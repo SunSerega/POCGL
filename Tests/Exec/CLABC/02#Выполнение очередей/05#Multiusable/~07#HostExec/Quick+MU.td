@@ -8,6 +8,13 @@ OpenCL.EventCallback = procedure(event: cl_event; event_command_status: CommandE
 OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): ValueTuple<cl_event,CLContext -> ()>
 
 #ExpExecOtp
+CommandQueueQuickArray<integer,array of integer,QueueArraySyncInvoker,SimpleFuncContainer<array of integer,array of integer>,QueueArrayWorkConvert<integer,array of integer,SimpleFuncContainer<array of integer,array of integer>>>#0
+	MultiusableCommandQueue<integer>#1 => CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>#2
+	MultiusableCommandQueue<integer>#1 => CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>#2
+	function lambda(a: array of integer): array of integer
+
+CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>#2: function lambda: integer
+
 1 
 2 2
 [QueueRes<T>]: 4 

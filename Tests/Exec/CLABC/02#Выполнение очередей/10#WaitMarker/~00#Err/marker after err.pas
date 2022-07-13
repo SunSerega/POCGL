@@ -2,12 +2,12 @@
 
 var M := WaitMarker.Create;
 var t := CLContext.Default.BeginInvoke(
-  WaitFor(M) + HQPQ(()->Println(2))
+  WaitFor(M) + HPQ(()->Println(2), false)
 );
 
 try
   CLContext.Default.SyncInvoke(
-    HQPQ(()->raise new Exception) + M
+    HPQ(()->raise new Exception, false) + M
   );
 except
 end;

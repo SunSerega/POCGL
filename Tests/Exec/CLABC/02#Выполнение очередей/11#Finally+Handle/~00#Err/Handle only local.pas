@@ -1,6 +1,6 @@
 ﻿## uses OpenCLABC;
 
 CLContext.Default.SyncInvoke(
-  HQPQ(()->raise new Exception('TestOK')) +
-  HQPQ(()->begin end).HandleWithoutRes(e->e.Message.Println<>nil)
+  HPQ(()->raise new Exception('TestOK'), false) +
+  HPQ(()->begin end, false).HandleWithoutRes(e->e.Message.Println<>nil)
 );

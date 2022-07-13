@@ -6,11 +6,11 @@ begin
   
   var t := CLContext.Default.BeginInvoke(
     WaitFor(M) +
-    HQPQ(()->
+    HPQ(()->
     begin
       Println('Waited');
       mre.Set;
-    end)
+    end, false)
   );
   
   CLContext.Default.SyncInvoke(QErr
@@ -25,7 +25,7 @@ begin
   t.Wait;
 end;
 
-var QErr := HQPQ(()->raise new Exception('TestOK'));
+var QErr := HPQ(()->raise new Exception('TestOK'), false);
 begin
   var M := WaitMarker.Create;
   Test(M, QErr>=M);

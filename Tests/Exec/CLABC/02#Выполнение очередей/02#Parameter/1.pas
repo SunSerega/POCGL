@@ -3,5 +3,5 @@
 var P := new ParameterQueue<integer>('P');
 
 CLContext.Default.SyncInvoke(
-  CombineQuickConvAsyncQueue(a->a, P,P.ThenQuickConvert(x->x*x)),
+  CombineConvAsyncQueue(a->a, |P,P.ThenConvert(x->x*x, false)|, false),
 P.NewSetter(5)).Println;

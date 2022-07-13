@@ -1,27 +1,27 @@
 ﻿## uses OpenCLABC;
 
 CLContext.Default.SyncInvoke(
-  CombineConstConvSyncQueue(res->res,
-    ArrGen(10, i->HTFQ(()->i), 1)
+  CombineConvSyncQueue(res->res,
+    ArrGen(10, i->HFQ(()->i), 1), false
   )
 ).Println;
 
 CLContext.Default.SyncInvoke(
-  CombineConstConvSyncQueueN2((i,s)->(i,s),
-    HTFQ(()->5),
-    HTFQ(()->'abc')
+  CombineConvSyncQueueN2((i,s)->(i,s),
+    HFQ(()->5),
+    HFQ(()->'abc'),
+  false)
+).Println;
+
+CLContext.Default.SyncInvoke(
+  CombineConvAsyncQueue(res->res,
+    ArrGen(10, i->HFQ(()->i), 1), false
   )
 ).Println;
 
 CLContext.Default.SyncInvoke(
-  CombineConstConvAsyncQueue(res->res,
-    ArrGen(10, i->HTFQ(()->i), 1)
-  )
-).Println;
-
-CLContext.Default.SyncInvoke(
-  CombineConstConvAsyncQueueN2((i,s)->(i,s),
-    HTFQ(()->5),
-    HTFQ(()->'abc')
-  )
+  CombineConvAsyncQueueN2((i,s)->(i,s),
+    HFQ(()->5),
+    HFQ(()->'abc'),
+  false)
 ).Println;

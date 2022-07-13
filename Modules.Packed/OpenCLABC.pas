@@ -53,6 +53,38 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO Получается, HFQ(()->A).MakeCCQ.DiscardResult не выполняет HFQ?
+// - (уже исправил)
+// - Проверки в CLTask, если очередь инициализировалась но не выполнилась?
+
+//TODO .MU в CCQ это костыль
+// - Выполняется куча всего лишнего
+// - Результат хранится в CLTask, хотя используется только в 1 выполнении CCQ
+
+//TODO Тесты:
+// - MU + HQPQ + MU + HQPQ + MU
+
+//TODO Что будет если из g.ParallelInvoke выполнить что то НЕ инвокером
+// - В любом случае добавить специальные проверки адекватности на время дебага
+
+//TODO Справка:
+// - "Q1 -= Q2" вместо Q1 := Q2+Q1;
+// - "Q1 /= Q2" вместо Q1 := Q2*Q1;
+
+//TODO Wait[All/Any] => CombineWait[All/Any]
+
+//TODO Теория: Все проверки "is ConstQueue<" заведомо костыльны
+// - К примеру в try/finally надо проверять на наличие под-очередей, выполяющих код на CPU (НЕ wait)
+//TODO С другой стороны в QueueCommand нужна проверка на полную сокращённость?
+
+//TODO DetachedMarkerSignal => CommandQueueMarkedCap
+//TODO Может переименовать в Host[Proc/Func]Queue?
+
+//TODO Потоко-безопастность CCQ.AddCommand
+
+//TODO CQ().ThenUse[.Cast]
+// - Должно быть HPQ+CQ в обоих случаях
+
 //TODO Ошибки в очередях из ev_l1 должны отменять вызов enq_f
 // - При чём даже если ev_l1 пустой (к примеру .ThenQuick(raise) без prev_ev)
 // - Иначе .GetResDirect вызывается на очередях, которые не закончили выполняться
@@ -96,10 +128,9 @@ unit OpenCLABC;
 // - Описание для unit
 // - Описания для extensionmethod
 // - Читабельность
-// - Несколько раз указание одного ключа шаблона: "a[g:b1,b2]c[g:d1d2]e" => "ab1cd1e" + "ab2cd2e"
+// - Несколько раз указание одного ключа шаблона: "a[g:b1,b2]c[g:d1,d2]e" => "ab1cd1e" + "ab2cd2e"
 // --- И вставка шаблона "[g:a,b]...{g}"
 // - Проверки адекватности шаблонов
-// - 
 //TODO Какой-то графический интерфейс для редактирования описаний?
 // - Упрощённое дерево файлов
 // - Читать .missing и т.п. файлы при обновлении чтобы показывать маркеры
@@ -138,27 +169,36 @@ unit OpenCLABC;
 
 //TODO CLContext.BeingInvoke выполняется чаще, чем создание новой очереди
 //TODO Поэтому стоит хранить в очереди кеш некоторых вещей, которые сейчас вычисляются заново в .BeingInvoke
-// - Список очередей, требующих инициализации
-//TODO Написать в справке что первый разгон для разогрева
+// - Очереди, требующие инициализации, в виде списка вместо дерева
+// - MU очереди:
+// --- Количество MU очередей (capacity для inited_mu)
+// --- Количество .Invoke каждой MU очереди
+// --- Нужен ли их результат (можно ли q.InvokeToNil)
+//TODO Написать в справке что первый проход для разогрева
 
 //TODO CLList: Как массив, но с изменяемой длиной
 //TODO Очень часто в OpenCL нужны двойные буферы: Предыдущее и новое состояние
-// - Я сейчас использую HQFQ(()->state1) и HQFQ(()->state2), но это очень криво
+// - Я сейчас использую HFQ(()->state1) и HFQ(()->state2), но это очень криво
 
-//TODO Если уже реализовывать поддержку "CQ<T> -> CQBase"... Это сразу и альтернатива .MU?
+//TODO Если уже реализовывать поддержку "CQ<T> -> TQ"... Это сразу и альтернатива .MU?
 // - Доп переменные не нужны. Т.е. очередь можно в 1 строчку расписать:
 // --- "q.ThenMultiuse(q->q+q)"
 // - Это будет интуитивнее:
 // --- НЕ работать между CLContext.BeginInvoke
-// --- В случае нескольких вызовов .ThenMultiuse - каждый отдельный, а не "создаёт новую функцию"
 // --- Порядок выполнения: q выполняет уже не при запуске очереди
-//TODO Защита от дурака, чтобы q-параметр нельзя было использовать вне .ThenMultiuse
-// - Поидее это уже примерно то, как работают очереди-параметры
-//TODO А вообще, возвращать надо не CQBase, а шаблон TQ
-//TODO Очень важно оптимизировать такие случаи, в зависимости от того, сколько раз используется q-параметр (0, 1, else)
 //TODO CLTaskErrHandlerThiefRepeater.FillErrLstWithPrev не берёт ошибки mu, если пришла ошибка с prev_ev
 // - По моему это плохо, потому что mu всегда выполняется как в finally
 // - Подумать как относится к .ThenMU, сделать тесты
+//TODO Защита от дурака, чтобы q-параметр нельзя было использовать вне .ThenMultiuse
+// - Поидее это уже примерно то, как работают очереди-параметры
+//TODO .Multiuseable всё же оставить, у них применения в разных структурах кода
+//TODO Очень важно оптимизировать такие случаи, в зависимости от того, сколько раз используется q-параметр (0, 1, else)
+// - Это же должно оптимищироваться для более общего .Multiuseable
+// - Тогда единственное различие - защита от дурака для q вне .ThenMultiuse
+//TODO A.ThenMultiuse(A->(B+A)*(C+A)): Должно ли ожидать окончания A перед стартом B и C?
+// - Нет, так нельзя, потому что тогда нельзя получить тот же порядок что с .MU
+// - Но тогда надо назвать как-то по другому, не "Then"
+// - .MultiuseAs? In? До "as" проще дотянуться
 
 //TODO NativeMemoryArea в отдельный модуль
 // - При этом сделать его кросс-платформенным
@@ -168,15 +208,6 @@ unit OpenCLABC;
 // --- if (len is ConstQueue) and (c_len.Value=0) then
 // --- if len=0 then
 // - И при этом настроить логику отмены cl.Enqueue, если второе условие не пройдёт
-
-//TODO Вернуть HPQ/HFQ и добавить аргументы-флаги:
-// - Quick: Можно ли без потока
-// - Const: Можно ли заранее (доступно и без Quick)
-// - ??? (что-то есть было пока засыпал, уже забыл)
-//TODO Или может сразу переименовать в Host[Proc/Func]Queue
-
-//TODO ConstQueueNil.Instance, чтобы не создавать лишние экземпляры
-//TODO CQNil возвращающая "ConstQueueNil.Instance as CommandQueueNil"
 
 //TODO Использовать cl.EnqueueMapBuffer
 // - В виде .ThenMapMemory([AutoSize?], Направление, while_mapped: CQ<Native*Area>->CQBase)
@@ -215,8 +246,9 @@ unit OpenCLABC;
 //TODO github.io
 // - Разобраться почему .css не работало до 0.css, но только на github.io
 // - Добавить index.html в справки, состоящий из всего 1 страницы
+// - Гитхаб-экшн, авто-обновляющий ветку справок
 //TODO Описание модуля в .dat
-// + Исправить что сказано про справку
+// - Исправить ссылку на справку в описании заголовка модуля
 
 //TODO Тесты и справка:
 // - (HTPQ+Par).ThenQuickUse.ThenConstConvert
@@ -241,8 +273,13 @@ unit OpenCLABC;
 //===================================
 // Запланированное:
 
+//TODO Комментарии "Использовано в" энумам н.у. модулей
+//TODO OpenCL: Объединить SamplePattern
+
+//TODO WaitNothing - аналог CQNil, в первую очередь для WaitAll([])
+
 //TODO Константные очереди с функцией-инициализатором
-// - Как параметры, которым каждый рад дают новое значение
+// - Как параметры, которым каждый раз дают новое значение
 // - Полезно, к примеру, чтобы выделять новый массив-буфер на каждое выполнение
 // - Или лучше какую-то кешированную очередь, выделяющий новые объекты только при накладывающихся выполнениях CLTask?
 // - Если делать .ThenMap - использования получаются довольно ограничены...
@@ -266,8 +303,6 @@ unit OpenCLABC;
 // - Но чтобы это сделать... придётся типы-утилиты перенести в отдельный модуль,
 // - чтобы они были доступны, но не на виду
 
-//TODO cl.WaitForEvents тратит время процессора??? Почему?
-// - Вроде потому, что тогда возобновление работы произойдёт быстрее, чем с колбеком
 //TODO Интегрировать профайлинг очередей
 // - И в том числе профайлинг отдельных ивентов
 
@@ -280,13 +315,6 @@ unit OpenCLABC;
 //
 //TODO Возможность выводить где именно в очереди возникла ошибка?
 
-//TODO (HTPQ+CQ(0)).ThenConstUse
-// - CQBase.TryGetConstRes ???
-// - Нет, это медленно
-// - Лучше хранить кэш константного результата
-// - И список зависимых очередей-параметров
-//TODO ParameterQueue.MU может возвращать себя
-
 //TODO Порядок Wait очередей в Wait группах
 // - Проверить сочетание с каждой другой фичей
 // - В комбинации с .Cycle вообще возможно добиться детерминированности?
@@ -298,7 +326,7 @@ unit OpenCLABC;
 // - Queue converter's >> Wait
 
 //TODO Исправить перегрузки CLKernel.Exec
-// - Но сначала решить как исправлять
+// - Но сначала придумать что исправлять
 // - Перегрузки с UIntPtr перед перегрузками integer?
 
 //TODO Фичи версий OpenCL:
@@ -1088,6 +1116,11 @@ type
     $'{time} | {GetActStr} when: {reason}';
     
   end;
+  //TODO #2680
+  TimeNString = auto class
+    t: TimeSpan;
+    s: string;
+  end;
   EventUseLog = sealed class
     private log_lines := new List<EventRetainReleaseData>;
     private ref_c := 0;
@@ -1106,14 +1139,14 @@ type
       ref_c -= 1;
     end;
     
-    private function MakeReports: sequence of array of string;
+    private function MakeReports: sequence of array of TimeNString;
     begin
-      var res := new List<string>;
+      var res := new List<TimeNString>;
       var c := 0;
       foreach var act in log_lines do
       begin
         c += if act.is_release then -1 else +1;
-        res += $'{c,3} | {act}';
+        res += new TimeNString(act.time, $'{c,3} | {act}');
         if c=0 then
         begin
           yield res.ToArray;
@@ -1149,13 +1182,17 @@ type
     begin
       otp.WriteLine(System.Environment.StackTrace);
       
+      var newest_report := TimeSpan.Zero;
       foreach var (r,ev) in Logs.SelectMany(kvp->
         kvp.Value.MakeReports.Tabulate(r->kvp.Key)
-      ).OrderBy(\(r,ev)->r.First) do
+      ).OrderBy(\(r,ev)->r[0].t) do
       begin
+        if r[0].t>newest_report then
+          otp.WriteLine;
         otp.WriteLine($'Logging state change of {ev}:');
         foreach var l in r do
-          otp.WriteLine(l);
+          otp.WriteLine(l.s);
+        newest_report := |newest_report, r[^1].t|.Max;
         otp.WriteLine('-'*30);
       end;
       
@@ -2746,7 +2783,7 @@ type
       var c: UInt32;
       begin
         var ec := cl.GetPlatformIDs(0, IntPtr.Zero, c);
-        if ec=ErrorCode.PLATFORM_NOT_FOUND_KHR then exit;
+        if ec=ErrorCode.PLATFORM_NOT_FOUND then exit;
         OpenCLABCInternalException.RaiseIfError(ec);
       end;
       if c=0 then exit;
@@ -2863,11 +2900,11 @@ type
       if Interlocked.CompareExchange(default_was_inited, 1, 0)=0 then
       begin
         var c :=
-        {$ifdef ForceMaxDebug}
-        LoadTestContext
-        {$else ForceMaxDebug}
-        MakeNewDefaultContext
-        {$endif ForceMaxDebug};
+          {$ifdef ForceMaxDebug}
+          //TODO #????: Лишние ()
+          LoadTestContext() ??
+          {$endif ForceMaxDebug}
+          MakeNewDefaultContext;
         // Another exchange, because Default could be explicitly set
         Interlocked.CompareExchange(_default, c, nil);
       end;
@@ -5601,28 +5638,56 @@ type
   
   ConstQueueNil = sealed partial class(CommandQueueNil)
     
-    public constructor := exit;
+    private constructor := raise new OpenCLABCInternalException;
+    private constructor(b: byte) := exit;
+    
+    private static _instance := new ConstQueueNil(0);
+    public static property Instance: ConstQueueNil read _instance;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override := sb += #10;
     
   end;
   
+  ///Представляет очередь команд, в основном выполняемых на GPU
+  ///Такая очередь всегда возвращает значение типа T
+  CommandQueue<T> = abstract partial class(CommandQueueBase)
+    private expected_const_res: T;
+    private const_res_dep: array of CommandQueueBase := nil;
+    
+    private static function empty_dep := System.Array.Empty&<CommandQueueBase>;
+    private function IsConstResDepEmpty: boolean;
+    begin
+      Result := self.const_res_dep = empty_dep;
+      {$ifdef DEBUG}
+      var robust_res := (const_res_dep<>nil) and (const_res_dep.Length=0);
+      if Result <> robust_res then
+        raise new OpenCLABCInternalException($'');
+      {$endif DEBUG}
+    end;
+    
+    // Empty ctor also allowed
+    protected constructor(res: T; dep: array of CommandQueueBase);
+    begin
+      self.expected_const_res := res;
+      self.const_res_dep := dep;
+    end;
+    
+  end;
   ///Представляет константную очередь
   ///Константные очереди ничего не выполняют и возвращают заданное при создании значение
   ConstQueue<T> = sealed partial class(CommandQueue<T>)
-    private res: T;
     
     ///Создаёт новую константную очередь, возвращающую указанное значения
-    public constructor(o: T) := self.res := o;
+    public constructor(o: T) := inherited Create(o, empty_dep);
     private constructor := raise new OpenCLABCInternalException;
     
     ///Значение, которого возвращает данная константная очередь
-    public property Value: T read res;
+    public property Value: T read self.expected_const_res;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
       sb += ': ';
-      ToStringRuntimeValue(sb, self.res);
+      ToStringRuntimeValue(sb, self.expected_const_res);
       sb += #10;
     end;
     
@@ -5633,7 +5698,7 @@ type
   CommandQueueNil = abstract partial class(CommandQueueBase) end;
   ///Представляет очередь команд, в основном выполняемых на GPU
   ///Такая очередь всегда возвращает значение типа T
-  CommandQueue<T> = abstract partial class
+  CommandQueue<T> = abstract partial class(CommandQueueBase)
     
     public static function operator implicit(o: T): CommandQueue<T> :=
     new ConstQueue<T>(o);
@@ -5657,44 +5722,36 @@ type
   ///Очереди-параметры ничего не выполняют, но возвращает установленное при запуске очереди значение
   ParameterQueue<T> = sealed partial class(CommandQueue<T>)
     private _name: string;
-    private def: T;
-    private def_is_set: boolean;
     
     ///Создаёт новую очередь-параметр
     ///name указывает имя параметра
     public constructor(name: string);
     begin
       self._name := name;
-      self.def_is_set := false;
     end;
     ///Создаёт новую очередь-параметр
     ///name указывает имя параметра
     ///Указанное значение будет использоваться если при запуске очереди значение параметра небыло установлено
     public constructor(name: string; def: T);
     begin
+      inherited Create(def, new CommandQueueBase[](self));
       self.name := name;
-      self.def := def;
-      self.def_is_set := true;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
     ///Имя параметра
     public property Name: string read _name write _name;
     ///Указывает, установлено ли значение, которое будет использоваться если при запуске очереди значение параметра небыло установлено
-    public property DefaultDefined: boolean read def_is_set;
+    public property DefaultDefined: boolean read const_res_dep<>nil;
     
     private function GetDefault: T;
     begin
-      if not def_is_set then
+      if not DefaultDefined then
         raise new InvalidOperationException($'Значение параметра {name} небыло установлено');
-      Result := self.def;
+      Result := self.expected_const_res;
     end;
     ///Значение, которое будет использоваться если при запуске очереди значение параметра небыло установлено
-    public property &Default: T read GetDefault write
-    begin
-      self.def := value;
-      self.def_is_set := true;
-    end;
+    public property &Default: T read GetDefault;
     
     ///Создаёт установщик данного параметра
     ///Если передать этот установщик в метод запуска очереди,
@@ -5705,8 +5762,12 @@ type
     begin
       sb += '["';
       sb += Name;
-      sb += '"]: Default=';
-      ToStringRuntimeValue(sb, self.def);
+      sb += '"]';
+      if DefaultDefined then
+      begin
+        sb += ': Default=';
+        ToStringRuntimeValue(sb, self.Default);
+      end;
       sb += #10;
     end;
     
@@ -5777,9 +5838,7 @@ type
   {$region Then[Convert,Use]}
   
   ///Представляет очередь команд, в основном выполняемых на GPU
-  CommandQueueBase = abstract partial class
-    
-  end;
+  CommandQueueBase = abstract partial class end;
   
   ///Представляет очередь команд, в основном выполняемых на GPU
   ///Такая очередь всегда возвращает nil
@@ -5790,55 +5849,15 @@ type
     
     {$region Convert}
     
-    public function ThenConstConvert<TOtp>(f: T->TOtp           ): CommandQueue<TOtp>;
-    public function ThenConstConvert<TOtp>(f: (T, CLContext)->TOtp): CommandQueue<TOtp>;
-    
-    ///Создаёт очередь, которая выполнит данную
-    ///А затем выполнит на CPU функцию f, используя результат данной очереди
-    ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-    ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-    ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-    ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-    ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp>;
-    public function ThenQuickConvert<TOtp>(f: (T, CLContext)->TOtp): CommandQueue<TOtp>;
-    
-    public function ThenThreadedConvert<TOtp>(f: T->TOtp           ): CommandQueue<TOtp>;
-    public function ThenThreadedConvert<TOtp>(f: (T, CLContext)->TOtp): CommandQueue<TOtp>;
-    
-    ///Создаёт очередь, которая выполнит данную
-    ///А затем выполнит на CPU функцию f, используя результат данной очереди
-    ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
-    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
-    public function ThenConvert<TOtp>(f: T->TOtp           ) := ThenThreadedConvert(f);
-    public function ThenConvert<TOtp>(f: (T, CLContext)->TOtp) := ThenThreadedConvert(f);
+    public function ThenConvert<TOtp>(f: T->TOtp             ; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TOtp>;
+    public function ThenConvert<TOtp>(f: (T, CLContext)->TOtp; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TOtp>;
     
     {$endregion Convert}
     
     {$region Use}
     
-    public function ThenConstUse(p: T->()           ): CommandQueue<T>;
-    public function ThenConstUse(p: (T, CLContext)->()): CommandQueue<T>;
-    
-    ///Создаёт очередь, которая выполнит данную и вернёт её результат
-    ///Но перед этим выполнит на CPU процедуру p, используя полученный результат
-    ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-    ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-    ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-    ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-    ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickUse(p: T->()           ): CommandQueue<T>;
-    public function ThenQuickUse(p: (T, CLContext)->()): CommandQueue<T>;
-    
-    public function ThenThreadedUse(p: T->()           ): CommandQueue<T>;
-    public function ThenThreadedUse(p: (T, CLContext)->()): CommandQueue<T>;
-    
-    ///Создаёт очередь, которая выполнит данную и вернёт её результат
-    ///Но перед этим выполнит на CPU процедуру p, используя полученный результат
-    ///Переданный делегат выполняется в отдельном потоке выполнения (Thread)
-    ///Если делегат выполняется быстро и выделение нового потока излишне - используйте соответствующую функцию, начинающуюся на ".ThenQuick..."
-    public function ThenUse(p: T->()           ) := ThenThreadedUse(p);
-    public function ThenUse(p: (T, CLContext)->()) := ThenThreadedUse(p);
+    public function ThenUse(p: T->()             ; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<T>;
+    public function ThenUse(p: (T, CLContext)->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<T>;
     
     {$endregion Use}
     
@@ -5846,59 +5865,12 @@ type
   
   {$endregion Then[Convert,Use]}
   
-  {$region +/*}
-  
-  ///Представляет очередь команд, в основном выполняемых на GPU
-  CommandQueueBase = abstract partial class
-    
-    private function  AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
-    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; abstract;
-    
-    public static function operator+(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueSyncBase(q1);
-    public static function operator*(q1, q2: CommandQueueBase): CommandQueueBase := q2.AfterQueueAsyncBase(q1);
-    
-    public static procedure operator+=(var q1: CommandQueueBase; q2: CommandQueueBase) := q1 := q1+q2;
-    public static procedure operator*=(var q1: CommandQueueBase; q2: CommandQueueBase) := q1 := q1*q2;
-    
-  end;
-  
-  ///Представляет очередь команд, в основном выполняемых на GPU
-  ///Такая очередь всегда возвращает nil
-  CommandQueueNil = abstract partial class(CommandQueueBase)
-    
-    private function  AfterQueueSyncBase(q: CommandQueueBase): CommandQueueBase; override := q+self;
-    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; override := q*self;
-    
-    public static function operator+(q1: CommandQueueBase; q2: CommandQueueNil): CommandQueueNil;
-    public static function operator*(q1: CommandQueueBase; q2: CommandQueueNil): CommandQueueNil;
-    
-    public static procedure operator+=(var q1: CommandQueueNil; q2: CommandQueueNil) := q1 := q1+q2;
-    public static procedure operator*=(var q1: CommandQueueNil; q2: CommandQueueNil) := q1 := q1*q2;
-    
-  end;
-  ///Представляет очередь команд, в основном выполняемых на GPU
-  ///Такая очередь всегда возвращает значение типа T
-  CommandQueue<T> = abstract partial class(CommandQueueBase)
-    
-    private function AfterQueueSyncBase (q: CommandQueueBase): CommandQueueBase; override := q+self;
-    private function AfterQueueAsyncBase(q: CommandQueueBase): CommandQueueBase; override := q*self;
-    
-    public static function operator+(q1: CommandQueueBase; q2: CommandQueue<T>): CommandQueue<T>;
-    public static function operator*(q1: CommandQueueBase; q2: CommandQueue<T>): CommandQueue<T>;
-    
-    public static procedure operator+=(var q1: CommandQueue<T>; q2: CommandQueue<T>) := q1 := q1+q2;
-    public static procedure operator*=(var q1: CommandQueue<T>; q2: CommandQueue<T>) := q1 := q1*q2;
-    
-  end;
-  
-  {$endregion +/*}
-  
   {$region Multiusable}
   
   ///Представляет очередь команд, в основном выполняемых на GPU
   CommandQueueBase = abstract partial class
     
-    private function MultiusableBase: ()->CommandQueueBase; abstract;
+    private function MultiusableBase: CommandQueueBase; abstract;
     ///Создаёт функцию, вызывая которую можно создать любое кол-во очередей-удлинителей для данной очереди
     ///Подробнее в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
     public function Multiusable := MultiusableBase;
@@ -5909,20 +5881,20 @@ type
   ///Такая очередь всегда возвращает nil
   CommandQueueNil = abstract partial class(CommandQueueBase)
     
-    private function MultiusableBase: ()->CommandQueueBase; override := Multiusable() as object as Func<CommandQueueBase>; //TODO #2221
+    private function MultiusableBase: CommandQueueBase; override := Multiusable;
     ///Создаёт функцию, вызывая которую можно создать любое кол-во очередей-удлинителей для данной очереди
     ///Подробнее в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
-    public function Multiusable: ()->CommandQueueNil;
+    public function Multiusable: CommandQueueNil;
     
   end;
   ///Представляет очередь команд, в основном выполняемых на GPU
   ///Такая очередь всегда возвращает значение типа T
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
-    private function MultiusableBase: ()->CommandQueueBase; override := Multiusable() as object as Func<CommandQueueBase>; //TODO #2221
+    private function MultiusableBase: CommandQueueBase; override := Multiusable;
     ///Создаёт функцию, вызывая которую можно создать любое кол-во очередей-удлинителей для данной очереди
     ///Подробнее в справке: "Очередь>>Создание очередей>>Множественное использование очереди"
-    public function Multiusable: ()->CommandQueue<T>;
+    public function Multiusable: CommandQueue<T>;
     
   end;
   
@@ -5932,9 +5904,6 @@ type
   
   ///Представляет очередь команд, в основном выполняемых на GPU
   CommandQueueBase = abstract partial class
-    
-    private function AfterTry(try_do: CommandQueueBase): CommandQueueBase; abstract;
-    public static function operator>=(try_do, do_finally: CommandQueueBase) := do_finally.AfterTry(try_do);
     
     private function ConvertErrHandler<TException>(handler: TException->boolean): Exception->boolean; where TException: Exception;
     begin Result := e->(e is TException) and handler(TException(e)) end;
@@ -5953,16 +5922,10 @@ type
   ///Такая очередь всегда возвращает nil
   CommandQueueNil = abstract partial class(CommandQueueBase)
     
-    private function AfterTry(try_do: CommandQueueBase): CommandQueueBase; override := try_do >= self;
-    public static function operator>=(try_do: CommandQueueBase; do_finally: CommandQueueNil): CommandQueueNil;
-    
   end;
   ///Представляет очередь команд, в основном выполняемых на GPU
   ///Такая очередь всегда возвращает значение типа T
   CommandQueue<T> = abstract partial class(CommandQueueBase)
-    
-    private function AfterTry(try_do: CommandQueueBase): CommandQueueBase; override := try_do >= self;
-    public static function operator>=(try_do: CommandQueueBase; do_finally: CommandQueue<T>): CommandQueue<T>;
     
     ///Создаёт очередь, сначала выполняющую данную, а затем обрабатывающую кинутые в ней исключения
     ///В конце выполнения созданная очередь возвращает то, что вернула данная, если исключений небыло и указанное значение если обработчик был успешно выполнен
@@ -5999,10 +5962,6 @@ type
     
     private function ConvertToQBase: CommandQueueBase; abstract;
     public static function operator implicit(m: WaitMarker): CommandQueueBase := m.ConvertToQBase;
-    
-    public static function operator+(m1, m2: WaitMarker) := CommandQueueBase(m1)+m2;
-    public static function operator*(m1, m2: WaitMarker) := CommandQueueBase(m1)*m2;
-    public static function operator>=(m1, m2: WaitMarker) := CommandQueueBase(m1)>=m2;
     
     {$region ToString}
     
@@ -6227,7 +6186,6 @@ type
   
   CLKernelCCQ = sealed partial class
     
-    public constructor(o: CLKernel);
     public constructor(q: CommandQueue<CLKernel>);
     private constructor;
     
@@ -6235,12 +6193,8 @@ type
     
     public function ThenQueue(q: CommandQueueBase): CLKernelCCQ;
     
-    public function ThenConstProc(p: CLKernel->()): CLKernelCCQ;
-    public function ThenConstProc(p: (CLKernel, CLContext)->()): CLKernelCCQ;
-    public function ThenQuickProc(p: CLKernel->()): CLKernelCCQ;
-    public function ThenQuickProc(p: (CLKernel, CLContext)->()): CLKernelCCQ;
-    public function ThenThreadedProc(p: CLKernel->()): CLKernelCCQ;
-    public function ThenThreadedProc(p: (CLKernel, CLContext)->()): CLKernelCCQ;
+    public function ThenProc(p: CLKernel->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLKernelCCQ;
+    public function ThenProc(p: (CLKernel, CLContext)->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLKernelCCQ;
     
     public function ThenWait(marker: WaitMarker): CLKernelCCQ;
     
@@ -6271,8 +6225,6 @@ type
   ///Представляет очередь-контейнер для команд GPU, применяемых к объекту типа CLMemory
   CLMemoryCCQ = sealed partial class
     
-    ///Создаёт контейнер команд, который будет применять команды к указанному объекту
-    public constructor(o: CLMemory);
     ///Создаёт контейнер команд, который будет применять команды к объекту, который вернёт указанная очередь
     ///За каждое одно выполнение контейнера - q выполнится ровно один раз
     public constructor(q: CommandQueue<CLMemory>);
@@ -6283,18 +6235,8 @@ type
     ///Добавляет выполнение очереди в список обычных команд для GPU
     public function ThenQueue(q: CommandQueueBase): CLMemoryCCQ;
     
-    public function ThenConstProc(p: CLMemory->()): CLMemoryCCQ;
-    public function ThenConstProc(p: (CLMemory, CLContext)->()): CLMemoryCCQ;
-    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
-    ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-    ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-    ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-    ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-    ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickProc(p: CLMemory->()): CLMemoryCCQ;
-    public function ThenQuickProc(p: (CLMemory, CLContext)->()): CLMemoryCCQ;
-    public function ThenThreadedProc(p: CLMemory->()): CLMemoryCCQ;
-    public function ThenThreadedProc(p: (CLMemory, CLContext)->()): CLMemoryCCQ;
+    public function ThenProc(p: CLMemory->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLMemoryCCQ;
+    public function ThenProc(p: (CLMemory, CLContext)->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLMemoryCCQ;
     
     ///Добавляет ожидание сигнала выполненности от заданного маркера
     public function ThenWait(marker: WaitMarker): CLMemoryCCQ;
@@ -6851,8 +6793,6 @@ type
   CLValueCCQ<T> = sealed partial class
   where T: record;
     
-    ///Создаёт контейнер команд, который будет применять команды к указанному объекту
-    public constructor(o: CLValue<T>);
     ///Создаёт контейнер команд, который будет применять команды к объекту, который вернёт указанная очередь
     ///За каждое одно выполнение контейнера - q выполнится ровно один раз
     public constructor(q: CommandQueue<CLValue<T>>);
@@ -6863,18 +6803,8 @@ type
     ///Добавляет выполнение очереди в список обычных команд для GPU
     public function ThenQueue(q: CommandQueueBase): CLValueCCQ<T>;
     
-    public function ThenConstProc(p: CLValue<T>->()): CLValueCCQ<T>;
-    public function ThenConstProc(p: (CLValue<T>, CLContext)->()): CLValueCCQ<T>;
-    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
-    ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-    ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-    ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-    ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-    ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickProc(p: CLValue<T>->()): CLValueCCQ<T>;
-    public function ThenQuickProc(p: (CLValue<T>, CLContext)->()): CLValueCCQ<T>;
-    public function ThenThreadedProc(p: CLValue<T>->()): CLValueCCQ<T>;
-    public function ThenThreadedProc(p: (CLValue<T>, CLContext)->()): CLValueCCQ<T>;
+    public function ThenProc(p: CLValue<T>->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLValueCCQ<T>;
+    public function ThenProc(p: (CLValue<T>, CLContext)->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLValueCCQ<T>;
     
     ///Добавляет ожидание сигнала выполненности от заданного маркера
     public function ThenWait(marker: WaitMarker): CLValueCCQ<T>;
@@ -6947,8 +6877,6 @@ type
   CLArrayCCQ<T> = sealed partial class
   where T: record;
     
-    ///Создаёт контейнер команд, который будет применять команды к указанному объекту
-    public constructor(o: CLArray<T>);
     ///Создаёт контейнер команд, который будет применять команды к объекту, который вернёт указанная очередь
     ///За каждое одно выполнение контейнера - q выполнится ровно один раз
     public constructor(q: CommandQueue<CLArray<T>>);
@@ -6959,18 +6887,8 @@ type
     ///Добавляет выполнение очереди в список обычных команд для GPU
     public function ThenQueue(q: CommandQueueBase): CLArrayCCQ<T>;
     
-    public function ThenConstProc(p: CLArray<T>->()): CLArrayCCQ<T>;
-    public function ThenConstProc(p: (CLArray<T>, CLContext)->()): CLArrayCCQ<T>;
-    ///Добавляет выполнение процедуры на CPU в список обычных команд для GPU
-    ///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-    ///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-    ///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-    ///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-    ///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-    public function ThenQuickProc(p: CLArray<T>->()): CLArrayCCQ<T>;
-    public function ThenQuickProc(p: (CLArray<T>, CLContext)->()): CLArrayCCQ<T>;
-    public function ThenThreadedProc(p: CLArray<T>->()): CLArrayCCQ<T>;
-    public function ThenThreadedProc(p: (CLArray<T>, CLContext)->()): CLArrayCCQ<T>;
+    public function ThenProc(p: CLArray<T>->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLArrayCCQ<T>;
+    public function ThenProc(p: (CLArray<T>, CLContext)->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLArrayCCQ<T>;
     
     ///Добавляет ожидание сигнала выполненности от заданного маркера
     public function ThenWait(marker: WaitMarker): CLArrayCCQ<T>;
@@ -7461,10 +7379,10 @@ type
     {$region FromBytes}
     
     public static function FromBytes(bytes: CommandQueue<UIntPtr>): CLKernelArgLocal;
-    public static function FromBytes(bytes: CommandQueue<UInt32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
-    public static function FromBytes(bytes: CommandQueue<Int32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
-    public static function FromBytes(bytes: CommandQueue<UInt64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
-    public static function FromBytes(bytes: CommandQueue<Int64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
+    public static function FromBytes(bytes: CommandQueue<UInt32>) := FromBytes(bytes.ThenConvert(bytes->new UIntPtr(bytes), false,true));
+    public static function FromBytes(bytes: CommandQueue<Int32>) := FromBytes(bytes.ThenConvert(bytes->new UIntPtr(bytes), false,true));
+    public static function FromBytes(bytes: CommandQueue<UInt64>) := FromBytes(bytes.ThenConvert(bytes->new UIntPtr(bytes), false,true));
+    public static function FromBytes(bytes: CommandQueue<Int64>) := FromBytes(bytes.ThenConvert(bytes->new UIntPtr(bytes), false,true));
     
     {$endregion FromBytes}
     
@@ -7478,32 +7396,32 @@ type
     {$region LikeArray}
     
     public static function LikeArray<T>(a: CommandQueue<array of T>): CLKernelArgLocal; where T: record;
-    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;
     public static function LikeArray<T>(a: array of T): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
     public static function LikeArray2<T>(a: CommandQueue<array[,] of T>): CLKernelArgLocal; where T: record;
-    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;
     public static function LikeArray2<T>(a: array[,] of T): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
     public static function LikeArray3<T>(a: CommandQueue<array[,,] of T>): CLKernelArgLocal; where T: record;
-    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;
     public static function LikeArray3<T>(a: array[,,] of T): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
     public static function LikeNativeArrayArea<T>(a: CommandQueue<NativeArrayArea<T>>): CLKernelArgLocal; where T: record;
-    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;
     public static function LikeNativeArrayArea<T>(a: NativeArrayArea<T>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
     public static function LikeNativeArray<T>(a: CommandQueue<NativeArray<T>>): CLKernelArgLocal; where T: record;
-    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;
     public static function LikeNativeArray<T>(a: NativeArray<T>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
     public static function LikeCLArray<T>(a: CommandQueue<CLArray<T>>): CLKernelArgLocal; where T: record;
-    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;
     public static function LikeCLArray<T>(a: CLArray<T>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
@@ -7964,6 +7882,7 @@ type
 
 {$region ConstQueue}
 
+function CQNil: CommandQueueNil;
 ///Создаёт константную очередь с указанным результатом
 function CQ<T>(o: T): CommandQueue<T>;
 
@@ -7971,15 +7890,11 @@ function CQ<T>(o: T): CommandQueue<T>;
 
 {$region HFQ/HPQ}
 
-function HQFQ<T>(f: ()->T): CommandQueue<T>;
-function HQFQ<T>(f: CLContext->T): CommandQueue<T>;
-function HTFQ<T>(f: ()->T): CommandQueue<T>;
-function HTFQ<T>(f: CLContext->T): CommandQueue<T>;
+function HFQ<T>(f: ()->T; need_own_thread: boolean := true): CommandQueue<T>;
+function HFQ<T>(f: CLContext->T; need_own_thread: boolean := true): CommandQueue<T>;
 
-function HQPQ(p: ()->()): CommandQueueNil;
-function HQPQ(p: CLContext->()): CommandQueueNil;
-function HTPQ(p: ()->()): CommandQueueNil;
-function HTPQ(p: CLContext->()): CommandQueueNil;
+function HPQ(p: ()->(); need_own_thread: boolean := true): CommandQueueNil;
+function HPQ(p: CLContext->(); need_own_thread: boolean := true): CommandQueueNil;
 
 {$endregion HFQ/HPQ}
 
@@ -8006,143 +7921,43 @@ function WaitFor(marker: WaitMarker): CommandQueueNil;
 
 {$region Simple}
 
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///И возвращающую результат последней очереди
-function CombineSyncQueueBase(params qs: array of CommandQueueBase): CommandQueueBase;
-
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///И возвращающую результат последней очереди
-function CombineSyncQueueNil(params qs: array of CommandQueueNil): CommandQueueNil;
-function CombineSyncQueueNil(qs: array of CommandQueueBase; last: CommandQueueNil): CommandQueueNil;
-
+function CombineSyncQueue(params qs: array of CommandQueueBase): CommandQueueBase;
+function CombineSyncQueue(params qs: array of CommandQueueNil): CommandQueueNil;
 ///Создаёт очередь, выполняющую указанные очереди одну за другой
 ///И возвращающую результат последней очереди
 function CombineSyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
-function CombineSyncQueue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
+
+function CombineSyncQueue<TQ>(qs: array of TQ; last: CommandQueueBase): CommandQueueBase; where TQ: CommandQueueBase;
+function CombineSyncQueue<TQ>(qs: array of TQ; last: CommandQueueNil): CommandQueueNil; where TQ: CommandQueueBase;
+function CombineSyncQueue<T, TQ>(qs: array of TQ; last: CommandQueue<T>): CommandQueue<T>; where TQ: CommandQueueBase;
 
 {$endregion Simple}
-
-{$region Lazy}
-
-{$endregion Lazy}
 
 {$region Conv}
 
 {$region NonContext}
 
-function CombineConstConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: array of CommandQueue<TInp>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
 
-function CombineConstConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одну за другой
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-
-function CombineThreadedConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-
-function CombineThreadedConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConvSyncQueueN2<TInp1,TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvSyncQueueN3<TInp1,TInp2,TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvSyncQueueN4<TInp1,TInp2,TInp3,TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvSyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvSyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvSyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
 
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineConstConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; qs: array of CommandQueue<TInp>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
 
-function CombineConstConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineConstConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-
-function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-
-function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-
-function CombineThreadedConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-
-function CombineThreadedConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineThreadedConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConvSyncQueueN2<TInp1,TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvSyncQueueN3<TInp1,TInp2,TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvSyncQueueN4<TInp1,TInp2,TInp3,TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvSyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvSyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvSyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
 
 {$endregion Context}
 
@@ -8152,63 +7967,27 @@ function CombineThreadedConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6
 
 {$region NonContext}
 
-function CombineConstUseSyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineUseSyncQueue<TInp>(use: Action<array of TInp>; qs: array of CommandQueue<TInp>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<array of TInp>;
 
-function CombineConstUseSyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineConstUseSyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineConstUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineConstUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineConstUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineConstUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-
-function CombineQuickUseSyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-
-function CombineQuickUseSyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineQuickUseSyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineQuickUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineQuickUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineQuickUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineQuickUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-
-function CombineThreadedUseSyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-
-function CombineThreadedUseSyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineThreadedUseSyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineThreadedUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineThreadedUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineThreadedUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineThreadedUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineUseSyncQueueN2<TInp1,TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineUseSyncQueueN3<TInp1,TInp2,TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineUseSyncQueueN4<TInp1,TInp2,TInp3,TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineUseSyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineUseSyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineUseSyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineConstUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; qs: array of CommandQueue<TInp>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<array of TInp>;
 
-function CombineConstUseSyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineConstUseSyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineConstUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineConstUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineConstUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineConstUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-
-function CombineQuickUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-
-function CombineQuickUseSyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineQuickUseSyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineQuickUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineQuickUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineQuickUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineQuickUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-
-function CombineThreadedUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-
-function CombineThreadedUseSyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineThreadedUseSyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineThreadedUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineThreadedUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineThreadedUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineThreadedUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineUseSyncQueueN2<TInp1,TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineUseSyncQueueN3<TInp1,TInp2,TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineUseSyncQueueN4<TInp1,TInp2,TInp3,TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineUseSyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineUseSyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineUseSyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 
 {$endregion Context}
 
@@ -8220,143 +7999,43 @@ function CombineThreadedUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6,
 
 {$region Simple}
 
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///И возвращающую результат последней очереди
-function CombineAsyncQueueBase(params qs: array of CommandQueueBase): CommandQueueBase;
-
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///И возвращающую результат последней очереди
-function CombineAsyncQueueNil(params qs: array of CommandQueueNil): CommandQueueNil;
-function CombineAsyncQueueNil(qs: array of CommandQueueBase; last: CommandQueueNil): CommandQueueNil;
-
+function CombineAsyncQueue(params qs: array of CommandQueueBase): CommandQueueBase;
+function CombineAsyncQueue(params qs: array of CommandQueueNil): CommandQueueNil;
 ///Создаёт очередь, выполняющую указанные очереди одновременно
 ///И возвращающую результат последней очереди
 function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>): CommandQueue<T>;
-function CombineAsyncQueue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>): CommandQueue<T>;
+
+function CombineAsyncQueue<TQ>(qs: array of TQ; last: CommandQueueBase): CommandQueueBase; where TQ: CommandQueueBase;
+function CombineAsyncQueue<TQ>(qs: array of TQ; last: CommandQueueNil): CommandQueueNil; where TQ: CommandQueueBase;
+function CombineAsyncQueue<T, TQ>(qs: array of TQ; last: CommandQueue<T>): CommandQueue<T>; where TQ: CommandQueueBase;
 
 {$endregion Simple}
-
-{$region Lazy}
-
-{$endregion Lazy}
 
 {$region Conv}
 
 {$region NonContext}
 
-function CombineConstConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: array of CommandQueue<TInp>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
 
-function CombineConstConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-///Создаёт очередь, выполняющую указанные очереди одновременно
-///Затем выполняющую указанную первым параметров функцию на CPU, передавая результаты всех очередей
-///И возвращающую результат этой функции
-///Переданный делегат старается выполняется в одном из уже существующих потоков выполнения, но так чтобы не нарушить порядок выполнения дерева очередей
-///Из делегата категорически нельзя вызывать функции модуля OpenCL блокирующие выполнение, к примеру "cl.WaitForEvents", "clFinish" и блокирующий "cl.EnqueueReadBuffer"
-///Подробнее - читайте в документации библиотеки OpenCL про функцию "clSetEventCallback"
-///Так же в делегате не желательно использовать долго выполняющиеся алгоритмы, особенно ввод с клавиатуры
-///Если эти ограничения не подходят, используйте соответствующую функцию, без "Quick" в названии
-function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-
-function CombineThreadedConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-
-function CombineThreadedConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN2<TInp1,TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvAsyncQueueN3<TInp1,TInp2,TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvAsyncQueueN4<TInp1,TInp2,TInp3,TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvAsyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvAsyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
 
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineConstConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; qs: array of CommandQueue<TInp>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
 
-function CombineConstConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineConstConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-
-function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-
-function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-
-function CombineThreadedConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-
-function CombineThreadedConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-function CombineThreadedConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN2<TInp1,TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvAsyncQueueN3<TInp1,TInp2,TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvAsyncQueueN4<TInp1,TInp2,TInp3,TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvAsyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvAsyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
+function CombineConvAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<TRes>;
 
 {$endregion Context}
 
@@ -8366,63 +8045,27 @@ function CombineThreadedConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp
 
 {$region NonContext}
 
-function CombineConstUseAsyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineUseAsyncQueue<TInp>(use: Action<array of TInp>; qs: array of CommandQueue<TInp>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<array of TInp>;
 
-function CombineConstUseAsyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineConstUseAsyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineConstUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineConstUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineConstUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineConstUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-
-function CombineQuickUseAsyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-
-function CombineQuickUseAsyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineQuickUseAsyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineQuickUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineQuickUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineQuickUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineQuickUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-
-function CombineThreadedUseAsyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-
-function CombineThreadedUseAsyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineThreadedUseAsyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineThreadedUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineThreadedUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineThreadedUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineThreadedUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineUseAsyncQueueN2<TInp1,TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineUseAsyncQueueN3<TInp1,TInp2,TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineUseAsyncQueueN4<TInp1,TInp2,TInp3,TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineUseAsyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineUseAsyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineUseAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineConstUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; qs: array of CommandQueue<TInp>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<array of TInp>;
 
-function CombineConstUseAsyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineConstUseAsyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineConstUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineConstUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineConstUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineConstUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-
-function CombineQuickUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-
-function CombineQuickUseAsyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineQuickUseAsyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineQuickUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineQuickUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineQuickUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineQuickUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-
-function CombineThreadedUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-
-function CombineThreadedUseAsyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-function CombineThreadedUseAsyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-function CombineThreadedUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-function CombineThreadedUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-function CombineThreadedUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-function CombineThreadedUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineUseAsyncQueueN2<TInp1,TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineUseAsyncQueueN3<TInp1,TInp2,TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineUseAsyncQueueN4<TInp1,TInp2,TInp3,TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineUseAsyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineUseAsyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineUseAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread: boolean := true; can_pre_calc: boolean := false): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 
 {$endregion Context}
 
@@ -8465,29 +8108,6 @@ type
   end;
   
 {$endregion InterlockedBoolean}
-
-{$region IBooleanFlag}
-
-type
-  IBooleanFlag = interface
-    
-    function val: boolean;
-    
-  end;
-  
-  TBooleanFalseFlag = record(IBooleanFlag)
-    
-    public function val := false; 
-    
-  end;
-  
-  TBooleanTrueFlag = record(IBooleanFlag)
-    
-    public function val := true; 
-    
-  end;
-  
-{$endregion IBooleanFlag}
 
 {$region Blittable}
 
@@ -8585,7 +8205,7 @@ function ParameterQueue<T>.NewSetter(val: T) := new ParameterQueueSetter(self as
 type
   CLTaskParameterData = record
     val: object;
-    state: (TPS_Empty, TPS_Default, TPS_Set);
+    state: (TPS_Default, TPS_Empty, TPS_Set);
     
     public constructor :=
     self.state := TPS_Empty;
@@ -8634,6 +8254,16 @@ type
       end;
       foreach var kvp in self.parameters do
         kvp.Value.TestSet(kvp.Key.Name);
+    end;
+    
+    public function CheckDeps(deps: array of CommandQueueBase): boolean;
+    begin
+      Result := false;
+      if deps=nil then exit;
+      foreach var dep in deps do
+        if parameters[IParameterQueue(dep)].state<>CLTaskParameterData.TPS_Default then
+          exit;
+      Result := true;
     end;
     
     {$endregion par}
@@ -8771,6 +8401,21 @@ type
   
   {$endregion Func}
   
+function PreInvoke<TInp,TRes>(self: ISimpleDelegateContainer; inp: TInp): TRes; extensionmethod;
+begin
+  match self with
+    ISimpleFuncContainer<TInp,TRes>(var f): Result := f.Invoke(inp, nil);
+    ISimpleProcContainer<TInp>(var p):
+    begin
+      p.Invoke(inp, nil);
+      if typeof(TInp)<>typeof(TRes) then
+        raise new OpenCLABCInternalException($'Proc inp [{TypeToTypeName(typeof(TInp))}] <> res [{TypeToTypeName(typeof(TRes))}]');
+      Result := inp as TRes;
+    end;
+    else raise new OpenCLABCInternalException($'Wrong DC type: [{TypeName(self)}] is not [{TypeToTypeName(typeof(TInp))}]=>[{TypeToTypeName(typeof(TRes))}]');
+  end;
+end;
+
 {$endregion SimpleDelegateContainer's}
 
 {$endregion Basic}
@@ -9216,14 +8861,14 @@ type
     begin
       var res := new StringBuilder;
       res += 'Expected: ['#10;
-      foreach var t in tests_exp do
+      lock tests_exp do foreach var t in tests_exp do
       begin
         res += #9;
         res += t;
         res += #10;
       end;
       res += ']; Done: ['#10;
-      foreach var t in tests_done do
+      lock tests_done do foreach var t in tests_done do
       begin
         res += #9;
         res += t;
@@ -9620,12 +9265,43 @@ type
     
     public procedure AddAction(d: QueueResAction);
     begin
-      if call_list=nil then
+      if count=0 then
         call_list := new QueueResAction[initial_cap] else
       if count=call_list.Length then
         System.Array.Resize(call_list, call_list.Length * 4);
       call_list[count] := d;
       count += 1;
+    end;
+    public procedure AddActions(l: QueueResComplDelegateData);
+    begin
+      {$ifdef DEBUG}
+      if l.count=0 then raise new OpenCLABCInternalException($'');
+      {$endif DEBUG}
+      if self.count=0 then
+      begin
+        self.call_list := l.call_list;
+        self.count := l.count;
+        exit;
+      end;
+      
+      var new_cap := Max(self.call_list.Length, l.call_list.Length);
+      if self.count+l.count > new_cap then
+        new_cap *= 2;
+      
+      if l.call_list.Length=new_cap then
+      begin
+        System.Array.Copy(   l.call_list,0, l.call_list,self.count, l.count);
+        System.Array.Copy(self.call_list,0, l.call_list,0,          self.count);
+        self.call_list := l.call_list;
+        self.count += l.count;
+      end else
+      begin
+        if self.call_list.Length<>new_cap then
+          System.Array.Resize(self.call_list, new_cap);
+        System.Array.Copy(l.call_list,0, self.call_list,self.count, l.count);
+        self.count += l.count;
+      end;
+      
     end;
     
     {$ifdef DEBUG}
@@ -9654,8 +9330,8 @@ type
     public function TakeOut: QueueResComplDelegateData;
     begin
       Result := self;
-      {$ifdef DEBUG}
       self.call_list := nil;
+      {$ifdef DEBUG}
       self.count := _taken_out_acts_c;
       {$endif DEBUG}
     end;
@@ -9735,6 +9411,8 @@ type
     
   end;
   
+  CommandQueueInvoker<TR> = (CLTaskGlobalData, CLTaskLocalData)->TR;
+  
 {$endregion CLTaskLocalData}
 
 {$region QueueRes}
@@ -9745,10 +9423,10 @@ type
   IQueueRes = interface
     
     property ResEv: EventList read;
-//    property IsConst: boolean read;
     
     function ShouldInstaCallAction: boolean;
     procedure AddAction(d: QueueResAction);
+    procedure AddActions(d: QueueResComplDelegateData);
     
     function AttachInvokeActions(g: CLTaskGlobalData): EventList;
     
@@ -9758,20 +9436,14 @@ type
     
   end;
   
-  IQueueResDirectFactory<T,TR> = interface
+  QueueRes<T> = abstract partial class end;
+  IQueueResFactory<T,TR> = interface
   where TR: IQueueRes;
     
     function MakeConst(l: CLTaskLocalData; res: T): TR;
     
     function MakeDelayed(l: CLTaskLocalData; make_act: TR->QueueResAction): TR;
     function MakeDelayed(make_l: TR->CLTaskLocalData): TR;
-    
-  end;
-  
-  ///--
-  QueueRes<T> = abstract partial class end;
-  IQueueResWrapFactory<T,TR> = interface
-  where TR: IQueueRes;
     
     function MakeWrap(qr: QueueRes<T>; new_ev: EventList): TR;
     
@@ -9802,12 +9474,22 @@ type
       Result := CLTaskLocalData(self).ShouldInstaCallAction;
     end;
     
-    public procedure AddAction(d: QueueResAction);
+    private procedure CheckValidAddAction;
     begin
       {$ifdef DEBUG}
       if ShouldInstaCallAction then raise new OpenCLABCInternalException($'Broken Quick.Invoke detected');
       {$endif DEBUG}
+    end;
+    public procedure AddAction(d: QueueResAction);
+    begin
+      CheckValidAddAction;
       complition_delegate.AddAction(d);
+    end;
+    public procedure AddActions(d: QueueResComplDelegateData);
+    begin
+      if d.count=0 then exit;
+      CheckValidAddAction;
+      complition_delegate.AddActions(d);
     end;
     
   end;
@@ -9833,13 +9515,14 @@ type
       base.ev := l.prev_ev;
       base.complition_delegate := l.prev_delegate;
     end;
+    public constructor(ev: EventList) := Create(new CLTaskLocalData(ev));
     public constructor := raise new OpenCLABCInternalException;
     
     public property ResEv: EventList read base.ResEv;
-//    public property IQueueRes.IsConst: boolean read boolean(true);
     
     public function ShouldInstaCallAction := base.ShouldInstaCallAction;
     public procedure AddAction(d: QueueResAction) := base.AddAction(d);
+    public procedure AddActions(d: QueueResComplDelegateData) := base.AddActions(d);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function AttachInvokeActions(g: CLTaskGlobalData) :=
@@ -9847,14 +9530,13 @@ type
     
     public procedure InvokeActions(c: CLContext) := base.complition_delegate.Invoke(c);
     
-    public function IQueueRes.MakeWrapWithImpl(new_ev: EventList): IQueueRes :=
-    new QueueResNil(new CLTaskLocalData(new_ev));
+    public function IQueueRes.MakeWrapWithImpl(new_ev: EventList): IQueueRes := new QueueResNil(new_ev);
     
     public procedure IQueueRes.SetRes<TRes>(res: TRes) := exit;
     
   end;
   
-  QueueResNilDirectFactory<T> = record(IQueueResDirectFactory<T,QueueResNil>)
+  QueueResNilFactory<T> = record(IQueueResFactory<T, QueueResNil>)
     
     public function MakeConst(l: CLTaskLocalData; res: T) := new QueueResNil(l);
     
@@ -9865,13 +9547,11 @@ type
     end;
     public function MakeDelayed(make_l: QueueResNil->CLTaskLocalData) := new QueueResNil(make_l(default(QueueResNil)));
     
+    public function MakeWrap(qr: QueueRes<T>; new_ev: EventList) := new QueueResNil(new_ev);
+    
   end;
-  
-  QueueResNilWrapFactory<T> = record(IQueueResWrapFactory<T,QueueResNil>)
-    
-    public function MakeWrap(qr: QueueRes<T>; new_ev: EventList) :=
-    new QueueResNil(new CLTaskLocalData(new_ev));
-    
+  QueueRes<T> = abstract partial class
+    static nil_factory := new QueueResNilFactory<T>;
   end;
   
 {$endregion Nil}
@@ -9907,6 +9587,7 @@ type
     
     public function ShouldInstaCallAction := base.ShouldInstaCallAction;
     public procedure AddAction(d: QueueResAction) := base.AddAction(d);
+    public procedure AddActions(d: QueueResComplDelegateData) := base.AddActions(d);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function AttachInvokeActions(g: CLTaskGlobalData) :=
@@ -10048,25 +9729,14 @@ type
     
     public constructor(l: CLTaskLocalData; res: T) := InitConst(l, res);
     
-    public constructor(l: CLTaskLocalData; make_act: QueueResValDirect<T>->QueueResAction) := InitDelayed(l, make_act(self));
-    public constructor(make_l: QueueResValDirect<T>->CLTaskLocalData) := InitDelayed(make_l(self));
+    public constructor(l: CLTaskLocalData; make_act: QueueResVal<T>->QueueResAction) := InitDelayed(l, make_act(self));
+    public constructor(make_l: QueueResVal<T>->CLTaskLocalData) := InitDelayed(make_l(self));
     
     private constructor := raise new OpenCLABCInternalException;
     
     protected procedure SetResImpl(res: T); override := self.res := res;
     protected function GetResImpl: T; override := self.res;
     
-  end;
-  QueueResDirectValFactory<T> = sealed class(IQueueResDirectFactory<T, QueueResValDirect<T>>)
-    
-    public function MakeConst(l: CLTaskLocalData; res: T) := new QueueResValDirect<T>(l, res);
-    
-    public function MakeDelayed(l: CLTaskLocalData; make_act: QueueResValDirect<T>->QueueResAction) := new QueueResValDirect<T>(l, make_act);
-    public function MakeDelayed(make_l: QueueResValDirect<T>->CLTaskLocalData) := new QueueResValDirect<T>(make_l);
-    
-  end;
-  QueueRes<T> = abstract partial class(QueueResT)
-    public static function direct_val_factory := new QueueResDirectValFactory<T>;
   end;
   
   QueueResValWrap<T> = sealed class(QueueResVal<T>)
@@ -10089,13 +9759,23 @@ type
     protected function GetResImpl: T; override := prev_qr.GetResDirect;
     
   end;
-  QueueResWrapValFactory<T> = sealed class(IQueueResWrapFactory<T, QueueResValWrap<T>>)
+  
+  QueueResValFactory<T> = sealed class(IQueueResFactory<T, QueueResVal<T>>)
     
-    public function MakeWrap(qr: QueueRes<T>; new_ev: EventList) := new QueueResValWrap<T>(qr, new_ev);
+    public function MakeConst(l: CLTaskLocalData; res: T): QueueResVal<T> :=
+    new QueueResValDirect<T>(l, res);
+    
+    public function MakeDelayed(l: CLTaskLocalData; make_act: QueueResVal<T>->QueueResAction): QueueResVal<T> :=
+    new QueueResValDirect<T>(l, make_act);
+    public function MakeDelayed(make_l: QueueResVal<T>->CLTaskLocalData): QueueResVal<T> :=
+    new QueueResValDirect<T>(make_l);
+    
+    public function MakeWrap(qr: QueueRes<T>; new_ev: EventList): QueueResVal<T> :=
+    new QueueResValWrap<T>(qr, new_ev);
     
   end;
   QueueRes<T> = abstract partial class(QueueResT)
-    public static function wrap_val_factory := new QueueResWrapValFactory<T>;
+    public static function val_factory := new QueueResValFactory<T>;
   end;
   
 {$endregion Val}
@@ -10178,19 +9858,13 @@ type
     end;
     
   end;
-  QueueResDirectPtrFactory<T> = sealed class(IQueueResDirectFactory<T, QueueResPtr<T>>)
+  
+  QueueResPtrFactory<T> = sealed class(IQueueResFactory<T, QueueResPtr<T>>)
     
     public function MakeConst(l: CLTaskLocalData; res: T) := new QueueResPtr<T>(l, res);
     
     public function MakeDelayed(l: CLTaskLocalData; make_act: QueueResPtr<T>->QueueResAction) := new QueueResPtr<T>(l, make_act);
     public function MakeDelayed(make_l: QueueResPtr<T>->CLTaskLocalData) := new QueueResPtr<T>(make_l);
-    
-  end;
-  QueueRes<T> = abstract partial class(QueueResT)
-    public static function direct_ptr_factory := new QueueResDirectPtrFactory<T>;
-  end;
-  
-  QueueResWrapPtrFactory<T> = sealed class(IQueueResWrapFactory<T, QueueResPtr<T>>)
     
     public function MakeWrap(prev_qr: QueueRes<T>; new_ev: EventList): QueueResPtr<T>;
     begin
@@ -10214,7 +9888,7 @@ type
     
   end;
   QueueRes<T> = abstract partial class(QueueResT)
-    public static function wrap_ptr_factory := new QueueResWrapPtrFactory<T>;
+    public static function ptr_factory := new QueueResPtrFactory<T>;
   end;
   
 {$endregion Ptr}
@@ -10225,7 +9899,7 @@ type
 
 {$region MakeWrapWith}
 
-function QueueResVal<T>.MakeWrapWithImpl(new_ev: EventList) := wrap_val_factory.MakeWrap(self, new_ev);
+function QueueResVal<T>.MakeWrapWithImpl(new_ev: EventList) := val_factory.MakeWrap(self, new_ev);
 
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
 function MakeWrapWith<TR>(self: TR; new_ev: EventList): TR; extensionmethod; where TR: IQueueRes;
@@ -10241,7 +9915,7 @@ type
   QueueRes<T> = abstract partial class(QueueResT)
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function TransformResult<T2,TR>(factory: IQueueResDirectFactory<T2,TR>; can_pre_call: boolean; transform: T->T2): TR; where TR: IQueueRes;
+    function TransformResult<T2,TR>(factory: IQueueResFactory<T2,TR>; can_pre_call: boolean; transform: T->T2): TR; where TR: IQueueRes;
     begin
       // Before .TakeBaseOut, because .IsConst checks ResEv
       var should_make_const := if can_pre_call then
@@ -10258,6 +9932,24 @@ type
   
 {$endregion TransformResult}
 
+{$region TrySkipInvoke}
+
+function TrySkipInvoke<T,TR>(self: IQueueResFactory<T,TR>;
+  g: CLTaskGlobalData; l: CLTaskLocalData;
+  q: CommandQueue<T>; sub_inv: CommandQueueInvoker<QueueResNil>;
+  var qr: TR
+): boolean; extensionmethod; where TR: IQueueRes;
+begin
+  Result := g.CheckDeps(q.const_res_dep);
+  if not Result then exit;
+  qr := self.MakeConst(
+    sub_inv(g,l).base,
+    q.expected_const_res
+  );
+end;
+
+{$endregion TrySkipInvoke}
+
 {$endregion Impl}
 
 {$endregion QueueRes}
@@ -10266,6 +9958,34 @@ type
 
 {$region Invoke state}
 
+{$region MultiuseableResultData}
+
+type
+  IMultiusableCommandQueue = interface end;
+  [StructLayout(LayoutKind.Auto)]
+  MultiuseableResultData = record
+    public qres: IQueueRes;
+    public ev: EventList;
+    public err_handler: CLTaskErrHandler;
+    
+    public constructor(qres: IQueueRes; ev: EventList; err_handler: CLTaskErrHandler);
+    begin
+      self.qres := qres;
+      self.ev := ev;
+      self.err_handler := err_handler;
+    end;
+    
+  end;
+  CLTaskGlobalData = sealed partial class
+    
+    public mu_res := new Dictionary<IMultiusableCommandQueue, MultiuseableResultData>;
+    
+    public prev_mu := new HashSet<IMultiusableCommandQueue>;
+    
+  end;
+  
+{$endregion MultiuseableResultData}
+
 {$region CLTaskBranchInvoker}
 
 type
@@ -10273,8 +9993,10 @@ type
     private g: CLTaskGlobalData;
     private prev_ev: EventList?;
     private prev_cq := cl_command_queue.Zero;
-    private branch_handlers := new List<CLTaskErrHandler>;
+    private prev_mu: HashSet<IMultiusableCommandQueue>;
+    
     private make_base_err_handler: ()->CLTaskErrHandler;
+    private branch_handlers := new List<CLTaskErrHandler>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     constructor(g: CLTaskGlobalData; prev_ev: EventList?; capacity: integer);
@@ -10302,6 +10024,11 @@ type
         g.curr_inv_cq := cl_command_queue.Zero;
       end;
       
+      self.prev_mu := g.prev_mu;
+      {$ifdef DEBUG}
+      g.prev_mu := nil;
+      {$endif DEBUG}
+      
       self.branch_handlers.Capacity := capacity;
       if prev_ev=nil then
         self.make_base_err_handler := ()->new CLTaskErrHandlerEmpty else
@@ -10313,14 +10040,23 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function InvokeBranch<TR>(branch: (CLTaskGlobalData, CLTaskLocalData)->TR): TR; where TR: IQueueRes;
+    function InvokeBranch<TR>(branch: CommandQueueInvoker<TR>): TR; where TR: IQueueRes;
     begin
       g.curr_err_handler := make_base_err_handler();
       var l := if self.prev_ev=nil then
         new CLTaskLocalData else
         new CLTaskLocalData(self.prev_ev.Value);
       
+      g.prev_mu := if prev_ev<>nil then
+        self.prev_mu.ToHashSet else
+        new HashSet<IMultiusableCommandQueue>;
+      
       Result := branch(g, l);
+      
+      self.prev_mu.UnionWith(g.prev_mu);
+      {$ifdef DEBUG}
+      g.prev_mu := nil;
+      {$endif DEBUG}
       
       var cq := g.curr_inv_cq;
       if cq<>cl_command_queue.Zero then
@@ -10366,37 +10102,13 @@ type
       
       self.curr_inv_cq := invoker.prev_cq;
       if outer_cq<>cl_command_queue.Zero then self.GetCQ(false);
+      
+      self.prev_mu := invoker.prev_mu;
     end;
     
   end;
   
 {$endregion CLTaskBranchInvoker}
-
-{$region MultiuseableResultData}
-
-type
-  IMultiusableCommandQueueHub = interface end;
-  [StructLayout(LayoutKind.Auto)]
-  MultiuseableResultData = record
-    public qres: IQueueRes;
-    public ev: EventList;
-    public err_handler: CLTaskErrHandler;
-    
-    public constructor(qres: IQueueRes; ev: EventList; err_handler: CLTaskErrHandler);
-    begin
-      self.qres := qres;
-      self.ev := ev;
-      self.err_handler := err_handler;
-    end;
-    
-  end;
-  CLTaskGlobalData = sealed partial class
-    
-    public mu_res := new Dictionary<IMultiusableCommandQueueHub, MultiuseableResultData>;
-    
-  end;
-  
-{$endregion MultiuseableResultData}
 
 {$region CLTaskGlobalData}
 
@@ -10456,7 +10168,7 @@ type
 type
   CommandQueueBase = abstract partial class
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); abstract;
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
     
@@ -10468,21 +10180,14 @@ type
   
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
-    protected static function qr_nil_factory := new QueueResNilDirectFactory<T>;
-    protected static function qr_val_factory := QueueRes&<T>.direct_val_factory;
-    protected static function qr_ptr_factory := QueueRes&<T>.direct_ptr_factory;
-    
-    protected static function qrw_nil_factory := new QueueResNilWrapFactory<T>;
-    protected static function qrw_val_factory := QueueRes&<T>.wrap_val_factory;
-    protected static function qrw_ptr_factory := QueueRes&<T>.wrap_ptr_factory;
+    protected static function qr_nil_factory := QueueRes&<T>.nil_factory;
+    protected static function qr_val_factory := QueueRes&<T>.val_factory;
+    protected static function qr_ptr_factory := QueueRes&<T>.ptr_factory;
     
     protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; abstract;
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; abstract;
     
-    
   end;
-  
-  CommandQueueInvoker<TR> = (CLTaskGlobalData,CLTaskLocalData)->TR;
   
 {$endregion Base}
 
@@ -10490,7 +10195,7 @@ type
   
   ConstQueueNil = sealed partial class(CommandQueueNil)
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := exit;
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := new QueueResNil(l);
     
@@ -10498,12 +10203,12 @@ type
   
   ConstQueue<T> = sealed partial class(CommandQueue<T>)
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := exit;
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := new QueueResNil(l);
     //TODO #????: Если убрать - ошибки компиляции нет, но сборка не загружается
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := qr_val_factory.MakeConst(l, self.res);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := qr_ptr_factory.MakeConst(l, self.res);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := qr_val_factory.MakeConst(l, self.Value);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := qr_ptr_factory.MakeConst(l, self.Value);
     
   end;
   
@@ -10514,13 +10219,13 @@ type
 type
   ParameterQueue<T> = sealed partial class(CommandQueue<T>, IParameterQueue)
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override;
     begin
       //TODO #????
       if g.parameters.ContainsKey(self as object as IParameterQueue) then exit;
       //TODO #????
-      g.parameters[self as object as IParameterQueue] := if self.def_is_set then
-        new CLTaskParameterData(self.def) else
+      g.parameters[self as object as IParameterQueue] := if self.DefaultDefined then
+        new CLTaskParameterData(self.Default) else
         new CLTaskParameterData;
     end;
     
@@ -10554,7 +10259,7 @@ type
       
       var g := new CLTaskGlobalData(c);
       
-      q.InitBeforeInvoke(g, new HashSet<IMultiusableCommandQueueHub>);
+      q.InitBeforeInvoke(g, new HashSet<IMultiusableCommandQueue>);
       g.ApplyParameters(pars);
       var qr := q.InvokeToNil(g, new CLTaskLocalData);
       g.FinishInvoke;
@@ -10583,7 +10288,7 @@ type
       
       var g := new CLTaskGlobalData(c);
       
-      q.InitBeforeInvoke(g, new HashSet<IMultiusableCommandQueueHub>);
+      q.InitBeforeInvoke(g, new HashSet<IMultiusableCommandQueue>);
       g.ApplyParameters(pars);
       var qr := q.InvokeToAny(g, new CLTaskLocalData);
       g.FinishInvoke;
@@ -10632,435 +10337,6 @@ end;
 
 {$region Queue converter's}
 
-{$region Cast}
-
-type
-  TypedNilQueue<T> = sealed class(CommandQueue<T>)
-    private static nil_val := default(T);
-    private q: CommandQueueNil;
-    
-    static constructor;
-    begin
-      if object(nil_val)<>nil then
-        raise new System.InvalidCastException($'.Cast не может преобразовывать nil в {TypeToTypeName(typeof(T))}');
-    end;
-    public constructor(q: CommandQueueNil) := self.q := q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := q.InitBeforeInvoke(g, inited_hubs);
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := q.InvokeToNil(g, l);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override := qr_val_factory.MakeConst(q.InvokeToNil(g, l).base, nil_val);
-    
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override;
-    begin
-      Result := nil;
-      raise new OpenCLABCInternalException($'');
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-  CastQueueBase<TRes> = abstract class(CommandQueue<TRes>)
-    
-    public property SourceBase: CommandQueueBase read; abstract;
-    
-  end;
-  
-  CastQueue<TInp, TRes> = sealed class(CastQueueBase<TRes>)
-    private q: CommandQueue<TInp>;
-    
-    static constructor;
-    begin
-      if typeof(TInp)=typeof(object) then exit;
-      try
-        var res := TRes(object(default(TInp)));
-        System.GC.KeepAlive(res);
-      except
-        raise new System.InvalidCastException($'.Cast не может преобразовывать {TypeToTypeName(typeof(TInp))} в {TypeToTypeName(typeof(TRes))}');
-      end;
-    end;
-    public constructor(q: CommandQueue<TInp>) := self.q := q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    public property SourceBase: CommandQueueBase read q as CommandQueueBase; override;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    q.InitBeforeInvoke(g, inited_hubs);
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := q.InvokeToNil(g, l);
-    
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResDirectFactory<TRes,TR>): TR; where TR: QueueRes<TRes>;
-    begin
-      var prev_qr := q.InvokeToAny(g,l);
-      var err_handler := g.curr_err_handler;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}';
-      err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
-      Result := prev_qr.TransformResult(qr_factory, true, o->
-      begin
-        if not err_handler.HadError then
-        try
-          Result := TRes(object(o));
-        except
-          on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
-        end;
-        {$ifdef DEBUG}
-        err_handler.EndMaybeError(err_test_reason);
-        {$endif DEBUG}
-      end);
-    end;
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-  CastQueueFactory<TRes> = record(ITypedCQConverter<CommandQueue<TRes>>)
-    
-    public function ConvertNil(q: CommandQueueNil): CommandQueue<TRes> :=
-    if q is ConstQueueNil then
-      CQ(TypedNilQueue&<TRes>.nil_val) else
-      new TypedNilQueue<TRes>(q);
-    
-    public function Convert<TInp>(q: CommandQueue<TInp>): CommandQueue<TRes> :=
-    if q is ConstQueue<TInp>(var prev_cq) then
-      CQ(TRes(prev_cq.Value as object)) else
-    if q is CastQueueBase<TInp>(var cqb) then
-      cqb.SourceBase.Cast&<TRes> else
-      new CastQueue<TInp, TRes>(q);
-    
-  end;
-  
-function CommandQueueBase.Cast<T>: CommandQueue<T>;
-begin
-  if self is CommandQueue<T>(var tcq) then
-    Result := tcq else
-  try
-    Result := self.ConvertTyped(new CastQueueFactory<T>);
-  except
-    on e: TypeInitializationException do
-      raise e.InnerException;
-    on e: InvalidCastException do
-      raise e;
-  end;
-end;
-
-function CommandQueueNil.Cast<T> := new TypedNilQueue<T>(self);
-
-{$endregion Cast}
-
-{$region DiscardResult}
-
-type
-  CommandQueueDiscardResult<T> = sealed class(CommandQueueNil)
-    private q: CommandQueue<T>;
-    
-    public constructor(q: CommandQueue<T>) := self.q := q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    q.InitBeforeInvoke(g, inited_hubs);
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := q.InvokeToNil(g, l);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-function CommandQueue<T>.DiscardResult :=
-new CommandQueueDiscardResult<T>(self);
-
-{$endregion DiscardResult}
-
-{$region Then[Convert,Use]}
-
-{$region Common}
-
-type
-  CommandQueueThenWork<TInp,TRes, TDelegate> = abstract class(CommandQueue<TRes>)
-  where TDelegate: ISimpleDelegateContainer;
-    protected q: CommandQueue<TInp>;
-    protected d: TDelegate;
-    
-    public constructor(q: CommandQueue<TInp>; d: TDelegate);
-    begin
-      self.q := q;
-      self.d := d;
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := q.InitBeforeInvoke(g, inited_hubs);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      q.ToString(sb, tabs, index, delayed);
-      
-      sb.Append(#9, tabs);
-      d.ToStringB(sb);
-      sb += #10;
-      
-    end;
-    
-  end;
-  CommandQueueThenConvert<TInp,TRes, TFunc> = CommandQueueThenWork<TInp,TRes, TFunc>;
-  CommandQueueThenUse<T, TProc> = CommandQueueThenWork<T,T, TProc>;
-  
-{$endregion Common}
-
-{$region Quick}
-
-{$region Convert}
-
-type
-  CommandQueueThenQuickConvert<TInp, TRes, TFunc, FPreCall> = sealed class(CommandQueueThenConvert<TInp,TRes, TFunc>)
-  where TFunc: ISimpleFuncContainer<TInp, TRes>;
-  where FPreCall: IBooleanFlag, constructor;
-    
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; factory: IQueueResDirectFactory<TRes,TR>): TR; where TR: IQueueRes;
-    begin
-      var prev_qr := q.InvokeToAny(g, l);
-      
-      var should_make_const := if FPreCall.Create.val then
-        prev_qr.IsConst else prev_qr.ShouldInstaCallAction;
-      l := prev_qr.TakeBaseOut;
-      
-      var err_handler := g.curr_err_handler;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
-      Result := if should_make_const then
-        factory.MakeConst(l,
-          d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, g.c)
-        ) else
-        factory.MakeDelayed(l, qr->c->qr.SetRes(
-          d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c)
-        ));
-      
-    end;
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory);
-    
-  end;
-  
-function CommandQueue<T>.ThenQuickConvert<TOtp>(f: T->TOtp) :=
-new CommandQueueThenQuickConvert<T, TOtp, SimpleFuncContainer <T,TOtp>, TBooleanFalseFlag>(self, f);
-
-function CommandQueue<T>.ThenQuickConvert<TOtp>(f: (T, CLContext)->TOtp) :=
-new CommandQueueThenQuickConvert<T, TOtp, SimpleFuncContainerC<T,TOtp>, TBooleanFalseFlag>(self, f);
-
-function CommandQueue<T>.ThenConstConvert<TOtp>(f: T->TOtp): CommandQueue<TOtp> :=
-if self is ConstQueue<T>(var c_q) then CQ(f(c_q.Value)) else
-new CommandQueueThenQuickConvert<T, TOtp, SimpleFuncContainer <T,TOtp>, TBooleanTrueFlag>(self, f);
-
-function CommandQueue<T>.ThenConstConvert<TOtp>(f: (T, CLContext)->TOtp): CommandQueue<TOtp> :=
-if self is ConstQueue<T>(var c_q) then CQ(f(c_q.Value, nil)) else
-new CommandQueueThenQuickConvert<T, TOtp, SimpleFuncContainerC<T,TOtp>, TBooleanTrueFlag>(self, f);
-
-{$endregion Convert}
-
-{$region Use}
-
-type
-  CommandQueueThenQuickUse<T, TProc, FPreCall> = sealed class(CommandQueueThenUse<T, TProc>)
-  where TProc: ISimpleProcContainer<T>;
-  where FPreCall: IBooleanFlag, constructor;
-    
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AddUse<TR1, TR2>(prev_is_const: boolean; prev_qr: TR1; own_qr: TR2; g: CLTaskGlobalData): TR2; where TR1: QueueRes<T>; where TR2: IQueueRes;
-    begin
-      Result := own_qr;
-      var should_insta_call := if FPreCall.Create.val then
-        prev_is_const else
-        Result.ShouldInstaCallAction;
-      
-      var err_handler := g.curr_err_handler;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
-      if should_insta_call then
-        d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, g.c) else
-        //TODO #????: self.
-        Result.AddAction(c->self.d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c));
-      
-    end;
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
-    begin
-      var prev_qr := q.InvokeToAny(g, l);
-      Result := AddUse(prev_qr.IsConst, prev_qr, new QueueResNil(prev_qr.TakeBaseOut), g);
-    end;
-    
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AddUse<TR>(qr: TR; g: CLTaskGlobalData): TR; where TR: QueueRes<T>;
-    begin
-      Result := AddUse(qr.IsConst, qr,qr, g);
-    end;
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := AddUse(q.InvokeToAny(g, l), g);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := AddUse(q.InvokeToPtr(g, l), g);
-    
-  end;
-  
-function CommandQueue<T>.ThenQuickUse(p: T->()) :=
-new CommandQueueThenQuickUse<T, SimpleProcContainer <T>, TBooleanFalseFlag>(self, p);
-
-function CommandQueue<T>.ThenQuickUse(p: (T, CLContext)->()) :=
-new CommandQueueThenQuickUse<T, SimpleProcContainerC<T>, TBooleanFalseFlag>(self, p);
-
-function CommandQueue<T>.ThenConstUse(p: T->()): CommandQueue<T>;
-begin
-  if self is ConstQueue<T>(var c_q) then
-  begin
-    p(c_q.Value);
-    Result := self;
-  end else
-    Result := new CommandQueueThenQuickUse<T, SimpleProcContainer<T>, TBooleanTrueFlag>(self, p);
-end;
-
-function CommandQueue<T>.ThenConstUse(p: (T, CLContext)->()): CommandQueue<T>;
-begin
-  if self is ConstQueue<T>(var c_q) then
-  begin
-    p(c_q.Value, nil);
-    Result := self;
-  end else
-    Result := new CommandQueueThenQuickUse<T, SimpleProcContainerC<T>, TBooleanTrueFlag>(self, p);
-end;
-
-{$endregion Use}
-
-{$endregion Quick}
-
-{$region Threaded}
-
-{$region Convert}
-
-type
-  CommandQueueThenThreadedConvert<TInp,TRes, TFunc> = sealed class(CommandQueueThenConvert<TInp,TRes, TFunc>)
-  where TFunc: ISimpleFuncContainer<TInp,TRes>;
-    
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
-    begin
-      Result := ()->
-        d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetRes(c), c)
-    end;
-    
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action; where TR: QueueRes<TRes>;
-    begin
-      Result := ()->own_qr.SetRes(
-        d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetRes(c), c)
-      );
-    end;
-    
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: (QueueRes<TInp>,CLTaskErrHandler,CLContext,TR{$ifdef DEBUG},string{$endif})->Action): TR; where TR: IQueueRes;
-    begin
-      var prev_qr := q.InvokeToAny(g, l);
-      
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
-      Result := make_qr(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
-        prev_qr.ResEv, make_body(prev_qr, g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
-        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-      )));
-      
-    end;
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory.MakeDelayed, MakeNilBody);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory.MakeDelayed, MakeResBody&<QueueResValDirect<TRes>>);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory.MakeDelayed, MakeResBody&<QueueResPtr<TRes>>);
-    
-  end;
-  
-function CommandQueue<T>.ThenThreadedConvert<TOtp>(f: T->TOtp) :=
-new CommandQueueThenThreadedConvert<T, TOtp, SimpleFuncContainer<T,TOtp>>(self, f);
-
-function CommandQueue<T>.ThenThreadedConvert<TOtp>(f: (T, CLContext)->TOtp) :=
-new CommandQueueThenThreadedConvert<T, TOtp, SimpleFuncContainerC<T,TOtp>>(self, f);
-
-{$endregion Convert}
-
-{$region Use}
-
-type
-  CommandQueueThenThreadedUse<T, TProc> = sealed class(CommandQueueThenUse<T, TProc>)
-  where TProc: ISimpleProcContainer<T>;
-    
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR1,TR2>(g: CLTaskGlobalData; l: CLTaskLocalData; q_invoker: CommandQueueInvoker<TR1>; qrw_factory: IQueueResWrapFactory<T,TR2>): TR2; where TR1: QueueRes<T>; where TR2: IQueueRes;
-    begin
-      var prev_qr := q_invoker(g, l);
-      var acts := prev_qr.base.complition_delegate.TakeOut;
-      
-      var err_handler := g.curr_err_handler;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
-      var c := g.c;
-      var work_ev := UserEvent.StartWorkThread(
-        prev_qr.ResEv, ()->
-        begin
-          acts.Invoke(c);
-          //TODO #????: self.
-          self.d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c);
-        end, g
-        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-      );
-      
-      //TODO На самом деле создавать новый объект, даже если обёртку - ни к чему
-      // - Новый объект нужен только при обёртывании mu результата
-      // - А тут должно быть достаточно подменить ивент
-      // --- status check ожидает что ивент не будет меняться
-      // - Это касается только .Then и только Use, потому что в остальных случаях нельзя использовать существующий QR
-      Result := qrw_factory.MakeWrap(prev_qr, work_ev);
-    end;
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := Invoke(g, l, q.InvokeToAny, qrw_nil_factory);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := Invoke(g, l, q.InvokeToAny, qrw_val_factory);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := Invoke(g, l, q.InvokeToPtr, qrw_ptr_factory);
-    
-  end;
-  
-function CommandQueue<T>.ThenThreadedUse(p: T->()) :=
-new CommandQueueThenThreadedUse<T, SimpleProcContainer<T>>(self, p);
-
-function CommandQueue<T>.ThenThreadedUse(p: (T, CLContext)->()) :=
-new CommandQueueThenThreadedUse<T, SimpleProcContainerC<T>>(self, p);
-
-{$endregion Use}
-
-{$endregion Threaded}
-
-{$endregion Then[Convert,Use}
-
 {$region +/*}
 
 {$region Simple}
@@ -11077,10 +10353,10 @@ type
     function GetQS: sequence of CommandQueueBase := qs.Append&<CommandQueueBase>(last);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>);
+    procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>);
     begin
-      foreach var q in qs do q.InitBeforeInvoke(g, inited_hubs);
-      last.InitBeforeInvoke(g, inited_hubs);
+      foreach var q in qs do q.InitBeforeInvoke(g, inited_mu);
+      last.InitBeforeInvoke(g, inited_mu);
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11142,8 +10418,8 @@ type
     
     public function GetQS: sequence of CommandQueueBase := data.GetQS;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    data.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    data.InitBeforeInvoke(g, inited_mu);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -11168,13 +10444,15 @@ type
     begin
       data.qs := qs;
       data.last := last;
+      self.const_res_dep      := last.const_res_dep;
+      self.expected_const_res := last.expected_const_res;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
     public function GetQS: sequence of CommandQueueBase := data.GetQS;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    data.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    data.InitBeforeInvoke(g, inited_mu);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -11199,6 +10477,12 @@ type
 {$region Utils}
 
 type
+  CastQueueBase<TRes> = abstract class(CommandQueue<TRes>)
+    
+    public property SourceBase: CommandQueueBase read; abstract;
+    
+  end;
+  
   QueueArrayFlattener<TArray> = sealed class(ITypedCQUser)
   where TArray: ISimpleQueueArray;
     public qs := new List<CommandQueueBase>;
@@ -11292,88 +10576,85 @@ type
       Result := ValueTuple.Create(qs,last);
     end;
     
-    private static function Construct<T>(inp: sequence of CommandQueueBase; allow_empty: boolean; make_constructor: Func<array of CommandQueueBase, ITypedCQConverter<CommandQueueBase>>): CommandQueueBase; where T: ISimpleQueueArray;
+    private static function Construct<T,TQ>(inp: sequence of CommandQueueBase; make_constructor: Func<array of CommandQueueBase, ITypedCQConverter<CommandQueueBase>>): TQ;
+    where T: ISimpleQueueArray;
+    where TQ: CommandQueueBase;
     begin
       var qs := FlattenQueueArray&<T>(inp);
       case qs.Count of
         0:
-        begin
-          if not allow_empty then raise new System.ArgumentException('');
-          Result := new ConstQueueNil;
-        end;
-        1: Result := qs[0];
+        if CQNil is TQ(var res) then
+          Result := res else
+          raise new System.ArgumentException('');
+        1:
+          Result := TQ(qs[0]);
         else
         begin
-          var (body,last) := SeparateLast(qs);
-          Result := last.ConvertTyped(make_constructor(body.ToArray));
+          var (body, last) := SeparateLast(qs);
+          Result := TQ(last.ConvertTyped(make_constructor(body.ToArray)));
         end;
       end;
     end;
     
-    public static function ConstructSync(inp: sequence of CommandQueueBase; allow_empty: boolean) :=
-    Construct&<ISimpleSyncQueueArray>(inp, allow_empty, body->new QueueArraySyncConstructor(body));
-    public static function ConstructSyncNil(inp: sequence of CommandQueueBase) := CommandQueueNil ( ConstructSync(inp,  true) );
-    public static function ConstructSync<T>(inp: sequence of CommandQueueBase) := CommandQueue&<T>( ConstructSync(inp, false) );
+    public static function ConstructSync<TQ>(inp: sequence of CommandQueueBase): TQ; where TQ: CommandQueueBase;
+    begin
+      Result := Construct&<ISimpleSyncQueueArray,TQ>(inp, body->new QueueArraySyncConstructor(body));
+    end;
     
-    public static function ConstructAsync(inp: sequence of CommandQueueBase; allow_empty: boolean) :=
-    Construct&<ISimpleAsyncQueueArray>(inp, allow_empty, body->new QueueArrayAsyncConstructor(body));
-    public static function ConstructAsyncNil(inp: sequence of CommandQueueBase) := CommandQueueNil ( ConstructAsync(inp,  true) );
-    public static function ConstructAsync<T>(inp: sequence of CommandQueueBase) := CommandQueue&<T>( ConstructAsync(inp, false) );
+    public static function ConstructAsync<TQ>(inp: sequence of CommandQueueBase): TQ; where TQ: CommandQueueBase;
+    begin
+      Result := Construct&<ISimpleAsyncQueueArray,TQ>(inp, body->new QueueArrayAsyncConstructor(body));
+    end;
     
   end;
   
 {$endregion Utils}
 
-static function CommandQueueNil.operator+(q1: CommandQueueBase; q2: CommandQueueNil) := QueueArrayUtils. ConstructSyncNil(|q1, q2|);
-static function CommandQueueNil.operator*(q1: CommandQueueBase; q2: CommandQueueNil) := QueueArrayUtils.ConstructAsyncNil(|q1, q2|);
+{$region CQ operator's}
 
-static function CommandQueue<T>.operator+(q1: CommandQueueBase; q2: CommandQueue<T>) := QueueArrayUtils. ConstructSync&<T>(|q1, q2|);
-static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(|q1, q2|);
+function operator+(q1, q2: CommandQueueBase); extensionmethod := QueueArrayUtils.ConstructSync &<CommandQueueBase>(|q1, q2|);
+function operator*(q1, q2: CommandQueueBase); extensionmethod := QueueArrayUtils.ConstructAsync&<CommandQueueBase>(|q1, q2|);
+
+function operator+(q1: CommandQueueBase; q2: CommandQueueNil); extensionmethod := QueueArrayUtils.ConstructSync &<CommandQueueNil>(|q1, q2|);
+function operator*(q1: CommandQueueBase; q2: CommandQueueNil); extensionmethod := QueueArrayUtils.ConstructAsync&<CommandQueueNil>(|q1, q2|);
+
+function operator+<T>(q1: CommandQueueBase; q2: CommandQueue<T>); extensionmethod := QueueArrayUtils.ConstructSync &<CommandQueue<T>>(|q1, q2|);
+function operator*<T>(q1: CommandQueueBase; q2: CommandQueue<T>); extensionmethod := QueueArrayUtils.ConstructAsync&<CommandQueue<T>>(|q1, q2|);
+
+
+
+procedure operator+=(var q1: CommandQueueBase; q2: CommandQueueBase); extensionmethod := q1 := q1+q2;
+procedure operator*=(var q1: CommandQueueBase; q2: CommandQueueBase); extensionmethod := q1 := q1*q2;
+
+procedure operator+=(var q1: CommandQueueNil; q2: CommandQueueNil); extensionmethod := q1 := q1+q2;
+procedure operator*=(var q1: CommandQueueNil; q2: CommandQueueNil); extensionmethod := q1 := q1*q2;
+
+procedure operator+=<T>(var q1: CommandQueue<T>; q2: CommandQueue<T>); extensionmethod := q1 := q1+q2;
+procedure operator*=<T>(var q1: CommandQueue<T>; q2: CommandQueue<T>); extensionmethod := q1 := q1*q2;
+
+
+
+procedure operator-=(var q1: CommandQueueBase; q2: CommandQueueBase); extensionmethod := q1 := q2+q1;
+procedure operator/=(var q1: CommandQueueBase; q2: CommandQueueBase); extensionmethod := q1 := q2*q1;
+
+procedure operator-=(var q1: CommandQueueNil; q2: CommandQueueBase); extensionmethod := q1 := q2+q1;
+procedure operator/=(var q1: CommandQueueNil; q2: CommandQueueBase); extensionmethod := q1 := q2*q1;
+
+procedure operator-=<T>(var q1: CommandQueue<T>; q2: CommandQueueBase); extensionmethod := q1 := q2+q1;
+procedure operator/=<T>(var q1: CommandQueue<T>; q2: CommandQueueBase); extensionmethod := q1 := q2*q1;
+
+{$endregion CQ operator's}
+
+{$region WaitMarker operator's}
+
+function operator+(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) + m2;
+function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) * m2;
+
+{$endregion WaitMarker operator's}
 
 {$endregion Simple}
 
 {$region [Any]} type
-  
-  {$region Common}
-  
-  CommandQueueArrayWithWork<TInp,TRes, TDelegate> = abstract class(CommandQueue<TRes>)
-  where TDelegate: ISimpleDelegateContainer;
-    protected qs: array of CommandQueue<TInp>;
-    protected d: TDelegate;
-    
-    public constructor(qs: array of CommandQueue<TInp>; d: TDelegate);
-    begin
-      self.qs := qs;
-      self.d := d;
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    foreach var q in qs do q.InitBeforeInvoke(g, inited_hubs);
-    
-    protected static function GetAllResDirect(qrs: array of QueueRes<TInp>): array of TInp;
-    begin
-      Result := new TInp[qrs.Length];
-      for var i := 0 to Result.Length-1 do
-        Result[i] := qrs[i].GetResDirect;
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      foreach var q in qs do
-        q.ToString(sb, tabs, index, delayed);
-      
-      sb.Append(#9, tabs);
-      d.ToStringB(sb);
-      sb += #10;
-      
-    end;
-    
-  end;
-  
-  {$endregion Common}
   
   {$region Invokers}
   
@@ -11388,14 +10669,23 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   end;
   IQueueArrayInvoker = interface
     
-    function Invoke<T>(qs: array of CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArrayInvokerData<T>;
+    function InvokeToNil<T>(qs: array of CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    function InvokeToAny<T>(qs: array of CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArrayInvokerData<T>;
     
   end;
   
   QueueArraySyncInvoker = record(IQueueArrayInvoker)
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<T>(qs: array of CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArrayInvokerData<T>;
+    function InvokeToNil<T>(qs: array of CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    begin
+      for var i := 0 to qs.Length-1 do
+        l := qs[i].InvokeToNil(g, l).base;
+      Result := l;
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<T>(qs: array of CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArrayInvokerData<T>;
     begin
       Result := new QueueArrayInvokerData<T>(qs.Length);
       
@@ -11414,12 +10704,25 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   end;
   QueueArrayAsyncInvoker = record(IQueueArrayInvoker)
     
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<T>(qs: array of CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    begin
+      var evs := new EventList[qs.Length];
+      
+      g.ParallelInvoke(l, qs.Length, invoker->
+        for var i := 0 to qs.Length-1 do
+          evs[i] := invoker.InvokeBranch(qs[i].InvokeToNil).AttachInvokeActions(invoker.g)
+      );
+      
+      Result := new CLTaskLocalData(EventList.Combine(evs));
+    end;
+    
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function MakeInvokeBody<T>(qs: array of CommandQueue<T>; qrs: array of QueueRes<T>): CLTaskBranchInvoker->() := invoker->
     for var i := 0 to qs.Length-1 do qrs[i] := invoker.InvokeBranch(qs[i].InvokeToAny);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<T>(qs: array of CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArrayInvokerData<T>;
+    function InvokeToAny<T>(qs: array of CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArrayInvokerData<T>;
     begin
       Result := new QueueArrayInvokerData<T>(qs.Length);
       
@@ -11471,36 +10774,111 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   {$endregion Work}
   
+  {$region Common}
+  
+  CommandQueueArrayWithWork<TInp,TRes, TInv,TDelegate> = abstract class(CommandQueue<TRes>)
+  where TInv: IQueueArrayInvoker, constructor;
+  where TDelegate: ISimpleDelegateContainer;
+    protected qs: array of CommandQueue<TInp>;
+    protected d: TDelegate;
+    protected can_pre_call: boolean;
+    
+    public constructor(qs: array of CommandQueue<TInp>; d: TDelegate; can_pre_call: boolean);
+    begin
+      self.qs := qs;
+      self.d := d;
+      self.can_pre_call := can_pre_call;
+      if can_pre_call and qs.All(q->q.const_res_dep<>nil) then
+      begin
+        self.expected_const_res := d.PreInvoke&<array of TInp, TRes>(
+          qs.ConvertAll(q->q.expected_const_res)
+        );
+        
+        var c := qs.Sum(q->q.const_res_dep.Length);
+        {$ifdef DEBUG}
+        if c=0 then raise new OpenCLABCInternalException($'0dep version is CQ/HFQ/HPQ');
+        {$endif DEBUG}
+        
+        self.const_res_dep := new CommandQueueBase[c];
+        for var i := qs.Length-1 downto 0 do
+        begin
+          var dep := qs[i].const_res_dep;
+          c -= dep.Length;
+          dep.CopyTo(self.const_res_dep, c);
+        end;
+        
+      end;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    foreach var q in qs do q.InitBeforeInvoke(g, inited_mu);
+    
+    protected function TrySkipInvoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; var res: TR): boolean; where TR: IQueueRes;
+    begin
+      Result := qr_factory.TrySkipInvoke(
+        g, l,
+        self,(g,l)->new QueueResNil(TInv.Create.InvokeToNil(self.qs, g,l)),
+        res
+      );
+    end;
+    
+    protected static function GetAllResDirect(qrs: array of QueueRes<TInp>): array of TInp;
+    begin
+      Result := new TInp[qrs.Length];
+      for var i := 0 to Result.Length-1 do
+        Result[i] := qrs[i].GetResDirect;
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      foreach var q in qs do
+        q.ToString(sb, tabs, index, delayed);
+      
+      sb.Append(#9, tabs);
+      d.ToStringB(sb);
+      sb += #10;
+      
+    end;
+    
+  end;
+  
+  {$endregion Common}
+  
   {$region Quick}
   
-  CommandQueueQuickArray<TInp,TRes, TInv, TDelegate, TWork, FPreCall> = sealed class(CommandQueueArrayWithWork<TInp,TRes, TDelegate>)
+  CommandQueueQuickArray<TInp,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArrayWithWork<TInp,TRes, TInv,TDelegate>)
   where TInv: IQueueArrayInvoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArrayWork<TInp,TRes, TDelegate>, constructor;
-  where FPreCall: IBooleanFlag, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; factory: IQueueResDirectFactory<TRes,TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(self.qs, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(self.qs, g, l);
       l := inv_data.next_l;
       
-      var should_make_const := if FPreCall.Create.val then
+      var should_make_const := if can_pre_call then
         inv_data.all_qrs_const else
         l.ShouldInstaCallAction;
       
+      var qrs := inv_data.qrs;
       var err_handler := g.curr_err_handler;
+      
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
       err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
-      var qrs := inv_data.qrs;
-      Result := if should_make_const then
-        factory.MakeConst(l, TWork.Create.Invoke(d, err_handler
-          {$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), g.c
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), g.c
         )) else
-        factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d, err_handler
-          {$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), c
+        Result := qr_factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), c
         )));
       
     end;
@@ -11511,8 +10889,8 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
-  CommandQueueConvertQuickArray<TInp,TRes, TInv, TFunc, FPreCall> = CommandQueueQuickArray<TInp,TRes,    TInv, TFunc, QueueArrayWorkConvert<TInp,TRes, TFunc>, FPreCall>;
-  CommandQueueUseQuickArray    <T,         TInv, TProc, FPreCall> = CommandQueueQuickArray<T,array of T, TInv, TProc, QueueArrayWorkUse    <T,         TProc>, FPreCall>;
+  CommandQueueConvertQuickArray<TInp,TRes, TInv, TFunc> = CommandQueueQuickArray<TInp,TRes,    TInv, TFunc, QueueArrayWorkConvert<TInp,TRes, TFunc>>;
+  CommandQueueUseQuickArray    <T,         TInv, TProc> = CommandQueueQuickArray<T,array of T, TInv, TProc, QueueArrayWorkUse    <T,         TProc>>;
   
   {$endregion Quick}
   
@@ -11521,7 +10899,7 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   //TODO #2657
   QueueResArr<T> = array of QueueRes<T>;
   
-  CommandQueueThreadedArray<TInp,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArrayWithWork<TInp,TRes, TDelegate>)
+  CommandQueueThreadedArray<TInp,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArrayWithWork<TInp,TRes, TInv,TDelegate>)
   where TInv: IQueueArrayInvoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArrayWork<TInp,TRes, TDelegate>, constructor;
@@ -11549,30 +10927,40 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>;
       make_body: (QueueResComplDelegateData, QueueResArr<TInp>,CLTaskErrHandler,CLContext,TR{$ifdef DEBUG},string{$endif})->Action
     ): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(self.qs, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(self.qs, g, l);
       l := inv_data.next_l;
       
-      var prev_ev := l.prev_ev;
-      var acts := l.prev_delegate;
       var qrs := inv_data.qrs;
+      var err_handler := g.curr_err_handler;
+      
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
+      err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
-      Result := make_qr(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
-        prev_ev, make_body(acts, qrs, g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
-        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-      )));
+      
+      if can_pre_call and inv_data.all_qrs_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), g.c)
+        ) else
+      begin
+        var prev_ev := l.prev_ev;
+        var acts := l.prev_delegate;
+        Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
+          prev_ev, make_body(acts, qrs, err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
+          {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
+        )));
+      end;
       
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory.MakeDelayed, MakeNilBody);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory.MakeDelayed, MakeResBody&<QueueResValDirect<TRes>>);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory.MakeDelayed, MakeResBody&<QueueResPtr<TRes>>);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, MakeNilBody);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory, MakeResBody&<QueueResVal<TRes>>);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory, MakeResBody&<QueueResPtr<TRes>>);
     
   end;
   
@@ -11585,38 +10973,97 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
 
 {$region [2]} type
   
-  {$region Common}
+  {$region Invokers}
   
-  CommandQueueArray2WithWork<TInp1,TInp2,TRes, TDelegate> = abstract class(CommandQueue<TRes>)  where TDelegate: ISimpleDelegateContainer;
-    protected q1: CommandQueue<TInp1>;
-    protected q2: CommandQueue<TInp2>;
-    protected d: TDelegate;
+  QueueArray2InvokerData<TInp1,TInp2> = record
+    public all_qrs_const := true;
+    public next_l: CLTaskLocalData;
+    public qr1: QueueRes<TInp1>;
+    public qr2: QueueRes<TInp2>;
+  end;
+  
+  IQueueArray2Invoker = interface
     
-    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; d: TDelegate);
+    function InvokeToNil<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    function InvokeToAny<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray2InvokerData<TInp1,TInp2>;
+    
+  end;
+  
+  QueueArray2SyncInvoker = record(IQueueArray2Invoker)
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
     begin
-      self.q1 := q1;
-      self.q2 := q2;
-      self.d := d;
+      l := q1.InvokeToNil(g, l).base;
+      l := q2.InvokeToNil(g, l).base;
+      Result := l;
     end;
-    private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray2InvokerData<TInp1,TInp2>;
     begin
-      q1.InitBeforeInvoke(g, inited_hubs);
-      q2.InitBeforeInvoke(g, inited_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      q1.ToString(sb, tabs, index, delayed);
-      q2.ToString(sb, tabs, index, delayed);
-      sb.Append(#9, tabs);
-      d.ToStringB(sb);
-      sb += #10;
+      
+      Result.qr1 := q1.InvokeToAny(g, l);
+      if not Result.qr1.IsConst then Result.all_qrs_const := false;
+      l := Result.qr1.TakeBaseOut;
+      
+      Result.qr2 := q2.InvokeToAny(g, l);
+      if not Result.qr2.IsConst then Result.all_qrs_const := false;
+      l := Result.qr2.TakeBaseOut;
+      
+      Result.next_l := l;
     end;
     
   end;
+  
+  QueueArray2AsyncInvoker = record(IQueueArray2Invoker)
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    begin
+      var res_ev: EventList;
+      g.ParallelInvoke(l, 2, invoker->(res_ev := EventList.Combine(|
+        invoker.InvokeBranch(q1.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q2.InvokeToNil).AttachInvokeActions(invoker.g)
+      |)));
+      Result := new CLTaskLocalData(res_ev);
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray2InvokerData<TInp1,TInp2>;
+    begin
+      
+      var res: QueueArray2InvokerData<TInp1,TInp2>;
+      g.ParallelInvoke(l, 2, invoker->
+      begin
+        res.qr1 := invoker.InvokeBranch(q1.InvokeToAny);
+        res.qr2 := invoker.InvokeBranch(q2.InvokeToAny);
+      end);
+      Result := res;
+      
+      Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst;
+      Result.next_l := new CLTaskLocalData(EventList.Combine(|
+        Result.qr1.AttachInvokeActions(g),
+        Result.qr2.AttachInvokeActions(g)
+      |));
+    end;
+    
+  end;
+  
+  {$endregion Invokers}
+  
+  {$region Work}
+  
+  IQueueArray2Work<TInp1,TInp2,TRes, TDelegate> = interface
+  where TDelegate: ISimpleDelegateContainer;
+    
+    function PreInvoke(d: TDelegate; inp1: TInp1; inp2: TInp2): TRes;
+    
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
+    
+  end;
+  
+  {$region Func}
   
   ISimpleFunc2Container<TInp1,TInp2,TRes> = interface(ISimpleDelegateContainer)
     
@@ -11653,6 +11100,33 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
+  QueueArray2WorkConvert<TInp1,TInp2,TRes, TFunc> = record(IQueueArray2Work<TInp1,TInp2,TRes, TFunc>)
+  where TFunc: ISimpleFunc2Container<TInp1,TInp2,TRes>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(f: TFunc; inp1: TInp1; inp2: TInp2) :=
+    f.Invoke(inp1,inp2, nil);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
+    begin
+      if not err_handler.HadError then
+      try
+        Result := f.Invoke(inp1,inp2, c);
+      except
+        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
+      end;
+      {$ifdef DEBUG}
+      err_handler.EndMaybeError(err_test_reason);
+      {$endif DEBUG}
+    end;
+    
+  end;
+  
+  {$endregion Func}
+  
+  {$region Proc}
+  
   ISimpleProc2Container<TInp1,TInp2> = interface(ISimpleDelegateContainer)
     
     procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext);
@@ -11688,94 +11162,15 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
-  {$endregion Common}
-  
-  {$region Invokers}
-  
-  QueueArray2InvokerData<TInp1,TInp2> = record
-    public all_qrs_const := true;
-    public next_l: CLTaskLocalData;
-    public qr1: QueueRes<TInp1>;
-    public qr2: QueueRes<TInp2>;
-  end;
-  
-  IQueueArray2Invoker = interface
-    
-    function Invoke<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray2InvokerData<TInp1,TInp2>;
-    
-  end;
-  
-  QueueArray2SyncInvoker = record(IQueueArray2Invoker)
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray2InvokerData<TInp1,TInp2>;
-    begin
-      
-      Result.qr1 := q1.InvokeToAny(g, l);
-      if not Result.qr1.IsConst then Result.all_qrs_const := false;
-      l := Result.qr1.TakeBaseOut;
-      
-      Result.qr2 := q2.InvokeToAny(g, l);
-      if not Result.qr2.IsConst then Result.all_qrs_const := false;
-      l := Result.qr2.TakeBaseOut;
-      
-      Result.next_l := l;
-    end;
-    
-  end;
-  
-  QueueArray2AsyncInvoker = record(IQueueArray2Invoker)
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray2InvokerData<TInp1,TInp2>;
-    begin
-      
-      var res: QueueArray2InvokerData<TInp1,TInp2>;
-      g.ParallelInvoke(l, 2, invoker->
-      begin
-        res.qr1 := invoker.InvokeBranch(q1.InvokeToAny);
-        res.qr2 := invoker.InvokeBranch(q2.InvokeToAny);
-      end);
-      Result := res;
-      
-      Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst;
-      Result.next_l := new CLTaskLocalData(EventList.Combine(|Result.qr1.AttachInvokeActions(g), Result.qr2.AttachInvokeActions(g)|));
-    end;
-    
-  end;
-  
-  {$endregion Invokers}
-  
-  {$region Work}
-  
-  IQueueArray2Work<TInp1,TInp2,TRes, TDelegate> = interface
-  where TDelegate: ISimpleDelegateContainer;
-    
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
-    
-  end;
-  
-  QueueArray2WorkConvert<TInp1,TInp2,TRes, TFunc> = record(IQueueArray2Work<TInp1,TInp2,TRes, TFunc>)
-  where TFunc: ISimpleFunc2Container<TInp1,TInp2,TRes>;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
-    begin
-      if not err_handler.HadError then
-      try
-        Result := f.Invoke(inp1,inp2, c);
-      except
-        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
-      end;
-      {$ifdef DEBUG}
-      err_handler.EndMaybeError(err_test_reason);
-      {$endif DEBUG}
-    end;
-    
-  end;
-  
   QueueArray2WorkUse<TInp1,TInp2, TProc> = record(IQueueArray2Work<TInp1,TInp2,ValueTuple<TInp1,TInp2>, TProc>)
   where TProc: ISimpleProc2Container<TInp1,TInp2>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(p: TProc; inp1: TInp1; inp2: TInp2): ValueTuple<TInp1,TInp2>;
+    begin
+      p.Invoke(inp1,inp2, nil);
+      Result := ValueTuple.Create(inp1,inp2);
+    end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke(p: TProc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): ValueTuple<TInp1,TInp2>;
@@ -11794,39 +11189,111 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
+  {$endregion Proc}
+  
   {$endregion Work}
   
-  {$region Quick}
+  {$region Common}
   
-  CommandQueueQuickArray2<TInp1,TInp2,TRes, TInv, TDelegate, TWork, FPreCall> = sealed class(CommandQueueArray2WithWork<TInp1,TInp2,TRes, TDelegate>)
+  CommandQueueArray2WithWork<TInp1,TInp2,TRes, TInv,TDelegate,TWork> = abstract class(CommandQueue<TRes>)
   where TInv: IQueueArray2Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray2Work<TInp1,TInp2,TRes, TDelegate>, constructor;
-  where FPreCall: IBooleanFlag, constructor;
+    protected q1: CommandQueue<TInp1>;
+    protected q2: CommandQueue<TInp2>;
+    protected d: TDelegate;
+    protected can_pre_call: boolean;
+    
+    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; d: TDelegate; can_pre_call: boolean);
+    begin
+      self.q1 := q1;
+      self.q2 := q2;
+      self.d := d;
+      self.can_pre_call := can_pre_call;
+      if can_pre_call and (q1.const_res_dep<>nil) and (q2.const_res_dep<>nil) then
+      begin
+        self.expected_const_res := TWork.Create.PreInvoke(d,
+          q1.expected_const_res,
+          q2.expected_const_res
+        );
+        
+        var c := q1.const_res_dep.Length + q2.const_res_dep.Length;
+        {$ifdef DEBUG}
+        if c=0 then raise new OpenCLABCInternalException($'0dep version is CQ/HFQ/HPQ');
+        {$endif DEBUG}
+        
+        self.const_res_dep := new CommandQueueBase[c];
+        var dep: array of CommandQueueBase;
+        dep := q2.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q1.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+      end;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
+    begin
+      q1.InitBeforeInvoke(g, inited_hubs);
+      q2.InitBeforeInvoke(g, inited_hubs);
+    end;
+    
+    protected function TrySkipInvoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; var res: TR): boolean; where TR: IQueueRes;
+    begin
+      Result := qr_factory.TrySkipInvoke(
+        g, l,
+        self,(g,l)->new QueueResNil(TInv.Create.InvokeToNil(q1,q2, g,l)),
+        res
+      );
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q1.ToString(sb, tabs, index, delayed);
+      q2.ToString(sb, tabs, index, delayed);
+      sb.Append(#9, tabs);
+      d.ToStringB(sb);
+      sb += #10;
+    end;
+    
+  end;
+  
+  {$endregion Common}
+  
+  {$region Quick}
+  
+  CommandQueueQuickArray2<TInp1,TInp2,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray2WithWork<TInp1,TInp2,TRes, TInv, TDelegate, TWork>)
+  where TInv: IQueueArray2Invoker, constructor;
+  where TDelegate: ISimpleDelegateContainer;
+  where TWork: IQueueArray2Work<TInp1,TInp2,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; factory: IQueueResDirectFactory<TRes,TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2, g, l);
       l := inv_data.next_l;
       
-      var should_make_const := if FPreCall.Create.val then
-        inv_data.all_qrs_const else
-        l.ShouldInstaCallAction;
-      
+      var qr1 := inv_data.qr1;
+      var qr2 := inv_data.qr2;
       var err_handler := g.curr_err_handler;
+      
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
       err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
-      var qr1 := inv_data.qr1;
-      var qr2 := inv_data.qr2;
-      Result := if should_make_const then
-        factory.MakeConst(l, TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect, g.c
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        l.ShouldInstaCallAction;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, g.c
         )) else
-        factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect, c
+        Result := qr_factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, c
         )));
       
     end;
@@ -11837,15 +11304,15 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
-  CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, TInv, TFunc, FPreCall> = CommandQueueQuickArray2<TInp1,TInp2,TRes, TInv, TFunc, QueueArray2WorkConvert<TInp1,TInp2,TRes, TFunc>, FPreCall>;
-  CommandQueueUseQuickArray2    <TInp1,TInp2,      TInv, TProc, FPreCall> = CommandQueueQuickArray2<TInp1,TInp2,ValueTuple<TInp1,TInp2>, TInv, TProc, QueueArray2WorkUse<TInp1,TInp2, TProc>, FPreCall>;
+  CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, TInv, TFunc> = CommandQueueQuickArray2<TInp1,TInp2,TRes, TInv, TFunc, QueueArray2WorkConvert<TInp1,TInp2,TRes, TFunc>>;
+  CommandQueueUseQuickArray2    <TInp1,TInp2,      TInv, TProc> = CommandQueueQuickArray2<TInp1,TInp2,ValueTuple<TInp1,TInp2>, TInv, TProc, QueueArray2WorkUse<TInp1,TInp2, TProc>>;
   
   {$endregion Quick}
   
   {$region Threaded}
   
   DCommandQueueThreadedArray2MakeBody<TInp1,TInp2, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
-  CommandQueueThreadedArray2<TInp1,TInp2,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray2WithWork<TInp1,TInp2,TRes, TDelegate>)
+  CommandQueueThreadedArray2<TInp1,TInp2,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray2WithWork<TInp1,TInp2,TRes, TInv, TDelegate, TWork>)
   where TInv: IQueueArray2Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray2Work<TInp1,TInp2,TRes, TDelegate>, constructor;
@@ -11871,29 +11338,44 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: DCommandQueueThreadedArray2MakeBody<TInp1,TInp2, TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; make_body: DCommandQueueThreadedArray2MakeBody<TInp1,TInp2, TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2, g, l);
       l := inv_data.next_l;
       
-      var prev_ev := l.prev_ev;
-      var acts := l.prev_delegate;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
-      Result := make_qr(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
-        prev_ev, make_body(acts, qr1,qr2, g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
-        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-      )));
+      var err_handler := g.curr_err_handler;
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        false;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, g.c
+        )) else
+      begin
+        var prev_ev := l.prev_ev;
+        var acts := l.prev_delegate;
+        Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
+          prev_ev, make_body(acts, qr1,qr2, err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
+          {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
+        )));
+      end;
       
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory.MakeDelayed, MakeNilBody);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory.MakeDelayed, MakeResBody&<QueueResValDirect<TRes>>);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory.MakeDelayed, MakeResBody&<QueueResPtr<TRes>>);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, MakeNilBody);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory, MakeResBody&<QueueResVal<TRes>>);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory, MakeResBody&<QueueResPtr<TRes>>);
     
   end;
   
@@ -11906,42 +11388,106 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
 
 {$region [3]} type
   
-  {$region Common}
+  {$region Invokers}
   
-  CommandQueueArray3WithWork<TInp1,TInp2,TInp3,TRes, TDelegate> = abstract class(CommandQueue<TRes>)  where TDelegate: ISimpleDelegateContainer;
-    protected q1: CommandQueue<TInp1>;
-    protected q2: CommandQueue<TInp2>;
-    protected q3: CommandQueue<TInp3>;
-    protected d: TDelegate;
+  QueueArray3InvokerData<TInp1,TInp2,TInp3> = record
+    public all_qrs_const := true;
+    public next_l: CLTaskLocalData;
+    public qr1: QueueRes<TInp1>;
+    public qr2: QueueRes<TInp2>;
+    public qr3: QueueRes<TInp3>;
+  end;
+  
+  IQueueArray3Invoker = interface
     
-    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; d: TDelegate);
+    function InvokeToNil<TInp1,TInp2,TInp3>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    function InvokeToAny<TInp1,TInp2,TInp3>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray3InvokerData<TInp1,TInp2,TInp3>;
+    
+  end;
+  
+  QueueArray3SyncInvoker = record(IQueueArray3Invoker)
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<TInp1,TInp2,TInp3>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
     begin
-      self.q1 := q1;
-      self.q2 := q2;
-      self.q3 := q3;
-      self.d := d;
+      l := q1.InvokeToNil(g, l).base;
+      l := q2.InvokeToNil(g, l).base;
+      l := q3.InvokeToNil(g, l).base;
+      Result := l;
     end;
-    private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2,TInp3>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray3InvokerData<TInp1,TInp2,TInp3>;
     begin
-      q1.InitBeforeInvoke(g, inited_hubs);
-      q2.InitBeforeInvoke(g, inited_hubs);
-      q3.InitBeforeInvoke(g, inited_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      q1.ToString(sb, tabs, index, delayed);
-      q2.ToString(sb, tabs, index, delayed);
-      q3.ToString(sb, tabs, index, delayed);
-      sb.Append(#9, tabs);
-      d.ToStringB(sb);
-      sb += #10;
+      
+      Result.qr1 := q1.InvokeToAny(g, l);
+      if not Result.qr1.IsConst then Result.all_qrs_const := false;
+      l := Result.qr1.TakeBaseOut;
+      
+      Result.qr2 := q2.InvokeToAny(g, l);
+      if not Result.qr2.IsConst then Result.all_qrs_const := false;
+      l := Result.qr2.TakeBaseOut;
+      
+      Result.qr3 := q3.InvokeToAny(g, l);
+      if not Result.qr3.IsConst then Result.all_qrs_const := false;
+      l := Result.qr3.TakeBaseOut;
+      
+      Result.next_l := l;
     end;
     
   end;
+  
+  QueueArray3AsyncInvoker = record(IQueueArray3Invoker)
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<TInp1,TInp2,TInp3>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    begin
+      var res_ev: EventList;
+      g.ParallelInvoke(l, 3, invoker->(res_ev := EventList.Combine(|
+        invoker.InvokeBranch(q1.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q2.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q3.InvokeToNil).AttachInvokeActions(invoker.g)
+      |)));
+      Result := new CLTaskLocalData(res_ev);
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2,TInp3>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray3InvokerData<TInp1,TInp2,TInp3>;
+    begin
+      
+      var res: QueueArray3InvokerData<TInp1,TInp2,TInp3>;
+      g.ParallelInvoke(l, 3, invoker->
+      begin
+        res.qr1 := invoker.InvokeBranch(q1.InvokeToAny);
+        res.qr2 := invoker.InvokeBranch(q2.InvokeToAny);
+        res.qr3 := invoker.InvokeBranch(q3.InvokeToAny);
+      end);
+      Result := res;
+      
+      Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst and Result.qr3.IsConst;
+      Result.next_l := new CLTaskLocalData(EventList.Combine(|
+        Result.qr1.AttachInvokeActions(g),
+        Result.qr2.AttachInvokeActions(g),
+        Result.qr3.AttachInvokeActions(g)
+      |));
+    end;
+    
+  end;
+  
+  {$endregion Invokers}
+  
+  {$region Work}
+  
+  IQueueArray3Work<TInp1,TInp2,TInp3,TRes, TDelegate> = interface
+  where TDelegate: ISimpleDelegateContainer;
+    
+    function PreInvoke(d: TDelegate; inp1: TInp1; inp2: TInp2; inp3: TInp3): TRes;
+    
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): TRes;
+    
+  end;
+  
+  {$region Func}
   
   ISimpleFunc3Container<TInp1,TInp2,TInp3,TRes> = interface(ISimpleDelegateContainer)
     
@@ -11978,6 +11524,33 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
+  QueueArray3WorkConvert<TInp1,TInp2,TInp3,TRes, TFunc> = record(IQueueArray3Work<TInp1,TInp2,TInp3,TRes, TFunc>)
+  where TFunc: ISimpleFunc3Container<TInp1,TInp2,TInp3,TRes>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(f: TFunc; inp1: TInp1; inp2: TInp2; inp3: TInp3) :=
+    f.Invoke(inp1,inp2,inp3, nil);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): TRes;
+    begin
+      if not err_handler.HadError then
+      try
+        Result := f.Invoke(inp1,inp2,inp3, c);
+      except
+        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
+      end;
+      {$ifdef DEBUG}
+      err_handler.EndMaybeError(err_test_reason);
+      {$endif DEBUG}
+    end;
+    
+  end;
+  
+  {$endregion Func}
+  
+  {$region Proc}
+  
   ISimpleProc3Container<TInp1,TInp2,TInp3> = interface(ISimpleDelegateContainer)
     
     procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext);
@@ -12013,100 +11586,15 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
-  {$endregion Common}
-  
-  {$region Invokers}
-  
-  QueueArray3InvokerData<TInp1,TInp2,TInp3> = record
-    public all_qrs_const := true;
-    public next_l: CLTaskLocalData;
-    public qr1: QueueRes<TInp1>;
-    public qr2: QueueRes<TInp2>;
-    public qr3: QueueRes<TInp3>;
-  end;
-  
-  IQueueArray3Invoker = interface
-    
-    function Invoke<TInp1,TInp2,TInp3>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray3InvokerData<TInp1,TInp2,TInp3>;
-    
-  end;
-  
-  QueueArray3SyncInvoker = record(IQueueArray3Invoker)
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2,TInp3>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray3InvokerData<TInp1,TInp2,TInp3>;
-    begin
-      
-      Result.qr1 := q1.InvokeToAny(g, l);
-      if not Result.qr1.IsConst then Result.all_qrs_const := false;
-      l := Result.qr1.TakeBaseOut;
-      
-      Result.qr2 := q2.InvokeToAny(g, l);
-      if not Result.qr2.IsConst then Result.all_qrs_const := false;
-      l := Result.qr2.TakeBaseOut;
-      
-      Result.qr3 := q3.InvokeToAny(g, l);
-      if not Result.qr3.IsConst then Result.all_qrs_const := false;
-      l := Result.qr3.TakeBaseOut;
-      
-      Result.next_l := l;
-    end;
-    
-  end;
-  
-  QueueArray3AsyncInvoker = record(IQueueArray3Invoker)
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2,TInp3>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray3InvokerData<TInp1,TInp2,TInp3>;
-    begin
-      
-      var res: QueueArray3InvokerData<TInp1,TInp2,TInp3>;
-      g.ParallelInvoke(l, 3, invoker->
-      begin
-        res.qr1 := invoker.InvokeBranch(q1.InvokeToAny);
-        res.qr2 := invoker.InvokeBranch(q2.InvokeToAny);
-        res.qr3 := invoker.InvokeBranch(q3.InvokeToAny);
-      end);
-      Result := res;
-      
-      Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst and Result.qr3.IsConst;
-      Result.next_l := new CLTaskLocalData(EventList.Combine(|Result.qr1.AttachInvokeActions(g), Result.qr2.AttachInvokeActions(g), Result.qr3.AttachInvokeActions(g)|));
-    end;
-    
-  end;
-  
-  {$endregion Invokers}
-  
-  {$region Work}
-  
-  IQueueArray3Work<TInp1,TInp2,TInp3,TRes, TDelegate> = interface
-  where TDelegate: ISimpleDelegateContainer;
-    
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): TRes;
-    
-  end;
-  
-  QueueArray3WorkConvert<TInp1,TInp2,TInp3,TRes, TFunc> = record(IQueueArray3Work<TInp1,TInp2,TInp3,TRes, TFunc>)
-  where TFunc: ISimpleFunc3Container<TInp1,TInp2,TInp3,TRes>;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): TRes;
-    begin
-      if not err_handler.HadError then
-      try
-        Result := f.Invoke(inp1,inp2,inp3, c);
-      except
-        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
-      end;
-      {$ifdef DEBUG}
-      err_handler.EndMaybeError(err_test_reason);
-      {$endif DEBUG}
-    end;
-    
-  end;
-  
   QueueArray3WorkUse<TInp1,TInp2,TInp3, TProc> = record(IQueueArray3Work<TInp1,TInp2,TInp3,ValueTuple<TInp1,TInp2,TInp3>, TProc>)
   where TProc: ISimpleProc3Container<TInp1,TInp2,TInp3>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(p: TProc; inp1: TInp1; inp2: TInp2; inp3: TInp3): ValueTuple<TInp1,TInp2,TInp3>;
+    begin
+      p.Invoke(inp1,inp2,inp3, nil);
+      Result := ValueTuple.Create(inp1,inp2,inp3);
+    end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke(p: TProc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): ValueTuple<TInp1,TInp2,TInp3>;
@@ -12125,40 +11613,118 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
+  {$endregion Proc}
+  
   {$endregion Work}
   
-  {$region Quick}
+  {$region Common}
   
-  CommandQueueQuickArray3<TInp1,TInp2,TInp3,TRes, TInv, TDelegate, TWork, FPreCall> = sealed class(CommandQueueArray3WithWork<TInp1,TInp2,TInp3,TRes, TDelegate>)
+  CommandQueueArray3WithWork<TInp1,TInp2,TInp3,TRes, TInv,TDelegate,TWork> = abstract class(CommandQueue<TRes>)
   where TInv: IQueueArray3Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray3Work<TInp1,TInp2,TInp3,TRes, TDelegate>, constructor;
-  where FPreCall: IBooleanFlag, constructor;
+    protected q1: CommandQueue<TInp1>;
+    protected q2: CommandQueue<TInp2>;
+    protected q3: CommandQueue<TInp3>;
+    protected d: TDelegate;
+    protected can_pre_call: boolean;
+    
+    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; d: TDelegate; can_pre_call: boolean);
+    begin
+      self.q1 := q1;
+      self.q2 := q2;
+      self.q3 := q3;
+      self.d := d;
+      self.can_pre_call := can_pre_call;
+      if can_pre_call and (q1.const_res_dep<>nil) and (q2.const_res_dep<>nil) and (q3.const_res_dep<>nil) then
+      begin
+        self.expected_const_res := TWork.Create.PreInvoke(d,
+          q1.expected_const_res,
+          q2.expected_const_res,
+          q3.expected_const_res
+        );
+        
+        var c := q1.const_res_dep.Length + q2.const_res_dep.Length + q3.const_res_dep.Length;
+        {$ifdef DEBUG}
+        if c=0 then raise new OpenCLABCInternalException($'0dep version is CQ/HFQ/HPQ');
+        {$endif DEBUG}
+        
+        self.const_res_dep := new CommandQueueBase[c];
+        var dep: array of CommandQueueBase;
+        dep := q3.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q2.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q1.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+      end;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
+    begin
+      q1.InitBeforeInvoke(g, inited_hubs);
+      q2.InitBeforeInvoke(g, inited_hubs);
+      q3.InitBeforeInvoke(g, inited_hubs);
+    end;
+    
+    protected function TrySkipInvoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; var res: TR): boolean; where TR: IQueueRes;
+    begin
+      Result := qr_factory.TrySkipInvoke(
+        g, l,
+        self,(g,l)->new QueueResNil(TInv.Create.InvokeToNil(q1,q2,q3, g,l)),
+        res
+      );
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q1.ToString(sb, tabs, index, delayed);
+      q2.ToString(sb, tabs, index, delayed);
+      q3.ToString(sb, tabs, index, delayed);
+      sb.Append(#9, tabs);
+      d.ToStringB(sb);
+      sb += #10;
+    end;
+    
+  end;
+  
+  {$endregion Common}
+  
+  {$region Quick}
+  
+  CommandQueueQuickArray3<TInp1,TInp2,TInp3,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray3WithWork<TInp1,TInp2,TInp3,TRes, TInv, TDelegate, TWork>)
+  where TInv: IQueueArray3Invoker, constructor;
+  where TDelegate: ISimpleDelegateContainer;
+  where TWork: IQueueArray3Work<TInp1,TInp2,TInp3,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; factory: IQueueResDirectFactory<TRes,TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2,q3, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2,q3, g, l);
       l := inv_data.next_l;
       
-      var should_make_const := if FPreCall.Create.val then
-        inv_data.all_qrs_const else
-        l.ShouldInstaCallAction;
-      
+      var qr1 := inv_data.qr1;
+      var qr2 := inv_data.qr2;
+      var qr3 := inv_data.qr3;
       var err_handler := g.curr_err_handler;
+      
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
       err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
-      var qr1 := inv_data.qr1;
-      var qr2 := inv_data.qr2;
-      var qr3 := inv_data.qr3;
-      Result := if should_make_const then
-        factory.MakeConst(l, TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect, g.c
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        l.ShouldInstaCallAction;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, g.c
         )) else
-        factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect, c
+        Result := qr_factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, c
         )));
       
     end;
@@ -12169,15 +11735,15 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
-  CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, TInv, TFunc, FPreCall> = CommandQueueQuickArray3<TInp1,TInp2,TInp3,TRes, TInv, TFunc, QueueArray3WorkConvert<TInp1,TInp2,TInp3,TRes, TFunc>, FPreCall>;
-  CommandQueueUseQuickArray3    <TInp1,TInp2,TInp3,      TInv, TProc, FPreCall> = CommandQueueQuickArray3<TInp1,TInp2,TInp3,ValueTuple<TInp1,TInp2,TInp3>, TInv, TProc, QueueArray3WorkUse<TInp1,TInp2,TInp3, TProc>, FPreCall>;
+  CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, TInv, TFunc> = CommandQueueQuickArray3<TInp1,TInp2,TInp3,TRes, TInv, TFunc, QueueArray3WorkConvert<TInp1,TInp2,TInp3,TRes, TFunc>>;
+  CommandQueueUseQuickArray3    <TInp1,TInp2,TInp3,      TInv, TProc> = CommandQueueQuickArray3<TInp1,TInp2,TInp3,ValueTuple<TInp1,TInp2,TInp3>, TInv, TProc, QueueArray3WorkUse<TInp1,TInp2,TInp3, TProc>>;
   
   {$endregion Quick}
   
   {$region Threaded}
   
   DCommandQueueThreadedArray3MakeBody<TInp1,TInp2,TInp3, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
-  CommandQueueThreadedArray3<TInp1,TInp2,TInp3,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray3WithWork<TInp1,TInp2,TInp3,TRes, TDelegate>)
+  CommandQueueThreadedArray3<TInp1,TInp2,TInp3,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray3WithWork<TInp1,TInp2,TInp3,TRes, TInv, TDelegate, TWork>)
   where TInv: IQueueArray3Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray3Work<TInp1,TInp2,TInp3,TRes, TDelegate>, constructor;
@@ -12203,30 +11769,45 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: DCommandQueueThreadedArray3MakeBody<TInp1,TInp2,TInp3, TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; make_body: DCommandQueueThreadedArray3MakeBody<TInp1,TInp2,TInp3, TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2,q3, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2,q3, g, l);
       l := inv_data.next_l;
       
-      var prev_ev := l.prev_ev;
-      var acts := l.prev_delegate;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
-      Result := make_qr(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
-        prev_ev, make_body(acts, qr1,qr2,qr3, g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
-        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-      )));
+      var err_handler := g.curr_err_handler;
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        false;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, g.c
+        )) else
+      begin
+        var prev_ev := l.prev_ev;
+        var acts := l.prev_delegate;
+        Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
+          prev_ev, make_body(acts, qr1,qr2,qr3, err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
+          {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
+        )));
+      end;
       
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory.MakeDelayed, MakeNilBody);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory.MakeDelayed, MakeResBody&<QueueResValDirect<TRes>>);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory.MakeDelayed, MakeResBody&<QueueResPtr<TRes>>);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, MakeNilBody);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory, MakeResBody&<QueueResVal<TRes>>);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory, MakeResBody&<QueueResPtr<TRes>>);
     
   end;
   
@@ -12239,46 +11820,115 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
 
 {$region [4]} type
   
-  {$region Common}
+  {$region Invokers}
   
-  CommandQueueArray4WithWork<TInp1,TInp2,TInp3,TInp4,TRes, TDelegate> = abstract class(CommandQueue<TRes>)  where TDelegate: ISimpleDelegateContainer;
-    protected q1: CommandQueue<TInp1>;
-    protected q2: CommandQueue<TInp2>;
-    protected q3: CommandQueue<TInp3>;
-    protected q4: CommandQueue<TInp4>;
-    protected d: TDelegate;
+  QueueArray4InvokerData<TInp1,TInp2,TInp3,TInp4> = record
+    public all_qrs_const := true;
+    public next_l: CLTaskLocalData;
+    public qr1: QueueRes<TInp1>;
+    public qr2: QueueRes<TInp2>;
+    public qr3: QueueRes<TInp3>;
+    public qr4: QueueRes<TInp4>;
+  end;
+  
+  IQueueArray4Invoker = interface
     
-    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; d: TDelegate);
+    function InvokeToNil<TInp1,TInp2,TInp3,TInp4>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    function InvokeToAny<TInp1,TInp2,TInp3,TInp4>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray4InvokerData<TInp1,TInp2,TInp3,TInp4>;
+    
+  end;
+  
+  QueueArray4SyncInvoker = record(IQueueArray4Invoker)
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<TInp1,TInp2,TInp3,TInp4>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
     begin
-      self.q1 := q1;
-      self.q2 := q2;
-      self.q3 := q3;
-      self.q4 := q4;
-      self.d := d;
+      l := q1.InvokeToNil(g, l).base;
+      l := q2.InvokeToNil(g, l).base;
+      l := q3.InvokeToNil(g, l).base;
+      l := q4.InvokeToNil(g, l).base;
+      Result := l;
     end;
-    private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2,TInp3,TInp4>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray4InvokerData<TInp1,TInp2,TInp3,TInp4>;
     begin
-      q1.InitBeforeInvoke(g, inited_hubs);
-      q2.InitBeforeInvoke(g, inited_hubs);
-      q3.InitBeforeInvoke(g, inited_hubs);
-      q4.InitBeforeInvoke(g, inited_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      q1.ToString(sb, tabs, index, delayed);
-      q2.ToString(sb, tabs, index, delayed);
-      q3.ToString(sb, tabs, index, delayed);
-      q4.ToString(sb, tabs, index, delayed);
-      sb.Append(#9, tabs);
-      d.ToStringB(sb);
-      sb += #10;
+      
+      Result.qr1 := q1.InvokeToAny(g, l);
+      if not Result.qr1.IsConst then Result.all_qrs_const := false;
+      l := Result.qr1.TakeBaseOut;
+      
+      Result.qr2 := q2.InvokeToAny(g, l);
+      if not Result.qr2.IsConst then Result.all_qrs_const := false;
+      l := Result.qr2.TakeBaseOut;
+      
+      Result.qr3 := q3.InvokeToAny(g, l);
+      if not Result.qr3.IsConst then Result.all_qrs_const := false;
+      l := Result.qr3.TakeBaseOut;
+      
+      Result.qr4 := q4.InvokeToAny(g, l);
+      if not Result.qr4.IsConst then Result.all_qrs_const := false;
+      l := Result.qr4.TakeBaseOut;
+      
+      Result.next_l := l;
     end;
     
   end;
+  
+  QueueArray4AsyncInvoker = record(IQueueArray4Invoker)
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<TInp1,TInp2,TInp3,TInp4>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    begin
+      var res_ev: EventList;
+      g.ParallelInvoke(l, 4, invoker->(res_ev := EventList.Combine(|
+        invoker.InvokeBranch(q1.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q2.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q3.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q4.InvokeToNil).AttachInvokeActions(invoker.g)
+      |)));
+      Result := new CLTaskLocalData(res_ev);
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2,TInp3,TInp4>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray4InvokerData<TInp1,TInp2,TInp3,TInp4>;
+    begin
+      
+      var res: QueueArray4InvokerData<TInp1,TInp2,TInp3,TInp4>;
+      g.ParallelInvoke(l, 4, invoker->
+      begin
+        res.qr1 := invoker.InvokeBranch(q1.InvokeToAny);
+        res.qr2 := invoker.InvokeBranch(q2.InvokeToAny);
+        res.qr3 := invoker.InvokeBranch(q3.InvokeToAny);
+        res.qr4 := invoker.InvokeBranch(q4.InvokeToAny);
+      end);
+      Result := res;
+      
+      Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst and Result.qr3.IsConst and Result.qr4.IsConst;
+      Result.next_l := new CLTaskLocalData(EventList.Combine(|
+        Result.qr1.AttachInvokeActions(g),
+        Result.qr2.AttachInvokeActions(g),
+        Result.qr3.AttachInvokeActions(g),
+        Result.qr4.AttachInvokeActions(g)
+      |));
+    end;
+    
+  end;
+  
+  {$endregion Invokers}
+  
+  {$region Work}
+  
+  IQueueArray4Work<TInp1,TInp2,TInp3,TInp4,TRes, TDelegate> = interface
+  where TDelegate: ISimpleDelegateContainer;
+    
+    function PreInvoke(d: TDelegate; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4): TRes;
+    
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext): TRes;
+    
+  end;
+  
+  {$region Func}
   
   ISimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes> = interface(ISimpleDelegateContainer)
     
@@ -12315,6 +11965,33 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
+  QueueArray4WorkConvert<TInp1,TInp2,TInp3,TInp4,TRes, TFunc> = record(IQueueArray4Work<TInp1,TInp2,TInp3,TInp4,TRes, TFunc>)
+  where TFunc: ISimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(f: TFunc; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4) :=
+    f.Invoke(inp1,inp2,inp3,inp4, nil);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext): TRes;
+    begin
+      if not err_handler.HadError then
+      try
+        Result := f.Invoke(inp1,inp2,inp3,inp4, c);
+      except
+        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
+      end;
+      {$ifdef DEBUG}
+      err_handler.EndMaybeError(err_test_reason);
+      {$endif DEBUG}
+    end;
+    
+  end;
+  
+  {$endregion Func}
+  
+  {$region Proc}
+  
   ISimpleProc4Container<TInp1,TInp2,TInp3,TInp4> = interface(ISimpleDelegateContainer)
     
     procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext);
@@ -12350,106 +12027,15 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
-  {$endregion Common}
-  
-  {$region Invokers}
-  
-  QueueArray4InvokerData<TInp1,TInp2,TInp3,TInp4> = record
-    public all_qrs_const := true;
-    public next_l: CLTaskLocalData;
-    public qr1: QueueRes<TInp1>;
-    public qr2: QueueRes<TInp2>;
-    public qr3: QueueRes<TInp3>;
-    public qr4: QueueRes<TInp4>;
-  end;
-  
-  IQueueArray4Invoker = interface
-    
-    function Invoke<TInp1,TInp2,TInp3,TInp4>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray4InvokerData<TInp1,TInp2,TInp3,TInp4>;
-    
-  end;
-  
-  QueueArray4SyncInvoker = record(IQueueArray4Invoker)
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2,TInp3,TInp4>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray4InvokerData<TInp1,TInp2,TInp3,TInp4>;
-    begin
-      
-      Result.qr1 := q1.InvokeToAny(g, l);
-      if not Result.qr1.IsConst then Result.all_qrs_const := false;
-      l := Result.qr1.TakeBaseOut;
-      
-      Result.qr2 := q2.InvokeToAny(g, l);
-      if not Result.qr2.IsConst then Result.all_qrs_const := false;
-      l := Result.qr2.TakeBaseOut;
-      
-      Result.qr3 := q3.InvokeToAny(g, l);
-      if not Result.qr3.IsConst then Result.all_qrs_const := false;
-      l := Result.qr3.TakeBaseOut;
-      
-      Result.qr4 := q4.InvokeToAny(g, l);
-      if not Result.qr4.IsConst then Result.all_qrs_const := false;
-      l := Result.qr4.TakeBaseOut;
-      
-      Result.next_l := l;
-    end;
-    
-  end;
-  
-  QueueArray4AsyncInvoker = record(IQueueArray4Invoker)
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2,TInp3,TInp4>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray4InvokerData<TInp1,TInp2,TInp3,TInp4>;
-    begin
-      
-      var res: QueueArray4InvokerData<TInp1,TInp2,TInp3,TInp4>;
-      g.ParallelInvoke(l, 4, invoker->
-      begin
-        res.qr1 := invoker.InvokeBranch(q1.InvokeToAny);
-        res.qr2 := invoker.InvokeBranch(q2.InvokeToAny);
-        res.qr3 := invoker.InvokeBranch(q3.InvokeToAny);
-        res.qr4 := invoker.InvokeBranch(q4.InvokeToAny);
-      end);
-      Result := res;
-      
-      Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst and Result.qr3.IsConst and Result.qr4.IsConst;
-      Result.next_l := new CLTaskLocalData(EventList.Combine(|Result.qr1.AttachInvokeActions(g), Result.qr2.AttachInvokeActions(g), Result.qr3.AttachInvokeActions(g), Result.qr4.AttachInvokeActions(g)|));
-    end;
-    
-  end;
-  
-  {$endregion Invokers}
-  
-  {$region Work}
-  
-  IQueueArray4Work<TInp1,TInp2,TInp3,TInp4,TRes, TDelegate> = interface
-  where TDelegate: ISimpleDelegateContainer;
-    
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext): TRes;
-    
-  end;
-  
-  QueueArray4WorkConvert<TInp1,TInp2,TInp3,TInp4,TRes, TFunc> = record(IQueueArray4Work<TInp1,TInp2,TInp3,TInp4,TRes, TFunc>)
-  where TFunc: ISimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext): TRes;
-    begin
-      if not err_handler.HadError then
-      try
-        Result := f.Invoke(inp1,inp2,inp3,inp4, c);
-      except
-        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
-      end;
-      {$ifdef DEBUG}
-      err_handler.EndMaybeError(err_test_reason);
-      {$endif DEBUG}
-    end;
-    
-  end;
-  
   QueueArray4WorkUse<TInp1,TInp2,TInp3,TInp4, TProc> = record(IQueueArray4Work<TInp1,TInp2,TInp3,TInp4,ValueTuple<TInp1,TInp2,TInp3,TInp4>, TProc>)
   where TProc: ISimpleProc4Container<TInp1,TInp2,TInp3,TInp4>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(p: TProc; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4): ValueTuple<TInp1,TInp2,TInp3,TInp4>;
+    begin
+      p.Invoke(inp1,inp2,inp3,inp4, nil);
+      Result := ValueTuple.Create(inp1,inp2,inp3,inp4);
+    end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke(p: TProc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext): ValueTuple<TInp1,TInp2,TInp3,TInp4>;
@@ -12468,41 +12054,125 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
+  {$endregion Proc}
+  
   {$endregion Work}
   
-  {$region Quick}
+  {$region Common}
   
-  CommandQueueQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, TInv, TDelegate, TWork, FPreCall> = sealed class(CommandQueueArray4WithWork<TInp1,TInp2,TInp3,TInp4,TRes, TDelegate>)
+  CommandQueueArray4WithWork<TInp1,TInp2,TInp3,TInp4,TRes, TInv,TDelegate,TWork> = abstract class(CommandQueue<TRes>)
   where TInv: IQueueArray4Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray4Work<TInp1,TInp2,TInp3,TInp4,TRes, TDelegate>, constructor;
-  where FPreCall: IBooleanFlag, constructor;
+    protected q1: CommandQueue<TInp1>;
+    protected q2: CommandQueue<TInp2>;
+    protected q3: CommandQueue<TInp3>;
+    protected q4: CommandQueue<TInp4>;
+    protected d: TDelegate;
+    protected can_pre_call: boolean;
+    
+    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; d: TDelegate; can_pre_call: boolean);
+    begin
+      self.q1 := q1;
+      self.q2 := q2;
+      self.q3 := q3;
+      self.q4 := q4;
+      self.d := d;
+      self.can_pre_call := can_pre_call;
+      if can_pre_call and (q1.const_res_dep<>nil) and (q2.const_res_dep<>nil) and (q3.const_res_dep<>nil) and (q4.const_res_dep<>nil) then
+      begin
+        self.expected_const_res := TWork.Create.PreInvoke(d,
+          q1.expected_const_res,
+          q2.expected_const_res,
+          q3.expected_const_res,
+          q4.expected_const_res
+        );
+        
+        var c := q1.const_res_dep.Length + q2.const_res_dep.Length + q3.const_res_dep.Length + q4.const_res_dep.Length;
+        {$ifdef DEBUG}
+        if c=0 then raise new OpenCLABCInternalException($'0dep version is CQ/HFQ/HPQ');
+        {$endif DEBUG}
+        
+        self.const_res_dep := new CommandQueueBase[c];
+        var dep: array of CommandQueueBase;
+        dep := q4.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q3.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q2.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q1.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+      end;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
+    begin
+      q1.InitBeforeInvoke(g, inited_hubs);
+      q2.InitBeforeInvoke(g, inited_hubs);
+      q3.InitBeforeInvoke(g, inited_hubs);
+      q4.InitBeforeInvoke(g, inited_hubs);
+    end;
+    
+    protected function TrySkipInvoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; var res: TR): boolean; where TR: IQueueRes;
+    begin
+      Result := qr_factory.TrySkipInvoke(
+        g, l,
+        self,(g,l)->new QueueResNil(TInv.Create.InvokeToNil(q1,q2,q3,q4, g,l)),
+        res
+      );
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q1.ToString(sb, tabs, index, delayed);
+      q2.ToString(sb, tabs, index, delayed);
+      q3.ToString(sb, tabs, index, delayed);
+      q4.ToString(sb, tabs, index, delayed);
+      sb.Append(#9, tabs);
+      d.ToStringB(sb);
+      sb += #10;
+    end;
+    
+  end;
+  
+  {$endregion Common}
+  
+  {$region Quick}
+  
+  CommandQueueQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray4WithWork<TInp1,TInp2,TInp3,TInp4,TRes, TInv, TDelegate, TWork>)
+  where TInv: IQueueArray4Invoker, constructor;
+  where TDelegate: ISimpleDelegateContainer;
+  where TWork: IQueueArray4Work<TInp1,TInp2,TInp3,TInp4,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; factory: IQueueResDirectFactory<TRes,TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2,q3,q4, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2,q3,q4, g, l);
       l := inv_data.next_l;
       
-      var should_make_const := if FPreCall.Create.val then
-        inv_data.all_qrs_const else
-        l.ShouldInstaCallAction;
-      
-      var err_handler := g.curr_err_handler;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
       var qr4 := inv_data.qr4;
-      Result := if should_make_const then
-        factory.MakeConst(l, TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect,qr4.GetResDirect, g.c
+      var err_handler := g.curr_err_handler;
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        l.ShouldInstaCallAction;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, g.c
         )) else
-        factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect,qr4.GetResDirect, c
+        Result := qr_factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, c
         )));
       
     end;
@@ -12513,15 +12183,15 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
-  CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, TInv, TFunc, FPreCall> = CommandQueueQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, TInv, TFunc, QueueArray4WorkConvert<TInp1,TInp2,TInp3,TInp4,TRes, TFunc>, FPreCall>;
-  CommandQueueUseQuickArray4    <TInp1,TInp2,TInp3,TInp4,      TInv, TProc, FPreCall> = CommandQueueQuickArray4<TInp1,TInp2,TInp3,TInp4,ValueTuple<TInp1,TInp2,TInp3,TInp4>, TInv, TProc, QueueArray4WorkUse<TInp1,TInp2,TInp3,TInp4, TProc>, FPreCall>;
+  CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, TInv, TFunc> = CommandQueueQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, TInv, TFunc, QueueArray4WorkConvert<TInp1,TInp2,TInp3,TInp4,TRes, TFunc>>;
+  CommandQueueUseQuickArray4    <TInp1,TInp2,TInp3,TInp4,      TInv, TProc> = CommandQueueQuickArray4<TInp1,TInp2,TInp3,TInp4,ValueTuple<TInp1,TInp2,TInp3,TInp4>, TInv, TProc, QueueArray4WorkUse<TInp1,TInp2,TInp3,TInp4, TProc>>;
   
   {$endregion Quick}
   
   {$region Threaded}
   
   DCommandQueueThreadedArray4MakeBody<TInp1,TInp2,TInp3,TInp4, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
-  CommandQueueThreadedArray4<TInp1,TInp2,TInp3,TInp4,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray4WithWork<TInp1,TInp2,TInp3,TInp4,TRes, TDelegate>)
+  CommandQueueThreadedArray4<TInp1,TInp2,TInp3,TInp4,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray4WithWork<TInp1,TInp2,TInp3,TInp4,TRes, TInv, TDelegate, TWork>)
   where TInv: IQueueArray4Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray4Work<TInp1,TInp2,TInp3,TInp4,TRes, TDelegate>, constructor;
@@ -12547,31 +12217,46 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: DCommandQueueThreadedArray4MakeBody<TInp1,TInp2,TInp3,TInp4, TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; make_body: DCommandQueueThreadedArray4MakeBody<TInp1,TInp2,TInp3,TInp4, TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2,q3,q4, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2,q3,q4, g, l);
       l := inv_data.next_l;
       
-      var prev_ev := l.prev_ev;
-      var acts := l.prev_delegate;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
       var qr4 := inv_data.qr4;
-      Result := make_qr(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
-        prev_ev, make_body(acts, qr1,qr2,qr3,qr4, g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
-        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-      )));
+      var err_handler := g.curr_err_handler;
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        false;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, g.c
+        )) else
+      begin
+        var prev_ev := l.prev_ev;
+        var acts := l.prev_delegate;
+        Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
+          prev_ev, make_body(acts, qr1,qr2,qr3,qr4, err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
+          {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
+        )));
+      end;
       
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory.MakeDelayed, MakeNilBody);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory.MakeDelayed, MakeResBody&<QueueResValDirect<TRes>>);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory.MakeDelayed, MakeResBody&<QueueResPtr<TRes>>);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, MakeNilBody);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory, MakeResBody&<QueueResVal<TRes>>);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory, MakeResBody&<QueueResPtr<TRes>>);
     
   end;
   
@@ -12584,50 +12269,124 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
 
 {$region [5]} type
   
-  {$region Common}
+  {$region Invokers}
   
-  CommandQueueArray5WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate> = abstract class(CommandQueue<TRes>)  where TDelegate: ISimpleDelegateContainer;
-    protected q1: CommandQueue<TInp1>;
-    protected q2: CommandQueue<TInp2>;
-    protected q3: CommandQueue<TInp3>;
-    protected q4: CommandQueue<TInp4>;
-    protected q5: CommandQueue<TInp5>;
-    protected d: TDelegate;
+  QueueArray5InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5> = record
+    public all_qrs_const := true;
+    public next_l: CLTaskLocalData;
+    public qr1: QueueRes<TInp1>;
+    public qr2: QueueRes<TInp2>;
+    public qr3: QueueRes<TInp3>;
+    public qr4: QueueRes<TInp4>;
+    public qr5: QueueRes<TInp5>;
+  end;
+  
+  IQueueArray5Invoker = interface
     
-    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; d: TDelegate);
+    function InvokeToNil<TInp1,TInp2,TInp3,TInp4,TInp5>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    function InvokeToAny<TInp1,TInp2,TInp3,TInp4,TInp5>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray5InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5>;
+    
+  end;
+  
+  QueueArray5SyncInvoker = record(IQueueArray5Invoker)
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<TInp1,TInp2,TInp3,TInp4,TInp5>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
     begin
-      self.q1 := q1;
-      self.q2 := q2;
-      self.q3 := q3;
-      self.q4 := q4;
-      self.q5 := q5;
-      self.d := d;
+      l := q1.InvokeToNil(g, l).base;
+      l := q2.InvokeToNil(g, l).base;
+      l := q3.InvokeToNil(g, l).base;
+      l := q4.InvokeToNil(g, l).base;
+      l := q5.InvokeToNil(g, l).base;
+      Result := l;
     end;
-    private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2,TInp3,TInp4,TInp5>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray5InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5>;
     begin
-      q1.InitBeforeInvoke(g, inited_hubs);
-      q2.InitBeforeInvoke(g, inited_hubs);
-      q3.InitBeforeInvoke(g, inited_hubs);
-      q4.InitBeforeInvoke(g, inited_hubs);
-      q5.InitBeforeInvoke(g, inited_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      q1.ToString(sb, tabs, index, delayed);
-      q2.ToString(sb, tabs, index, delayed);
-      q3.ToString(sb, tabs, index, delayed);
-      q4.ToString(sb, tabs, index, delayed);
-      q5.ToString(sb, tabs, index, delayed);
-      sb.Append(#9, tabs);
-      d.ToStringB(sb);
-      sb += #10;
+      
+      Result.qr1 := q1.InvokeToAny(g, l);
+      if not Result.qr1.IsConst then Result.all_qrs_const := false;
+      l := Result.qr1.TakeBaseOut;
+      
+      Result.qr2 := q2.InvokeToAny(g, l);
+      if not Result.qr2.IsConst then Result.all_qrs_const := false;
+      l := Result.qr2.TakeBaseOut;
+      
+      Result.qr3 := q3.InvokeToAny(g, l);
+      if not Result.qr3.IsConst then Result.all_qrs_const := false;
+      l := Result.qr3.TakeBaseOut;
+      
+      Result.qr4 := q4.InvokeToAny(g, l);
+      if not Result.qr4.IsConst then Result.all_qrs_const := false;
+      l := Result.qr4.TakeBaseOut;
+      
+      Result.qr5 := q5.InvokeToAny(g, l);
+      if not Result.qr5.IsConst then Result.all_qrs_const := false;
+      l := Result.qr5.TakeBaseOut;
+      
+      Result.next_l := l;
     end;
     
   end;
+  
+  QueueArray5AsyncInvoker = record(IQueueArray5Invoker)
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<TInp1,TInp2,TInp3,TInp4,TInp5>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    begin
+      var res_ev: EventList;
+      g.ParallelInvoke(l, 5, invoker->(res_ev := EventList.Combine(|
+        invoker.InvokeBranch(q1.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q2.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q3.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q4.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q5.InvokeToNil).AttachInvokeActions(invoker.g)
+      |)));
+      Result := new CLTaskLocalData(res_ev);
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2,TInp3,TInp4,TInp5>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray5InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5>;
+    begin
+      
+      var res: QueueArray5InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5>;
+      g.ParallelInvoke(l, 5, invoker->
+      begin
+        res.qr1 := invoker.InvokeBranch(q1.InvokeToAny);
+        res.qr2 := invoker.InvokeBranch(q2.InvokeToAny);
+        res.qr3 := invoker.InvokeBranch(q3.InvokeToAny);
+        res.qr4 := invoker.InvokeBranch(q4.InvokeToAny);
+        res.qr5 := invoker.InvokeBranch(q5.InvokeToAny);
+      end);
+      Result := res;
+      
+      Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst and Result.qr3.IsConst and Result.qr4.IsConst and Result.qr5.IsConst;
+      Result.next_l := new CLTaskLocalData(EventList.Combine(|
+        Result.qr1.AttachInvokeActions(g),
+        Result.qr2.AttachInvokeActions(g),
+        Result.qr3.AttachInvokeActions(g),
+        Result.qr4.AttachInvokeActions(g),
+        Result.qr5.AttachInvokeActions(g)
+      |));
+    end;
+    
+  end;
+  
+  {$endregion Invokers}
+  
+  {$region Work}
+  
+  IQueueArray5Work<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate> = interface
+  where TDelegate: ISimpleDelegateContainer;
+    
+    function PreInvoke(d: TDelegate; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5): TRes;
+    
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): TRes;
+    
+  end;
+  
+  {$region Func}
   
   ISimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes> = interface(ISimpleDelegateContainer)
     
@@ -12664,6 +12423,33 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
+  QueueArray5WorkConvert<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TFunc> = record(IQueueArray5Work<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TFunc>)
+  where TFunc: ISimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(f: TFunc; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5) :=
+    f.Invoke(inp1,inp2,inp3,inp4,inp5, nil);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): TRes;
+    begin
+      if not err_handler.HadError then
+      try
+        Result := f.Invoke(inp1,inp2,inp3,inp4,inp5, c);
+      except
+        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
+      end;
+      {$ifdef DEBUG}
+      err_handler.EndMaybeError(err_test_reason);
+      {$endif DEBUG}
+    end;
+    
+  end;
+  
+  {$endregion Func}
+  
+  {$region Proc}
+  
   ISimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5> = interface(ISimpleDelegateContainer)
     
     procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext);
@@ -12699,112 +12485,15 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
-  {$endregion Common}
-  
-  {$region Invokers}
-  
-  QueueArray5InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5> = record
-    public all_qrs_const := true;
-    public next_l: CLTaskLocalData;
-    public qr1: QueueRes<TInp1>;
-    public qr2: QueueRes<TInp2>;
-    public qr3: QueueRes<TInp3>;
-    public qr4: QueueRes<TInp4>;
-    public qr5: QueueRes<TInp5>;
-  end;
-  
-  IQueueArray5Invoker = interface
-    
-    function Invoke<TInp1,TInp2,TInp3,TInp4,TInp5>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray5InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5>;
-    
-  end;
-  
-  QueueArray5SyncInvoker = record(IQueueArray5Invoker)
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2,TInp3,TInp4,TInp5>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray5InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5>;
-    begin
-      
-      Result.qr1 := q1.InvokeToAny(g, l);
-      if not Result.qr1.IsConst then Result.all_qrs_const := false;
-      l := Result.qr1.TakeBaseOut;
-      
-      Result.qr2 := q2.InvokeToAny(g, l);
-      if not Result.qr2.IsConst then Result.all_qrs_const := false;
-      l := Result.qr2.TakeBaseOut;
-      
-      Result.qr3 := q3.InvokeToAny(g, l);
-      if not Result.qr3.IsConst then Result.all_qrs_const := false;
-      l := Result.qr3.TakeBaseOut;
-      
-      Result.qr4 := q4.InvokeToAny(g, l);
-      if not Result.qr4.IsConst then Result.all_qrs_const := false;
-      l := Result.qr4.TakeBaseOut;
-      
-      Result.qr5 := q5.InvokeToAny(g, l);
-      if not Result.qr5.IsConst then Result.all_qrs_const := false;
-      l := Result.qr5.TakeBaseOut;
-      
-      Result.next_l := l;
-    end;
-    
-  end;
-  
-  QueueArray5AsyncInvoker = record(IQueueArray5Invoker)
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2,TInp3,TInp4,TInp5>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray5InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5>;
-    begin
-      
-      var res: QueueArray5InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5>;
-      g.ParallelInvoke(l, 5, invoker->
-      begin
-        res.qr1 := invoker.InvokeBranch(q1.InvokeToAny);
-        res.qr2 := invoker.InvokeBranch(q2.InvokeToAny);
-        res.qr3 := invoker.InvokeBranch(q3.InvokeToAny);
-        res.qr4 := invoker.InvokeBranch(q4.InvokeToAny);
-        res.qr5 := invoker.InvokeBranch(q5.InvokeToAny);
-      end);
-      Result := res;
-      
-      Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst and Result.qr3.IsConst and Result.qr4.IsConst and Result.qr5.IsConst;
-      Result.next_l := new CLTaskLocalData(EventList.Combine(|Result.qr1.AttachInvokeActions(g), Result.qr2.AttachInvokeActions(g), Result.qr3.AttachInvokeActions(g), Result.qr4.AttachInvokeActions(g), Result.qr5.AttachInvokeActions(g)|));
-    end;
-    
-  end;
-  
-  {$endregion Invokers}
-  
-  {$region Work}
-  
-  IQueueArray5Work<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate> = interface
-  where TDelegate: ISimpleDelegateContainer;
-    
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): TRes;
-    
-  end;
-  
-  QueueArray5WorkConvert<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TFunc> = record(IQueueArray5Work<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TFunc>)
-  where TFunc: ISimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): TRes;
-    begin
-      if not err_handler.HadError then
-      try
-        Result := f.Invoke(inp1,inp2,inp3,inp4,inp5, c);
-      except
-        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
-      end;
-      {$ifdef DEBUG}
-      err_handler.EndMaybeError(err_test_reason);
-      {$endif DEBUG}
-    end;
-    
-  end;
-  
   QueueArray5WorkUse<TInp1,TInp2,TInp3,TInp4,TInp5, TProc> = record(IQueueArray5Work<TInp1,TInp2,TInp3,TInp4,TInp5,ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>, TProc>)
   where TProc: ISimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(p: TProc; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>;
+    begin
+      p.Invoke(inp1,inp2,inp3,inp4,inp5, nil);
+      Result := ValueTuple.Create(inp1,inp2,inp3,inp4,inp5);
+    end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke(p: TProc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>;
@@ -12823,42 +12512,132 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
+  {$endregion Proc}
+  
   {$endregion Work}
   
-  {$region Quick}
+  {$region Common}
   
-  CommandQueueQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv, TDelegate, TWork, FPreCall> = sealed class(CommandQueueArray5WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate>)
+  CommandQueueArray5WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv,TDelegate,TWork> = abstract class(CommandQueue<TRes>)
   where TInv: IQueueArray5Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray5Work<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate>, constructor;
-  where FPreCall: IBooleanFlag, constructor;
+    protected q1: CommandQueue<TInp1>;
+    protected q2: CommandQueue<TInp2>;
+    protected q3: CommandQueue<TInp3>;
+    protected q4: CommandQueue<TInp4>;
+    protected q5: CommandQueue<TInp5>;
+    protected d: TDelegate;
+    protected can_pre_call: boolean;
+    
+    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; d: TDelegate; can_pre_call: boolean);
+    begin
+      self.q1 := q1;
+      self.q2 := q2;
+      self.q3 := q3;
+      self.q4 := q4;
+      self.q5 := q5;
+      self.d := d;
+      self.can_pre_call := can_pre_call;
+      if can_pre_call and (q1.const_res_dep<>nil) and (q2.const_res_dep<>nil) and (q3.const_res_dep<>nil) and (q4.const_res_dep<>nil) and (q5.const_res_dep<>nil) then
+      begin
+        self.expected_const_res := TWork.Create.PreInvoke(d,
+          q1.expected_const_res,
+          q2.expected_const_res,
+          q3.expected_const_res,
+          q4.expected_const_res,
+          q5.expected_const_res
+        );
+        
+        var c := q1.const_res_dep.Length + q2.const_res_dep.Length + q3.const_res_dep.Length + q4.const_res_dep.Length + q5.const_res_dep.Length;
+        {$ifdef DEBUG}
+        if c=0 then raise new OpenCLABCInternalException($'0dep version is CQ/HFQ/HPQ');
+        {$endif DEBUG}
+        
+        self.const_res_dep := new CommandQueueBase[c];
+        var dep: array of CommandQueueBase;
+        dep := q5.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q4.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q3.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q2.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q1.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+      end;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
+    begin
+      q1.InitBeforeInvoke(g, inited_hubs);
+      q2.InitBeforeInvoke(g, inited_hubs);
+      q3.InitBeforeInvoke(g, inited_hubs);
+      q4.InitBeforeInvoke(g, inited_hubs);
+      q5.InitBeforeInvoke(g, inited_hubs);
+    end;
+    
+    protected function TrySkipInvoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; var res: TR): boolean; where TR: IQueueRes;
+    begin
+      Result := qr_factory.TrySkipInvoke(
+        g, l,
+        self,(g,l)->new QueueResNil(TInv.Create.InvokeToNil(q1,q2,q3,q4,q5, g,l)),
+        res
+      );
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q1.ToString(sb, tabs, index, delayed);
+      q2.ToString(sb, tabs, index, delayed);
+      q3.ToString(sb, tabs, index, delayed);
+      q4.ToString(sb, tabs, index, delayed);
+      q5.ToString(sb, tabs, index, delayed);
+      sb.Append(#9, tabs);
+      d.ToStringB(sb);
+      sb += #10;
+    end;
+    
+  end;
+  
+  {$endregion Common}
+  
+  {$region Quick}
+  
+  CommandQueueQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray5WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv, TDelegate, TWork>)
+  where TInv: IQueueArray5Invoker, constructor;
+  where TDelegate: ISimpleDelegateContainer;
+  where TWork: IQueueArray5Work<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; factory: IQueueResDirectFactory<TRes,TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2,q3,q4,q5, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2,q3,q4,q5, g, l);
       l := inv_data.next_l;
       
-      var should_make_const := if FPreCall.Create.val then
-        inv_data.all_qrs_const else
-        l.ShouldInstaCallAction;
-      
-      var err_handler := g.curr_err_handler;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
       var qr4 := inv_data.qr4;
       var qr5 := inv_data.qr5;
-      Result := if should_make_const then
-        factory.MakeConst(l, TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect,qr4.GetResDirect,qr5.GetResDirect, g.c
+      var err_handler := g.curr_err_handler;
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        l.ShouldInstaCallAction;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, g.c
         )) else
-        factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect,qr4.GetResDirect,qr5.GetResDirect, c
+        Result := qr_factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, c
         )));
       
     end;
@@ -12869,15 +12648,15 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
-  CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv, TFunc, FPreCall> = CommandQueueQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv, TFunc, QueueArray5WorkConvert<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TFunc>, FPreCall>;
-  CommandQueueUseQuickArray5    <TInp1,TInp2,TInp3,TInp4,TInp5,      TInv, TProc, FPreCall> = CommandQueueQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>, TInv, TProc, QueueArray5WorkUse<TInp1,TInp2,TInp3,TInp4,TInp5, TProc>, FPreCall>;
+  CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv, TFunc> = CommandQueueQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv, TFunc, QueueArray5WorkConvert<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TFunc>>;
+  CommandQueueUseQuickArray5    <TInp1,TInp2,TInp3,TInp4,TInp5,      TInv, TProc> = CommandQueueQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>, TInv, TProc, QueueArray5WorkUse<TInp1,TInp2,TInp3,TInp4,TInp5, TProc>>;
   
   {$endregion Quick}
   
   {$region Threaded}
   
   DCommandQueueThreadedArray5MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
-  CommandQueueThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray5WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate>)
+  CommandQueueThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray5WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TInv, TDelegate, TWork>)
   where TInv: IQueueArray5Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray5Work<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, TDelegate>, constructor;
@@ -12903,32 +12682,47 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: DCommandQueueThreadedArray5MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5, TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; make_body: DCommandQueueThreadedArray5MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5, TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2,q3,q4,q5, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2,q3,q4,q5, g, l);
       l := inv_data.next_l;
       
-      var prev_ev := l.prev_ev;
-      var acts := l.prev_delegate;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
       var qr4 := inv_data.qr4;
       var qr5 := inv_data.qr5;
-      Result := make_qr(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
-        prev_ev, make_body(acts, qr1,qr2,qr3,qr4,qr5, g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
-        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-      )));
+      var err_handler := g.curr_err_handler;
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        false;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, g.c
+        )) else
+      begin
+        var prev_ev := l.prev_ev;
+        var acts := l.prev_delegate;
+        Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
+          prev_ev, make_body(acts, qr1,qr2,qr3,qr4,qr5, err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
+          {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
+        )));
+      end;
       
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory.MakeDelayed, MakeNilBody);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory.MakeDelayed, MakeResBody&<QueueResValDirect<TRes>>);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory.MakeDelayed, MakeResBody&<QueueResPtr<TRes>>);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, MakeNilBody);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory, MakeResBody&<QueueResVal<TRes>>);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory, MakeResBody&<QueueResPtr<TRes>>);
     
   end;
   
@@ -12941,54 +12735,133 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
 
 {$region [6]} type
   
-  {$region Common}
+  {$region Invokers}
   
-  CommandQueueArray6WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate> = abstract class(CommandQueue<TRes>)  where TDelegate: ISimpleDelegateContainer;
-    protected q1: CommandQueue<TInp1>;
-    protected q2: CommandQueue<TInp2>;
-    protected q3: CommandQueue<TInp3>;
-    protected q4: CommandQueue<TInp4>;
-    protected q5: CommandQueue<TInp5>;
-    protected q6: CommandQueue<TInp6>;
-    protected d: TDelegate;
+  QueueArray6InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6> = record
+    public all_qrs_const := true;
+    public next_l: CLTaskLocalData;
+    public qr1: QueueRes<TInp1>;
+    public qr2: QueueRes<TInp2>;
+    public qr3: QueueRes<TInp3>;
+    public qr4: QueueRes<TInp4>;
+    public qr5: QueueRes<TInp5>;
+    public qr6: QueueRes<TInp6>;
+  end;
+  
+  IQueueArray6Invoker = interface
     
-    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; d: TDelegate);
+    function InvokeToNil<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    function InvokeToAny<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray6InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
+    
+  end;
+  
+  QueueArray6SyncInvoker = record(IQueueArray6Invoker)
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
     begin
-      self.q1 := q1;
-      self.q2 := q2;
-      self.q3 := q3;
-      self.q4 := q4;
-      self.q5 := q5;
-      self.q6 := q6;
-      self.d := d;
+      l := q1.InvokeToNil(g, l).base;
+      l := q2.InvokeToNil(g, l).base;
+      l := q3.InvokeToNil(g, l).base;
+      l := q4.InvokeToNil(g, l).base;
+      l := q5.InvokeToNil(g, l).base;
+      l := q6.InvokeToNil(g, l).base;
+      Result := l;
     end;
-    private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray6InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
     begin
-      q1.InitBeforeInvoke(g, inited_hubs);
-      q2.InitBeforeInvoke(g, inited_hubs);
-      q3.InitBeforeInvoke(g, inited_hubs);
-      q4.InitBeforeInvoke(g, inited_hubs);
-      q5.InitBeforeInvoke(g, inited_hubs);
-      q6.InitBeforeInvoke(g, inited_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      q1.ToString(sb, tabs, index, delayed);
-      q2.ToString(sb, tabs, index, delayed);
-      q3.ToString(sb, tabs, index, delayed);
-      q4.ToString(sb, tabs, index, delayed);
-      q5.ToString(sb, tabs, index, delayed);
-      q6.ToString(sb, tabs, index, delayed);
-      sb.Append(#9, tabs);
-      d.ToStringB(sb);
-      sb += #10;
+      
+      Result.qr1 := q1.InvokeToAny(g, l);
+      if not Result.qr1.IsConst then Result.all_qrs_const := false;
+      l := Result.qr1.TakeBaseOut;
+      
+      Result.qr2 := q2.InvokeToAny(g, l);
+      if not Result.qr2.IsConst then Result.all_qrs_const := false;
+      l := Result.qr2.TakeBaseOut;
+      
+      Result.qr3 := q3.InvokeToAny(g, l);
+      if not Result.qr3.IsConst then Result.all_qrs_const := false;
+      l := Result.qr3.TakeBaseOut;
+      
+      Result.qr4 := q4.InvokeToAny(g, l);
+      if not Result.qr4.IsConst then Result.all_qrs_const := false;
+      l := Result.qr4.TakeBaseOut;
+      
+      Result.qr5 := q5.InvokeToAny(g, l);
+      if not Result.qr5.IsConst then Result.all_qrs_const := false;
+      l := Result.qr5.TakeBaseOut;
+      
+      Result.qr6 := q6.InvokeToAny(g, l);
+      if not Result.qr6.IsConst then Result.all_qrs_const := false;
+      l := Result.qr6.TakeBaseOut;
+      
+      Result.next_l := l;
     end;
     
   end;
+  
+  QueueArray6AsyncInvoker = record(IQueueArray6Invoker)
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    begin
+      var res_ev: EventList;
+      g.ParallelInvoke(l, 6, invoker->(res_ev := EventList.Combine(|
+        invoker.InvokeBranch(q1.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q2.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q3.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q4.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q5.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q6.InvokeToNil).AttachInvokeActions(invoker.g)
+      |)));
+      Result := new CLTaskLocalData(res_ev);
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray6InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
+    begin
+      
+      var res: QueueArray6InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
+      g.ParallelInvoke(l, 6, invoker->
+      begin
+        res.qr1 := invoker.InvokeBranch(q1.InvokeToAny);
+        res.qr2 := invoker.InvokeBranch(q2.InvokeToAny);
+        res.qr3 := invoker.InvokeBranch(q3.InvokeToAny);
+        res.qr4 := invoker.InvokeBranch(q4.InvokeToAny);
+        res.qr5 := invoker.InvokeBranch(q5.InvokeToAny);
+        res.qr6 := invoker.InvokeBranch(q6.InvokeToAny);
+      end);
+      Result := res;
+      
+      Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst and Result.qr3.IsConst and Result.qr4.IsConst and Result.qr5.IsConst and Result.qr6.IsConst;
+      Result.next_l := new CLTaskLocalData(EventList.Combine(|
+        Result.qr1.AttachInvokeActions(g),
+        Result.qr2.AttachInvokeActions(g),
+        Result.qr3.AttachInvokeActions(g),
+        Result.qr4.AttachInvokeActions(g),
+        Result.qr5.AttachInvokeActions(g),
+        Result.qr6.AttachInvokeActions(g)
+      |));
+    end;
+    
+  end;
+  
+  {$endregion Invokers}
+  
+  {$region Work}
+  
+  IQueueArray6Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate> = interface
+  where TDelegate: ISimpleDelegateContainer;
+    
+    function PreInvoke(d: TDelegate; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6): TRes;
+    
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): TRes;
+    
+  end;
+  
+  {$region Func}
   
   ISimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes> = interface(ISimpleDelegateContainer)
     
@@ -13025,6 +12898,33 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
+  QueueArray6WorkConvert<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TFunc> = record(IQueueArray6Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TFunc>)
+  where TFunc: ISimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(f: TFunc; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6) :=
+    f.Invoke(inp1,inp2,inp3,inp4,inp5,inp6, nil);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): TRes;
+    begin
+      if not err_handler.HadError then
+      try
+        Result := f.Invoke(inp1,inp2,inp3,inp4,inp5,inp6, c);
+      except
+        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
+      end;
+      {$ifdef DEBUG}
+      err_handler.EndMaybeError(err_test_reason);
+      {$endif DEBUG}
+    end;
+    
+  end;
+  
+  {$endregion Func}
+  
+  {$region Proc}
+  
   ISimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6> = interface(ISimpleDelegateContainer)
     
     procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext);
@@ -13060,118 +12960,15 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
-  {$endregion Common}
-  
-  {$region Invokers}
-  
-  QueueArray6InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6> = record
-    public all_qrs_const := true;
-    public next_l: CLTaskLocalData;
-    public qr1: QueueRes<TInp1>;
-    public qr2: QueueRes<TInp2>;
-    public qr3: QueueRes<TInp3>;
-    public qr4: QueueRes<TInp4>;
-    public qr5: QueueRes<TInp5>;
-    public qr6: QueueRes<TInp6>;
-  end;
-  
-  IQueueArray6Invoker = interface
-    
-    function Invoke<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray6InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
-    
-  end;
-  
-  QueueArray6SyncInvoker = record(IQueueArray6Invoker)
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray6InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
-    begin
-      
-      Result.qr1 := q1.InvokeToAny(g, l);
-      if not Result.qr1.IsConst then Result.all_qrs_const := false;
-      l := Result.qr1.TakeBaseOut;
-      
-      Result.qr2 := q2.InvokeToAny(g, l);
-      if not Result.qr2.IsConst then Result.all_qrs_const := false;
-      l := Result.qr2.TakeBaseOut;
-      
-      Result.qr3 := q3.InvokeToAny(g, l);
-      if not Result.qr3.IsConst then Result.all_qrs_const := false;
-      l := Result.qr3.TakeBaseOut;
-      
-      Result.qr4 := q4.InvokeToAny(g, l);
-      if not Result.qr4.IsConst then Result.all_qrs_const := false;
-      l := Result.qr4.TakeBaseOut;
-      
-      Result.qr5 := q5.InvokeToAny(g, l);
-      if not Result.qr5.IsConst then Result.all_qrs_const := false;
-      l := Result.qr5.TakeBaseOut;
-      
-      Result.qr6 := q6.InvokeToAny(g, l);
-      if not Result.qr6.IsConst then Result.all_qrs_const := false;
-      l := Result.qr6.TakeBaseOut;
-      
-      Result.next_l := l;
-    end;
-    
-  end;
-  
-  QueueArray6AsyncInvoker = record(IQueueArray6Invoker)
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray6InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
-    begin
-      
-      var res: QueueArray6InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
-      g.ParallelInvoke(l, 6, invoker->
-      begin
-        res.qr1 := invoker.InvokeBranch(q1.InvokeToAny);
-        res.qr2 := invoker.InvokeBranch(q2.InvokeToAny);
-        res.qr3 := invoker.InvokeBranch(q3.InvokeToAny);
-        res.qr4 := invoker.InvokeBranch(q4.InvokeToAny);
-        res.qr5 := invoker.InvokeBranch(q5.InvokeToAny);
-        res.qr6 := invoker.InvokeBranch(q6.InvokeToAny);
-      end);
-      Result := res;
-      
-      Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst and Result.qr3.IsConst and Result.qr4.IsConst and Result.qr5.IsConst and Result.qr6.IsConst;
-      Result.next_l := new CLTaskLocalData(EventList.Combine(|Result.qr1.AttachInvokeActions(g), Result.qr2.AttachInvokeActions(g), Result.qr3.AttachInvokeActions(g), Result.qr4.AttachInvokeActions(g), Result.qr5.AttachInvokeActions(g), Result.qr6.AttachInvokeActions(g)|));
-    end;
-    
-  end;
-  
-  {$endregion Invokers}
-  
-  {$region Work}
-  
-  IQueueArray6Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate> = interface
-  where TDelegate: ISimpleDelegateContainer;
-    
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): TRes;
-    
-  end;
-  
-  QueueArray6WorkConvert<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TFunc> = record(IQueueArray6Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TFunc>)
-  where TFunc: ISimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): TRes;
-    begin
-      if not err_handler.HadError then
-      try
-        Result := f.Invoke(inp1,inp2,inp3,inp4,inp5,inp6, c);
-      except
-        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
-      end;
-      {$ifdef DEBUG}
-      err_handler.EndMaybeError(err_test_reason);
-      {$endif DEBUG}
-    end;
-    
-  end;
-  
   QueueArray6WorkUse<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TProc> = record(IQueueArray6Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TProc>)
   where TProc: ISimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(p: TProc; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
+    begin
+      p.Invoke(inp1,inp2,inp3,inp4,inp5,inp6, nil);
+      Result := ValueTuple.Create(inp1,inp2,inp3,inp4,inp5,inp6);
+    end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke(p: TProc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>;
@@ -13190,43 +12987,139 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
+  {$endregion Proc}
+  
   {$endregion Work}
   
-  {$region Quick}
+  {$region Common}
   
-  CommandQueueQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv, TDelegate, TWork, FPreCall> = sealed class(CommandQueueArray6WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate>)
+  CommandQueueArray6WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv,TDelegate,TWork> = abstract class(CommandQueue<TRes>)
   where TInv: IQueueArray6Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray6Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate>, constructor;
-  where FPreCall: IBooleanFlag, constructor;
+    protected q1: CommandQueue<TInp1>;
+    protected q2: CommandQueue<TInp2>;
+    protected q3: CommandQueue<TInp3>;
+    protected q4: CommandQueue<TInp4>;
+    protected q5: CommandQueue<TInp5>;
+    protected q6: CommandQueue<TInp6>;
+    protected d: TDelegate;
+    protected can_pre_call: boolean;
+    
+    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; d: TDelegate; can_pre_call: boolean);
+    begin
+      self.q1 := q1;
+      self.q2 := q2;
+      self.q3 := q3;
+      self.q4 := q4;
+      self.q5 := q5;
+      self.q6 := q6;
+      self.d := d;
+      self.can_pre_call := can_pre_call;
+      if can_pre_call and (q1.const_res_dep<>nil) and (q2.const_res_dep<>nil) and (q3.const_res_dep<>nil) and (q4.const_res_dep<>nil) and (q5.const_res_dep<>nil) and (q6.const_res_dep<>nil) then
+      begin
+        self.expected_const_res := TWork.Create.PreInvoke(d,
+          q1.expected_const_res,
+          q2.expected_const_res,
+          q3.expected_const_res,
+          q4.expected_const_res,
+          q5.expected_const_res,
+          q6.expected_const_res
+        );
+        
+        var c := q1.const_res_dep.Length + q2.const_res_dep.Length + q3.const_res_dep.Length + q4.const_res_dep.Length + q5.const_res_dep.Length + q6.const_res_dep.Length;
+        {$ifdef DEBUG}
+        if c=0 then raise new OpenCLABCInternalException($'0dep version is CQ/HFQ/HPQ');
+        {$endif DEBUG}
+        
+        self.const_res_dep := new CommandQueueBase[c];
+        var dep: array of CommandQueueBase;
+        dep := q6.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q5.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q4.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q3.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q2.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q1.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+      end;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
+    begin
+      q1.InitBeforeInvoke(g, inited_hubs);
+      q2.InitBeforeInvoke(g, inited_hubs);
+      q3.InitBeforeInvoke(g, inited_hubs);
+      q4.InitBeforeInvoke(g, inited_hubs);
+      q5.InitBeforeInvoke(g, inited_hubs);
+      q6.InitBeforeInvoke(g, inited_hubs);
+    end;
+    
+    protected function TrySkipInvoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; var res: TR): boolean; where TR: IQueueRes;
+    begin
+      Result := qr_factory.TrySkipInvoke(
+        g, l,
+        self,(g,l)->new QueueResNil(TInv.Create.InvokeToNil(q1,q2,q3,q4,q5,q6, g,l)),
+        res
+      );
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q1.ToString(sb, tabs, index, delayed);
+      q2.ToString(sb, tabs, index, delayed);
+      q3.ToString(sb, tabs, index, delayed);
+      q4.ToString(sb, tabs, index, delayed);
+      q5.ToString(sb, tabs, index, delayed);
+      q6.ToString(sb, tabs, index, delayed);
+      sb.Append(#9, tabs);
+      d.ToStringB(sb);
+      sb += #10;
+    end;
+    
+  end;
+  
+  {$endregion Common}
+  
+  {$region Quick}
+  
+  CommandQueueQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray6WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv, TDelegate, TWork>)
+  where TInv: IQueueArray6Invoker, constructor;
+  where TDelegate: ISimpleDelegateContainer;
+  where TWork: IQueueArray6Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; factory: IQueueResDirectFactory<TRes,TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2,q3,q4,q5,q6, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2,q3,q4,q5,q6, g, l);
       l := inv_data.next_l;
       
-      var should_make_const := if FPreCall.Create.val then
-        inv_data.all_qrs_const else
-        l.ShouldInstaCallAction;
-      
-      var err_handler := g.curr_err_handler;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
       var qr4 := inv_data.qr4;
       var qr5 := inv_data.qr5;
       var qr6 := inv_data.qr6;
-      Result := if should_make_const then
-        factory.MakeConst(l, TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect,qr4.GetResDirect,qr5.GetResDirect,qr6.GetResDirect, g.c
+      var err_handler := g.curr_err_handler;
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        l.ShouldInstaCallAction;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, qr6.GetResDirect, g.c
         )) else
-        factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect,qr4.GetResDirect,qr5.GetResDirect,qr6.GetResDirect, c
+        Result := qr_factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, qr6.GetResDirect, c
         )));
       
     end;
@@ -13237,15 +13130,15 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
-  CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv, TFunc, FPreCall> = CommandQueueQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv, TFunc, QueueArray6WorkConvert<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TFunc>, FPreCall>;
-  CommandQueueUseQuickArray6    <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,      TInv, TProc, FPreCall> = CommandQueueQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TInv, TProc, QueueArray6WorkUse<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TProc>, FPreCall>;
+  CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv, TFunc> = CommandQueueQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv, TFunc, QueueArray6WorkConvert<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TFunc>>;
+  CommandQueueUseQuickArray6    <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,      TInv, TProc> = CommandQueueQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TInv, TProc, QueueArray6WorkUse<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TProc>>;
   
   {$endregion Quick}
   
   {$region Threaded}
   
   DCommandQueueThreadedArray6MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
-  CommandQueueThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray6WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate>)
+  CommandQueueThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray6WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TInv, TDelegate, TWork>)
   where TInv: IQueueArray6Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray6Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, TDelegate>, constructor;
@@ -13271,33 +13164,48 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: DCommandQueueThreadedArray6MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; make_body: DCommandQueueThreadedArray6MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2,q3,q4,q5,q6, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2,q3,q4,q5,q6, g, l);
       l := inv_data.next_l;
       
-      var prev_ev := l.prev_ev;
-      var acts := l.prev_delegate;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
       var qr4 := inv_data.qr4;
       var qr5 := inv_data.qr5;
       var qr6 := inv_data.qr6;
-      Result := make_qr(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
-        prev_ev, make_body(acts, qr1,qr2,qr3,qr4,qr5,qr6, g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
-        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-      )));
+      var err_handler := g.curr_err_handler;
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        false;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, qr6.GetResDirect, g.c
+        )) else
+      begin
+        var prev_ev := l.prev_ev;
+        var acts := l.prev_delegate;
+        Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
+          prev_ev, make_body(acts, qr1,qr2,qr3,qr4,qr5,qr6, err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
+          {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
+        )));
+      end;
       
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory.MakeDelayed, MakeNilBody);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory.MakeDelayed, MakeResBody&<QueueResValDirect<TRes>>);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory.MakeDelayed, MakeResBody&<QueueResPtr<TRes>>);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, MakeNilBody);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory, MakeResBody&<QueueResVal<TRes>>);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory, MakeResBody&<QueueResPtr<TRes>>);
     
   end;
   
@@ -13309,131 +13217,6 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
 {$endregion [6]}
 
 {$region [7]} type
-  
-  {$region Common}
-  
-  CommandQueueArray7WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TDelegate> = abstract class(CommandQueue<TRes>)  where TDelegate: ISimpleDelegateContainer;
-    protected q1: CommandQueue<TInp1>;
-    protected q2: CommandQueue<TInp2>;
-    protected q3: CommandQueue<TInp3>;
-    protected q4: CommandQueue<TInp4>;
-    protected q5: CommandQueue<TInp5>;
-    protected q6: CommandQueue<TInp6>;
-    protected q7: CommandQueue<TInp7>;
-    protected d: TDelegate;
-    
-    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; d: TDelegate);
-    begin
-      self.q1 := q1;
-      self.q2 := q2;
-      self.q3 := q3;
-      self.q4 := q4;
-      self.q5 := q5;
-      self.q6 := q6;
-      self.q7 := q7;
-      self.d := d;
-    end;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    begin
-      q1.InitBeforeInvoke(g, inited_hubs);
-      q2.InitBeforeInvoke(g, inited_hubs);
-      q3.InitBeforeInvoke(g, inited_hubs);
-      q4.InitBeforeInvoke(g, inited_hubs);
-      q5.InitBeforeInvoke(g, inited_hubs);
-      q6.InitBeforeInvoke(g, inited_hubs);
-      q7.InitBeforeInvoke(g, inited_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      q1.ToString(sb, tabs, index, delayed);
-      q2.ToString(sb, tabs, index, delayed);
-      q3.ToString(sb, tabs, index, delayed);
-      q4.ToString(sb, tabs, index, delayed);
-      q5.ToString(sb, tabs, index, delayed);
-      q6.ToString(sb, tabs, index, delayed);
-      q7.ToString(sb, tabs, index, delayed);
-      sb.Append(#9, tabs);
-      d.ToStringB(sb);
-      sb += #10;
-    end;
-    
-  end;
-  
-  ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes> = interface(ISimpleDelegateContainer)
-    
-    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext): TRes;
-    
-  end;
-  
-  SimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes> = record(ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>)
-    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7)->TRes;
-    
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7)->TRes): SimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>;
-    begin
-      Result.d := d;
-    end;
-    
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
-    
-    public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
-    
-  end;
-  SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes> = record(ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>)
-    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, CLContext)->TRes;
-    
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, CLContext)->TRes): SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>;
-    begin
-      Result.d := d;
-    end;
-    
-    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
-    
-    public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
-    
-  end;
-  
-  ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7> = interface(ISimpleDelegateContainer)
-    
-    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext);
-    
-  end;
-  
-  SimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7> = record(ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>)
-    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7)->();
-    
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7)->()): SimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
-    begin
-      Result.d := d;
-    end;
-    
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
-    
-    public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
-    
-  end;
-  SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7> = record(ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>)
-    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, CLContext)->();
-    
-    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, CLContext)->()): SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
-    begin
-      Result.d := d;
-    end;
-    
-    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
-    
-    public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
-    
-  end;
-  
-  {$endregion Common}
   
   {$region Invokers}
   
@@ -13451,14 +13234,28 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   
   IQueueArray7Invoker = interface
     
-    function Invoke<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray7InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
+    function InvokeToNil<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    function InvokeToAny<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray7InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
     
   end;
   
   QueueArray7SyncInvoker = record(IQueueArray7Invoker)
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray7InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
+    function InvokeToNil<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    begin
+      l := q1.InvokeToNil(g, l).base;
+      l := q2.InvokeToNil(g, l).base;
+      l := q3.InvokeToNil(g, l).base;
+      l := q4.InvokeToNil(g, l).base;
+      l := q5.InvokeToNil(g, l).base;
+      l := q6.InvokeToNil(g, l).base;
+      l := q7.InvokeToNil(g, l).base;
+      Result := l;
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray7InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
     begin
       
       Result.qr1 := q1.InvokeToAny(g, l);
@@ -13497,7 +13294,23 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   QueueArray7AsyncInvoker = record(IQueueArray7Invoker)
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray7InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
+    function InvokeToNil<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    begin
+      var res_ev: EventList;
+      g.ParallelInvoke(l, 7, invoker->(res_ev := EventList.Combine(|
+        invoker.InvokeBranch(q1.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q2.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q3.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q4.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q5.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q6.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q7.InvokeToNil).AttachInvokeActions(invoker.g)
+      |)));
+      Result := new CLTaskLocalData(res_ev);
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray7InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
     begin
       
       var res: QueueArray7InvokerData<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
@@ -13514,7 +13327,15 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       Result := res;
       
       Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst and Result.qr3.IsConst and Result.qr4.IsConst and Result.qr5.IsConst and Result.qr6.IsConst and Result.qr7.IsConst;
-      Result.next_l := new CLTaskLocalData(EventList.Combine(|Result.qr1.AttachInvokeActions(g), Result.qr2.AttachInvokeActions(g), Result.qr3.AttachInvokeActions(g), Result.qr4.AttachInvokeActions(g), Result.qr5.AttachInvokeActions(g), Result.qr6.AttachInvokeActions(g), Result.qr7.AttachInvokeActions(g)|));
+      Result.next_l := new CLTaskLocalData(EventList.Combine(|
+        Result.qr1.AttachInvokeActions(g),
+        Result.qr2.AttachInvokeActions(g),
+        Result.qr3.AttachInvokeActions(g),
+        Result.qr4.AttachInvokeActions(g),
+        Result.qr5.AttachInvokeActions(g),
+        Result.qr6.AttachInvokeActions(g),
+        Result.qr7.AttachInvokeActions(g)
+      |));
     end;
     
   end;
@@ -13526,12 +13347,55 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
   IQueueArray7Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TDelegate> = interface
   where TDelegate: ISimpleDelegateContainer;
     
+    function PreInvoke(d: TDelegate; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7): TRes;
+    
     function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext): TRes;
+    
+  end;
+  
+  {$region Func}
+  
+  ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes> = interface(ISimpleDelegateContainer)
+    
+    function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext): TRes;
+    
+  end;
+  
+  SimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes> = record(ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>)
+    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7)->TRes;
+    
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7)->TRes): SimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>;
+    begin
+      Result.d := d;
+    end;
+    
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
+    
+    public procedure ToStringB(sb: StringBuilder) :=
+    CommandQueueBase.ToStringWriteDelegate(sb, d);
+    
+  end;
+  SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes> = record(ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>)
+    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, CLContext)->TRes;
+    
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, CLContext)->TRes): SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>;
+    begin
+      Result.d := d;
+    end;
+    
+    public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
+    
+    public procedure ToStringB(sb: StringBuilder) :=
+    CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
   QueueArray7WorkConvert<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TFunc> = record(IQueueArray7Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TFunc>)
   where TFunc: ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(f: TFunc; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7) :=
+    f.Invoke(inp1,inp2,inp3,inp4,inp5,inp6,inp7, nil);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext): TRes;
@@ -13549,8 +13413,54 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
+  {$endregion Func}
+  
+  {$region Proc}
+  
+  ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7> = interface(ISimpleDelegateContainer)
+    
+    procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext);
+    
+  end;
+  
+  SimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7> = record(ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>)
+    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7)->();
+    
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7)->()): SimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
+    begin
+      Result.d := d;
+    end;
+    
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
+    
+    public procedure ToStringB(sb: StringBuilder) :=
+    CommandQueueBase.ToStringWriteDelegate(sb, d);
+    
+  end;
+  SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7> = record(ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>)
+    private d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, CLContext)->();
+    
+    public static function operator implicit(d: (TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, CLContext)->()): SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
+    begin
+      Result.d := d;
+    end;
+    
+    public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
+    
+    public procedure ToStringB(sb: StringBuilder) :=
+    CommandQueueBase.ToStringWriteDelegate(sb, d);
+    
+  end;
+  
   QueueArray7WorkUse<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TProc> = record(IQueueArray7Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TProc>)
   where TProc: ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(p: TProc; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
+    begin
+      p.Invoke(inp1,inp2,inp3,inp4,inp5,inp6,inp7, nil);
+      Result := ValueTuple.Create(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
+    end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke(p: TProc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext): ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>;
@@ -13569,31 +13479,120 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
+  {$endregion Proc}
+  
   {$endregion Work}
   
-  {$region Quick}
+  {$region Common}
   
-  CommandQueueQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TInv, TDelegate, TWork, FPreCall> = sealed class(CommandQueueArray7WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TDelegate>)
+  CommandQueueArray7WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TInv,TDelegate,TWork> = abstract class(CommandQueue<TRes>)
   where TInv: IQueueArray7Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray7Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TDelegate>, constructor;
-  where FPreCall: IBooleanFlag, constructor;
+    protected q1: CommandQueue<TInp1>;
+    protected q2: CommandQueue<TInp2>;
+    protected q3: CommandQueue<TInp3>;
+    protected q4: CommandQueue<TInp4>;
+    protected q5: CommandQueue<TInp5>;
+    protected q6: CommandQueue<TInp6>;
+    protected q7: CommandQueue<TInp7>;
+    protected d: TDelegate;
+    protected can_pre_call: boolean;
+    
+    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; d: TDelegate; can_pre_call: boolean);
+    begin
+      self.q1 := q1;
+      self.q2 := q2;
+      self.q3 := q3;
+      self.q4 := q4;
+      self.q5 := q5;
+      self.q6 := q6;
+      self.q7 := q7;
+      self.d := d;
+      self.can_pre_call := can_pre_call;
+      if can_pre_call and (q1.const_res_dep<>nil) and (q2.const_res_dep<>nil) and (q3.const_res_dep<>nil) and (q4.const_res_dep<>nil) and (q5.const_res_dep<>nil) and (q6.const_res_dep<>nil) and (q7.const_res_dep<>nil) then
+      begin
+        self.expected_const_res := TWork.Create.PreInvoke(d,
+          q1.expected_const_res,
+          q2.expected_const_res,
+          q3.expected_const_res,
+          q4.expected_const_res,
+          q5.expected_const_res,
+          q6.expected_const_res,
+          q7.expected_const_res
+        );
+        
+        var c := q1.const_res_dep.Length + q2.const_res_dep.Length + q3.const_res_dep.Length + q4.const_res_dep.Length + q5.const_res_dep.Length + q6.const_res_dep.Length + q7.const_res_dep.Length;
+        {$ifdef DEBUG}
+        if c=0 then raise new OpenCLABCInternalException($'0dep version is CQ/HFQ/HPQ');
+        {$endif DEBUG}
+        
+        self.const_res_dep := new CommandQueueBase[c];
+        var dep: array of CommandQueueBase;
+        dep := q7.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q6.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q5.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q4.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q3.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q2.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q1.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+      end;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
+    begin
+      q1.InitBeforeInvoke(g, inited_hubs);
+      q2.InitBeforeInvoke(g, inited_hubs);
+      q3.InitBeforeInvoke(g, inited_hubs);
+      q4.InitBeforeInvoke(g, inited_hubs);
+      q5.InitBeforeInvoke(g, inited_hubs);
+      q6.InitBeforeInvoke(g, inited_hubs);
+      q7.InitBeforeInvoke(g, inited_hubs);
+    end;
+    
+    protected function TrySkipInvoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; var res: TR): boolean; where TR: IQueueRes;
+    begin
+      Result := qr_factory.TrySkipInvoke(
+        g, l,
+        self,(g,l)->new QueueResNil(TInv.Create.InvokeToNil(q1,q2,q3,q4,q5,q6,q7, g,l)),
+        res
+      );
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q1.ToString(sb, tabs, index, delayed);
+      q2.ToString(sb, tabs, index, delayed);
+      q3.ToString(sb, tabs, index, delayed);
+      q4.ToString(sb, tabs, index, delayed);
+      q5.ToString(sb, tabs, index, delayed);
+      q6.ToString(sb, tabs, index, delayed);
+      q7.ToString(sb, tabs, index, delayed);
+      sb.Append(#9, tabs);
+      d.ToStringB(sb);
+      sb += #10;
+    end;
+    
+  end;
+  
+  {$endregion Common}
+  
+  {$region Quick}
+  
+  CommandQueueQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray7WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TInv, TDelegate, TWork>)
+  where TInv: IQueueArray7Invoker, constructor;
+  where TDelegate: ISimpleDelegateContainer;
+  where TWork: IQueueArray7Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; factory: IQueueResDirectFactory<TRes,TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2,q3,q4,q5,q6,q7, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2,q3,q4,q5,q6,q7, g, l);
       l := inv_data.next_l;
       
-      var should_make_const := if FPreCall.Create.val then
-        inv_data.all_qrs_const else
-        l.ShouldInstaCallAction;
-      
-      var err_handler := g.curr_err_handler;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
@@ -13601,12 +13600,25 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       var qr5 := inv_data.qr5;
       var qr6 := inv_data.qr6;
       var qr7 := inv_data.qr7;
-      Result := if should_make_const then
-        factory.MakeConst(l, TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect,qr4.GetResDirect,qr5.GetResDirect,qr6.GetResDirect,qr7.GetResDirect, g.c
+      var err_handler := g.curr_err_handler;
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        l.ShouldInstaCallAction;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, qr6.GetResDirect, qr7.GetResDirect, g.c
         )) else
-        factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect,qr3.GetResDirect,qr4.GetResDirect,qr5.GetResDirect,qr6.GetResDirect,qr7.GetResDirect, c
+        Result := qr_factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, qr6.GetResDirect, qr7.GetResDirect, c
         )));
       
     end;
@@ -13617,15 +13629,15 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     
   end;
   
-  CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TInv, TFunc, FPreCall> = CommandQueueQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TInv, TFunc, QueueArray7WorkConvert<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TFunc>, FPreCall>;
-  CommandQueueUseQuickArray7    <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,      TInv, TProc, FPreCall> = CommandQueueQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TInv, TProc, QueueArray7WorkUse<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TProc>, FPreCall>;
+  CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TInv, TFunc> = CommandQueueQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TInv, TFunc, QueueArray7WorkConvert<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TFunc>>;
+  CommandQueueUseQuickArray7    <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,      TInv, TProc> = CommandQueueQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TInv, TProc, QueueArray7WorkUse<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TProc>>;
   
   {$endregion Quick}
   
   {$region Threaded}
   
   DCommandQueueThreadedArray7MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; qr4: QueueRes<TInp4>; qr5: QueueRes<TInp5>; qr6: QueueRes<TInp6>; qr7: QueueRes<TInp7>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
-  CommandQueueThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray7WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TDelegate>)
+  CommandQueueThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray7WithWork<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TInv, TDelegate, TWork>)
   where TInv: IQueueArray7Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray7Work<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, TDelegate>, constructor;
@@ -13651,17 +13663,12 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: DCommandQueueThreadedArray7MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; make_body: DCommandQueueThreadedArray7MakeBody<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2,q3,q4,q5,q6,q7, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2,q3,q4,q5,q6,q7, g, l);
       l := inv_data.next_l;
       
-      var prev_ev := l.prev_ev;
-      var acts := l.prev_delegate;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
@@ -13669,16 +13676,36 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
       var qr5 := inv_data.qr5;
       var qr6 := inv_data.qr6;
       var qr7 := inv_data.qr7;
-      Result := make_qr(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
-        prev_ev, make_body(acts, qr1,qr2,qr3,qr4,qr5,qr6,qr7, g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
-        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-      )));
+      var err_handler := g.curr_err_handler;
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        false;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, qr3.GetResDirect, qr4.GetResDirect, qr5.GetResDirect, qr6.GetResDirect, qr7.GetResDirect, g.c
+        )) else
+      begin
+        var prev_ev := l.prev_ev;
+        var acts := l.prev_delegate;
+        Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
+          prev_ev, make_body(acts, qr1,qr2,qr3,qr4,qr5,qr6,qr7, err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
+          {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
+        )));
+      end;
       
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory.MakeDelayed, MakeNilBody);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory.MakeDelayed, MakeResBody&<QueueResValDirect<TRes>>);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory.MakeDelayed, MakeResBody&<QueueResPtr<TRes>>);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, MakeNilBody);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory, MakeResBody&<QueueResVal<TRes>>);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory, MakeResBody&<QueueResPtr<TRes>>);
     
   end;
   
@@ -13691,29 +13718,495 @@ static function CommandQueue<T>.operator*(q1: CommandQueueBase; q2: CommandQueue
 
 {$endregion +/*}
 
+{$region Cast}
+
+type
+  TypedNilQueue<T> = sealed class(CommandQueue<T>)
+    private static nil_val := default(T);
+    private q: CommandQueueNil;
+    
+    static constructor;
+    begin
+      if object(nil_val)<>nil then
+        raise new System.InvalidCastException($'.Cast не может преобразовывать nil в {TypeToTypeName(typeof(T))}');
+    end;
+    public constructor(q: CommandQueueNil) := self.q := q;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := q.InitBeforeInvoke(g, inited_mu);
+    
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := q.InvokeToNil(g, l);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override := qr_val_factory.MakeConst(q.InvokeToNil(g, l).base, nil_val);
+    
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override;
+    begin
+      Result := nil;
+      raise new OpenCLABCInternalException($'');
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  
+  CastQueue<TInp, TRes> = sealed class(CastQueueBase<TRes>)
+    private q: CommandQueue<TInp>;
+    
+    static constructor;
+    begin
+      if typeof(TInp)=typeof(object) then exit;
+      try
+        var res := TRes(object(default(TInp)));
+        System.GC.KeepAlive(res);
+      except
+        raise new System.InvalidCastException($'.Cast не может преобразовывать {TypeToTypeName(typeof(TInp))} в {TypeToTypeName(typeof(TRes))}');
+      end;
+    end;
+    public constructor(q: CommandQueue<TInp>);
+    begin
+      self.q := q;
+      if q.const_res_dep<>nil then
+      begin
+        self.expected_const_res := TRes(q.expected_const_res as object);
+        self.const_res_dep := q.const_res_dep;
+      end;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    public property SourceBase: CommandQueueBase read q as CommandQueueBase; override;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    q.InitBeforeInvoke(g, inited_mu);
+    
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := q.InvokeToNil(g, l);
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: QueueRes<TRes>;
+    begin
+      if qr_factory.TrySkipInvoke(g,l, self,q.InvokeToNil, Result) then exit;
+      var prev_qr := q.InvokeToAny(g,l);
+      var err_handler := g.curr_err_handler;
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      Result := prev_qr.TransformResult(qr_factory, true, o->
+      begin
+        if not err_handler.HadError then
+        try
+          Result := TRes(o as object);
+        except
+          on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
+        end;
+        {$ifdef DEBUG}
+        err_handler.EndMaybeError(err_test_reason);
+        {$endif DEBUG}
+      end);
+    end;
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  
+  CastQueueConstructor<TRes> = record(ITypedCQConverter<CommandQueue<TRes>>)
+    
+    public function ConvertNil(q: CommandQueueNil): CommandQueue<TRes> :=
+    if q is ConstQueueNil then
+      CQ(TypedNilQueue&<TRes>.nil_val) else
+      new TypedNilQueue<TRes>(q);
+    
+    public function Convert<TInp>(q: CommandQueue<TInp>): CommandQueue<TRes> :=
+    if q is CastQueueBase<TInp>(var cqb) then
+      cqb.SourceBase.Cast&<TRes> else
+    if q.IsConstResDepEmpty then
+      q + CQ(TRes(q.expected_const_res as object)) else
+      new CastQueue<TInp, TRes>(q);
+    
+  end;
+  
+function CommandQueueBase.Cast<T>: CommandQueue<T>;
+begin
+  if self is CommandQueue<T>(var tcq) then
+    Result := tcq else
+  try
+    Result := self.ConvertTyped(new CastQueueConstructor<T>);
+  except
+    on e: TypeInitializationException do
+      raise e.InnerException;
+    on e: InvalidCastException do
+      raise e;
+  end;
+end;
+
+function CommandQueueNil.Cast<T> := new TypedNilQueue<T>(self);
+
+{$endregion Cast}
+
+{$region DiscardResult}
+
+type
+  CommandQueueDiscardResult<T> = sealed class(CommandQueueNil)
+    private q: CommandQueue<T>;
+    
+    public constructor(q: CommandQueue<T>) := self.q := q;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    q.InitBeforeInvoke(g, inited_mu);
+    
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := q.InvokeToNil(g, l);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q.ToString(sb, tabs, index, delayed);
+    end;
+    
+  end;
+  
+function CommandQueue<T>.DiscardResult :=
+if (self is ConstQueue<T>) or (self is ParameterQueue<T>) then
+  CQNil else new CommandQueueDiscardResult<T>(self);
+
+{$endregion DiscardResult}
+
+{$region Then[Convert,Use]}
+
+{$region Common}
+
+type
+  CommandQueueThenWork<TInp,TRes, TDelegate> = abstract class(CommandQueue<TRes>)
+  where TDelegate: ISimpleDelegateContainer;
+    protected q: CommandQueue<TInp>;
+    protected d: TDelegate;
+    protected can_pre_call: boolean;
+    
+    public constructor(q: CommandQueue<TInp>; d: TDelegate; can_pre_call: boolean);
+    begin
+      self.q := q;
+      self.d := d;
+      self.can_pre_call := can_pre_call;
+      if can_pre_call and (q.const_res_dep<>nil) then
+      begin
+        {$ifdef DEBUG}
+        if q.IsConstResDepEmpty then
+          raise new OpenCLABCInternalException($'0dep version is CQ/HFQ');
+        {$endif DEBUG}
+        self.expected_const_res := d.PreInvoke&<TInp,TRes>(q.expected_const_res);
+        self.const_res_dep := q.const_res_dep;
+      end;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := q.InitBeforeInvoke(g, inited_mu);
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      q.ToString(sb, tabs, index, delayed);
+      
+      sb.Append(#9, tabs);
+      d.ToStringB(sb);
+      sb += #10;
+      
+    end;
+    
+  end;
+  CommandQueueThenConvert<TInp,TRes, TFunc> = CommandQueueThenWork<TInp,TRes, TFunc>;
+  CommandQueueThenUse<T, TProc> = CommandQueueThenWork<T,T, TProc>;
+  
+{$endregion Common}
+
+{$region Convert}
+
+type
+  CommandQueueThenQuickConvert<TInp, TRes, TFunc> = sealed class(CommandQueueThenConvert<TInp,TRes, TFunc>)
+  where TFunc: ISimpleFuncContainer<TInp, TRes>;
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: IQueueRes;
+    begin
+      if qr_factory.TrySkipInvoke(g,l, self,q.InvokeToNil, Result) then exit;
+      var prev_qr := q.InvokeToAny(g, l);
+      
+      var should_make_const := if can_pre_call then
+        prev_qr.IsConst else
+        prev_qr.ShouldInstaCallAction;
+      l := prev_qr.TakeBaseOut;
+      
+      var err_handler := g.curr_err_handler;
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      Result := if should_make_const then
+        qr_factory.MakeConst(l,
+          d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, g.c)
+        ) else
+        qr_factory.MakeDelayed(l, qr->c->qr.SetRes(
+          d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c)
+        ));
+      
+    end;
+    
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory);
+    
+  end;
+  
+  CommandQueueThenThreadedConvert<TInp,TRes, TFunc> = sealed class(CommandQueueThenConvert<TInp,TRes, TFunc>)
+  where TFunc: ISimpleFuncContainer<TInp,TRes>;
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function MakeNilBody    (prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
+    begin
+      Result := ()->
+        d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetRes(c), c)
+    end;
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function MakeResBody<TR>(prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action; where TR: QueueRes<TRes>;
+    begin
+      Result := ()->own_qr.SetRes(
+        d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetRes(c), c)
+      );
+    end;
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; make_body: (QueueRes<TInp>,CLTaskErrHandler,CLContext,TR{$ifdef DEBUG},string{$endif})->Action): TR; where TR: IQueueRes;
+    begin
+      if qr_factory.TrySkipInvoke(g,l, self,q.InvokeToNil, Result) then exit;
+      var prev_qr := q.InvokeToAny(g, l);
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      g.curr_err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      Result := if can_pre_call and prev_qr.IsConst then
+        qr_factory.MakeConst(l,
+          d.Invoke(g.curr_err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, nil)
+        ) else
+        qr_factory.MakeDelayed(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
+          prev_qr.ResEv, make_body(prev_qr, g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
+          {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
+        )));
+      
+    end;
+    
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, MakeNilBody);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory, MakeResBody&<QueueResVal<TRes>>);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory, MakeResBody&<QueueResPtr<TRes>>);
+    
+  end;
+  
+function CommandQueue<T>.ThenConvert<TOtp>(f: T->TOtp; need_own_thread, can_pre_calc: boolean): CommandQueue<TOtp>;
+begin
+  if self.IsConstResDepEmpty then
+  begin
+    var inp := self.expected_const_res;
+    Result := self + if can_pre_calc then
+      CQ(f(inp)) else
+      HFQ(()->f(inp), need_own_thread);
+  end else
+  if need_own_thread then
+    Result := new CommandQueueThenThreadedConvert <T, TOtp, SimpleFuncContainer<T,TOtp>>(self, f, can_pre_calc) else
+    Result := new CommandQueueThenQuickConvert    <T, TOtp, SimpleFuncContainer<T,TOtp>>(self, f, can_pre_calc);
+end;
+
+function CommandQueue<T>.ThenConvert<TOtp>(f: (T,CLContext)->TOtp; need_own_thread, can_pre_calc: boolean): CommandQueue<TOtp>;
+begin
+  if self.IsConstResDepEmpty then
+  begin
+    var inp := self.expected_const_res;
+    Result := self + if can_pre_calc then
+      CQ(f(inp,nil)) else
+      HFQ(c->f(inp,c), need_own_thread);
+  end else
+  if need_own_thread then
+    Result := new CommandQueueThenThreadedConvert <T, TOtp, SimpleFuncContainerC<T,TOtp>>(self, f, can_pre_calc) else
+    Result := new CommandQueueThenQuickConvert    <T, TOtp, SimpleFuncContainerC<T,TOtp>>(self, f, can_pre_calc);
+end;
+
+{$endregion Convert}
+
+{$region Use}
+
+type
+  CommandQueueThenQuickUse<T, TProc> = sealed class(CommandQueueThenUse<T, TProc>)
+  where TProc: ISimpleProcContainer<T>;
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AddUse<TR1, TR2>(prev_is_const: boolean; prev_qr: TR1; own_qr: TR2; g: CLTaskGlobalData): TR2; where TR1: QueueRes<T>; where TR2: IQueueRes;
+    begin
+      Result := own_qr;
+      
+      // .IsConst debug tests executed before this
+      // So if prev_is_const then also Result.ShouldInstaCallAction
+      var should_insta_call := if can_pre_call then
+        prev_is_const else
+        Result.ShouldInstaCallAction;
+      
+      var err_handler := g.curr_err_handler;
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      if should_insta_call then
+        d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, g.c) else
+        //TODO #????: self.
+        Result.AddAction(c->self.d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c));
+      
+    end;
+    
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
+    begin
+      if g.CheckDeps(self.const_res_dep) then
+        Result := q.InvokeToNil(g, l) else
+      begin
+        var prev_qr := q.InvokeToAny(g, l);
+        Result := AddUse(prev_qr.IsConst, prev_qr, new QueueResNil(prev_qr.TakeBaseOut), g);
+      end;
+    end;
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AddUse<TR>(qr: TR; g: CLTaskGlobalData): TR; where TR: QueueRes<T>;
+    begin
+      Result := qr;
+      //TODO Единственный способ не вызывать эту же проверку из q.InvokeToAny(g, l)
+      // - Передавать данные о том, что все зависимости сработали
+      // - Или self=>q, или q=>self
+      // - Первый способ должен быть капельку быстрее для Combine очередей,
+      //   если один параметр используется в нескольких ветках
+      // - А второй поидее проще реализовать, потому что данные будут в qr
+      // - Подумать, может ли константность qr сразу говорить и о CheckDeps
+      if g.CheckDeps(self.const_res_dep) then exit;
+      Result := AddUse(qr.IsConst, qr,qr, g);
+    end;
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := AddUse(q.InvokeToAny(g, l), g);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := AddUse(q.InvokeToPtr(g, l), g);
+    
+  end;
+  
+  CommandQueueThenThreadedUse<T, TProc> = sealed class(CommandQueueThenUse<T, TProc>)
+  where TProc: ISimpleProcContainer<T>;
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke<TR1,TR2>(g: CLTaskGlobalData; l: CLTaskLocalData; q_invoker: CommandQueueInvoker<TR1>; qr_factory: IQueueResFactory<T,TR2>): TR2; where TR1: QueueRes<T>; where TR2: IQueueRes;
+    begin
+      if qr_factory.TrySkipInvoke(g,l, self,q.InvokeToNil, Result) then exit;
+      
+      var prev_qr := q_invoker(g, l);
+      if can_pre_call and prev_qr.IsConst then
+      begin
+        //TODO И тут тоже (как и ниже) лишний объект во всех случаях кроме TR2=QueueResNil
+        Result := qr_factory.MakeConst(prev_qr.TakeBaseOut, prev_qr.GetResDirect);
+        exit;
+      end;
+      
+      var acts := prev_qr.base.complition_delegate.TakeOut;
+      
+      var err_handler := g.curr_err_handler;
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      var c := g.c;
+      var work_ev := UserEvent.StartWorkThread(
+        prev_qr.ResEv, ()->
+        begin
+          acts.Invoke(c);
+          //TODO #????: self.
+          self.d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c);
+        end, g
+        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
+      );
+      
+      //TODO На самом деле создавать новый объект, даже если обёртку - ни к чему
+      // - Новый объект нужен только при .MakeWrap mu результата
+      // - А тут должно быть достаточно подменить ивент
+      // --- status check ожидает что ивент не будет меняться
+      // - Но InvokeToNil создаёт "new QueueResNil(work_ev)"
+      // --- InvokeToAny и InvokeToPtr копируют тип prev_qr
+      // - Это касается только .Then и только Use, потому что в остальных случаях нельзя использовать существующий QR
+      Result := qr_factory.MakeWrap(prev_qr, work_ev);
+    end;
+    
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := Invoke(g, l, q.InvokeToAny, qr_nil_factory);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := Invoke(g, l, q.InvokeToAny, qr_val_factory);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := Invoke(g, l, q.InvokeToPtr, qr_ptr_factory);
+    
+  end;
+  
+function CommandQueue<T>.ThenUse(p: T->(); need_own_thread, can_pre_calc: boolean): CommandQueue<T>;
+begin
+  if self.IsConstResDepEmpty then
+  begin
+    var inp := self.expected_const_res;
+    Result := self;
+    if can_pre_calc then
+      p(inp) else
+      Result += HPQ(()->p(inp), need_own_thread) + CQ(inp);
+  end else
+  if need_own_thread then
+    Result := new CommandQueueThenThreadedUse <T, SimpleProcContainer<T>>(self, p, can_pre_calc) else
+    Result := new CommandQueueThenQuickUse    <T, SimpleProcContainer<T>>(self, p, can_pre_calc);
+end;
+
+function CommandQueue<T>.ThenUse(p: (T,CLContext)->(); need_own_thread, can_pre_calc: boolean): CommandQueue<T>;
+begin
+  if self.IsConstResDepEmpty then
+  begin
+    var inp := self.expected_const_res;
+    Result := self;
+    if can_pre_calc then
+      p(inp,nil) else
+      Result += HPQ(c->p(inp,c), need_own_thread) + CQ(inp);
+  end else
+  if need_own_thread then
+    Result := new CommandQueueThenThreadedUse <T, SimpleProcContainerC<T>>(self, p, can_pre_calc) else
+    Result := new CommandQueueThenQuickUse    <T, SimpleProcContainerC<T>>(self, p, can_pre_calc);
+end;
+
+{$endregion Use}
+
+{$endregion Then[Convert,Use}
+
 {$region Multiusable}
 
 type
-  MultiusableCommandQueueHubCommon<TQ> = abstract class(IMultiusableCommandQueueHub)
-  where TQ: CommandQueueBase;
-    public q: TQ;
-    public constructor(q: TQ) := self.q := q;
-    private constructor := raise new OpenCLABCInternalException;
+  MultiusableCommandQueueCommon = static class
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>) :=
-    if inited_hubs.Add(self) then q.InitBeforeInvoke(g, inited_hubs);
+    static procedure InitBeforeInvoke(self: IMultiusableCommandQueue; q: CommandQueueBase; g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>) :=
+    if inited_mu.Add(self) then q.InitBeforeInvoke(g, inited_mu);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; invoke_q: CommandQueueInvoker<TR>): ValueTuple<TR, EventList>; where TR: IQueueRes;
+    static function Invoke<TR1, TR2>(
+      self: IMultiusableCommandQueue;
+      g: CLTaskGlobalData; l: CLTaskLocalData;
+      invoke_q: CommandQueueInvoker<TR1>;
+      make_wrap: (TR1, EventList)->TR2
+    ): TR2; where TR1,TR2: IQueueRes;
     begin
       var res_data: MultiuseableResultData;
-      var qr: TR;
+      var qr: TR1;
       
       // Потоко-безопасно, потому что все .Invoke выполняются синхронно
       //TODO А что будет когда .ThenIf и т.п.?
       if g.mu_res.TryGetValue(self, res_data) then
-        qr := TR(res_data.qres) else
+        qr := TR1(res_data.qres) else
       begin
         var prev_err_handler := g.curr_err_handler;
         g.curr_err_handler := new CLTaskErrHandlerEmpty;
@@ -13729,16 +14222,22 @@ type
       g.curr_err_handler := new CLTaskErrHandlerThiefRepeater(g.curr_err_handler, res_data.err_handler);
       
       res_data.ev.Retain({$ifdef EventDebug}$'for all mu branches'{$endif});
-      Result := ValueTuple.Create(qr, res_data.ev + l.AttachInvokeActions(g) );
+      
+      if g.prev_mu.Add(self) then
+        Result := make_wrap(qr, res_data.ev + l.AttachInvokeActions(g)) else
+      begin
+        Result := make_wrap(qr, l.prev_ev);
+        Result.AddActions(l.prev_delegate);
+      end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function InvokeToNil<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; invoke_q: CommandQueueInvoker<TR>): QueueResNil; where TR: IQueueRes;
+    static function InvokeToNil<TR>(self: IMultiusableCommandQueue; g: CLTaskGlobalData; l: CLTaskLocalData; invoke_q: CommandQueueInvoker<TR>): QueueResNil; where TR: IQueueRes;
     begin
-      Result := new QueueResNil(new CLTaskLocalData( Invoke(g,l,invoke_q).Item2 ));
+      Result := Invoke(self, g,l, invoke_q, (qr, ev)->new QueueResNil(ev));
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
+    static procedure ToString(q: CommandQueueBase; sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb += ' => ';
       if q.ToStringHeader(sb, index) then
@@ -13748,59 +14247,61 @@ type
     
   end;
   
-  MultiusableCommandQueueHubNil = sealed partial class(MultiusableCommandQueueHubCommon< CommandQueueNil >) end;
-  MultiusableCommandQueueNodeNil = sealed class(CommandQueueNil)
-    public hub: MultiusableCommandQueueHubNil;
+  MultiusableCommandQueueNil = sealed class(CommandQueueNil, IMultiusableCommandQueue)
+    public q: CommandQueueNil;
     
-    public constructor(hub: MultiusableCommandQueueHubNil) := self.hub := hub;
+    public constructor(q: CommandQueueNil) := self.q := q;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := hub.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    MultiusableCommandQueueCommon.InitBeforeInvoke(self,q, g,inited_mu);
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := hub.InvokeToNil(g, l, hub.q.InvokeToNil);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
+    MultiusableCommandQueueCommon.InvokeToNil(self, g,l, q.InvokeToNil);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    hub.ToString(sb, tabs, index, delayed);
-    
-  end;
-  MultiusableCommandQueueHubNil = sealed partial class
-    
-    public function MakeNode: CommandQueueNil := new MultiusableCommandQueueNodeNil(self);
+    MultiusableCommandQueueCommon.ToString(q, sb,tabs,index,delayed);
     
   end;
   
-  MultiusableCommandQueueHub<T> = sealed partial class(MultiusableCommandQueueHubCommon< CommandQueue<T> >) end;
-  MultiusableCommandQueueNode<T> = sealed class(CommandQueue<T>)
-    public hub: MultiusableCommandQueueHub<T>;
+  MultiusableCommandQueue<T> = sealed class(CommandQueue<T>, IMultiusableCommandQueue)
+    public q: CommandQueue<T>;
     
-    public constructor(hub: MultiusableCommandQueueHub<T>) := self.hub := hub;
+    public constructor(q: CommandQueue<T>);
+    begin
+      inherited Create(q.expected_const_res, q.const_res_dep);
+      self.q := q;
+    end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := hub.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    MultiusableCommandQueueCommon.InitBeforeInvoke(self,q, g,inited_mu);
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := hub.InvokeToNil(g, l, hub.q.InvokeToAny);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override :=
+    MultiusableCommandQueueCommon.InvokeToNil(self, g,l, q.InvokeToAny);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResWrapFactory<T,TR>): TR; where TR: QueueRes<T>;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<T,TR>): TR; where TR: QueueRes<T>;
     begin
-      var (qr, ev) := hub.Invoke(g, l, hub.q.InvokeToAny);
-      Result := qr_factory.MakeWrap(qr, ev);
+      Result := MultiusableCommandQueueCommon
+        .Invoke(self, g,l, q.InvokeToAny, qr_factory.MakeWrap);
     end;
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := Invoke(g, l, qrw_val_factory);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := Invoke(g, l, qrw_ptr_factory);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := Invoke(g, l, qr_val_factory);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := Invoke(g, l, qr_ptr_factory);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    hub.ToString(sb, tabs, index, delayed);
-    
-  end;
-  MultiusableCommandQueueHub<T> = sealed partial class
-    
-    public function MakeNode: CommandQueue<T> := new MultiusableCommandQueueNode<T>(self);
+    MultiusableCommandQueueCommon.ToString(q, sb,tabs,index,delayed);
     
   end;
   
-function CommandQueueNil.Multiusable: ()->CommandQueueNil := (if self is MultiusableCommandQueueNodeNil(var mucqn) then mucqn.hub else new MultiusableCommandQueueHubNil(self)).MakeNode;
-function CommandQueue<T>.Multiusable: ()->CommandQueue<T> := (if self is MultiusableCommandQueueNode<T>(var mucqn) then mucqn.hub else new MultiusableCommandQueueHub<T>(self)).MakeNode;
+function CommandQueueNil.Multiusable :=
+if (self is MultiusableCommandQueueNil) or (self is ConstQueueNil) then
+  self else new MultiusableCommandQueueNil(self);
+
+function CommandQueue<T>.Multiusable :=
+// No const_res_dep checks, because (HPQ+CQ).MU should execute HPQ once
+if (self is MultiusableCommandQueue<T>) or (self is ConstQueue<T>) or (self is ParameterQueue<T>) then
+  self else new MultiusableCommandQueue<T>(self);
 
 {$endregion Multiusable}
 
@@ -14540,7 +15041,7 @@ type
     public constructor(m: WaitMarkerDirect) := self.m := m;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := exit;
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
@@ -14583,7 +15084,7 @@ static function WaitMarker.Create := new WaitMarkerDummy;
 {$region ThenMarkerSignal}
 
 type
-  DetachedMarkerSignalWrapCommon<TQ> = abstract class(WaitMarkerDirect)
+  DetachedMarkerSignalWrapper<TQ> = sealed class(WaitMarkerDirect)
   where TQ: CommandQueueBase;
     protected org: TQ;
     
@@ -14607,10 +15108,10 @@ type
   DetachedMarkerSignalCommon<TQ> = record
   where TQ: CommandQueueBase;
     public q: TQ;
-    public wrap: DetachedMarkerSignalWrapCommon<TQ>;
+    public wrap: DetachedMarkerSignalWrapper<TQ>;
     public signal_in_finally: boolean;
     
-    public procedure Init(q: TQ; wrap: DetachedMarkerSignalWrapCommon<TQ>; signal_in_finally: boolean);
+    public procedure Init(q: TQ; wrap: DetachedMarkerSignalWrapper<TQ>; signal_in_finally: boolean);
     begin
       self.q := q;
       self.wrap := wrap;
@@ -14618,7 +15119,7 @@ type
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>) := q.InitBeforeInvoke(g, inited_hubs);
+    procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>) := q.InitBeforeInvoke(g, inited_mu);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke<TR>(prev_qr: TR; err_handler: CLTaskErrHandler): TR; where TR: IQueueRes;
@@ -14653,13 +15154,10 @@ type
     
   end;
   
-  DetachedMarkerSignalWrapperNil = sealed class(DetachedMarkerSignalWrapCommon<CommandQueueNil>)
-    
-  end;
   DetachedMarkerSignalNil = sealed partial class(CommandQueueNil)
     data: DetachedMarkerSignalCommon<CommandQueueNil>;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := data.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := data.InitBeforeInvoke(g, inited_mu);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := data.Invoke(data.q.InvokeToNil(g,l), g.curr_err_handler);
     
@@ -14668,13 +15166,10 @@ type
     
   end;
   
-  DetachedMarkerSignalWrapper<T> = sealed class(DetachedMarkerSignalWrapCommon<CommandQueue<T>>)
-    
-  end;
   DetachedMarkerSignal<T> = sealed partial class(CommandQueue<T>)
     data: DetachedMarkerSignalCommon<CommandQueue<T>>;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := data.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := data.InitBeforeInvoke(g, inited_mu);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := data.Invoke(g, l, data.q.InvokeToNil);
     protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := data.Invoke(g, l, data.q.InvokeToAny);
@@ -14688,10 +15183,16 @@ type
 function DetachedMarkerSignalNil.get_signal_in_finally := data.signal_in_finally;
 function DetachedMarkerSignal<T>.get_signal_in_finally := data.signal_in_finally;
 
-constructor DetachedMarkerSignalNil.Create(q: CommandQueueNil; signal_in_finally: boolean) :=
-data.Init(q, new DetachedMarkerSignalWrapperNil(self), signal_in_finally);
-constructor DetachedMarkerSignal<T>.Create(q: CommandQueue<T>; signal_in_finally: boolean) :=
-data.Init(q, new DetachedMarkerSignalWrapper<T>(self), signal_in_finally);
+constructor DetachedMarkerSignalNil.Create(q: CommandQueueNil; signal_in_finally: boolean);
+begin
+  data.Init(q, new DetachedMarkerSignalWrapper<CommandQueueNil>(self), signal_in_finally);
+end;
+constructor DetachedMarkerSignal<T>.Create(q: CommandQueue<T>; signal_in_finally: boolean);
+begin
+  data.Init(q, new DetachedMarkerSignalWrapper<CommandQueue<T>>(self), signal_in_finally);
+  self.const_res_dep      := q.const_res_dep;
+  self.expected_const_res := q.expected_const_res;
+end;
 
 static function DetachedMarkerSignalNil.operator implicit(dms: DetachedMarkerSignalNil) := dms.data.wrap;
 static function DetachedMarkerSignal<T>.operator implicit(dms: DetachedMarkerSignal<T>) := dms.data.wrap;
@@ -14705,11 +15206,11 @@ type
     public marker: WaitMarker;
     public constructor(marker: WaitMarker) := self.marker := marker;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
     marker.InitInnerHandles(g);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
-    new QueueResNil(new CLTaskLocalData( marker.MakeWaitEv(g,l) ));
+    new QueueResNil( marker.MakeWaitEv(g,l) );
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -14734,12 +15235,14 @@ type
     begin
       self.q := q;
       self.marker := marker;
+      self.const_res_dep      := q.const_res_dep;
+      self.expected_const_res := q.expected_const_res;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override;
     begin
-      q.InitBeforeInvoke(g, inited_hubs);
+      q.InitBeforeInvoke(g, inited_mu);
       marker.InitInnerHandles(g);
     end;
     
@@ -14814,10 +15317,10 @@ type
     public do_finally: TQ;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>);
+    procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>);
     begin
-      try_do.InitBeforeInvoke(g, inited_hubs);
-      do_finally.InitBeforeInvoke(g, inited_hubs);
+      try_do.InitBeforeInvoke(g, inited_mu);
+      do_finally.InitBeforeInvoke(g, inited_mu);
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -14864,8 +15367,8 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    data.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    data.InitBeforeInvoke(g, inited_mu);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := data.Invoke(g, l, data.do_finally.InvokeToNil);
     
@@ -14880,11 +15383,13 @@ type
     begin
       data.try_do := try_do;
       data.do_finally := do_finally;
+      self.const_res_dep      := do_finally.const_res_dep;
+      self.expected_const_res := do_finally.expected_const_res;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    data.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    data.InitBeforeInvoke(g, inited_mu);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := data.Invoke(g, l, data.do_finally.InvokeToNil);
     protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := data.Invoke(g, l, data.do_finally.InvokeToAny);
@@ -14895,10 +15400,24 @@ type
     
   end;
   
-static function CommandQueueNil.operator>=(try_do: CommandQueueBase; do_finally: CommandQueueNil) :=
-new CommandQueueTryFinallyNil(try_do, do_finally);
-static function CommandQueue<T>.operator>=(try_do: CommandQueueBase; do_finally: CommandQueue<T>) :=
-new CommandQueueTryFinally<T>(try_do, do_finally);
+  CommandQueueTryFinallyConstructor = sealed auto class(ITypedCQConverter<CommandQueueBase>)
+    private try_do: CommandQueueBase;
+    
+    public function ConvertNil(do_finally: CommandQueueNil): CommandQueueBase :=
+    new CommandQueueTryFinallyNil(try_do, do_finally);
+    public function Convert<T>(do_finally: CommandQueue<T>): CommandQueueBase :=
+    new CommandQueueTryFinally<T>(try_do, do_finally);
+    
+  end;
+  
+function operator>=<TQ>(try_do: CommandQueueBase; do_finally: TQ): TQ; extensionmethod; where TQ: CommandQueueBase;
+begin
+  Result := TQ(do_finally.ConvertTyped(
+    new CommandQueueTryFinallyConstructor(try_do)
+  ));
+end;
+
+function operator>=(q: CommandQueueBase; m: WaitMarker); extensionmethod := q >= CommandQueueBase(m);
 
 {$endregion Finally}
 
@@ -14917,8 +15436,8 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    try_do.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    try_do.InitBeforeInvoke(g, inited_mu);
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     procedure ApplyTo(err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG});
@@ -14966,6 +15485,20 @@ type
     
   end;
   
+  CommandQueueHandleWithoutResConstructor = record(ITypedCQConverter<CommandQueueNil>)
+    
+    function ConvertNil(cq: CommandQueueNil): CommandQueueNil :=
+    if cq is ConstQueueNil then cq else nil;
+    function Convert<T>(cq: CommandQueue<T>): CommandQueueNil :=
+    if (cq is ConstQueue<T>) or (cq is ParameterQueue<T>) then CQNil else nil;
+    
+  end;
+  
+function CommandQueueBase.HandleWithoutRes(handler: Exception->boolean) :=
+self.ConvertTyped(new CommandQueueHandleWithoutResConstructor) ??
+new CommandQueueHandleWithoutRes(self, handler);
+
+type
   CommandQueueHandleDefaultRes<T> = sealed class(CommandQueue<T>)
     private try_do: CommandQueue<T>;
     private handler: Exception->boolean;
@@ -14979,8 +15512,8 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    try_do.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    try_do.InitBeforeInvoke(g, inited_mu);
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     procedure ApplyTo(err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG});
@@ -15015,7 +15548,7 @@ type
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResDirectFactory<T,TR>): TR; where TR: QueueRes<T>;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<T,TR>): TR; where TR: QueueRes<T>;
     begin
       var pre_inv_handler := g.curr_err_handler;
       
@@ -15063,6 +15596,11 @@ type
     
   end;
   
+function CommandQueue<T>.HandleDefaultRes(handler: Exception->boolean; def: T): CommandQueue<T> :=
+if (self is ConstQueue<T>) or (self is ParameterQueue<T>) then self else
+new CommandQueueHandleDefaultRes<T>(self, handler, def);
+
+type
   CommandQueueHandleReplaceRes<T> = sealed class(CommandQueue<T>)
     private try_do: CommandQueue<T>;
     private handler: List<Exception> -> T;
@@ -15074,8 +15612,8 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    try_do.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    try_do.InitBeforeInvoke(g, inited_mu);
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function ApplyTo(err_handler: CLTaskErrHandlerThiefBase{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG}): ValueTuple<boolean,T>;
@@ -15115,7 +15653,7 @@ type
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResDirectFactory<T,TR>): TR; where TR: QueueRes<T>;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<T,TR>): TR; where TR: QueueRes<T>;
     begin
       var pre_inv_handler := g.curr_err_handler;
       
@@ -15152,13 +15690,8 @@ type
     
   end;
   
-function CommandQueueBase.HandleWithoutRes(handler: Exception->boolean) :=
-new CommandQueueHandleWithoutRes(self, handler);
-
-function CommandQueue<T>.HandleDefaultRes(handler: Exception->boolean; def: T): CommandQueue<T> :=
-new CommandQueueHandleDefaultRes<T>(self, handler, def);
-
 function CommandQueue<T>.HandleReplaceRes(handler: List<Exception> -> T) :=
+if (self is ConstQueue<T>) or (self is ParameterQueue<T>) then self else
 new CommandQueueHandleReplaceRes<T>(self, handler);
 
 {$endregion Handle}
@@ -15170,17 +15703,13 @@ new CommandQueueHandleReplaceRes<T>(self, handler);
 {$region Base}
 
 type
-  GPUCommandObjInvoker<T> = CommandQueueInvoker<QueueRes<T>>;
-  
   GPUCommand<T> = abstract class
     
-    protected function ValidateForObj  (o: T              ): boolean; abstract;
-    protected function ValidateForQueue(q: CommandQueue<T>): boolean; abstract;
+    protected function TryPreCall(q: CommandQueue<T>): boolean; abstract;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); abstract;
     
-    protected function InvokeObj  (o: T;                              g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
-    protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
+    protected function Invoke(dep_ok: boolean; inp: CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
     
     protected static procedure ToStringWriteDelegate(sb: StringBuilder; d: System.Delegate) := CommandQueueBase.ToStringWriteDelegate(sb,d);
     
@@ -15195,18 +15724,6 @@ type
     
   end;
   
-  CommonGPUCommand<T> = abstract class(GPUCommand<T>)
-    
-    protected function Invoke(o_const: boolean; get_o: ()->T; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
-    
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(o_qr: QueueRes<T>; g: CLTaskGlobalData) := Invoke(o_qr.IsConst, o_qr.GetResDirect, g, o_qr.TakeBaseOut);
-    
-    protected function InvokeObj  (o: T;                              g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := Invoke(true, ()->o, g, l);
-    protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := Invoke(o_invoke(g, l), g);
-    
-  end;
-  
 {$endregion Base}
 
 {$region Queue}
@@ -15218,14 +15735,12 @@ type
     public constructor(q: CommandQueueBase) := self.q := q;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected function ValidateForObj  (o: T              ): boolean; override := true;
-    protected function ValidateForQueue(q: CommandQueue<T>): boolean; override := true;
+    protected function TryPreCall(q: CommandQueue<T>): boolean; override := false;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    q.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    q.InitBeforeInvoke(g, inited_mu);
     
-    protected function InvokeObj  (o: T;                              g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := q.InvokeToNil(g, l);
-    protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := q.InvokeToNil(g, l);
+    protected function Invoke(dep_ok: boolean; inp: CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := q.InvokeToNil(g, l);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -15235,7 +15750,8 @@ type
     
   end;
   
-  QueueCommandFactory<TObj> = sealed class(ITypedCQConverter<GPUCommand<TObj>>)
+  //TODO Разбить на 2 ITypedCQConverter: IsEmpty и CastUnpack
+  QueueCommandConstructor<TObj> = sealed class(ITypedCQConverter<GPUCommand<TObj>>)
     
     public function ConvertNil(cq: CommandQueueNil): GPUCommand<TObj> :=
     if cq is ConstQueueNil then nil else
@@ -15247,7 +15763,8 @@ type
       ccq.SourceBase.ConvertTyped(self) else
       new QueueCommand<TObj>(cq);
     
-    public static function Make(q: CommandQueueBase): GPUCommand<TObj> := q.ConvertTyped(new QueueCommandFactory<TObj>);
+    public static function Make(q: CommandQueueBase): GPUCommand<TObj> :=
+    q.ConvertTyped(new QueueCommandConstructor<TObj>);
     
   end;
   
@@ -15257,14 +15774,28 @@ type
   
   {$region Base}
   
-  ProcCommandBase<T, TProc> = abstract class(CommonGPUCommand<T>)
+  ProcCommandBase<T, TProc> = abstract class(GPUCommand<T>)
   where TProc: ISimpleProcContainer<T>;
     public p: TProc;
+    public can_pre_call: boolean;
     
-    public constructor(p: TProc) := self.p := p;
+    public constructor(p: TProc; can_pre_call: boolean);
+    begin
+      self.p := p;
+      self.can_pre_call := can_pre_call;
+    end;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    protected function TryPreCall(q: CommandQueue<T>): boolean; override;
+    begin
+      Result := false;
+      if not can_pre_call then exit;
+      if q.const_res_dep=nil then exit;
+      p.Invoke(q.expected_const_res, nil);
+      Result := q.IsConstResDepEmpty;
+    end;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := exit;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -15279,23 +15810,18 @@ type
   
   {$region Quick}
   
-  QuickProcCommand<T, TProc, FPreCall> = sealed class(ProcCommandBase<T, TProc>)
+  QuickProcCommand<T, TProc> = sealed class(ProcCommandBase<T, TProc>)
   where TProc: ISimpleProcContainer<T>;
-  where FPreCall: IBooleanFlag, constructor;
     
-    protected function ValidateForObj(o: T): boolean; override;
+    protected function Invoke(dep_ok: boolean; inp: CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
-      Result := not FPreCall.Create.val;
-      if Result then exit;
-      p.Invoke(o, nil);
-    end;
-    protected function ValidateForQueue(q: CommandQueue<T>): boolean; override := true;
-    
-    protected function Invoke(o_const: boolean; get_o: ()->T; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
-    begin
-      var should_insta_call := if FPreCall.Create.val then
-        o_const else l.ShouldInstaCallAction;
       Result := new QueueResNil(l);
+      if can_pre_call and dep_ok then exit;
+      
+      var prev_qr := inp.InvokeToAny(g, l);
+      var should_insta_call := if can_pre_call then
+        prev_qr.IsConst else
+        prev_qr.ShouldInstaCallAction;
       
       var err_handler := g.curr_err_handler;
       {$ifdef DEBUG}
@@ -15303,9 +15829,9 @@ type
       err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
       if should_insta_call then
-        p.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}, get_o(), g.c) else
+        p.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}, prev_qr.GetResDirect, g.c) else
         //TODO #????: self.
-        Result.AddAction(c->self.p.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}, get_o(), c));
+        Result.AddAction(c->self.p.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}, prev_qr.GetResDirect, c));
       
     end;
     
@@ -15318,11 +15844,16 @@ type
   ThreadedProcCommand<T, TProc> = sealed class(ProcCommandBase<T, TProc>)
   where TProc: ISimpleProcContainer<T>;
     
-    protected function ValidateForObj  (o: T              ): boolean; override := true;
-    protected function ValidateForQueue(q: CommandQueue<T>): boolean; override := true;
-    
-    protected function Invoke(o_const: boolean; get_o: ()->T; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
+    protected function Invoke(dep_ok: boolean; inp: CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
+      if can_pre_call and dep_ok then
+      begin
+        Result := new QueueResNil(l);
+        exit;
+      end;
+      
+      var prev_qr := inp.InvokeToAny(g, l);
+      l := prev_qr.TakeBaseOut;
       var acts := l.prev_delegate;
       var c := g.c;
       var err_handler := g.curr_err_handler;
@@ -15334,44 +15865,34 @@ type
       var work_ev := UserEvent.StartWorkThread(l.prev_ev, ()->
       begin
         acts.Invoke(c);
-        p.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}, get_o(), c);
+        p.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}, prev_qr.GetResDirect, c);
       end, g
       {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif});
       
-      Result := new QueueResNil(new CLTaskLocalData(work_ev));
+      Result := new QueueResNil(work_ev);
     end;
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(o_qr: QueueRes<T>; g: CLTaskGlobalData) := Invoke(o_qr.IsConst, o_qr.GetResDirect, g, o_qr.TakeBaseOut);
     
   end;
   
   {$endregion Threaded}
   
-  {$region Factory}
+  {$region Constructor}
   
-  ProcCommandFactory<TObj> = sealed class
+  ProcCommandConstructor<TObj> = sealed class
     
     private constructor := raise new OpenCLABCInternalException;
     
-    public static function MakeConst<TProc>(p: TProc): GPUCommand<TObj>; where TProc: ISimpleProcContainer<TObj>;
+    public static function Make<TProc>(p: TProc; need_own_thread, can_pre_calc: boolean): GPUCommand<TObj>; where TProc: ISimpleProcContainer<TObj>;
     begin
-      // Check for const input is in a ValidateForObj
-      Result := new QuickProcCommand<TObj, TProc, TBooleanTrueFlag>(p);
-    end;
-    
-    public static function MakeQuick<TProc>(p: TProc): GPUCommand<TObj>; where TProc: ISimpleProcContainer<TObj>;
-    begin
-      Result := new QuickProcCommand<TObj, TProc, TBooleanFalseFlag>(p);
-    end;
-    
-    public static function MakeThreaded<TProc>(p: TProc): GPUCommand<TObj>; where TProc: ISimpleProcContainer<TObj>;
-    begin
-      Result := new ThreadedProcCommand<TObj, TProc>(p);
+      // Check for const input is in a .Validate
+      if need_own_thread then
+        Result := new ThreadedProcCommand<TObj, TProc>(p, can_pre_calc) else
+        Result := new    QuickProcCommand<TObj, TProc>(p, can_pre_calc);
     end;
     
   end;
   
-  {$endregion Factory}
+  {$endregion Constructor}
   
 {$endregion Proc}
 
@@ -15384,16 +15905,13 @@ type
     public constructor(marker: WaitMarker) := self.marker := marker;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected function ValidateForObj  (o: T              ): boolean; override := true;
-    protected function ValidateForQueue(q: CommandQueue<T>): boolean; override := true;
+    protected function TryPreCall(q: CommandQueue<T>): boolean; override := false;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
     marker.InitInnerHandles(g);
     
-    private function Invoke(g: CLTaskGlobalData; l: CLTaskLocalData) :=
-    new QueueResNil(new CLTaskLocalData( marker.MakeWaitEv(g,l) ));
-    protected function InvokeObj  (o: T;                              g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := Invoke(g, l);
-    protected function InvokeQueue(o_invoke: GPUCommandObjInvoker<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := Invoke(g, l);
+    protected function Invoke(dep_ok: boolean; inp: CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
+    new QueueResNil( marker.MakeWaitEv(g,l) );
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -15403,7 +15921,7 @@ type
     
   end;
   
-  WaitCommandFactory<TObj> = sealed class
+  WaitCommandConstructor<TObj> = sealed class
     
     private constructor := raise new OpenCLABCInternalException;
     
@@ -15420,56 +15938,71 @@ type
 {$region Base}
 
 type
-  GPUCommandContainer<T> = abstract partial class
-    private constructor := raise new OpenCLABCInternalException;
-  end;
-  GPUCommandContainerCore<T> = abstract class
+  GPUCommandContainer<T> = abstract class(CommandQueue<T>)
+    protected q: CommandQueue<T>;
     
-    protected function Validate(comm: GPUCommand<T>): boolean; abstract;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResNil; abstract;
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueRes<T>; abstract;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
-    private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
-    begin
-      sb.Append(#9, tabs);
-      sb += TypeName(self);
-      self.ToStringImpl(sb, tabs+1, index, delayed);
-    end;
-    
-  end;
-  
-  GPUCommandContainer<T> = abstract partial class(CommandQueue<T>)
-    protected core: GPUCommandContainerCore<T>;
     protected commands := new List<GPUCommand<T>>;
     // Not nil only when commands are nil
     private commands_in: GPUCommandContainer<T>;
     private old_command_count: integer;
     
+    protected constructor(q: CommandQueue<T>);
+    begin
+      self.q := q.Multiusable;
+      self.const_res_dep      := q.const_res_dep;
+      self.expected_const_res := q.expected_const_res;
+    end;
+    
+    protected constructor(ccq: GPUCommandContainer<T>);
+    begin
+      self.q := ccq.q;
+      self.commands := ccq.commands;
+    end;
+    
+    private constructor := raise new OpenCLABCInternalException;
+    
     private procedure TakeCommandsBack;
     begin
+      var commands_in := self.commands_in;
       if commands_in=nil then exit;
-      while commands_in.commands_in<>nil do
-        commands_in := commands_in.commands_in;
-      self.commands := new List<GPUCommand<T>>(old_command_count);
-      for var i := 0 to old_command_count-1 do self.commands += commands_in.commands[i];
-      commands_in := nil;
+      
+      while true do
+      begin
+        var next := commands_in.commands_in;
+        if next=nil then break;
+        commands_in := next;
+      end;
+      
+      var commands := new List<GPUCommand<T>>(old_command_count);
+      for var i := 0 to old_command_count-1 do
+        commands += commands_in.commands[i];
+      
+      Volatile.Write(self.commands, commands);
+      Volatile.Write(self.commands_in, nil);
     end;
     
     public function Clone: GPUCommandContainer<T>; abstract;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override;
     begin
-      core.InitBeforeInvoke(g, inited_hubs);
+      q.InitBeforeInvoke(g, inited_mu);
       TakeCommandsBack;
-      foreach var comm in self.commands do comm.InitBeforeInvoke(g, inited_hubs);
+      foreach var comm in self.commands do comm.InitBeforeInvoke(g, inited_mu);
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := core.InvokeToNil(g, l, self.commands);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override := core.InvokeToAny(g, l, self.commands);
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; last_invoke: CommandQueueInvoker<TR>): TR;
+    begin
+      var dep_ok := g.CheckDeps(q.const_res_dep);
+      l := q.InvokeToNil(g,l).base; //TODO Костыль, но сначала убрать .MU из заголовка
+      
+      foreach var comm in commands do
+        l := comm.Invoke(dep_ok,q, g,l).base;
+      
+      Result := last_invoke(g,l);
+    end;
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := Invoke(g, l, q.InvokeToNil);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes<T>; override := Invoke(g, l, q.InvokeToAny);
     
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override;
     begin
@@ -15480,7 +16013,7 @@ type
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
       sb += #10;
-      core.ToString(sb, tabs, index, delayed);
+      q.ToString(sb, tabs, index, delayed);
       TakeCommandsBack;
       foreach var comm in commands do
         comm.ToString(sb, tabs, index, delayed);
@@ -15490,7 +16023,7 @@ type
   
 function AddCommand<TContainer, T>(cc: TContainer; comm: GPUCommand<T>): TContainer; where TContainer: GPUCommandContainer<T>;
 begin
-  if not cc.core.Validate(comm) then exit;
+  if comm.TryPreCall(cc.q) then exit;
   cc.TakeCommandsBack;
   Result := TContainer(cc.Clone);
   cc.commands_in := Result;
@@ -15502,95 +16035,6 @@ end;
 
 {$endregion Base}
 
-{$region Core}
-
-type
-  CCCObj<T> = sealed class(GPUCommandContainerCore<T>)
-    public o: T;
-    
-    public constructor(o: T) := self.o := o;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Validate(comm: GPUCommand<T>): boolean; override := comm.ValidateForObj(o);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
-    
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>; make_qr: (CLTaskLocalData, T)->TR): TR;
-    begin
-      var o := self.o;
-      
-      foreach var comm in commands do
-        l := comm.InvokeObj(o, g, l).base;
-      
-      Result := make_qr(l, o);
-    end;
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResNil; override := Invoke(g, l, commands, (l,o)->new QueueResNil(l));
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueRes<T>; override := Invoke(g, l, commands, (l,o)->new QueueResValDirect<T>(l,o));
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      CommandQueueBase.ToStringRuntimeValue(sb, self.o);
-      sb += #10;
-    end;
-    
-  end;
-  
-  CCCQueue<T> = sealed class(GPUCommandContainerCore<T>)
-    public hub: MultiusableCommandQueueHub<T>;
-    
-    public constructor(q: CommandQueue<T>) := self.hub := new MultiusableCommandQueueHub<T>(q);
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected function Validate(comm: GPUCommand<T>): boolean; override := comm.ValidateForQueue(hub.q);
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    hub.q.InitBeforeInvoke(g, inited_hubs);
-    
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>; make_qr: (GPUCommandObjInvoker<T>,CLTaskGlobalData,CLTaskLocalData)->TR): TR;
-    begin
-      var invoke_plug: GPUCommandObjInvoker<T> := hub.MakeNode.InvokeToAny;
-      
-      foreach var comm in commands do
-        l := comm.InvokeQueue(invoke_plug, g, l).base;
-      
-      Result := make_qr(invoke_plug, g, l);
-    end;
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueResNil; override := Invoke(g, l, commands, (inv,g,l)->new QueueResNil(l));
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData; commands: List<GPUCommand<T>>): QueueRes<T>; override := Invoke(g, l, commands, (inv,g,l)->inv(g,l));
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      hub.q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-  GPUCommandContainer<T> = abstract partial class
-    
-    protected constructor(o: T) :=
-    self.core := new CCCObj<T>(o);
-    
-    protected constructor(q: CommandQueue<T>) :=
-    if q is ConstQueue<T>(var c_q) then
-      self.core := new CCCObj<T>(c_q.Value) else
-      self.core := new CCCQueue<T>(q);
-    
-    protected constructor(ccq: GPUCommandContainer<T>);
-    begin
-      self.core := ccq.core;
-      self.commands := ccq.commands;
-    end;
-    
-  end;
-  
-{$endregion Core}
-
 {$region CLKernel}
 
 type
@@ -15601,7 +16045,6 @@ type
     
   end;
   
-constructor CLKernelCCQ.Create(o: CLKernel) := inherited;
 constructor CLKernelCCQ.Create(q: CommandQueue<CLKernel>) := inherited;
 constructor CLKernelCCQ.Create := inherited;
 
@@ -15614,18 +16057,14 @@ end;
 
 function CLKernelCCQ.ThenQueue(q: CommandQueueBase): CLKernelCCQ;
 begin
-  var comm := QueueCommandFactory&<CLKernel>.Make(q);
+  var comm := QueueCommandConstructor&<CLKernel>.Make(q);
   Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function CLKernelCCQ.ThenConstProc(p: CLKernel->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeConst&<SimpleProcContainer<CLKernel>>(p));
-function CLKernelCCQ.ThenConstProc(p: (CLKernel, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeConst&<SimpleProcContainerC<CLKernel>>(p));
-function CLKernelCCQ.ThenQuickProc(p: CLKernel->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeQuick&<SimpleProcContainer<CLKernel>>(p));
-function CLKernelCCQ.ThenQuickProc(p: (CLKernel, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeQuick&<SimpleProcContainerC<CLKernel>>(p));
-function CLKernelCCQ.ThenThreadedProc(p: CLKernel->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeThreaded&<SimpleProcContainer<CLKernel>>(p));
-function CLKernelCCQ.ThenThreadedProc(p: (CLKernel, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeThreaded&<SimpleProcContainerC<CLKernel>>(p));
+function CLKernelCCQ.ThenProc(p: CLKernel->(); need_own_thread, can_pre_calc: boolean) := AddCommand(self, ProcCommandConstructor&<CLKernel>.Make&<SimpleProcContainer<CLKernel>>(p, need_own_thread, can_pre_calc));
+function CLKernelCCQ.ThenProc(p: (CLKernel, CLContext)->(); need_own_thread, can_pre_calc: boolean) := AddCommand(self, ProcCommandConstructor&<CLKernel>.Make&<SimpleProcContainerC<CLKernel>>(p, need_own_thread, can_pre_calc));
 
-function CLKernelCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLKernel>.Make(marker));
+function CLKernelCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandConstructor&<CLKernel>.Make(marker));
 
 {$endregion Special .Add's}
 
@@ -15641,7 +16080,6 @@ type
     
   end;
   
-constructor CLMemoryCCQ.Create(o: CLMemory) := inherited;
 constructor CLMemoryCCQ.Create(q: CommandQueue<CLMemory>) := inherited;
 constructor CLMemoryCCQ.Create := inherited;
 
@@ -15654,18 +16092,14 @@ end;
 
 function CLMemoryCCQ.ThenQueue(q: CommandQueueBase): CLMemoryCCQ;
 begin
-  var comm := QueueCommandFactory&<CLMemory>.Make(q);
+  var comm := QueueCommandConstructor&<CLMemory>.Make(q);
   Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function CLMemoryCCQ.ThenConstProc(p: CLMemory->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeConst&<SimpleProcContainer<CLMemory>>(p));
-function CLMemoryCCQ.ThenConstProc(p: (CLMemory, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeConst&<SimpleProcContainerC<CLMemory>>(p));
-function CLMemoryCCQ.ThenQuickProc(p: CLMemory->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeQuick&<SimpleProcContainer<CLMemory>>(p));
-function CLMemoryCCQ.ThenQuickProc(p: (CLMemory, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeQuick&<SimpleProcContainerC<CLMemory>>(p));
-function CLMemoryCCQ.ThenThreadedProc(p: CLMemory->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeThreaded&<SimpleProcContainer<CLMemory>>(p));
-function CLMemoryCCQ.ThenThreadedProc(p: (CLMemory, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLMemory>.MakeThreaded&<SimpleProcContainerC<CLMemory>>(p));
+function CLMemoryCCQ.ThenProc(p: CLMemory->(); need_own_thread, can_pre_calc: boolean) := AddCommand(self, ProcCommandConstructor&<CLMemory>.Make&<SimpleProcContainer<CLMemory>>(p, need_own_thread, can_pre_calc));
+function CLMemoryCCQ.ThenProc(p: (CLMemory, CLContext)->(); need_own_thread, can_pre_calc: boolean) := AddCommand(self, ProcCommandConstructor&<CLMemory>.Make&<SimpleProcContainerC<CLMemory>>(p, need_own_thread, can_pre_calc));
 
-function CLMemoryCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLMemory>.Make(marker));
+function CLMemoryCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandConstructor&<CLMemory>.Make(marker));
 
 {$endregion Special .Add's}
 
@@ -15681,7 +16115,6 @@ type
     
   end;
   
-constructor CLValueCCQ<T>.Create(o: CLValue<T>) := inherited;
 constructor CLValueCCQ<T>.Create(q: CommandQueue<CLValue<T>>) := inherited;
 constructor CLValueCCQ<T>.Create := inherited;
 
@@ -15694,18 +16127,14 @@ end;
 
 function CLValueCCQ<T>.ThenQueue(q: CommandQueueBase): CLValueCCQ<T>;
 begin
-  var comm := QueueCommandFactory&<CLValue<T>>.Make(q);
+  var comm := QueueCommandConstructor&<CLValue<T>>.Make(q);
   Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function CLValueCCQ<T>.ThenConstProc(p: CLValue<T>->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeConst&<SimpleProcContainer<CLValue<T>>>(p));
-function CLValueCCQ<T>.ThenConstProc(p: (CLValue<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeConst&<SimpleProcContainerC<CLValue<T>>>(p));
-function CLValueCCQ<T>.ThenQuickProc(p: CLValue<T>->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeQuick&<SimpleProcContainer<CLValue<T>>>(p));
-function CLValueCCQ<T>.ThenQuickProc(p: (CLValue<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeQuick&<SimpleProcContainerC<CLValue<T>>>(p));
-function CLValueCCQ<T>.ThenThreadedProc(p: CLValue<T>->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeThreaded&<SimpleProcContainer<CLValue<T>>>(p));
-function CLValueCCQ<T>.ThenThreadedProc(p: (CLValue<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLValue<T>>.MakeThreaded&<SimpleProcContainerC<CLValue<T>>>(p));
+function CLValueCCQ<T>.ThenProc(p: CLValue<T>->(); need_own_thread, can_pre_calc: boolean) := AddCommand(self, ProcCommandConstructor&<CLValue<T>>.Make&<SimpleProcContainer<CLValue<T>>>(p, need_own_thread, can_pre_calc));
+function CLValueCCQ<T>.ThenProc(p: (CLValue<T>, CLContext)->(); need_own_thread, can_pre_calc: boolean) := AddCommand(self, ProcCommandConstructor&<CLValue<T>>.Make&<SimpleProcContainerC<CLValue<T>>>(p, need_own_thread, can_pre_calc));
 
-function CLValueCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLValue<T>>.Make(marker));
+function CLValueCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandConstructor&<CLValue<T>>.Make(marker));
 
 {$endregion Special .Add's}
 
@@ -15721,7 +16150,6 @@ type
     
   end;
   
-constructor CLArrayCCQ<T>.Create(o: CLArray<T>) := inherited;
 constructor CLArrayCCQ<T>.Create(q: CommandQueue<CLArray<T>>) := inherited;
 constructor CLArrayCCQ<T>.Create := inherited;
 
@@ -15734,18 +16162,14 @@ end;
 
 function CLArrayCCQ<T>.ThenQueue(q: CommandQueueBase): CLArrayCCQ<T>;
 begin
-  var comm := QueueCommandFactory&<CLArray<T>>.Make(q);
+  var comm := QueueCommandConstructor&<CLArray<T>>.Make(q);
   Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function CLArrayCCQ<T>.ThenConstProc(p: CLArray<T>->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeConst&<SimpleProcContainer<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenConstProc(p: (CLArray<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeConst&<SimpleProcContainerC<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenQuickProc(p: CLArray<T>->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeQuick&<SimpleProcContainer<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenQuickProc(p: (CLArray<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeQuick&<SimpleProcContainerC<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenThreadedProc(p: CLArray<T>->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeThreaded&<SimpleProcContainer<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenThreadedProc(p: (CLArray<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeThreaded&<SimpleProcContainerC<CLArray<T>>>(p));
+function CLArrayCCQ<T>.ThenProc(p: CLArray<T>->(); need_own_thread, can_pre_calc: boolean) := AddCommand(self, ProcCommandConstructor&<CLArray<T>>.Make&<SimpleProcContainer<CLArray<T>>>(p, need_own_thread, can_pre_calc));
+function CLArrayCCQ<T>.ThenProc(p: (CLArray<T>, CLContext)->(); need_own_thread, can_pre_calc: boolean) := AddCommand(self, ProcCommandConstructor&<CLArray<T>>.Make&<SimpleProcContainerC<CLArray<T>>>(p, need_own_thread, can_pre_calc));
 
-function CLArrayCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLArray<T>>.Make(marker));
+function CLArrayCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandConstructor&<CLArray<T>>.Make(marker));
 
 {$endregion Special .Add's}
 
@@ -15850,7 +16274,7 @@ type
     
     protected function TryGetConstSetter: CLKernelArgSetter; abstract;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); abstract;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); abstract;
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; abstract;
     
@@ -15958,8 +16382,8 @@ type
     if bytes is ConstQueue<UIntPtr>(var c_bytes) then
       new CLKernelArgSetterLocalBytes(c_bytes.Value) else nil;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
-    bytes.InitBeforeInvoke(g, inited_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
+    bytes.InitBeforeInvoke(g, inited_mu);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override;
     begin
@@ -16044,7 +16468,7 @@ type
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
     data.TryGetConstSetter(WrapToNative);
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16077,7 +16501,7 @@ type
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
     data.TryGetConstSetter(WrapToNative);
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16110,7 +16534,7 @@ type
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
     data.TryGetConstSetter(WrapToNative);
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16150,7 +16574,7 @@ type
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
     data.TryGetConstSetter(WrapToNative);
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16183,7 +16607,7 @@ type
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
     data.TryGetConstSetter(WrapToNative);
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16216,7 +16640,7 @@ type
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
     data.TryGetConstSetter(WrapToNative);
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16251,16 +16675,16 @@ static function CLKernelArgLocal.FromBytes(bytes: CommandQueue<UIntPtr>) := new 
 static function CLKernelArgLocal.FromItemCount<T>(item_count: CommandQueue<UInt32>): CLKernelArgLocal; where T: record;
 begin
   BlittableHelper.RaiseIfBad(typeof(T), '');
-  Result := FromBytes(item_count.ThenConstConvert(item_count->new UIntPtr(
+  Result := FromBytes(item_count.ThenConvert(item_count->new UIntPtr(
     uint64(Marshal.Sizeof(default(T)))*UInt32(item_count)
-  )));
+  ), false,true));
 end;
 static function CLKernelArgLocal.FromItemCount<T>(item_count: CommandQueue<Int32>): CLKernelArgLocal; where T: record;
 begin
   BlittableHelper.RaiseIfBad(typeof(T), '');
-  Result := FromBytes(item_count.ThenConstConvert(item_count->new UIntPtr(
+  Result := FromBytes(item_count.ThenConvert(item_count->new UIntPtr(
     uint64(Marshal.Sizeof(default(T)))*UInt32(item_count)
-  )));
+  ), false,true));
 end;
 
 {$endregion FromItemCount}
@@ -16298,7 +16722,7 @@ type
     if data.q is ConstQueue<array of T>(var c_q) then
       new CLKernelArgPrivateSetterArray<T>(c_q.Value) else nil;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16337,7 +16761,7 @@ type
     if data.q is ConstQueue<array[,] of T>(var c_q) then
       new CLKernelArgPrivateSetterArray2<T>(c_q.Value) else nil;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16376,7 +16800,7 @@ type
     if data.q is ConstQueue<array[,,] of T>(var c_q) then
       new CLKernelArgPrivateSetterArray3<T>(c_q.Value) else nil;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16415,7 +16839,7 @@ type
     if data.q is ConstQueue<ArraySegment<T>>(var c_q) then
       new CLKernelArgPrivateSetterArraySegment<T>(c_q.Value) else nil;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16454,7 +16878,7 @@ type
     if data.q is ConstQueue<NativeMemoryArea>(var c_q) then
       new CLKernelArgPrivateSetterNativeMemoryArea(c_q.Value) else nil;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16493,7 +16917,7 @@ type
     if data.q is ConstQueue<NativeValueArea<T>>(var c_q) then
       new CLKernelArgPrivateSetterNativeValueArea<T>(c_q.Value) else nil;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16532,7 +16956,7 @@ type
     if data.q is ConstQueue<NativeArrayArea<T>>(var c_q) then
       new CLKernelArgPrivateSetterNativeArrayArea<T>(c_q.Value) else nil;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16571,7 +16995,7 @@ type
     if data.q is ConstQueue<NativeMemory>(var c_q) then
       new CLKernelArgPrivateSetterNativeMemory(c_q.Value) else nil;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16610,7 +17034,7 @@ type
     if data.q is ConstQueue<NativeValue<T>>(var c_q) then
       new CLKernelArgPrivateSetterNativeValue<T>(c_q.Value) else nil;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16649,7 +17073,7 @@ type
     if data.q is ConstQueue<NativeArray<T>>(var c_q) then
       new CLKernelArgPrivateSetterNativeArray<T>(c_q.Value) else nil;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16690,7 +17114,7 @@ type
     if data.q is ConstQueue<T>(var c_q) then
       new CLKernelArgPrivateSetterValue<T>(c_q.Value) else nil;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -16971,10 +17395,9 @@ type
 {$region GPUCommand}
 
 type
-  EnqueueableGPUCommand<T> = abstract class(CommonGPUCommand<T>)
+  EnqueueableGPUCommand<T> = abstract class(GPUCommand<T>)
     
-    protected function ValidateForObj  (o: T              ): boolean; override := true;
-    protected function ValidateForQueue(q: CommandQueue<T>): boolean; override := true;
+    protected function TryPreCall(q: CommandQueue<T>): boolean; override := false;
     
     protected function EnqEvCapacity: integer; abstract;
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<T>; abstract;
@@ -16983,14 +17406,29 @@ type
       var TODO := 0; //TODO abstract
     end;
     
-    protected function Invoke(o_const: boolean; get_o: ()->T; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
+    protected function Invoke(dep_ok: boolean; inp: CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
+      var get_o: ()->T;
+      var o_const: boolean;
+      if dep_ok then
+      begin
+        get_o := ()->inp.expected_const_res;
+        o_const := true;
+      end else
+      begin
+        var prev_qr := inp.InvokeToAny(g, l);
+        l := prev_qr.TakeBaseOut;
+        get_o := prev_qr.GetResDirect;
+        o_const := prev_qr.IsConst;
+      end;
+      
       var (enq_ev, enq_act) := EnqueueableCore.Invoke(
         self.EnqEvCapacity, o_const, get_o, g, l,
         InvokeParams, ProcessError
         {$ifdef DEBUG},self{$endif}
       );
-      Result := new QueueResNil(new CLTaskLocalData(enq_ev));
+      
+      Result := new QueueResNil(enq_ev);
       if enq_act<>nil then Result.AddAction(enq_act);
     end;
     
@@ -17067,7 +17505,7 @@ type
     
   end;
   
-  EnqueueableExecCommand = abstract class(CommonGPUCommand<CLKernel>)
+  EnqueueableExecCommand = abstract class(GPUCommand<CLKernel>)
     private args: array of CLKernelArg;
     private const_args_setters: array of CLKernelArgSetter;
     private args_c, args_non_const_c: integer;
@@ -17112,16 +17550,11 @@ type
       ApplyConstArgsTo(Result);
     end{$ifdef ExecDebug}, self{$endif});
     
-    protected function ValidateForObj(k: CLKernel): boolean; override;
+    protected function TryPreCall(q: CommandQueue<CLKernel>): boolean; override;
     begin
-      Result := true;
-      GetArgCache(k); // Auto calls ApplyConstArgsTo
-    end;
-    protected function ValidateForQueue(q: CommandQueue<CLKernel>): boolean; override;
-    begin
-      Result := true;
-      if (q is ParameterQueue<CLKernel>(var p_q)) and p_q.DefaultDefined then
-        GetArgCache(p_q.Default);
+      Result := false;
+      if q.const_res_dep=nil then exit;
+      GetArgCache(q.expected_const_res); // Auto calls ApplyConstArgsTo
     end;
     
     protected function EnqEvCapacity: integer; abstract;
@@ -17165,28 +17598,43 @@ type
     
     {$endregion DerCommon}
     
-    protected function Invoke(k_const: boolean; get_k: ()->CLKernel; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
+    protected function Invoke(dep_ok: boolean; inp: CommandQueue<CLKernel>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
+      var get_k: ()->CLKernel;
+      var k_const: boolean;
+      if dep_ok then
+      begin
+        get_k := ()->inp.expected_const_res;
+        k_const := true;
+      end else
+      begin
+        var prev_qr := inp.InvokeToAny(g, l);
+        l := prev_qr.TakeBaseOut;
+        get_k := prev_qr.GetResDirect;
+        k_const := prev_qr.IsConst;
+      end;
+      
       var get_k_ntv: ()->cl_kernel;
       var arg_cache := default(CLKernelArgCache);
       if k_const then
       begin
-        arg_cache := self.GetArgCache(get_k());
+        arg_cache := self.GetArgCache(get_k);
         get_k_ntv := ()->arg_cache.ntv;
       end else
         get_k_ntv := ()->
         begin
-          arg_cache := self.GetArgCache(get_k());
+          arg_cache := self.GetArgCache(get_k);
           Result := arg_cache.ntv;
         end;
       
+      //TODO Надо ли "()->" перед arg_cache?
       var (enq_ev, enq_act) := EnqueueableCore.Invoke(
         self.args_non_const_c+self.EnqEvCapacity, k_const, get_k_ntv, g, l,
         (g, enq_evs)->InvokeParams(g, enq_evs, ()->arg_cache), ProcessError
         {$ifdef DEBUG},self{$endif}
       );
       
-      Result := new QueueResNil(new CLTaskLocalData(enq_ev));
+      Result := new QueueResNil(enq_ev);
       if enq_act<>nil then Result.AddAction(enq_act);
     end;
     
@@ -17214,17 +17662,20 @@ type
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResDirectFactory<TRes,TR>): TR; where TR: QueueRes<TRes>;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: QueueRes<TRes>;
     begin
       Result := qr_factory.MakeDelayed(qr->
       begin
         var prev_qr := prev_commands.InvokeToAny(g, l);
+        var inp_const := prev_qr.IsConst;
+        l := prev_qr.TakeBaseOut;
         
         var (enq_ev, enq_act) := EnqueueableCore.Invoke(
-          self.EnqEvCapacity, prev_qr.IsConst, prev_qr.GetResDirect, g, prev_qr.TakeBaseOut,
+          self.EnqEvCapacity, inp_const, prev_qr.GetResDirect, g, l,
           (g, enq_evs)->InvokeParams(g, enq_evs, qr), ProcessError
           {$ifdef DEBUG},self{$endif}
         );
+        
         Result := new CLTaskLocalData(enq_ev);
         if enq_act<>nil then Result.prev_delegate.AddAction(enq_act);
       end);
@@ -17297,7 +17748,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
        sz1.InitBeforeInvoke(g, prev_hubs);
@@ -17380,7 +17831,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
        sz1.InitBeforeInvoke(g, prev_hubs);
@@ -17474,7 +17925,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
        sz1.InitBeforeInvoke(g, prev_hubs);
@@ -17577,7 +18028,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
       global_work_offset.InitBeforeInvoke(g, prev_hubs);
@@ -18445,7 +18896,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -18522,7 +18973,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
              val.InitBeforeInvoke(g, prev_hubs);
       mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -18712,7 +19163,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -18788,7 +19239,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -18864,7 +19315,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -18940,7 +19391,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -19016,7 +19467,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -19092,7 +19543,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -19174,7 +19625,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                a.InitBeforeInvoke(g, prev_hubs);
            a_ind.InitBeforeInvoke(g, prev_hubs);
@@ -19284,7 +19735,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                a.InitBeforeInvoke(g, prev_hubs);
           a_ind1.InitBeforeInvoke(g, prev_hubs);
@@ -19405,7 +19856,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                a.InitBeforeInvoke(g, prev_hubs);
           a_ind1.InitBeforeInvoke(g, prev_hubs);
@@ -19531,7 +19982,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                a.InitBeforeInvoke(g, prev_hubs);
            a_ind.InitBeforeInvoke(g, prev_hubs);
@@ -19641,7 +20092,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                a.InitBeforeInvoke(g, prev_hubs);
           a_ind1.InitBeforeInvoke(g, prev_hubs);
@@ -19762,7 +20213,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                a.InitBeforeInvoke(g, prev_hubs);
           a_ind1.InitBeforeInvoke(g, prev_hubs);
@@ -19895,7 +20346,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       ptr.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -19964,7 +20415,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
              ptr.InitBeforeInvoke(g, prev_hubs);
       mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -20047,7 +20498,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       ptr.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -20116,7 +20567,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
              ptr.InitBeforeInvoke(g, prev_hubs);
       mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -20561,7 +21012,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -20637,7 +21088,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -20718,7 +21169,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -20799,7 +21250,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -20880,7 +21331,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -20961,7 +21412,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -21037,7 +21488,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -21113,7 +21564,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -21194,7 +21645,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -21275,7 +21726,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -21356,7 +21807,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -21437,7 +21888,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -21525,7 +21976,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
     end;
     
@@ -21588,7 +22039,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       val.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -21670,7 +22121,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
          mem_offset.InitBeforeInvoke(g, prev_hubs);
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
@@ -21758,7 +22209,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                 val.InitBeforeInvoke(g, prev_hubs);
          mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -21903,7 +22354,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -21979,7 +22430,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -22055,7 +22506,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -22139,7 +22590,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                      a.InitBeforeInvoke(g, prev_hubs);
                  a_ind.InitBeforeInvoke(g, prev_hubs);
@@ -22260,7 +22711,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                      a.InitBeforeInvoke(g, prev_hubs);
                 a_ind1.InitBeforeInvoke(g, prev_hubs);
@@ -22392,7 +22843,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                      a.InitBeforeInvoke(g, prev_hubs);
                 a_ind1.InitBeforeInvoke(g, prev_hubs);
@@ -22521,7 +22972,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
     end;
     
@@ -22588,7 +23039,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
          mem_offset.InitBeforeInvoke(g, prev_hubs);
       fill_byte_len.InitBeforeInvoke(g, prev_hubs);
@@ -22669,7 +23120,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                    ptr.InitBeforeInvoke(g, prev_hubs);
       pattern_byte_len.InitBeforeInvoke(g, prev_hubs);
@@ -22749,7 +23200,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                    ptr.InitBeforeInvoke(g, prev_hubs);
       pattern_byte_len.InitBeforeInvoke(g, prev_hubs);
@@ -22967,7 +23418,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -23037,7 +23488,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
         native_data.InitBeforeInvoke(g, prev_hubs);
          mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -23121,7 +23572,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -23191,7 +23642,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
         native_data.InitBeforeInvoke(g, prev_hubs);
          mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -23280,7 +23731,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -23355,7 +23806,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
         native_data.InitBeforeInvoke(g, prev_hubs);
          mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -23444,7 +23895,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -23519,7 +23970,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
         native_data.InitBeforeInvoke(g, prev_hubs);
          mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -23608,7 +24059,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -23683,7 +24134,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
         native_data.InitBeforeInvoke(g, prev_hubs);
          mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -23772,7 +24223,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -23847,7 +24298,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
         native_data.InitBeforeInvoke(g, prev_hubs);
          mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -23935,7 +24386,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       mem.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -24006,7 +24457,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
               mem.InitBeforeInvoke(g, prev_hubs);
       from_offset.InitBeforeInvoke(g, prev_hubs);
@@ -24098,7 +24549,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       mem.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -24169,7 +24620,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
               mem.InitBeforeInvoke(g, prev_hubs);
       from_offset.InitBeforeInvoke(g, prev_hubs);
@@ -24280,7 +24731,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
       mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -24353,7 +24804,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of TRecord>): EnqFunc<CLMemory>; override;
     begin
@@ -24413,7 +24864,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
       len.InitBeforeInvoke(g, prev_hubs);
@@ -24494,7 +24945,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
       len1.InitBeforeInvoke(g, prev_hubs);
@@ -24586,7 +25037,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
       len1.InitBeforeInvoke(g, prev_hubs);
@@ -24776,7 +25227,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
     end;
     
@@ -24835,7 +25286,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       val.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -24904,7 +25355,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -24970,7 +25421,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -25036,7 +25487,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -25102,7 +25553,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -25192,7 +25643,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
              mem.InitBeforeInvoke(g, prev_hubs);
       mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -25269,7 +25720,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
              mem.InitBeforeInvoke(g, prev_hubs);
       mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -25344,7 +25795,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       val.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -25410,7 +25861,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       val.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -25479,7 +25930,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<&T>): EnqFunc<CLValue<T>>; override;
     begin
@@ -26094,7 +26545,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -26167,7 +26618,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       val.InitBeforeInvoke(g, prev_hubs);
       ind.InitBeforeInvoke(g, prev_hubs);
@@ -26245,7 +26696,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -26317,7 +26768,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -26389,7 +26840,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -26461,7 +26912,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -26533,7 +26984,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -26605,7 +27056,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -26683,7 +27134,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
           a.InitBeforeInvoke(g, prev_hubs);
       a_ind.InitBeforeInvoke(g, prev_hubs);
@@ -26789,7 +27240,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
            a.InitBeforeInvoke(g, prev_hubs);
       a_ind1.InitBeforeInvoke(g, prev_hubs);
@@ -26906,7 +27357,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
            a.InitBeforeInvoke(g, prev_hubs);
       a_ind1.InitBeforeInvoke(g, prev_hubs);
@@ -27028,7 +27479,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
           a.InitBeforeInvoke(g, prev_hubs);
       a_ind.InitBeforeInvoke(g, prev_hubs);
@@ -27134,7 +27585,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
            a.InitBeforeInvoke(g, prev_hubs);
       a_ind1.InitBeforeInvoke(g, prev_hubs);
@@ -27251,7 +27702,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
            a.InitBeforeInvoke(g, prev_hubs);
       a_ind1.InitBeforeInvoke(g, prev_hubs);
@@ -27387,7 +27838,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
         a.InitBeforeInvoke(g, prev_hubs);
       ind.InitBeforeInvoke(g, prev_hubs);
@@ -27470,7 +27921,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
         a.InitBeforeInvoke(g, prev_hubs);
       ind.InitBeforeInvoke(g, prev_hubs);
@@ -27551,7 +28002,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       ptr.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -27622,7 +28073,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       ptr.InitBeforeInvoke(g, prev_hubs);
       ind.InitBeforeInvoke(g, prev_hubs);
@@ -27707,7 +28158,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       ptr.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -27778,7 +28229,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       ptr.InitBeforeInvoke(g, prev_hubs);
       ind.InitBeforeInvoke(g, prev_hubs);
@@ -28009,7 +28460,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -28086,7 +28537,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -28163,7 +28614,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -28240,7 +28691,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -28317,7 +28768,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -28394,7 +28845,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -28471,7 +28922,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -28548,7 +28999,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -28625,7 +29076,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -28702,7 +29153,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -28779,7 +29230,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -28856,7 +29307,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
        mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -28940,7 +29391,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
     end;
     
@@ -28999,7 +29450,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       val.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -29077,7 +29528,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       ind.InitBeforeInvoke(g, prev_hubs);
       len.InitBeforeInvoke(g, prev_hubs);
@@ -29161,7 +29612,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       val.InitBeforeInvoke(g, prev_hubs);
       ind.InitBeforeInvoke(g, prev_hubs);
@@ -29248,7 +29699,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -29319,7 +29770,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -29390,7 +29841,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -29469,7 +29920,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                 a.InitBeforeInvoke(g, prev_hubs);
             a_ind.InitBeforeInvoke(g, prev_hubs);
@@ -29586,7 +30037,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                 a.InitBeforeInvoke(g, prev_hubs);
            a_ind1.InitBeforeInvoke(g, prev_hubs);
@@ -29714,7 +30165,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
                 a.InitBeforeInvoke(g, prev_hubs);
            a_ind1.InitBeforeInvoke(g, prev_hubs);
@@ -29839,7 +30290,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -29914,7 +30365,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
              a.InitBeforeInvoke(g, prev_hubs);
            ind.InitBeforeInvoke(g, prev_hubs);
@@ -30005,7 +30456,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
               ptr.InitBeforeInvoke(g, prev_hubs);
       pattern_len.InitBeforeInvoke(g, prev_hubs);
@@ -30086,7 +30537,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
               ptr.InitBeforeInvoke(g, prev_hubs);
       pattern_len.InitBeforeInvoke(g, prev_hubs);
@@ -30305,7 +30756,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -30376,7 +30827,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
               ind.InitBeforeInvoke(g, prev_hubs);
@@ -30461,7 +30912,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -30532,7 +30983,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
               ind.InitBeforeInvoke(g, prev_hubs);
@@ -30617,7 +31068,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -30688,7 +31139,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
               ind.InitBeforeInvoke(g, prev_hubs);
@@ -30773,7 +31224,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -30844,7 +31295,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
               ind.InitBeforeInvoke(g, prev_hubs);
@@ -30929,7 +31380,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -31000,7 +31451,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
               ind.InitBeforeInvoke(g, prev_hubs);
@@ -31085,7 +31536,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -31156,7 +31607,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
               ind.InitBeforeInvoke(g, prev_hubs);
@@ -31245,7 +31696,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       mem.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -31319,7 +31770,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
              mem.InitBeforeInvoke(g, prev_hubs);
       mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -31414,7 +31865,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       mem.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -31488,7 +31939,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
              mem.InitBeforeInvoke(g, prev_hubs);
       mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -31585,7 +32036,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       val.InitBeforeInvoke(g, prev_hubs);
       ind.InitBeforeInvoke(g, prev_hubs);
@@ -31662,7 +32113,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       val.InitBeforeInvoke(g, prev_hubs);
       ind.InitBeforeInvoke(g, prev_hubs);
@@ -31737,7 +32188,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -31809,7 +32260,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
              a.InitBeforeInvoke(g, prev_hubs);
       from_ind.InitBeforeInvoke(g, prev_hubs);
@@ -31902,7 +32353,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       a.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -31974,7 +32425,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
              a.InitBeforeInvoke(g, prev_hubs);
       from_ind.InitBeforeInvoke(g, prev_hubs);
@@ -32072,7 +32523,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
       ind.InitBeforeInvoke(g, prev_hubs);
@@ -32141,7 +32592,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of &T>): EnqFunc<CLArray<T>>; override;
     begin
@@ -32197,7 +32648,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
       len.InitBeforeInvoke(g, prev_hubs);
@@ -32274,7 +32725,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
       len1.InitBeforeInvoke(g, prev_hubs);
@@ -32362,7 +32813,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
       len1.InitBeforeInvoke(g, prev_hubs);
@@ -32451,6 +32902,8 @@ end;
 
 {$region CQ}
 
+function CQNil := ConstQueueNil.Instance;
+
 function CQ<T>(o: T) := CommandQueue&<T>(o);
 
 {$endregion CQ}
@@ -32503,7 +32956,7 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
     public constructor(f: TFunc) := self.f := f;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := exit;
     
     protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function InvokeFunc(err_handler: CLTaskErrHandler; c: CLContext{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG}): T;
@@ -32574,7 +33027,7 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
     public constructor(p: TProc) := self.p := p;
     private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override := exit;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := exit;
     
     protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
     procedure InvokeProc(err_handler: CLTaskErrHandler; c: CLContext{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG});
@@ -32603,8 +33056,6 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
   
 {$endregion Common}
 
-{$region Quick}
-
 {$region Func}
 
 type
@@ -32612,7 +33063,7 @@ type
   where TFunc: ISimpleFunc0Container<T>;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResDirectFactory<T,TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<T,TR>): TR; where TR: IQueueRes;
     begin
       var err_handler := g.curr_err_handler;
       {$ifdef DEBUG}
@@ -32636,10 +33087,57 @@ type
     
   end;
   
-function HQFQ<T>(f: ()->T) :=
-new CommandQueueHostQuickFunc<T, SimpleFunc0Container <T>>(f);
-function HQFQ<T>(f: CLContext->T) :=
-new CommandQueueHostQuickFunc<T, SimpleFunc0ContainerC<T>>(f);
+  CommandQueueHostThreadedFunc<T, TFunc> = sealed class(CommandQueueHostFuncBase<T, TFunc>)
+  where TFunc: ISimpleFunc0Container<T>;
+    
+    private function MakeNilBody    (prev_d: QueueResComplDelegateData; c: CLContext; err_handler: CLTaskErrHandler; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG}): Action := ()->
+    begin
+      prev_d.Invoke(c);
+      InvokeFunc(err_handler, c{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
+    end;
+    private function MakeResBody<TR>(prev_d: QueueResComplDelegateData; c: CLContext; err_handler: CLTaskErrHandler; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG}): Action; where TR: QueueRes<T>;
+    begin
+      Result := ()->
+      begin
+        prev_d.Invoke(c);
+        own_qr.SetRes(
+          InvokeFunc(err_handler, c{$ifdef DEBUG}, err_test_reason{$endif DEBUG})
+        );
+      end;
+    end;
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<T,TR>; make_body: (QueueResComplDelegateData,CLContext,CLTaskErrHandler,TR{$ifdef DEBUG},string{$endif DEBUG})->Action): TR; where TR: IQueueRes;
+    begin
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.InvokeFunc';
+      g.curr_err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(
+        UserEvent.StartWorkThread(l.prev_ev,
+          make_body(l.prev_delegate, g.c, g.curr_err_handler, qr{$ifdef DEBUG}, err_test_reason{$endif DEBUG}), g
+          {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
+        )
+      ));
+    end;
+    
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := Invoke(g, l, qr_nil_factory, MakeNilBody);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := Invoke(g, l, qr_val_factory, MakeResBody&<QueueResVal<T>>);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := Invoke(g, l, qr_ptr_factory, MakeResBody&<QueueResPtr<T>>);
+    
+  end;
+  
+function HFQ<T,TFunc>(f: TFunc; need_own_thread: boolean): CommandQueue<T>; where TFunc: ISimpleFunc0Container<T>;
+begin
+  if need_own_thread then
+    Result := new CommandQueueHostThreadedFunc<T, TFunc>(f) else
+    Result := new CommandQueueHostQuickFunc   <T, TFunc>(f);
+end;
+
+function HFQ<T>(f: ()->T; need_own_thread: boolean) :=
+HFQ&<T, SimpleFunc0Container <T>>(f, need_own_thread);
+function HFQ<T>(f: CLContext->T; need_own_thread: boolean) :=
+HFQ&<T, SimpleFunc0ContainerC<T>>(f, need_own_thread);
 
 {$endregion Func}
 
@@ -32666,70 +33164,6 @@ type
     
   end;
   
-function HQPQ(p: ()->()) :=
-new CommandQueueHostQuickProc<SimpleProc0Container >(p);
-function HQPQ(p: CLContext->()) :=
-new CommandQueueHostQuickProc<SimpleProc0Containerc>(p);
-
-{$endregion Proc}
-
-{$endregion Quick}
-
-{$region Threaded}
-
-{$region Func}
-
-type
-  CommandQueueHostThreadedFunc<T, TFunc> = sealed class(CommandQueueHostFuncBase<T, TFunc>)
-  where TFunc: ISimpleFunc0Container<T>;
-    
-    private function MakeNilBody    (prev_d: QueueResComplDelegateData; c: CLContext; err_handler: CLTaskErrHandler; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG}): Action := ()->
-    begin
-      prev_d.Invoke(c);
-      InvokeFunc(err_handler, c{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
-    end;
-    private function MakeResBody<TR>(prev_d: QueueResComplDelegateData; c: CLContext; err_handler: CLTaskErrHandler; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG}): Action; where TR: QueueRes<T>;
-    begin
-      Result := ()->
-      begin
-        prev_d.Invoke(c);
-        own_qr.SetRes(
-          InvokeFunc(err_handler, c{$ifdef DEBUG}, err_test_reason{$endif DEBUG})
-        );
-      end;
-    end;
-    
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: (QueueResComplDelegateData,CLContext,CLTaskErrHandler,TR{$ifdef DEBUG},string{$endif DEBUG})->Action): TR; where TR: IQueueRes;
-    begin
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.InvokeFunc';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
-      Result := make_qr(qr->new CLTaskLocalData(
-        UserEvent.StartWorkThread(l.prev_ev,
-          make_body(l.prev_delegate, g.c, g.curr_err_handler, qr{$ifdef DEBUG}, err_test_reason{$endif DEBUG}), g
-          {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-        )
-      ));
-    end;
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := Invoke(g, l, qr_nil_factory.MakeDelayed, MakeNilBody);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := Invoke(g, l, qr_val_factory.MakeDelayed, MakeResBody&<QueueResValDirect<T>>);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := Invoke(g, l, qr_ptr_factory.MakeDelayed, MakeResBody&<QueueResPtr<T>>);
-    
-  end;
-  
-function HTFQ<T>(f: ()->T) :=
-new CommandQueueHostThreadedFunc<T, SimpleFunc0Container <T>>(f);
-function HTFQ<T>(f: CLContext->T) :=
-new CommandQueueHostThreadedFunc<T, SimpleFunc0ContainerC<T>>(f);
-
-{$endregion Func}
-
-{$region Proc}
-
-type
   CommandQueueHostThreadedProc<TProc> = sealed class(CommandQueueHostProcBase<TProc>)
   where TProc: ISimpleProc0Container;
     
@@ -32745,22 +33179,27 @@ type
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.InvokeProc';
       g.curr_err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
-      Result := new QueueResNil(new CLTaskLocalData(UserEvent.StartWorkThread(
+      Result := new QueueResNil(UserEvent.StartWorkThread(
         l.prev_ev, MakeBody(l.prev_delegate, g.curr_err_handler, g.c{$ifdef DEBUG}, err_test_reason{$endif DEBUG}), g
         {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-      )));
+      ));
     end;
     
   end;
   
-function HTPQ(p: ()->()) :=
-new CommandQueueHostThreadedProc<SimpleProc0Container >(p);
-function HTPQ(p: CLContext->()) :=
-new CommandQueueHostThreadedProc<SimpleProc0ContainerC>(p);
+function HPQ<TProc>(p: TProc; need_own_thread: boolean): CommandQueueNil; where TProc: ISimpleProc0Container;
+begin
+  if need_own_thread then
+    Result := new CommandQueueHostThreadedProc<TProc>(p) else
+    Result := new CommandQueueHostQuickProc   <TProc>(p);
+end;
+
+function HPQ(p: ()->(); need_own_thread: boolean) :=
+HPQ&<SimpleProc0Container >(p, need_own_thread);
+function HPQ(p: CLContext->(); need_own_thread: boolean) :=
+HPQ&<SimpleProc0ContainerC>(p, need_own_thread);
 
 {$endregion Proc}
-
-{$endregion Threaded}
 
 {$endregion HFQ/HPQ}
 
@@ -32770,264 +33209,264 @@ new CommandQueueHostThreadedProc<SimpleProc0ContainerC>(p);
 
 {$region Simple}
 
-function CombineSyncQueueBase(params qs: array of CommandQueueBase) := QueueArrayUtils.ConstructSync(qs, true);
+function CombineSyncQueue(params qs: array of CommandQueueBase) := QueueArrayUtils.ConstructSync&<CommandQueueBase>(qs.Cast&<CommandQueueBase>);
+function CombineSyncQueue(params qs: array of CommandQueueNil) := QueueArrayUtils.ConstructSync&<CommandQueueNil>(qs.Cast&<CommandQueueBase>);
+function CombineSyncQueue<T>(params qs: array of CommandQueue<T>) := QueueArrayUtils.ConstructSync&<CommandQueue<T>>(qs.Cast&<CommandQueueBase>);
 
-function CombineSyncQueueNil(params qs: array of CommandQueueNil) := QueueArrayUtils.ConstructSyncNil(qs.Cast&<CommandQueueBase>);
-function CombineSyncQueueNil(qs: array of CommandQueueBase; last: CommandQueueNil) := QueueArrayUtils.ConstructSyncNil(qs.Append&<CommandQueueBase>(last));
-
-function CombineSyncQueue<T>(params qs: array of CommandQueue<T>) := QueueArrayUtils.ConstructSync&<T>(qs.Cast&<CommandQueueBase>);
-function CombineSyncQueue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>) := QueueArrayUtils.ConstructSync&<T>(qs.Append&<CommandQueueBase>(last));
+function CombineSyncQueue<TQ>(qs: array of TQ; last: CommandQueueBase) := QueueArrayUtils.ConstructSync&<CommandQueueBase>(qs.Cast&<CommandQueueBase>.Append&<CommandQueueBase>(last));
+function CombineSyncQueue<TQ>(qs: array of TQ; last: CommandQueueNil) := QueueArrayUtils.ConstructSync&<CommandQueueNil>(qs.Cast&<CommandQueueBase>.Append&<CommandQueueBase>(last));
+function CombineSyncQueue<T, TQ>(qs: array of TQ; last: CommandQueue<T>) := QueueArrayUtils.ConstructSync&<CommandQueue<T>>(qs.Cast&<CommandQueueBase>.Append&<CommandQueueBase>(last));
 
 {$endregion Simple}
-
-{$region Lazy}
-
-{$endregion Lazy}
 
 {$region Conv}
 
 {$region NonContext}
 
-function CombineConstConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: array of CommandQueue<TInp>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if qs.All(q->q is ConstQueue<TInp>) then
+  if qs.All(q->q.IsConstResDepEmpty) then
   begin
-    var res := qs.ConvertAll(q->ConstQueue&<TInp>(q).Value);
-    Result := conv(res);
+    var inp := qs.ConvertAll(q->q.expected_const_res);
+    Result := if can_pre_calc then
+      CQ(conv(inp)) else
+      HFQ(()->conv(inp), need_own_thread);
+    Result := CombineSyncQueue(qs, Result);
   end else
-    Result := new CommandQueueConvertQuickArray<TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainer<array of TInp, TRes>, TBooleanTrueFlag>(qs.ToArray, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray<TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainer<array of TInp, TRes>>(qs.ToArray, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray   <TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainer<array of TInp, TRes>>(qs.ToArray, conv, can_pre_calc);
 end;
 
-function CombineConstConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConvSyncQueueN2<TInp1,TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2)) else
+      HFQ(()->conv(inp1,inp2), need_own_thread);
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2), Result);
   end else
-    Result := new CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, QueueArray2SyncInvoker, SimpleFunc2Container<TInp1,TInp2,TRes>, TBooleanTrueFlag>(q1,q2, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray2<TInp1,TInp2, TRes, QueueArray2SyncInvoker, SimpleFunc2Container<TInp1, TInp2, TRes>>(q1,q2, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray2   <TInp1,TInp2, TRes, QueueArray2SyncInvoker, SimpleFunc2Container<TInp1, TInp2, TRes>>(q1,q2, conv, can_pre_calc);
 end;
-function CombineConstConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConvSyncQueueN3<TInp1,TInp2,TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3)) else
+      HFQ(()->conv(inp1,inp2,inp3), need_own_thread);
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3), Result);
   end else
-    Result := new CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, QueueArray3SyncInvoker, SimpleFunc3Container<TInp1,TInp2,TInp3,TRes>, TBooleanTrueFlag>(q1,q2,q3, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray3<TInp1,TInp2,TInp3, TRes, QueueArray3SyncInvoker, SimpleFunc3Container<TInp1, TInp2, TInp3, TRes>>(q1,q2,q3, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray3   <TInp1,TInp2,TInp3, TRes, QueueArray3SyncInvoker, SimpleFunc3Container<TInp1, TInp2, TInp3, TRes>>(q1,q2,q3, conv, can_pre_calc);
 end;
-function CombineConstConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConvSyncQueueN4<TInp1,TInp2,TInp3,TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4)) else
+      HFQ(()->conv(inp1,inp2,inp3,inp4), need_own_thread);
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4), Result);
   end else
-    Result := new CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4SyncInvoker, SimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray4<TInp1,TInp2,TInp3,TInp4, TRes, QueueArray4SyncInvoker, SimpleFunc4Container<TInp1, TInp2, TInp3, TInp4, TRes>>(q1,q2,q3,q4, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray4   <TInp1,TInp2,TInp3,TInp4, TRes, QueueArray4SyncInvoker, SimpleFunc4Container<TInp1, TInp2, TInp3, TInp4, TRes>>(q1,q2,q3,q4, conv, can_pre_calc);
 end;
-function CombineConstConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConvSyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4,inp5)) else
+      HFQ(()->conv(inp1,inp2,inp3,inp4,inp5), need_own_thread);
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5), Result);
   end else
-    Result := new CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5SyncInvoker, SimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes, QueueArray5SyncInvoker, SimpleFunc5Container<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>>(q1,q2,q3,q4,q5, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray5   <TInp1,TInp2,TInp3,TInp4,TInp5, TRes, QueueArray5SyncInvoker, SimpleFunc5Container<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>>(q1,q2,q3,q4,q5, conv, can_pre_calc);
 end;
-function CombineConstConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConvSyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4,inp5,inp6)) else
+      HFQ(()->conv(inp1,inp2,inp3,inp4,inp5,inp6), need_own_thread);
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6), Result);
   end else
-    Result := new CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6SyncInvoker, SimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes, QueueArray6SyncInvoker, SimpleFunc6Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>>(q1,q2,q3,q4,q5,q6, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray6   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes, QueueArray6SyncInvoker, SimpleFunc6Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>>(q1,q2,q3,q4,q5,q6, conv, can_pre_calc);
 end;
-function CombineConstConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConvSyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) and (q7 is ConstQueue<TInp7>(var c_q7)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty and q7.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, c_q7.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    var inp7 := q7.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4,inp5,inp6,inp7)) else
+      HFQ(()->conv(inp1,inp2,inp3,inp4,inp5,inp6,inp7), need_own_thread);
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6,q7), Result);
   end else
-    Result := new CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7SyncInvoker, SimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6,q7, conv);
-end;
-
-function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray<TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainer<array of TInp, TRes>, TBooleanFalseFlag>(qs.ToArray, conv);
-end;
-
-function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, QueueArray2SyncInvoker, SimpleFunc2Container<TInp1,TInp2,TRes>, TBooleanFalseFlag>(q1,q2, conv);
-end;
-function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, QueueArray3SyncInvoker, SimpleFunc3Container<TInp1,TInp2,TInp3,TRes>, TBooleanFalseFlag>(q1,q2,q3, conv);
-end;
-function CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4SyncInvoker, SimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4, conv);
-end;
-function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5SyncInvoker, SimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5, conv);
-end;
-function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6SyncInvoker, SimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6, conv);
-end;
-function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7SyncInvoker, SimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6,q7, conv);
-end;
-
-function CombineThreadedConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray<TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainer<array of TInp, TRes>>(qs.ToArray, conv);
-end;
-
-function CombineThreadedConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray2<TInp1,TInp2,TRes, QueueArray2SyncInvoker, SimpleFunc2Container<TInp1,TInp2,TRes>>(q1,q2, conv);
-end;
-function CombineThreadedConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray3<TInp1,TInp2,TInp3,TRes, QueueArray3SyncInvoker, SimpleFunc3Container<TInp1,TInp2,TInp3,TRes>>(q1,q2,q3, conv);
-end;
-function CombineThreadedConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4SyncInvoker, SimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>>(q1,q2,q3,q4, conv);
-end;
-function CombineThreadedConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5SyncInvoker, SimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>>(q1,q2,q3,q4,q5, conv);
-end;
-function CombineThreadedConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6SyncInvoker, SimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>>(q1,q2,q3,q4,q5,q6, conv);
-end;
-function CombineThreadedConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7SyncInvoker, SimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>>(q1,q2,q3,q4,q5,q6,q7, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes, QueueArray7SyncInvoker, SimpleFunc7Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>>(q1,q2,q3,q4,q5,q6,q7, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray7   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes, QueueArray7SyncInvoker, SimpleFunc7Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>>(q1,q2,q3,q4,q5,q6,q7, conv, can_pre_calc);
 end;
 
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineConstConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; qs: array of CommandQueue<TInp>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if qs.All(q->q is ConstQueue<TInp>) then
+  if qs.All(q->q.IsConstResDepEmpty) then
   begin
-    var res := qs.ConvertAll(q->ConstQueue&<TInp>(q).Value);
-    Result := conv(res, nil);
+    var inp := qs.ConvertAll(q->q.expected_const_res);
+    Result := if can_pre_calc then
+      CQ(conv(inp, nil)) else
+      HFQ(c->conv(inp, c), need_own_thread);
+    Result := CombineSyncQueue(qs, Result);
   end else
-    Result := new CommandQueueConvertQuickArray<TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainerC<array of TInp, TRes>, TBooleanTrueFlag>(qs.ToArray, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray<TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainerC<array of TInp, TRes>>(qs.ToArray, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray   <TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainerC<array of TInp, TRes>>(qs.ToArray, conv, can_pre_calc);
 end;
 
-function CombineConstConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConvSyncQueueN2<TInp1,TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, nil);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2, nil)) else
+      HFQ(c->conv(inp1,inp2, c), need_own_thread);
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2), Result);
   end else
-    Result := new CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, QueueArray2SyncInvoker, SimpleFunc2ContainerC<TInp1,TInp2,TRes>, TBooleanTrueFlag>(q1,q2, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray2<TInp1,TInp2, TRes, QueueArray2SyncInvoker, SimpleFunc2ContainerC<TInp1, TInp2, TRes>>(q1,q2, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray2   <TInp1,TInp2, TRes, QueueArray2SyncInvoker, SimpleFunc2ContainerC<TInp1, TInp2, TRes>>(q1,q2, conv, can_pre_calc);
 end;
-function CombineConstConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConvSyncQueueN3<TInp1,TInp2,TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, nil);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3, nil)) else
+      HFQ(c->conv(inp1,inp2,inp3, c), need_own_thread);
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3), Result);
   end else
-    Result := new CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, QueueArray3SyncInvoker, SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>, TBooleanTrueFlag>(q1,q2,q3, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray3<TInp1,TInp2,TInp3, TRes, QueueArray3SyncInvoker, SimpleFunc3ContainerC<TInp1, TInp2, TInp3, TRes>>(q1,q2,q3, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray3   <TInp1,TInp2,TInp3, TRes, QueueArray3SyncInvoker, SimpleFunc3ContainerC<TInp1, TInp2, TInp3, TRes>>(q1,q2,q3, conv, can_pre_calc);
 end;
-function CombineConstConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConvSyncQueueN4<TInp1,TInp2,TInp3,TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, nil);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4, nil)) else
+      HFQ(c->conv(inp1,inp2,inp3,inp4, c), need_own_thread);
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4), Result);
   end else
-    Result := new CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4SyncInvoker, SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray4<TInp1,TInp2,TInp3,TInp4, TRes, QueueArray4SyncInvoker, SimpleFunc4ContainerC<TInp1, TInp2, TInp3, TInp4, TRes>>(q1,q2,q3,q4, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray4   <TInp1,TInp2,TInp3,TInp4, TRes, QueueArray4SyncInvoker, SimpleFunc4ContainerC<TInp1, TInp2, TInp3, TInp4, TRes>>(q1,q2,q3,q4, conv, can_pre_calc);
 end;
-function CombineConstConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConvSyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, nil);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4,inp5, nil)) else
+      HFQ(c->conv(inp1,inp2,inp3,inp4,inp5, c), need_own_thread);
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5), Result);
   end else
-    Result := new CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5SyncInvoker, SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes, QueueArray5SyncInvoker, SimpleFunc5ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>>(q1,q2,q3,q4,q5, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray5   <TInp1,TInp2,TInp3,TInp4,TInp5, TRes, QueueArray5SyncInvoker, SimpleFunc5ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>>(q1,q2,q3,q4,q5, conv, can_pre_calc);
 end;
-function CombineConstConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConvSyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, nil);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4,inp5,inp6, nil)) else
+      HFQ(c->conv(inp1,inp2,inp3,inp4,inp5,inp6, c), need_own_thread);
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6), Result);
   end else
-    Result := new CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6SyncInvoker, SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes, QueueArray6SyncInvoker, SimpleFunc6ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>>(q1,q2,q3,q4,q5,q6, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray6   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes, QueueArray6SyncInvoker, SimpleFunc6ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>>(q1,q2,q3,q4,q5,q6, conv, can_pre_calc);
 end;
-function CombineConstConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConvSyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) and (q7 is ConstQueue<TInp7>(var c_q7)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty and q7.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, c_q7.Value, nil);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    var inp7 := q7.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4,inp5,inp6,inp7, nil)) else
+      HFQ(c->conv(inp1,inp2,inp3,inp4,inp5,inp6,inp7, c), need_own_thread);
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6,q7), Result);
   end else
-    Result := new CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7SyncInvoker, SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6,q7, conv);
-end;
-
-function CombineQuickConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray<TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainerC<array of TInp, TRes>, TBooleanFalseFlag>(qs.ToArray, conv);
-end;
-
-function CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, QueueArray2SyncInvoker, SimpleFunc2ContainerC<TInp1,TInp2,TRes>, TBooleanFalseFlag>(q1,q2, conv);
-end;
-function CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, QueueArray3SyncInvoker, SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>, TBooleanFalseFlag>(q1,q2,q3, conv);
-end;
-function CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4SyncInvoker, SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4, conv);
-end;
-function CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5SyncInvoker, SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5, conv);
-end;
-function CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6SyncInvoker, SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6, conv);
-end;
-function CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7SyncInvoker, SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6,q7, conv);
-end;
-
-function CombineThreadedConvSyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray<TInp, TRes, QueueArraySyncInvoker, SimpleFuncContainerC<array of TInp, TRes>>(qs.ToArray, conv);
-end;
-
-function CombineThreadedConvSyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray2<TInp1,TInp2,TRes, QueueArray2SyncInvoker, SimpleFunc2ContainerC<TInp1,TInp2,TRes>>(q1,q2, conv);
-end;
-function CombineThreadedConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray3<TInp1,TInp2,TInp3,TRes, QueueArray3SyncInvoker, SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>>(q1,q2,q3, conv);
-end;
-function CombineThreadedConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4SyncInvoker, SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>>(q1,q2,q3,q4, conv);
-end;
-function CombineThreadedConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5SyncInvoker, SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>>(q1,q2,q3,q4,q5, conv);
-end;
-function CombineThreadedConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6SyncInvoker, SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>>(q1,q2,q3,q4,q5,q6, conv);
-end;
-function CombineThreadedConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7SyncInvoker, SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>>(q1,q2,q3,q4,q5,q6,q7, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes, QueueArray7SyncInvoker, SimpleFunc7ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>>(q1,q2,q3,q4,q5,q6,q7, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray7   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes, QueueArray7SyncInvoker, SimpleFunc7ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>>(q1,q2,q3,q4,q5,q6,q7, conv, can_pre_calc);
 end;
 
 {$endregion Context}
@@ -33038,260 +33477,264 @@ end;
 
 {$region NonContext}
 
-function CombineConstUseSyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineUseSyncQueue<TInp>(use: Action<array of TInp>; qs: array of CommandQueue<TInp>; need_own_thread, can_pre_calc: boolean): CommandQueue<array of TInp>;
 begin
-  if qs.All(q->q is ConstQueue<TInp>) then
+  if qs.All(q->q.IsConstResDepEmpty) then
   begin
-    var res := qs.ConvertAll(q->ConstQueue&<TInp>(q).Value);
-    use(res);
-    Result := res;
+    var inp := qs.ConvertAll(q->q.expected_const_res);
+    Result := CQ(inp);
+    if can_pre_calc then
+      use(inp) else
+      Result := HPQ(()->use(inp), need_own_thread) + Result;
+    Result := CombineSyncQueue(qs, Result);
   end else
-    Result := new CommandQueueUseQuickArray<TInp, QueueArraySyncInvoker, SimpleProcContainer<array of TInp>, TBooleanTrueFlag>(qs.ToArray, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray<TInp, QueueArraySyncInvoker, SimpleProcContainer<array of TInp>>(qs.ToArray, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray   <TInp, QueueArraySyncInvoker, SimpleProcContainer<array of TInp>>(qs.ToArray, use, can_pre_calc);
 end;
 
-function CombineConstUseSyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineUseSyncQueueN2<TInp1,TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2));
+    if can_pre_calc then
+      use(inp1,inp2) else
+      Result := HPQ(()->use(inp1,inp2), need_own_thread) + Result;
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2), Result);
   end else
-    Result := new CommandQueueUseQuickArray2<TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2Container<TInp1,TInp2>, TBooleanTrueFlag>(q1,q2, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray2<TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2Container<TInp1, TInp2>>(q1,q2, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray2   <TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2Container<TInp1, TInp2>>(q1,q2, use, can_pre_calc);
 end;
-function CombineConstUseSyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineUseSyncQueueN3<TInp1,TInp2,TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3));
+    if can_pre_calc then
+      use(inp1,inp2,inp3) else
+      Result := HPQ(()->use(inp1,inp2,inp3), need_own_thread) + Result;
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3), Result);
   end else
-    Result := new CommandQueueUseQuickArray3<TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3Container<TInp1,TInp2,TInp3>, TBooleanTrueFlag>(q1,q2,q3, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray3<TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3Container<TInp1, TInp2, TInp3>>(q1,q2,q3, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray3   <TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3Container<TInp1, TInp2, TInp3>>(q1,q2,q3, use, can_pre_calc);
 end;
-function CombineConstUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineUseSyncQueueN4<TInp1,TInp2,TInp3,TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4) else
+      Result := HPQ(()->use(inp1,inp2,inp3,inp4), need_own_thread) + Result;
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4), Result);
   end else
-    Result := new CommandQueueUseQuickArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4Container<TInp1,TInp2,TInp3,TInp4>, TBooleanTrueFlag>(q1,q2,q3,q4, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4Container<TInp1, TInp2, TInp3, TInp4>>(q1,q2,q3,q4, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray4   <TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4Container<TInp1, TInp2, TInp3, TInp4>>(q1,q2,q3,q4, use, can_pre_calc);
 end;
-function CombineConstUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineUseSyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4, inp5));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4,inp5) else
+      Result := HPQ(()->use(inp1,inp2,inp3,inp4,inp5), need_own_thread) + Result;
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5), Result);
   end else
-    Result := new CommandQueueUseQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>, TBooleanTrueFlag>(q1,q2,q3,q4,q5, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5Container<TInp1, TInp2, TInp3, TInp4, TInp5>>(q1,q2,q3,q4,q5, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray5   <TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5Container<TInp1, TInp2, TInp3, TInp4, TInp5>>(q1,q2,q3,q4,q5, use, can_pre_calc);
 end;
-function CombineConstUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineUseSyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4, inp5, inp6));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4,inp5,inp6) else
+      Result := HPQ(()->use(inp1,inp2,inp3,inp4,inp5,inp6), need_own_thread) + Result;
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6), Result);
   end else
-    Result := new CommandQueueUseQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>>(q1,q2,q3,q4,q5,q6, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray6   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>>(q1,q2,q3,q4,q5,q6, use, can_pre_calc);
 end;
-function CombineConstUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineUseSyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) and (q7 is ConstQueue<TInp7>(var c_q7)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty and q7.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, c_q7.Value);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, c_q7.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    var inp7 := q7.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4, inp5, inp6, inp7));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4,inp5,inp6,inp7) else
+      Result := HPQ(()->use(inp1,inp2,inp3,inp4,inp5,inp6,inp7), need_own_thread) + Result;
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6,q7), Result);
   end else
-    Result := new CommandQueueUseQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6,q7, use);
-end;
-
-function CombineQuickUseSyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-begin
-  Result := new CommandQueueUseQuickArray<TInp, QueueArraySyncInvoker, SimpleProcContainer<array of TInp>, TBooleanFalseFlag>(qs.ToArray, use);
-end;
-
-function CombineQuickUseSyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-begin
-  Result := new CommandQueueUseQuickArray2<TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2Container<TInp1,TInp2>, TBooleanFalseFlag>(q1,q2, use);
-end;
-function CombineQuickUseSyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-begin
-  Result := new CommandQueueUseQuickArray3<TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3Container<TInp1,TInp2,TInp3>, TBooleanFalseFlag>(q1,q2,q3, use);
-end;
-function CombineQuickUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-begin
-  Result := new CommandQueueUseQuickArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4Container<TInp1,TInp2,TInp3,TInp4>, TBooleanFalseFlag>(q1,q2,q3,q4, use);
-end;
-function CombineQuickUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-begin
-  Result := new CommandQueueUseQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>, TBooleanFalseFlag>(q1,q2,q3,q4,q5, use);
-end;
-function CombineQuickUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-begin
-  Result := new CommandQueueUseQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6, use);
-end;
-function CombineQuickUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-begin
-  Result := new CommandQueueUseQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6,q7, use);
-end;
-
-function CombineThreadedUseSyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-begin
-  Result := new CommandQueueUseThreadedArray<TInp, QueueArraySyncInvoker, SimpleProcContainer<array of TInp>>(qs.ToArray, use);
-end;
-
-function CombineThreadedUseSyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-begin
-  Result := new CommandQueueUseThreadedArray2<TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2Container<TInp1,TInp2>>(q1,q2, use);
-end;
-function CombineThreadedUseSyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-begin
-  Result := new CommandQueueUseThreadedArray3<TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3Container<TInp1,TInp2,TInp3>>(q1,q2,q3, use);
-end;
-function CombineThreadedUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-begin
-  Result := new CommandQueueUseThreadedArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4Container<TInp1,TInp2,TInp3,TInp4>>(q1,q2,q3,q4, use);
-end;
-function CombineThreadedUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-begin
-  Result := new CommandQueueUseThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>>(q1,q2,q3,q4,q5, use);
-end;
-function CombineThreadedUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-begin
-  Result := new CommandQueueUseThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>(q1,q2,q3,q4,q5,q6, use);
-end;
-function CombineThreadedUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-begin
-  Result := new CommandQueueUseThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>(q1,q2,q3,q4,q5,q6,q7, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>(q1,q2,q3,q4,q5,q6,q7, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray7   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>(q1,q2,q3,q4,q5,q6,q7, use, can_pre_calc);
 end;
 
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineConstUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; qs: array of CommandQueue<TInp>; need_own_thread, can_pre_calc: boolean): CommandQueue<array of TInp>;
 begin
-  if qs.All(q->q is ConstQueue<TInp>) then
+  if qs.All(q->q.IsConstResDepEmpty) then
   begin
-    var res := qs.ConvertAll(q->ConstQueue&<TInp>(q).Value);
-    use(res, nil);
-    Result := res;
+    var inp := qs.ConvertAll(q->q.expected_const_res);
+    Result := CQ(inp);
+    if can_pre_calc then
+      use(inp, nil) else
+      Result := HPQ(c->use(inp, c), need_own_thread) + Result;
+    Result := CombineSyncQueue(qs, Result);
   end else
-    Result := new CommandQueueUseQuickArray<TInp, QueueArraySyncInvoker, SimpleProcContainerC<array of TInp>, TBooleanTrueFlag>(qs.ToArray, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray<TInp, QueueArraySyncInvoker, SimpleProcContainerC<array of TInp>>(qs.ToArray, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray   <TInp, QueueArraySyncInvoker, SimpleProcContainerC<array of TInp>>(qs.ToArray, use, can_pre_calc);
 end;
 
-function CombineConstUseSyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineUseSyncQueueN2<TInp1,TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, nil);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2));
+    if can_pre_calc then
+      use(inp1,inp2, nil) else
+      Result := HPQ(c->use(inp1,inp2, c), need_own_thread) + Result;
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2), Result);
   end else
-    Result := new CommandQueueUseQuickArray2<TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2ContainerC<TInp1,TInp2>, TBooleanTrueFlag>(q1,q2, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray2<TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2ContainerC<TInp1, TInp2>>(q1,q2, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray2   <TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2ContainerC<TInp1, TInp2>>(q1,q2, use, can_pre_calc);
 end;
-function CombineConstUseSyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineUseSyncQueueN3<TInp1,TInp2,TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, nil);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3));
+    if can_pre_calc then
+      use(inp1,inp2,inp3, nil) else
+      Result := HPQ(c->use(inp1,inp2,inp3, c), need_own_thread) + Result;
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3), Result);
   end else
-    Result := new CommandQueueUseQuickArray3<TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3ContainerC<TInp1,TInp2,TInp3>, TBooleanTrueFlag>(q1,q2,q3, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray3<TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3ContainerC<TInp1, TInp2, TInp3>>(q1,q2,q3, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray3   <TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3ContainerC<TInp1, TInp2, TInp3>>(q1,q2,q3, use, can_pre_calc);
 end;
-function CombineConstUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineUseSyncQueueN4<TInp1,TInp2,TInp3,TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, nil);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4, nil) else
+      Result := HPQ(c->use(inp1,inp2,inp3,inp4, c), need_own_thread) + Result;
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4), Result);
   end else
-    Result := new CommandQueueUseQuickArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>, TBooleanTrueFlag>(q1,q2,q3,q4, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4ContainerC<TInp1, TInp2, TInp3, TInp4>>(q1,q2,q3,q4, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray4   <TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4ContainerC<TInp1, TInp2, TInp3, TInp4>>(q1,q2,q3,q4, use, can_pre_calc);
 end;
-function CombineConstUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineUseSyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, nil);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4, inp5));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4,inp5, nil) else
+      Result := HPQ(c->use(inp1,inp2,inp3,inp4,inp5, c), need_own_thread) + Result;
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5), Result);
   end else
-    Result := new CommandQueueUseQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>, TBooleanTrueFlag>(q1,q2,q3,q4,q5, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5>>(q1,q2,q3,q4,q5, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray5   <TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5>>(q1,q2,q3,q4,q5, use, can_pre_calc);
 end;
-function CombineConstUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineUseSyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, nil);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4, inp5, inp6));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4,inp5,inp6, nil) else
+      Result := HPQ(c->use(inp1,inp2,inp3,inp4,inp5,inp6, c), need_own_thread) + Result;
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6), Result);
   end else
-    Result := new CommandQueueUseQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>>(q1,q2,q3,q4,q5,q6, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray6   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>>(q1,q2,q3,q4,q5,q6, use, can_pre_calc);
 end;
-function CombineConstUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineUseSyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) and (q7 is ConstQueue<TInp7>(var c_q7)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty and q7.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, c_q7.Value, nil);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, c_q7.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    var inp7 := q7.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4, inp5, inp6, inp7));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4,inp5,inp6,inp7, nil) else
+      Result := HPQ(c->use(inp1,inp2,inp3,inp4,inp5,inp6,inp7, c), need_own_thread) + Result;
+    Result := CombineSyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6,q7), Result);
   end else
-    Result := new CommandQueueUseQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6,q7, use);
-end;
-
-function CombineQuickUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-begin
-  Result := new CommandQueueUseQuickArray<TInp, QueueArraySyncInvoker, SimpleProcContainerC<array of TInp>, TBooleanFalseFlag>(qs.ToArray, use);
-end;
-
-function CombineQuickUseSyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-begin
-  Result := new CommandQueueUseQuickArray2<TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2ContainerC<TInp1,TInp2>, TBooleanFalseFlag>(q1,q2, use);
-end;
-function CombineQuickUseSyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-begin
-  Result := new CommandQueueUseQuickArray3<TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3ContainerC<TInp1,TInp2,TInp3>, TBooleanFalseFlag>(q1,q2,q3, use);
-end;
-function CombineQuickUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-begin
-  Result := new CommandQueueUseQuickArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>, TBooleanFalseFlag>(q1,q2,q3,q4, use);
-end;
-function CombineQuickUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-begin
-  Result := new CommandQueueUseQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>, TBooleanFalseFlag>(q1,q2,q3,q4,q5, use);
-end;
-function CombineQuickUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-begin
-  Result := new CommandQueueUseQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6, use);
-end;
-function CombineQuickUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-begin
-  Result := new CommandQueueUseQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6,q7, use);
-end;
-
-function CombineThreadedUseSyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-begin
-  Result := new CommandQueueUseThreadedArray<TInp, QueueArraySyncInvoker, SimpleProcContainerC<array of TInp>>(qs.ToArray, use);
-end;
-
-function CombineThreadedUseSyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-begin
-  Result := new CommandQueueUseThreadedArray2<TInp1,TInp2, QueueArray2SyncInvoker, SimpleProc2ContainerC<TInp1,TInp2>>(q1,q2, use);
-end;
-function CombineThreadedUseSyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-begin
-  Result := new CommandQueueUseThreadedArray3<TInp1,TInp2,TInp3, QueueArray3SyncInvoker, SimpleProc3ContainerC<TInp1,TInp2,TInp3>>(q1,q2,q3, use);
-end;
-function CombineThreadedUseSyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-begin
-  Result := new CommandQueueUseThreadedArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4SyncInvoker, SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>>(q1,q2,q3,q4, use);
-end;
-function CombineThreadedUseSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-begin
-  Result := new CommandQueueUseThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5SyncInvoker, SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>>(q1,q2,q3,q4,q5, use);
-end;
-function CombineThreadedUseSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-begin
-  Result := new CommandQueueUseThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6SyncInvoker, SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>(q1,q2,q3,q4,q5,q6, use);
-end;
-function CombineThreadedUseSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-begin
-  Result := new CommandQueueUseThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>(q1,q2,q3,q4,q5,q6,q7, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>(q1,q2,q3,q4,q5,q6,q7, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray7   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7SyncInvoker, SimpleProc7ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>(q1,q2,q3,q4,q5,q6,q7, use, can_pre_calc);
 end;
 
 {$endregion Context}
@@ -33304,264 +33747,264 @@ end;
 
 {$region Simple}
 
-function CombineAsyncQueueBase(params qs: array of CommandQueueBase) := QueueArrayUtils.ConstructAsync(qs, true);
+function CombineAsyncQueue(params qs: array of CommandQueueBase) := QueueArrayUtils.ConstructAsync&<CommandQueueBase>(qs.Cast&<CommandQueueBase>);
+function CombineAsyncQueue(params qs: array of CommandQueueNil) := QueueArrayUtils.ConstructAsync&<CommandQueueNil>(qs.Cast&<CommandQueueBase>);
+function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<CommandQueue<T>>(qs.Cast&<CommandQueueBase>);
 
-function CombineAsyncQueueNil(params qs: array of CommandQueueNil) := QueueArrayUtils.ConstructAsyncNil(qs.Cast&<CommandQueueBase>);
-function CombineAsyncQueueNil(qs: array of CommandQueueBase; last: CommandQueueNil) := QueueArrayUtils.ConstructAsyncNil(qs.Append&<CommandQueueBase>(last));
-
-function CombineAsyncQueue<T>(params qs: array of CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(qs.Cast&<CommandQueueBase>);
-function CombineAsyncQueue<T>(qs: array of CommandQueueBase; last: CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<T>(qs.Append&<CommandQueueBase>(last));
+function CombineAsyncQueue<TQ>(qs: array of TQ; last: CommandQueueBase) := QueueArrayUtils.ConstructAsync&<CommandQueueBase>(qs.Cast&<CommandQueueBase>.Append&<CommandQueueBase>(last));
+function CombineAsyncQueue<TQ>(qs: array of TQ; last: CommandQueueNil) := QueueArrayUtils.ConstructAsync&<CommandQueueNil>(qs.Cast&<CommandQueueBase>.Append&<CommandQueueBase>(last));
+function CombineAsyncQueue<T, TQ>(qs: array of TQ; last: CommandQueue<T>) := QueueArrayUtils.ConstructAsync&<CommandQueue<T>>(qs.Cast&<CommandQueueBase>.Append&<CommandQueueBase>(last));
 
 {$endregion Simple}
-
-{$region Lazy}
-
-{$endregion Lazy}
 
 {$region Conv}
 
 {$region NonContext}
 
-function CombineConstConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; qs: array of CommandQueue<TInp>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if qs.All(q->q is ConstQueue<TInp>) then
+  if qs.All(q->q.IsConstResDepEmpty) then
   begin
-    var res := qs.ConvertAll(q->ConstQueue&<TInp>(q).Value);
-    Result := conv(res);
+    var inp := qs.ConvertAll(q->q.expected_const_res);
+    Result := if can_pre_calc then
+      CQ(conv(inp)) else
+      HFQ(()->conv(inp), need_own_thread);
+    Result := CombineAsyncQueue(qs, Result);
   end else
-    Result := new CommandQueueConvertQuickArray<TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainer<array of TInp, TRes>, TBooleanTrueFlag>(qs.ToArray, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray<TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainer<array of TInp, TRes>>(qs.ToArray, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray   <TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainer<array of TInp, TRes>>(qs.ToArray, conv, can_pre_calc);
 end;
 
-function CombineConstConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN2<TInp1,TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2)) else
+      HFQ(()->conv(inp1,inp2), need_own_thread);
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2), Result);
   end else
-    Result := new CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, QueueArray2AsyncInvoker, SimpleFunc2Container<TInp1,TInp2,TRes>, TBooleanTrueFlag>(q1,q2, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray2<TInp1,TInp2, TRes, QueueArray2AsyncInvoker, SimpleFunc2Container<TInp1, TInp2, TRes>>(q1,q2, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray2   <TInp1,TInp2, TRes, QueueArray2AsyncInvoker, SimpleFunc2Container<TInp1, TInp2, TRes>>(q1,q2, conv, can_pre_calc);
 end;
-function CombineConstConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN3<TInp1,TInp2,TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3)) else
+      HFQ(()->conv(inp1,inp2,inp3), need_own_thread);
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3), Result);
   end else
-    Result := new CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, QueueArray3AsyncInvoker, SimpleFunc3Container<TInp1,TInp2,TInp3,TRes>, TBooleanTrueFlag>(q1,q2,q3, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray3<TInp1,TInp2,TInp3, TRes, QueueArray3AsyncInvoker, SimpleFunc3Container<TInp1, TInp2, TInp3, TRes>>(q1,q2,q3, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray3   <TInp1,TInp2,TInp3, TRes, QueueArray3AsyncInvoker, SimpleFunc3Container<TInp1, TInp2, TInp3, TRes>>(q1,q2,q3, conv, can_pre_calc);
 end;
-function CombineConstConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN4<TInp1,TInp2,TInp3,TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4)) else
+      HFQ(()->conv(inp1,inp2,inp3,inp4), need_own_thread);
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4), Result);
   end else
-    Result := new CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4AsyncInvoker, SimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray4<TInp1,TInp2,TInp3,TInp4, TRes, QueueArray4AsyncInvoker, SimpleFunc4Container<TInp1, TInp2, TInp3, TInp4, TRes>>(q1,q2,q3,q4, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray4   <TInp1,TInp2,TInp3,TInp4, TRes, QueueArray4AsyncInvoker, SimpleFunc4Container<TInp1, TInp2, TInp3, TInp4, TRes>>(q1,q2,q3,q4, conv, can_pre_calc);
 end;
-function CombineConstConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4,inp5)) else
+      HFQ(()->conv(inp1,inp2,inp3,inp4,inp5), need_own_thread);
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5), Result);
   end else
-    Result := new CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5AsyncInvoker, SimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes, QueueArray5AsyncInvoker, SimpleFunc5Container<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>>(q1,q2,q3,q4,q5, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray5   <TInp1,TInp2,TInp3,TInp4,TInp5, TRes, QueueArray5AsyncInvoker, SimpleFunc5Container<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>>(q1,q2,q3,q4,q5, conv, can_pre_calc);
 end;
-function CombineConstConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4,inp5,inp6)) else
+      HFQ(()->conv(inp1,inp2,inp3,inp4,inp5,inp6), need_own_thread);
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6), Result);
   end else
-    Result := new CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6AsyncInvoker, SimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes, QueueArray6AsyncInvoker, SimpleFunc6Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>>(q1,q2,q3,q4,q5,q6, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray6   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes, QueueArray6AsyncInvoker, SimpleFunc6Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>>(q1,q2,q3,q4,q5,q6, conv, can_pre_calc);
 end;
-function CombineConstConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) and (q7 is ConstQueue<TInp7>(var c_q7)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty and q7.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, c_q7.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    var inp7 := q7.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4,inp5,inp6,inp7)) else
+      HFQ(()->conv(inp1,inp2,inp3,inp4,inp5,inp6,inp7), need_own_thread);
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6,q7), Result);
   end else
-    Result := new CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7AsyncInvoker, SimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6,q7, conv);
-end;
-
-function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray<TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainer<array of TInp, TRes>, TBooleanFalseFlag>(qs.ToArray, conv);
-end;
-
-function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, QueueArray2AsyncInvoker, SimpleFunc2Container<TInp1,TInp2,TRes>, TBooleanFalseFlag>(q1,q2, conv);
-end;
-function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, QueueArray3AsyncInvoker, SimpleFunc3Container<TInp1,TInp2,TInp3,TRes>, TBooleanFalseFlag>(q1,q2,q3, conv);
-end;
-function CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4AsyncInvoker, SimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4, conv);
-end;
-function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5AsyncInvoker, SimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5, conv);
-end;
-function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6AsyncInvoker, SimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6, conv);
-end;
-function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7AsyncInvoker, SimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6,q7, conv);
-end;
-
-function CombineThreadedConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray<TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainer<array of TInp, TRes>>(qs.ToArray, conv);
-end;
-
-function CombineThreadedConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray2<TInp1,TInp2,TRes, QueueArray2AsyncInvoker, SimpleFunc2Container<TInp1,TInp2,TRes>>(q1,q2, conv);
-end;
-function CombineThreadedConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray3<TInp1,TInp2,TInp3,TRes, QueueArray3AsyncInvoker, SimpleFunc3Container<TInp1,TInp2,TInp3,TRes>>(q1,q2,q3, conv);
-end;
-function CombineThreadedConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4AsyncInvoker, SimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>>(q1,q2,q3,q4, conv);
-end;
-function CombineThreadedConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5AsyncInvoker, SimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>>(q1,q2,q3,q4,q5, conv);
-end;
-function CombineThreadedConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6AsyncInvoker, SimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>>(q1,q2,q3,q4,q5,q6, conv);
-end;
-function CombineThreadedConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7AsyncInvoker, SimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>>(q1,q2,q3,q4,q5,q6,q7, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes, QueueArray7AsyncInvoker, SimpleFunc7Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>>(q1,q2,q3,q4,q5,q6,q7, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray7   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes, QueueArray7AsyncInvoker, SimpleFunc7Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>>(q1,q2,q3,q4,q5,q6,q7, conv, can_pre_calc);
 end;
 
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineConstConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
+function CombineConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; qs: array of CommandQueue<TInp>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if qs.All(q->q is ConstQueue<TInp>) then
+  if qs.All(q->q.IsConstResDepEmpty) then
   begin
-    var res := qs.ConvertAll(q->ConstQueue&<TInp>(q).Value);
-    Result := conv(res, nil);
+    var inp := qs.ConvertAll(q->q.expected_const_res);
+    Result := if can_pre_calc then
+      CQ(conv(inp, nil)) else
+      HFQ(c->conv(inp, c), need_own_thread);
+    Result := CombineAsyncQueue(qs, Result);
   end else
-    Result := new CommandQueueConvertQuickArray<TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainerC<array of TInp, TRes>, TBooleanTrueFlag>(qs.ToArray, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray<TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainerC<array of TInp, TRes>>(qs.ToArray, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray   <TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainerC<array of TInp, TRes>>(qs.ToArray, conv, can_pre_calc);
 end;
 
-function CombineConstConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN2<TInp1,TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, nil);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2, nil)) else
+      HFQ(c->conv(inp1,inp2, c), need_own_thread);
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2), Result);
   end else
-    Result := new CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, QueueArray2AsyncInvoker, SimpleFunc2ContainerC<TInp1,TInp2,TRes>, TBooleanTrueFlag>(q1,q2, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray2<TInp1,TInp2, TRes, QueueArray2AsyncInvoker, SimpleFunc2ContainerC<TInp1, TInp2, TRes>>(q1,q2, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray2   <TInp1,TInp2, TRes, QueueArray2AsyncInvoker, SimpleFunc2ContainerC<TInp1, TInp2, TRes>>(q1,q2, conv, can_pre_calc);
 end;
-function CombineConstConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN3<TInp1,TInp2,TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, nil);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3, nil)) else
+      HFQ(c->conv(inp1,inp2,inp3, c), need_own_thread);
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3), Result);
   end else
-    Result := new CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, QueueArray3AsyncInvoker, SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>, TBooleanTrueFlag>(q1,q2,q3, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray3<TInp1,TInp2,TInp3, TRes, QueueArray3AsyncInvoker, SimpleFunc3ContainerC<TInp1, TInp2, TInp3, TRes>>(q1,q2,q3, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray3   <TInp1,TInp2,TInp3, TRes, QueueArray3AsyncInvoker, SimpleFunc3ContainerC<TInp1, TInp2, TInp3, TRes>>(q1,q2,q3, conv, can_pre_calc);
 end;
-function CombineConstConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN4<TInp1,TInp2,TInp3,TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, nil);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4, nil)) else
+      HFQ(c->conv(inp1,inp2,inp3,inp4, c), need_own_thread);
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4), Result);
   end else
-    Result := new CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4AsyncInvoker, SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray4<TInp1,TInp2,TInp3,TInp4, TRes, QueueArray4AsyncInvoker, SimpleFunc4ContainerC<TInp1, TInp2, TInp3, TInp4, TRes>>(q1,q2,q3,q4, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray4   <TInp1,TInp2,TInp3,TInp4, TRes, QueueArray4AsyncInvoker, SimpleFunc4ContainerC<TInp1, TInp2, TInp3, TInp4, TRes>>(q1,q2,q3,q4, conv, can_pre_calc);
 end;
-function CombineConstConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, nil);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4,inp5, nil)) else
+      HFQ(c->conv(inp1,inp2,inp3,inp4,inp5, c), need_own_thread);
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5), Result);
   end else
-    Result := new CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5AsyncInvoker, SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes, QueueArray5AsyncInvoker, SimpleFunc5ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>>(q1,q2,q3,q4,q5, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray5   <TInp1,TInp2,TInp3,TInp4,TInp5, TRes, QueueArray5AsyncInvoker, SimpleFunc5ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>>(q1,q2,q3,q4,q5, conv, can_pre_calc);
 end;
-function CombineConstConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, nil);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4,inp5,inp6, nil)) else
+      HFQ(c->conv(inp1,inp2,inp3,inp4,inp5,inp6, c), need_own_thread);
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6), Result);
   end else
-    Result := new CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6AsyncInvoker, SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes, QueueArray6AsyncInvoker, SimpleFunc6ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>>(q1,q2,q3,q4,q5,q6, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray6   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes, QueueArray6AsyncInvoker, SimpleFunc6ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>>(q1,q2,q3,q4,q5,q6, conv, can_pre_calc);
 end;
-function CombineConstConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
+function CombineConvAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread, can_pre_calc: boolean): CommandQueue<TRes>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) and (q7 is ConstQueue<TInp7>(var c_q7)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty and q7.IsConstResDepEmpty then
   begin
-    Result := conv(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, c_q7.Value, nil);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    var inp7 := q7.expected_const_res;
+    Result := if can_pre_calc then
+      CQ(conv(inp1,inp2,inp3,inp4,inp5,inp6,inp7, nil)) else
+      HFQ(c->conv(inp1,inp2,inp3,inp4,inp5,inp6,inp7, c), need_own_thread);
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6,q7), Result);
   end else
-    Result := new CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7AsyncInvoker, SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6,q7, conv);
-end;
-
-function CombineQuickConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray<TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainerC<array of TInp, TRes>, TBooleanFalseFlag>(qs.ToArray, conv);
-end;
-
-function CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, QueueArray2AsyncInvoker, SimpleFunc2ContainerC<TInp1,TInp2,TRes>, TBooleanFalseFlag>(q1,q2, conv);
-end;
-function CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray3<TInp1,TInp2,TInp3,TRes, QueueArray3AsyncInvoker, SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>, TBooleanFalseFlag>(q1,q2,q3, conv);
-end;
-function CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4AsyncInvoker, SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4, conv);
-end;
-function CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5AsyncInvoker, SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5, conv);
-end;
-function CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6AsyncInvoker, SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6, conv);
-end;
-function CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7AsyncInvoker, SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6,q7, conv);
-end;
-
-function CombineThreadedConvAsyncQueue<TInp, TRes>(conv: Func<array of TInp, CLContext, TRes>; params qs: array of CommandQueue<TInp>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray<TInp, TRes, QueueArrayAsyncInvoker, SimpleFuncContainerC<array of TInp, TRes>>(qs.ToArray, conv);
-end;
-
-function CombineThreadedConvAsyncQueueN2<TInp1, TInp2, TRes>(conv: Func<TInp1, TInp2, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray2<TInp1,TInp2,TRes, QueueArray2AsyncInvoker, SimpleFunc2ContainerC<TInp1,TInp2,TRes>>(q1,q2, conv);
-end;
-function CombineThreadedConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(conv: Func<TInp1, TInp2, TInp3, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray3<TInp1,TInp2,TInp3,TRes, QueueArray3AsyncInvoker, SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes>>(q1,q2,q3, conv);
-end;
-function CombineThreadedConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray4<TInp1,TInp2,TInp3,TInp4,TRes, QueueArray4AsyncInvoker, SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes>>(q1,q2,q3,q4, conv);
-end;
-function CombineThreadedConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5,TRes, QueueArray5AsyncInvoker, SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>>(q1,q2,q3,q4,q5, conv);
-end;
-function CombineThreadedConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes, QueueArray6AsyncInvoker, SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>>(q1,q2,q3,q4,q5,q6, conv);
-end;
-function CombineThreadedConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(conv: Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<TRes>;
-begin
-  Result := new CommandQueueConvertThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes, QueueArray7AsyncInvoker, SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>>(q1,q2,q3,q4,q5,q6,q7, conv);
+  if need_own_thread then
+    Result := new CommandQueueConvertThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes, QueueArray7AsyncInvoker, SimpleFunc7ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>>(q1,q2,q3,q4,q5,q6,q7, conv, can_pre_calc) else
+    Result := new CommandQueueConvertQuickArray7   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes, QueueArray7AsyncInvoker, SimpleFunc7ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>>(q1,q2,q3,q4,q5,q6,q7, conv, can_pre_calc);
 end;
 
 {$endregion Context}
@@ -33572,260 +34015,264 @@ end;
 
 {$region NonContext}
 
-function CombineConstUseAsyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineUseAsyncQueue<TInp>(use: Action<array of TInp>; qs: array of CommandQueue<TInp>; need_own_thread, can_pre_calc: boolean): CommandQueue<array of TInp>;
 begin
-  if qs.All(q->q is ConstQueue<TInp>) then
+  if qs.All(q->q.IsConstResDepEmpty) then
   begin
-    var res := qs.ConvertAll(q->ConstQueue&<TInp>(q).Value);
-    use(res);
-    Result := res;
+    var inp := qs.ConvertAll(q->q.expected_const_res);
+    Result := CQ(inp);
+    if can_pre_calc then
+      use(inp) else
+      Result := HPQ(()->use(inp), need_own_thread) + Result;
+    Result := CombineAsyncQueue(qs, Result);
   end else
-    Result := new CommandQueueUseQuickArray<TInp, QueueArrayAsyncInvoker, SimpleProcContainer<array of TInp>, TBooleanTrueFlag>(qs.ToArray, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray<TInp, QueueArrayAsyncInvoker, SimpleProcContainer<array of TInp>>(qs.ToArray, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray   <TInp, QueueArrayAsyncInvoker, SimpleProcContainer<array of TInp>>(qs.ToArray, use, can_pre_calc);
 end;
 
-function CombineConstUseAsyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineUseAsyncQueueN2<TInp1,TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2));
+    if can_pre_calc then
+      use(inp1,inp2) else
+      Result := HPQ(()->use(inp1,inp2), need_own_thread) + Result;
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2), Result);
   end else
-    Result := new CommandQueueUseQuickArray2<TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2Container<TInp1,TInp2>, TBooleanTrueFlag>(q1,q2, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray2<TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2Container<TInp1, TInp2>>(q1,q2, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray2   <TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2Container<TInp1, TInp2>>(q1,q2, use, can_pre_calc);
 end;
-function CombineConstUseAsyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineUseAsyncQueueN3<TInp1,TInp2,TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3));
+    if can_pre_calc then
+      use(inp1,inp2,inp3) else
+      Result := HPQ(()->use(inp1,inp2,inp3), need_own_thread) + Result;
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3), Result);
   end else
-    Result := new CommandQueueUseQuickArray3<TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3Container<TInp1,TInp2,TInp3>, TBooleanTrueFlag>(q1,q2,q3, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray3<TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3Container<TInp1, TInp2, TInp3>>(q1,q2,q3, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray3   <TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3Container<TInp1, TInp2, TInp3>>(q1,q2,q3, use, can_pre_calc);
 end;
-function CombineConstUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineUseAsyncQueueN4<TInp1,TInp2,TInp3,TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4) else
+      Result := HPQ(()->use(inp1,inp2,inp3,inp4), need_own_thread) + Result;
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4), Result);
   end else
-    Result := new CommandQueueUseQuickArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4Container<TInp1,TInp2,TInp3,TInp4>, TBooleanTrueFlag>(q1,q2,q3,q4, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4Container<TInp1, TInp2, TInp3, TInp4>>(q1,q2,q3,q4, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray4   <TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4Container<TInp1, TInp2, TInp3, TInp4>>(q1,q2,q3,q4, use, can_pre_calc);
 end;
-function CombineConstUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineUseAsyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4, inp5));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4,inp5) else
+      Result := HPQ(()->use(inp1,inp2,inp3,inp4,inp5), need_own_thread) + Result;
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5), Result);
   end else
-    Result := new CommandQueueUseQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>, TBooleanTrueFlag>(q1,q2,q3,q4,q5, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5Container<TInp1, TInp2, TInp3, TInp4, TInp5>>(q1,q2,q3,q4,q5, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray5   <TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5Container<TInp1, TInp2, TInp3, TInp4, TInp5>>(q1,q2,q3,q4,q5, use, can_pre_calc);
 end;
-function CombineConstUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineUseAsyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4, inp5, inp6));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4,inp5,inp6) else
+      Result := HPQ(()->use(inp1,inp2,inp3,inp4,inp5,inp6), need_own_thread) + Result;
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6), Result);
   end else
-    Result := new CommandQueueUseQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>>(q1,q2,q3,q4,q5,q6, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray6   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>>(q1,q2,q3,q4,q5,q6, use, can_pre_calc);
 end;
-function CombineConstUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineUseAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) and (q7 is ConstQueue<TInp7>(var c_q7)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty and q7.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, c_q7.Value);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, c_q7.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    var inp7 := q7.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4, inp5, inp6, inp7));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4,inp5,inp6,inp7) else
+      Result := HPQ(()->use(inp1,inp2,inp3,inp4,inp5,inp6,inp7), need_own_thread) + Result;
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6,q7), Result);
   end else
-    Result := new CommandQueueUseQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6,q7, use);
-end;
-
-function CombineQuickUseAsyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-begin
-  Result := new CommandQueueUseQuickArray<TInp, QueueArrayAsyncInvoker, SimpleProcContainer<array of TInp>, TBooleanFalseFlag>(qs.ToArray, use);
-end;
-
-function CombineQuickUseAsyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-begin
-  Result := new CommandQueueUseQuickArray2<TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2Container<TInp1,TInp2>, TBooleanFalseFlag>(q1,q2, use);
-end;
-function CombineQuickUseAsyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-begin
-  Result := new CommandQueueUseQuickArray3<TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3Container<TInp1,TInp2,TInp3>, TBooleanFalseFlag>(q1,q2,q3, use);
-end;
-function CombineQuickUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-begin
-  Result := new CommandQueueUseQuickArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4Container<TInp1,TInp2,TInp3,TInp4>, TBooleanFalseFlag>(q1,q2,q3,q4, use);
-end;
-function CombineQuickUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-begin
-  Result := new CommandQueueUseQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>, TBooleanFalseFlag>(q1,q2,q3,q4,q5, use);
-end;
-function CombineQuickUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-begin
-  Result := new CommandQueueUseQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6, use);
-end;
-function CombineQuickUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-begin
-  Result := new CommandQueueUseQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6,q7, use);
-end;
-
-function CombineThreadedUseAsyncQueue<TInp>(use: Action<array of TInp>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-begin
-  Result := new CommandQueueUseThreadedArray<TInp, QueueArrayAsyncInvoker, SimpleProcContainer<array of TInp>>(qs.ToArray, use);
-end;
-
-function CombineThreadedUseAsyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-begin
-  Result := new CommandQueueUseThreadedArray2<TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2Container<TInp1,TInp2>>(q1,q2, use);
-end;
-function CombineThreadedUseAsyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-begin
-  Result := new CommandQueueUseThreadedArray3<TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3Container<TInp1,TInp2,TInp3>>(q1,q2,q3, use);
-end;
-function CombineThreadedUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-begin
-  Result := new CommandQueueUseThreadedArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4Container<TInp1,TInp2,TInp3,TInp4>>(q1,q2,q3,q4, use);
-end;
-function CombineThreadedUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-begin
-  Result := new CommandQueueUseThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>>(q1,q2,q3,q4,q5, use);
-end;
-function CombineThreadedUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-begin
-  Result := new CommandQueueUseThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>(q1,q2,q3,q4,q5,q6, use);
-end;
-function CombineThreadedUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-begin
-  Result := new CommandQueueUseThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>(q1,q2,q3,q4,q5,q6,q7, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>(q1,q2,q3,q4,q5,q6,q7, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray7   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7Container<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>(q1,q2,q3,q4,q5,q6,q7, use, can_pre_calc);
 end;
 
 {$endregion NonContext}
 
 {$region Context}
 
-function CombineConstUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
+function CombineUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; qs: array of CommandQueue<TInp>; need_own_thread, can_pre_calc: boolean): CommandQueue<array of TInp>;
 begin
-  if qs.All(q->q is ConstQueue<TInp>) then
+  if qs.All(q->q.IsConstResDepEmpty) then
   begin
-    var res := qs.ConvertAll(q->ConstQueue&<TInp>(q).Value);
-    use(res, nil);
-    Result := res;
+    var inp := qs.ConvertAll(q->q.expected_const_res);
+    Result := CQ(inp);
+    if can_pre_calc then
+      use(inp, nil) else
+      Result := HPQ(c->use(inp, c), need_own_thread) + Result;
+    Result := CombineAsyncQueue(qs, Result);
   end else
-    Result := new CommandQueueUseQuickArray<TInp, QueueArrayAsyncInvoker, SimpleProcContainerC<array of TInp>, TBooleanTrueFlag>(qs.ToArray, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray<TInp, QueueArrayAsyncInvoker, SimpleProcContainerC<array of TInp>>(qs.ToArray, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray   <TInp, QueueArrayAsyncInvoker, SimpleProcContainerC<array of TInp>>(qs.ToArray, use, can_pre_calc);
 end;
 
-function CombineConstUseAsyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
+function CombineUseAsyncQueueN2<TInp1,TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, nil);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2));
+    if can_pre_calc then
+      use(inp1,inp2, nil) else
+      Result := HPQ(c->use(inp1,inp2, c), need_own_thread) + Result;
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2), Result);
   end else
-    Result := new CommandQueueUseQuickArray2<TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2ContainerC<TInp1,TInp2>, TBooleanTrueFlag>(q1,q2, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray2<TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2ContainerC<TInp1, TInp2>>(q1,q2, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray2   <TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2ContainerC<TInp1, TInp2>>(q1,q2, use, can_pre_calc);
 end;
-function CombineConstUseAsyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
+function CombineUseAsyncQueueN3<TInp1,TInp2,TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, nil);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3));
+    if can_pre_calc then
+      use(inp1,inp2,inp3, nil) else
+      Result := HPQ(c->use(inp1,inp2,inp3, c), need_own_thread) + Result;
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3), Result);
   end else
-    Result := new CommandQueueUseQuickArray3<TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3ContainerC<TInp1,TInp2,TInp3>, TBooleanTrueFlag>(q1,q2,q3, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray3<TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3ContainerC<TInp1, TInp2, TInp3>>(q1,q2,q3, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray3   <TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3ContainerC<TInp1, TInp2, TInp3>>(q1,q2,q3, use, can_pre_calc);
 end;
-function CombineConstUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
+function CombineUseAsyncQueueN4<TInp1,TInp2,TInp3,TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, nil);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4, nil) else
+      Result := HPQ(c->use(inp1,inp2,inp3,inp4, c), need_own_thread) + Result;
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4), Result);
   end else
-    Result := new CommandQueueUseQuickArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>, TBooleanTrueFlag>(q1,q2,q3,q4, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4ContainerC<TInp1, TInp2, TInp3, TInp4>>(q1,q2,q3,q4, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray4   <TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4ContainerC<TInp1, TInp2, TInp3, TInp4>>(q1,q2,q3,q4, use, can_pre_calc);
 end;
-function CombineConstUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
+function CombineUseAsyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, nil);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4, inp5));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4,inp5, nil) else
+      Result := HPQ(c->use(inp1,inp2,inp3,inp4,inp5, c), need_own_thread) + Result;
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5), Result);
   end else
-    Result := new CommandQueueUseQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>, TBooleanTrueFlag>(q1,q2,q3,q4,q5, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5>>(q1,q2,q3,q4,q5, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray5   <TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5>>(q1,q2,q3,q4,q5, use, can_pre_calc);
 end;
-function CombineConstUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
+function CombineUseAsyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, nil);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4, inp5, inp6));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4,inp5,inp6, nil) else
+      Result := HPQ(c->use(inp1,inp2,inp3,inp4,inp5,inp6, c), need_own_thread) + Result;
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6), Result);
   end else
-    Result := new CommandQueueUseQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>>(q1,q2,q3,q4,q5,q6, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray6   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>>(q1,q2,q3,q4,q5,q6, use, can_pre_calc);
 end;
-function CombineConstUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
+function CombineUseAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>; need_own_thread, can_pre_calc: boolean): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
 begin
-  if (q1 is ConstQueue<TInp1>(var c_q1)) and (q2 is ConstQueue<TInp2>(var c_q2)) and (q3 is ConstQueue<TInp3>(var c_q3)) and (q4 is ConstQueue<TInp4>(var c_q4)) and (q5 is ConstQueue<TInp5>(var c_q5)) and (q6 is ConstQueue<TInp6>(var c_q6)) and (q7 is ConstQueue<TInp7>(var c_q7)) then
+  if q1.IsConstResDepEmpty and q2.IsConstResDepEmpty and q3.IsConstResDepEmpty and q4.IsConstResDepEmpty and q5.IsConstResDepEmpty and q6.IsConstResDepEmpty and q7.IsConstResDepEmpty then
   begin
-    use(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, c_q7.Value, nil);
-    Result := ValueTuple.Create(c_q1.Value, c_q2.Value, c_q3.Value, c_q4.Value, c_q5.Value, c_q6.Value, c_q7.Value);
+    var inp1 := q1.expected_const_res;
+    var inp2 := q2.expected_const_res;
+    var inp3 := q3.expected_const_res;
+    var inp4 := q4.expected_const_res;
+    var inp5 := q5.expected_const_res;
+    var inp6 := q6.expected_const_res;
+    var inp7 := q7.expected_const_res;
+    Result := CQ(ValueTuple.Create(inp1, inp2, inp3, inp4, inp5, inp6, inp7));
+    if can_pre_calc then
+      use(inp1,inp2,inp3,inp4,inp5,inp6,inp7, nil) else
+      Result := HPQ(c->use(inp1,inp2,inp3,inp4,inp5,inp6,inp7, c), need_own_thread) + Result;
+    Result := CombineAsyncQueue(new CommandQueueBase[](q1,q2,q3,q4,q5,q6,q7), Result);
   end else
-    Result := new CommandQueueUseQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TBooleanTrueFlag>(q1,q2,q3,q4,q5,q6,q7, use);
-end;
-
-function CombineQuickUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-begin
-  Result := new CommandQueueUseQuickArray<TInp, QueueArrayAsyncInvoker, SimpleProcContainerC<array of TInp>, TBooleanFalseFlag>(qs.ToArray, use);
-end;
-
-function CombineQuickUseAsyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-begin
-  Result := new CommandQueueUseQuickArray2<TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2ContainerC<TInp1,TInp2>, TBooleanFalseFlag>(q1,q2, use);
-end;
-function CombineQuickUseAsyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-begin
-  Result := new CommandQueueUseQuickArray3<TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3ContainerC<TInp1,TInp2,TInp3>, TBooleanFalseFlag>(q1,q2,q3, use);
-end;
-function CombineQuickUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-begin
-  Result := new CommandQueueUseQuickArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>, TBooleanFalseFlag>(q1,q2,q3,q4, use);
-end;
-function CombineQuickUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-begin
-  Result := new CommandQueueUseQuickArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>, TBooleanFalseFlag>(q1,q2,q3,q4,q5, use);
-end;
-function CombineQuickUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-begin
-  Result := new CommandQueueUseQuickArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6, use);
-end;
-function CombineQuickUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-begin
-  Result := new CommandQueueUseQuickArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>, TBooleanFalseFlag>(q1,q2,q3,q4,q5,q6,q7, use);
-end;
-
-function CombineThreadedUseAsyncQueue<TInp>(use: Action<array of TInp, CLContext>; params qs: array of CommandQueue<TInp>): CommandQueue<array of TInp>;
-begin
-  Result := new CommandQueueUseThreadedArray<TInp, QueueArrayAsyncInvoker, SimpleProcContainerC<array of TInp>>(qs.ToArray, use);
-end;
-
-function CombineThreadedUseAsyncQueueN2<TInp1, TInp2>(use: Action<TInp1, TInp2, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>): CommandQueue<ValueTuple<TInp1,TInp2>>;
-begin
-  Result := new CommandQueueUseThreadedArray2<TInp1,TInp2, QueueArray2AsyncInvoker, SimpleProc2ContainerC<TInp1,TInp2>>(q1,q2, use);
-end;
-function CombineThreadedUseAsyncQueueN3<TInp1, TInp2, TInp3>(use: Action<TInp1, TInp2, TInp3, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3>>;
-begin
-  Result := new CommandQueueUseThreadedArray3<TInp1,TInp2,TInp3, QueueArray3AsyncInvoker, SimpleProc3ContainerC<TInp1,TInp2,TInp3>>(q1,q2,q3, use);
-end;
-function CombineThreadedUseAsyncQueueN4<TInp1, TInp2, TInp3, TInp4>(use: Action<TInp1, TInp2, TInp3, TInp4, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4>>;
-begin
-  Result := new CommandQueueUseThreadedArray4<TInp1,TInp2,TInp3,TInp4, QueueArray4AsyncInvoker, SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4>>(q1,q2,q3,q4, use);
-end;
-function CombineThreadedUseAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5>>;
-begin
-  Result := new CommandQueueUseThreadedArray5<TInp1,TInp2,TInp3,TInp4,TInp5, QueueArray5AsyncInvoker, SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5>>(q1,q2,q3,q4,q5, use);
-end;
-function CombineThreadedUseAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>;
-begin
-  Result := new CommandQueueUseThreadedArray6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, QueueArray6AsyncInvoker, SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>>(q1,q2,q3,q4,q5,q6, use);
-end;
-function CombineThreadedUseAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>(use: Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>; q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; q3: CommandQueue<TInp3>; q4: CommandQueue<TInp4>; q5: CommandQueue<TInp5>; q6: CommandQueue<TInp6>; q7: CommandQueue<TInp7>): CommandQueue<ValueTuple<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>;
-begin
-  Result := new CommandQueueUseThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>>(q1,q2,q3,q4,q5,q6,q7, use);
+  if need_own_thread then
+    Result := new CommandQueueUseThreadedArray7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>(q1,q2,q3,q4,q5,q6,q7, use, can_pre_calc) else
+    Result := new CommandQueueUseQuickArray7   <TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, QueueArray7AsyncInvoker, SimpleProc7ContainerC<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>>(q1,q2,q3,q4,q5,q6,q7, use, can_pre_calc);
 end;
 
 {$endregion Context}
@@ -34250,14 +34697,14 @@ begin
     var rng := new Random;
     var test_arr := ArrGen(test_size, i->rng.Next);
      Q_Test :=
-       CLKernelCCQ.Create(P_Prog.ThenConstConvert(p->p['k']))
+       CLKernelCCQ.Create(P_Prog.ThenConvert(p->p['k'], false, true))
          .ThenExec1(test_size, CLArrayCCQ&<integer>.Create(P_Arr)
            .ThenWriteArray(test_arr)
          ) +
        CLArrayCCQ&<integer>.Create(P_Arr)
          .ThenGetArray
-         .ThenQuickConvert(test_res->
-           test_res.Zip(test_arr, (a,b)->a=b+1).All(r->r)
+         .ThenConvert(test_res->
+           test_res.Zip(test_arr, (a,b)->a=b+1).All(r->r), false
          );
   end;
   
@@ -34319,44 +34766,47 @@ end;
 
 static function CLContext.LoadTestContext: CLContext;
 begin
-  var dir := GetCurrentDir;
-  while true do
+  Result := nil;
+  
+  var fname :=
+    SeqWhile(GetCurrentDir, System.IO.Path.GetDirectoryName, dir->dir<>nil)
+    .Select(dir->System.IO.Path.Combine(dir, 'TestContext.dat'))
+    .FirstOrDefault(FileExists);
+  if fname=nil then
   begin
-    var fname := System.IO.Path.Combine(dir, 'TestContext.dat');
-    if FileExists(fname) then
-    begin
-      var br := new System.IO.BinaryReader(System.IO.File.OpenRead(fname));
-      try
-        var pl_name := br.ReadString;
-        if pl_name.Length=0 then
-        begin
-          $'Pregenerated context was empty'.Println;
-          Result := MakeNewDefaultContext;
-          exit;
-        end;
-        var pl := CLPlatform.All.SingleOrDefault(pl->pl.Properties.Name=pl_name);
-        if pl=nil then
-        begin
-          var all_pl_names := CLPlatform.All.Select(pl->$'['+pl.Properties.Name+$']').JoinToString(', ');
-          raise new InvalidOperationException($'No platform with name [{pl_name}], only: {all_pl_names}');
-        end;
-        var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL).ToDictionary(dvc->dvc.Properties.Name);
-        Result := new CLContext(ArrGen(br.ReadInt32, i->
-        begin
-          Result := default(CLDevice);
-          var dvc_name := br.ReadString;
-          if dvcs.TryGetValue(dvc_name, Result) then exit;
-          var all_dvc_names := dvcs.Keys.Select(key->$'[{key}]').JoinToString(', ');
-          raise new InvalidOperationException($'No device with name [{dvc_name}], only: {all_dvc_names}');
-        end));
-      finally
-        br.Close;
-      end;
-      break;
-    end;
-    dir := System.IO.Path.GetDirectoryName(dir);
-    if dir=nil then exit;
+    $'Pregenerated context not found'.Println;
+    exit;
   end;
+  
+  var br := new System.IO.BinaryReader(System.IO.File.OpenRead(fname));
+  try
+    var pl_name := br.ReadString;
+    if pl_name.Length=0 then
+    begin
+      $'Pregenerated context was empty'.Println;
+      exit;
+    end;
+    
+    var pl := CLPlatform.All.SingleOrDefault(pl->pl.Properties.Name=pl_name);
+    if pl=nil then
+    begin
+      var all_pl_names := CLPlatform.All.Select(pl->$'['+pl.Properties.Name+$']').JoinToString(', ');
+      raise new InvalidOperationException($'No platform with name [{pl_name}], only: {all_pl_names}');
+    end;
+    var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL).ToDictionary(dvc->dvc.Properties.Name);
+    Result := new CLContext(ArrGen(br.ReadInt32, i->
+    begin
+      Result := default(CLDevice);
+      var dvc_name := br.ReadString;
+      if dvcs.TryGetValue(dvc_name, Result) then exit;
+      var all_dvc_names := dvcs.Keys.Select(key->$'[{key}]').JoinToString(', ');
+      raise new InvalidOperationException($'No device with name [{dvc_name}], only: {all_dvc_names}');
+    end));
+    
+  finally
+    br.Close;
+  end;
+  
 end;
 
 {$endregion CLContext}
@@ -34375,17 +34825,15 @@ begin
     var v_spl := v_str.Substring(v_str_beg.Length).Split(|'.'|, 2);
     var v := (v_spl[0].ToInteger, v_spl[1].ToInteger);
     if max_v<>nil then
-    begin
-      case Sign(max_v[0]-v[0]) of
+      case Sign(v[0]-max_v[0]) of
         1: continue;
         0:
-        case Sign(max_v[1]-v[1]) of
+        case Sign(v[1]-max_v[1]) of
           1: continue;
           0: ;
         end;
       end;
-    end;
-    max_v := v;
+    max_v := v; // if max_v=nil or v<=max_v
   end;
   
   Version := max_v;
@@ -34596,7 +35044,6 @@ WriteArray(value, range.Low, range.High-range.Low+1, 0);
 {$ifdef ForceMaxDebug}
 initialization
 finalization
-  GC.Collect;
   
   {$ifdef EventDebug}
   EventDebug.FinallyReport;

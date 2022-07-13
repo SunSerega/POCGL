@@ -1,38 +1,97 @@
 ﻿  
   
   
-  {$region Common}
+  {$region Invokers}
   
-  CommandQueueArray2WithWork<TInp1,TInp2,TRes, TDelegate> = abstract class(CommandQueue<TRes>)  where TDelegate: ISimpleDelegateContainer;
-    protected q1: CommandQueue<TInp1>;
-    protected q2: CommandQueue<TInp2>;
-    protected d: TDelegate;
+  QueueArray2InvokerData<TInp1,TInp2> = record
+    public all_qrs_const := true;
+    public next_l: CLTaskLocalData;
+    public qr1: QueueRes<TInp1>;
+    public qr2: QueueRes<TInp2>;
+  end;
+  
+  IQueueArray2Invoker = interface
     
-    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; d: TDelegate);
+    function InvokeToNil<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    function InvokeToAny<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray2InvokerData<TInp1,TInp2>;
+    
+  end;
+  
+  QueueArray2SyncInvoker = record(IQueueArray2Invoker)
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
     begin
-      self.q1 := q1;
-      self.q2 := q2;
-      self.d := d;
+      l := q1.InvokeToNil(g, l).base;
+      l := q2.InvokeToNil(g, l).base;
+      Result := l;
     end;
-    private constructor := raise new OpenCLABCInternalException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray2InvokerData<TInp1,TInp2>;
     begin
-      q1.InitBeforeInvoke(g, inited_hubs);
-      q2.InitBeforeInvoke(g, inited_hubs);
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      q1.ToString(sb, tabs, index, delayed);
-      q2.ToString(sb, tabs, index, delayed);
-      sb.Append(#9, tabs);
-      d.ToStringB(sb);
-      sb += #10;
+      
+      Result.qr1 := q1.InvokeToAny(g, l);
+      if not Result.qr1.IsConst then Result.all_qrs_const := false;
+      l := Result.qr1.TakeBaseOut;
+      
+      Result.qr2 := q2.InvokeToAny(g, l);
+      if not Result.qr2.IsConst then Result.all_qrs_const := false;
+      l := Result.qr2.TakeBaseOut;
+      
+      Result.next_l := l;
     end;
     
   end;
+  
+  QueueArray2AsyncInvoker = record(IQueueArray2Invoker)
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToNil<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): CLTaskLocalData;
+    begin
+      var res_ev: EventList;
+      g.ParallelInvoke(l, 2, invoker->(res_ev := EventList.Combine(|
+        invoker.InvokeBranch(q1.InvokeToNil).AttachInvokeActions(invoker.g),
+        invoker.InvokeBranch(q2.InvokeToNil).AttachInvokeActions(invoker.g)
+      |)));
+      Result := new CLTaskLocalData(res_ev);
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeToAny<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray2InvokerData<TInp1,TInp2>;
+    begin
+      
+      var res: QueueArray2InvokerData<TInp1,TInp2>;
+      g.ParallelInvoke(l, 2, invoker->
+      begin
+        res.qr1 := invoker.InvokeBranch(q1.InvokeToAny);
+        res.qr2 := invoker.InvokeBranch(q2.InvokeToAny);
+      end);
+      Result := res;
+      
+      Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst;
+      Result.next_l := new CLTaskLocalData(EventList.Combine(|
+        Result.qr1.AttachInvokeActions(g),
+        Result.qr2.AttachInvokeActions(g)
+      |));
+    end;
+    
+  end;
+  
+  {$endregion Invokers}
+  
+  {$region Work}
+  
+  IQueueArray2Work<TInp1,TInp2,TRes, TDelegate> = interface
+  where TDelegate: ISimpleDelegateContainer;
+    
+    function PreInvoke(d: TDelegate; inp1: TInp1; inp2: TInp2): TRes;
+    
+    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
+    
+  end;
+  
+  {$region Func}
   
   ISimpleFunc2Container<TInp1,TInp2,TRes> = interface(ISimpleDelegateContainer)
     
@@ -69,6 +128,33 @@
     
   end;
   
+  QueueArray2WorkConvert<TInp1,TInp2,TRes, TFunc> = record(IQueueArray2Work<TInp1,TInp2,TRes, TFunc>)
+  where TFunc: ISimpleFunc2Container<TInp1,TInp2,TRes>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(f: TFunc; inp1: TInp1; inp2: TInp2) :=
+    f.Invoke(inp1,inp2, nil);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
+    begin
+      if not err_handler.HadError then
+      try
+        Result := f.Invoke(inp1,inp2, c);
+      except
+        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
+      end;
+      {$ifdef DEBUG}
+      err_handler.EndMaybeError(err_test_reason);
+      {$endif DEBUG}
+    end;
+    
+  end;
+  
+  {$endregion Func}
+  
+  {$region Proc}
+  
   ISimpleProc2Container<TInp1,TInp2> = interface(ISimpleDelegateContainer)
     
     procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext);
@@ -104,94 +190,15 @@
     
   end;
   
-  {$endregion Common}
-  
-  {$region Invokers}
-  
-  QueueArray2InvokerData<TInp1,TInp2> = record
-    public all_qrs_const := true;
-    public next_l: CLTaskLocalData;
-    public qr1: QueueRes<TInp1>;
-    public qr2: QueueRes<TInp2>;
-  end;
-  
-  IQueueArray2Invoker = interface
-    
-    function Invoke<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray2InvokerData<TInp1,TInp2>;
-    
-  end;
-  
-  QueueArray2SyncInvoker = record(IQueueArray2Invoker)
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray2InvokerData<TInp1,TInp2>;
-    begin
-      
-      Result.qr1 := q1.InvokeToAny(g, l);
-      if not Result.qr1.IsConst then Result.all_qrs_const := false;
-      l := Result.qr1.TakeBaseOut;
-      
-      Result.qr2 := q2.InvokeToAny(g, l);
-      if not Result.qr2.IsConst then Result.all_qrs_const := false;
-      l := Result.qr2.TakeBaseOut;
-      
-      Result.next_l := l;
-    end;
-    
-  end;
-  
-  QueueArray2AsyncInvoker = record(IQueueArray2Invoker)
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TInp1,TInp2>(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueArray2InvokerData<TInp1,TInp2>;
-    begin
-      
-      var res: QueueArray2InvokerData<TInp1,TInp2>;
-      g.ParallelInvoke(l, 2, invoker->
-      begin
-        res.qr1 := invoker.InvokeBranch(q1.InvokeToAny);
-        res.qr2 := invoker.InvokeBranch(q2.InvokeToAny);
-      end);
-      Result := res;
-      
-      Result.all_qrs_const := Result.qr1.IsConst and Result.qr2.IsConst;
-      Result.next_l := new CLTaskLocalData(EventList.Combine(|Result.qr1.AttachInvokeActions(g), Result.qr2.AttachInvokeActions(g)|));
-    end;
-    
-  end;
-  
-  {$endregion Invokers}
-  
-  {$region Work}
-  
-  IQueueArray2Work<TInp1,TInp2,TRes, TDelegate> = interface
-  where TDelegate: ISimpleDelegateContainer;
-    
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
-    
-  end;
-  
-  QueueArray2WorkConvert<TInp1,TInp2,TRes, TFunc> = record(IQueueArray2Work<TInp1,TInp2,TRes, TFunc>)
-  where TFunc: ISimpleFunc2Container<TInp1,TInp2,TRes>;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
-    begin
-      if not err_handler.HadError then
-      try
-        Result := f.Invoke(inp1,inp2, c);
-      except
-        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif})
-      end;
-      {$ifdef DEBUG}
-      err_handler.EndMaybeError(err_test_reason);
-      {$endif DEBUG}
-    end;
-    
-  end;
-  
   QueueArray2WorkUse<TInp1,TInp2, TProc> = record(IQueueArray2Work<TInp1,TInp2,ValueTuple<TInp1,TInp2>, TProc>)
   where TProc: ISimpleProc2Container<TInp1,TInp2>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function PreInvoke(p: TProc; inp1: TInp1; inp2: TInp2): ValueTuple<TInp1,TInp2>;
+    begin
+      p.Invoke(inp1,inp2, nil);
+      Result := ValueTuple.Create(inp1,inp2);
+    end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke(p: TProc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): ValueTuple<TInp1,TInp2>;
@@ -210,39 +217,111 @@
     
   end;
   
+  {$endregion Proc}
+  
   {$endregion Work}
   
-  {$region Quick}
+  {$region Common}
   
-  CommandQueueQuickArray2<TInp1,TInp2,TRes, TInv, TDelegate, TWork, FPreCall> = sealed class(CommandQueueArray2WithWork<TInp1,TInp2,TRes, TDelegate>)
+  CommandQueueArray2WithWork<TInp1,TInp2,TRes, TInv,TDelegate,TWork> = abstract class(CommandQueue<TRes>)
   where TInv: IQueueArray2Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray2Work<TInp1,TInp2,TRes, TDelegate>, constructor;
-  where FPreCall: IBooleanFlag, constructor;
+    protected q1: CommandQueue<TInp1>;
+    protected q2: CommandQueue<TInp2>;
+    protected d: TDelegate;
+    protected can_pre_call: boolean;
+    
+    public constructor(q1: CommandQueue<TInp1>; q2: CommandQueue<TInp2>; d: TDelegate; can_pre_call: boolean);
+    begin
+      self.q1 := q1;
+      self.q2 := q2;
+      self.d := d;
+      self.can_pre_call := can_pre_call;
+      if can_pre_call and (q1.const_res_dep<>nil) and (q2.const_res_dep<>nil) then
+      begin
+        self.expected_const_res := TWork.Create.PreInvoke(d,
+          q1.expected_const_res,
+          q2.expected_const_res
+        );
+        
+        var c := q1.const_res_dep.Length + q2.const_res_dep.Length;
+        {$ifdef DEBUG}
+        if c=0 then raise new OpenCLABCInternalException($'0dep version is CQ/HFQ/HPQ');
+        {$endif DEBUG}
+        
+        self.const_res_dep := new CommandQueueBase[c];
+        var dep: array of CommandQueueBase;
+        dep := q2.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+        dep := q1.const_res_dep; c -= dep.Length; dep.CopyTo(self.const_res_dep, c);
+      end;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
+    begin
+      q1.InitBeforeInvoke(g, inited_hubs);
+      q2.InitBeforeInvoke(g, inited_hubs);
+    end;
+    
+    protected function TrySkipInvoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; var res: TR): boolean; where TR: IQueueRes;
+    begin
+      Result := qr_factory.TrySkipInvoke(
+        g, l,
+        self,(g,l)->new QueueResNil(TInv.Create.InvokeToNil(q1,q2, g,l)),
+        res
+      );
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      q1.ToString(sb, tabs, index, delayed);
+      q2.ToString(sb, tabs, index, delayed);
+      sb.Append(#9, tabs);
+      d.ToStringB(sb);
+      sb += #10;
+    end;
+    
+  end;
+  
+  {$endregion Common}
+  
+  {$region Quick}
+  
+  CommandQueueQuickArray2<TInp1,TInp2,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray2WithWork<TInp1,TInp2,TRes, TInv, TDelegate, TWork>)
+  where TInv: IQueueArray2Invoker, constructor;
+  where TDelegate: ISimpleDelegateContainer;
+  where TWork: IQueueArray2Work<TInp1,TInp2,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; factory: IQueueResDirectFactory<TRes,TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2, g, l);
       l := inv_data.next_l;
       
-      var should_make_const := if FPreCall.Create.val then
-        inv_data.all_qrs_const else
-        l.ShouldInstaCallAction;
-      
+      var qr1 := inv_data.qr1;
+      var qr2 := inv_data.qr2;
       var err_handler := g.curr_err_handler;
+      
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
       err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
-      var qr1 := inv_data.qr1;
-      var qr2 := inv_data.qr2;
-      Result := if should_make_const then
-        factory.MakeConst(l, TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect, g.c
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        l.ShouldInstaCallAction;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, g.c
         )) else
-        factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, qr1.GetResDirect,qr2.GetResDirect, c
+        Result := qr_factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, c
         )));
       
     end;
@@ -253,15 +332,15 @@
     
   end;
   
-  CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, TInv, TFunc, FPreCall> = CommandQueueQuickArray2<TInp1,TInp2,TRes, TInv, TFunc, QueueArray2WorkConvert<TInp1,TInp2,TRes, TFunc>, FPreCall>;
-  CommandQueueUseQuickArray2    <TInp1,TInp2,      TInv, TProc, FPreCall> = CommandQueueQuickArray2<TInp1,TInp2,ValueTuple<TInp1,TInp2>, TInv, TProc, QueueArray2WorkUse<TInp1,TInp2, TProc>, FPreCall>;
+  CommandQueueConvertQuickArray2<TInp1,TInp2,TRes, TInv, TFunc> = CommandQueueQuickArray2<TInp1,TInp2,TRes, TInv, TFunc, QueueArray2WorkConvert<TInp1,TInp2,TRes, TFunc>>;
+  CommandQueueUseQuickArray2    <TInp1,TInp2,      TInv, TProc> = CommandQueueQuickArray2<TInp1,TInp2,ValueTuple<TInp1,TInp2>, TInv, TProc, QueueArray2WorkUse<TInp1,TInp2, TProc>>;
   
   {$endregion Quick}
   
   {$region Threaded}
   
   DCommandQueueThreadedArray2MakeBody<TInp1,TInp2, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
-  CommandQueueThreadedArray2<TInp1,TInp2,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray2WithWork<TInp1,TInp2,TRes, TDelegate>)
+  CommandQueueThreadedArray2<TInp1,TInp2,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray2WithWork<TInp1,TInp2,TRes, TInv, TDelegate, TWork>)
   where TInv: IQueueArray2Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray2Work<TInp1,TInp2,TRes, TDelegate>, constructor;
@@ -287,29 +366,44 @@
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; make_qr: Func<TR,CLTaskLocalData>->TR; make_body: DCommandQueueThreadedArray2MakeBody<TInp1,TInp2, TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; make_body: DCommandQueueThreadedArray2MakeBody<TInp1,TInp2, TR>): TR; where TR: IQueueRes;
     begin
-      var inv_data := TInv.Create.Invoke(q1,q2, g, l);
+      if TrySkipInvoke(g,l, qr_factory, Result) then exit;
+      var inv_data := TInv.Create.InvokeToAny(q1,q2, g, l);
       l := inv_data.next_l;
       
-      var prev_ev := l.prev_ev;
-      var acts := l.prev_delegate;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
-      Result := make_qr(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
-        prev_ev, make_body(acts, qr1,qr2, g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
-        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-      )));
+      var err_handler := g.curr_err_handler;
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      var should_make_const := if can_pre_call then
+        inv_data.all_qrs_const else
+        false;
+      
+      if should_make_const then
+        Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
+          err_handler{$ifdef DEBUG}, err_test_reason{$endif},
+          qr1.GetResDirect, qr2.GetResDirect, g.c
+        )) else
+      begin
+        var prev_ev := l.prev_ev;
+        var acts := l.prev_delegate;
+        Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
+          prev_ev, make_body(acts, qr1,qr2, err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
+          {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
+        )));
+      end;
       
     end;
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory.MakeDelayed, MakeNilBody);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory.MakeDelayed, MakeResBody&<QueueResValDirect<TRes>>);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory.MakeDelayed, MakeResBody&<QueueResPtr<TRes>>);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;       override := Invoke(g, l, qr_nil_factory, MakeNilBody);
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <TRes>; override := Invoke(g, l, qr_val_factory, MakeResBody&<QueueResVal<TRes>>);
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<TRes>; override := Invoke(g, l, qr_ptr_factory, MakeResBody&<QueueResPtr<TRes>>);
     
   end;
   

@@ -13,14 +13,14 @@ begin
   
   ('-'*30).Println;
   CLContext.Default.SyncInvoke(q
-    .ThenQuickUse(x->Println(x))
-    .ThenQuickConvert(x->(x*x).Println)
-    .ThenQuickUse(x->Println(x+1))
+    .ThenUse(x->Println(x), false)
+    .ThenConvert(x->(x*x).Println, false)
+    .ThenUse(x->Println(x+1), false)
   );
   
   ('='*30).Println;
 end;
 
 Test(2);
-Test(HTFQ(()->3));
-Test(HTFQ(()->4 as object).Cast&<integer>);
+Test(HFQ(()->3));
+Test(HFQ(()->4 as object).Cast&<integer>);

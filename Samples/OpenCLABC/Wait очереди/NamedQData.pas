@@ -3,7 +3,7 @@
 uses OpenCLABC;
 
 function NamedQ(name: string; delay: integer := 1000) :=
-HTPQ(()->
+HPQ(()->
 begin
   lock output do Writeln($'{Milliseconds} Очередь {name} начала выполнятся');
   Sleep(delay);

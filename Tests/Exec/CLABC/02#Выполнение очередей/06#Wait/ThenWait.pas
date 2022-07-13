@@ -2,7 +2,7 @@
 
 var M := WaitMarker.Create;
 var t := CLContext.Default.BeginInvoke(
-  HTFQ(()->5).ThenWaitFor(M)
+  HFQ(()->5).ThenWaitFor(M)
 );
 
 M.SendSignal;

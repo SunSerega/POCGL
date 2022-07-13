@@ -4,10 +4,10 @@
     {$region FromBytes}
     
     public static function FromBytes(bytes: CommandQueue<UIntPtr>): CLKernelArgLocal;
-    public static function FromBytes(bytes: CommandQueue<UInt32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
-    public static function FromBytes(bytes: CommandQueue<Int32>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
-    public static function FromBytes(bytes: CommandQueue<UInt64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
-    public static function FromBytes(bytes: CommandQueue<Int64>) := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));
+    public static function FromBytes(bytes: CommandQueue<UInt32>) := FromBytes(bytes.ThenConvert(bytes->new UIntPtr(bytes), false,true));
+    public static function FromBytes(bytes: CommandQueue<Int32>) := FromBytes(bytes.ThenConvert(bytes->new UIntPtr(bytes), false,true));
+    public static function FromBytes(bytes: CommandQueue<UInt64>) := FromBytes(bytes.ThenConvert(bytes->new UIntPtr(bytes), false,true));
+    public static function FromBytes(bytes: CommandQueue<Int64>) := FromBytes(bytes.ThenConvert(bytes->new UIntPtr(bytes), false,true));
     
     {$endregion FromBytes}
     
@@ -21,32 +21,32 @@
     {$region LikeArray}
     
     public static function LikeArray<T>(a: CommandQueue<array of T>): CLKernelArgLocal; where T: record;
-    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;
     public static function LikeArray<T>(a: array of T): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
     public static function LikeArray2<T>(a: CommandQueue<array[,] of T>): CLKernelArgLocal; where T: record;
-    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;
     public static function LikeArray2<T>(a: array[,] of T): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
     public static function LikeArray3<T>(a: CommandQueue<array[,,] of T>): CLKernelArgLocal; where T: record;
-    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;
     public static function LikeArray3<T>(a: array[,,] of T): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
     public static function LikeNativeArrayArea<T>(a: CommandQueue<NativeArrayArea<T>>): CLKernelArgLocal; where T: record;
-    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;
     public static function LikeNativeArrayArea<T>(a: NativeArrayArea<T>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
     public static function LikeNativeArray<T>(a: CommandQueue<NativeArray<T>>): CLKernelArgLocal; where T: record;
-    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;
     public static function LikeNativeArray<T>(a: NativeArray<T>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     
     public static function LikeCLArray<T>(a: CommandQueue<CLArray<T>>): CLKernelArgLocal; where T: record;
-    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;
+    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;
     public static function LikeCLArray<T>(a: CLArray<T>): CLKernelArgLocal; where T: record;
     begin Result := FromItemCount&<T>(a.Length) end;
     

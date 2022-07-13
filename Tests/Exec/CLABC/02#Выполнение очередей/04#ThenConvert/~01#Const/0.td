@@ -11,9 +11,9 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 25 
 (125,True) 
 [EventDebug]: 2 event's created 
-[QueueRes<T>]: 4 
+[QueueRes<T>]: 2 
 	QueueResValDirect<(integer,boolean)>: 1 
-	QueueResValDirect<integer>: 3 
+	QueueResValDirect<integer>: 1 
 
 #ReqModules
 OpenCLABC

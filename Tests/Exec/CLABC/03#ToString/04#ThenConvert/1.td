@@ -8,7 +8,7 @@ OpenCL.EventCallback = procedure(event: cl_event; event_command_status: CommandE
 OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): ValueTuple<cl_event,CLContext -> ()>
 
 #ExpExecOtp
-CommandQueueThenQuickConvert<integer,integer,SimpleFuncContainer<integer,integer>,TBooleanTrueFlag>#0
+CommandQueueThenQuickConvert<integer,integer,SimpleFuncContainer<integer,integer>>#0
 	CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>#1: function lambda: integer
 	function lambda(i: integer): integer
 

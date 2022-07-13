@@ -11,7 +11,7 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 5 
 [EventDebug]: 2 event's created 
 [QueueDebug]: 2 queue's created 
-[QueueResNil]: 1 
+[QueueResNil]: 3 
 [QueueRes<T>]: 7 
 	QueueResPtr<integer>: 2 
 	QueueResValDirect<CLMemory>: 2 

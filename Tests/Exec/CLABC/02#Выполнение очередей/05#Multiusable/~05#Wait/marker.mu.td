@@ -13,7 +13,7 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 2 
 [EventDebug]: 5 event's created 
 [WaitDebug]: 3 wait handler's created 
-[QueueResNil]: 9 
+[QueueResNil]: 8 
 
 #ReqModules
 OpenCLABC

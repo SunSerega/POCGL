@@ -1,6 +1,6 @@
 ﻿## uses OpenCLABC;
 
-var q: CommandQueueBase := HTFQ(()->5);
+var Q: CommandQueueBase := HFQ(()->5);
 CLContext.Default.SyncInvoke(
-  CombineSyncQueueBase(ArrFill(2,q)).Cast&<integer>.Print
+  CombineSyncQueue(ArrFill(2,Q)).Cast&<integer>.Print
 ).Println;

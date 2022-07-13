@@ -918,7 +918,7 @@ type
       {$region InitBeforeInvoke}
       
       var init_before_invoke_extra := GetInitBeforeInvokeExtra;
-      res_EIm += '    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override';
+      res_EIm += '    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override';
       if settings.args = nil then
       begin
         res_EIm += ' := ';

@@ -11,7 +11,7 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 Calculated anyway 
 TestOK 
 [EventDebug]: 1 event's created 
-[QueueResNil]: 3 
+[QueueResNil]: 4 
 [QueueRes<T>]: 1 
 	QueueResValDirect<integer>: 1 
 

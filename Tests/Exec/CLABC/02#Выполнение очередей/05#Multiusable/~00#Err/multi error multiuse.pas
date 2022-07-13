@@ -1,16 +1,16 @@
 ﻿## uses OpenCLABC;
 
 var i := 0;
-var QErr := HQPQ(()->
+var QErr := HPQ(()->
 begin
   i += 1;
   raise new Exception('TestOK'+i);
-end);
+end, false);
 
-var Q1s := QErr.Multiusable;
-var Q2s := QErr.Multiusable;
+var Q1 := QErr.Multiusable;
+var Q2 := QErr.Multiusable;
 
-CLContext.Default.SyncInvoke((Q1s()*Q1s()*Q2s()).HandleWithoutRes(e->
+CLContext.Default.SyncInvoke((Q1*Q1*Q2).HandleWithoutRes(e->
 begin
   e.Message.Println;
   Result := true;

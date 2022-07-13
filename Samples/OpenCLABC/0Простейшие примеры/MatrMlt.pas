@@ -56,12 +56,12 @@ try
   
   var Otp_C_Q :=
     C.MakeCCQ.ThenGetArray2(W, W)
-    .ThenQuickUse(C_Matr->
+    .ThenUse(C_Matr->
     begin
       'Матрица С = A*B:'.Println;
       C_Matr.Println;
       Println;
-    end).DiscardResult;
+    end, false).DiscardResult;
   
   var Calc_V2_Q :=
     code['MatrMltVec'].MakeCCQ.ThenExec1(W,
@@ -73,7 +73,7 @@ try
   
   var Otp_V2_Q :=
     V2.MakeCCQ.ThenGetArray
-    .ThenQuickUse(V2_Arr->
+    .ThenUse(V2_Arr->
     begin
       'Вектор V2 = C*V1:'.Println;
       V2_Arr.Println;
@@ -81,7 +81,7 @@ try
     // Единственный DiscardResult, меняющий поведение очереди:
     // С ним не выделяются ресурсы на то, чтобы передать V2_Arr
     // Из результата ThenGetArray1 в результат SyncInvoke
-    end).DiscardResult;
+    end, false).DiscardResult;
   
   // Выполнение всего и сразу асинхронный вывод
   

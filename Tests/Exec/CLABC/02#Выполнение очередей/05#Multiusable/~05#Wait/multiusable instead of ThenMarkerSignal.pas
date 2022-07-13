@@ -1,12 +1,12 @@
 ﻿## uses OpenCLABC;
 
-var Qs := HQFQ(()->5).Multiusable;
+var Q := HFQ(()->5, false).Multiusable;
 var M := WaitMarker.Create;
 
 var t := CLContext.Default.BeginInvoke(
-  WaitFor(M) + HTPQ(()->lock output do 'Got signal of M'.Println)
+  WaitFor(M) + HPQ(()->lock output do 'Got signal of M'.Println)
 );
-var res := CLContext.Default.SyncInvoke( Qs()+M+Qs() );
+var res := CLContext.Default.SyncInvoke( Q+M+Q );
 
 t.Wait;
 res.Println;

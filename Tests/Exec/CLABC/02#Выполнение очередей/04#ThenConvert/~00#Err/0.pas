@@ -1,9 +1,9 @@
 ﻿## uses OpenCLABC;
 
 CLContext.Default.SyncInvoke(
-  HQFQ(()->5).ThenConstConvert(i->
+  HFQ(()->5, false).ThenConvert(i->
   begin
     Result := i;
     raise new Exception('TestOK');
-  end)
+  end, false,true)
 );

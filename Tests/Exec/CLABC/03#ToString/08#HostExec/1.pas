@@ -2,18 +2,18 @@
 
 
 
-HQFQ(()->1).Println;
-HQPQ(()->begin end).Println;
+HFQ(()->1, false).Println;
+HPQ(()->begin end, false).Println;
 
-HQFQ(с->1).Println;
-HQPQ(с->begin end).Println;
+HFQ(с->1, false).Println;
+HPQ(с->begin end, false).Println;
 
 
 
-HTFQ(()->1).Println;
-HTPQ(()->begin end).Println;
+HFQ(()->1).Println;
+HPQ(()->begin end).Println;
 
-HTFQ(с->1).Println;
-HTPQ(с->begin end).Println;
+HFQ(с->1).Println;
+HPQ(с->begin end).Println;
 
 

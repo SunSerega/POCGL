@@ -3,7 +3,7 @@
 var mre := new System.Threading.ManualResetEventSlim(false);
 
 var fast_id := 0;
-var Q_fast := HTFQ(()->
+var Q_fast := HFQ(()->
 begin
   lock output do
   begin
@@ -15,7 +15,7 @@ begin
 end);
 
 var slow_id := 0;
-var Q_slow := HTFQ(()->
+var Q_slow := HFQ(()->
 begin
   mre.Wait;
   lock output do

@@ -1,118 +1,9 @@
 ﻿Executing selected stages:
-FirstPack + Reference + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
+OpenCLABC + Compile + Test + Release
 Start packing
-=================================== First Pack ===================================
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\Reps\PullReps.pas"
-Compiling: OK
-Runing SubReps Update
-SubReps Update: Init
-SubReps Update: Done init
-SubReps Update: Pulling OpenCL Docs
-SubReps Update: OpenCL Docs : checkout:
-SubReps Update: OpenCL Docs : Your branch is up to date with '0_official/main'.
-SubReps Update: OpenCL Docs : [Info] Already on 'main'
-SubReps Update: OpenCL Docs : pull:
-SubReps Update: OpenCL Docs : [Info] From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL Docs : [Info] * branch            main       -> FETCH_HEAD
-SubReps Update: OpenCL Docs : Already up to date.
-SubReps Update: OpenCL Docs : push:
-SubReps Update: OpenCL Docs : [Info] Everything up-to-date
-SubReps Update: Done pulling OpenCL Docs
-SubReps Update: Pulling OpenGL Registry
-SubReps Update: OpenGL Registry : checkout:
-SubReps Update: OpenGL Registry : Your branch is up to date with 'SunSerega/unused-groups'.
-SubReps Update: OpenGL Registry : [Info] Already on 'unused-groups'
-SubReps Update: OpenGL Registry : pull:
-SubReps Update: OpenGL Registry : [Info] fatal: couldn't find remote ref unused-groups
-SubReps Update: OpenGL Registry : push:
-SubReps Update: OpenGL Registry : [Info] Everything up-to-date
-SubReps Update: Done pulling OpenGL Registry
-Finished runing SubReps Update
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\XML\CL\ScrapXML.pas"
-Compiling: OK
-Runing ScrapXML[CL]
-ScrapXML[CL]: Parsing "cl"
-ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MAJOR_MASK_KHR]
-ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MINOR_MASK_KHR]
-ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_PATCH_MASK_KHR]
-ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MAJOR_KHR]
-ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_MINOR_KHR]
-ScrapXML[CL]: WARNING: Weird XML for [CL_VERSION_PATCH_KHR]
-ScrapXML[CL]: WARNING: Weird XML for [CL_MAKE_VERSION_KHR]
-ScrapXML[CL]: Saving as binary
-Finished runing ScrapXML[CL]
-Compiling "DataScraping\XML\GL\ScrapXML.pas"
-Compiling: OK
-Runing ScrapXML[GL]
-ScrapXML[GL]: Parsing "gl"
-ScrapXML[GL]: Parsing "wgl"
-ScrapXML[GL]: Parsing "glx"
-ScrapXML[GL]: Saving as binary
-Finished runing ScrapXML[GL]
-=================================== References ===================================
-Compiling "Packing\Reference\ReferencePacker.pas"
-Compiling: OK
-Runing ReferencePacker
-ReferencePacker: Packing reference "Гайд по использованию OpenGL и OpenCL"
-ReferencePacker: Done packing feference "Гайд по использованию OpenGL и OpenCL"
-ReferencePacker: Packing reference "Справка OpenGLABC"
-ReferencePacker: Done packing feference "Справка OpenGLABC"
-ReferencePacker: Packing reference "Справка OpenCLABC"
-ReferencePacker: Done packing feference "Справка OpenCLABC"
-Finished runing ReferencePacker
-================================= FuncVirtualTest ================================
-Compiling "Packing\Template\FuncVirtualTest.pas"
-Compiling: OK
-Runing FVT
-FVT: Creating funcs
-FVT: Constructing funcs code
-Finished runing FVT
-===================================== OpenCL =====================================
+==================================== OpenCLABC ===================================
 Compiling "Packing\Template\Pack Template.pas"
 Compiling: OK
-Runing Template[OpenCL]
-Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack NameRecords.pas"
-Template[OpenCL]: Compiling: OK
-Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack NameRecords.exe]
-Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack NameRecords.exe]
-Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack Most.pas"
-Template[OpenCL]: Compiling: OK
-Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack Most.exe]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Reading .bin
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Fixing all
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing funcs code
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueMigrateMemObjects]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireD3D10ObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseD3D10ObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireD3D11ObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseD3D11ObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireDX9MediaSurfacesKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseDX9MediaSurfacesKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireEGLObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseEGLObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueMigrateMemObjectEXT]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireGrallocObjectsIMG]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseGrallocObjectsIMG]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireVA_APIMediaSurfacesINTEL]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseVA_APIMediaSurfacesINTEL]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireDX9ObjectsINTEL]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseDX9ObjectsINTEL]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireGLObjects]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseGLObjects]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 30 overloads of non-fixed Func [clEnqueueGenerateMipmapIMG]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 30 overloads of non-fixed Func [clEnqueueWaitSemaphoresKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 30 overloads of non-fixed Func [clEnqueueSignalSemaphoresKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireExternalMemObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseExternalMemObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueCommandBufferKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clGetImageRequirementsInfoEXT]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing structs code
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing enums code
-Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
-Finished runing Template[OpenCL]
-==================================== OpenCLABC ===================================
 Runing Template[OpenCLABC]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapperProperties.pas"
 Template[OpenCLABC]: Compiling: OK
@@ -152,6 +43,8 @@ Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\CLKernelArg.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CombineQueues.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CombineQueues.exe]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\CombineQueues.exe]: WARNING: Lazy not implemented
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\CombineQueues.exe]: WARNING: Lazy not implemented
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\CombineQueues.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\QueueStaticArrayWithWork.pas"
 Template[OpenCLABC]: Compiling: OK
@@ -162,74 +55,16 @@ Compiling "Packing\Descriptions\PackDescriptions.pas"
 Compiling: OK
 Runing Descriptions[OpenCLABC]
 Finished runing Descriptions[OpenCLABC]
-===================================== OpenGL =====================================
-Runing Template[OpenGL]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack NameRecords.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack NameRecords.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack NameRecords.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack Most.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack Most.exe]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Reading .bin
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Fixing all
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [ConvolutionTargetEXT] had different enums from [ConvolutionTarget]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [SeparableTargetEXT] had different enums from [SeparableTarget]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [HistogramTargetEXT] had different enums from [HistogramTarget]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [MinmaxTargetEXT] had different enums from [MinmaxTarget]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [SamplePatternEXT] had different enums from [SamplePattern]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [ColorTableTargetSGI] had different enums from [ColorTableTarget]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [VertexArrayPNameAPPLE] had different enums from [VertexArrayPName]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [VertexAttribEnumNV] had different enums from [VertexAttribEnum]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [ShadingRateQCOM] had different enums from [ShadingRate]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Groups [HintTargetPGI] had different enums from [HintTarget]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing funcs code
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glDrawCommandsStatesNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glDrawCommandsStatesAddressNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glListDrawCommandsStatesClientNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glAsyncCopyBufferSubDataNVX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glAsyncCopyImageSubDataNVX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [wglChoosePixelFormatARB]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [wglChoosePixelFormatEXT]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glXQueryChannelRectSGIX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glXQueryChannelDeltasSGIX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing structs code
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing enums code
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack Most.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack VecTypes.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack VecTypes.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack VecTypes.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrTypes.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrExt.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrExt.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrExt.exe]
-Finished runing Template[OpenGL]
-==================================== OpenGLABC ===================================
-Runing Template[OpenGLABC]
-Finished runing Template[OpenGLABC]
-Runing Descriptions[OpenGLABC]
-Finished runing Descriptions[OpenGLABC]
 ==================================== Compiling ===================================
 Compiling "Modules.Packed\OpenCLABC.pas"
-Compiling: OK
-Compiling "Modules.Packed\OpenGLABC.pas"
 Compiling: OK
 ===================================== Testing ====================================
 Compiling "Tests\Tester.pas"
 Compiling: OK
 Runing Tester
 Tester: Testing selected modules:
-Tester: OpenCL + OpenCLABC + OpenGL + OpenGLABC
+Tester: OpenCLABC
 Tester: Compiling "Tests\DebugPCU\OpenCLABC.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\DebugPCU\OpenGLABC.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CL\ToString.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\gen def context.pas"
 Tester: Compiling: OK
@@ -407,20 +242,6 @@ Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\06#CLCode\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Det.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Mtr.Translate.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Random.pas"
-Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Vec.Cross.pas"
-Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCL\MatrMlt.pas"
-Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCL\SimpleAddition.pas"
-Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
@@ -433,12 +254,6 @@ Tester: Compiling "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.pas"
-Tester: Compiling: OK
-Tester: Compiling "Samples\OpenGLABC\Точки на поле\Точки.pas"
-Tester: Compiling: OK
-Tester: Executing Test[Tests\Exec\CL\ToString]
-Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\gen def context]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\01#CLPlatform\1]
@@ -522,16 +337,16 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~08#HostExec\QuickParOrder]
 Tester: Testing.FatalTestingException: OpenCLABC.OpenCLABCInternalException: Result read before 1 events completed:
 	SUBMITTED
-   at OpenCLABC_implementation______.QueueRes`1.CheckStatus() in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 9989
-   at OpenCLABC_implementation______.QueueResPtr`1.GetResPtrForRead() in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 10151
-   at OpenCLABC_implementation______.<>local_variables_class_290`1.<>lambda355(CLArray`1 <>o, cl_command_queue <>cq, EventList <>evs) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 26180
-   at OpenCLABC_implementation______.EnqueueableCore.ExecuteEnqFunc[T](T prev_res, cl_command_queue cq, EventList ev_l2, EnqFunc`1 enq_f, CLTaskErrHandler err_handler, String err_test_reason, Object q) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 16859
+   at OpenCLABC_implementation______.QueueRes`1.CheckStatus() in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 9681
+   at OpenCLABC_implementation______.QueueResPtr`1.GetResPtrForRead() in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 9842
+   at OpenCLABC_implementation______.<>local_variables_class_317`1.<>lambda374(CLArray`1 <>o, cl_command_queue <>cq, EventList <>evs) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 26642
+   at OpenCLABC_implementation______.EnqueueableCore.ExecuteEnqFunc[T](T prev_res, cl_command_queue cq, EventList ev_l2, EnqFunc`1 enq_f, CLTaskErrHandler err_handler, String err_test_reason, Object q) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 17294
 --- End of stack trace from previous location where exception was thrown ---
    at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
-   at OpenCLABC_implementation______.CLTaskErrHandler.AddErr(Exception e, String test_reason) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 9133
-   at OpenCLABC_implementation______.EnqueueableCore.ExecuteEnqFunc[T](T prev_res, cl_command_queue cq, EventList ev_l2, EnqFunc`1 enq_f, CLTaskErrHandler err_handler, String err_test_reason, Object q) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 16863
-   at OpenCLABC_implementation______.<>local_variables_class_107`1.<>lambda156() in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 16944
-   at OpenCLABC_implementation______.EventList.InvokeAttachedCallback(cl_event ev, CommandExecutionStatus st, IntPtr data) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 8920
+   at OpenCLABC_implementation______.CLTaskErrHandler.AddErr(Exception e, String test_reason) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 8789
+   at OpenCLABC_implementation______.EnqueueableCore.ExecuteEnqFunc[T](T prev_res, cl_command_queue cq, EventList ev_l2, EnqFunc`1 enq_f, CLTaskErrHandler err_handler, String err_test_reason, Object q) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 17298
+   at OpenCLABC_implementation______.<>local_variables_class_133`1.<>lambda173() in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 17379
+   at OpenCLABC_implementation______.EventList.InvokeAttachedCallback(cl_event ev, CommandExecutionStatus st, IntPtr data) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 8576
    at Testing.ExecutingTest.FinishExecution()
    at Tester.TestInfo.Execute()
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\0]
@@ -628,20 +443,6 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\06#CLCode\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Det]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Mtr.Rotate3D]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Mtr.Translate]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Random]
-Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Vec.Cross]
-Tester: Done executing
-Tester: Executing Test[Samples\OpenCL\MatrMlt]
-Tester: Done executing
-Tester: Executing Test[Samples\OpenCL\SimpleAddition]
-Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
@@ -655,18 +456,12 @@ Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying modules ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Packing Modules.Packed\OpenCL.pas
-WARNING: Not enough rights to copy [Modules.Packed\OpenCL.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
 Packing Modules.Packed\OpenCLABC.pas
 WARNING: Not enough rights to copy [Modules.Packed\OpenCLABC.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
-Packing Modules.Packed\OpenGL.pas
-WARNING: Not enough rights to copy [Modules.Packed\OpenGL.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
-Packing Modules.Packed\OpenGLABC.pas
-WARNING: Not enough rights to copy [Modules.Packed\OpenGLABC.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
-WARNING: Not enough rights to copy [Modules.Packed\OpenCL.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
+Packing Modules.Packed\OpenCL.pas
+WARNING: Not enough rights to copy [Modules.Packed\OpenCL.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
 WARNING: Not enough rights to copy [Modules.Packed\OpenCLABC.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
-WARNING: Not enough rights to copy [Modules.Packed\OpenGL.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
-WARNING: Not enough rights to copy [Modules.Packed\OpenGLABC.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
+WARNING: Not enough rights to copy [Modules.Packed\OpenCL.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
 Done copying release modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying samples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Packing sample file "Samples\OpenCL\MatrMlt.cl"

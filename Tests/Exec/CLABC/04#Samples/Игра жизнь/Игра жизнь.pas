@@ -66,7 +66,7 @@ try
 //    );
 //  end;
   
-  CLContext.Default.SyncInvoke(CombineSyncQueueBase(ArrFill&<CommandQueueBase>(50, Q_1Step)) + Q_Otp);
+  CLContext.Default.SyncInvoke(CombineSyncQueue(ArrFill&<CommandQueueBase>(50, Q_1Step)) + Q_Otp);
   field_states_q.Single.ConvertAll(b->b<>0?#9608:' ').Println(0);
   
 except

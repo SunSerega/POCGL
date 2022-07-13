@@ -8,15 +8,9 @@ OpenCL.EventCallback = procedure(event: cl_event; event_command_status: CommandE
 OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): ValueTuple<cl_event,CLContext -> ()>
 
 #ExpExecOtp
-CommandQueueQuickArray<Object,array of Object,QueueArraySyncInvoker,SimpleFuncContainer<array of Object,array of Object>,QueueArrayWorkConvert<Object,array of Object,SimpleFuncContainer<array of Object,array of Object>>,TBooleanFalseFlag>#0
-	ConstQueue<Object>#1: { nil }
-	ConstQueue<Object>#1: { nil }
-	function lambda(a: array of Object): array of Object
+CommandQueueHostQuickFunc<array of Object,SimpleFunc0Container<array of Object>>#0: (((System.Object[] <>lambda*(System.Object[]),nil)),[nil,nil]) => function lambda: array of Object
 
-CommandQueueQuickArray<Object,array of Object,QueueArrayAsyncInvoker,SimpleFuncContainer<array of Object,array of Object>,QueueArrayWorkConvert<Object,array of Object,SimpleFuncContainer<array of Object,array of Object>>,TBooleanFalseFlag>#0
-	ConstQueue<Object>#1: { nil }
-	ConstQueue<Object>#1: { nil }
-	function lambda(a: array of Object): array of Object
+CommandQueueHostQuickFunc<array of Object,SimpleFunc0Container<array of Object>>#0: (((System.Object[] <>lambda*(System.Object[]),nil)),[nil,nil]) => function lambda: array of Object
 
 #ReqModules
 OpenCLABC

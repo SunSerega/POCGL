@@ -20,9 +20,9 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 ------------------------------ 
 1 
 ------------------------------ 
-[QueueResNil]: 8 
-[QueueRes<T>]: 4 
-	QueueResValDirect<CLMemory>: 4 
+[QueueResNil]: 12 
+[QueueRes<T>]: 12 
+	QueueResValDirect<CLMemory>: 12 
 
 #ReqModules
 OpenCLABC

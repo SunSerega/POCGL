@@ -4,15 +4,15 @@ var M := WaitMarker.Create;
 
 var mre := new System.Threading.ManualResetEventSlim(false);
 CLContext.Default.SyncInvoke(
-  HTPQ(()->
+  HPQ(()->
   begin
     mre.Wait;
     'M'.Println;
     M.SendSignal;
   end) *
-  HTFQ(()->5).ThenQuickUse(x->
+  HFQ(()->5).ThenUse(x->
   begin
     $'/\{x}/\'.Println;
     mre.Set;
-  end).ThenWaitFor(M)
+  end, false).ThenWaitFor(M)
 ).Println;

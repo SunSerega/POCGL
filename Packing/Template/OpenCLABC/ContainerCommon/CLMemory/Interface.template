@@ -1,7 +1,6 @@
 ﻿    
     
     
-    public constructor(o: CLMemory);
     public constructor(q: CommandQueue<CLMemory>);
     private constructor;
     
@@ -9,12 +8,8 @@
     
     public function ThenQueue(q: CommandQueueBase): CLMemoryCCQ;
     
-    public function ThenConstProc(p: CLMemory->()): CLMemoryCCQ;
-    public function ThenConstProc(p: (CLMemory, CLContext)->()): CLMemoryCCQ;
-    public function ThenQuickProc(p: CLMemory->()): CLMemoryCCQ;
-    public function ThenQuickProc(p: (CLMemory, CLContext)->()): CLMemoryCCQ;
-    public function ThenThreadedProc(p: CLMemory->()): CLMemoryCCQ;
-    public function ThenThreadedProc(p: (CLMemory, CLContext)->()): CLMemoryCCQ;
+    public function ThenProc(p: CLMemory->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLMemoryCCQ;
+    public function ThenProc(p: (CLMemory, CLContext)->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLMemoryCCQ;
     
     public function ThenWait(marker: WaitMarker): CLMemoryCCQ;
     

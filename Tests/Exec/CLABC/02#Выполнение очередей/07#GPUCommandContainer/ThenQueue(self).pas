@@ -1,8 +1,8 @@
 ## uses OpenCLABC;
 
 var q := CLMemory.Create(1).MakeCCQ
-  .ThenQuickProc(mem->Println(1))
-  .ThenQuickProc(mem->Println(2))
+  .ThenProc(mem->Println(1), false)
+  .ThenProc(mem->Println(2), false)
 ;
 
 CLContext.Default.SyncInvoke(

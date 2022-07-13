@@ -5,11 +5,6 @@ uses CodeGen      in '..\..\..\Utils\CodeGen';
 
 uses PackingUtils in '..\PackingUtils';
 
-const exec_speed_const = 'Const';
-const exec_speed_quick = 'Quick';
-const exec_speed_threaded = 'Threaded';
-const exec_speeds: array of string = (exec_speed_const, exec_speed_quick, exec_speed_threaded);
-
 begin
   try
     
@@ -69,15 +64,6 @@ begin
       end;
       
       {$region constructor's}
-      
-      WriteHeader('constructor', 'public');
-      res_Im += 'Create';
-      res += '(o: ';
-      res += t;
-      WriteGenerics(res);
-      res += ')';
-      res_Im += ' := inherited';
-      res += ';'#10;
       
       WriteHeader('constructor', 'public');
       res_Im += 'Create';
@@ -141,7 +127,7 @@ begin
       WriteCCQ(res);
       res += ';'#10;
       res_Im += 'begin'#10;
-      res_Im += '  var comm := QueueCommandFactory&<';
+      res_Im += '  var comm := QueueCommandConstructor&<';
       res_Im += t;
       WriteGenerics(res_Im);
       res_Im += '>.Make(q);'#10;
@@ -156,36 +142,30 @@ begin
       
       {$region ThenProc}
       
-      foreach var exec_speed in exec_speeds do
+      foreach var need_c in |false,true| do
       begin
-        
-        foreach var need_c in |false,true| do
-        begin
-          WriteHeader('function', 'public');
-          res += 'Then';
-          res += exec_speed;
-          res += 'Proc(p: ';
-          if need_c then res += '(';
-          res += t;
-          WriteGenerics(res);
-          if need_c then res += ', CLContext)';
-          res += '->())';
-          res_In += ': ';
-          WriteCCQ(res_In);
-          res_Im += ' := AddCommand(self, ProcCommandFactory&<';
-          res_Im += t;
-          WriteGenerics(res_Im);
-          res_Im += '>.Make';
-          res_Im += exec_speed;
-          res_Im += '&<SimpleProcContainer';
-          if need_c then res_Im += 'C';
-          res_Im += '<';
-          res_Im += t;
-          WriteGenerics(res_Im);
-          res_Im += '>>(p))';
-          res += ';'#10;
-        end;
-        
+        WriteHeader('function', 'public');
+        res += 'ThenProc(p: ';
+        if need_c then res += '(';
+        res += t;
+        WriteGenerics(res);
+        if need_c then res += ', CLContext)';
+        res += '->(); ';
+        res_In += 'need_own_thread: boolean := true; can_pre_calc: boolean := false';
+        res_Im += 'need_own_thread, can_pre_calc: boolean';
+        res += ')';
+        res_In += ': ';
+        WriteCCQ(res_In);
+        res_Im += ' := AddCommand(self, ProcCommandConstructor&<';
+        res_Im += t;
+        WriteGenerics(res_Im);
+        res_Im += '>.Make&<SimpleProcContainer';
+        if need_c then res_Im += 'C';
+        res_Im += '<';
+        res_Im += t;
+        WriteGenerics(res_Im);
+        res_Im += '>>(p, need_own_thread, can_pre_calc))';
+        res += ';'#10;
       end;
       
       res_In += '    ';
@@ -199,7 +179,7 @@ begin
       res += 'ThenWait(marker: WaitMarker)';
       res_In += ': ';
       WriteCCQ(res_In);
-      res_Im += ' := AddCommand(self, WaitCommandFactory&<';
+      res_Im += ' := AddCommand(self, WaitCommandConstructor&<';
       res_Im += t;
       WriteGenerics(res_Im);
       res_Im += '>.Make(marker))';

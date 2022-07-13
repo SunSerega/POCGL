@@ -3,5 +3,5 @@
 var mem := new CLMemory(1);
 CLContext.Default.SyncInvoke(
   mem.MakeCCQ
-  .ThenThreadedProc(b->raise new Exception($'{mem}, TestOK'))
+  .ThenProc(b->raise new Exception($'{mem}, TestOK'))
 );

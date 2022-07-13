@@ -1,7 +1,7 @@
 ﻿## uses OpenCLABC;
 
-var q := HQPQ(()->
+var Q := HPQ(()->
 begin
   raise new Exception('TestOK');
-end);
-CLContext.Default.SyncInvoke(q);
+end, false);
+CLContext.Default.SyncInvoke(Q);

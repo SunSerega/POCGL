@@ -7,12 +7,12 @@ var mre := new System.Threading.ManualResetEventSlim(false);
 var t := CLContext.Default.BeginInvoke(
   (
     WaitFor(M1 and M2) +
-    HQPQ(()->Println(2))
+    HPQ(()->Println(2), false)
   ) *
   (
     WaitFor(M1) +
-    HQPQ(()->Println(1)) +
-    HQPQ(mre.Set)
+    HPQ(()->Println(1), false) +
+    HPQ(mre.Set, false)
   )
 );
 

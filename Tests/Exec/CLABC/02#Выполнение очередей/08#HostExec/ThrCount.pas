@@ -10,11 +10,11 @@ begin
   end;
   
   CLContext.Default.SyncInvoke(
-    Q(add_thr_id) + CombineAsyncQueueNil(ArrFill(16, HQPQ(add_thr_id)))
+    Q(add_thr_id) + CombineAsyncQueue(ArrFill(16, HPQ(add_thr_id, false)))
   );
   
   (thr_ids.Distinct.Count>=min_thrs).Println;
 end;
 
-Test(2, ati->HTPQ(ati) );
+Test(2, ati->HPQ(ati) );
 Test(1, ati->CLMemory.Create(4).MakeCCQ.ThenWriteValue(5) );

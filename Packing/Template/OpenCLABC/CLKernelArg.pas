@@ -329,7 +329,7 @@ type
           raise new System.NotImplementedException;
         m += '    '#10;
         
-        m += '    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :='#10;
+        m += '    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :='#10;
         m += '    data.q.InitBeforeInvoke(g, inited_hubs);'#10;
         m += '    '#10;
         
@@ -622,9 +622,9 @@ begin
         t += '(123)));'#10;
         t += 'Test(';
         t += wr_local.class_name;
-        t += '.FromBytes(HQFQ(()->';
+        t += '.FromBytes(HFQ(()->';
         t += dt ?? 'new UIntPtr';
-        t += '(123))));'#10;
+        t += '(123), false)));'#10;
         
         if dt=nil then
         begin
@@ -636,7 +636,7 @@ begin
           m += wr_local.class_name;
           m += 'Bytes(bytes);'#10;
         end else
-          n += ' := FromBytes(bytes.ThenConstConvert(bytes->new UIntPtr(bytes)));'#10;
+          n += ' := FromBytes(bytes.ThenConvert(bytes->new UIntPtr(bytes), false,true));'#10;
         
       end;
       
@@ -670,17 +670,17 @@ begin
         t += '(64)));'#10;
         t += 'Test(';
         t += wr_local.class_name;
-        t += '.FromItemCount&<integer>(HQFQ&<';
+        t += '.FromItemCount&<integer>(HFQ&<';
         t += dt;
-        t += '>(()->64)));'#10;
+        t += '>(()->64, false)));'#10;
         
         m += 'begin'#10;
         m += '  BlittableHelper.RaiseIfBad(typeof(T), ''%Err:Blittable:Source:';
         m += wr_local.class_name;
         m += ':ItemCount%'');'#10;
-        m += '  Result := FromBytes(item_count.ThenConstConvert(item_count->new UIntPtr('#10;
+        m += '  Result := FromBytes(item_count.ThenConvert(item_count->new UIntPtr('#10;
         m += '    uint64(Marshal.Sizeof(default(T)))*UInt32(item_count)'#10;
-        m += '  )));'#10;
+        m += '  ), false,true));'#10;
         m += 'end;'#10;
       end;
       n += '    ';
@@ -703,7 +703,7 @@ begin
         n += '>): ';
         n += wr_local.class_name;
         n += '; where T: record;'#10;
-        n += '    begin Result := FromItemCount&<T>(a.ThenConstConvert(a->a.Length)) end;'#10;
+        n += '    begin Result := FromItemCount&<T>(a.ThenConvert(a->a.Length, false,true)) end;'#10;
         
         n += '    public static function Like';
         n += tnick;
@@ -726,9 +726,9 @@ begin
         t += wr_local.class_name;
         t += '.Like';
         t += tnick;
-        t += '(HQFQ(()->';
+        t += '(HFQ(()->';
         t += par_name;
-        t += ')));'#10;
+        t += ', false)));'#10;
         
         n += '    '#10;
       end;

@@ -16,9 +16,9 @@ SimpleAsyncQueueArray<Object>#0
 		CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#3: function lambda: integer
  
 CLMemoryCCQ#0
-	CCCObj<CLMemory>: CLMemory[*] of size 1
+	ConstQueue<CLMemory>#1: CLMemory[*] of size 1
 	QueueCommand<CLMemory>
-		CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#1: function lambda: integer
+		CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#2: function lambda: integer
 
 #ReqModules
 OpenCLABC

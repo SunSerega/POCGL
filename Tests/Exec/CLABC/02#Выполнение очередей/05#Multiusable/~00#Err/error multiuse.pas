@@ -1,4 +1,4 @@
 ﻿## uses OpenCLABC;
 
-var Qs := HQPQ(()->raise new Exception('TestOK')).Multiusable;
-CLContext.Default.SyncInvoke(Qs()*Qs()+Qs());
+var Q := HPQ(()->raise new Exception('TestOK'), false).Multiusable;
+CLContext.Default.SyncInvoke(Q*Q+Q);

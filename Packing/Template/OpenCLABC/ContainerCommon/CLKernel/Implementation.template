@@ -1,7 +1,6 @@
 ﻿
 
 
-constructor CLKernelCCQ.Create(o: CLKernel) := inherited;
 constructor CLKernelCCQ.Create(q: CommandQueue<CLKernel>) := inherited;
 constructor CLKernelCCQ.Create := inherited;
 
@@ -14,18 +13,14 @@ end;
 
 function CLKernelCCQ.ThenQueue(q: CommandQueueBase): CLKernelCCQ;
 begin
-  var comm := QueueCommandFactory&<CLKernel>.Make(q);
+  var comm := QueueCommandConstructor&<CLKernel>.Make(q);
   Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function CLKernelCCQ.ThenConstProc(p: CLKernel->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeConst&<SimpleProcContainer<CLKernel>>(p));
-function CLKernelCCQ.ThenConstProc(p: (CLKernel, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeConst&<SimpleProcContainerC<CLKernel>>(p));
-function CLKernelCCQ.ThenQuickProc(p: CLKernel->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeQuick&<SimpleProcContainer<CLKernel>>(p));
-function CLKernelCCQ.ThenQuickProc(p: (CLKernel, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeQuick&<SimpleProcContainerC<CLKernel>>(p));
-function CLKernelCCQ.ThenThreadedProc(p: CLKernel->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeThreaded&<SimpleProcContainer<CLKernel>>(p));
-function CLKernelCCQ.ThenThreadedProc(p: (CLKernel, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLKernel>.MakeThreaded&<SimpleProcContainerC<CLKernel>>(p));
+function CLKernelCCQ.ThenProc(p: CLKernel->(); need_own_thread, can_pre_calc: boolean) := AddCommand(self, ProcCommandConstructor&<CLKernel>.Make&<SimpleProcContainer<CLKernel>>(p, need_own_thread, can_pre_calc));
+function CLKernelCCQ.ThenProc(p: (CLKernel, CLContext)->(); need_own_thread, can_pre_calc: boolean) := AddCommand(self, ProcCommandConstructor&<CLKernel>.Make&<SimpleProcContainerC<CLKernel>>(p, need_own_thread, can_pre_calc));
 
-function CLKernelCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLKernel>.Make(marker));
+function CLKernelCCQ.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandConstructor&<CLKernel>.Make(marker));
 
 {$endregion Special .Add's}
 

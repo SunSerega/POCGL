@@ -20,7 +20,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
        sz1.InitBeforeInvoke(g, prev_hubs);
@@ -103,7 +103,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
        sz1.InitBeforeInvoke(g, prev_hubs);
@@ -197,7 +197,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
        sz1.InitBeforeInvoke(g, prev_hubs);
@@ -300,7 +300,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
       global_work_offset.InitBeforeInvoke(g, prev_hubs);

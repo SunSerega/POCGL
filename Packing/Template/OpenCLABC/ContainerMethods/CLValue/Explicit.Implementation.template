@@ -23,7 +23,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
     end;
     
@@ -82,7 +82,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       val.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -151,7 +151,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -217,7 +217,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -283,7 +283,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -349,7 +349,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -439,7 +439,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
              mem.InitBeforeInvoke(g, prev_hubs);
       mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -516,7 +516,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
              mem.InitBeforeInvoke(g, prev_hubs);
       mem_offset.InitBeforeInvoke(g, prev_hubs);
@@ -591,7 +591,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       val.InitBeforeInvoke(g, prev_hubs);
     end;
@@ -657,7 +657,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       val.InitBeforeInvoke(g, prev_hubs);
     end;

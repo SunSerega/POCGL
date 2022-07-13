@@ -1,7 +1,6 @@
 ﻿    
     
     
-    public constructor(o: CLKernel);
     public constructor(q: CommandQueue<CLKernel>);
     private constructor;
     
@@ -9,12 +8,8 @@
     
     public function ThenQueue(q: CommandQueueBase): CLKernelCCQ;
     
-    public function ThenConstProc(p: CLKernel->()): CLKernelCCQ;
-    public function ThenConstProc(p: (CLKernel, CLContext)->()): CLKernelCCQ;
-    public function ThenQuickProc(p: CLKernel->()): CLKernelCCQ;
-    public function ThenQuickProc(p: (CLKernel, CLContext)->()): CLKernelCCQ;
-    public function ThenThreadedProc(p: CLKernel->()): CLKernelCCQ;
-    public function ThenThreadedProc(p: (CLKernel, CLContext)->()): CLKernelCCQ;
+    public function ThenProc(p: CLKernel->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLKernelCCQ;
+    public function ThenProc(p: (CLKernel, CLContext)->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLKernelCCQ;
     
     public function ThenWait(marker: WaitMarker): CLKernelCCQ;
     

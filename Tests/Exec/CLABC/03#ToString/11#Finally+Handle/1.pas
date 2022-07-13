@@ -1,6 +1,6 @@
 ## uses OpenCLABC;
 
-var Q := HQFQ(()->1);
+var Q := HFQ(()->1);
 
 (Q >= Q).Println;
 Q.HandleWithoutRes(e->true).Println;

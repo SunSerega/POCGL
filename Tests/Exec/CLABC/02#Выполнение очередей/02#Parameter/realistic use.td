@@ -14,7 +14,7 @@ def
 2 
 [EventDebug]: 4 event's created 
 [QueueDebug]: 2 queue's created 
-[QueueResNil]: 4 
+[QueueResNil]: 6 
 [QueueRes<T>]: 12 
 	QueueResPtr<integer>: 4 
 	QueueResValDirect<CLMemory>: 2 

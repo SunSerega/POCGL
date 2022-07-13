@@ -8,9 +8,9 @@ OpenCL.EventCallback = procedure(event: cl_event; event_command_status: CommandE
 OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): ValueTuple<cl_event,CLContext -> ()>
 
 #ExpExecOtp
-q выполнилась 
+Q выполнилась 
 5 25 625
-q выполнилась 
+Q выполнилась 
 3125 
 [EventDebug]: 1 event's created 
 [QueueRes<T>]: 14 

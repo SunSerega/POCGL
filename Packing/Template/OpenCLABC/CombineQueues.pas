@@ -1,4 +1,4 @@
-uses POCGL_Utils  in '..\..\..\POCGL_Utils';
+﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
 
 uses CodeGen      in '..\..\..\Utils\CodeGen';
 uses Fixers       in '..\..\..\Utils\Fixers';
@@ -10,17 +10,9 @@ const exec_order_s = 'Sync';
 const exec_order_a = 'Async';
 const exec_orders: array of string = (exec_order_s, exec_order_a);
 
-const q_t_base = 'Base';
-const q_ts: array of string = (q_t_base,'Nil','&<T>');
-
 const work_t_conv = 'Conv';
 const work_t_use = 'Use';
 const work_ts: array of string = (work_t_conv, work_t_use);
-
-const exec_speed_const = 'Const';
-const exec_speed_quick = 'Quick';
-const exec_speed_threaded = 'Threaded';
-const exec_speeds: array of string = (exec_speed_const, exec_speed_quick, exec_speed_threaded);
 
 begin
   try
@@ -38,56 +30,72 @@ begin
       wr += exec_order;
       wr += '}'#10#10;
       
+      {$region Simple}
+      
       wr += '{$region Simple}'#10#10;
       
-      foreach var q_t in q_ts do
+      foreach var with_last in |false,true| do
       begin
-        
-        wr += 'function Combine';
-        wr += exec_order;
-        wr += 'Queue';
-        wr += q_t.TrimStart('&');
-        wr += '(params qs: array of CommandQueue';
-        wr += q_t.TrimStart('&');
-        wr += ')';
-        
-        intr += ': CommandQueue';
-        intr += q_t.TrimStart('&');
-        intr += ';'#10;
-        
-        impl += ' := QueueArrayUtils.Construct';
-        impl += exec_order;
-        if q_t<>q_t_base then impl += q_t;
-        impl += '(qs';
-        if q_t=q_t_base then
-          impl += ', true' else
-          impl += '.Cast&<CommandQueueBase>';
-        impl += ');'#10;
-        
-        if q_t<>q_t_base then
+        foreach var tq in |'Base', 'Nil', '<T>'| do
         begin
           wr += 'function Combine';
           wr += exec_order;
           wr += 'Queue';
-          wr += q_t.TrimStart('&');
-          wr += '(qs: array of CommandQueueBase; last: CommandQueue';
-          wr += q_t.TrimStart('&');
+          begin
+            var gen := new List<string>;
+            if tq='<T>' then
+              gen += $'T';
+            if with_last then
+              gen += 'TQ';
+            if gen.Count<>0 then
+            begin
+              wr += '<';
+              wr += gen.JoinToString(', ');
+              wr += '>';
+            end;
+          end;
+          wr += '(';
+          if not with_last then
+            wr += 'params ';
+          wr += 'qs: array of ';
+          if with_last then
+            wr += 'TQ; last: ';
+          wr += 'CommandQueue';
+          wr += tq;
           wr += ')';
           
           intr += ': CommandQueue';
-          intr += q_t.TrimStart('&');
-          intr += ';'#10;
+          intr += tq;
+          intr += ';';
+          if with_last then
+            intr += ' where TQ: CommandQueueBase;';
+          intr += #10;
           
           impl += ' := QueueArrayUtils.Construct';
           impl += exec_order;
-          impl += q_t;
-          impl += '(qs.Append&<CommandQueueBase>(last));'#10;
+          impl += '&<CommandQueue';
+          impl += tq;
+          impl += '>(qs.Cast&<CommandQueueBase>';
+          if with_last then
+            impl += '.Append&<CommandQueueBase>(last)';
+          impl += ');'#10;
+          
         end;
-        
         wr += #10;
       end;
       
       wr += '{$endregion Simple}'#10#10;
+      
+      {$endregion Simple}
+      
+      {$region Lazy}
+      
+      var TODO := 0;
+      Otp($'WARNING: Lazy not implemented');
+      
+      {$endregion Lazy}
+      
+      {$region WithWork}
       
       foreach var work_t in work_ts do
       begin
@@ -104,14 +112,28 @@ begin
           wr += reg_name;
           wr += '}'#10#10;
           
-          foreach var exec_speed in exec_speeds do
+          foreach var c in 0+(2..MaxQueueStaticArraySize) do
           begin
+            var WriteNumbered := procedure(wr: Writer; a: string)->
+            wr.WriteNumbered(c, a);
+            
+            var WriteTInps := procedure(wr: Writer)->
+            if c=0 then wr += 'TInp' else
+            WriteNumbered(wr, 'TInp%!,');
+            
+            {$region Def}
             
             wr += 'function Combine';
-            wr += exec_speed;
             wr += work_t;
             wr += exec_order;
-            wr += 'Queue<TInp';
+            wr += 'Queue';
+            if c<>0 then
+            begin
+              wr += 'N';
+              wr += c;
+            end;
+            wr += '<';
+            WriteTInps(wr);
             if work_t=work_t_conv then
               wr += ', TRes';
             wr += '>(';
@@ -121,161 +143,141 @@ begin
               work_t_conv: wr += 'Func';
               work_t_use: wr += 'Action';
             end;
-            wr += '<array of TInp';
+            wr += '<';
+            if c=0 then
+              wr += 'array of TInp' else
+              WriteNumbered(wr, 'TInp%!, ');
             wr += context_par;
             if work_t=work_t_conv then
               wr += ', TRes';
             wr += '>; ';
-            wr += 'params qs: array of CommandQueue<TInp>): CommandQueue<';
+            if c=0 then
+              wr += 'qs: array of CommandQueue<TInp>; ' else
+              WriteNumbered(wr, 'q%: CommandQueue<TInp%>; ');
+            intr += 'need_own_thread: boolean := true; can_pre_calc: boolean := false';
+            impl += 'need_own_thread, can_pre_calc: boolean';
+            wr += '): CommandQueue<';
             case work_t of
-              work_t_conv: wr += 'TRes';
-              work_t_use:  wr += 'array of TInp';
+              work_t_conv:
+                wr += 'TRes';
+              work_t_use:
+              if c=0 then
+                wr += 'array of TInp' else
+              begin
+                wr += 'ValueTuple<';
+                WriteTInps(wr);
+                wr += '>';
+              end;
             end;
             wr += '>;'#10;
             
+            {$endregion Def}
+            
+            {$region Impl}
+            
             impl += 'begin'#10;
-            if exec_speed=exec_speed_const then
+            
+            impl += '  if ';
+            if c=0 then
+              impl += 'qs.All(q->q.IsConstResDepEmpty)' else
+              WriteNumbered(impl, 'q%.IsConstResDepEmpty! and ');
+            impl += ' then'#10;
+            
+            impl += '  begin'#10;
+            
+            if c=0 then
+              impl += '    var inp := qs.ConvertAll(q->q.expected_const_res);'#10 else
+              WriteNumbered(impl, '    var inp% := q%.expected_const_res;'#10);
+            
+            var WriteWorkCall := procedure(cont: string)->
             begin
-              impl += '  if qs.All(q->q is ConstQueue<TInp>) then'#10;
-              impl += '  begin'#10;
-              impl += '    var res := qs.ConvertAll(q->ConstQueue&<TInp>(q).Value);'#10;
-              impl += '    ';
-              if work_t=work_t_conv then
-                impl += 'Result := ';
               impl += work_t.ToLower;
-              impl += '(res';
+              impl += '(';
+              if c=0 then
+                impl += 'inp' else
+                WriteNumbered(impl, 'inp%!,');
               if need_context then
-                impl += ', nil';
-              impl += ');'#10;
-              if work_t=work_t_use then
-                impl += '    Result := res;'#10;
-              impl += '  end else'#10;
-              impl += '  ';
-            end;
-            impl += '  Result := new CommandQueue';
-            case work_t of
-              work_t_conv: impl += 'Convert';
-              work_t_use:  impl += 'Use';
-              else raise new System.NotImplementedException;
-            end;
-            impl += if exec_speed<>exec_speed_threaded then exec_speed_quick else exec_speed;
-            impl += 'Array<TInp';
-            if work_t=work_t_conv then
-              impl += ', TRes';
-            
-            impl += ', QueueArray';
-            impl += exec_order;
-            impl += 'Invoker';
-            
-            impl += ', Simple';
-            case work_t of
-              work_t_conv: impl += 'Func';
-              work_t_use:  impl += 'Proc';
-            end;
-            impl += 'Container';
-            if need_context then
-              impl += 'C';
-            impl += '<array of TInp';
-            if work_t=work_t_conv then
-              impl += ', TRes';
-            impl += '>';
-            
-            if exec_speed<>exec_speed_threaded then
-            begin
-              impl += ', TBoolean';
-              impl += (exec_speed=exec_speed_const).ToString;
-              impl += 'Flag';
-            end;
-            
-            impl += '>(qs.ToArray, ';
-            impl += work_t.ToLower;
-            impl += ');'#10;
-            impl += 'end;'#10;
-            
-            wr += #10;
-            
-            for var c := 2 to MaxQueueStaticArraySize do
-            begin
-              var WriteNumbered := procedure(wr: Writer; a: string)->
-              wr.WriteNumbered(c, a);
-              
-              wr += 'function Combine';
-              wr += exec_speed;
-              wr += work_t;
-              wr += exec_order;
-              wr += 'QueueN';
-              wr += c;
-              wr += '<';
-              WriteNumbered(wr, 'TInp%!, ');
-              if work_t=work_t_conv then
-                wr += ', TRes';
-              wr += '>(';
-              wr += work_t.ToLower;
-              wr += ': ';
-              case work_t of
-                work_t_conv: wr += 'Func';
-                work_t_use: wr += 'Action';
-              end;
-              wr += '<';
-              WriteNumbered(wr, 'TInp%!, ');
-              wr += context_par;
-              if work_t=work_t_conv then wr += ', TRes';
-              wr += '>';
-              WriteNumbered(wr, '; q%: CommandQueue<TInp%>');
-              wr += '): CommandQueue<';
-              case work_t of
-                work_t_conv:
-                  wr += 'TRes';
-                work_t_use:
-                begin
-                  wr += 'ValueTuple<';
-                  WriteNumbered(wr, 'TInp%!,');
-                  wr += '>';
-                end;
-              end;
-              wr += '>;'#10;
-              
-              impl += 'begin'#10;
-              if exec_speed=exec_speed_const then
               begin
-                impl += '  if ';
-                WriteNumbered(impl, '(q% is ConstQueue<TInp%>(var c_q%))! and ');
-                impl += ' then'#10;
-                impl += '  begin'#10;
-                impl += '    ';
-                if work_t=work_t_conv then
-                  impl += 'Result := ';
-                impl += work_t.ToLower;
-                impl += '(';
-                WriteNumbered(impl, 'c_q%.Value!, ');
-                if need_context then
-                  impl += ', nil';
-                impl += ');'#10;
-                if work_t=work_t_use then
-                begin
-                  impl += '    Result := ValueTuple.Create(';
-                  WriteNumbered(impl, 'c_q%.Value!, ');
-                  impl += ');'#10;
-                end;
-                impl += '  end else'#10;
-                impl += '  ';
+                impl += ', ';
+                impl += cont;
               end;
-              impl += '  Result := new CommandQueue';
+              impl += ')';
+            end;
+            
+            if work_t=work_t_conv then
+            begin
+              impl += '    Result := if can_pre_calc then'#10;
+              
+              impl += '      CQ(';
+              WriteWorkCall('nil');
+              impl += ') else'#10;
+              
+              impl += '      HFQ(';
+              impl += if need_context then 'c' else '()';
+              impl += '->';
+              WriteWorkCall('c');
+              impl += ', need_own_thread);'#10;
+              
+            end else
+            begin
+              impl += '    Result := CQ(';
+              if c=0 then
+                impl += 'inp' else
+              begin
+                impl += 'ValueTuple.Create(';
+                WriteNumbered(impl, 'inp%!, ');
+                impl += ')';
+              end;
+              impl += ');'#10;
+              
+              impl += '    if can_pre_calc then'#10;
+              
+              impl += '      ';
+              WriteWorkCall('nil');
+              impl += ' else'#10;
+              
+              impl += '      Result := HPQ(';
+              impl += if need_context then 'c' else '()';
+              impl += '->';
+              WriteWorkCall('c');
+              impl += ', need_own_thread) + Result;'#10;
+              
+            end;
+            
+            impl += '    Result := Combine';
+            impl += exec_order;
+            impl += 'Queue(';
+            if c=0 then
+              impl += 'qs' else
+            begin
+              impl += 'new CommandQueueBase[](';
+              WriteNumbered(impl, 'q%!,');
+              impl += ')';
+            end;
+            impl += ', Result);'#10;
+            
+            impl += '  end else'#10;
+            
+            impl += '  if need_own_thread then'#10;
+            foreach var w_thr in |true, false| do
+            begin
+              impl += '    Result := new CommandQueue';
               case work_t of
                 work_t_conv: impl += 'Convert';
                 work_t_use:  impl += 'Use';
                 else raise new System.NotImplementedException;
               end;
-              impl += if exec_speed<>exec_speed_threaded then exec_speed_quick else exec_speed;
+              impl += if w_thr then 'Threaded' else 'Quick';
               impl += 'Array';
-              impl += c;
+              if c<>0 then impl += c;
+              if not w_thr then impl += '   ';
               impl += '<';
-              WriteNumbered(impl, 'TInp%!,');
+              WriteTInps(impl);
               if work_t=work_t_conv then
-                impl += ',TRes';
+                impl += ', TRes';
               
               impl += ', QueueArray';
-              impl += c;
+              if c<>0 then impl += c;
               impl += exec_order;
               impl += 'Invoker';
               
@@ -284,34 +286,36 @@ begin
                 work_t_conv: impl += 'Func';
                 work_t_use:  impl += 'Proc';
               end;
-              impl += c;
+              if c<>0 then impl += c;
               impl += 'Container';
               if need_context then
                 impl += 'C';
               impl += '<';
-              WriteNumbered(impl, 'TInp%!,');
+              if c=0 then
+                impl += 'array of TInp' else
+                WriteNumbered(impl, 'TInp%!, ');
               if work_t=work_t_conv then
-                impl += ',TRes';
+                impl += ', TRes';
               impl += '>';
               
-              if exec_speed<>exec_speed_threaded then
-              begin
-                impl += ', TBoolean';
-                impl += (exec_speed=exec_speed_const).ToString;
-                impl += 'Flag';
-              end;
-              
               impl += '>(';
-              WriteNumbered(impl, 'q%,');
+              if c=0 then
+                impl += 'qs.ToArray,' else
+                WriteNumbered(impl, 'q%,');
               impl += ' ';
               impl += work_t.ToLower;
-              impl += ');'#10;
-              impl += 'end;'#10;
+              impl += ', can_pre_calc)';
+              impl += if w_thr then ' else' else ';';
               
+              impl += #10;
             end;
-            wr += #10;
+            impl += 'end;'#10;
             
+            {$endregion Impl}
+            
+            if c=0 then wr += #10;
           end;
+          wr += #10;
           
           wr += '{$endregion ';
           wr += reg_name;
@@ -323,6 +327,8 @@ begin
         wr += work_t;
         wr += '}'#10#10;
       end;
+      
+      {$endregion WithWork}
       
       wr += '{$endregion ';
       wr += exec_order;

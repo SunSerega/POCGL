@@ -1,5 +1,5 @@
 ﻿## uses OpenCLABC;
 
 CLContext.Default.SyncInvoke(
-  HQFQ(()->5).Cast&<word>
+  HFQ(()->5).Cast&<word>
 );

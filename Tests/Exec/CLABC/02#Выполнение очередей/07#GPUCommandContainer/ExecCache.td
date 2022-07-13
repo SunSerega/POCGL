@@ -1,4 +1,4 @@
-
+﻿
 
 
 #Delegates
@@ -36,11 +36,11 @@ For CLKernel[k3] from CLProgramCode[*] taken cl_kernel[*]
 [EventDebug]: 6 event's created 
 [QueueDebug]: 6 queue's created 
 [ExecDebug]: 3 cache entries created 
-[QueueResNil]: 12 
-[QueueRes<T>]: 14 
-	QueueResValDirect<CLKernel>: 4 
+[QueueResNil]: 18 
+[QueueRes<T>]: 10 
+	QueueResValDirect<CLKernel>: 2 
 	QueueResValDirect<integer>: 6 
-	QueueResValWrap<CLKernel>: 4 
+	QueueResValWrap<CLKernel>: 2 
 
 #ReqModules
 OpenCLABC

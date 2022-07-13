@@ -256,7 +256,7 @@ type
             Group.name_cache.Remove(gname);
             Group.name_remap.Add(gname, s_gname);
           end else
-            Otp($'WARNING: Groups [{gname}] had different enums from [{s_gname}]');
+            Otp($'WARNING: Group [{gname}] had different enums from [{s_gname}]');
           exit;
         end;
         

@@ -1,7 +1,6 @@
 ﻿
 
 
-constructor CLArrayCCQ<T>.Create(o: CLArray<T>) := inherited;
 constructor CLArrayCCQ<T>.Create(q: CommandQueue<CLArray<T>>) := inherited;
 constructor CLArrayCCQ<T>.Create := inherited;
 
@@ -14,18 +13,14 @@ end;
 
 function CLArrayCCQ<T>.ThenQueue(q: CommandQueueBase): CLArrayCCQ<T>;
 begin
-  var comm := QueueCommandFactory&<CLArray<T>>.Make(q);
+  var comm := QueueCommandConstructor&<CLArray<T>>.Make(q);
   Result := if comm=nil then self else AddCommand(self, comm);
 end;
 
-function CLArrayCCQ<T>.ThenConstProc(p: CLArray<T>->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeConst&<SimpleProcContainer<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenConstProc(p: (CLArray<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeConst&<SimpleProcContainerC<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenQuickProc(p: CLArray<T>->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeQuick&<SimpleProcContainer<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenQuickProc(p: (CLArray<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeQuick&<SimpleProcContainerC<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenThreadedProc(p: CLArray<T>->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeThreaded&<SimpleProcContainer<CLArray<T>>>(p));
-function CLArrayCCQ<T>.ThenThreadedProc(p: (CLArray<T>, CLContext)->()) := AddCommand(self, ProcCommandFactory&<CLArray<T>>.MakeThreaded&<SimpleProcContainerC<CLArray<T>>>(p));
+function CLArrayCCQ<T>.ThenProc(p: CLArray<T>->(); need_own_thread, can_pre_calc: boolean) := AddCommand(self, ProcCommandConstructor&<CLArray<T>>.Make&<SimpleProcContainer<CLArray<T>>>(p, need_own_thread, can_pre_calc));
+function CLArrayCCQ<T>.ThenProc(p: (CLArray<T>, CLContext)->(); need_own_thread, can_pre_calc: boolean) := AddCommand(self, ProcCommandConstructor&<CLArray<T>>.Make&<SimpleProcContainerC<CLArray<T>>>(p, need_own_thread, can_pre_calc));
 
-function CLArrayCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandFactory&<CLArray<T>>.Make(marker));
+function CLArrayCCQ<T>.ThenWait(marker: WaitMarker) := AddCommand(self, WaitCommandConstructor&<CLArray<T>>.Make(marker));
 
 {$endregion Special .Add's}
 

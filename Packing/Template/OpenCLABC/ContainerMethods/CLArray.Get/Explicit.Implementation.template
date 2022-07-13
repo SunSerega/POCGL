@@ -19,7 +19,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
       ind.InitBeforeInvoke(g, prev_hubs);
@@ -88,7 +88,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
     protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of &T>): EnqFunc<CLArray<T>>; override;
     begin
@@ -144,7 +144,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
       len.InitBeforeInvoke(g, prev_hubs);
@@ -221,7 +221,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
       len1.InitBeforeInvoke(g, prev_hubs);
@@ -309,7 +309,7 @@ type
     end;
     private constructor := raise new System.InvalidOperationException;
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueueHub>); override;
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       prev_commands.InitBeforeInvoke(g, prev_hubs);
       len1.InitBeforeInvoke(g, prev_hubs);

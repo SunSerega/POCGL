@@ -12,16 +12,16 @@ static function CLKernelArgLocal.FromBytes(bytes: CommandQueue<UIntPtr>) := new 
 static function CLKernelArgLocal.FromItemCount<T>(item_count: CommandQueue<UInt32>): CLKernelArgLocal; where T: record;
 begin
   BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:CLKernelArgLocal:ItemCount%');
-  Result := FromBytes(item_count.ThenConstConvert(item_count->new UIntPtr(
+  Result := FromBytes(item_count.ThenConvert(item_count->new UIntPtr(
     uint64(Marshal.Sizeof(default(T)))*UInt32(item_count)
-  )));
+  ), false,true));
 end;
 static function CLKernelArgLocal.FromItemCount<T>(item_count: CommandQueue<Int32>): CLKernelArgLocal; where T: record;
 begin
   BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:CLKernelArgLocal:ItemCount%');
-  Result := FromBytes(item_count.ThenConstConvert(item_count->new UIntPtr(
+  Result := FromBytes(item_count.ThenConvert(item_count->new UIntPtr(
     uint64(Marshal.Sizeof(default(T)))*UInt32(item_count)
-  )));
+  ), false,true));
 end;
 
 {$endregion FromItemCount}

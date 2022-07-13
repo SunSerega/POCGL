@@ -1,8 +1,8 @@
 ﻿## uses OpenCLABC;
 
-(HTPQ(()->begin end) + new ConstQueueNil).Println;
+(HPQ(()->begin end) + CQNil).Println;
 
 Println(
-  (HTFQ(()->0) + new ConstQueueNil).Println
-  + HTPQ(()->begin end)
+  (HFQ(()->0) + CQNil).Println
+  + HPQ(()->begin end)
 );

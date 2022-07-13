@@ -1,5 +1,5 @@
 ﻿## uses OpenCLABC;
-var q := HQFQ(()->5);
+var q := HFQ(()->5, false);
 
 CLContext.Default.SyncInvoke(
   q.Cast&<object>.ThenConvert(i->integer(i).Sqr).Cast&<object>

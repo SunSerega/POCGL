@@ -23,7 +23,7 @@ Global
 |	|	|		ParameterQueue<CLMemory>#0["cl_mem"]: Default=CLMemory[*] of size 1 
 |	|	|	CLKernelArgGlobalCLMemory 
 |	|	|		CLMemoryCCQ#0 
-|	|	|			CCCObj<CLMemory>: CLMemory[*] of size 1 
+|	|	|			ConstQueue<CLMemory>#1: CLMemory[*] of size 1 
 |	|	CLValue 
 |	|	|	CLKernelArgGlobalCLValue<byte> 
 |	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*] 
@@ -37,7 +37,7 @@ Global
 |	|	|		ParameterQueue<CLValue<byte>>#0["cl_val"]: Default=CLValue<byte>[*] 
 |	|	|	CLKernelArgGlobalCLValue<byte> 
 |	|	|		CLValueCCQ<byte>#0 
-|	|	|			CCCObj<CLValue<byte>>: CLValue<byte>[*] 
+|	|	|			ConstQueue<CLValue<byte>>#1: CLValue<byte>[*] 
 |	|	CLArray 
 |	|	|	CLKernelArgGlobalCLArray<byte> 
 |	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4 
@@ -51,7 +51,7 @@ Global
 |	|	|		ParameterQueue<CLArray<byte>>#0["cl_arr"]: Default=CLArray<byte>[*] of length 4 
 |	|	|	CLKernelArgGlobalCLArray<byte> 
 |	|	|		CLArrayCCQ<byte>#0 
-|	|	|			CCCObj<CLArray<byte>>: CLArray<byte>[*] of length 4 
+|	|	|			ConstQueue<CLArray<byte>>#1: CLArray<byte>[*] of length 4 
 Constant 
 |	CL 
 |	|	CLMemory 
@@ -67,7 +67,7 @@ Constant
 |	|	|		ParameterQueue<CLMemory>#0["cl_mem"]: Default=CLMemory[*] of size 1 
 |	|	|	CLKernelArgConstantCLMemory 
 |	|	|		CLMemoryCCQ#0 
-|	|	|			CCCObj<CLMemory>: CLMemory[*] of size 1 
+|	|	|			ConstQueue<CLMemory>#1: CLMemory[*] of size 1 
 |	|	CLValue 
 |	|	|	CLKernelArgConstantCLValue<byte> 
 |	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*] 
@@ -81,7 +81,7 @@ Constant
 |	|	|		ParameterQueue<CLValue<byte>>#0["cl_val"]: Default=CLValue<byte>[*] 
 |	|	|	CLKernelArgConstantCLValue<byte> 
 |	|	|		CLValueCCQ<byte>#0 
-|	|	|			CCCObj<CLValue<byte>>: CLValue<byte>[*] 
+|	|	|			ConstQueue<CLValue<byte>>#1: CLValue<byte>[*] 
 |	|	CLArray 
 |	|	|	CLKernelArgConstantCLArray<byte> 
 |	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4 
@@ -95,7 +95,7 @@ Constant
 |	|	|		ParameterQueue<CLArray<byte>>#0["cl_arr"]: Default=CLArray<byte>[*] of length 4 
 |	|	|	CLKernelArgConstantCLArray<byte> 
 |	|	|		CLArrayCCQ<byte>#0 
-|	|	|			CCCObj<CLArray<byte>>: CLArray<byte>[*] of length 4 
+|	|	|			ConstQueue<CLArray<byte>>#1: CLArray<byte>[*] of length 4 
 Local 
 |	FromBytes 
 |	|	CLKernelArgLocalBytes 
@@ -105,86 +105,86 @@ Local
 |	|	CLKernelArgLocalBytes 
 |	|		ConstQueue<System.UIntPtr>#0: 123 
 |	|	CLKernelArgLocalBytes 
-|	|		CommandQueueThenQuickConvert<longword,System.UIntPtr,SimpleFuncContainer<longword,System.UIntPtr>,TBooleanTrueFlag>#0 
+|	|		CommandQueueThenQuickConvert<longword,System.UIntPtr,SimpleFuncContainer<longword,System.UIntPtr>>#0 
 |	|			CommandQueueHostQuickFunc<longword,SimpleFunc0Container<longword>>#1: function lambda: longword 
 |	|			function lambda(bytes: longword): System.UIntPtr 
 |	|	CLKernelArgLocalBytes 
 |	|		ConstQueue<System.UIntPtr>#0: 123 
 |	|	CLKernelArgLocalBytes 
-|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>,TBooleanTrueFlag>#0 
+|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>>#0 
 |	|			CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>#1: function lambda: integer 
 |	|			function lambda(bytes: integer): System.UIntPtr 
 |	|	CLKernelArgLocalBytes 
 |	|		ConstQueue<System.UIntPtr>#0: 123 
 |	|	CLKernelArgLocalBytes 
-|	|		CommandQueueThenQuickConvert<uint64,System.UIntPtr,SimpleFuncContainer<uint64,System.UIntPtr>,TBooleanTrueFlag>#0 
+|	|		CommandQueueThenQuickConvert<uint64,System.UIntPtr,SimpleFuncContainer<uint64,System.UIntPtr>>#0 
 |	|			CommandQueueHostQuickFunc<uint64,SimpleFunc0Container<uint64>>#1: function lambda: uint64 
 |	|			function lambda(bytes: uint64): System.UIntPtr 
 |	|	CLKernelArgLocalBytes 
 |	|		ConstQueue<System.UIntPtr>#0: 123 
 |	|	CLKernelArgLocalBytes 
-|	|		CommandQueueThenQuickConvert<int64,System.UIntPtr,SimpleFuncContainer<int64,System.UIntPtr>,TBooleanTrueFlag>#0 
+|	|		CommandQueueThenQuickConvert<int64,System.UIntPtr,SimpleFuncContainer<int64,System.UIntPtr>>#0 
 |	|			CommandQueueHostQuickFunc<int64,SimpleFunc0Container<int64>>#1: function lambda: int64 
 |	|			function lambda(bytes: int64): System.UIntPtr 
 |	FromItemCount 
 |	|	CLKernelArgLocalBytes 
 |	|		ConstQueue<System.UIntPtr>#0: 256 
 |	|	CLKernelArgLocalBytes 
-|	|		CommandQueueThenQuickConvert<longword,System.UIntPtr,SimpleFuncContainer<longword,System.UIntPtr>,TBooleanTrueFlag>#0 
+|	|		CommandQueueThenQuickConvert<longword,System.UIntPtr,SimpleFuncContainer<longword,System.UIntPtr>>#0 
 |	|			CommandQueueHostQuickFunc<longword,SimpleFunc0Container<longword>>#1: function lambda: longword 
 |	|			function lambda(item_count: longword): System.UIntPtr 
 |	|	CLKernelArgLocalBytes 
 |	|		ConstQueue<System.UIntPtr>#0: 256 
 |	|	CLKernelArgLocalBytes 
-|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>,TBooleanTrueFlag>#0 
+|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>>#0 
 |	|			CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>#1: function lambda: integer 
 |	|			function lambda(item_count: integer): System.UIntPtr 
 |	LikeArray 
 |	|	CLKernelArgLocalBytes 
 |	|		ConstQueue<System.UIntPtr>#0: 4 
 |	|	CLKernelArgLocalBytes 
-|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>,TBooleanTrueFlag>#0 
-|	|			CommandQueueThenQuickConvert<array of byte,integer,SimpleFuncContainer<array of byte,integer>,TBooleanTrueFlag>#1 
+|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>>#0 
+|	|			CommandQueueThenQuickConvert<array of byte,integer,SimpleFuncContainer<array of byte,integer>>#1 
 |	|				CommandQueueHostQuickFunc<array of byte,SimpleFunc0Container<array of byte>>#2: function lambda: array of byte 
 |	|				function lambda(a: array of byte): integer 
 |	|			function lambda(item_count: integer): System.UIntPtr 
 |	|	CLKernelArgLocalBytes 
 |	|		ConstQueue<System.UIntPtr>#0: 6 
 |	|	CLKernelArgLocalBytes 
-|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>,TBooleanTrueFlag>#0 
-|	|			CommandQueueThenQuickConvert<array [,] of byte,integer,SimpleFuncContainer<array [,] of byte,integer>,TBooleanTrueFlag>#1 
+|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>>#0 
+|	|			CommandQueueThenQuickConvert<array [,] of byte,integer,SimpleFuncContainer<array [,] of byte,integer>>#1 
 |	|				CommandQueueHostQuickFunc<array [,] of byte,SimpleFunc0Container<array [,] of byte>>#2: function lambda: array [,] of byte 
 |	|				function lambda(a: array [,] of byte): integer 
 |	|			function lambda(item_count: integer): System.UIntPtr 
 |	|	CLKernelArgLocalBytes 
 |	|		ConstQueue<System.UIntPtr>#0: 24 
 |	|	CLKernelArgLocalBytes 
-|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>,TBooleanTrueFlag>#0 
-|	|			CommandQueueThenQuickConvert<array [,,] of byte,integer,SimpleFuncContainer<array [,,] of byte,integer>,TBooleanTrueFlag>#1 
+|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>>#0 
+|	|			CommandQueueThenQuickConvert<array [,,] of byte,integer,SimpleFuncContainer<array [,,] of byte,integer>>#1 
 |	|				CommandQueueHostQuickFunc<array [,,] of byte,SimpleFunc0Container<array [,,] of byte>>#2: function lambda: array [,,] of byte 
 |	|				function lambda(a: array [,,] of byte): integer 
 |	|			function lambda(item_count: integer): System.UIntPtr 
 |	|	CLKernelArgLocalBytes 
 |	|		ConstQueue<System.UIntPtr>#0: 5 
 |	|	CLKernelArgLocalBytes 
-|	|		CommandQueueThenQuickConvert<longword,System.UIntPtr,SimpleFuncContainer<longword,System.UIntPtr>,TBooleanTrueFlag>#0 
-|	|			CommandQueueThenQuickConvert<NativeArrayArea<byte>,longword,SimpleFuncContainer<NativeArrayArea<byte>,longword>,TBooleanTrueFlag>#1 
+|	|		CommandQueueThenQuickConvert<longword,System.UIntPtr,SimpleFuncContainer<longword,System.UIntPtr>>#0 
+|	|			CommandQueueThenQuickConvert<NativeArrayArea<byte>,longword,SimpleFuncContainer<NativeArrayArea<byte>,longword>>#1 
 |	|				CommandQueueHostQuickFunc<NativeArrayArea<byte>,SimpleFunc0Container<NativeArrayArea<byte>>>#2: function lambda: NativeArrayArea<byte> 
 |	|				function lambda(a: NativeArrayArea<byte>): longword 
 |	|			function lambda(item_count: longword): System.UIntPtr 
 |	|	CLKernelArgLocalBytes 
 |	|		ConstQueue<System.UIntPtr>#0: 4 
 |	|	CLKernelArgLocalBytes 
-|	|		CommandQueueThenQuickConvert<longword,System.UIntPtr,SimpleFuncContainer<longword,System.UIntPtr>,TBooleanTrueFlag>#0 
-|	|			CommandQueueThenQuickConvert<NativeArray<byte>,longword,SimpleFuncContainer<NativeArray<byte>,longword>,TBooleanTrueFlag>#1 
+|	|		CommandQueueThenQuickConvert<longword,System.UIntPtr,SimpleFuncContainer<longword,System.UIntPtr>>#0 
+|	|			CommandQueueThenQuickConvert<NativeArray<byte>,longword,SimpleFuncContainer<NativeArray<byte>,longword>>#1 
 |	|				CommandQueueHostQuickFunc<NativeArray<byte>,SimpleFunc0Container<NativeArray<byte>>>#2: function lambda: NativeArray<byte> 
 |	|				function lambda(a: NativeArray<byte>): longword 
 |	|			function lambda(item_count: longword): System.UIntPtr 
 |	|	CLKernelArgLocalBytes 
 |	|		ConstQueue<System.UIntPtr>#0: 4 
 |	|	CLKernelArgLocalBytes 
-|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>,TBooleanTrueFlag>#0 
-|	|			CommandQueueThenQuickConvert<CLArray<byte>,integer,SimpleFuncContainer<CLArray<byte>,integer>,TBooleanTrueFlag>#1 
+|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>>#0 
+|	|			CommandQueueThenQuickConvert<CLArray<byte>,integer,SimpleFuncContainer<CLArray<byte>,integer>>#1 
 |	|				CommandQueueHostQuickFunc<CLArray<byte>,SimpleFunc0Container<CLArray<byte>>>#2: function lambda: CLArray<byte> 
 |	|				function lambda(a: CLArray<byte>): integer 
 |	|			function lambda(item_count: integer): System.UIntPtr 
@@ -441,7 +441,7 @@ Generic
 |	|	|		ParameterQueue<CLMemory>#0["cl_mem"]: Default=CLMemory[*] of size 1 
 |	|	|	CLKernelArgGlobalCLMemory 
 |	|	|		CLMemoryCCQ#0 
-|	|	|			CCCObj<CLMemory>: CLMemory[*] of size 1 
+|	|	|			ConstQueue<CLMemory>#1: CLMemory[*] of size 1 
 |	|	CLValue 
 |	|	|	CLKernelArgGlobalCLValue<byte> 
 |	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*] 
@@ -455,7 +455,7 @@ Generic
 |	|	|		ParameterQueue<CLValue<byte>>#0["cl_val"]: Default=CLValue<byte>[*] 
 |	|	|	CLKernelArgGlobalCLValue<byte> 
 |	|	|		CLValueCCQ<byte>#0 
-|	|	|			CCCObj<CLValue<byte>>: CLValue<byte>[*] 
+|	|	|			ConstQueue<CLValue<byte>>#1: CLValue<byte>[*] 
 |	|	CLArray 
 |	|	|	CLKernelArgGlobalCLArray<byte> 
 |	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4 
@@ -469,7 +469,7 @@ Generic
 |	|	|		ParameterQueue<CLArray<byte>>#0["cl_arr"]: Default=CLArray<byte>[*] of length 4 
 |	|	|	CLKernelArgGlobalCLArray<byte> 
 |	|	|		CLArrayCCQ<byte>#0 
-|	|	|			CCCObj<CLArray<byte>>: CLArray<byte>[*] of length 4 
+|	|	|			ConstQueue<CLArray<byte>>#1: CLArray<byte>[*] of length 4 
 |	Value 
 |	|	CLKernelArgPrivateValue<integer> 
 |	|		ConstQueue<integer>#0: 1 

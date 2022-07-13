@@ -1,7 +1,6 @@
 ﻿    
     
     
-    public constructor(o: CLValue<T>);
     public constructor(q: CommandQueue<CLValue<T>>);
     private constructor;
     
@@ -9,12 +8,8 @@
     
     public function ThenQueue(q: CommandQueueBase): CLValueCCQ<T>;
     
-    public function ThenConstProc(p: CLValue<T>->()): CLValueCCQ<T>;
-    public function ThenConstProc(p: (CLValue<T>, CLContext)->()): CLValueCCQ<T>;
-    public function ThenQuickProc(p: CLValue<T>->()): CLValueCCQ<T>;
-    public function ThenQuickProc(p: (CLValue<T>, CLContext)->()): CLValueCCQ<T>;
-    public function ThenThreadedProc(p: CLValue<T>->()): CLValueCCQ<T>;
-    public function ThenThreadedProc(p: (CLValue<T>, CLContext)->()): CLValueCCQ<T>;
+    public function ThenProc(p: CLValue<T>->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLValueCCQ<T>;
+    public function ThenProc(p: (CLValue<T>, CLContext)->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLValueCCQ<T>;
     
     public function ThenWait(marker: WaitMarker): CLValueCCQ<T>;
     

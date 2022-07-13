@@ -1,19 +1,19 @@
 ﻿## uses OpenCLABC;
 
-var M1 := WaitMarker.Create;
-var M1s := CommandQueueBase(M1).Multiusable;
+var M := WaitMarker.Create;
+var MQ := CommandQueueBase(M).Multiusable;
 
 var mre := new System.Threading.ManualResetEventSlim(false);
 
 var t := CLContext.Default.BeginInvoke(
-  WaitFor(M1) + HTPQ(()->Println(1)) +
-  HQPQ(mre.Set) +
-  WaitFor(M1) + HTPQ(()->Println(2))
+  WaitFor(M) + HPQ(()->Println(1)) +
+  HPQ(mre.Set, false) +
+  WaitFor(M) + HPQ(()->Println(2))
 );
 
-CLContext.Default.SyncInvoke( M1s()*M1s() );
+CLContext.Default.SyncInvoke( MQ+MQ );
 mre.Wait;
 Println(1.5);
-M1.SendSignal;
+M.SendSignal;
 
 t.Wait;

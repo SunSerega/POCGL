@@ -17,7 +17,7 @@ type
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
     data.TryGetConstSetter(WrapToNative);
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -50,7 +50,7 @@ type
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
     data.TryGetConstSetter(WrapToNative);
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
@@ -83,7 +83,7 @@ type
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
     data.TryGetConstSetter(WrapToNative);
     
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueueHub>); override :=
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=

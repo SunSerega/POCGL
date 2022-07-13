@@ -1,7 +1,6 @@
 ﻿    
     
     
-    public constructor(o: CLArray<T>);
     public constructor(q: CommandQueue<CLArray<T>>);
     private constructor;
     
@@ -9,12 +8,8 @@
     
     public function ThenQueue(q: CommandQueueBase): CLArrayCCQ<T>;
     
-    public function ThenConstProc(p: CLArray<T>->()): CLArrayCCQ<T>;
-    public function ThenConstProc(p: (CLArray<T>, CLContext)->()): CLArrayCCQ<T>;
-    public function ThenQuickProc(p: CLArray<T>->()): CLArrayCCQ<T>;
-    public function ThenQuickProc(p: (CLArray<T>, CLContext)->()): CLArrayCCQ<T>;
-    public function ThenThreadedProc(p: CLArray<T>->()): CLArrayCCQ<T>;
-    public function ThenThreadedProc(p: (CLArray<T>, CLContext)->()): CLArrayCCQ<T>;
+    public function ThenProc(p: CLArray<T>->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLArrayCCQ<T>;
+    public function ThenProc(p: (CLArray<T>, CLContext)->(); need_own_thread: boolean := true; can_pre_calc: boolean := false): CLArrayCCQ<T>;
     
     public function ThenWait(marker: WaitMarker): CLArrayCCQ<T>;
     

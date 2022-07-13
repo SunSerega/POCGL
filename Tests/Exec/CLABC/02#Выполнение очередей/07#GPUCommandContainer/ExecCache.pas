@@ -13,6 +13,6 @@ var code := CLProgramCode.Create(
 );
 Test(code['k1']);
 Test(new ParameterQueue<CLKernel>('k2', code['k2']));
-Test(HQFQ(()->code['k3']));
+Test(HFQ(()->code['k3'], false));
 
 ExecDebug.ReportExecCache;

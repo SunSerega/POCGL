@@ -1,6 +1,6 @@
 ﻿## uses OpenCLABC;
 
 CLContext.Default.SyncInvoke(
-  HTPQ(()->raise new Exception('TestOK')) +
-  HTPQ(()->raise new Exception('TestError'))
+  HPQ(()->raise new Exception('TestOK')) +
+  HPQ(()->raise new Exception('TestError'))
 );
