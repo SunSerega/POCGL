@@ -2780,36 +2780,646 @@
     
   end;
   
-  FragmentOp = record
+  FragmentOp1 = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property MOV:      FragmentOp read new FragmentOp($8961);
-    public static property ADD_ATI:  FragmentOp read new FragmentOp($8963);
-    public static property MUL:      FragmentOp read new FragmentOp($8964);
-    public static property SUB:      FragmentOp read new FragmentOp($8965);
-    public static property DOT3:     FragmentOp read new FragmentOp($8966);
-    public static property DOT4:     FragmentOp read new FragmentOp($8967);
-    public static property MAD:      FragmentOp read new FragmentOp($8968);
-    public static property LERP:     FragmentOp read new FragmentOp($8969);
-    public static property CND:      FragmentOp read new FragmentOp($896A);
-    public static property CND0:     FragmentOp read new FragmentOp($896B);
-    public static property DOT2_ADD: FragmentOp read new FragmentOp($896C);
+    public static property MOV: FragmentOp1 read new FragmentOp1($8961);
     
     public function ToString: string; override;
     begin
       if self.val = UInt32($8961) then Result := 'MOV' else
+        Result := $'FragmentOp1[{self.val}]';
+    end;
+    
+  end;
+  
+  FragmentOp2 = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property ADD_ATI: FragmentOp2 read new FragmentOp2($8963);
+    public static property MUL:     FragmentOp2 read new FragmentOp2($8964);
+    public static property SUB:     FragmentOp2 read new FragmentOp2($8965);
+    public static property DOT3:    FragmentOp2 read new FragmentOp2($8966);
+    public static property DOT4:    FragmentOp2 read new FragmentOp2($8967);
+    
+    public function ToString: string; override;
+    begin
       if self.val = UInt32($8963) then Result := 'ADD_ATI' else
       if self.val = UInt32($8964) then Result := 'MUL' else
       if self.val = UInt32($8965) then Result := 'SUB' else
       if self.val = UInt32($8966) then Result := 'DOT3' else
       if self.val = UInt32($8967) then Result := 'DOT4' else
+        Result := $'FragmentOp2[{self.val}]';
+    end;
+    
+  end;
+  
+  FragmentOp3 = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property MAD:      FragmentOp3 read new FragmentOp3($8968);
+    public static property LERP:     FragmentOp3 read new FragmentOp3($8969);
+    public static property CND:      FragmentOp3 read new FragmentOp3($896A);
+    public static property CND0:     FragmentOp3 read new FragmentOp3($896B);
+    public static property DOT2_ADD: FragmentOp3 read new FragmentOp3($896C);
+    
+    public function ToString: string; override;
+    begin
       if self.val = UInt32($8968) then Result := 'MAD' else
       if self.val = UInt32($8969) then Result := 'LERP' else
       if self.val = UInt32($896A) then Result := 'CND' else
       if self.val = UInt32($896B) then Result := 'CND0' else
       if self.val = UInt32($896C) then Result := 'DOT2_ADD' else
-        Result := $'FragmentOp[{self.val}]';
+        Result := $'FragmentOp3[{self.val}]';
+    end;
+    
+  end;
+  
+  FragmentShaderColorModMask = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property _2X_BIT:    FragmentShaderColorModMask read new FragmentShaderColorModMask($0001);
+    public static property COMP_BIT:   FragmentShaderColorModMask read new FragmentShaderColorModMask($0002);
+    public static property NEGATE_BIT: FragmentShaderColorModMask read new FragmentShaderColorModMask($0004);
+    public static property BIAS_BIT:   FragmentShaderColorModMask read new FragmentShaderColorModMask($0008);
+    
+    public static function operator+(f1,f2: FragmentShaderColorModMask) := new FragmentShaderColorModMask(f1.val or f2.val);
+    public static function operator or(f1,f2: FragmentShaderColorModMask) := f1+f2;
+    
+    public static procedure operator+=(var f1: FragmentShaderColorModMask; f2: FragmentShaderColorModMask) := f1 := f1+f2;
+    
+    public property HAS_FLAG__2X_BIT:    boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_COMP_BIT:   boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG_NEGATE_BIT: boolean read self.val and $0004 <> 0;
+    public property HAS_FLAG_BIAS_BIT:   boolean read self.val and $0008 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      if self.val and UInt32($0001) = UInt32($0001) then res += '_2X_BIT+';
+      if self.val and UInt32($0002) = UInt32($0002) then res += 'COMP_BIT+';
+      if self.val and UInt32($0004) = UInt32($0004) then res += 'NEGATE_BIT+';
+      if self.val and UInt32($0008) = UInt32($0008) then res += 'BIAS_BIT+';
+      if res.Length<>0 then
+      begin
+        res.Length -= 1;
+        Result := res.ToString;
+      end else
+      if self.val=0 then
+        Result := 'NONE' else
+        Result := $'FragmentShaderColorModMask[{self.val}]';
+    end;
+    
+  end;
+  
+  FragmentShaderCon = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property CON_0:  FragmentShaderCon read new FragmentShaderCon($8941);
+    public static property CON_1:  FragmentShaderCon read new FragmentShaderCon($8942);
+    public static property CON_2:  FragmentShaderCon read new FragmentShaderCon($8943);
+    public static property CON_3:  FragmentShaderCon read new FragmentShaderCon($8944);
+    public static property CON_4:  FragmentShaderCon read new FragmentShaderCon($8945);
+    public static property CON_5:  FragmentShaderCon read new FragmentShaderCon($8946);
+    public static property CON_6:  FragmentShaderCon read new FragmentShaderCon($8947);
+    public static property CON_7:  FragmentShaderCon read new FragmentShaderCon($8948);
+    public static property CON_8:  FragmentShaderCon read new FragmentShaderCon($8949);
+    public static property CON_9:  FragmentShaderCon read new FragmentShaderCon($894A);
+    public static property CON_10: FragmentShaderCon read new FragmentShaderCon($894B);
+    public static property CON_11: FragmentShaderCon read new FragmentShaderCon($894C);
+    public static property CON_12: FragmentShaderCon read new FragmentShaderCon($894D);
+    public static property CON_13: FragmentShaderCon read new FragmentShaderCon($894E);
+    public static property CON_14: FragmentShaderCon read new FragmentShaderCon($894F);
+    public static property CON_15: FragmentShaderCon read new FragmentShaderCon($8950);
+    public static property CON_16: FragmentShaderCon read new FragmentShaderCon($8951);
+    public static property CON_17: FragmentShaderCon read new FragmentShaderCon($8952);
+    public static property CON_18: FragmentShaderCon read new FragmentShaderCon($8953);
+    public static property CON_19: FragmentShaderCon read new FragmentShaderCon($8954);
+    public static property CON_20: FragmentShaderCon read new FragmentShaderCon($8955);
+    public static property CON_21: FragmentShaderCon read new FragmentShaderCon($8956);
+    public static property CON_22: FragmentShaderCon read new FragmentShaderCon($8957);
+    public static property CON_23: FragmentShaderCon read new FragmentShaderCon($8958);
+    public static property CON_24: FragmentShaderCon read new FragmentShaderCon($8959);
+    public static property CON_25: FragmentShaderCon read new FragmentShaderCon($895A);
+    public static property CON_26: FragmentShaderCon read new FragmentShaderCon($895B);
+    public static property CON_27: FragmentShaderCon read new FragmentShaderCon($895C);
+    public static property CON_28: FragmentShaderCon read new FragmentShaderCon($895D);
+    public static property CON_29: FragmentShaderCon read new FragmentShaderCon($895E);
+    public static property CON_30: FragmentShaderCon read new FragmentShaderCon($895F);
+    public static property CON_31: FragmentShaderCon read new FragmentShaderCon($8960);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($8941) then Result := 'CON_0' else
+      if self.val = UInt32($8942) then Result := 'CON_1' else
+      if self.val = UInt32($8943) then Result := 'CON_2' else
+      if self.val = UInt32($8944) then Result := 'CON_3' else
+      if self.val = UInt32($8945) then Result := 'CON_4' else
+      if self.val = UInt32($8946) then Result := 'CON_5' else
+      if self.val = UInt32($8947) then Result := 'CON_6' else
+      if self.val = UInt32($8948) then Result := 'CON_7' else
+      if self.val = UInt32($8949) then Result := 'CON_8' else
+      if self.val = UInt32($894A) then Result := 'CON_9' else
+      if self.val = UInt32($894B) then Result := 'CON_10' else
+      if self.val = UInt32($894C) then Result := 'CON_11' else
+      if self.val = UInt32($894D) then Result := 'CON_12' else
+      if self.val = UInt32($894E) then Result := 'CON_13' else
+      if self.val = UInt32($894F) then Result := 'CON_14' else
+      if self.val = UInt32($8950) then Result := 'CON_15' else
+      if self.val = UInt32($8951) then Result := 'CON_16' else
+      if self.val = UInt32($8952) then Result := 'CON_17' else
+      if self.val = UInt32($8953) then Result := 'CON_18' else
+      if self.val = UInt32($8954) then Result := 'CON_19' else
+      if self.val = UInt32($8955) then Result := 'CON_20' else
+      if self.val = UInt32($8956) then Result := 'CON_21' else
+      if self.val = UInt32($8957) then Result := 'CON_22' else
+      if self.val = UInt32($8958) then Result := 'CON_23' else
+      if self.val = UInt32($8959) then Result := 'CON_24' else
+      if self.val = UInt32($895A) then Result := 'CON_25' else
+      if self.val = UInt32($895B) then Result := 'CON_26' else
+      if self.val = UInt32($895C) then Result := 'CON_27' else
+      if self.val = UInt32($895D) then Result := 'CON_28' else
+      if self.val = UInt32($895E) then Result := 'CON_29' else
+      if self.val = UInt32($895F) then Result := 'CON_30' else
+      if self.val = UInt32($8960) then Result := 'CON_31' else
+        Result := $'FragmentShaderCon[{self.val}]';
+    end;
+    
+  end;
+  
+  FragmentShaderDestMask = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property NONE:      FragmentShaderDestMask read new FragmentShaderDestMask($0000);
+    public static property RED_BIT:   FragmentShaderDestMask read new FragmentShaderDestMask($0001);
+    public static property GREEN_BIT: FragmentShaderDestMask read new FragmentShaderDestMask($0002);
+    public static property BLUE_BIT:  FragmentShaderDestMask read new FragmentShaderDestMask($0004);
+    
+    public static function operator+(f1,f2: FragmentShaderDestMask) := new FragmentShaderDestMask(f1.val or f2.val);
+    public static function operator or(f1,f2: FragmentShaderDestMask) := f1+f2;
+    
+    public static procedure operator+=(var f1: FragmentShaderDestMask; f2: FragmentShaderDestMask) := f1 := f1+f2;
+    
+    public property ANY_FLAGS: boolean read self.val<>0;
+    public property HAS_FLAG_RED_BIT:   boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG_GREEN_BIT: boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG_BLUE_BIT:  boolean read self.val and $0004 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      if self.val and UInt32($0001) = UInt32($0001) then res += 'RED_BIT+';
+      if self.val and UInt32($0002) = UInt32($0002) then res += 'GREEN_BIT+';
+      if self.val and UInt32($0004) = UInt32($0004) then res += 'BLUE_BIT+';
+      if res.Length<>0 then
+      begin
+        res.Length -= 1;
+        Result := res.ToString;
+      end else
+      if self.val=0 then
+        Result := 'NONE' else
+        Result := $'FragmentShaderDestMask[{self.val}]';
+    end;
+    
+  end;
+  
+  FragmentShaderDestModMask = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property NONE:         FragmentShaderDestModMask read new FragmentShaderDestModMask($0000);
+    public static property _2X_BIT:      FragmentShaderDestModMask read new FragmentShaderDestModMask($0001);
+    public static property _4X_BIT:      FragmentShaderDestModMask read new FragmentShaderDestModMask($0002);
+    public static property _8X_BIT:      FragmentShaderDestModMask read new FragmentShaderDestModMask($0004);
+    public static property HALF_BIT:     FragmentShaderDestModMask read new FragmentShaderDestModMask($0008);
+    public static property QUARTER_BIT:  FragmentShaderDestModMask read new FragmentShaderDestModMask($0010);
+    public static property EIGHTH_BIT:   FragmentShaderDestModMask read new FragmentShaderDestModMask($0020);
+    public static property SATURATE_BIT: FragmentShaderDestModMask read new FragmentShaderDestModMask($0040);
+    
+    public static function operator+(f1,f2: FragmentShaderDestModMask) := new FragmentShaderDestModMask(f1.val or f2.val);
+    public static function operator or(f1,f2: FragmentShaderDestModMask) := f1+f2;
+    
+    public static procedure operator+=(var f1: FragmentShaderDestModMask; f2: FragmentShaderDestModMask) := f1 := f1+f2;
+    
+    public property ANY_FLAGS: boolean read self.val<>0;
+    public property HAS_FLAG__2X_BIT:      boolean read self.val and $0001 <> 0;
+    public property HAS_FLAG__4X_BIT:      boolean read self.val and $0002 <> 0;
+    public property HAS_FLAG__8X_BIT:      boolean read self.val and $0004 <> 0;
+    public property HAS_FLAG_HALF_BIT:     boolean read self.val and $0008 <> 0;
+    public property HAS_FLAG_QUARTER_BIT:  boolean read self.val and $0010 <> 0;
+    public property HAS_FLAG_EIGHTH_BIT:   boolean read self.val and $0020 <> 0;
+    public property HAS_FLAG_SATURATE_BIT: boolean read self.val and $0040 <> 0;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      if self.val and UInt32($0001) = UInt32($0001) then res += '_2X_BIT+';
+      if self.val and UInt32($0002) = UInt32($0002) then res += '_4X_BIT+';
+      if self.val and UInt32($0004) = UInt32($0004) then res += '_8X_BIT+';
+      if self.val and UInt32($0008) = UInt32($0008) then res += 'HALF_BIT+';
+      if self.val and UInt32($0010) = UInt32($0010) then res += 'QUARTER_BIT+';
+      if self.val and UInt32($0020) = UInt32($0020) then res += 'EIGHTH_BIT+';
+      if self.val and UInt32($0040) = UInt32($0040) then res += 'SATURATE_BIT+';
+      if res.Length<>0 then
+      begin
+        res.Length -= 1;
+        Result := res.ToString;
+      end else
+      if self.val=0 then
+        Result := 'NONE' else
+        Result := $'FragmentShaderDestModMask[{self.val}]';
+    end;
+    
+  end;
+  
+  FragmentShaderGenericSource = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property ZERO:                   FragmentShaderGenericSource read new FragmentShaderGenericSource($0000);
+    public static property ONE:                    FragmentShaderGenericSource read new FragmentShaderGenericSource($0001);
+    public static property PRIMARY_COLOR:          FragmentShaderGenericSource read new FragmentShaderGenericSource($8577);
+    public static property REG_0:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8921);
+    public static property REG_1:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8922);
+    public static property REG_2:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8923);
+    public static property REG_3:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8924);
+    public static property REG_4:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8925);
+    public static property REG_5:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8926);
+    public static property REG_6:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8927);
+    public static property REG_7:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8928);
+    public static property REG_8:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8929);
+    public static property REG_9:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($892A);
+    public static property REG_10:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($892B);
+    public static property REG_11:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($892C);
+    public static property REG_12:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($892D);
+    public static property REG_13:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($892E);
+    public static property REG_14:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($892F);
+    public static property REG_15:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8930);
+    public static property REG_16:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8931);
+    public static property REG_17:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8932);
+    public static property REG_18:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8933);
+    public static property REG_19:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8934);
+    public static property REG_20:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8935);
+    public static property REG_21:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8936);
+    public static property REG_22:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8937);
+    public static property REG_23:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8938);
+    public static property REG_24:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8939);
+    public static property REG_25:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($893A);
+    public static property REG_26:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($893B);
+    public static property REG_27:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($893C);
+    public static property REG_28:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($893D);
+    public static property REG_29:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($893E);
+    public static property REG_30:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($893F);
+    public static property REG_31:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8940);
+    public static property CON_0:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8941);
+    public static property CON_1:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8942);
+    public static property CON_2:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8943);
+    public static property CON_3:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8944);
+    public static property CON_4:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8945);
+    public static property CON_5:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8946);
+    public static property CON_6:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8947);
+    public static property CON_7:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8948);
+    public static property CON_8:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($8949);
+    public static property CON_9:                  FragmentShaderGenericSource read new FragmentShaderGenericSource($894A);
+    public static property CON_10:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($894B);
+    public static property CON_11:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($894C);
+    public static property CON_12:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($894D);
+    public static property CON_13:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($894E);
+    public static property CON_14:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($894F);
+    public static property CON_15:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8950);
+    public static property CON_16:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8951);
+    public static property CON_17:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8952);
+    public static property CON_18:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8953);
+    public static property CON_19:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8954);
+    public static property CON_20:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8955);
+    public static property CON_21:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8956);
+    public static property CON_22:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8957);
+    public static property CON_23:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8958);
+    public static property CON_24:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8959);
+    public static property CON_25:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($895A);
+    public static property CON_26:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($895B);
+    public static property CON_27:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($895C);
+    public static property CON_28:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($895D);
+    public static property CON_29:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($895E);
+    public static property CON_30:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($895F);
+    public static property CON_31:                 FragmentShaderGenericSource read new FragmentShaderGenericSource($8960);
+    public static property SECONDARY_INTERPOLATOR: FragmentShaderGenericSource read new FragmentShaderGenericSource($896D);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($0000) then Result := 'ZERO' else
+      if self.val = UInt32($0001) then Result := 'ONE' else
+      if self.val = UInt32($8577) then Result := 'PRIMARY_COLOR' else
+      if self.val = UInt32($8921) then Result := 'REG_0' else
+      if self.val = UInt32($8922) then Result := 'REG_1' else
+      if self.val = UInt32($8923) then Result := 'REG_2' else
+      if self.val = UInt32($8924) then Result := 'REG_3' else
+      if self.val = UInt32($8925) then Result := 'REG_4' else
+      if self.val = UInt32($8926) then Result := 'REG_5' else
+      if self.val = UInt32($8927) then Result := 'REG_6' else
+      if self.val = UInt32($8928) then Result := 'REG_7' else
+      if self.val = UInt32($8929) then Result := 'REG_8' else
+      if self.val = UInt32($892A) then Result := 'REG_9' else
+      if self.val = UInt32($892B) then Result := 'REG_10' else
+      if self.val = UInt32($892C) then Result := 'REG_11' else
+      if self.val = UInt32($892D) then Result := 'REG_12' else
+      if self.val = UInt32($892E) then Result := 'REG_13' else
+      if self.val = UInt32($892F) then Result := 'REG_14' else
+      if self.val = UInt32($8930) then Result := 'REG_15' else
+      if self.val = UInt32($8931) then Result := 'REG_16' else
+      if self.val = UInt32($8932) then Result := 'REG_17' else
+      if self.val = UInt32($8933) then Result := 'REG_18' else
+      if self.val = UInt32($8934) then Result := 'REG_19' else
+      if self.val = UInt32($8935) then Result := 'REG_20' else
+      if self.val = UInt32($8936) then Result := 'REG_21' else
+      if self.val = UInt32($8937) then Result := 'REG_22' else
+      if self.val = UInt32($8938) then Result := 'REG_23' else
+      if self.val = UInt32($8939) then Result := 'REG_24' else
+      if self.val = UInt32($893A) then Result := 'REG_25' else
+      if self.val = UInt32($893B) then Result := 'REG_26' else
+      if self.val = UInt32($893C) then Result := 'REG_27' else
+      if self.val = UInt32($893D) then Result := 'REG_28' else
+      if self.val = UInt32($893E) then Result := 'REG_29' else
+      if self.val = UInt32($893F) then Result := 'REG_30' else
+      if self.val = UInt32($8940) then Result := 'REG_31' else
+      if self.val = UInt32($8941) then Result := 'CON_0' else
+      if self.val = UInt32($8942) then Result := 'CON_1' else
+      if self.val = UInt32($8943) then Result := 'CON_2' else
+      if self.val = UInt32($8944) then Result := 'CON_3' else
+      if self.val = UInt32($8945) then Result := 'CON_4' else
+      if self.val = UInt32($8946) then Result := 'CON_5' else
+      if self.val = UInt32($8947) then Result := 'CON_6' else
+      if self.val = UInt32($8948) then Result := 'CON_7' else
+      if self.val = UInt32($8949) then Result := 'CON_8' else
+      if self.val = UInt32($894A) then Result := 'CON_9' else
+      if self.val = UInt32($894B) then Result := 'CON_10' else
+      if self.val = UInt32($894C) then Result := 'CON_11' else
+      if self.val = UInt32($894D) then Result := 'CON_12' else
+      if self.val = UInt32($894E) then Result := 'CON_13' else
+      if self.val = UInt32($894F) then Result := 'CON_14' else
+      if self.val = UInt32($8950) then Result := 'CON_15' else
+      if self.val = UInt32($8951) then Result := 'CON_16' else
+      if self.val = UInt32($8952) then Result := 'CON_17' else
+      if self.val = UInt32($8953) then Result := 'CON_18' else
+      if self.val = UInt32($8954) then Result := 'CON_19' else
+      if self.val = UInt32($8955) then Result := 'CON_20' else
+      if self.val = UInt32($8956) then Result := 'CON_21' else
+      if self.val = UInt32($8957) then Result := 'CON_22' else
+      if self.val = UInt32($8958) then Result := 'CON_23' else
+      if self.val = UInt32($8959) then Result := 'CON_24' else
+      if self.val = UInt32($895A) then Result := 'CON_25' else
+      if self.val = UInt32($895B) then Result := 'CON_26' else
+      if self.val = UInt32($895C) then Result := 'CON_27' else
+      if self.val = UInt32($895D) then Result := 'CON_28' else
+      if self.val = UInt32($895E) then Result := 'CON_29' else
+      if self.val = UInt32($895F) then Result := 'CON_30' else
+      if self.val = UInt32($8960) then Result := 'CON_31' else
+      if self.val = UInt32($896D) then Result := 'SECONDARY_INTERPOLATOR' else
+        Result := $'FragmentShaderGenericSource[{self.val}]';
+    end;
+    
+  end;
+  
+  FragmentShaderReg = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property REG_0:  FragmentShaderReg read new FragmentShaderReg($8921);
+    public static property REG_1:  FragmentShaderReg read new FragmentShaderReg($8922);
+    public static property REG_2:  FragmentShaderReg read new FragmentShaderReg($8923);
+    public static property REG_3:  FragmentShaderReg read new FragmentShaderReg($8924);
+    public static property REG_4:  FragmentShaderReg read new FragmentShaderReg($8925);
+    public static property REG_5:  FragmentShaderReg read new FragmentShaderReg($8926);
+    public static property REG_6:  FragmentShaderReg read new FragmentShaderReg($8927);
+    public static property REG_7:  FragmentShaderReg read new FragmentShaderReg($8928);
+    public static property REG_8:  FragmentShaderReg read new FragmentShaderReg($8929);
+    public static property REG_9:  FragmentShaderReg read new FragmentShaderReg($892A);
+    public static property REG_10: FragmentShaderReg read new FragmentShaderReg($892B);
+    public static property REG_11: FragmentShaderReg read new FragmentShaderReg($892C);
+    public static property REG_12: FragmentShaderReg read new FragmentShaderReg($892D);
+    public static property REG_13: FragmentShaderReg read new FragmentShaderReg($892E);
+    public static property REG_14: FragmentShaderReg read new FragmentShaderReg($892F);
+    public static property REG_15: FragmentShaderReg read new FragmentShaderReg($8930);
+    public static property REG_16: FragmentShaderReg read new FragmentShaderReg($8931);
+    public static property REG_17: FragmentShaderReg read new FragmentShaderReg($8932);
+    public static property REG_18: FragmentShaderReg read new FragmentShaderReg($8933);
+    public static property REG_19: FragmentShaderReg read new FragmentShaderReg($8934);
+    public static property REG_20: FragmentShaderReg read new FragmentShaderReg($8935);
+    public static property REG_21: FragmentShaderReg read new FragmentShaderReg($8936);
+    public static property REG_22: FragmentShaderReg read new FragmentShaderReg($8937);
+    public static property REG_23: FragmentShaderReg read new FragmentShaderReg($8938);
+    public static property REG_24: FragmentShaderReg read new FragmentShaderReg($8939);
+    public static property REG_25: FragmentShaderReg read new FragmentShaderReg($893A);
+    public static property REG_26: FragmentShaderReg read new FragmentShaderReg($893B);
+    public static property REG_27: FragmentShaderReg read new FragmentShaderReg($893C);
+    public static property REG_28: FragmentShaderReg read new FragmentShaderReg($893D);
+    public static property REG_29: FragmentShaderReg read new FragmentShaderReg($893E);
+    public static property REG_30: FragmentShaderReg read new FragmentShaderReg($893F);
+    public static property REG_31: FragmentShaderReg read new FragmentShaderReg($8940);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($8921) then Result := 'REG_0' else
+      if self.val = UInt32($8922) then Result := 'REG_1' else
+      if self.val = UInt32($8923) then Result := 'REG_2' else
+      if self.val = UInt32($8924) then Result := 'REG_3' else
+      if self.val = UInt32($8925) then Result := 'REG_4' else
+      if self.val = UInt32($8926) then Result := 'REG_5' else
+      if self.val = UInt32($8927) then Result := 'REG_6' else
+      if self.val = UInt32($8928) then Result := 'REG_7' else
+      if self.val = UInt32($8929) then Result := 'REG_8' else
+      if self.val = UInt32($892A) then Result := 'REG_9' else
+      if self.val = UInt32($892B) then Result := 'REG_10' else
+      if self.val = UInt32($892C) then Result := 'REG_11' else
+      if self.val = UInt32($892D) then Result := 'REG_12' else
+      if self.val = UInt32($892E) then Result := 'REG_13' else
+      if self.val = UInt32($892F) then Result := 'REG_14' else
+      if self.val = UInt32($8930) then Result := 'REG_15' else
+      if self.val = UInt32($8931) then Result := 'REG_16' else
+      if self.val = UInt32($8932) then Result := 'REG_17' else
+      if self.val = UInt32($8933) then Result := 'REG_18' else
+      if self.val = UInt32($8934) then Result := 'REG_19' else
+      if self.val = UInt32($8935) then Result := 'REG_20' else
+      if self.val = UInt32($8936) then Result := 'REG_21' else
+      if self.val = UInt32($8937) then Result := 'REG_22' else
+      if self.val = UInt32($8938) then Result := 'REG_23' else
+      if self.val = UInt32($8939) then Result := 'REG_24' else
+      if self.val = UInt32($893A) then Result := 'REG_25' else
+      if self.val = UInt32($893B) then Result := 'REG_26' else
+      if self.val = UInt32($893C) then Result := 'REG_27' else
+      if self.val = UInt32($893D) then Result := 'REG_28' else
+      if self.val = UInt32($893E) then Result := 'REG_29' else
+      if self.val = UInt32($893F) then Result := 'REG_30' else
+      if self.val = UInt32($8940) then Result := 'REG_31' else
+        Result := $'FragmentShaderReg[{self.val}]';
+    end;
+    
+  end;
+  
+  FragmentShaderTextureSource = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property TEXTURE0:  FragmentShaderTextureSource read new FragmentShaderTextureSource($84C0);
+    public static property TEXTURE1:  FragmentShaderTextureSource read new FragmentShaderTextureSource($84C1);
+    public static property TEXTURE2:  FragmentShaderTextureSource read new FragmentShaderTextureSource($84C2);
+    public static property TEXTURE3:  FragmentShaderTextureSource read new FragmentShaderTextureSource($84C3);
+    public static property TEXTURE4:  FragmentShaderTextureSource read new FragmentShaderTextureSource($84C4);
+    public static property TEXTURE5:  FragmentShaderTextureSource read new FragmentShaderTextureSource($84C5);
+    public static property TEXTURE6:  FragmentShaderTextureSource read new FragmentShaderTextureSource($84C6);
+    public static property TEXTURE7:  FragmentShaderTextureSource read new FragmentShaderTextureSource($84C7);
+    public static property TEXTURE8:  FragmentShaderTextureSource read new FragmentShaderTextureSource($84C8);
+    public static property TEXTURE9:  FragmentShaderTextureSource read new FragmentShaderTextureSource($84C9);
+    public static property TEXTURE10: FragmentShaderTextureSource read new FragmentShaderTextureSource($84CA);
+    public static property TEXTURE11: FragmentShaderTextureSource read new FragmentShaderTextureSource($84CB);
+    public static property TEXTURE12: FragmentShaderTextureSource read new FragmentShaderTextureSource($84CC);
+    public static property TEXTURE13: FragmentShaderTextureSource read new FragmentShaderTextureSource($84CD);
+    public static property TEXTURE14: FragmentShaderTextureSource read new FragmentShaderTextureSource($84CE);
+    public static property TEXTURE15: FragmentShaderTextureSource read new FragmentShaderTextureSource($84CF);
+    public static property TEXTURE16: FragmentShaderTextureSource read new FragmentShaderTextureSource($84D0);
+    public static property TEXTURE17: FragmentShaderTextureSource read new FragmentShaderTextureSource($84D1);
+    public static property TEXTURE18: FragmentShaderTextureSource read new FragmentShaderTextureSource($84D2);
+    public static property TEXTURE19: FragmentShaderTextureSource read new FragmentShaderTextureSource($84D3);
+    public static property TEXTURE20: FragmentShaderTextureSource read new FragmentShaderTextureSource($84D4);
+    public static property TEXTURE21: FragmentShaderTextureSource read new FragmentShaderTextureSource($84D5);
+    public static property TEXTURE22: FragmentShaderTextureSource read new FragmentShaderTextureSource($84D6);
+    public static property TEXTURE23: FragmentShaderTextureSource read new FragmentShaderTextureSource($84D7);
+    public static property TEXTURE24: FragmentShaderTextureSource read new FragmentShaderTextureSource($84D8);
+    public static property TEXTURE25: FragmentShaderTextureSource read new FragmentShaderTextureSource($84D9);
+    public static property TEXTURE26: FragmentShaderTextureSource read new FragmentShaderTextureSource($84DA);
+    public static property TEXTURE27: FragmentShaderTextureSource read new FragmentShaderTextureSource($84DB);
+    public static property TEXTURE28: FragmentShaderTextureSource read new FragmentShaderTextureSource($84DC);
+    public static property TEXTURE29: FragmentShaderTextureSource read new FragmentShaderTextureSource($84DD);
+    public static property TEXTURE30: FragmentShaderTextureSource read new FragmentShaderTextureSource($84DE);
+    public static property TEXTURE31: FragmentShaderTextureSource read new FragmentShaderTextureSource($84DF);
+    public static property REG_0:     FragmentShaderTextureSource read new FragmentShaderTextureSource($8921);
+    public static property REG_1:     FragmentShaderTextureSource read new FragmentShaderTextureSource($8922);
+    public static property REG_2:     FragmentShaderTextureSource read new FragmentShaderTextureSource($8923);
+    public static property REG_3:     FragmentShaderTextureSource read new FragmentShaderTextureSource($8924);
+    public static property REG_4:     FragmentShaderTextureSource read new FragmentShaderTextureSource($8925);
+    public static property REG_5:     FragmentShaderTextureSource read new FragmentShaderTextureSource($8926);
+    public static property REG_6:     FragmentShaderTextureSource read new FragmentShaderTextureSource($8927);
+    public static property REG_7:     FragmentShaderTextureSource read new FragmentShaderTextureSource($8928);
+    public static property REG_8:     FragmentShaderTextureSource read new FragmentShaderTextureSource($8929);
+    public static property REG_9:     FragmentShaderTextureSource read new FragmentShaderTextureSource($892A);
+    public static property REG_10:    FragmentShaderTextureSource read new FragmentShaderTextureSource($892B);
+    public static property REG_11:    FragmentShaderTextureSource read new FragmentShaderTextureSource($892C);
+    public static property REG_12:    FragmentShaderTextureSource read new FragmentShaderTextureSource($892D);
+    public static property REG_13:    FragmentShaderTextureSource read new FragmentShaderTextureSource($892E);
+    public static property REG_14:    FragmentShaderTextureSource read new FragmentShaderTextureSource($892F);
+    public static property REG_15:    FragmentShaderTextureSource read new FragmentShaderTextureSource($8930);
+    public static property REG_16:    FragmentShaderTextureSource read new FragmentShaderTextureSource($8931);
+    public static property REG_17:    FragmentShaderTextureSource read new FragmentShaderTextureSource($8932);
+    public static property REG_18:    FragmentShaderTextureSource read new FragmentShaderTextureSource($8933);
+    public static property REG_19:    FragmentShaderTextureSource read new FragmentShaderTextureSource($8934);
+    public static property REG_20:    FragmentShaderTextureSource read new FragmentShaderTextureSource($8935);
+    public static property REG_21:    FragmentShaderTextureSource read new FragmentShaderTextureSource($8936);
+    public static property REG_22:    FragmentShaderTextureSource read new FragmentShaderTextureSource($8937);
+    public static property REG_23:    FragmentShaderTextureSource read new FragmentShaderTextureSource($8938);
+    public static property REG_24:    FragmentShaderTextureSource read new FragmentShaderTextureSource($8939);
+    public static property REG_25:    FragmentShaderTextureSource read new FragmentShaderTextureSource($893A);
+    public static property REG_26:    FragmentShaderTextureSource read new FragmentShaderTextureSource($893B);
+    public static property REG_27:    FragmentShaderTextureSource read new FragmentShaderTextureSource($893C);
+    public static property REG_28:    FragmentShaderTextureSource read new FragmentShaderTextureSource($893D);
+    public static property REG_29:    FragmentShaderTextureSource read new FragmentShaderTextureSource($893E);
+    public static property REG_30:    FragmentShaderTextureSource read new FragmentShaderTextureSource($893F);
+    public static property REG_31:    FragmentShaderTextureSource read new FragmentShaderTextureSource($8940);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($84C0) then Result := 'TEXTURE0' else
+      if self.val = UInt32($84C1) then Result := 'TEXTURE1' else
+      if self.val = UInt32($84C2) then Result := 'TEXTURE2' else
+      if self.val = UInt32($84C3) then Result := 'TEXTURE3' else
+      if self.val = UInt32($84C4) then Result := 'TEXTURE4' else
+      if self.val = UInt32($84C5) then Result := 'TEXTURE5' else
+      if self.val = UInt32($84C6) then Result := 'TEXTURE6' else
+      if self.val = UInt32($84C7) then Result := 'TEXTURE7' else
+      if self.val = UInt32($84C8) then Result := 'TEXTURE8' else
+      if self.val = UInt32($84C9) then Result := 'TEXTURE9' else
+      if self.val = UInt32($84CA) then Result := 'TEXTURE10' else
+      if self.val = UInt32($84CB) then Result := 'TEXTURE11' else
+      if self.val = UInt32($84CC) then Result := 'TEXTURE12' else
+      if self.val = UInt32($84CD) then Result := 'TEXTURE13' else
+      if self.val = UInt32($84CE) then Result := 'TEXTURE14' else
+      if self.val = UInt32($84CF) then Result := 'TEXTURE15' else
+      if self.val = UInt32($84D0) then Result := 'TEXTURE16' else
+      if self.val = UInt32($84D1) then Result := 'TEXTURE17' else
+      if self.val = UInt32($84D2) then Result := 'TEXTURE18' else
+      if self.val = UInt32($84D3) then Result := 'TEXTURE19' else
+      if self.val = UInt32($84D4) then Result := 'TEXTURE20' else
+      if self.val = UInt32($84D5) then Result := 'TEXTURE21' else
+      if self.val = UInt32($84D6) then Result := 'TEXTURE22' else
+      if self.val = UInt32($84D7) then Result := 'TEXTURE23' else
+      if self.val = UInt32($84D8) then Result := 'TEXTURE24' else
+      if self.val = UInt32($84D9) then Result := 'TEXTURE25' else
+      if self.val = UInt32($84DA) then Result := 'TEXTURE26' else
+      if self.val = UInt32($84DB) then Result := 'TEXTURE27' else
+      if self.val = UInt32($84DC) then Result := 'TEXTURE28' else
+      if self.val = UInt32($84DD) then Result := 'TEXTURE29' else
+      if self.val = UInt32($84DE) then Result := 'TEXTURE30' else
+      if self.val = UInt32($84DF) then Result := 'TEXTURE31' else
+      if self.val = UInt32($8921) then Result := 'REG_0' else
+      if self.val = UInt32($8922) then Result := 'REG_1' else
+      if self.val = UInt32($8923) then Result := 'REG_2' else
+      if self.val = UInt32($8924) then Result := 'REG_3' else
+      if self.val = UInt32($8925) then Result := 'REG_4' else
+      if self.val = UInt32($8926) then Result := 'REG_5' else
+      if self.val = UInt32($8927) then Result := 'REG_6' else
+      if self.val = UInt32($8928) then Result := 'REG_7' else
+      if self.val = UInt32($8929) then Result := 'REG_8' else
+      if self.val = UInt32($892A) then Result := 'REG_9' else
+      if self.val = UInt32($892B) then Result := 'REG_10' else
+      if self.val = UInt32($892C) then Result := 'REG_11' else
+      if self.val = UInt32($892D) then Result := 'REG_12' else
+      if self.val = UInt32($892E) then Result := 'REG_13' else
+      if self.val = UInt32($892F) then Result := 'REG_14' else
+      if self.val = UInt32($8930) then Result := 'REG_15' else
+      if self.val = UInt32($8931) then Result := 'REG_16' else
+      if self.val = UInt32($8932) then Result := 'REG_17' else
+      if self.val = UInt32($8933) then Result := 'REG_18' else
+      if self.val = UInt32($8934) then Result := 'REG_19' else
+      if self.val = UInt32($8935) then Result := 'REG_20' else
+      if self.val = UInt32($8936) then Result := 'REG_21' else
+      if self.val = UInt32($8937) then Result := 'REG_22' else
+      if self.val = UInt32($8938) then Result := 'REG_23' else
+      if self.val = UInt32($8939) then Result := 'REG_24' else
+      if self.val = UInt32($893A) then Result := 'REG_25' else
+      if self.val = UInt32($893B) then Result := 'REG_26' else
+      if self.val = UInt32($893C) then Result := 'REG_27' else
+      if self.val = UInt32($893D) then Result := 'REG_28' else
+      if self.val = UInt32($893E) then Result := 'REG_29' else
+      if self.val = UInt32($893F) then Result := 'REG_30' else
+      if self.val = UInt32($8940) then Result := 'REG_31' else
+        Result := $'FragmentShaderTextureSource[{self.val}]';
+    end;
+    
+  end;
+  
+  FragmentShaderValueRep = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property NONE:  FragmentShaderValueRep read new FragmentShaderValueRep($0000);
+    public static property RED:   FragmentShaderValueRep read new FragmentShaderValueRep($1903);
+    public static property GREEN: FragmentShaderValueRep read new FragmentShaderValueRep($1904);
+    public static property BLUE:  FragmentShaderValueRep read new FragmentShaderValueRep($1905);
+    public static property ALPHA: FragmentShaderValueRep read new FragmentShaderValueRep($1906);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($0000) then Result := 'NONE' else
+      if self.val = UInt32($1903) then Result := 'RED' else
+      if self.val = UInt32($1904) then Result := 'GREEN' else
+      if self.val = UInt32($1905) then Result := 'BLUE' else
+      if self.val = UInt32($1906) then Result := 'ALPHA' else
+        Result := $'FragmentShaderValueRep[{self.val}]';
     end;
     
   end;
@@ -3743,6 +4353,7 @@
     public static property MIN_PROGRAM_TEXEL_OFFSET:                                            GetPName read new GetPName($8904);
     public static property MAX_PROGRAM_TEXEL_OFFSET:                                            GetPName read new GetPName($8905);
     public static property SAMPLER_BINDING:                                                     GetPName read new GetPName($8919);
+    public static property FRAGMENT_SHADER_ATI:                                                 GetPName read new GetPName($8920);
     public static property UNIFORM_BUFFER_BINDING:                                              GetPName read new GetPName($8A28);
     public static property UNIFORM_BUFFER_START:                                                GetPName read new GetPName($8A29);
     public static property UNIFORM_BUFFER_SIZE:                                                 GetPName read new GetPName($8A2A);
@@ -4309,6 +4920,7 @@
       if self.val = UInt32($8904) then Result := 'MIN_PROGRAM_TEXEL_OFFSET' else
       if self.val = UInt32($8905) then Result := 'MAX_PROGRAM_TEXEL_OFFSET' else
       if self.val = UInt32($8919) then Result := 'SAMPLER_BINDING' else
+      if self.val = UInt32($8920) then Result := 'FRAGMENT_SHADER_ATI' else
       if self.val = UInt32($8A28) then Result := 'UNIFORM_BUFFER_BINDING' else
       if self.val = UInt32($8A29) then Result := 'UNIFORM_BUFFER_START' else
       if self.val = UInt32($8A2A) then Result := 'UNIFORM_BUFFER_SIZE' else

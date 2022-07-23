@@ -35,6 +35,7 @@ Group [TextureEnvMode]: Enum [REPLACE_EXT]=$8062, but without [_EXT]=$1E01
 Group [GetPName]: Enum [SAMPLE_MASK_SGIS]=$80A0, but without [_SGIS]=$8E51
 Enums [PACK_RESAMPLE_OML,PACK_RESAMPLE_SGIX] have different values
 Enums [UNPACK_RESAMPLE_OML,UNPACK_RESAMPLE_SGIX] have different values
+Group [GetPName]: Enum [FRAGMENT_SHADER_ATI]=$8920, but without [_ATI]=$8B30
 Group [GetPName]: Enum [SHADING_RATE_QCOM]=$96A4, but without [_QCOM]=$96D0
 Enums [SHADING_RATE_EXT,SHADING_RATE_QCOM] have different values
 Group [EnableCap]: Enum [SAMPLE_MASK_SGIS]=$80A0, but without [_SGIS]=$8E51
@@ -48,7 +49,7 @@ Enums [DISCARD_ATI,DISCARD_NV] have different values
 Group [PathColor]: Enum [PRIMARY_COLOR_NV]=$852C, but without [_NV]=$8577
 Group [VertexShaderCoordOut]: Enum [ZERO_EXT]=$87DD, but without [_EXT]=$0
 Group [VertexShaderCoordOut]: Enum [ONE_EXT]=$87DE, but without [_EXT]=$1
-Group [FragmentOp]: Enum [ADD_ATI]=$8963, but without [_ATI]=$104
+Group [FragmentOp2]: Enum [ADD_ATI]=$8963, but without [_ATI]=$104
 Group [RenderbufferParameterName]: Enum [RENDERBUFFER_SAMPLES_IMG]=$9133, but without [_IMG]=$8CAB
 Func [glBindBufferRange] was added in versions [3.0] and [3.1]
 Func [glBindBufferBase] was added in versions [3.0] and [3.1]
@@ -57,7 +58,5 @@ Func [glProgramParameteri] was added in versions [4.1] and [4.1]
 Invalid API: [gles1]
 Invalid API: [gles2]
 Invalid API: [glsc2]
-Group [FragmentShaderDestMask] was not referenced
-Group [FragmentShaderDestModMask] was not referenced
-Group [FragmentShaderColorModMask] was not referenced
+Group [TraceMask] was not referenced
 done

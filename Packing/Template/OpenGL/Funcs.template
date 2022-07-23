@@ -22291,58 +22291,58 @@
     z_EndFragmentShaderATI_1();
     
     private z_PassTexCoordATI_adr := GetProcAddress('glPassTexCoordATI');
-    private z_PassTexCoordATI_1 := GetProcOrNil&<procedure(dst: UInt32; coord: UInt32; swizzle: SwizzleOp)>(z_PassTexCoordATI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PassTexCoordATI(dst: UInt32; coord: UInt32; swizzle: SwizzleOp) :=
+    private z_PassTexCoordATI_1 := GetProcOrNil&<procedure(dst: FragmentShaderReg; coord: FragmentShaderTextureSource; swizzle: SwizzleOp)>(z_PassTexCoordATI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PassTexCoordATI(dst: FragmentShaderReg; coord: FragmentShaderTextureSource; swizzle: SwizzleOp) :=
     z_PassTexCoordATI_1(dst, coord, swizzle);
     
     private z_SampleMapATI_adr := GetProcAddress('glSampleMapATI');
-    private z_SampleMapATI_1 := GetProcOrNil&<procedure(dst: UInt32; interp: UInt32; swizzle: SwizzleOp)>(z_SampleMapATI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SampleMapATI(dst: UInt32; interp: UInt32; swizzle: SwizzleOp) :=
+    private z_SampleMapATI_1 := GetProcOrNil&<procedure(dst: FragmentShaderReg; interp: FragmentShaderTextureSource; swizzle: SwizzleOp)>(z_SampleMapATI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SampleMapATI(dst: FragmentShaderReg; interp: FragmentShaderTextureSource; swizzle: SwizzleOp) :=
     z_SampleMapATI_1(dst, interp, swizzle);
     
     private z_ColorFragmentOp1ATI_adr := GetProcAddress('glColorFragmentOp1ATI');
-    private z_ColorFragmentOp1ATI_1 := GetProcOrNil&<procedure(op: FragmentOp; dst: UInt32; dstMask: UInt32; dstMod: UInt32; arg1: UInt32; arg1Rep: UInt32; arg1Mod: UInt32)>(z_ColorFragmentOp1ATI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorFragmentOp1ATI(op: FragmentOp; dst: UInt32; dstMask: UInt32; dstMod: UInt32; arg1: UInt32; arg1Rep: UInt32; arg1Mod: UInt32) :=
+    private z_ColorFragmentOp1ATI_1 := GetProcOrNil&<procedure(op: FragmentOp1; dst: FragmentShaderReg; dstMask: FragmentShaderDestMask; dstMod: FragmentShaderDestModMask; arg1: FragmentShaderGenericSource; arg1Rep: FragmentShaderValueRep; arg1Mod: FragmentShaderColorModMask)>(z_ColorFragmentOp1ATI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorFragmentOp1ATI(op: FragmentOp1; dst: FragmentShaderReg; dstMask: FragmentShaderDestMask; dstMod: FragmentShaderDestModMask; arg1: FragmentShaderGenericSource; arg1Rep: FragmentShaderValueRep; arg1Mod: FragmentShaderColorModMask) :=
     z_ColorFragmentOp1ATI_1(op, dst, dstMask, dstMod, arg1, arg1Rep, arg1Mod);
     
     private z_ColorFragmentOp2ATI_adr := GetProcAddress('glColorFragmentOp2ATI');
-    private z_ColorFragmentOp2ATI_1 := GetProcOrNil&<procedure(op: FragmentOp; dst: UInt32; dstMask: UInt32; dstMod: UInt32; arg1: UInt32; arg1Rep: UInt32; arg1Mod: UInt32; arg2: UInt32; arg2Rep: UInt32; arg2Mod: UInt32)>(z_ColorFragmentOp2ATI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorFragmentOp2ATI(op: FragmentOp; dst: UInt32; dstMask: UInt32; dstMod: UInt32; arg1: UInt32; arg1Rep: UInt32; arg1Mod: UInt32; arg2: UInt32; arg2Rep: UInt32; arg2Mod: UInt32) :=
+    private z_ColorFragmentOp2ATI_1 := GetProcOrNil&<procedure(op: FragmentOp2; dst: FragmentShaderReg; dstMask: FragmentShaderDestMask; dstMod: FragmentShaderDestModMask; arg1: FragmentShaderGenericSource; arg1Rep: FragmentShaderValueRep; arg1Mod: FragmentShaderColorModMask; arg2: FragmentShaderGenericSource; arg2Rep: FragmentShaderValueRep; arg2Mod: FragmentShaderColorModMask)>(z_ColorFragmentOp2ATI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorFragmentOp2ATI(op: FragmentOp2; dst: FragmentShaderReg; dstMask: FragmentShaderDestMask; dstMod: FragmentShaderDestModMask; arg1: FragmentShaderGenericSource; arg1Rep: FragmentShaderValueRep; arg1Mod: FragmentShaderColorModMask; arg2: FragmentShaderGenericSource; arg2Rep: FragmentShaderValueRep; arg2Mod: FragmentShaderColorModMask) :=
     z_ColorFragmentOp2ATI_1(op, dst, dstMask, dstMod, arg1, arg1Rep, arg1Mod, arg2, arg2Rep, arg2Mod);
     
     private z_ColorFragmentOp3ATI_adr := GetProcAddress('glColorFragmentOp3ATI');
-    private z_ColorFragmentOp3ATI_1 := GetProcOrNil&<procedure(op: FragmentOp; dst: UInt32; dstMask: UInt32; dstMod: UInt32; arg1: UInt32; arg1Rep: UInt32; arg1Mod: UInt32; arg2: UInt32; arg2Rep: UInt32; arg2Mod: UInt32; arg3: UInt32; arg3Rep: UInt32; arg3Mod: UInt32)>(z_ColorFragmentOp3ATI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorFragmentOp3ATI(op: FragmentOp; dst: UInt32; dstMask: UInt32; dstMod: UInt32; arg1: UInt32; arg1Rep: UInt32; arg1Mod: UInt32; arg2: UInt32; arg2Rep: UInt32; arg2Mod: UInt32; arg3: UInt32; arg3Rep: UInt32; arg3Mod: UInt32) :=
+    private z_ColorFragmentOp3ATI_1 := GetProcOrNil&<procedure(op: FragmentOp3; dst: FragmentShaderReg; dstMask: FragmentShaderDestMask; dstMod: FragmentShaderDestModMask; arg1: FragmentShaderGenericSource; arg1Rep: FragmentShaderValueRep; arg1Mod: FragmentShaderColorModMask; arg2: FragmentShaderGenericSource; arg2Rep: FragmentShaderValueRep; arg2Mod: FragmentShaderColorModMask; arg3: FragmentShaderGenericSource; arg3Rep: FragmentShaderValueRep; arg3Mod: FragmentShaderColorModMask)>(z_ColorFragmentOp3ATI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorFragmentOp3ATI(op: FragmentOp3; dst: FragmentShaderReg; dstMask: FragmentShaderDestMask; dstMod: FragmentShaderDestModMask; arg1: FragmentShaderGenericSource; arg1Rep: FragmentShaderValueRep; arg1Mod: FragmentShaderColorModMask; arg2: FragmentShaderGenericSource; arg2Rep: FragmentShaderValueRep; arg2Mod: FragmentShaderColorModMask; arg3: FragmentShaderGenericSource; arg3Rep: FragmentShaderValueRep; arg3Mod: FragmentShaderColorModMask) :=
     z_ColorFragmentOp3ATI_1(op, dst, dstMask, dstMod, arg1, arg1Rep, arg1Mod, arg2, arg2Rep, arg2Mod, arg3, arg3Rep, arg3Mod);
     
     private z_AlphaFragmentOp1ATI_adr := GetProcAddress('glAlphaFragmentOp1ATI');
-    private z_AlphaFragmentOp1ATI_1 := GetProcOrNil&<procedure(op: FragmentOp; dst: UInt32; dstMod: UInt32; arg1: UInt32; arg1Rep: UInt32; arg1Mod: UInt32)>(z_AlphaFragmentOp1ATI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure AlphaFragmentOp1ATI(op: FragmentOp; dst: UInt32; dstMod: UInt32; arg1: UInt32; arg1Rep: UInt32; arg1Mod: UInt32) :=
+    private z_AlphaFragmentOp1ATI_1 := GetProcOrNil&<procedure(op: FragmentOp1; dst: FragmentShaderReg; dstMod: FragmentShaderDestModMask; arg1: FragmentShaderGenericSource; arg1Rep: FragmentShaderValueRep; arg1Mod: FragmentShaderColorModMask)>(z_AlphaFragmentOp1ATI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure AlphaFragmentOp1ATI(op: FragmentOp1; dst: FragmentShaderReg; dstMod: FragmentShaderDestModMask; arg1: FragmentShaderGenericSource; arg1Rep: FragmentShaderValueRep; arg1Mod: FragmentShaderColorModMask) :=
     z_AlphaFragmentOp1ATI_1(op, dst, dstMod, arg1, arg1Rep, arg1Mod);
     
     private z_AlphaFragmentOp2ATI_adr := GetProcAddress('glAlphaFragmentOp2ATI');
-    private z_AlphaFragmentOp2ATI_1 := GetProcOrNil&<procedure(op: FragmentOp; dst: UInt32; dstMod: UInt32; arg1: UInt32; arg1Rep: UInt32; arg1Mod: UInt32; arg2: UInt32; arg2Rep: UInt32; arg2Mod: UInt32)>(z_AlphaFragmentOp2ATI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure AlphaFragmentOp2ATI(op: FragmentOp; dst: UInt32; dstMod: UInt32; arg1: UInt32; arg1Rep: UInt32; arg1Mod: UInt32; arg2: UInt32; arg2Rep: UInt32; arg2Mod: UInt32) :=
+    private z_AlphaFragmentOp2ATI_1 := GetProcOrNil&<procedure(op: FragmentOp2; dst: FragmentShaderReg; dstMod: FragmentShaderDestModMask; arg1: FragmentShaderGenericSource; arg1Rep: FragmentShaderValueRep; arg1Mod: FragmentShaderColorModMask; arg2: FragmentShaderGenericSource; arg2Rep: FragmentShaderValueRep; arg2Mod: FragmentShaderColorModMask)>(z_AlphaFragmentOp2ATI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure AlphaFragmentOp2ATI(op: FragmentOp2; dst: FragmentShaderReg; dstMod: FragmentShaderDestModMask; arg1: FragmentShaderGenericSource; arg1Rep: FragmentShaderValueRep; arg1Mod: FragmentShaderColorModMask; arg2: FragmentShaderGenericSource; arg2Rep: FragmentShaderValueRep; arg2Mod: FragmentShaderColorModMask) :=
     z_AlphaFragmentOp2ATI_1(op, dst, dstMod, arg1, arg1Rep, arg1Mod, arg2, arg2Rep, arg2Mod);
     
     private z_AlphaFragmentOp3ATI_adr := GetProcAddress('glAlphaFragmentOp3ATI');
-    private z_AlphaFragmentOp3ATI_1 := GetProcOrNil&<procedure(op: FragmentOp; dst: UInt32; dstMod: UInt32; arg1: UInt32; arg1Rep: UInt32; arg1Mod: UInt32; arg2: UInt32; arg2Rep: UInt32; arg2Mod: UInt32; arg3: UInt32; arg3Rep: UInt32; arg3Mod: UInt32)>(z_AlphaFragmentOp3ATI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure AlphaFragmentOp3ATI(op: FragmentOp; dst: UInt32; dstMod: UInt32; arg1: UInt32; arg1Rep: UInt32; arg1Mod: UInt32; arg2: UInt32; arg2Rep: UInt32; arg2Mod: UInt32; arg3: UInt32; arg3Rep: UInt32; arg3Mod: UInt32) :=
+    private z_AlphaFragmentOp3ATI_1 := GetProcOrNil&<procedure(op: FragmentOp3; dst: FragmentShaderReg; dstMod: FragmentShaderDestModMask; arg1: FragmentShaderGenericSource; arg1Rep: FragmentShaderValueRep; arg1Mod: FragmentShaderColorModMask; arg2: FragmentShaderGenericSource; arg2Rep: FragmentShaderValueRep; arg2Mod: FragmentShaderColorModMask; arg3: FragmentShaderGenericSource; arg3Rep: FragmentShaderValueRep; arg3Mod: FragmentShaderColorModMask)>(z_AlphaFragmentOp3ATI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure AlphaFragmentOp3ATI(op: FragmentOp3; dst: FragmentShaderReg; dstMod: FragmentShaderDestModMask; arg1: FragmentShaderGenericSource; arg1Rep: FragmentShaderValueRep; arg1Mod: FragmentShaderColorModMask; arg2: FragmentShaderGenericSource; arg2Rep: FragmentShaderValueRep; arg2Mod: FragmentShaderColorModMask; arg3: FragmentShaderGenericSource; arg3Rep: FragmentShaderValueRep; arg3Mod: FragmentShaderColorModMask) :=
     z_AlphaFragmentOp3ATI_1(op, dst, dstMod, arg1, arg1Rep, arg1Mod, arg2, arg2Rep, arg2Mod, arg3, arg3Rep, arg3Mod);
     
     private z_SetFragmentShaderConstantATI_adr := GetProcAddress('glSetFragmentShaderConstantATI');
-    private z_SetFragmentShaderConstantATI_1 := GetProcOrNil&<procedure(dst: UInt32; value: IntPtr)>(z_SetFragmentShaderConstantATI_adr);
-    private z_SetFragmentShaderConstantATI_2 := GetProcOrNil&<procedure(dst: UInt32; var value: single)>(z_SetFragmentShaderConstantATI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SetFragmentShaderConstantATI(dst: UInt32; value: array of single);
+    private z_SetFragmentShaderConstantATI_1 := GetProcOrNil&<procedure(dst: FragmentShaderCon; value: IntPtr)>(z_SetFragmentShaderConstantATI_adr);
+    private z_SetFragmentShaderConstantATI_2 := GetProcOrNil&<procedure(dst: FragmentShaderCon; var value: single)>(z_SetFragmentShaderConstantATI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SetFragmentShaderConstantATI(dst: FragmentShaderCon; value: array of single);
     type Psingle=^single;
     begin
       if (value<>nil) and (value.Length<>0) then
         z_SetFragmentShaderConstantATI_2(dst, value[0]) else
         z_SetFragmentShaderConstantATI_2(dst, Psingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SetFragmentShaderConstantATI(dst: UInt32; var value: single) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SetFragmentShaderConstantATI(dst: FragmentShaderCon; var value: single) :=
     z_SetFragmentShaderConstantATI_2(dst, value);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SetFragmentShaderConstantATI(dst: UInt32; value: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SetFragmentShaderConstantATI(dst: FragmentShaderCon; value: IntPtr) :=
     z_SetFragmentShaderConstantATI_1(dst, value);
     
   end;

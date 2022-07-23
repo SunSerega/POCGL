@@ -9292,51 +9292,51 @@
 # glEndFragmentShaderATI[1]:
 
 # glPassTexCoordATI[1]:
-	UInt32 | UInt32 | SwizzleOp |
-	------ | ------ | --------- |
-	dst    | coord  | swizzle   |
+	FragmentShaderReg | FragmentShaderTextureSource | SwizzleOp |
+	----------------- | --------------------------- | --------- |
+	dst               | coord                       | swizzle   |
 
 # glSampleMapATI[1]:
-	UInt32 | UInt32 | SwizzleOp |
-	------ | ------ | --------- |
-	dst    | interp | swizzle   |
+	FragmentShaderReg | FragmentShaderTextureSource | SwizzleOp |
+	----------------- | --------------------------- | --------- |
+	dst               | interp                      | swizzle   |
 
 # glColorFragmentOp1ATI[1]:
-	FragmentOp | UInt32 | UInt32  | UInt32 | UInt32 | UInt32  | UInt32  |
-	---------- | ------ | ------- | ------ | ------ | ------- | ------- |
-	op         | dst    | dstMask | dstMod | arg1   | arg1Rep | arg1Mod |
+	FragmentOp1 | FragmentShaderReg | FragmentShaderDestMask | FragmentShaderDestModMask | FragmentShaderGenericSource | FragmentShaderValueRep | FragmentShaderColorModMask |
+	----------- | ----------------- | ---------------------- | ------------------------- | --------------------------- | ---------------------- | -------------------------- |
+	op          | dst               | dstMask                | dstMod                    | arg1                        | arg1Rep                | arg1Mod                    |
 
 # glColorFragmentOp2ATI[1]:
-	FragmentOp | UInt32 | UInt32  | UInt32 | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  |
-	---------- | ------ | ------- | ------ | ------ | ------- | ------- | ------ | ------- | ------- |
-	op         | dst    | dstMask | dstMod | arg1   | arg1Rep | arg1Mod | arg2   | arg2Rep | arg2Mod |
+	FragmentOp2 | FragmentShaderReg | FragmentShaderDestMask | FragmentShaderDestModMask | FragmentShaderGenericSource | FragmentShaderValueRep | FragmentShaderColorModMask | FragmentShaderGenericSource | FragmentShaderValueRep | FragmentShaderColorModMask |
+	----------- | ----------------- | ---------------------- | ------------------------- | --------------------------- | ---------------------- | -------------------------- | --------------------------- | ---------------------- | -------------------------- |
+	op          | dst               | dstMask                | dstMod                    | arg1                        | arg1Rep                | arg1Mod                    | arg2                        | arg2Rep                | arg2Mod                    |
 
 # glColorFragmentOp3ATI[1]:
-	FragmentOp | UInt32 | UInt32  | UInt32 | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  |
-	---------- | ------ | ------- | ------ | ------ | ------- | ------- | ------ | ------- | ------- | ------ | ------- | ------- |
-	op         | dst    | dstMask | dstMod | arg1   | arg1Rep | arg1Mod | arg2   | arg2Rep | arg2Mod | arg3   | arg3Rep | arg3Mod |
+	FragmentOp3 | FragmentShaderReg | FragmentShaderDestMask | FragmentShaderDestModMask | FragmentShaderGenericSource | FragmentShaderValueRep | FragmentShaderColorModMask | FragmentShaderGenericSource | FragmentShaderValueRep | FragmentShaderColorModMask | FragmentShaderGenericSource | FragmentShaderValueRep | FragmentShaderColorModMask |
+	----------- | ----------------- | ---------------------- | ------------------------- | --------------------------- | ---------------------- | -------------------------- | --------------------------- | ---------------------- | -------------------------- | --------------------------- | ---------------------- | -------------------------- |
+	op          | dst               | dstMask                | dstMod                    | arg1                        | arg1Rep                | arg1Mod                    | arg2                        | arg2Rep                | arg2Mod                    | arg3                        | arg3Rep                | arg3Mod                    |
 
 # glAlphaFragmentOp1ATI[1]:
-	FragmentOp | UInt32 | UInt32 | UInt32 | UInt32  | UInt32  |
-	---------- | ------ | ------ | ------ | ------- | ------- |
-	op         | dst    | dstMod | arg1   | arg1Rep | arg1Mod |
+	FragmentOp1 | FragmentShaderReg | FragmentShaderDestModMask | FragmentShaderGenericSource | FragmentShaderValueRep | FragmentShaderColorModMask |
+	----------- | ----------------- | ------------------------- | --------------------------- | ---------------------- | -------------------------- |
+	op          | dst               | dstMod                    | arg1                        | arg1Rep                | arg1Mod                    |
 
 # glAlphaFragmentOp2ATI[1]:
-	FragmentOp | UInt32 | UInt32 | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  |
-	---------- | ------ | ------ | ------ | ------- | ------- | ------ | ------- | ------- |
-	op         | dst    | dstMod | arg1   | arg1Rep | arg1Mod | arg2   | arg2Rep | arg2Mod |
+	FragmentOp2 | FragmentShaderReg | FragmentShaderDestModMask | FragmentShaderGenericSource | FragmentShaderValueRep | FragmentShaderColorModMask | FragmentShaderGenericSource | FragmentShaderValueRep | FragmentShaderColorModMask |
+	----------- | ----------------- | ------------------------- | --------------------------- | ---------------------- | -------------------------- | --------------------------- | ---------------------- | -------------------------- |
+	op          | dst               | dstMod                    | arg1                        | arg1Rep                | arg1Mod                    | arg2                        | arg2Rep                | arg2Mod                    |
 
 # glAlphaFragmentOp3ATI[1]:
-	FragmentOp | UInt32 | UInt32 | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  | UInt32 | UInt32  | UInt32  |
-	---------- | ------ | ------ | ------ | ------- | ------- | ------ | ------- | ------- | ------ | ------- | ------- |
-	op         | dst    | dstMod | arg1   | arg1Rep | arg1Mod | arg2   | arg2Rep | arg2Mod | arg3   | arg3Rep | arg3Mod |
+	FragmentOp3 | FragmentShaderReg | FragmentShaderDestModMask | FragmentShaderGenericSource | FragmentShaderValueRep | FragmentShaderColorModMask | FragmentShaderGenericSource | FragmentShaderValueRep | FragmentShaderColorModMask | FragmentShaderGenericSource | FragmentShaderValueRep | FragmentShaderColorModMask |
+	----------- | ----------------- | ------------------------- | --------------------------- | ---------------------- | -------------------------- | --------------------------- | ---------------------- | -------------------------- | --------------------------- | ---------------------- | -------------------------- |
+	op          | dst               | dstMod                    | arg1                        | arg1Rep                | arg1Mod                    | arg2                        | arg2Rep                | arg2Mod                    | arg3                        | arg3Rep                | arg3Mod                    |
 
 # glSetFragmentShaderConstantATI[3]:
-	UInt32 | array of single |
-	UInt32 | var single      |
-	UInt32 | IntPtr          |
-	------ | --------------- |
-	dst    | value           |
+	FragmentShaderCon | array of single |
+	FragmentShaderCon | var single      |
+	FragmentShaderCon | IntPtr          |
+	----------------- | --------------- |
+	dst               | value           |
 
 # glMapObjectBufferATI[1]:
 	IntPtr | gl_buffer |
