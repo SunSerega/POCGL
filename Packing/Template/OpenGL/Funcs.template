@@ -11157,13 +11157,6 @@
     external 'opengl32.dll' name 'wglGetLayerPaletteEntries';
     private static function z_GetLayerPaletteEntries_2(hdc: gdi_device_context; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; var pcr: gdi_colorref): Int32;
     external 'opengl32.dll' name 'wglGetLayerPaletteEntries';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerPaletteEntries(hdc: gdi_device_context; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; pcr: array of gdi_colorref): Int32;
-    type Pgdi_colorref=^gdi_colorref;
-    begin
-      Result := if (pcr<>nil) and (pcr.Length<>0) then
-        z_GetLayerPaletteEntries_2(hdc, iLayerPlane, iStart, cEntries, pcr[0]) else
-        z_GetLayerPaletteEntries_2(hdc, iLayerPlane, iStart, cEntries, Pgdi_colorref(nil)^);
-    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerPaletteEntries(hdc: gdi_device_context; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; var pcr: gdi_colorref): Int32 :=
     z_GetLayerPaletteEntries_2(hdc, iLayerPlane, iStart, cEntries, pcr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerPaletteEntries(hdc: gdi_device_context; iLayerPlane: Int32; iStart: Int32; cEntries: Int32; pcr: IntPtr): Int32 :=
@@ -11746,21 +11739,14 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function DescribePixelFormat(hdc: gdi_device_context; ipfd: Int32; cjpfd: UInt32; ppfd: IntPtr): Int32 :=
     z_DescribePixelFormat_1(hdc, ipfd, cjpfd, ppfd);
     
-    private static function z_GetEnhMetaFilePixelFormat_1(hemf: gdi_h_enh_metafile; ppfd: IntPtr): UInt32;
+    private static function z_GetEnhMetaFilePixelFormat_1(hemf: gdi_h_enh_metafile; cbBuffer: UInt32; ppfd: IntPtr): UInt32;
     external 'gdi32.dll' name 'GetEnhMetaFilePixelFormat';
-    private static function z_GetEnhMetaFilePixelFormat_2(hemf: gdi_h_enh_metafile; var ppfd: gdi_pixel_format_descriptor): UInt32;
+    private static function z_GetEnhMetaFilePixelFormat_2(hemf: gdi_h_enh_metafile; cbBuffer: UInt32; var ppfd: gdi_pixel_format_descriptor): UInt32;
     external 'gdi32.dll' name 'GetEnhMetaFilePixelFormat';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEnhMetaFilePixelFormat(hemf: gdi_h_enh_metafile; ppfd: array of gdi_pixel_format_descriptor): UInt32;
-    type Pgdi_pixel_format_descriptor=^gdi_pixel_format_descriptor;
-    begin
-      Result := if (ppfd<>nil) and (ppfd.Length<>0) then
-        z_GetEnhMetaFilePixelFormat_2(hemf, ppfd[0]) else
-        z_GetEnhMetaFilePixelFormat_2(hemf, Pgdi_pixel_format_descriptor(nil)^);
-    end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEnhMetaFilePixelFormat(hemf: gdi_h_enh_metafile; var ppfd: gdi_pixel_format_descriptor): UInt32 :=
-    z_GetEnhMetaFilePixelFormat_2(hemf, ppfd);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEnhMetaFilePixelFormat(hemf: gdi_h_enh_metafile; ppfd: IntPtr): UInt32 :=
-    z_GetEnhMetaFilePixelFormat_1(hemf, ppfd);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEnhMetaFilePixelFormat(hemf: gdi_h_enh_metafile; cbBuffer: UInt32; var ppfd: gdi_pixel_format_descriptor): UInt32 :=
+    z_GetEnhMetaFilePixelFormat_2(hemf, cbBuffer, ppfd);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetEnhMetaFilePixelFormat(hemf: gdi_h_enh_metafile; cbBuffer: UInt32; ppfd: IntPtr): UInt32 :=
+    z_GetEnhMetaFilePixelFormat_1(hemf, cbBuffer, ppfd);
     
     private static function z_GetPixelFormat_1(hdc: gdi_device_context): Int32;
     external 'gdi32.dll' name 'GetPixelFormat';

@@ -6205,12 +6205,11 @@
 # wglGetCurrentDC[1]:
 	gdi_device_context |
 
-# wglGetLayerPaletteEntries[3]:
-	Int32 | gdi_device_context | Int32       | Int32  | Int32    | array of gdi_colorref |
-	Int32 | gdi_device_context | Int32       | Int32  | Int32    | var gdi_colorref      |
-	Int32 | gdi_device_context | Int32       | Int32  | Int32    | IntPtr                |
-	----- | ------------------ | ----------- | ------ | -------- | --------------------- |
-	      | hdc                | iLayerPlane | iStart | cEntries | pcr                   |
+# wglGetLayerPaletteEntries[2]:
+	Int32 | gdi_device_context | Int32       | Int32  | Int32    | var gdi_colorref |
+	Int32 | gdi_device_context | Int32       | Int32  | Int32    | IntPtr           |
+	----- | ------------------ | ----------- | ------ | -------- | ---------------- |
+	      | hdc                | iLayerPlane | iStart | cEntries | pcr              |
 
 # wglGetProcAddress[2]:
 	IntPtr | string   |
@@ -6505,12 +6504,11 @@
 	----- | ------------------ | ----- | ------ | ------------------------------------ |
 	      | hdc                | ipfd  | cjpfd  | ppfd                                 |
 
-# GetEnhMetaFilePixelFormat[3]:
-	UInt32 | gdi_h_enh_metafile | array of gdi_pixel_format_descriptor |
-	UInt32 | gdi_h_enh_metafile | var gdi_pixel_format_descriptor      |
-	UInt32 | gdi_h_enh_metafile | IntPtr                               |
-	------ | ------------------ | ------------------------------------ |
-	       | hemf               | ppfd                                 |
+# GetEnhMetaFilePixelFormat[2]:
+	UInt32 | gdi_h_enh_metafile | UInt32   | var gdi_pixel_format_descriptor |
+	UInt32 | gdi_h_enh_metafile | UInt32   | IntPtr                          |
+	------ | ------------------ | -------- | ------------------------------- |
+	       | hemf               | cbBuffer | ppfd                            |
 
 # GetPixelFormat[1]:
 	Int32 | gdi_device_context |
