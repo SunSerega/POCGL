@@ -552,10 +552,10 @@
     
     private static procedure z_8BoolPtr_1(b: IntPtr);
     external 'virtual.dll' name 'v8BoolPtr';
-    private static procedure z_8BoolPtr_2(var b: boolean);
+    private static procedure z_8BoolPtr_2(var b: Byte);
     external 'virtual.dll' name 'v8BoolPtr';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 8BoolPtr(var b: boolean) :=
-    z_8BoolPtr_2(b);
+    z_8BoolPtr_2(PByte(pointer(@b))^);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 8BoolPtr(b: IntPtr) :=
     z_8BoolPtr_1(b);
     
@@ -1163,9 +1163,9 @@
     
     private z_8BoolPtr_adr := GetProcAddress('vDyn8BoolPtr');
     private z_8BoolPtr_1 := GetProcOrNil&<procedure(b: IntPtr)>(z_8BoolPtr_adr);
-    private z_8BoolPtr_2 := GetProcOrNil&<procedure(var b: boolean)>(z_8BoolPtr_adr);
+    private z_8BoolPtr_2 := GetProcOrNil&<procedure(var b: Byte)>(z_8BoolPtr_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 8BoolPtr(var b: boolean) :=
-    z_8BoolPtr_2(b);
+    z_8BoolPtr_2(PByte(pointer(@b))^);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 8BoolPtr(b: IntPtr) :=
     z_8BoolPtr_1(b);
     

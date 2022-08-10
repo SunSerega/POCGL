@@ -892,6 +892,8 @@ type
     
     /// Changes to name of var with marshaled value
     par_str := default(string);
+    /// 'abc('#0')' will call abc() func on result
+    res_par_conv := default(string);
     
     vars := new List<(string, string)>;
     init := new StringBuilder;
@@ -1451,7 +1453,7 @@ type
       {$region MiscInit}
       
       for var par_i := 1 to org_par.Length-1 do
-        if all_overloads.Any(ovr->ovr.pars.Skip(1).Any(ovr_par->ovr_par.GetTName.ToLower=org_par[par_i].name.ToLower)) then
+        if all_overloads.Any(ovr->org_par[par_i].name.ToLower in ovr.pars.Skip(1).Select(org_par->org_par.GetTName.ToLower).Append('pointer')) then
           org_par[par_i].name := '_' + org_par[par_i].name;
       
       var l_name := name;
@@ -1541,7 +1543,20 @@ type
           if par_i=0 then
           begin
             // Cannot determine array size if it is returned
-            if par.arr_lvl<>0 then raise new System.NotSupportedException;
+            if par.var_arg or (par.arr_lvl<>0) then raise new System.NotSupportedException;
+            
+            {$region boolean}
+            
+            if par.tname='boolean' then
+            begin
+              relevant_m.res_par_conv := '0<>'#0'';
+              Result.AddMarshaler(par_i, relevant_m);
+              
+              par := new FuncParamT(false, 0, 'byte');
+              relevant_m := new FuncParamMarshaler(par, initial_par_str);
+            end;
+            
+            {$endregion boolean}
             
             {$region string}
             
@@ -1556,7 +1571,7 @@ type
                 fnls += ' := Marshal.PtrToStringAnsi(';
                 fnls += str_ptr_name;
                 fnls += ');';
-                if not org_par[0].readonly then
+                if not org_par[par_i].readonly then
                 begin
                   fnls += #10;
                   fnls += 'Marshal.FreeHGlobal(';
@@ -1568,17 +1583,34 @@ type
               relevant_m.par_str := str_ptr_name;
               Result.AddMarshaler(par_i, relevant_m);
               
-              par := new FuncParamT(false, par.arr_lvl, 'IntPtr');
+              par := new FuncParamT(false, 0, 'IntPtr');
               relevant_m := new FuncParamMarshaler(par, initial_par_str);
             end;
             
             {$endregion string}
             
-          end else
+          end
           {$endregion Result}
-          
+          else
           {$region Param}
           begin
+            
+            {$region boolean}
+            
+            if (par.tname='boolean') and not par.var_arg then
+            begin
+              if par.arr_lvl<>0 then raise new System.NotImplementedException(
+                $'Func [{name}] par#{par_i} [{par}]: Standard boolean marshaling will gen in the way of copying'
+              );
+              
+              relevant_m.par_str := $'byte({relevant_m.par_str})';
+              Result.AddMarshaler(par_i, relevant_m);
+              
+              par := new FuncParamT(false, 0, 'byte');
+              relevant_m := new FuncParamMarshaler(par, initial_par_str);
+            end;
+            
+            {$endregion boolean}
             
             {$region string}
             
@@ -1733,7 +1765,10 @@ type
             
             {$region genetic}
             
-            if par.IsGeneric then
+            //TODO Instead of boolean check, parameter should have type BooleanByte
+            // - And boolean itself should be disallowed except for plain case
+            // - glAreTexturesResidentEXT rn only returns 1 value
+            if par.IsGeneric or (par.tname='boolean') then
             begin
               // Ovr's like "p<T>(o: T)" don't make sense
               if not par.var_arg then raise new System.NotSupportedException;
@@ -2030,8 +2065,14 @@ type
             wr += if need_conv[0] then md.pars[0].par_str else 'Result';
             wr += ' := ';
           end;
-          var need_call_tabs := false;
           
+          // md.pars[0] is nil if is_proc
+          // md.pars[0].res_par_conv is nil by default
+          var res_par_conv := md.pars[0]?.res_par_conv?.Split(|#0|,2);
+          if res_par_conv<>nil then
+            wr += res_par_conv[0];
+          
+          var need_call_tabs := false;
           var arr_nil_set := new MultiBooleanChoiseSet(arr_nil_pars);
           var if_used := new boolean[arr_nil_pars.Length];
           foreach var arr_nil in arr_nil_set.Enmr do
@@ -2083,7 +2124,14 @@ type
                 wr += org_par[par_i].name;
             end;
             wr += ')';
-            wr += if arr_nil.state=arr_nil_set.size-1 then ';' else ' else';
+            
+            if arr_nil.state=arr_nil_set.size-1 then
+            begin
+              if res_par_conv<>nil then
+                wr += res_par_conv[1];
+              wr += ';';
+            end else
+              wr += ' else';
             wr += #10;
             
           end;
