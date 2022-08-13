@@ -320,23 +320,24 @@ type
     begin
       var sb := new StringBuilder;
       
-      foreach var arg_t in FixerUtils.FindTemplateInsertions(l, '!', '!') do
-        if arg_t[0] then
+      foreach var (is_arg, text) in FixerUtils.FindTemplateInsertions(l, '!', '!') do
+        if not is_arg then
+          sb *= text else
         begin
-          var arg_name := arg_t[1];
-          var usage: string := nil;
+          var arg_name := text;
+          var usage := default(string);
           begin
             var ind := arg_name.IndexOf(':');
-            if ind<>-1 then
+            if not ind.IsInvalid then
             begin
-              usage := arg_name.Remove(0,ind+1);
-              arg_name := arg_name.Remove(ind);
+              usage := text.TrimFirst(ind+1).TrimWhile(char.IsWhiteSpace).ToString;
+              arg_name := arg_name.TakeFirst(ind);
             end;
           end;
+          arg_name := arg_name.TrimWhile(char.IsWhiteSpace);
           
-          ProcessSpecialDefVar(sb, arg_name, usage, debug_tn);
-        end else
-          sb += arg_t[1];
+          ProcessSpecialDefVar(sb, arg_name.ToString, usage, debug_tn);
+        end;
       
       Result := sb.ToString;
     end;

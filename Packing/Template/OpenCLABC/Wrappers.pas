@@ -79,7 +79,7 @@ begin
     loop 3 do res += '  '#10;
     
     foreach var t: TypeDescr in TypeDescr.All.Values do
-    begin  
+    begin
       var is_direct_wrap := t.base not in TypeDescr.All.Keys;
       
       var WriteGenerics := procedure->
