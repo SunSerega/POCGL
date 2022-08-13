@@ -86,6 +86,10 @@ begin
       
       {$region MakeCCQ}
       
+      res_Im += '/// %CommandQueue<';
+      res_Im += t;
+      WriteGenerics(res_Im);
+      res_Im += '>.MakeCCQ%'#10;
       res_Im += 'function MakeCCQ';
       WriteGenerics(res_Im);
       res_Im += '(self: CommandQueue<';

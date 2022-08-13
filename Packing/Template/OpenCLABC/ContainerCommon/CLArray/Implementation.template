@@ -4,6 +4,7 @@
 constructor CLArrayCCQ<T>.Create(q: CommandQueue<CLArray<T>>) := inherited;
 constructor CLArrayCCQ<T>.Create := inherited;
 
+/// %CommandQueue<CLArray<T>>.MakeCCQ%
 function MakeCCQ<T>(self: CommandQueue<CLArray<T>>): CLArrayCCQ<T>; extensionmethod; where T: record;
 begin
   Result := new CLArrayCCQ<T>(self);

@@ -53,17 +53,16 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Вместо g.GetCQ(need_async_inv) лучше хранить ивент, после которого можно будет вызывать cl.Enqueue
-// - Но порядок ивент-колбеков неопределён, поэтому надо сделать какую то магию с Interlocked
-// - Или ConcurrentQueue?
-//TODO А что если ещё один need_async_inv, пока предыдущий список ещё не выполнился
-//TODO Сейчас GetCQ вызывается перед проверкой на ошибки от ev_l1
-// - В случае need_async_inv - не знаю как это исправить без этой ConcurrentQueue
-
-//TODO Тесты:
-// - "V.WriteValue(HQFQ(raise))"
-// - "V.WriteValue(HTFQ(raise))"
-// - (отмена enq до и после cl.Enqueue)
+//TODO Улучшить систему описаний:
+// - Описание для unit
+// - Описания для extensionmethod
+// - Читабельность
+// - Проверки адекватности шаблонов
+//TODO Какой-то графический интерфейс для редактирования описаний?
+// - Упрощённое дерево файлов
+// - Читать .missing и т.п. файлы при обновлении чтобы показывать маркеры
+// - Автоматический запуск упаковки с изменениями
+// - Групировка шаблонов с кнопкой [+]
 
 //TODO После cl.Enqueue нужно в любом случае UserEvent
 // - Следующие команды игнорирует ошибку в ивенте на 2/3 реализациях, если она не в UserEvent
@@ -71,6 +70,13 @@ unit OpenCLABC;
 // - Хотя должно быть достаточно .HadError перед проверкой
 // - Или нет, если в одном ивенте ошибка, а другой всё ещё ждёт
 // - Вообще это более общая проблема... В общем надо колбек делать для (prev_ev+enq_ev), чтобы дальше не продолжать пока всё не сработает
+
+//TODO Вместо g.GetCQ(need_async_inv) лучше хранить ивент, после которого можно будет вызывать cl.Enqueue
+// - Но порядок ивент-колбеков неопределён, поэтому надо сделать какую то магию с Interlocked
+// - Или ConcurrentQueue?
+//TODO А что если ещё один need_async_inv, пока предыдущий список ещё не выполнился
+//TODO Сейчас GetCQ вызывается перед проверкой на ошибки от ev_l1
+// - В случае need_async_inv - не знаю как это исправить без этой ConcurrentQueue
 
 //TODO Пора бы почистить TODO в кодогенераторах - куча давно закрытых issue
 
@@ -83,54 +89,24 @@ unit OpenCLABC;
 // - Результат хранится в CLTask, хотя используется только в 1 выполнении CCQ
 // --- То же самое в .MultiuseFor
 
-//TODO Тесты:
-// - MU + HQPQ + MU + HQPQ + MU
-// --- Ивент от MU должно добавить только 1 раз
-// - (HQPQ(raise)+MU).Handle[ + MU]
-// --- Ивент от MU не добавляется второй раз
-// --- Поидее его добавляет первый раз, даже если ошибка
-
 //TODO Что будет если из g.ParallelInvoke выполнить что то НЕ инвокером
 // - В любом случае добавить специальные проверки адекватности на время дебага
-
-//TODO Справка:
-// - "Q1 -= Q2" вместо Q1 := Q2+Q1;
-// - "Q1 /= Q2" вместо Q1 := Q2*Q1;
-
-//TODO Wait[All/Any] => CombineWait[All/Any]
 
 //TODO Теория: Все проверки "is ConstQueue<" заведомо костыльны
 // - К примеру в try/finally надо проверять на наличие под-очередей, выполяющих код на CPU (НЕ wait)
 //TODO С другой стороны в QueueCommand нужна проверка на полную сокращённость?
 
-//TODO DetachedMarkerSignal => CommandQueueMarkedCap
 //TODO Может переименовать в Host[Proc/Func]Queue?
 
-//TODO Потоко-безопастность CCQ.AddCommand
-
-//TODO CQ().ThenUse[.Cast]
-// - Должно быть HPQ+CQ в обоих случаях
-
-//TODO Тесты:
-// - "HTPQ(raise) + CCQ" выполнялось как "HTPQ >= CCQ"
-
 //TODO Каким, всё же, считает generic KernelArg: Global или Constant?
-
-//TODO Улучшить систему описаний:
-// - Описание для unit
-// - Описания для extensionmethod
-// - Читабельность
-// - Проверки адекватности шаблонов
-//TODO Какой-то графический интерфейс для редактирования описаний?
-// - Упрощённое дерево файлов
-// - Читать .missing и т.п. файлы при обновлении чтобы показывать маркеры
-// - Автоматический запуск упаковки с изменениями
-// - Групировка шаблонов с кнопкой [+]
 
 //TODO IEnumerable<T>.Lazy[Sync,Async]ForeachQueue(CQ<T> -> CQBase)
 // - Без этого нельзя реализовать вызов очереди для каждого элемента списка с изменяющейся длиной
 // - Нет, лучше сделать CombineQueue, но принимающий "sequence of T" и "CQ<T> -> CQBase"
 //TODO Может тогда и extensionmethod, которому копируется описание?
+//TODO CLList: Как массив, но с изменяемой длиной
+//TODO Очень часто в OpenCL нужны двойные буферы: Предыдущее и новое состояние
+// - Я сейчас использую HFQ(()->state1) и HFQ(()->state2), но это очень криво
 //
 //TODO .Cycle(integer)
 //TODO .Cycle // бесконечность циклов
@@ -158,17 +134,13 @@ unit OpenCLABC;
 // - Подумать как можно сделать это красивее, чем через MU
 
 //TODO CLContext.BeingInvoke выполняется чаще, чем создание новой очереди
-//TODO Поэтому стоит хранить в очереди кеш некоторых вещей, которые сейчас вычисляются заново в .BeingInvoke
-// - Очереди, требующие инициализации, в виде списка вместо дерева
+// - Поэтому стоит хранить в очереди кеш некоторых вещей, которые сейчас вычисляются заново в .BeingInvoke
+// - Сохранять очереди, требующие инициализации, в виде списка вместо дерева
 // - MU очереди:
 // --- Количество MU очередей (capacity для inited_mu)
 // --- Количество .Invoke каждой MU очереди
 // --- Нужен ли их результат (можно ли q.InvokeToNil)
-//TODO Написать в справке что первый проход для разогрева
-
-//TODO CLList: Как массив, но с изменяемой длиной
-//TODO Очень часто в OpenCL нужны двойные буферы: Предыдущее и новое состояние
-// - Я сейчас использую HFQ(()->state1) и HFQ(()->state2), но это очень криво
+// - Написать в справке что первый проход для разогрева
 
 //TODO Если уже реализовывать поддержку "CQ<T> -> TQ"... Это сразу и альтернатива .MU?
 // - Доп переменные не нужны. Т.е. очередь можно в 1 строчку расписать:
@@ -232,36 +204,57 @@ unit OpenCLABC;
 // --- Или, можно ещё принимать void*, но тогда на стороне OpenCL-C необходимы vload/vstore функции:
 // --- https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_C.html#alignment-of-types
 
-//TODO Разделить .html справку и гайд по OpenCLABC
-//TODO github.io
-// - Разобраться почему .css не работало до 0.css, но только на github.io
-// - Добавить index.html в справки, состоящий из всего 1 страницы
-// - Гитхаб-экшн, авто-обновляющий ветку справок
-//TODO Описание модуля в .dat
-// - Исправить ссылку на справку в описании заголовка модуля
-
-//TODO Тесты и справка:
-// - (HTPQ+Par).ThenQuickUse.ThenConstConvert
+//TODO Тесты:
+//
+// - Отмена enq до и после cl.Enqueue
+// --- "V.WriteValue(HQFQ(raise))"
+// --- "V.WriteValue(HTFQ(raise))"
+//
+// - Ивент от MU должно добавить только 1 раз
+// --- MU + HQPQ + MU + HQPQ + MU
+// - Ивент от MU не добавляется второй раз
+// --- (HQPQ(raise)+MU).Handle[ + MU]
+// --- Поидее его добавляет первый раз, даже если ошибка
+//
+// - Должно быть HPQ+CQ в обоих случаях
+// --- CQ().ThenUse[.Cast]
+//
+// - Выполнялось как "HTPQ >= CCQ"
+// --- "HTPQ(raise) + CCQ"
+//
+// - need_own_thread и can_pre_calc
+// --- (HTPQ+Par).ThenQuickUse.ThenConstConvert
 
 //TODO Справка:
+// - "Q1 -= Q2" вместо Q1 := Q2+Q1;
+// - "Q1 /= Q2" вместо Q1 := Q2*Q1;
+// - Wait[All/Any] => CombineWait[All/Any]
+// - CQ<>.MakeCCQ
 // - CLKernelArg
 // - NativeArray
 // - CLValue
 // - !CL!Memory[SubSegment]
 // - Из заголовка папки простых обёрток сделать прямую ссылку в под-папку папки CLKernelArg для CL- типов
 // - CLMemoryUsage
+// - CQ<byte>.Cast<byte?>
+// - Properties.ToString
+// - need_own_thread и can_pre_calc
+// --- (HTPQ+Par).ThenQuickUse.ThenConstConvert
 // - new CLValue<byte>(new CLMemorySubSegment(cl_a))
 // --- CLArray и CLValue неявно конвертируются в CLMemory
 // --- И их можно создать назад конструктором
-//
 // - Описать и в процессе перепродумать логику, почему CommandQueue<CommandQueue<>> не только не эффективно, но и не может понадобится
-//
-// - CQ<byte>.Cast<byte?>
-//
-// - Properties.ToString
+//TODO Разделить .html справку и гайд по OpenCLABC
+// - Исправить ссылку на справку в описании заголовка модуля
+//TODO github.io
+// - Разобраться почему .css не работало до 0.css, но только на github.io
+// - Добавить index.html в справки, состоящий из всего 1 страницы
+// - Гитхаб-экшн, авто-обновляющий ветку справок
 
 //===================================
 // Запланированное:
+
+//TODO Потоко-безопастность CCQ.AddCommand
 
 //TODO Комментарии "Использовано в" энумам н.у. модулей
 //TODO OpenCL: Объединить SamplePattern
@@ -715,7 +708,7 @@ type
     end;
     public property ManagedCopy: array of T read GetManagedCopy write
     begin
-      if value.Length<>self.item_count then raise new ArgumentException($'');
+      if value.Length<>self.item_count then raise new ArgumentException($'%Err:NativeArrayArea:ManagedCopy:WriteSize%');
       self.UntypedArea.CopyFrom(value);
     end;
     
@@ -2954,7 +2947,7 @@ type
     {$region constructor's}
     
     private static procedure CheckMainDevice(main_dvc: CLDevice; dvc_lst: IList<CLDevice>) :=
-    if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'');
+    if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'%Err:CLContext:WrongMainDvc%');
     
     public constructor(dvcs: IList<CLDevice>; main_dvc: CLDevice);
     begin
@@ -3204,7 +3197,7 @@ type
         WL_Ignore:  res += '-w ';
         WL_Warn:    ;
         WL_Error:   res += '-Werror ';
-        else raise new System.ArgumentException($'');
+        else raise new System.ArgumentException($'%Err:ProgramOptions:WarningLevel:Invalid%');
       end;
       
       if Version<>nil then
@@ -3449,7 +3442,7 @@ type
         OpenCLABCInternalException.RaiseIfError(ec) else
         CheckBuildFail(Result,
           ec, ErrorCode.LINK_PROGRAM_FAILURE,
-          $'', opt.BuildContext.AllDevices
+          $'%Err:CLCode:BuildFail:Link%', opt.BuildContext.AllDevices
         );
       
     end;
@@ -3491,7 +3484,7 @@ type
       
       CheckBuildFail(self.ntv,
         ec, ErrorCode.COMPILE_PROGRAM_FAILURE,
-        $'', opt.BuildContext.AllDevices
+        $'%Err:CLCode:BuildFail:Compile%', opt.BuildContext.AllDevices
       );
       
       if opt.KeepLog then SaveLogsFor(opt.BuildContext.AllDevices);
@@ -3563,7 +3556,7 @@ type
       
       CheckBuildFail(self.ntv,
         ec, ErrorCode.BUILD_PROGRAM_FAILURE,
-        $'', opt.BuildContext.AllDevices
+        $'%Err:CLCode:BuildFail:Compile%', opt.BuildContext.AllDevices
       );
       
       if opt.KeepLog then SaveLogsFor(opt.BuildContext.AllDevices);
@@ -3628,12 +3621,12 @@ type
         if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
           general_pt := pt else
         if general_pt<>pt then
-          raise new NotSupportedException($'');
+          raise new NotSupportedException($'%BinCLCode:Deserialize:ProgramBinaryType:Different%');
         
       end;
       
       if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
-        raise new NotSupportedException($'') else
+        raise new NotSupportedException($'%BinCLCode:Deserialize:ProgramBinaryType:Missing%') else
       if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_COMPILED_OBJECT then
         Result := new CLCompCode(ntv,false) else
       if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_LIBRARY then
@@ -3778,7 +3771,7 @@ type
       
       case kernel_use.data of
         none_bits:
-          raise new ArgumentException($'');
+          raise new ArgumentException($'%Err:CLMemoryUsage:NoCLKernelAccess%');
         can_read_bit:
           Result := MemFlags.MEM_READ_ONLY;
         can_write_bit:
@@ -3786,7 +3779,7 @@ type
         read_write_bits:
           Result := MemFlags.MEM_READ_WRITE;
         else
-          raise new ArgumentException($'');
+          raise new ArgumentException($'%Err:CLMemoryUsage:Invalid%');
       end;
       
       case map_use.data of
@@ -3799,7 +3792,7 @@ type
         read_write_bits:
           ;
         else
-          raise new ArgumentException($'');
+          raise new ArgumentException($'%Err:CLMemoryUsage:Invalid%');
       end;
       
     end;
@@ -4264,18 +4257,15 @@ type
     ///Заполняет область памяти копиями указанного массива
     public function FillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemory; where TRecord: record;
     
-    ///Заполняет область памяти копиями указанного массива
-    public function FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного массива
-    public function FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
-    
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
     ///el_count указывает кол-во задействованных элементов массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
     public function FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного массива
+    public function FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
@@ -4287,6 +4277,9 @@ type
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
     public function FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного массива
+    public function FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
@@ -5362,7 +5355,7 @@ type
     private function Split(params props: array of DevicePartitionProperty): array of CLSubDevice;
     begin
       if not GetSSM.Contains(props[0]) then
-        raise new NotSupportedException($'');
+        raise new NotSupportedException($'%Err:CLDevice:SplitNotSupported%');
       
       var c: UInt32;
       OpenCLABCInternalException.RaiseIfError( cl.CreateSubDevices(self.ntv, props, 0, IntPtr.Zero, c) );
@@ -5376,7 +5369,7 @@ type
     public property CanSplitEqually: boolean read DevicePartitionProperty.DEVICE_PARTITION_EQUALLY in GetSSM;
     public function SplitEqually(CUCount: integer): array of CLSubDevice;
     begin
-      if CUCount <= 0 then raise new ArgumentException($'');
+      if CUCount <= 0 then raise new ArgumentException($'%Err:CLDevice:SplitCUCount%');
       Result := Split(
         DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
         DevicePartitionProperty.Create(CUCount),
@@ -5388,7 +5381,7 @@ type
     public function SplitByCounts(params CUCounts: array of integer): array of CLSubDevice;
     begin
       foreach var CUCount in CUCounts do
-        if CUCount <= 0 then raise new ArgumentException($'');
+        if CUCount <= 0 then raise new ArgumentException($'%Err:CLDevice:SplitCUCount%');
       
       var props := new DevicePartitionProperty[CUCounts.Length+2];
       props[0] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS;
@@ -6031,48 +6024,34 @@ type
     
   end;
   
-  ///Представляет оторванный сигнал маркера, являющийся обёрткой очереди без возвращаемого значения
-  ///Данный тип не является маркером, но преобразуется в него при передаче в Wait-очереди
-  DetachedMarkerSignalNil = sealed partial class
+  CommandQueueMarkedCapNil = sealed partial class
     
     private function get_signal_in_finally: boolean;
-    ///Указывает, будут ли проигнорированы ошибки выполнения исходной очереди при автоматическом вызове .SendSignal
     public property SignalInFinally: boolean read get_signal_in_finally;
     
-    ///Создаёт новый оторванный сигнал маркера
-    ///При выполнении сначала будет выполнена очередь q, а затем метод .SendSignal
-    ///signal_in_finally указывает, будут ли проигнорированы ошибки выполнения q при автоматическом вызове .SendSignal
     public constructor(q: CommandQueueNil; signal_in_finally: boolean);
     private constructor := raise new OpenCLABCInternalException;
     
-    public static function operator implicit(dms: DetachedMarkerSignalNil): WaitMarker;
+    public static function operator implicit(dms: CommandQueueMarkedCapNil): WaitMarker;
     
-    ///Посылает сигнал выполненности всем ожидающим Wait очередям
     public procedure SendSignal := WaitMarker(self).SendSignal;
-    public static function operator and(m1, m2: DetachedMarkerSignalNil) := WaitMarker(m1) and WaitMarker(m2);
-    public static function operator or(m1, m2: DetachedMarkerSignalNil) := WaitMarker(m1) or WaitMarker(m2);
+    public static function operator and(m1, m2: CommandQueueMarkedCapNil) := WaitMarker(m1) and WaitMarker(m2);
+    public static function operator or(m1, m2: CommandQueueMarkedCapNil) := WaitMarker(m1) or WaitMarker(m2);
     
   end;
-  ///Представляет оторванный сигнал маркера, являющийся обёрткой очереди с возвращаемым значением
-  ///Данный тип не является маркером, но преобразуется в него при передаче в Wait-очереди
-  DetachedMarkerSignal<T> = sealed partial class
+  CommandQueueMarkedCap<T> = sealed partial class
     
     private function get_signal_in_finally: boolean;
-    ///Указывает, будут ли проигнорированы ошибки выполнения исходной очереди при автоматическом вызове .SendSignal
     public property SignalInFinally: boolean read get_signal_in_finally;
     
-    ///Создаёт новый оторванный сигнал маркера
-    ///При выполнении сначала будет выполнена очередь q, а затем метод .SendSignal
-    ///signal_in_finally указывает, будут ли проигнорированы ошибки выполнения q при автоматическом вызове .SendSignal
     public constructor(q: CommandQueue<T>; signal_in_finally: boolean);
     private constructor := raise new OpenCLABCInternalException;
     
-    public static function operator implicit(dms: DetachedMarkerSignal<T>): WaitMarker;
+    public static function operator implicit(dms: CommandQueueMarkedCap<T>): WaitMarker;
     
-    ///Посылает сигнал выполненности всем ожидающим Wait очередям
     public procedure SendSignal := WaitMarker(self).SendSignal;
-    public static function operator and(m1, m2: DetachedMarkerSignal<T>) := WaitMarker(m1) and WaitMarker(m2);
-    public static function operator or(m1, m2: DetachedMarkerSignal<T>) := WaitMarker(m1) or WaitMarker(m2);
+    public static function operator and(m1, m2: CommandQueueMarkedCap<T>) := WaitMarker(m1) and WaitMarker(m2);
+    public static function operator or(m1, m2: CommandQueueMarkedCap<T>) := WaitMarker(m1) or WaitMarker(m2);
     
   end;
   
@@ -6086,11 +6065,11 @@ type
     ///Создаёт очередь, сначала выполняющую данную, а затем вызывающую свой .SendSignal
     ///При передаче в Wait-очереди, полученная очередь превращается в маркер
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
-    public function ThenMarkerSignal := new DetachedMarkerSignalNil(self, false);
+    public function ThenMarkerSignal := new CommandQueueMarkedCapNil(self, false);
     ///Создаёт очередь, сначала выполняющую данную, а затем вызывающую свой .SendSignal не зависимо от исключений при выполнении данной очереди
     ///При передаче в Wait-очереди, полученная очередь превращается в маркер
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
-    public function ThenFinallyMarkerSignal := new DetachedMarkerSignalNil(self, true);
+    public function ThenFinallyMarkerSignal := new CommandQueueMarkedCapNil(self, true);
     
   end;
   ///Представляет очередь команд, в основном выполняемых на GPU
@@ -6100,11 +6079,11 @@ type
     ///Создаёт очередь, сначала выполняющую данную, а затем вызывающую свой .SendSignal
     ///При передаче в Wait-очереди, полученная очередь превращается в маркер
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
-    public function ThenMarkerSignal := new DetachedMarkerSignal<T>(self, false);
+    public function ThenMarkerSignal := new CommandQueueMarkedCap<T>(self, false);
     ///Создаёт очередь, сначала выполняющую данную, а затем вызывающую свой .SendSignal не зависимо от исключений при выполнении данной очереди
     ///При передаче в Wait-очереди, полученная очередь превращается в маркер
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
-    public function ThenFinallyMarkerSignal := new DetachedMarkerSignal<T>(self, true);
+    public function ThenFinallyMarkerSignal := new CommandQueueMarkedCap<T>(self, true);
     
     ///Создаёт очередь, сначала выполняющую данную, а затем ожидающую сигнала от указанного маркера
     ///В конце выполнения созданная очередь возвращает то, что вернула данная
@@ -6619,18 +6598,15 @@ type
     ///Заполняет область памяти копиями указанного массива
     public function ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemoryCCQ; where TRecord: record;
     
-    ///Заполняет область памяти копиями указанного массива
-    public function ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
-    
-    ///Заполняет область памяти копиями указанного массива
-    public function ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
-    
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
     ///el_count указывает кол-во задействованных элементов массива
     ///mem_offset указывает отступ от начала области памяти, в байтах
     ///fill_byte_len указывает кол-во заливаемых байт
     public function ThenFillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного массива
+    public function ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
@@ -6642,6 +6618,9 @@ type
     ///Это значит что, к примеру, чтение 4 элементов 2-х мерного массива начиная с индекса [0,1] прочитает элементы [0,1], [0,2], [1,0], [1,1]
     ///Для чтения частей из нескольких строк массива - делайте несколько операций чтения, по 1 на строку
     public function ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
+    ///Заполняет область памяти копиями указанного массива
+    public function ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
     
     ///Заполняет область памяти копиями указанного участка массива
     ///a_ind(-ы) указывают индекс первого задействованного элемента массива
@@ -7911,15 +7890,11 @@ function HPQ(p: CLContext->(); need_own_thread: boolean := true): CommandQueueNi
 
 {$region Wait}
 
-///Создаёт маркер-комбинацию, который активируется когда активированы каждых из указанных маркеров
-function WaitAll(params sub_markers: array of WaitMarker): WaitMarker;
-///Создаёт маркер-комбинацию, который активируется когда активированы каждых из указанных маркеров
-function WaitAll(sub_markers: sequence of WaitMarker): WaitMarker;
+function CombineWaitAll(params sub_markers: array of WaitMarker): WaitMarker;
+function CombineWaitAll(sub_markers: sequence of WaitMarker): WaitMarker;
 
-///Создаёт маркер-комбинацию, который активируется когда активированы любого из указанных маркеров
-function WaitAny(params sub_markers: array of WaitMarker): WaitMarker;
-///Создаёт маркер-комбинацию, который активируется когда активированы любого из указанных маркеров
-function WaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
+function CombineWaitAny(params sub_markers: array of WaitMarker): WaitMarker;
+function CombineWaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
 
 ///Создаёт очередь, ожидающую сигнала выполненности от заданного маркера
 function WaitFor(marker: WaitMarker): CommandQueueNil;
@@ -8179,10 +8154,10 @@ type
   end;
   
 static constructor NativeValueArea<T>.Create :=
-BlittableHelper.RaiseIfBad(typeof(T), $'');
+BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:NativeValue[Area]%');
 
 static constructor NativeArrayArea<T>.Create :=
-BlittableHelper.RaiseIfBad(typeof(T), $'');
+BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:NativeArray[Area]%');
 
 {$endregion Blittable}
 
@@ -10658,7 +10633,7 @@ type
         0:
         if CQNil is TQ(var res) then
           Result := res else
-          raise new System.ArgumentException('');
+          raise new System.ArgumentException('%Err:QueueArrayUtils:EmptyNotAllowed%');
         1:
           Result := TQ(qs[0]);
         else
@@ -13814,7 +13789,7 @@ type
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override;
     begin
       Result := nil;
-      raise new OpenCLABCInternalException($'');
+      raise new OpenCLABCInternalException($'%Err:Invoke:InvalidToPtr%');
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -14686,7 +14661,7 @@ type
     end;
     
     public procedure SendSignal; override :=
-    raise new System.InvalidProgramException($'');
+    raise new System.InvalidProgramException($'%Err:WaitMarkerCombination.SendSignal%');
     
     {$endregion Disabled override's}
     
@@ -15046,7 +15021,7 @@ type
     
   end;
   
-function WaitAll(sub_markers: sequence of WaitMarker): WaitMarker;
+function CombineWaitAll(sub_markers: sequence of WaitMarker): WaitMarker;
 begin
   var prev := |new WaitMarkerAllFast(0)| as IList<WaitMarkerAllFast>;
   var next := new List<WaitMarkerAllFast>;
@@ -15077,9 +15052,9 @@ begin
   
   Result := WaitMarkerAllFast.MarkerFromLst(prev);
 end;
-function WaitAll(params sub_markers: array of WaitMarker) := WaitAll(sub_markers.AsEnumerable);
+function CombineWaitAll(params sub_markers: array of WaitMarker) := CombineWaitAll(sub_markers.AsEnumerable);
 
-function WaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
+function CombineWaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
 begin
   var res := new List<WaitMarkerAllFast>;
   foreach var m in sub_markers do
@@ -15096,10 +15071,10 @@ begin
     end;
   Result := WaitMarkerAllFast.MarkerFromLst(res);
 end;
-function WaitAny(params sub_markers: array of WaitMarker) := WaitAny(sub_markers.AsEnumerable);
+function CombineWaitAny(params sub_markers: array of WaitMarker) := CombineWaitAny(sub_markers.AsEnumerable);
 
-static function WaitMarker.operator and(m1, m2: WaitMarker) := WaitAll(|m1, m2|);
-static function WaitMarker.operator or(m1, m2: WaitMarker) := WaitAny(|m1, m2|);
+static function WaitMarker.operator and(m1, m2: WaitMarker) := CombineWaitAll(|m1, m2|);
+static function WaitMarker.operator or(m1, m2: WaitMarker) := CombineWaitAny(|m1, m2|);
 
 {$endregion public}
 
@@ -15159,7 +15134,7 @@ static function WaitMarker.Create := new WaitMarkerDummy;
 {$region ThenMarkerSignal}
 
 type
-  DetachedMarkerSignalWrapper<TQ> = sealed class(WaitMarkerDirect)
+  CommandQueueMarkedCapWrapper<TQ> = sealed class(WaitMarkerDirect)
   where TQ: CommandQueueBase;
     protected org: TQ;
     
@@ -15180,13 +15155,13 @@ type
     
   end;
   
-  DetachedMarkerSignalCommon<TQ> = record
+  CommandQueueMarkedCapCommon<TQ> = record
   where TQ: CommandQueueBase;
     public q: TQ;
-    public wrap: DetachedMarkerSignalWrapper<TQ>;
+    public wrap: CommandQueueMarkedCapWrapper<TQ>;
     public signal_in_finally: boolean;
     
-    public procedure Init(q: TQ; wrap: DetachedMarkerSignalWrapper<TQ>; signal_in_finally: boolean);
+    public procedure Init(q: TQ; wrap: CommandQueueMarkedCapWrapper<TQ>; signal_in_finally: boolean);
     begin
       self.q := q;
       self.wrap := wrap;
@@ -15229,8 +15204,8 @@ type
     
   end;
   
-  DetachedMarkerSignalNil = sealed partial class(CommandQueueNil)
-    data: DetachedMarkerSignalCommon<CommandQueueNil>;
+  CommandQueueMarkedCapNil = sealed partial class(CommandQueueNil)
+    data: CommandQueueMarkedCapCommon<CommandQueueNil>;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := data.InitBeforeInvoke(g, inited_mu);
     
@@ -15241,8 +15216,8 @@ type
     
   end;
   
-  DetachedMarkerSignal<T> = sealed partial class(CommandQueue<T>)
-    data: DetachedMarkerSignalCommon<CommandQueue<T>>;
+  CommandQueueMarkedCap<T> = sealed partial class(CommandQueue<T>)
+    data: CommandQueueMarkedCapCommon<CommandQueue<T>>;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := data.InitBeforeInvoke(g, inited_mu);
     
@@ -15255,22 +15230,22 @@ type
     
   end;
   
-function DetachedMarkerSignalNil.get_signal_in_finally := data.signal_in_finally;
-function DetachedMarkerSignal<T>.get_signal_in_finally := data.signal_in_finally;
+function CommandQueueMarkedCapNil.get_signal_in_finally := data.signal_in_finally;
+function CommandQueueMarkedCap<T>.get_signal_in_finally := data.signal_in_finally;
 
-constructor DetachedMarkerSignalNil.Create(q: CommandQueueNil; signal_in_finally: boolean);
+constructor CommandQueueMarkedCapNil.Create(q: CommandQueueNil; signal_in_finally: boolean);
 begin
-  data.Init(q, new DetachedMarkerSignalWrapper<CommandQueueNil>(self), signal_in_finally);
+  data.Init(q, new CommandQueueMarkedCapWrapper<CommandQueueNil>(self), signal_in_finally);
 end;
-constructor DetachedMarkerSignal<T>.Create(q: CommandQueue<T>; signal_in_finally: boolean);
+constructor CommandQueueMarkedCap<T>.Create(q: CommandQueue<T>; signal_in_finally: boolean);
 begin
-  data.Init(q, new DetachedMarkerSignalWrapper<CommandQueue<T>>(self), signal_in_finally);
+  data.Init(q, new CommandQueueMarkedCapWrapper<CommandQueue<T>>(self), signal_in_finally);
   self.const_res_dep      := q.const_res_dep;
   self.expected_const_res := q.expected_const_res;
 end;
 
-static function DetachedMarkerSignalNil.operator implicit(dms: DetachedMarkerSignalNil) := dms.data.wrap;
-static function DetachedMarkerSignal<T>.operator implicit(dms: DetachedMarkerSignal<T>) := dms.data.wrap;
+static function CommandQueueMarkedCapNil.operator implicit(dms: CommandQueueMarkedCapNil) := dms.data.wrap;
+static function CommandQueueMarkedCap<T>.operator implicit(dms: CommandQueueMarkedCap<T>) := dms.data.wrap;
 
 {$endregion ThenMarkerSignal}
 
@@ -16082,7 +16057,7 @@ type
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override;
     begin
       Result := nil;
-      raise new OpenCLABCInternalException($'');
+      raise new OpenCLABCInternalException($'%Err:Invoke:InvalidToPtr%');
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -16123,6 +16098,7 @@ type
 constructor CLKernelCCQ.Create(q: CommandQueue<CLKernel>) := inherited;
 constructor CLKernelCCQ.Create := inherited;
 
+/// %CommandQueue<CLKernel>.MakeCCQ%
 function MakeCCQ(self: CommandQueue<CLKernel>): CLKernelCCQ; extensionmethod;
 begin
   Result := new CLKernelCCQ(self);
@@ -16158,6 +16134,7 @@ type
 constructor CLMemoryCCQ.Create(q: CommandQueue<CLMemory>) := inherited;
 constructor CLMemoryCCQ.Create := inherited;
 
+/// %CommandQueue<CLMemory>.MakeCCQ%
 function MakeCCQ(self: CommandQueue<CLMemory>): CLMemoryCCQ; extensionmethod;
 begin
   Result := new CLMemoryCCQ(self);
@@ -16193,6 +16170,7 @@ type
 constructor CLValueCCQ<T>.Create(q: CommandQueue<CLValue<T>>) := inherited;
 constructor CLValueCCQ<T>.Create := inherited;
 
+/// %CommandQueue<CLValue<T>>.MakeCCQ%
 function MakeCCQ<T>(self: CommandQueue<CLValue<T>>): CLValueCCQ<T>; extensionmethod; where T: record;
 begin
   Result := new CLValueCCQ<T>(self);
@@ -16228,6 +16206,7 @@ type
 constructor CLArrayCCQ<T>.Create(q: CommandQueue<CLArray<T>>) := inherited;
 constructor CLArrayCCQ<T>.Create := inherited;
 
+/// %CommandQueue<CLArray<T>>.MakeCCQ%
 function MakeCCQ<T>(self: CommandQueue<CLArray<T>>): CLArrayCCQ<T>; extensionmethod; where T: record;
 begin
   Result := new CLArrayCCQ<T>(self);
@@ -16749,14 +16728,14 @@ static function CLKernelArgLocal.FromBytes(bytes: CommandQueue<UIntPtr>) := new 
 
 static function CLKernelArgLocal.FromItemCount<T>(item_count: CommandQueue<UInt32>): CLKernelArgLocal; where T: record;
 begin
-  BlittableHelper.RaiseIfBad(typeof(T), '');
+  BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:CLKernelArgLocal:ItemCount%');
   Result := FromBytes(item_count.ThenConvert(item_count->new UIntPtr(
     uint64(Marshal.Sizeof(default(T)))*UInt32(item_count)
   ), false,true));
 end;
 static function CLKernelArgLocal.FromItemCount<T>(item_count: CommandQueue<Int32>): CLKernelArgLocal; where T: record;
 begin
-  BlittableHelper.RaiseIfBad(typeof(T), '');
+  BlittableHelper.RaiseIfBad(typeof(T), '%Err:Blittable:Source:CLKernelArgLocal:ItemCount%');
   Result := FromBytes(item_count.ThenConvert(item_count->new UIntPtr(
     uint64(Marshal.Sizeof(default(T)))*UInt32(item_count)
   ), false,true));
@@ -16788,7 +16767,7 @@ type
   where T: record;
     private data: CLKernelArgPrivateCommon<array of T>;
     
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:Array%');
     
     public constructor(a: CommandQueue<array of T>) :=
     data := new CLKernelArgPrivateCommon<array of T>(a);
@@ -16827,7 +16806,7 @@ type
   where T: record;
     private data: CLKernelArgPrivateCommon<array[,] of T>;
     
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:Array2%');
     
     public constructor(a2: CommandQueue<array[,] of T>) :=
     data := new CLKernelArgPrivateCommon<array[,] of T>(a2);
@@ -16866,7 +16845,7 @@ type
   where T: record;
     private data: CLKernelArgPrivateCommon<array[,,] of T>;
     
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:Array3%');
     
     public constructor(a3: CommandQueue<array[,,] of T>) :=
     data := new CLKernelArgPrivateCommon<array[,,] of T>(a3);
@@ -16905,7 +16884,7 @@ type
   where T: record;
     private data: CLKernelArgPrivateCommon<ArraySegment<T>>;
     
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:ArraySegment%');
     
     public constructor(seg: CommandQueue<ArraySegment<T>>) :=
     data := new CLKernelArgPrivateCommon<ArraySegment<T>>(seg);
@@ -16983,7 +16962,7 @@ type
   where T: record;
     private data: CLKernelArgPrivateCommon<NativeValueArea<T>>;
     
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:NativeValueArea%');
     
     public constructor(ntv_val_area: CommandQueue<NativeValueArea<T>>) :=
     data := new CLKernelArgPrivateCommon<NativeValueArea<T>>(ntv_val_area);
@@ -17022,7 +17001,7 @@ type
   where T: record;
     private data: CLKernelArgPrivateCommon<NativeArrayArea<T>>;
     
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:NativeArrayArea%');
     
     public constructor(ntv_arr_area: CommandQueue<NativeArrayArea<T>>) :=
     data := new CLKernelArgPrivateCommon<NativeArrayArea<T>>(ntv_arr_area);
@@ -17100,7 +17079,7 @@ type
   where T: record;
     private data: CLKernelArgPrivateCommon<NativeValue<T>>;
     
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:NativeValue%');
     
     public constructor(ntv_val: CommandQueue<NativeValue<T>>) :=
     data := new CLKernelArgPrivateCommon<NativeValue<T>>(ntv_val);
@@ -17139,7 +17118,7 @@ type
   where T: record;
     private data: CLKernelArgPrivateCommon<NativeArray<T>>;
     
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:NativeArray%');
     
     public constructor(ntv_arr: CommandQueue<NativeArray<T>>) :=
     data := new CLKernelArgPrivateCommon<NativeArray<T>>(ntv_arr);
@@ -17180,7 +17159,7 @@ type
   where T: record;
     private data: CLKernelArgPrivateCommon<T>;
     
-    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'');
+    static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:Value%');
     
     public constructor(val: CommandQueue<T>) :=
     data := new CLKernelArgPrivateCommon<T>(val);
@@ -18714,24 +18693,24 @@ begin
   Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray1&<TRecord>(a));
 end;
 
-function CLMemory.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
-begin
-  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray2&<TRecord>(a));
-end;
-
-function CLMemory.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
-begin
-  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray3&<TRecord>(a));
-end;
-
 function CLMemory.FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray1&<TRecord>(a, a_ind, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
+function CLMemory.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
+begin
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray2&<TRecord>(a));
+end;
+
 function CLMemory.FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray2&<TRecord>(a, a_ind1, a_ind2, pattern_byte_len, mem_offset, fill_byte_len));
+end;
+
+function CLMemory.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
+begin
+  Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray3&<TRecord>(a));
 end;
 
 function CLMemory.FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
@@ -21353,7 +21332,7 @@ type
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:WriteNativeValueArea%');
     end;
     public constructor(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>);
     begin
@@ -21523,7 +21502,7 @@ type
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:WriteNativeArrayArea%');
     end;
     public constructor(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>);
     begin
@@ -21853,7 +21832,7 @@ type
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:ReadNativeValueArea%');
     end;
     public constructor(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset: CommandQueue<integer>);
     begin
@@ -22023,7 +22002,7 @@ type
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:ReadNativeArrayArea%');
     end;
     public constructor(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset: CommandQueue<integer>);
     begin
@@ -22622,7 +22601,6 @@ type
         
         var res_ev: cl_event;
         
-        //TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
           a[0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
@@ -22658,166 +22636,6 @@ begin
 end;
 
 {$endregion FillArray1!AutoSize}
-
-{$region FillArray2!AutoSize}
-
-type
-  CLMemoryCommandFillArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
-  where TRecord: record;
-    private a: CommandQueue<array[,] of TRecord>;
-    
-    protected function ExpectedEnqCount: integer; override := 1;
-    
-    static constructor;
-    begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
-    end;
-    public constructor(a: CommandQueue<array[,] of TRecord>);
-    begin
-      self.a := a;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
-    begin
-      a.InitBeforeInvoke(g, prev_hubs);
-    end;
-    
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLMemory>; override;
-    begin
-      var a_qr: QueueRes<array[,] of TRecord>;
-      
-      var l1_err_handler: CLTaskErrHandler;
-      g.ParallelInvoke(nil, enq_c, invoker->
-      begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
-      end);
-      Result.Item1 := l1_err_handler;
-      
-      Result.Item2 := (o, cq, evs)->
-      begin
-        var a := a_qr.GetResDirect;
-        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-        
-        var res_ev: cl_event;
-        
-        //TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize
-        var ec := cl.EnqueueFillBuffer(
-          cq, o.Native,
-          a[0,0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
-          UIntPtr.Zero, o.Size,
-          evs.count, evs.evs, res_ev
-        );
-        OpenCLABCInternalException.RaiseIfError(ec);
-        
-        Result := new DirectEnqRes(res_ev, c->
-        begin
-          a_hnd.Free;
-        end);
-      end;
-      
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'a:';
-      sb += ' ';
-      a.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function CLMemoryCCQ.ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
-begin
-  Result := AddCommand(self, new CLMemoryCommandFillArray2AutoSize<TRecord>(a));
-end;
-
-{$endregion FillArray2!AutoSize}
-
-{$region FillArray3!AutoSize}
-
-type
-  CLMemoryCommandFillArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
-  where TRecord: record;
-    private a: CommandQueue<array[,,] of TRecord>;
-    
-    protected function ExpectedEnqCount: integer; override := 1;
-    
-    static constructor;
-    begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
-    end;
-    public constructor(a: CommandQueue<array[,,] of TRecord>);
-    begin
-      self.a := a;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
-    begin
-      a.InitBeforeInvoke(g, prev_hubs);
-    end;
-    
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLMemory>; override;
-    begin
-      var a_qr: QueueRes<array[,,] of TRecord>;
-      
-      var l1_err_handler: CLTaskErrHandler;
-      g.ParallelInvoke(nil, enq_c, invoker->
-      begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
-      end);
-      Result.Item1 := l1_err_handler;
-      
-      Result.Item2 := (o, cq, evs)->
-      begin
-        var a := a_qr.GetResDirect;
-        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-        
-        var res_ev: cl_event;
-        
-        //TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize
-        var ec := cl.EnqueueFillBuffer(
-          cq, o.Native,
-          a[0,0,0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
-          UIntPtr.Zero, o.Size,
-          evs.count, evs.evs, res_ev
-        );
-        OpenCLABCInternalException.RaiseIfError(ec);
-        
-        Result := new DirectEnqRes(res_ev, c->
-        begin
-          a_hnd.Free;
-        end);
-      end;
-      
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'a:';
-      sb += ' ';
-      a.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function CLMemoryCCQ.ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
-begin
-  Result := AddCommand(self, new CLMemoryCommandFillArray3AutoSize<TRecord>(a));
-end;
-
-{$endregion FillArray3!AutoSize}
 
 {$region FillArray1}
 
@@ -22941,6 +22759,85 @@ begin
 end;
 
 {$endregion FillArray1}
+
+{$region FillArray2!AutoSize}
+
+type
+  CLMemoryCommandFillArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
+  where TRecord: record;
+    private a: CommandQueue<array[,] of TRecord>;
+    
+    protected function ExpectedEnqCount: integer; override := 1;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
+    public constructor(a: CommandQueue<array[,] of TRecord>);
+    begin
+      self.a := a;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
+    begin
+      a.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLMemory>; override;
+    begin
+      var a_qr: QueueRes<array[,] of TRecord>;
+      
+      var l1_err_handler: CLTaskErrHandler;
+      g.ParallelInvoke(nil, enq_c, invoker->
+      begin
+        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
+        l1_err_handler := invoker.GroupHandlers;
+      end);
+      Result.Item1 := l1_err_handler;
+      
+      Result.Item2 := (o, cq, evs)->
+      begin
+        var a := a_qr.GetResDirect;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          a[0,0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
+          UIntPtr.Zero, o.Size,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, c->
+        begin
+          a_hnd.Free;
+        end);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'a:';
+      sb += ' ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemoryCCQ.ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
+begin
+  Result := AddCommand(self, new CLMemoryCommandFillArray2AutoSize<TRecord>(a));
+end;
+
+{$endregion FillArray2!AutoSize}
 
 {$region FillArray2}
 
@@ -23075,6 +22972,85 @@ begin
 end;
 
 {$endregion FillArray2}
+
+{$region FillArray3!AutoSize}
+
+type
+  CLMemoryCommandFillArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
+  where TRecord: record;
+    private a: CommandQueue<array[,,] of TRecord>;
+    
+    protected function ExpectedEnqCount: integer; override := 1;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), 'записывать в область памяти OpenCL');
+    end;
+    public constructor(a: CommandQueue<array[,,] of TRecord>);
+    begin
+      self.a := a;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
+    begin
+      a.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLMemory>; override;
+    begin
+      var a_qr: QueueRes<array[,,] of TRecord>;
+      
+      var l1_err_handler: CLTaskErrHandler;
+      g.ParallelInvoke(nil, enq_c, invoker->
+      begin
+        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
+        l1_err_handler := invoker.GroupHandlers;
+      end);
+      Result.Item1 := l1_err_handler;
+      
+      Result.Item2 := (o, cq, evs)->
+      begin
+        var a := a_qr.GetResDirect;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          a[0,0,0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
+          UIntPtr.Zero, o.Size,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, c->
+        begin
+          a_hnd.Free;
+        end);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'a:';
+      sb += ' ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemoryCCQ.ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
+begin
+  Result := AddCommand(self, new CLMemoryCommandFillArray3AutoSize<TRecord>(a));
+end;
+
+{$endregion FillArray3!AutoSize}
 
 {$region FillArray3}
 
@@ -24062,7 +24038,7 @@ type
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:FillNativeValueAreaAutoSize%');
     end;
     public constructor(native_data: CommandQueue<NativeValueArea<TRecord>>);
     begin
@@ -24139,7 +24115,7 @@ type
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:FillNativeValueArea%');
     end;
     public constructor(native_data: CommandQueue<NativeValueArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>);
     begin
@@ -24406,7 +24382,7 @@ type
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:FillNativeArrayAreaAutoSize%');
     end;
     public constructor(native_data: CommandQueue<NativeArrayArea<TRecord>>);
     begin
@@ -24483,7 +24459,7 @@ type
     
     static constructor;
     begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '');
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:FillNativeArrayArea%');
     end;
     public constructor(native_data: CommandQueue<NativeArrayArea<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>);
     begin
@@ -35409,7 +35385,7 @@ end;
 static procedure CLContext.GenerateAndCheckDefault(test_size: integer; test_max_seconds: real);
 begin
   if Interlocked.CompareExchange(default_was_inited, 1, 0)<>0 then
-    raise new System.InvalidOperationException($'');
+    raise new System.InvalidOperationException($'%CLContext:GenerateAndCheckDefault:NotFirst%');
   
   var test_prog := 'kernel void k(global int* v) { v[get_global_id(0)]++; }';
   var test_max_time := TimeSpan.FromSeconds(test_max_seconds);
@@ -35422,10 +35398,10 @@ begin
     var test_arr := ArrGen(test_size, i->rng.Next);
      Q_Test :=
        CLKernelCCQ.Create(P_Prog.ThenConvert(p->p['k'], false, true))
-         .ThenExec1(test_size, CLArrayCCQ&<integer>.Create(P_Arr)
+         .ThenExec1(test_size, P_Arr.MakeCCQ
            .ThenWriteArray(test_arr)
          ) +
-       CLArrayCCQ&<integer>.Create(P_Arr)
+       P_Arr.MakeCCQ
          .ThenGetArray
          .ThenConvert(test_res->
            test_res.Zip(test_arr, (a,b)->a=b+1).All(r->r), false

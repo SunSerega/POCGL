@@ -53,53 +53,59 @@ type
       Result := $'Comment [{key}] from [{val.source}]';
     end;
     
-    public static function ApplyToKey(key: string; missing_keys: AsyncQueue<string>; prev: List<string> := nil): string;
+    public static function ApplyToKey(key: string; missing_keys: AsyncQueue<string>; prev: Stack<string>; res: StringBuilder): boolean;
     begin
       var cd: CommentData;
-      if all.TryGetValue(key, cd) then
+      Result := all.TryGetValue(key, cd);
+      if not Result then
       begin
-        cd.used := true;
-        var no_prev := prev=nil;
-        cd.directly_used := cd.directly_used or no_prev;
-        
-        if no_prev then
-          prev := new List<string> else
-        if key in prev then
-          raise new MessageException($'Comment loop chain:{#10}{prev.Select(GetPrintableData).JoinToString(#10)}]');
-        prev += key;
-        
-        Result := Apply(cd.comment, missing_keys, prev);
-        cd.comment := Result;
-      end else
         missing_keys.Enq(key);
-    end;
-    
-    static function Apply(l: string; missing_keys: AsyncQueue<string>; prev: List<string> := nil): string;
-    begin
-      var res := new StringBuilder;
-      
-      var ind_comment := l.IndexOf('//');
-      if ind_comment=-1 then ind_comment := l.Length;
-      
-      var last_ind := 0;
-      while true do
-      begin
-        var ind1 := l.IndexOf('%', last_ind, ind_comment-last_ind);
-        if ind1=-1 then break;
-        
-        var ind2 := l.IndexOf('%', ind1+1, ind_comment-ind1-1);
-        if ind2=-1 then raise new System.InvalidOperationException($'>>>{l}<<<');
-        
-        res.Append(l, last_ind, ind1-last_ind);
-        ind1 += 1;
-        
-        res += ApplyToKey(l.Substring(ind1,ind2-ind1), missing_keys, prev);
-        
-        last_ind := ind2+1;
-        if last_ind=l.Length then break;
+        exit;
       end;
       
-      res.Append(l, last_ind,l.Length-last_ind);
+      if prev=nil then
+        cd.directly_used := true;
+      
+      if cd.used then
+      begin
+        res += cd.comment;
+        exit;
+      end;
+      cd.used := true;
+      
+      if prev=nil then
+        prev := new Stack<string> else
+      if key in prev then
+        raise new MessageException($'Comment loop chain:{#10}{prev.Select(GetPrintableData).JoinToString(#10)}]');
+      prev.Push(key);
+      
+      var res_ind := res.Length;
+      ApplyToString(cd.comment, missing_keys, prev, res);
+      cd.comment := res.ToString(res_ind, res.Length-res_ind);
+      
+      if prev.Pop<>key then raise new System.InvalidOperationException;
+    end;
+    public static function ApplyToKey(key: string; missing_keys: AsyncQueue<string>; prev: Stack<string> := nil): string;
+    begin
+      var res := new StringBuilder;
+      ApplyToKey(key, missing_keys, prev, res);
+      Result := res.ToString;
+    end;
+    
+    static procedure ApplyToString(l: string; missing_keys: AsyncQueue<string>; prev: Stack<string>; res: StringBuilder) :=
+    foreach var (is_key, s) in FixerUtils.FindTemplateInsertions(l, '%','%') do
+      if not is_key then
+        res *= s else
+      if not ApplyToKey(s.TrimWhile(char.IsWhiteSpace).ToString, missing_keys, prev, res) then
+      begin
+        res += '%';
+        res *= s;
+        res += '%';
+      end;
+    static function ApplyToString(l: string; missing_keys: AsyncQueue<string>; prev: Stack<string> := nil): string;
+    begin
+      var res := new StringBuilder;
+      ApplyToString(l, missing_keys, prev, res);
       Result := res.ToString;
     end;
     
@@ -149,11 +155,12 @@ begin
     var fls := GetArgs('fname').ToArray;
     var use_pd := 'UseLastPreDoc' in CommandLineArgs;
     
-    if is_separate_execution and string.IsNullOrWhiteSpace(nick) and (fls.Length=0) then
+    if is_separate_execution and string.IsNullOrWhiteSpace(nick) and (fls.Length=0) and not use_pd then
     begin
       
       nick := 'OpenCLABC';
       fls := | 'Modules.Packed\OpenCLABC.pas' |;
+      use_pd := true;
       
     end;
     
@@ -225,7 +232,7 @@ begin
             res.WriteLine(last_line);
           end;
           
-          last_line := CommentData.Apply(l, log_data.missing);
+          last_line := CommentData.ApplyToString(l, log_data.missing);
           
           Result := true;
         end) do

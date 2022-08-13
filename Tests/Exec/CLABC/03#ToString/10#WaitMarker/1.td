@@ -13,41 +13,41 @@ WaitMarkerDummy#0
  
 ------------------------------
  
-DetachedMarkerSignal<integer>#0
-	DetachedMarkerSignalWrapper<CommandQueue<integer>>#1
+CommandQueueMarkedCap<integer>#0
+	CommandQueueMarkedCapWrapper<CommandQueue<integer>>#1
 	CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#2: function lambda: integer
  
 ------------------------------
  
-DetachedMarkerSignalWrapper<CommandQueue<integer>>#0
-	DetachedMarkerSignal<integer>#1
+CommandQueueMarkedCapWrapper<CommandQueue<integer>>#0
+	CommandQueueMarkedCap<integer>#1
  
 ------------------------------
  
-DetachedMarkerSignal<integer>#0
-	DetachedMarkerSignalWrapper<CommandQueue<integer>>#1
+CommandQueueMarkedCap<integer>#0
+	CommandQueueMarkedCapWrapper<CommandQueue<integer>>#1
 	CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#2: function lambda: integer
  
 ------------------------------
  
 SimpleAsyncQueueArray<integer>#0
 	CommandQueueWaitFor#1
-		DetachedMarkerSignalWrapper<CommandQueue<integer>>#2
-			DetachedMarkerSignal<integer>#3
-	DetachedMarkerSignal<integer>#3
-		DetachedMarkerSignalWrapper<CommandQueue<integer>>#2
+		CommandQueueMarkedCapWrapper<CommandQueue<integer>>#2
+			CommandQueueMarkedCap<integer>#3
+	CommandQueueMarkedCap<integer>#3
+		CommandQueueMarkedCapWrapper<CommandQueue<integer>>#2
 		CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#4: function lambda: integer
  
 ------------------------------
  
 WaitMarkerAll#0
-	DetachedMarkerSignalWrapper<CommandQueue<integer>>#1
-		DetachedMarkerSignal<integer>#2 * 2
+	CommandQueueMarkedCapWrapper<CommandQueue<integer>>#1
+		CommandQueueMarkedCap<integer>#2 * 2
  
 ------------------------------
  
-DetachedMarkerSignalWrapper<CommandQueue<integer>>#0
-	DetachedMarkerSignal<integer>#1
+CommandQueueMarkedCapWrapper<CommandQueue<integer>>#0
+	CommandQueueMarkedCap<integer>#1
  
 ------------------------------
  

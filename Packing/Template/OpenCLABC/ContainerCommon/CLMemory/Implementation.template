@@ -4,6 +4,7 @@
 constructor CLMemoryCCQ.Create(q: CommandQueue<CLMemory>) := inherited;
 constructor CLMemoryCCQ.Create := inherited;
 
+/// %CommandQueue<CLMemory>.MakeCCQ%
 function MakeCCQ(self: CommandQueue<CLMemory>): CLMemoryCCQ; extensionmethod;
 begin
   Result := new CLMemoryCCQ(self);

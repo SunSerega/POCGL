@@ -24,25 +24,21 @@ a: array{%rank? : [,] : [,,] %} of TRecord; {%rank? a_ind : a_ind1,a_ind2 : a_in
 !ShortDef
 FillArray{%rank%}(CQ(a), {%rank? a_ind : a_ind1,a_ind2 : a_ind1,a_ind2,a_ind3 %}, pattern_byte_len, mem_offset, fill_byte_len);
 
-# FillArray[%rank:1,2,3%]!AutoSize
-a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>
-!Enqueue
-//TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize
-var ec := cl.EnqueueFillBuffer(
-  cq, o.Native,
-  !a:pinn![{%rank? 0 : 0,0 : 0,0,0 %}], new UIntPtr(!a:pinn!.Length*Marshal.SizeOf(default(TRecord))),
-  UIntPtr.Zero, o.Size,
-  !evs!
-);
-OpenCLABCInternalException.RaiseIfError(ec);
-
-# FillArray[%rank:1,2,3%]
-a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>; {%rank? a_ind : a_ind1,a_ind2 : a_ind1,a_ind2,a_ind3 %}, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>
+# FillArray[%rank:1,2,3%]![%AutoSize:AutoSize,%]
+a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>{%AutoSize?:
+	; {%rank? a_ind \: a_ind1,a_ind2 \: a_ind1,a_ind2,a_ind3 \%}, pattern_byte_len, mem_offset, fill_byte_len\: CommandQueue<integer>
+%}
 !Enqueue
 var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
-  !a:pinn![{%rank? !a_ind! : !a_ind1!,!a_ind2! : !a_ind1!,!a_ind2!,!a_ind3! %}], new UIntPtr(!pattern_byte_len!),
-  new UIntPtr(!mem_offset!), new UIntPtr(!fill_byte_len!),
+  !a:pinn![{%AutoSize?
+    {%rank? 0		\: 0,0					\: 0,0,0						\%} :
+    {%rank? !a_ind!	\: !a_ind1!,!a_ind2!	\: !a_ind1!,!a_ind2!,!a_ind3!	\%}
+  %}], new UIntPtr({%AutoSize?
+    !a\:pinn!.Length*Marshal.SizeOf(default(TRecord)) :
+    !pattern_byte_len!
+  %}),
+  {%AutoSize? UIntPtr.Zero, o.Size : new UIntPtr(!mem_offset!), new UIntPtr(!fill_byte_len!) %},
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);

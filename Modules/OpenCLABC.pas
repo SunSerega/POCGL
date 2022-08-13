@@ -43,17 +43,16 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Вместо g.GetCQ(need_async_inv) лучше хранить ивент, после которого можно будет вызывать cl.Enqueue
-// - Но порядок ивент-колбеков неопределён, поэтому надо сделать какую то магию с Interlocked
-// - Или ConcurrentQueue?
-//TODO А что если ещё один need_async_inv, пока предыдущий список ещё не выполнился
-//TODO Сейчас GetCQ вызывается перед проверкой на ошибки от ev_l1
-// - В случае need_async_inv - не знаю как это исправить без этой ConcurrentQueue
-
-//TODO Тесты:
-// - "V.WriteValue(HQFQ(raise))"
-// - "V.WriteValue(HTFQ(raise))"
-// - (отмена enq до и после cl.Enqueue)
+//TODO Улучшить систему описаний:
+// - Описание для unit
+// - Описания для extensionmethod
+// - Читабельность
+// - Проверки адекватности шаблонов
+//TODO Какой-то графический интерфейс для редактирования описаний?
+// - Упрощённое дерево файлов
+// - Читать .missing и т.п. файлы при обновлении чтобы показывать маркеры
+// - Автоматический запуск упаковки с изменениями
+// - Групировка шаблонов с кнопкой [+]
 
 //TODO После cl.Enqueue нужно в любом случае UserEvent
 // - Следующие команды игнорирует ошибку в ивенте на 2/3 реализациях, если она не в UserEvent
@@ -61,6 +60,13 @@ unit OpenCLABC;
 // - Хотя должно быть достаточно .HadError перед проверкой
 // - Или нет, если в одном ивенте ошибка, а другой всё ещё ждёт
 // - Вообще это более общая проблема... В общем надо колбек делать для (prev_ev+enq_ev), чтобы дальше не продолжать пока всё не сработает
+
+//TODO Вместо g.GetCQ(need_async_inv) лучше хранить ивент, после которого можно будет вызывать cl.Enqueue
+// - Но порядок ивент-колбеков неопределён, поэтому надо сделать какую то магию с Interlocked
+// - Или ConcurrentQueue?
+//TODO А что если ещё один need_async_inv, пока предыдущий список ещё не выполнился
+//TODO Сейчас GetCQ вызывается перед проверкой на ошибки от ev_l1
+// - В случае need_async_inv - не знаю как это исправить без этой ConcurrentQueue
 
 //TODO Пора бы почистить TODO в кодогенераторах - куча давно закрытых issue
 
@@ -73,54 +79,24 @@ unit OpenCLABC;
 // - Результат хранится в CLTask, хотя используется только в 1 выполнении CCQ
 // --- То же самое в .MultiuseFor
 
-//TODO Тесты:
-// - MU + HQPQ + MU + HQPQ + MU
-// --- Ивент от MU должно добавить только 1 раз
-// - (HQPQ(raise)+MU).Handle[ + MU]
-// --- Ивент от MU не добавляется второй раз
-// --- Поидее его добавляет первый раз, даже если ошибка
-
 //TODO Что будет если из g.ParallelInvoke выполнить что то НЕ инвокером
 // - В любом случае добавить специальные проверки адекватности на время дебага
-
-//TODO Справка:
-// - "Q1 -= Q2" вместо Q1 := Q2+Q1;
-// - "Q1 /= Q2" вместо Q1 := Q2*Q1;
-
-//TODO Wait[All/Any] => CombineWait[All/Any]
 
 //TODO Теория: Все проверки "is ConstQueue<" заведомо костыльны
 // - К примеру в try/finally надо проверять на наличие под-очередей, выполяющих код на CPU (НЕ wait)
 //TODO С другой стороны в QueueCommand нужна проверка на полную сокращённость?
 
-//TODO DetachedMarkerSignal => CommandQueueMarkedCap
 //TODO Может переименовать в Host[Proc/Func]Queue?
 
-//TODO Потоко-безопастность CCQ.AddCommand
-
-//TODO CQ().ThenUse[.Cast]
-// - Должно быть HPQ+CQ в обоих случаях
-
-//TODO Тесты:
-// - "HTPQ(raise) + CCQ" выполнялось как "HTPQ >= CCQ"
-
 //TODO Каким, всё же, считает generic KernelArg: Global или Constant?
-
-//TODO Улучшить систему описаний:
-// - Описание для unit
-// - Описания для extensionmethod
-// - Читабельность
-// - Проверки адекватности шаблонов
-//TODO Какой-то графический интерфейс для редактирования описаний?
-// - Упрощённое дерево файлов
-// - Читать .missing и т.п. файлы при обновлении чтобы показывать маркеры
-// - Автоматический запуск упаковки с изменениями
-// - Групировка шаблонов с кнопкой [+]
 
 //TODO IEnumerable<T>.Lazy[Sync,Async]ForeachQueue(CQ<T> -> CQBase)
 // - Без этого нельзя реализовать вызов очереди для каждого элемента списка с изменяющейся длиной
 // - Нет, лучше сделать CombineQueue, но принимающий "sequence of T" и "CQ<T> -> CQBase"
 //TODO Может тогда и extensionmethod, которому копируется описание?
+//TODO CLList: Как массив, но с изменяемой длиной
+//TODO Очень часто в OpenCL нужны двойные буферы: Предыдущее и новое состояние
+// - Я сейчас использую HFQ(()->state1) и HFQ(()->state2), но это очень криво
 //
 //TODO .Cycle(integer)
 //TODO .Cycle // бесконечность циклов
@@ -148,17 +124,13 @@ unit OpenCLABC;
 // - Подумать как можно сделать это красивее, чем через MU
 
 //TODO CLContext.BeingInvoke выполняется чаще, чем создание новой очереди
-//TODO Поэтому стоит хранить в очереди кеш некоторых вещей, которые сейчас вычисляются заново в .BeingInvoke
-// - Очереди, требующие инициализации, в виде списка вместо дерева
+// - Поэтому стоит хранить в очереди кеш некоторых вещей, которые сейчас вычисляются заново в .BeingInvoke
+// - Сохранять очереди, требующие инициализации, в виде списка вместо дерева
 // - MU очереди:
 // --- Количество MU очередей (capacity для inited_mu)
 // --- Количество .Invoke каждой MU очереди
 // --- Нужен ли их результат (можно ли q.InvokeToNil)
-//TODO Написать в справке что первый проход для разогрева
-
-//TODO CLList: Как массив, но с изменяемой длиной
-//TODO Очень часто в OpenCL нужны двойные буферы: Предыдущее и новое состояние
-// - Я сейчас использую HFQ(()->state1) и HFQ(()->state2), но это очень криво
+// - Написать в справке что первый проход для разогрева
 
 //TODO Если уже реализовывать поддержку "CQ<T> -> TQ"... Это сразу и альтернатива .MU?
 // - Доп переменные не нужны. Т.е. очередь можно в 1 строчку расписать:
@@ -222,36 +194,57 @@ unit OpenCLABC;
 // --- Или, можно ещё принимать void*, но тогда на стороне OpenCL-C необходимы vload/vstore функции:
 // --- https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/OpenCL_C.html#alignment-of-types
 
-//TODO Разделить .html справку и гайд по OpenCLABC
-//TODO github.io
-// - Разобраться почему .css не работало до 0.css, но только на github.io
-// - Добавить index.html в справки, состоящий из всего 1 страницы
-// - Гитхаб-экшн, авто-обновляющий ветку справок
-//TODO Описание модуля в .dat
-// - Исправить ссылку на справку в описании заголовка модуля
-
-//TODO Тесты и справка:
-// - (HTPQ+Par).ThenQuickUse.ThenConstConvert
+//TODO Тесты:
+//
+// - Отмена enq до и после cl.Enqueue
+// --- "V.WriteValue(HQFQ(raise))"
+// --- "V.WriteValue(HTFQ(raise))"
+//
+// - Ивент от MU должно добавить только 1 раз
+// --- MU + HQPQ + MU + HQPQ + MU
+// - Ивент от MU не добавляется второй раз
+// --- (HQPQ(raise)+MU).Handle[ + MU]
+// --- Поидее его добавляет первый раз, даже если ошибка
+//
+// - Должно быть HPQ+CQ в обоих случаях
+// --- CQ().ThenUse[.Cast]
+//
+// - Выполнялось как "HTPQ >= CCQ"
+// --- "HTPQ(raise) + CCQ"
+//
+// - need_own_thread и can_pre_calc
+// --- (HTPQ+Par).ThenQuickUse.ThenConstConvert
 
 //TODO Справка:
+// - "Q1 -= Q2" вместо Q1 := Q2+Q1;
+// - "Q1 /= Q2" вместо Q1 := Q2*Q1;
+// - Wait[All/Any] => CombineWait[All/Any]
+// - CQ<>.MakeCCQ
 // - CLKernelArg
 // - NativeArray
 // - CLValue
 // - !CL!Memory[SubSegment]
 // - Из заголовка папки простых обёрток сделать прямую ссылку в под-папку папки CLKernelArg для CL- типов
 // - CLMemoryUsage
+// - CQ<byte>.Cast<byte?>
+// - Properties.ToString
+// - need_own_thread и can_pre_calc
+// --- (HTPQ+Par).ThenQuickUse.ThenConstConvert
 // - new CLValue<byte>(new CLMemorySubSegment(cl_a))
 // --- CLArray и CLValue неявно конвертируются в CLMemory
 // --- И их можно создать назад конструктором
-//
 // - Описать и в процессе перепродумать логику, почему CommandQueue<CommandQueue<>> не только не эффективно, но и не может понадобится
-//
-// - CQ<byte>.Cast<byte?>
-//
-// - Properties.ToString
+//TODO Разделить .html справку и гайд по OpenCLABC
+// - Исправить ссылку на справку в описании заголовка модуля
+//TODO github.io
+// - Разобраться почему .css не работало до 0.css, но только на github.io
+// - Добавить index.html в справки, состоящий из всего 1 страницы
+// - Гитхаб-экшн, авто-обновляющий ветку справок
 
 //===================================
 // Запланированное:
+
+//TODO Потоко-безопастность CCQ.AddCommand
 
 //TODO Комментарии "Использовано в" энумам н.у. модулей
 //TODO OpenCL: Объединить SamplePattern
@@ -3156,7 +3149,7 @@ type
     
   end;
   
-  DetachedMarkerSignalNil = sealed partial class
+  CommandQueueMarkedCapNil = sealed partial class
     
     private function get_signal_in_finally: boolean;
     public property SignalInFinally: boolean read get_signal_in_finally;
@@ -3164,14 +3157,14 @@ type
     public constructor(q: CommandQueueNil; signal_in_finally: boolean);
     private constructor := raise new OpenCLABCInternalException;
     
-    public static function operator implicit(dms: DetachedMarkerSignalNil): WaitMarker;
+    public static function operator implicit(dms: CommandQueueMarkedCapNil): WaitMarker;
     
     public procedure SendSignal := WaitMarker(self).SendSignal;
-    public static function operator and(m1, m2: DetachedMarkerSignalNil) := WaitMarker(m1) and WaitMarker(m2);
-    public static function operator or(m1, m2: DetachedMarkerSignalNil) := WaitMarker(m1) or WaitMarker(m2);
+    public static function operator and(m1, m2: CommandQueueMarkedCapNil) := WaitMarker(m1) and WaitMarker(m2);
+    public static function operator or(m1, m2: CommandQueueMarkedCapNil) := WaitMarker(m1) or WaitMarker(m2);
     
   end;
-  DetachedMarkerSignal<T> = sealed partial class
+  CommandQueueMarkedCap<T> = sealed partial class
     
     private function get_signal_in_finally: boolean;
     public property SignalInFinally: boolean read get_signal_in_finally;
@@ -3179,11 +3172,11 @@ type
     public constructor(q: CommandQueue<T>; signal_in_finally: boolean);
     private constructor := raise new OpenCLABCInternalException;
     
-    public static function operator implicit(dms: DetachedMarkerSignal<T>): WaitMarker;
+    public static function operator implicit(dms: CommandQueueMarkedCap<T>): WaitMarker;
     
     public procedure SendSignal := WaitMarker(self).SendSignal;
-    public static function operator and(m1, m2: DetachedMarkerSignal<T>) := WaitMarker(m1) and WaitMarker(m2);
-    public static function operator or(m1, m2: DetachedMarkerSignal<T>) := WaitMarker(m1) or WaitMarker(m2);
+    public static function operator and(m1, m2: CommandQueueMarkedCap<T>) := WaitMarker(m1) and WaitMarker(m2);
+    public static function operator or(m1, m2: CommandQueueMarkedCap<T>) := WaitMarker(m1) or WaitMarker(m2);
     
   end;
   
@@ -3191,14 +3184,14 @@ type
   
   CommandQueueNil = abstract partial class(CommandQueueBase)
     
-    public function ThenMarkerSignal := new DetachedMarkerSignalNil(self, false);
-    public function ThenFinallyMarkerSignal := new DetachedMarkerSignalNil(self, true);
+    public function ThenMarkerSignal := new CommandQueueMarkedCapNil(self, false);
+    public function ThenFinallyMarkerSignal := new CommandQueueMarkedCapNil(self, true);
     
   end;
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
-    public function ThenMarkerSignal := new DetachedMarkerSignal<T>(self, false);
-    public function ThenFinallyMarkerSignal := new DetachedMarkerSignal<T>(self, true);
+    public function ThenMarkerSignal := new CommandQueueMarkedCap<T>(self, false);
+    public function ThenFinallyMarkerSignal := new CommandQueueMarkedCap<T>(self, true);
     
     public function ThenWaitFor(marker: WaitMarker): CommandQueue<T>;
     public function ThenFinallyWaitFor(marker: WaitMarker): CommandQueue<T>;
@@ -3417,11 +3410,11 @@ function HPQ(p: CLContext->(); need_own_thread: boolean := true): CommandQueueNi
 
 {$region Wait}
 
-function WaitAll(params sub_markers: array of WaitMarker): WaitMarker;
-function WaitAll(sub_markers: sequence of WaitMarker): WaitMarker;
+function CombineWaitAll(params sub_markers: array of WaitMarker): WaitMarker;
+function CombineWaitAll(sub_markers: sequence of WaitMarker): WaitMarker;
 
-function WaitAny(params sub_markers: array of WaitMarker): WaitMarker;
-function WaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
+function CombineWaitAny(params sub_markers: array of WaitMarker): WaitMarker;
+function CombineWaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
 
 function WaitFor(marker: WaitMarker): CommandQueueNil;
 
@@ -7650,7 +7643,7 @@ type
     
   end;
   
-function WaitAll(sub_markers: sequence of WaitMarker): WaitMarker;
+function CombineWaitAll(sub_markers: sequence of WaitMarker): WaitMarker;
 begin
   var prev := |new WaitMarkerAllFast(0)| as IList<WaitMarkerAllFast>;
   var next := new List<WaitMarkerAllFast>;
@@ -7681,9 +7674,9 @@ begin
   
   Result := WaitMarkerAllFast.MarkerFromLst(prev);
 end;
-function WaitAll(params sub_markers: array of WaitMarker) := WaitAll(sub_markers.AsEnumerable);
+function CombineWaitAll(params sub_markers: array of WaitMarker) := CombineWaitAll(sub_markers.AsEnumerable);
 
-function WaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
+function CombineWaitAny(sub_markers: sequence of WaitMarker): WaitMarker;
 begin
   var res := new List<WaitMarkerAllFast>;
   foreach var m in sub_markers do
@@ -7700,10 +7693,10 @@ begin
     end;
   Result := WaitMarkerAllFast.MarkerFromLst(res);
 end;
-function WaitAny(params sub_markers: array of WaitMarker) := WaitAny(sub_markers.AsEnumerable);
+function CombineWaitAny(params sub_markers: array of WaitMarker) := CombineWaitAny(sub_markers.AsEnumerable);
 
-static function WaitMarker.operator and(m1, m2: WaitMarker) := WaitAll(|m1, m2|);
-static function WaitMarker.operator or(m1, m2: WaitMarker) := WaitAny(|m1, m2|);
+static function WaitMarker.operator and(m1, m2: WaitMarker) := CombineWaitAll(|m1, m2|);
+static function WaitMarker.operator or(m1, m2: WaitMarker) := CombineWaitAny(|m1, m2|);
 
 {$endregion public}
 
@@ -7763,7 +7756,7 @@ static function WaitMarker.Create := new WaitMarkerDummy;
 {$region ThenMarkerSignal}
 
 type
-  DetachedMarkerSignalWrapper<TQ> = sealed class(WaitMarkerDirect)
+  CommandQueueMarkedCapWrapper<TQ> = sealed class(WaitMarkerDirect)
   where TQ: CommandQueueBase;
     protected org: TQ;
     
@@ -7784,13 +7777,13 @@ type
     
   end;
   
-  DetachedMarkerSignalCommon<TQ> = record
+  CommandQueueMarkedCapCommon<TQ> = record
   where TQ: CommandQueueBase;
     public q: TQ;
-    public wrap: DetachedMarkerSignalWrapper<TQ>;
+    public wrap: CommandQueueMarkedCapWrapper<TQ>;
     public signal_in_finally: boolean;
     
-    public procedure Init(q: TQ; wrap: DetachedMarkerSignalWrapper<TQ>; signal_in_finally: boolean);
+    public procedure Init(q: TQ; wrap: CommandQueueMarkedCapWrapper<TQ>; signal_in_finally: boolean);
     begin
       self.q := q;
       self.wrap := wrap;
@@ -7833,8 +7826,8 @@ type
     
   end;
   
-  DetachedMarkerSignalNil = sealed partial class(CommandQueueNil)
-    data: DetachedMarkerSignalCommon<CommandQueueNil>;
+  CommandQueueMarkedCapNil = sealed partial class(CommandQueueNil)
+    data: CommandQueueMarkedCapCommon<CommandQueueNil>;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := data.InitBeforeInvoke(g, inited_mu);
     
@@ -7845,8 +7838,8 @@ type
     
   end;
   
-  DetachedMarkerSignal<T> = sealed partial class(CommandQueue<T>)
-    data: DetachedMarkerSignalCommon<CommandQueue<T>>;
+  CommandQueueMarkedCap<T> = sealed partial class(CommandQueue<T>)
+    data: CommandQueueMarkedCapCommon<CommandQueue<T>>;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := data.InitBeforeInvoke(g, inited_mu);
     
@@ -7859,22 +7852,22 @@ type
     
   end;
   
-function DetachedMarkerSignalNil.get_signal_in_finally := data.signal_in_finally;
-function DetachedMarkerSignal<T>.get_signal_in_finally := data.signal_in_finally;
+function CommandQueueMarkedCapNil.get_signal_in_finally := data.signal_in_finally;
+function CommandQueueMarkedCap<T>.get_signal_in_finally := data.signal_in_finally;
 
-constructor DetachedMarkerSignalNil.Create(q: CommandQueueNil; signal_in_finally: boolean);
+constructor CommandQueueMarkedCapNil.Create(q: CommandQueueNil; signal_in_finally: boolean);
 begin
-  data.Init(q, new DetachedMarkerSignalWrapper<CommandQueueNil>(self), signal_in_finally);
+  data.Init(q, new CommandQueueMarkedCapWrapper<CommandQueueNil>(self), signal_in_finally);
 end;
-constructor DetachedMarkerSignal<T>.Create(q: CommandQueue<T>; signal_in_finally: boolean);
+constructor CommandQueueMarkedCap<T>.Create(q: CommandQueue<T>; signal_in_finally: boolean);
 begin
-  data.Init(q, new DetachedMarkerSignalWrapper<CommandQueue<T>>(self), signal_in_finally);
+  data.Init(q, new CommandQueueMarkedCapWrapper<CommandQueue<T>>(self), signal_in_finally);
   self.const_res_dep      := q.const_res_dep;
   self.expected_const_res := q.expected_const_res;
 end;
 
-static function DetachedMarkerSignalNil.operator implicit(dms: DetachedMarkerSignalNil) := dms.data.wrap;
-static function DetachedMarkerSignal<T>.operator implicit(dms: DetachedMarkerSignal<T>) := dms.data.wrap;
+static function CommandQueueMarkedCapNil.operator implicit(dms: CommandQueueMarkedCapNil) := dms.data.wrap;
+static function CommandQueueMarkedCap<T>.operator implicit(dms: CommandQueueMarkedCap<T>) := dms.data.wrap;
 
 {$endregion ThenMarkerSignal}
 
@@ -9986,10 +9979,10 @@ begin
     var test_arr := ArrGen(test_size, i->rng.Next);
     {%> Q_Test :=%}
     {%>   CLKernelCCQ.Create(P_Prog.ThenConvert(p->p['k'], false, true))%}
-    {%>     .ThenExec1(test_size, CLArrayCCQ&<integer>.Create(P_Arr)%}
+    {%>     .ThenExec1(test_size, P_Arr.MakeCCQ%}
     {%>       .ThenWriteArray(test_arr)%}
     {%>     ) +%}
-    {%>   CLArrayCCQ&<integer>.Create(P_Arr)%}
+    {%>   P_Arr.MakeCCQ%}
     {%>     .ThenGetArray%}
     {%>     .ThenConvert(test_res->%}
     {%>       test_res.Zip(test_arr, (a,b)->a=b+1).All(r->r), false%}

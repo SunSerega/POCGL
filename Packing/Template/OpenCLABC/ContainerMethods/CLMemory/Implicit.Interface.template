@@ -201,13 +201,13 @@
     
     public function FillArray1<TRecord>(a: CommandQueue<array of TRecord>): CLMemory; where TRecord: record;
     
-    public function FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
-    
-    public function FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
-    
     public function FillArray1<TRecord>(a: CommandQueue<array of TRecord>; a_ind, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     
+    public function FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemory; where TRecord: record;
+    
     public function FillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>; a_ind1,a_ind2, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
+    
+    public function FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemory; where TRecord: record;
     
     public function FillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
     

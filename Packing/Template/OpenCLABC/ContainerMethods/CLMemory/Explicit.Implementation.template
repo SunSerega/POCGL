@@ -3660,7 +3660,6 @@ type
         
         var res_ev: cl_event;
         
-        //TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize
         var ec := cl.EnqueueFillBuffer(
           cq, o.Native,
           a[0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
@@ -3696,166 +3695,6 @@ begin
 end;
 
 {$endregion FillArray1!AutoSize}
-
-{$region FillArray2!AutoSize}
-
-type
-  CLMemoryCommandFillArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
-  where TRecord: record;
-    private a: CommandQueue<array[,] of TRecord>;
-    
-    protected function ExpectedEnqCount: integer; override := 1;
-    
-    static constructor;
-    begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:FillArray2AutoSize%');
-    end;
-    public constructor(a: CommandQueue<array[,] of TRecord>);
-    begin
-      self.a := a;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
-    begin
-      a.InitBeforeInvoke(g, prev_hubs);
-    end;
-    
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLMemory>; override;
-    begin
-      var a_qr: QueueRes<array[,] of TRecord>;
-      
-      var l1_err_handler: CLTaskErrHandler;
-      g.ParallelInvoke(nil, enq_c, invoker->
-      begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
-      end);
-      Result.Item1 := l1_err_handler;
-      
-      Result.Item2 := (o, cq, evs)->
-      begin
-        var a := a_qr.GetResDirect;
-        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-        
-        var res_ev: cl_event;
-        
-        //TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize
-        var ec := cl.EnqueueFillBuffer(
-          cq, o.Native,
-          a[0,0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
-          UIntPtr.Zero, o.Size,
-          evs.count, evs.evs, res_ev
-        );
-        OpenCLABCInternalException.RaiseIfError(ec);
-        
-        Result := new DirectEnqRes(res_ev, c->
-        begin
-          a_hnd.Free;
-        end);
-      end;
-      
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'a:';
-      sb += ' ';
-      a.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function CLMemoryCCQ.ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
-begin
-  Result := AddCommand(self, new CLMemoryCommandFillArray2AutoSize<TRecord>(a));
-end;
-
-{$endregion FillArray2!AutoSize}
-
-{$region FillArray3!AutoSize}
-
-type
-  CLMemoryCommandFillArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
-  where TRecord: record;
-    private a: CommandQueue<array[,,] of TRecord>;
-    
-    protected function ExpectedEnqCount: integer; override := 1;
-    
-    static constructor;
-    begin
-      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:FillArray3AutoSize%');
-    end;
-    public constructor(a: CommandQueue<array[,,] of TRecord>);
-    begin
-      self.a := a;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
-    begin
-      a.InitBeforeInvoke(g, prev_hubs);
-    end;
-    
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLMemory>; override;
-    begin
-      var a_qr: QueueRes<array[,,] of TRecord>;
-      
-      var l1_err_handler: CLTaskErrHandler;
-      g.ParallelInvoke(nil, enq_c, invoker->
-      begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
-      end);
-      Result.Item1 := l1_err_handler;
-      
-      Result.Item2 := (o, cq, evs)->
-      begin
-        var a := a_qr.GetResDirect;
-        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
-        
-        var res_ev: cl_event;
-        
-        //TODO unable to merge this Enqueue with non-AutoSize, because %rank would be nested in %AutoSize
-        var ec := cl.EnqueueFillBuffer(
-          cq, o.Native,
-          a[0,0,0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
-          UIntPtr.Zero, o.Size,
-          evs.count, evs.evs, res_ev
-        );
-        OpenCLABCInternalException.RaiseIfError(ec);
-        
-        Result := new DirectEnqRes(res_ev, c->
-        begin
-          a_hnd.Free;
-        end);
-      end;
-      
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      
-      sb.Append(#9, tabs);
-      sb += 'a:';
-      sb += ' ';
-      a.ToString(sb, tabs, index, delayed, false);
-      
-    end;
-    
-  end;
-  
-function CLMemoryCCQ.ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
-begin
-  Result := AddCommand(self, new CLMemoryCommandFillArray3AutoSize<TRecord>(a));
-end;
-
-{$endregion FillArray3!AutoSize}
 
 {$region FillArray1}
 
@@ -3979,6 +3818,85 @@ begin
 end;
 
 {$endregion FillArray1}
+
+{$region FillArray2!AutoSize}
+
+type
+  CLMemoryCommandFillArray2AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
+  where TRecord: record;
+    private a: CommandQueue<array[,] of TRecord>;
+    
+    protected function ExpectedEnqCount: integer; override := 1;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:FillArray2AutoSize%');
+    end;
+    public constructor(a: CommandQueue<array[,] of TRecord>);
+    begin
+      self.a := a;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
+    begin
+      a.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLMemory>; override;
+    begin
+      var a_qr: QueueRes<array[,] of TRecord>;
+      
+      var l1_err_handler: CLTaskErrHandler;
+      g.ParallelInvoke(nil, enq_c, invoker->
+      begin
+        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
+        l1_err_handler := invoker.GroupHandlers;
+      end);
+      Result.Item1 := l1_err_handler;
+      
+      Result.Item2 := (o, cq, evs)->
+      begin
+        var a := a_qr.GetResDirect;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          a[0,0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
+          UIntPtr.Zero, o.Size,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, c->
+        begin
+          a_hnd.Free;
+        end);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'a:';
+      sb += ' ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemoryCCQ.ThenFillArray2<TRecord>(a: CommandQueue<array[,] of TRecord>): CLMemoryCCQ; where TRecord: record;
+begin
+  Result := AddCommand(self, new CLMemoryCommandFillArray2AutoSize<TRecord>(a));
+end;
+
+{$endregion FillArray2!AutoSize}
 
 {$region FillArray2}
 
@@ -4113,6 +4031,85 @@ begin
 end;
 
 {$endregion FillArray2}
+
+{$region FillArray3!AutoSize}
+
+type
+  CLMemoryCommandFillArray3AutoSize<TRecord> = sealed class(EnqueueableGPUCommand<CLMemory>)
+  where TRecord: record;
+    private a: CommandQueue<array[,,] of TRecord>;
+    
+    protected function ExpectedEnqCount: integer; override := 1;
+    
+    static constructor;
+    begin
+      BlittableHelper.RaiseIfBad(typeof(TRecord), '%Err:Blittable:Source:CLMemory:FillArray3AutoSize%');
+    end;
+    public constructor(a: CommandQueue<array[,,] of TRecord>);
+    begin
+      self.a := a;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
+    begin
+      a.InitBeforeInvoke(g, prev_hubs);
+    end;
+    
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLMemory>; override;
+    begin
+      var a_qr: QueueRes<array[,,] of TRecord>;
+      
+      var l1_err_handler: CLTaskErrHandler;
+      g.ParallelInvoke(nil, enq_c, invoker->
+      begin
+        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
+        l1_err_handler := invoker.GroupHandlers;
+      end);
+      Result.Item1 := l1_err_handler;
+      
+      Result.Item2 := (o, cq, evs)->
+      begin
+        var a := a_qr.GetResDirect;
+        var a_hnd := GCHandle.Alloc(a, GCHandleType.Pinned);
+        
+        var res_ev: cl_event;
+        
+        var ec := cl.EnqueueFillBuffer(
+          cq, o.Native,
+          a[0,0,0], new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
+          UIntPtr.Zero, o.Size,
+          evs.count, evs.evs, res_ev
+        );
+        OpenCLABCInternalException.RaiseIfError(ec);
+        
+        Result := new DirectEnqRes(res_ev, c->
+        begin
+          a_hnd.Free;
+        end);
+      end;
+      
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += #10;
+      
+      sb.Append(#9, tabs);
+      sb += 'a:';
+      sb += ' ';
+      a.ToString(sb, tabs, index, delayed, false);
+      
+    end;
+    
+  end;
+  
+function CLMemoryCCQ.ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>): CLMemoryCCQ; where TRecord: record;
+begin
+  Result := AddCommand(self, new CLMemoryCommandFillArray3AutoSize<TRecord>(a));
+end;
+
+{$endregion FillArray3!AutoSize}
 
 {$region FillArray3}
 
