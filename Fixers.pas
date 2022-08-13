@@ -1,5 +1,9 @@
 ﻿unit Fixers;
 
+interface
+
+uses Parsing;
+
 type
   FixerUtils = static class
     
@@ -7,27 +11,28 @@ type
     ///   is_in_template,
     ///   text
     /// )
-    public static function FindTemplateInsertions(s: string; open_br, close_br: string): sequence of (boolean, string);
+    public static function FindTemplateInsertions(s: StringSection; br1str, br2str: string): sequence of (boolean, StringSection);
     begin
-      var ind := 0;
-      
       while true do
       begin
-        var ind1 := s.IndexOf(open_br, ind);
-        if ind1=-1 then break;
-        var ind2 := s.IndexOf(close_br, ind1+open_br.Length);
-        if ind2=-1 then break;
         
-        yield (false, s.Substring(ind, ind1-ind));
-        ind1 += open_br.Length;
+        var br1 := s.SubSectionOfFirstUnescaped(br1str);
+        if br1.IsInvalid then break;
         
-        yield (true, s.Substring(ind1, ind2-ind1));
+        var br2 := s.WithI1(br1.I2).SubSectionOfFirstUnescaped(br2str);
+        if br2.IsInvalid then break;
         
-        ind := ind2 + close_br.Length;
+        if s.I1<>br1.I1 then
+          yield (false, s.WithI2(br1.I1));
+        yield (true, new StringSection(s.text, br1.I2,br2.I1));
+        
+        s.range.i1 := br2.I2;
       end;
       
-      if ind<>s.Length then yield (false, s.Substring(ind));
+      if s.Length<>0 then
+        yield (false, s);
     end;
+    public static function FindTemplateInsertions(s, br1str, br2str: string) := FindTemplateInsertions(new StringSection(s), br1str, br2str);
     
     // Syntax:
     //# abc[%arg1:1,2,3%]
@@ -37,86 +42,54 @@ type
     //# abc[%1,2,3%]
     //def{%0%}gh
     // 
-    private static function DeTemplateName(name: string; lns: array of string): sequence of (string, array of string);
-    begin
-      var res := Seq(('',lns));
-      
-      var i := 0;
-      FindTemplateInsertions(name, '[%', '%]').ForEach(t->
-        if t[0] then
-        begin
-          var template_ids := new List<string>(2);
-          template_ids += i.ToString;
-          
-          var ind := t[1].IndexOf(':');
-          if ind<>-1 then
-          begin
-            template_ids += t[1].Remove(ind);
-            t := (t[0], t[1].Remove(0,ind+1));
-          end;
-          
-          res := res.SelectMany(bl->t[1].Replace('\,',#0).Split(',').Select(arg_def->arg_def.Replace(#0,',').Trim).Select((arg_def,arg_i)->(bl[0]+arg_def, bl[1].ConvertAll(l->
-          begin
-            var sb := new StringBuilder;
-            foreach var st in FindTemplateInsertions(l, '{%', '%}') do
-              if not st[0] then
-                sb += st[1] else
-              if not template_ids.Any(template_id->(st[1]=template_id) or (st[1].StartsWith(template_id) and st[1].Contains('?'))) then
-              begin
-                sb += '{%';
-                sb += st[1];
-                sb += '%}';
-              end else
-              begin
-                var ind := st[1].IndexOf('?');
-                if ind=-1 then
-                  sb += arg_def else
-                  sb += st[1].Remove(0,ind+1).Replace('\:',#0).Split(':')[arg_i].Replace(#0,':').Trim;
-              end;
-            Result := sb.ToString;
-          end))));
-          
-          i += 1;
-        end else
-          res := res.Select(bl->(bl[0]+t[1], bl[1]))
-      );
-      
-      Result := res;
-    end;
+    private static function DeTemplateName(name, body: string): array of (string, string);
+    
     public static function ReadBlocks(lines: sequence of string; power_sign: string; concat_blocks: boolean): sequence of (string, array of string);
     begin
-      var make_lns: List<string>->array of string := lst->
-      begin
-        var lc := lst.Count;
-        while (lc<>0) and string.IsNullOrWhiteSpace(lst[lc-1]) do lc -= 1;
-        lst.RemoveRange(lc, lst.Count-lc);
-        Result := lst.ToArray;
-        lst.Clear;
-      end;
+      //TODO #2203
+      Result := System.Linq.Enumerable.Empty&<(string, array of string)>;
       
       var res := new List<string>;
       var names := new List<string>;
       var start := true;
       var bl_start := true;
       
+      //TODO #????
+      var make_body: function: string := ()->
+      begin
+        var lc := res.Count;
+        while (lc<>0) and string.IsNullOrWhiteSpace(res[lc-1]) do lc -= 1;
+        Result := res.Take(lc).JoinToString(#10);
+        res.Clear;
+      end;
+      
+      //TODO #2683
+      var make_res_seq: function: sequence of (string,array of string) := ()->
+      begin
+        var body := make_body();
+        Result := names.DefaultIfEmpty
+          .SelectMany(name->
+            DetemplateName(name, body)
+            //TODO #2685
+            .Select(t->
+            begin
+              var lns := t[1].Split(#10);
+              if lns.SequenceEqual(|''|) then
+                lns := System.Array.Empty&<string>;
+              Result := (t[0], lns);
+            end)
+          ).ToArray; //TODO #2203: Убрать .ToArray
+      end;
+      
       foreach var l in lines do
         if l.StartsWith(power_sign) then
         begin
           
-          if not bl_start or not concat_blocks then
+          if not (bl_start and concat_blocks) then
           begin
-            
-            if start then
-            begin
-              if res.Count<>0 then
-                yield (nil as string, make_lns(res));
-            end else
-            begin
-              var lns := make_lns(res);
-              yield sequence names.SelectMany(name->DetemplateName(name, lns));
-              names.Clear;
-            end;
-            
+            if not (start and (res.Count=0)) then
+              Result := Result+make_res_seq();
+            names.Clear;
           end;
           
           names += l.Substring(power_sign.Length).Trim;
@@ -131,15 +104,19 @@ type
           bl_start := false;
         end;
       
-      if start then
-      begin
-        if res.Count<>0 then
-          yield (nil as string, make_lns(res));
-      end else
-      begin
-        var lns := make_lns(res);
-        yield sequence names.SelectMany(name->DetemplateName(name, lns));
-      end;
+      if not (start and (res.Count=0)) then
+        Result := Result+make_res_seq();
+      
+//      $'=== ORIGINAL ==='.Println;
+//      lines.PrintLines;
+//      $'=== PARSED ==='.Println;
+//      foreach var (name, lns) in Result do
+//      begin
+//        $'# {name}'.Println;
+//        foreach var l in lns do
+//          l.Println;
+//        Println;
+//      end;
     end;
     public static function ReadBlocks(fname: string; concat_blocks: boolean) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
     
@@ -207,4 +184,157 @@ type
     
   end;
   
+implementation
+
+type
+  SVariants = record
+    name := default(string);
+    vals: array of StringSection;
+  end;
+  
+function SplitByUnescaped(self: StringSection; by: string): List<StringSection>; extensionmethod;
+begin
+  Result := new List<StringSection>;
+  while true do
+  begin
+    var sep := self.SubSectionOfFirstUnescaped(by);
+    if sep.IsInvalid then break;
+    Result += self.WithI2(sep.I1);
+    self.range.i1 := sep.I2;
+  end;
+  Result += self;
+end;
+
+static function FixerUtils.DeTemplateName(name, body: string): array of (string, string);
+begin
+  if name=nil then
+  begin
+    Result := |(name,body)|;
+    exit;
+  end;
+  
+  {$region name_parts}
+  var name_parts := FindTemplateInsertions(new StringSection(name), '[%','%]')
+    .Select(\(is_v, s)->
+    begin
+      Result := new SVariants;
+      if not is_v then
+      begin
+        Result.vals := |s|;
+        exit;
+      end;
+      
+      begin
+        var name_sep := s.SubSectionOfFirstUnescaped(':');
+        if name_sep.IsInvalid then
+          Result.name := '' else
+        begin
+          Result.name := s.WithI2(name_sep.I1).TrimWhile(char.IsWhiteSpace).ToString;
+          s.range.i1 := name_sep.I2;
+        end;
+      end;
+      
+      Result.vals := s.SplitByUnescaped(',').ToArray;
+      Result.vals.Transform(val->val.TrimWhile(char.IsWhiteSpace));
+    end).ToArray;
+  {$endregion name_parts}
+  
+  {$region Misc setup}
+  
+  begin
+    var n := 0;
+    for var i := 0 to name_parts.Length-1 do
+    begin
+      var npn := name_parts[i].name;
+      if npn=nil then continue;
+      if npn='' then name_parts[i].name := i.ToString;
+      n += 1;
+    end;
+  end;
+  
+  var name_ind := name_parts.Numerate(0)
+    .Where(\(i,np)->np.name <> nil)
+    .ToDictionary(\(i,np)->np.name, \(i,np)->i)
+  ;
+  
+  var choise_cap := 1;
+  var choise_ind_div := new integer[name_parts.Length];
+  for var i := name_parts.Length-1 downto 0 do
+  begin
+    choise_ind_div[i] := choise_cap;
+    choise_cap *= name_parts[i].vals.Length;
+  end;
+  
+  {$endregion Misc setup}
+  
+  Result := ArrGen(choise_cap, choise_i->
+  begin
+    {$region AppendWithInsertions}
+    var AppendWithInsertions: procedure(sb: StringBuilder; text: StringSection); AppendWithInsertions := (sb,text)->
+    foreach var (repl, s) in FindTemplateInsertions(text, '{%','%}') do
+      if not repl then
+      begin
+        var escape := false;
+        for var i := 0 to s.Length-1 do
+        begin
+          var ch := s[i];
+          escape := (ch='\') and not escape;
+          if not escape then
+            sb += ch;
+        end;
+      end else
+      begin
+        var name: StringSection;
+        
+        begin
+          var name_sep := s.SubSectionOfFirstUnescaped('?');
+          if name_sep.IsInvalid then
+          begin
+            name := s;
+            s := s.TakeLast(0);
+          end else
+          begin
+            name := s.WithI2(name_sep.I1);
+            s := s.WithI1(name_sep.I2);
+          end;
+        end;
+        
+        var i: integer;
+        if not name_ind.TryGetValue(name.TrimWhile(char.IsWhiteSpace).ToString, i) then
+        begin
+          sb += '{%';
+          sb *= name;
+          sb += '?';
+          sb *= s;
+          sb += '%}';
+          continue;
+        end;
+        var choise := choise_i div choise_ind_div[i] mod name_parts[i].vals.Length;
+        
+        if s.Length=0 then
+          AppendWithInsertions(sb, name_parts[i].vals[choise]) else
+        begin
+          var vals := s.SplitByUnescaped(':');
+          if vals.Count<>name_parts[i].vals.Length then
+            raise new System.InvalidOperationException($'{vals.Count} <> {name_parts[i].vals.Length}');
+          AppendWithInsertions(sb, vals[choise].TrimWhile(char.IsWhiteSpace));
+        end;
+        
+      end;
+    {$endregion AppendWithInsertions}
+    
+    var name_sb := new StringBuilder;
+    for var i := 0 to name_parts.Length-1 do
+    begin
+      var choise := choise_i div choise_ind_div[i] mod name_parts[i].vals.Length;
+      AppendWithInsertions(name_sb, name_parts[i].vals[choise]);
+    end;
+    
+    var body_sb := new StringBuilder;
+    AppendWithInsertions(body_sb, new StringSection(body));
+    
+    Result := (name_sb.ToString, body_sb.ToString);
+  end);
+end;
+
 end.

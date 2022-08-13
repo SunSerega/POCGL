@@ -133,7 +133,7 @@ type
     public procedure ValidateLen(len: StringIndex) :=
     if (len > StringIndex(Length)) then raise new System.IndexOutOfRangeException($'Length {len} was > {Length}');
     
-    public static function operator in(ind: StringIndex; text: StringSection) := ind in text.range;
+    public static function operator in(ind: StringIndex; s: StringSection) := ind in s.range;
     
     private function GetItemAt(ind: StringIndex): char;
     begin
@@ -220,6 +220,9 @@ type
         Result.range.i2 -= 1;
       end;
     end;
+    public function TrimWhile(ch_validator: char->boolean) := self
+    .TrimFirstWhile(ch_validator)
+    .TrimLastWhile(ch_validator);
     
     public function TakeFirstWhile(ch_validator: char->boolean) :=
     self.TakeFirst(0).NextWhile(self.I2, ch_validator);
@@ -413,13 +416,17 @@ type
     
     public function SubSectionOfFirst(params strs: array of string): StringSection;
     begin
+      Result := StringSection.Invalid;
+      
       var min_str_len := strs.Min(str->str.Length);
+      if self.Length<min_str_len then exit;
       if min_str_len=0 then raise new System.ArgumentException(strs.JoinToString(#10));
+      
       strs.Transform(str->str.ToUpper);
       var headers := strs.ConvertAll(KMP_GetHeader);
       var curr_inds := ArrFill(strs.Length, StringIndex.Invalid);
       
-      for var text_i: integer := self.i1 to self.i2-min_str_len do
+      for var text_i: integer := self.i1 to self.i2-1 do
       begin
         var text_ch := text[text_i].ToUpper;
         for var str_i := 0 to strs.Length-1 do
@@ -453,7 +460,21 @@ type
         end;
       end;
       
-      Result := StringSection.Invalid;
+    end;
+    
+    public function IsEscaped(min_ind: StringIndex) :=
+    self.TakeFirst(0).PrevWhile(min_ind, ch->ch='\').Length.IsOdd;
+    
+    public function SubSectionOfFirstUnescaped(params strs: array of string): StringSection;
+    begin
+      Result := self;
+      while true do
+      begin
+        Result := Result.SubSectionOfFirst(strs);
+        if Result.IsInvalid then break;
+        if not Result.IsEscaped(self.I1) then break;
+        Result := Result.TakeLast(0).WithI2(self.I2);
+      end;
     end;
     
     public function ToString: string; override :=
@@ -462,4 +483,7 @@ type
     
   end;
   
+//TODO #2692
+procedure operator*=(sb: StringBuilder; s: StringSection); extensionmethod := sb.Append(s.text, s.I1, s.Length);
+
 end.
