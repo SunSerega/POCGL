@@ -103,9 +103,9 @@ type
     
     protected procedure WriteInvokeHeader(settings: GetMethodSettings); override;
     begin
-      res_EIm += '    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<';
+      res_EIm += '    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<';
       res_EIm += settings.result_type.org_text;
-      res_EIm += '>): EnqFunc<';
+      res_EIm += '>): ParamInvRes<';
       res_EIm += t;
       if generics.Count <> 0 then
       begin

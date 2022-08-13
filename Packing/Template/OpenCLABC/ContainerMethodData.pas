@@ -447,17 +447,23 @@ type
     protected procedure WriteSpecialPreEnq(wr: Writer; settings: TSettings); virtual := exit;
     protected procedure WriteSpecialPostEnq(wr: Writer; settings: TSettings); virtual := exit;
     
-    private procedure WriteParamInvokes(max_arg_w: integer; settings: TSettings);
+    private procedure WriteParamInvokes(fn: string; max_arg_w: integer; settings: TSettings);
     begin
-      if settings.args=nil then exit;
       //TODO #2654
-      var useful_args :=
-        settings.args.Where(arg->(settings as MethodSettings).arg_usage.ContainsKey(arg.name) and arg.t.IsCQ)
-        .Concat(GetSpecialInvokeResVars(settings))
-      .ToArray;
-      if useful_args.Length=0 then exit;
+      var invokeable_args :=
+        settings.args?.&Where(arg->(settings as MethodSettings).arg_usage.ContainsKey(arg.name) and arg.t.IsCQ)
+        .Concat(GetSpecialInvokeResVars(settings)).ToArray
+      ?? System.Array.Empty&<MethodArg>;
       
-      foreach var arg in useful_args do
+      var any_val := invokeable_args.Any(arg->(settings as MethodSettings).arg_usage[arg.name]<>'ptr');
+      if not any_val then
+        res_EIm += '      Result.Item1 := new CLTaskErrHandlerEmpty;'#10;
+      
+      if invokeable_args.Length=0 then exit;
+      
+      {$region var *_qr: ...}
+      
+      foreach var arg in invokeable_args do
       begin
         res_EIm += '      var ';
         if arg.t is MethodArgTypeBasic then
@@ -495,92 +501,79 @@ type
         res_EIm += '>;'#10;
         
       end;
+      res_EIm += '      '#10;
       
-      // Always need to ParallelInvoke, event if there is only one parameter
-      res_EIm += '      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->'#10;
-      res_EIm += '      begin'#10;
+      {$endregion var *_qr: ...}
       
-      foreach var arg in useful_args do
+      {$region WriteArgInvoke}
+      
+      var WriteArgInvoke := procedure(arg: MethodArg; to_ptr: boolean)->
       begin
         //TODO #2654
-        var local_ptr_need := (settings as MethodSettings).arg_usage[arg.name]='ptr';
+        if to_ptr <> ((settings as MethodSettings).arg_usage[arg.name]='ptr') then exit;
         
         res_EIm += '        ';
-        
         if arg.t is MethodArgTypeBasic then
-          WriteBasicArgInvoke(res_EIm, arg, settings) else
         begin
-          res_EIm += arg.name.PadLeft(max_arg_w);
-          res_EIm += '_qr := ';
-          
-          var arg_name := arg.name;
-          for var i := 1 to arg.t.ArrLvl do
-          begin
-            var n_arg_name := $'temp{i}';
-            
-            res_EIm += arg_name;
-            res_EIm += '.ConvertAll(';
-            res_EIm += n_arg_name;
-            res_EIm += '->';
-            
-            arg_name := n_arg_name;
-          end;
-          
-          if arg.t is MethodArgTypeArray then res_EIm += 'begin Result := ';
-          
-          res_EIm += 'invoker.InvokeBranch';
-          //TODO #2564
-          begin
-            res_EIm += '&<QueueRes';
-            if local_ptr_need then
-              res_EIm += 'Ptr';
-            res_EIm += '<';
-            res_EIm += MethodArgTypeCQ(arg.t).next.org_text;
-            res_EIm += '>>';
-          end;
-          res_EIm += '(';
-          
-          var WriteQRName := procedure->
-          if arg.t is MethodArgTypeArray then
-            res_EIm += 'Result' else
-          begin
-            res_EIm += arg.name;
-            res_EIm += '_qr';
-          end;
-          
-          //TODO вместо max_arg_w тут надо что то отдельное, потому что не все проходят это условие
-          res_EIm += if arg.t.ArrLvl<>0 then arg_name else arg_name.PadLeft(max_arg_w);
-          
-          res_EIm += '.Invoke';
-          res_EIm += if local_ptr_need then 'ToPtr' else 'ToAny';
-          
-          res_EIm += '); ';
-          //TODO #2654
-          if (settings as MethodSettings).arg_usage[arg.name]<>'ptr' then
-          begin
-            res_EIm += 'if ';
-            WriteQRName;
-            res_EIm += '.IsConst then ';
-          end;
-          res_EIm += 'enq_evs.AddL2(';
-          WriteQRName;
-          res_EIm += '.AttachInvokeActions(g))';
-          //TODO #2654
-          if (settings as MethodSettings).arg_usage[arg.name]<>'ptr' then
-          begin
-            res_EIm += ' else enq_evs.AddL1(';
-            WriteQRName;
-            res_EIm += '.AttachInvokeActions(g))';
-          end;
-          
-          if arg.t is MethodArgTypeArray then res_EIm += '; end';
-          loop arg.t.ArrLvl do res_EIm += ')';
+          WriteBasicArgInvoke(res_EIm, arg, settings);
+          exit;
         end;
         
+        var res_EIm := res_EIm; //TODO #???? (issue с 3 переменными)
+        
+        res_EIm += arg.name.PadLeft(max_arg_w);
+        res_EIm += '_qr := ';
+        
+        var arg_name := arg.name;
+        var arr_lvl := arg.t.ArrLvl;
+        for var i := 1 to arr_lvl do
+        begin
+          var n_arg_name := $'temp{i}';
+          
+          res_EIm += arg_name;
+          res_EIm += '.ConvertAll(';
+          res_EIm += n_arg_name;
+          res_EIm += '->';
+          
+          arg_name := n_arg_name;
+        end;
+        
+        res_EIm += 'invoker.InvokeBranch(';
+        //TODO Вместо max_arg_w тут надо что то отдельное, потому что не все проходят это условие
+        res_EIm += if arg.t.ArrLvl<>0 then arg_name else arg_name.PadLeft(max_arg_w);
+        res_EIm += '.Invoke';
+        res_EIm += to_ptr ? 'ToPtr' : 'ToAny';
+        res_EIm += ').AddToEvLst(g, enq_evs, ';
+        res_EIm += (not to_ptr).ToString;
+        res_EIm += ')';
+        
+        loop arr_lvl do res_EIm += ')';
         res_EIm += ';'#10;
       end;
       
+      {$endregion WriteArgInvoke}
+      
+      if any_val then
+        res_EIm += '      var l1_err_handler: CLTaskErrHandler;'#10;
+      
+      // At least one branch, all full separated
+      res_EIm += '      g.ParallelInvoke(nil, enq_c, invoker->'#10;
+      res_EIm += '      begin'#10;
+      
+      foreach var arg in invokeable_args do
+        WriteArgInvoke(arg, false);
+      
+      if any_val then
+        res_EIm += '        l1_err_handler := invoker.GroupHandlers;'#10;
+      
+      foreach var arg in invokeable_args do
+        WriteArgInvoke(arg, true);
+      
       res_EIm += '      end);'#10;
+      
+      if any_val then
+        res_EIm += '      Result.Item1 := l1_err_handler;'#10;
+      
     end;
     
     private procedure WriteCommandTypeInvoke(fn: string; max_arg_w: integer; settings: TSettings);
@@ -593,11 +586,11 @@ type
           if not settings.arg_usage.ContainsKey(arg.name) then
             Otp($'WARNING: arg [{arg.name}] is defined for {fn}({settings.args_str}), but never used');
       
-      WriteParamInvokes(max_arg_w, settings);
+      WriteParamInvokes(fn, max_arg_w, settings);
       
       res_EIm += '      '#10;
       
-      res_EIm += '      Result := (o, cq, evs)->'#10;
+      res_EIm += '      Result.Item2 := (o, cq, evs)->'#10;
       res_EIm += '      begin'#10;
       
       {$region param .GetRes's}
@@ -841,7 +834,7 @@ type
         res_EIm += '    '#10;
       end;
       
-      res_EIm += '    protected function EnqEvCapacity: integer; override := ';
+      res_EIm += '    protected function ExpectedEnqCount: integer; override := ';
       begin
         var param_count := new List<MethodArgEvCount>;
         if settings.args<>nil then

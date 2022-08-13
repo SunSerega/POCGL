@@ -517,14 +517,24 @@ begin
   Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArray3&<TRecord>(a, a_ind1, a_ind2, a_ind3, pattern_byte_len, mem_offset, fill_byte_len));
 end;
 
-function CLMemory.FillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemory; where TRecord: record;
+function CLMemory.FillArraySegment<TRecord>(a: CommandQueue<ArraySegment<TRecord>>): CLMemory; where TRecord: record;
 begin
   Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArraySegment&<TRecord>(a));
 end;
 
-function CLMemory.FillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
+function CLMemory.FillArraySegment<TRecord>(a: CommandQueue<ArraySegment<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
 begin
   Result := CLContext.Default.SyncInvoke(self.MakeCCQ.ThenFillArraySegment&<TRecord>(a, mem_offset, fill_byte_len));
+end;
+
+function CLMemory.FillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemory; where TRecord: record;
+begin
+  Result := FillArraySegment(CQ(a));
+end;
+
+function CLMemory.FillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemory; where TRecord: record;
+begin
+  Result := FillArraySegment(CQ(a),mem_offset,fill_byte_len);
 end;
 
 function CLMemory.FillData(ptr: CommandQueue<IntPtr>; pattern_byte_len: CommandQueue<integer>): CLMemory;

@@ -10,7 +10,7 @@ type
   where T: record;
     private ind: CommandQueue<integer>;
     
-    protected function EnqEvCapacity: integer; override := 1;
+    protected function ExpectedEnqCount: integer; override := 1;
     
     public constructor(ccq: CLArrayCCQ<T>; ind: CommandQueue<integer>);
     begin
@@ -25,15 +25,19 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<&T>): EnqFunc<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<&T>): ParamInvRes<CLArray<T>>; override;
     begin
       var ind_qr: QueueRes<integer>;
-      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
-      begin
-        ind_qr := invoker.InvokeBranch&<QueueRes<integer>>(ind.InvokeToAny); if ind_qr.IsConst then enq_evs.AddL2(ind_qr.AttachInvokeActions(g)) else enq_evs.AddL1(ind_qr.AttachInvokeActions(g));
-      end);
       
-      Result := (o, cq, evs)->
+      var l1_err_handler: CLTaskErrHandler;
+      g.ParallelInvoke(nil, enq_c, invoker->
+      begin
+        ind_qr := invoker.InvokeBranch(ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
+        l1_err_handler := invoker.GroupHandlers;
+      end);
+      Result.Item1 := l1_err_handler;
+      
+      Result.Item2 := (o, cq, evs)->
       begin
         var ind := ind_qr.GetResDirect;
         var res_ev: cl_event;
@@ -80,7 +84,7 @@ type
   CLArrayCommandGetArrayAutoSize<T> = sealed class(EnqueueableGetCommand<CLArray<T>, array of &T>)
   where T: record;
     
-    protected function EnqEvCapacity: integer; override := 0;
+    protected function ExpectedEnqCount: integer; override := 0;
     
     public constructor(ccq: CLArrayCCQ<T>);
     begin
@@ -90,10 +94,11 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of &T>): EnqFunc<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of &T>): ParamInvRes<CLArray<T>>; override;
     begin
+      Result.Item1 := new CLTaskErrHandlerEmpty;
       
-      Result := (o, cq, evs)->
+      Result.Item2 := (o, cq, evs)->
       begin
         var res := new T[o.Length];
         own_qr.SetRes(res);
@@ -135,7 +140,7 @@ type
   where T: record;
     private len: CommandQueue<integer>;
     
-    protected function EnqEvCapacity: integer; override := 1;
+    protected function ExpectedEnqCount: integer; override := 1;
     
     public constructor(ccq: CLArrayCCQ<T>; len: CommandQueue<integer>);
     begin
@@ -150,15 +155,19 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of &T>): EnqFunc<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array of &T>): ParamInvRes<CLArray<T>>; override;
     begin
       var len_qr: QueueRes<integer>;
-      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
-      begin
-        len_qr := invoker.InvokeBranch&<QueueRes<integer>>(len.InvokeToAny); if len_qr.IsConst then enq_evs.AddL2(len_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len_qr.AttachInvokeActions(g));
-      end);
       
-      Result := (o, cq, evs)->
+      var l1_err_handler: CLTaskErrHandler;
+      g.ParallelInvoke(nil, enq_c, invoker->
+      begin
+        len_qr := invoker.InvokeBranch(len.InvokeToAny).AddToEvLst(g, enq_evs, True);
+        l1_err_handler := invoker.GroupHandlers;
+      end);
+      Result.Item1 := l1_err_handler;
+      
+      Result.Item2 := (o, cq, evs)->
       begin
         var len := len_qr.GetResDirect;
         var res := new &T[len];
@@ -211,7 +220,7 @@ type
     private len1: CommandQueue<integer>;
     private len2: CommandQueue<integer>;
     
-    protected function EnqEvCapacity: integer; override := 2;
+    protected function ExpectedEnqCount: integer; override := 2;
     
     public constructor(ccq: CLArrayCCQ<T>; len1,len2: CommandQueue<integer>);
     begin
@@ -228,17 +237,21 @@ type
       len2.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,] of &T>): EnqFunc<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,] of &T>): ParamInvRes<CLArray<T>>; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
-      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
-      begin
-        len1_qr := invoker.InvokeBranch&<QueueRes<integer>>(len1.InvokeToAny); if len1_qr.IsConst then enq_evs.AddL2(len1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len1_qr.AttachInvokeActions(g));
-        len2_qr := invoker.InvokeBranch&<QueueRes<integer>>(len2.InvokeToAny); if len2_qr.IsConst then enq_evs.AddL2(len2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len2_qr.AttachInvokeActions(g));
-      end);
       
-      Result := (o, cq, evs)->
+      var l1_err_handler: CLTaskErrHandler;
+      g.ParallelInvoke(nil, enq_c, invoker->
+      begin
+        len1_qr := invoker.InvokeBranch(len1.InvokeToAny).AddToEvLst(g, enq_evs, True);
+        len2_qr := invoker.InvokeBranch(len2.InvokeToAny).AddToEvLst(g, enq_evs, True);
+        l1_err_handler := invoker.GroupHandlers;
+      end);
+      Result.Item1 := l1_err_handler;
+      
+      Result.Item2 := (o, cq, evs)->
       begin
         var len1 := len1_qr.GetResDirect;
         var len2 := len2_qr.GetResDirect;
@@ -298,7 +311,7 @@ type
     private len2: CommandQueue<integer>;
     private len3: CommandQueue<integer>;
     
-    protected function EnqEvCapacity: integer; override := 3;
+    protected function ExpectedEnqCount: integer; override := 3;
     
     public constructor(ccq: CLArrayCCQ<T>; len1,len2,len3: CommandQueue<integer>);
     begin
@@ -317,19 +330,23 @@ type
       len3.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,,] of &T>): EnqFunc<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<array[,,] of &T>): ParamInvRes<CLArray<T>>; override;
     begin
       var len1_qr: QueueRes<integer>;
       var len2_qr: QueueRes<integer>;
       var len3_qr: QueueRes<integer>;
-      g.ParallelInvoke(nil, enq_evs.Capacity-1, invoker->
-      begin
-        len1_qr := invoker.InvokeBranch&<QueueRes<integer>>(len1.InvokeToAny); if len1_qr.IsConst then enq_evs.AddL2(len1_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len1_qr.AttachInvokeActions(g));
-        len2_qr := invoker.InvokeBranch&<QueueRes<integer>>(len2.InvokeToAny); if len2_qr.IsConst then enq_evs.AddL2(len2_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len2_qr.AttachInvokeActions(g));
-        len3_qr := invoker.InvokeBranch&<QueueRes<integer>>(len3.InvokeToAny); if len3_qr.IsConst then enq_evs.AddL2(len3_qr.AttachInvokeActions(g)) else enq_evs.AddL1(len3_qr.AttachInvokeActions(g));
-      end);
       
-      Result := (o, cq, evs)->
+      var l1_err_handler: CLTaskErrHandler;
+      g.ParallelInvoke(nil, enq_c, invoker->
+      begin
+        len1_qr := invoker.InvokeBranch(len1.InvokeToAny).AddToEvLst(g, enq_evs, True);
+        len2_qr := invoker.InvokeBranch(len2.InvokeToAny).AddToEvLst(g, enq_evs, True);
+        len3_qr := invoker.InvokeBranch(len3.InvokeToAny).AddToEvLst(g, enq_evs, True);
+        l1_err_handler := invoker.GroupHandlers;
+      end);
+      Result.Item1 := l1_err_handler;
+      
+      Result.Item2 := (o, cq, evs)->
       begin
         var len1 := len1_qr.GetResDirect;
         var len2 := len2_qr.GetResDirect;

@@ -50,7 +50,7 @@ OpenCLABCInternalException.RaiseIfError(ec);
 
 
 # FillArraySegment![%AutoSize:AutoSize,%]
-a: ArraySegment<TRecord>{%AutoSize?: ; mem_offset, fill_byte_len\: CommandQueue<integer> %}
+a: CommandQueue<ArraySegment<TRecord>>{%AutoSize?: ; mem_offset, fill_byte_len\: CommandQueue<integer> %}
 !Enqueue
 var ec := cl.EnqueueFillBuffer(
   cq, o.Native,
@@ -59,6 +59,11 @@ var ec := cl.EnqueueFillBuffer(
   !evs!
 );
 OpenCLABCInternalException.RaiseIfError(ec);
+
+# FillArraySegment![%AutoSize:AutoSize,%]
+a: ArraySegment<TRecord>{%AutoSize?: ; mem_offset, fill_byte_len\: CommandQueue<integer> %}
+!ShortDef
+FillArraySegment(CQ(a){%AutoSize?: ,mem_offset,fill_byte_len %});
 
 
 

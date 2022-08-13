@@ -43,6 +43,32 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO Properties должны генерироваться с описанием "///--"
+// - А кодогенератор описаний должен игнорировать содержимое этих классов
+// - Таким образом будет меньше мусора в .skipped
+//TODO И тогда совместить skipped и missing, потому что у всего из skipped вообще должны быть описания
+
+//TODO Вместо g.GetCQ(need_async_inv) лучше хранить ивент, после которого можно будет вызывать cl.Enqueue
+// - Но порядок ивент-колбеков неопределён, поэтому надо сделать какую то магию с Interlocked
+// - Или ConcurrentQueue?
+//TODO А что если ещё один need_async_inv, пока предыдущий список ещё не выполнился
+//TODO Сейчас GetCQ вызывается перед проверкой на ошибки от ev_l1
+// - В случае need_async_inv - не знаю как это исправить без этой ConcurrentQueue
+
+//TODO Тесты:
+// - "V.WriteValue(HQFQ(raise))"
+// - "V.WriteValue(HTFQ(raise))"
+// - (отмена enq до и после cl.Enqueue)
+
+//TODO После cl.Enqueue нужно в любом случае UserEvent
+// - Следующие команды игнорирует ошибку в ивенте на 2/3 реализациях, если она не в UserEvent
+// - А в колбеке ивента команды надо сначала проверять ошибки prev_ev, потому что их может скопировать в ивент команды
+// - Хотя должно быть достаточно .HadError перед проверкой
+// - Или нет, если в одном ивенте ошибка, а другой всё ещё ждёт
+// - Вообще это более общая проблема... В общем надо колбек делать для (prev_ev+enq_ev), чтобы дальше не продолжать пока всё не сработает
+
+//TODO Пора бы почистить TODO в кодогенераторах - куча давно закрытых issue
+
 //TODO Получается, HFQ(()->A).MakeCCQ.DiscardResult не выполняет HFQ?
 // - (уже исправил)
 // - Проверки в CLTask, если очередь инициализировалась но не выполнилась?
@@ -50,9 +76,14 @@ unit OpenCLABC;
 //TODO .MU в CCQ это костыль
 // - Выполняется куча всего лишнего
 // - Результат хранится в CLTask, хотя используется только в 1 выполнении CCQ
+// --- То же самое в .MultiuseFor
 
 //TODO Тесты:
 // - MU + HQPQ + MU + HQPQ + MU
+// --- Ивент от MU должно добавить только 1 раз
+// - (HQPQ(raise)+MU).Handle[ + MU]
+// --- Ивент от MU не добавляется второй раз
+// --- Поидее его добавляет первый раз, даже если ошибка
 
 //TODO Что будет если из g.ParallelInvoke выполнить что то НЕ инвокером
 // - В любом случае добавить специальные проверки адекватности на время дебага
@@ -75,44 +106,10 @@ unit OpenCLABC;
 //TODO CQ().ThenUse[.Cast]
 // - Должно быть HPQ+CQ в обоих случаях
 
-//TODO Ошибки в очередях из ev_l1 должны отменять вызов enq_f
-// - При чём даже если ev_l1 пустой (к примеру .ThenQuick(raise) без prev_ev)
-// - Иначе .GetResDirect вызывается на очередях, которые не закончили выполняться
-// --- Проявляется на "CLABC\02\07\~08\QuickParOrder"
-// - Но использовать общий .HadError нельзя, потому что ev_l2 может ещё добавить свои ошибки
-// - Наверное придётся разделить хэндлеры ошибок...
-//TODO То есть надо разделить g.ParallelInvoke на 2 половины:
-// - При этом нужен общий invoker, потому что очереди с константным QR попадают в ev_l2
-// --- А это можно узнать только после вызова .InvokeTo*
-// --- Или нет, стоп, я всё равно хотел сделать такую оптимизацию
-// --- Тогда можно создавать 2 версии каждой очереди (общим шаблоном):
-// --- 1. Всегда константный вход
-// --- 2. Всегда вычисляемый на лету вход
-//TODO Тесты:
-// - "V.WriteValue(HQFQ(raise))"
-// - "V.WriteValue(HTFQ(raise))"
-// - (отмена enq до и после cl.Enqueue)
-//TODO После cl.Enqueue нужно в любом случае UserEvent
-// - Следующие команды игнорирует ошибку в ивенте на 2/3 реализациях, если она не в UserEvent
-// - А в колбеке ивента команды надо сначала проверять ошибки prev_ev, потому что их может скопировать в ивент команды
-// - Хотя должно быть достаточно .HadError перед проверкой
-// - Или нет, если в одном ивенте ошибка, а другой всё ещё ждёт
-// - Вообще это более общая проблема... В общем надо колбек делать для (prev_ev+enq_ev), чтобы дальше не продолжать пока всё не сработает
-
 //TODO Тесты:
 // - "HTPQ(raise) + CCQ" выполнялось как "HTPQ >= CCQ"
 
-//TODO Вместо g.GetCQ(need_async_inv) лучше хранить ивент, после которого можно будет вызывать cl.Enqueue
-// - Но порядок ивент-колбеков неопределён, поэтому надо сделать какую то магию с Interlocked
-// - Или ConcurrentQueue?
-//TODO А что если ещё один need_async_inv, пока предыдущий список ещё не выполнился
-
 //TODO Каким, всё же, считает generic KernelArg: Global или Constant?
-
-//TODO Properties должны генерироваться с описанием "///--"
-// - А кодогенератор описаний должен игнорировать содержимое этих классов
-// - Таким образом будет меньше мусора в .skipped
-//TODO И тогда совместить skipped и missing, потому что у всего из skipped вообще должны быть описания
 
 //TODO Улучшить систему описаний:
 // - Описание для unit
@@ -361,7 +358,7 @@ unit OpenCLABC;
 
 {$endregion TODO}
 
-{$region Bugs}
+{$region Upstream bugs}
 
 //TODO Issue компилятора:
 //TODO https://github.com/pascalabcnet/pascalabcnet/issues/{id}
@@ -372,10 +369,7 @@ unit OpenCLABC;
 // - #2607
 // - #2610
 
-//TODO Баги Intel
-// - https://community.intel.com/t5/Graphics/OpenCL-clSetEventCallback-with-callback-calling-clReleaseEvent/m-p/1385934
-
-{$endregion}
+{$endregion Upstream bugs}
 
 interface
 
@@ -4074,50 +4068,49 @@ type
     
     public property Capacity: integer read evs.Length;
     
+    {$ifdef DEBUG}
+    private procedure CheckFill(exp_done: boolean);
+    begin
+      var done_c := c1+c2+skipped;
+      if (done_c=Capacity) <> exp_done then raise new OpenCLABCInternalException(
+        if exp_done then
+          $'Too much EnqEv capacity: {done_c}/{evs.Length} used' else
+          $'Not enough EnqEv capacity'
+      );
+    end;
+    {$endif DEBUG}
+    
     public procedure AddL1(ev: EventList);
     begin
       {$ifdef DEBUG}
-      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
+      CheckFill(false);
+      if ev.count=0 then raise new OpenCLABCInternalException($'Empty event');
       {$endif DEBUG}
-      if ev.count=0 then
-        {$ifdef DEBUG}skipped += 1{$endif} else
-      begin
-        evs[c1] := ev;
-        c1 += 1;
-      end;
+      evs[c1] := ev;
+      c1 += 1;
     end;
     public procedure AddL2(ev: EventList);
     begin
       {$ifdef DEBUG}
-      if c1+c2+skipped = evs.Length then raise new OpenCLABCInternalException($'Not enough EnqEv capacity');
+      CheckFill(false);
+      if ev.count=0 then raise new OpenCLABCInternalException($'Empty event');
       {$endif DEBUG}
-      if ev.count=0 then
-        {$ifdef DEBUG}skipped += 1{$endif} else
-      begin
-        c2 += 1;
-        evs[evs.Length-c2] := ev;
-      end;
+      c2 += 1;
+      evs[evs.Length-c2] := ev;
     end;
-    
-    private procedure CheckDone;
-    begin
-      {$ifdef DEBUG}
-      if c1+c2+skipped <> evs.Length then raise new OpenCLABCInternalException($'Too much EnqEv capacity: {c1+c2+skipped}/{evs.Length} used');
-      {$endif DEBUG}
-    end;
+    {$ifdef DEBUG}
+    private procedure FakeAdd := skipped += 1;
+    {$endif DEBUG}
     
     public function MakeLists: ValueTuple<EventList, EventList>;
     begin
-      CheckDone;
+      {$ifdef DEBUG}
+      CheckFill(true);
+      {$endif DEBUG}
       Result := ValueTuple.Create(
         EventList.Combine(new ArraySegment<EventList>(evs,0,c1)),
         EventList.Combine(new ArraySegment<EventList>(evs,evs.Length-c2,c2))
       );
-    end;
-    public function CombineAll: EventList;
-    begin
-      CheckDone;
-      Result := EventList.Combine(evs);
     end;
     
   end;
@@ -4565,7 +4558,8 @@ type
     begin
       Result := done.TrySet(true);
       if not Result then exit;
-      //TODO INTEL#1385934
+      // - Old INTEL drivers break if callback invoked by SetUserEventStatus deletes own event
+      //TODO Delete this retain/release pair at some point
       OpenCLABCInternalException.RaiseIfError(cl.RetainEvent(uev));
       try
         OpenCLABCInternalException.RaiseIfError(
@@ -4959,11 +4953,15 @@ type
     
     public function MakeWrapWithImpl(new_ev: EventList): IQueueRes; abstract;
     
+    {$ifdef DEBUG}
+    private procedure CancelStatusCheck(reason: string) :=
+    ResEv.Release({$ifdef EventDebug}$'cancel status check of {TypeName(self)}[{self.GetHashCode}], because {reason}'{$endif});
+    {$endif DEBUG}
     public function TakeBaseOut: QueueResData;
     begin
       Result := self.base;
       {$ifdef DEBUG}
-      ResEv.Release({$ifdef EventDebug}$'cancel status check of {TypeName(self)}[{self.GetHashCode}], because base was taken out'{$endif});
+      CancelStatusCheck($'base was taken out');
       {$endif DEBUG}
       self.base := default(QueueResData);
       {$ifdef DEBUG}
@@ -5036,8 +5034,13 @@ type
         for var i := 0 to ResEv.count-1 do
         begin
           err += #10#9;
+          err += ResEv[i].ToString;
+          err += ': ';
           err += EventList.GetStatus(ResEv[i]).ToString;
         end;
+        {$ifdef EventDebug}
+        EventDebug.ReportEventLogs(Console.Error);
+        {$endif EventDebug}
         raise new OpenCLABCInternalException(err.ToString);
       end;
       ResEv.Release({$ifdef EventDebug}$'after status check of {TypeName(self)}[{self.GetHashCode}]'{$endif});
@@ -5158,7 +5161,7 @@ type
     
   end;
   
-  QueueResPtr<T> = sealed class(QueueRes<T>)
+  QueueResPtr<T> = sealed partial class(QueueRes<T>)
     private data: NativeValueArea<QueueResPtrData<T>>;
     
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:QueueResPtr%');
@@ -5200,7 +5203,8 @@ type
     public function GetResPtrForRead: ^T;
     begin
       {$ifdef DEBUG}
-      CheckStatus;
+      // The whole point of QRPtr is to not wait for ev before enq
+      CancelStatusCheck($'result would be read from ptr');
       {$endif DEBUG}
       Result := GetResPtrImpl;
     end;
@@ -5314,6 +5318,36 @@ end;
 
 {$endregion TrySkipInvoke}
 
+{$region AddToEvLst}
+
+type
+  QueueRes<T> = abstract partial class
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static function AddToEvLst<TR>(qr: TR; g: CLTaskGlobalData; evs: DoubleEventListList; to_l1: boolean): TR; where TR: QueueRes<T>;
+    begin
+      var ev := qr.AttachInvokeActions(g);
+      if ev.count=0 then
+        {$ifdef DEBUG}evs.FakeAdd{$endif} else
+      if to_l1 and not qr.IsConst then
+        evs.AddL1(ev) else
+        evs.AddL2(ev);
+      Result := qr;
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AddToEvLst(g: CLTaskGlobalData; evs: DoubleEventListList; to_l1: boolean) := AddToEvLst(self, g, evs, to_l1);
+    
+  end;
+  QueueResPtr<T> = sealed partial class
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AddToEvLst(g: CLTaskGlobalData; evs: DoubleEventListList; to_l1: boolean) := AddToEvLst(self, g, evs, to_l1);
+    
+  end;
+  
+{$endregion AddToEvLst}
+
 {$endregion Impl}
 
 {$endregion QueueRes}
@@ -5362,11 +5396,18 @@ type
     private make_base_err_handler: ()->CLTaskErrHandler;
     private branch_handlers := new List<CLTaskErrHandler>;
     
+    {$ifdef DEBUG}
+    private missing_handler_c: integer;
+    {$endif DEBUG}
+    
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     constructor(g: CLTaskGlobalData; prev_ev: EventList?; capacity: integer);
     begin
       self.g := g;
       self.prev_ev := prev_ev;
+      {$ifdef DEBUG}
+      self.missing_handler_c := capacity;
+      {$endif DEBUG}
       
       if g.curr_inv_cq<>cl_command_queue.Zero then
       begin
@@ -5393,13 +5434,13 @@ type
       g.prev_mu := nil;
       {$endif DEBUG}
       
-      self.branch_handlers.Capacity := capacity;
       if prev_ev=nil then
         self.make_base_err_handler := ()->new CLTaskErrHandlerEmpty else
       begin
         var origin_handler := g.curr_err_handler;
         self.make_base_err_handler := ()->new CLTaskErrHandlerBranchBud(origin_handler);
       end;
+      self.branch_handlers.Capacity := capacity;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
@@ -5435,6 +5476,22 @@ type
       end;
       
       branch_handlers += g.curr_err_handler;
+      {$ifdef DEBUG}
+      missing_handler_c -= 1;
+      {$endif DEBUG}
+    end;
+    
+    function GroupHandlers: CLTaskErrHandler;
+    begin
+      {$ifdef DEBUG}
+      if prev_ev<>nil then
+        raise new OpenCLABCInternalException($'Only expected to be used for l1/l2 separation');
+      if branch_handlers.Count=0 then
+        raise new OpenCLABCInternalException($'Optimization possible');
+      {$endif DEBUG}
+      Result := new CLTaskErrHandlerBranchCombinator(new CLTaskErrHandlerEmpty, branch_handlers.ToArray);
+      branch_handlers.Clear;
+      branch_handlers += Result;
     end;
     
   end;
@@ -5442,7 +5499,7 @@ type
   CLTaskGlobalData = sealed partial class
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure ParallelInvoke(l: CLTaskLocalData?; capacity: integer; use: Action<CLTaskBranchInvoker>);
+    procedure ParallelInvoke(l: CLTaskLocalData?; capacity: integer; use: CLTaskBranchInvoker->());
     begin
       var prev_ev := default(EventList?);
       if l<>nil then
@@ -5453,14 +5510,13 @@ type
         prev_ev := ev;
       end;
       
-      var invoker := new CLTaskBranchInvoker(self, prev_ev, capacity);
       var origin_handler := self.curr_err_handler;
-      
+      var invoker := new CLTaskBranchInvoker(self, prev_ev, capacity);
       use(invoker);
       
       {$ifdef DEBUG}
-      if invoker.branch_handlers.Count<>capacity then
-        raise new OpenCLABCInternalException($'{invoker.branch_handlers.Count} <> {capacity}');
+      if invoker.missing_handler_c<>0 then
+        raise new OpenCLABCInternalException($'Missing {invoker.missing_handler_c} parallel branches of {capacity}');
       {$endif DEBUG}
       self.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_handler, invoker.branch_handlers.ToArray);
       
@@ -6842,10 +6898,12 @@ type
       end;
       g.curr_err_handler := new CLTaskErrHandlerThiefRepeater(g.curr_err_handler, res_data.err_handler);
       
-      res_data.ev.Retain({$ifdef EventDebug}$'for all mu branches'{$endif});
-      
       if g.prev_mu.Add(self) then
-        Result := make_wrap(qr, res_data.ev + l.AttachInvokeActions(g)) else
+      begin
+        // "all", except Q+Q, because q's in g.prev_mu are already waited upon
+        res_data.ev.Retain({$ifdef EventDebug}$'for all mu branches'{$endif});
+        Result := make_wrap(qr, res_data.ev + l.AttachInvokeActions(g));
+      end else
       begin
         Result := make_wrap(qr, l.prev_ev);
         Result.AddActions(l.prev_delegate);
@@ -9000,6 +9058,9 @@ type
   EnqRes = ValueTuple<EventList, QueueResAction>;
   EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): DirectEnqRes;
   
+  ParamInvRes<T> = ValueTuple<CLTaskErrHandler, EnqFunc<T>>;
+  InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<T>;
+  
   EnqueueableCore = static class
     
     private static function ExecuteEnqFunc<T>(
@@ -9007,31 +9068,32 @@ type
       cq: cl_command_queue;
       ev_l2: EventList;
       enq_f: EnqFunc<T>;
-      err_handler: CLTaskErrHandler
-      {$ifdef DEBUG}; err_test_reason: string{$endif DEBUG}
+      l1_err_handler,l2_err_handler: CLTaskErrHandler
+      {$ifdef DEBUG}; err_test_reason: string{$endif}
       {$ifdef EventDebug}; q: object{$endif}
     ): EnqRes;
     begin
-      {$ifdef DEBUG}
-      if prev_res=default(t) then
-        raise new OpenCLABCInternalException($'NULL Native');
-      {$endif DEBUG}
-      Result := new EnqRes(ev_l2, nil);
-      
       var direct_enq_res: DirectEnqRes;
       try
+        {$ifdef DEBUG}
+        if prev_res=default(t) then
+          raise new OpenCLABCInternalException($'NULL Native');
+        {$endif DEBUG}
+        Result := new EnqRes(ev_l2, nil);
+        if l1_err_handler.HadError then exit;
+        
         try
           direct_enq_res := enq_f(prev_res, cq, ev_l2);
         except
           on e: Exception do
           begin
-            err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
+            l1_err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
             exit;
           end;
         end;
       finally
         {$ifdef DEBUG}
-        err_handler.EndMaybeError(err_test_reason);
+        l1_err_handler.EndMaybeError(err_test_reason);
         {$endif DEBUG}
       end;
       
@@ -9042,62 +9104,58 @@ type
       EventDebug.RegisterEventRetain(enq_ev, $'Enq by {TypeName(q)}, waiting on [{ev_l2.evs?.JoinToString}]');
       {$endif EventDebug}
       // 1. ev_l2 can only be released after executing dependant command
-      // 2. If event in ev_l2 would receive error, enq_ev would not give descriptive error
+      // 2. If event in ev_l2 would complete with error, enq_ev would have non-descriptive error code
       Result := new EnqRes(ev_l2+enq_ev, act);
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     static function Invoke<T>(
-      enq_ev_capacity: integer;
+      enq_c: integer;
       o_const: boolean; get_o: ()->T;
       g: CLTaskGlobalData; l: CLTaskLocalData;
-      invoke_params: (CLTaskGlobalData, DoubleEventListList)->EnqFunc<T>;
+      invoke_params: InvokeParamsFunc<T>;
       on_err: ErrorCode->()
       {$ifdef DEBUG}; q: object{$endif}
     ): EnqRes;
     begin
       
-      var pre_params_handler := g.curr_err_handler;
-      var enq_evs := new DoubleEventListList(enq_ev_capacity+1);
-      var enq_f := invoke_params(g, enq_evs);
+      var enq_evs := new DoubleEventListList(enq_c+1);
+      var (l1_err_handler, enq_f) := invoke_params(enq_c, o_const, g, enq_evs);
+      var l2_err_handler := g.curr_err_handler;
+      
       var need_async_inv := (enq_evs.c1<>0) or not o_const;
       begin
         // If ExecuteEnqFunc (and so prev_qr.GetRes) is insta called
         // There is no point in creating another event for actions
         var start_ev := if not need_async_inv then
           l.prev_ev else l.AttachInvokeActions(g);
+        
+        if start_ev.count=0 then
+          {$ifdef DEBUG}enq_evs.FakeAdd{$endif} else
         if not o_const then
           enq_evs.AddL1(start_ev) else
           enq_evs.AddL2(start_ev);
-      end;
-      
-      // After invoke_params, because parameters
-      // should not care about prev events and errors
-      //TODO "l.prev_delegate" has not been invoked yet
-      if pre_params_handler.HadError then
-      begin
-        Result := new EnqRes(enq_evs.CombineAll, nil);
-        exit;
+        
       end;
       var (ev_l1, ev_l2) := enq_evs.MakeLists;
       
       // When need_async_inv, cq needs to be secured for thread safety
       // Otherwise, next command can be written before current one
+      //TODO Created even if l1_err_handler had errors
       var cq := g.GetCQ(need_async_inv);
       {$ifdef QueueDebug}
       QueueDebug.Add(cq, TypeName(q));
       {$endif QueueDebug}
       
-      var post_params_handler := g.curr_err_handler;
       {$ifdef DEBUG}
       var err_test_reason := $'[{q.GetHashCode}]:{TypeName(q)}.ExecuteEnqFunc';
-      post_params_handler.AddMaybeError(err_test_reason);
+      l1_err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
       
       if not need_async_inv then
       begin
         l.prev_delegate.Invoke(g.c);
-        Result := ExecuteEnqFunc(get_o(), cq, ev_l2, enq_f, post_params_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}{$ifdef EventDebug}, q{$endif});
+        Result := ExecuteEnqFunc(get_o(), cq, ev_l2, enq_f, l1_err_handler,l2_err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}{$ifdef EventDebug}, q{$endif});
       end else
       begin
         var res_ev := new UserEvent(g.cl_c
@@ -9106,13 +9164,13 @@ type
         
         ev_l1.MultiAttachCallback(()->
         begin
-          var (enq_ev, enq_act) := ExecuteEnqFunc(get_o(), cq, ev_l2, enq_f, post_params_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}{$ifdef EventDebug}, q{$endif});
+          var (enq_ev, enq_act) := ExecuteEnqFunc(get_o(), cq, ev_l2, enq_f, l1_err_handler,l2_err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}{$ifdef EventDebug}, q{$endif});
           OpenCLABCInternalException.RaiseIfError( cl.Flush(cq) );
           enq_ev.MultiAttachCallback(()->
           begin
             if enq_act<>nil then enq_act(g.c);
             g.ReturnCQ(cq);
-            res_ev.SetComplete(post_params_handler.HadError);
+            res_ev.SetComplete(l2_err_handler.HadError);
           end{$ifdef EventDebug}, $'propagating Enq ev of {TypeName(q)} to res_ev: {res_ev.uev}'{$endif});
         end{$ifdef EventDebug}, $'calling async Enq of {TypeName(q)}'{$endif});
         
@@ -9132,8 +9190,9 @@ type
     
     protected function TryPreCall(q: CommandQueue<T>): boolean; override := false;
     
-    protected function EnqEvCapacity: integer; abstract;
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList): EnqFunc<T>; abstract;
+    protected function ExpectedEnqCount: integer; abstract;
+    
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<T>; abstract;
     protected procedure ProcessError(ec: ErrorCode);
     begin
       var TODO := 0; //TODO abstract
@@ -9156,7 +9215,7 @@ type
       end;
       
       var (enq_ev, enq_act) := EnqueueableCore.Invoke(
-        self.EnqEvCapacity, o_const, get_o, g, l,
+        self.ExpectedEnqCount, o_const, get_o, g, l,
         InvokeParams, ProcessError
         {$ifdef DEBUG},self{$endif}
       );
@@ -9290,8 +9349,9 @@ type
       GetArgCache(q.expected_const_res); // Auto calls ApplyConstArgsTo
     end;
     
-    protected function EnqEvCapacity: integer; abstract;
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->CLKernelArgCache): EnqFunc<cl_kernel>; abstract;
+    protected function ExpectedEnqCount: integer; abstract;
+    
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->CLKernelArgCache): ParamInvRes<cl_kernel>; abstract;
     protected procedure ProcessError(ec: ErrorCode);
     begin
       var TODO := 0; //TODO abstract
@@ -9309,6 +9369,9 @@ type
         if args[i]=nil then continue;
         var (arg_setter, arg_ev) := self.args[i].Invoke(inv);
         Result[i] := arg_setter;
+        
+        if arg_ev.count=0 then
+          {$ifdef DEBUG}enq_evs.FakeAdd{$endif} else
         if not arg_setter.IsConst then
           enq_evs.AddL1(arg_ev) else
           enq_evs.AddL2(arg_ev);
@@ -9360,10 +9423,14 @@ type
           Result := arg_cache.ntv;
         end;
       
-      //TODO Надо ли "()->" перед arg_cache?
+      //TODO Надо ли "()->" перед arg_cache? Разница в том что:
+      // - Без "()->" его будет читать прямо перед вызовом InvokeParams
+      // - А сейчас его считает аж в EnqFunc<cl_kernel>
       var (enq_ev, enq_act) := EnqueueableCore.Invoke(
-        self.args_non_const_c+self.EnqEvCapacity, k_const, get_k_ntv, g, l,
-        (g, enq_evs)->InvokeParams(g, enq_evs, ()->arg_cache), ProcessError
+        self.ExpectedEnqCount+args_non_const_c, k_const, get_k_ntv, g, l,
+        (enq_c, o_const, g, enq_evs)->
+          InvokeParams(enq_c, o_const, g, enq_evs, ()->arg_cache),
+        ProcessError
         {$ifdef DEBUG},self{$endif}
       );
       
@@ -9387,8 +9454,9 @@ type
     public constructor(prev_commands: GPUCommandContainer<TObj>) :=
     self.prev_commands := prev_commands;
     
-    protected function EnqEvCapacity: integer; abstract;
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRes>): EnqFunc<TObj>; abstract;
+    protected function ExpectedEnqCount: integer; abstract;
+    
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRes>): ParamInvRes<TObj>; abstract;
     protected procedure ProcessError(ec: ErrorCode);
     begin
       var TODO := 0; //TODO abstract
@@ -9404,8 +9472,10 @@ type
         l := prev_qr.TakeBaseOut;
         
         var (enq_ev, enq_act) := EnqueueableCore.Invoke(
-          self.EnqEvCapacity, inp_const, prev_qr.GetResDirect, g, l,
-          (g, enq_evs)->InvokeParams(g, enq_evs, qr), ProcessError
+          self.ExpectedEnqCount, inp_const, prev_qr.GetResDirect, g, l,
+          (enq_c, o_const, g, enq_evs)->
+            InvokeParams(enq_c, o_const, g, enq_evs, qr),
+          ProcessError
           {$ifdef DEBUG},self{$endif}
         );
         

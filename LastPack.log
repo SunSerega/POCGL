@@ -335,20 +335,7 @@ Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~02#Cast\0]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~08#HostExec\QuickParOrder]
-Tester: Testing.FatalTestingException: OpenCLABC.OpenCLABCInternalException: Result read before 1 events completed:
-	SUBMITTED
-   at OpenCLABC_implementation______.QueueRes`1.CheckStatus() in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 9681
-   at OpenCLABC_implementation______.QueueResPtr`1.GetResPtrForRead() in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 9842
-   at OpenCLABC_implementation______.<>local_variables_class_317`1.<>lambda374(CLArray`1 <>o, cl_command_queue <>cq, EventList <>evs) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 26642
-   at OpenCLABC_implementation______.EnqueueableCore.ExecuteEnqFunc[T](T prev_res, cl_command_queue cq, EventList ev_l2, EnqFunc`1 enq_f, CLTaskErrHandler err_handler, String err_test_reason, Object q) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 17294
---- End of stack trace from previous location where exception was thrown ---
-   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
-   at OpenCLABC_implementation______.CLTaskErrHandler.AddErr(Exception e, String test_reason) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 8789
-   at OpenCLABC_implementation______.EnqueueableCore.ExecuteEnqFunc[T](T prev_res, cl_command_queue cq, EventList ev_l2, EnqFunc`1 enq_f, CLTaskErrHandler err_handler, String err_test_reason, Object q) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 17298
-   at OpenCLABC_implementation______.<>local_variables_class_133`1.<>lambda173() in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 17379
-   at OpenCLABC_implementation______.EventList.InvokeAttachedCallback(cl_event ev, CommandExecutionStatus st, IntPtr data) in G:\0Prog\POCGL\Tests\LibSource\OpenCLABC.pas:line 8576
-   at Testing.ExecutingTest.FinishExecution()
-   at Tester.TestInfo.Execute()
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\0]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\ThrCount]

@@ -9,7 +9,7 @@ type
   CLValueCommandGetValue<T> = sealed class(EnqueueableGetPtrCommand<CLValue<T>, &T>)
   where T: record;
     
-    protected function EnqEvCapacity: integer; override := 0;
+    protected function ExpectedEnqCount: integer; override := 0;
     
     public constructor(ccq: CLValueCCQ<T>);
     begin
@@ -19,10 +19,11 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
-    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<&T>): EnqFunc<CLValue<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<&T>): ParamInvRes<CLValue<T>>; override;
     begin
+      Result.Item1 := new CLTaskErrHandlerEmpty;
       
-      Result := (o, cq, evs)->
+      Result.Item2 := (o, cq, evs)->
       begin
         var res_ev: cl_event;
         

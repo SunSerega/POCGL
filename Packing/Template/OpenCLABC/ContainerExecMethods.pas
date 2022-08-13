@@ -45,9 +45,9 @@ type
     
     protected procedure WriteInvokeHeader(settings: ExecMethodSettings); override;
     begin
-      res_EIm += '    protected function InvokeParams(g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->';
+      res_EIm += '    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->';
       res_EIm += t;
-      res_EIm += 'ArgCache): EnqFunc<cl_kernel>; override;'#10;
+      res_EIm += 'ArgCache): ParamInvRes<cl_kernel>; override;'#10;
     end;
     
     protected function GetSpecialInvokeResVars(settings: ExecMethodSettings): sequence of MethodArg; override := |ExecMethodSettings.arg_k_args|;
@@ -59,7 +59,7 @@ type
       wr += 'ArgSetter';
     end else inherited;
     protected procedure WriteBasicArgInvoke(wr: Writer; arg: MethodArg; settings: ExecMethodSettings); override :=
-    if arg=ExecMethodSettings.arg_k_args then wr += 'arg_setters := self.InvokeArgs(invoker, enq_evs)' else inherited;
+    if arg=ExecMethodSettings.arg_k_args then wr += 'arg_setters := self.InvokeArgs(invoker, enq_evs);'#10 else inherited;
     
     protected procedure WriteSpecialPreEnq(wr: Writer; settings: ExecMethodSettings); override :=
     wr += '        ApplySetters(get_arg_cache(), arg_setters);'#10;

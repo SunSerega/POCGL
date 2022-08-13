@@ -211,6 +211,10 @@
     
     public function ThenFillArray3<TRecord>(a: CommandQueue<array[,,] of TRecord>; a_ind1,a_ind2,a_ind3, pattern_byte_len, mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
     
+    public function ThenFillArraySegment<TRecord>(a: CommandQueue<ArraySegment<TRecord>>): CLMemoryCCQ; where TRecord: record;
+    
+    public function ThenFillArraySegment<TRecord>(a: CommandQueue<ArraySegment<TRecord>>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
+    
     public function ThenFillArraySegment<TRecord>(a: ArraySegment<TRecord>): CLMemoryCCQ; where TRecord: record;
     
     public function ThenFillArraySegment<TRecord>(a: ArraySegment<TRecord>; mem_offset, fill_byte_len: CommandQueue<integer>): CLMemoryCCQ; where TRecord: record;
