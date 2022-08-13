@@ -1210,14 +1210,12 @@ type
       
       var cap := 1;
       var par_ind_div := new integer[org_par.Length];
-      var par_ind_mod := new integer[org_par.Length];
       for var par_i := org_par.Length-1 downto 0 do
       begin
         if is_proc and (par_i=0) then continue;
         
         par_ind_div[par_i] := cap;
         cap *= possible_par_types[par_i].Count;
-        par_ind_mod[par_i] := cap;
         
         possible_par_types[par_i].Sort((p1,p2)->
         begin
@@ -1274,7 +1272,7 @@ type
           for var par_i := 0 to ppt_inds.Length-1 do
           begin
             if is_proc and (par_i=0) then continue;
-            var ppt_ind := par_state mod par_ind_mod[par_i] div par_ind_div[par_i];
+            var ppt_ind := par_state div par_ind_div[par_i] mod possible_par_types[par_i].Count;
             if opt_arr[par_i] and (ppt_ind=0 <> only_arr_ovrs) then
             begin
               ppt_inds := nil;
