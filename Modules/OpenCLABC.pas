@@ -43,11 +43,6 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
-//TODO Properties должны генерироваться с описанием "///--"
-// - А кодогенератор описаний должен игнорировать содержимое этих классов
-// - Таким образом будет меньше мусора в .skipped
-//TODO И тогда совместить skipped и missing, потому что у всего из skipped вообще должны быть описания
-
 //TODO Вместо g.GetCQ(need_async_inv) лучше хранить ивент, после которого можно будет вызывать cl.Enqueue
 // - Но порядок ивент-колбеков неопределён, поэтому надо сделать какую то магию с Interlocked
 // - Или ConcurrentQueue?
@@ -978,6 +973,7 @@ type
   
   {$region EventDebug}{$ifdef EventDebug}
   
+  ///
   EventRetainReleaseData = record
     private is_release: boolean;
     private reason: string;
@@ -999,10 +995,12 @@ type
     
   end;
   //TODO #2680
+  ///
   TimeNString = auto class
     t: TimeSpan;
     s: string;
   end;
+  ///
   EventUseLog = sealed class
     private log_lines := new List<EventRetainReleaseData>;
     private ref_c := 0;
@@ -1040,6 +1038,7 @@ type
     end;
     
   end;
+  ///
   EventDebug = static class
     
     private static Logs := new ConcurrentDictionary<cl_event, EventUseLog>;
@@ -1108,6 +1107,7 @@ type
   
   {$region QueueDebug}{$ifdef QueueDebug}
   
+  ///
   QueueDebug = static class
     
     private static QueueUses := new ConcurrentDictionary<cl_command_queue, ConcurrentQueue<string>>;
@@ -1157,6 +1157,7 @@ type
   
   {$region WaitDebug}{$ifdef WaitDebug}
   
+  ///
   WaitDebug = static class
     
     private static WaitActions := new ConcurrentDictionary<object, ConcurrentQueue<string>>;
@@ -1190,6 +1191,7 @@ type
   
   {$region ExecDebug}{$ifdef ExecDebug}
   
+  ///
   ExecDebug = static class
     
     private static ExecCacheTries := new ConcurrentDictionary<string, ConcurrentQueue<(boolean,string)>>;

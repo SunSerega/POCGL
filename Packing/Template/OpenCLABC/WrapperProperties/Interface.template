@@ -3,6 +3,7 @@
   
   {$region CLPlatform}
   
+  ///
   CLPlatformProperties = partial class
     
     public constructor(ntv: cl_platform_id);
@@ -85,6 +86,7 @@
   
   {$region CLDevice}
   
+  ///
   CLDeviceProperties = partial class
     
     public constructor(ntv: cl_device_id);
@@ -1027,6 +1029,7 @@
   
   {$region CLSubDevice}
   
+  ///
   CLSubDeviceProperties = partial class(CLDeviceProperties)
     
     public constructor(ntv: cl_device_id);
@@ -1038,6 +1041,7 @@
   
   {$region CLContext}
   
+  ///
   CLContextProperties = partial class
     
     public constructor(ntv: cl_context);
@@ -1090,6 +1094,7 @@
   
   {$region CLCode}
   
+  ///
   CLCodeProperties = partial class
     
     public constructor(ntv: cl_program);
@@ -1162,6 +1167,7 @@
   
   {$region CLMemory}
   
+  ///
   CLMemoryProperties = partial class
     
     public constructor(ntv: cl_mem);
@@ -1234,6 +1240,7 @@
   
   {$region CLMemorySubSegment}
   
+  ///
   CLMemorySubSegmentProperties = partial class(CLMemoryProperties)
     
     public constructor(ntv: cl_mem);
@@ -1262,6 +1269,7 @@
   
   {$region CLValue}
   
+  ///
   CLValueProperties = partial class
     
     public constructor(ntv: cl_mem);
@@ -1334,6 +1342,7 @@
   
   {$region CLArray}
   
+  ///
   CLArrayProperties = partial class
     
     public constructor(ntv: cl_mem);

@@ -106,7 +106,7 @@ type
   end;
   
   FileLogData = record
-    skipped := new AsyncQueue<CommentableBase>;
+    skipped := new AsyncQueue<(CommentableBase,boolean)>;
     missing := new AsyncQueue<string>;
     
     static procedure WriteAll(s: sequence of string; wr: Writer) :=
@@ -123,22 +123,22 @@ type
       missing.Finish;
     end;
     
-    procedure Write(skipped_types: HashSet<string>; wr_skipped, wr_missing: Writer);
+    procedure Write(ignored_types: HashSet<string>; wr_missing: Writer);
     begin
-      WriteAll(skipped.Where(c->
+      WriteAll(skipped.Where(\(c,need_report)->
       begin
         match c with
           
           CommentableType(var ct): Result :=
-          skipped_types.Add(ct.FullName);
+          ignored_types.Add(ct.FullName);
           
           CommentableTypeMember(var cm): Result :=
-          (cm.Type=nil) or not skipped_types.Contains(cm.Type.FullName);
+          (cm.Type=nil) or not ignored_types.Contains(cm.Type.FullName);
           
           else raise new System.NotImplementedException($'{c.GetType}');
         end;
-      end).Select(c->c.FullName), wr_skipped);
-      WriteAll(missing, wr_missing);
+        Result := Result and need_report;
+      end).Select(\(c,need_report)->c.FullName) + missing, wr_missing);
     end;
     
   end;
@@ -147,6 +147,7 @@ begin
   try
     var nick := GetArgs('nick').SingleOrDefault;
     var fls := GetArgs('fname').ToArray;
+    var use_pd := 'UseLastPreDoc' in CommandLineArgs;
     
     if is_separate_execution and string.IsNullOrWhiteSpace(nick) and (fls.Length=0) then
     begin
@@ -164,15 +165,14 @@ begin
     (
       ProcTask(()->
       begin
-        var wr_skipped := new FileWriter(GetFullPathRTA($'{nick}.skipped.log'));
         var wr_missing := new FileWriter(GetFullPathRTA($'{nick}.missing.log'));
         var wr_unused  := new FileWriter(GetFullPathRTA($'{nick}.unused.log'));
         var wr_used    := new FileWriter(GetFullPathRTA($'{nick}.used.log'));
         
-        var skipped_types := new HashSet<string>;
+        var ignored_types := new HashSet<string>;
         
         foreach var log_data in all_log_data.Values do
-          log_data.Write(skipped_types, wr_skipped, wr_missing);
+          log_data.Write(ignored_types, wr_missing);
         
         foreach var key in CommentData.all.Keys do
           if not CommentData.all[key].used then
@@ -199,17 +199,25 @@ begin
           wr_used += #10#10;
         end);
         
-        (wr_skipped * wr_missing * wr_unused * wr_used).Close;
+        (wr_missing * wr_unused * wr_used).Close;
       end)
     *
       fls.Select(fname->ProcTask(()->
       begin
-        var res := new System.IO.StreamWriter($'{fname}.docres', false, enc);
+        var pd_fname := GetFullPathRTA($'{System.IO.Path.GetFileNameWithoutExtension(fname)}.predoc');
+        
+        if not use_pd then
+        begin
+          System.IO.File.Delete(pd_fname);
+          System.IO.File.Move(fname, pd_fname);
+        end;
+        
+        var res := new System.IO.StreamWriter(fname, false, enc);
         var log_data := all_log_data[fname];
         
         var last_line: string := nil;
         var already_commented := false;
-        foreach var c in CommentableBase.FindAllCommentalbes(ReadLines(fname), l->
+        foreach var c in CommentableBase.FindAllCommentalbes(ReadLines(pd_fname), l->
         begin
           if last_line<>nil then
           begin
@@ -222,11 +230,15 @@ begin
           Result := true;
         end) do
         begin
-          if already_commented then continue;
+          if already_commented then
+          begin
+            log_data.skipped.Enq((c,false));
+            continue;
+          end;
           var key := c.FullName;
           
           if not CommentData.all.ContainsKey(key) then
-            log_data.skipped.Enq(c) else
+            log_data.skipped.Enq((c,true)) else
           begin
             var spaces := last_line.TakeWhile(ch->ch=' ').Count;
             foreach var l in CommentData.ApplyToKey(key, log_data.missing).Split(#10) do
@@ -242,13 +254,6 @@ begin
         
         res.Close;
         log_data.Finish;
-        
-//        if is_secondary_proc then
-        begin
-          System.IO.File.Delete(fname);
-          System.IO.File.Move($'{fname}.docres', fname);
-        end;
-        
       end)).CombineAsyncTask
     ).SyncExec;
     

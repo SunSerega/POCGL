@@ -87,6 +87,7 @@ begin
       
       
       m += 'type'#10;
+      n += '  ///'#10;
       all += '  ';
       all += t;
       all += 'Properties = partial class';
