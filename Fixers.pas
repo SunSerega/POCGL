@@ -189,7 +189,7 @@ implementation
 type
   SVariants = record
     name := default(string);
-    vals: array of StringSection;
+    vals: array of string;
   end;
   
 function SplitByUnescaped(self: StringSection; by: string): List<StringSection>; extensionmethod;
@@ -220,7 +220,7 @@ begin
       Result := new SVariants;
       if not is_v then
       begin
-        Result.vals := |s|;
+        Result.vals := |s.ToString|;
         exit;
       end;
       
@@ -234,8 +234,10 @@ begin
         end;
       end;
       
-      Result.vals := s.SplitByUnescaped(',').ToArray;
-      Result.vals.Transform(val->val.TrimWhile(char.IsWhiteSpace));
+      var vals := s.SplitByUnescaped(',');
+      Result.vals := new string[vals.Count];
+      for var i := 0 to vals.Count-1 do
+        Result.vals[i] := vals[i].TrimWhile(char.IsWhiteSpace).Unescape;
     end).ToArray;
   {$endregion name_parts}
   
@@ -247,12 +249,12 @@ begin
     begin
       var npn := name_parts[i].name;
       if npn=nil then continue;
-      if npn='' then name_parts[i].name := i.ToString;
+      if npn='' then name_parts[i].name := n.ToString;
       n += 1;
     end;
   end;
   
-  var name_ind := name_parts.Numerate(0)
+  var pname_ind := name_parts.Numerate(0)
     .Where(\(i,np)->np.name <> nil)
     .ToDictionary(\(i,np)->np.name, \(i,np)->i)
   ;
@@ -270,54 +272,44 @@ begin
   Result := ArrGen(choise_cap, choise_i->
   begin
     {$region AppendWithInsertions}
-    var AppendWithInsertions: procedure(sb: StringBuilder; text: StringSection); AppendWithInsertions := (sb,text)->
-    foreach var (repl, s) in FindTemplateInsertions(text, '{%','%}') do
+    var AppendWithInsertions: procedure(sb: StringBuilder; text: string); AppendWithInsertions := (sb,text)->
+    foreach var (repl, s) in FindTemplateInsertions(new StringSection(text), '{%','%}') do
       if not repl then
+        s.UnescapeTo(sb) else
       begin
-        var escape := false;
-        for var i := 0 to s.Length-1 do
-        begin
-          var ch := s[i];
-          escape := (ch='\') and not escape;
-          if not escape then
-            sb += ch;
-        end;
-      end else
-      begin
-        var name: StringSection;
+        var pname, pbody: StringSection;
         
         begin
-          var name_sep := s.SubSectionOfFirstUnescaped('?');
-          if name_sep.IsInvalid then
+          var pname_sep := s.SubSectionOfFirstUnescaped('?');
+          if pname_sep.IsInvalid then
           begin
-            name := s;
-            s := s.TakeLast(0);
+            pname := s;
+            pbody := s.TakeLast(0);
           end else
           begin
-            name := s.WithI2(name_sep.I1);
-            s := s.WithI1(name_sep.I2);
+            pname := s.WithI2(pname_sep.I1);
+            pbody := s.WithI1(pname_sep.I2);
           end;
         end;
         
         var i: integer;
-        if not name_ind.TryGetValue(name.TrimWhile(char.IsWhiteSpace).ToString, i) then
-        begin
-          sb += '{%';
-          sb *= name;
-          sb += '?';
-          sb *= s;
-          sb += '%}';
-          continue;
-        end;
+        if not pname_ind.TryGetValue(pname.TrimWhile(char.IsWhiteSpace).ToString, i) then
+          raise new System.InvalidOperationException($'[{name}]: [{pname}] template is not defined. All templates:{#10}'+pname_ind.Keys.Select(key->$'[{key}]').JoinToString(#10));
+//        begin
+//          sb += '{%';
+//          sb *= s;
+//          sb += '%}';
+//          continue;
+//        end;
         var choise := choise_i div choise_ind_div[i] mod name_parts[i].vals.Length;
         
-        if s.Length=0 then
+        if pbody.Length=0 then
           AppendWithInsertions(sb, name_parts[i].vals[choise]) else
         begin
-          var vals := s.SplitByUnescaped(':');
+          var vals := pbody.SplitByUnescaped(':');
           if vals.Count<>name_parts[i].vals.Length then
-            raise new System.InvalidOperationException($'{vals.Count} <> {name_parts[i].vals.Length}');
-          AppendWithInsertions(sb, vals[choise].TrimWhile(char.IsWhiteSpace));
+            raise new System.InvalidOperationException($'[{name}]: Instance of [{name_parts[i].name}] had {vals.Count} vals instead of {name_parts[i].vals.Length}:{#10}'+vals.JoinToString(#10));
+          AppendWithInsertions(sb, vals[choise].TrimWhile(char.IsWhiteSpace).Unescape);
         end;
         
       end;
@@ -331,7 +323,7 @@ begin
     end;
     
     var body_sb := new StringBuilder;
-    AppendWithInsertions(body_sb, new StringSection(body));
+    AppendWithInsertions(body_sb, body);
     
     Result := (name_sb.ToString, body_sb.ToString);
   end);

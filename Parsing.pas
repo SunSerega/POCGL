@@ -465,6 +465,24 @@ type
     public function IsEscaped(min_ind: StringIndex) :=
     self.TakeFirst(0).PrevWhile(min_ind, ch->ch='\').Length.IsOdd;
     
+    public procedure UnescapeTo(res: StringBuilder);
+    begin
+      var escaped := false;
+      for i: integer := I1 to I2-1 do
+      begin
+        var ch := text[i];
+        escaped := (ch='\') and not escaped;
+        if not escaped then
+          res += ch;
+      end;
+    end;
+    public function Unescape: string;
+    begin
+      var res := new StringBuilder(self.Length);
+      UnescapeTo(res);
+      Result := res.ToString;
+    end;
+    
     public function SubSectionOfFirstUnescaped(params strs: array of string): StringSection;
     begin
       Result := self;
