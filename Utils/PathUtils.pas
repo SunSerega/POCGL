@@ -20,14 +20,15 @@ begin
   var path := GetFullPath(base_folder);
   if path.EndsWith('\') then path := path.Remove(path.Length-1);
   
-  if fname.StartsWith('\') then fname := fname.Substring(1);
-  while fname.StartsWith('..\') do
+  while true do
   begin
-    fname := fname.Substring(3);
+    if fname.StartsWith('\') then fname := fname.Substring(1);
+    if not fname.StartsWith('..') then break;
+    fname := fname.Substring('..'.Length);
     path := System.IO.Path.GetDirectoryName(path);
   end;
   
-  Result := $'{path}\{fname}';
+  Result := System.IO.Path.Combine(path, fname);
 end;
 function GetFullPathRTA(fname: string) := GetFullPath(fname, assembly_dir);
 
