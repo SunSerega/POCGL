@@ -1,4 +1,4 @@
-cl_device_id
+﻿cl_device_id
 DeviceInfo
 clGetDeviceInfo
 

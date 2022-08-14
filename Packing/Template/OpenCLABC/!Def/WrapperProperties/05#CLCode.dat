@@ -1,4 +1,4 @@
-cl_program
+﻿cl_program
 ProgramInfo
 clGetProgramInfo
 

@@ -1,4 +1,4 @@
-cl_mem
+﻿cl_mem
 MemInfo
 clGetMemObjectInfo
 
