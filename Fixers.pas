@@ -188,19 +188,6 @@ type
     vals: array of string;
   end;
   
-function SplitByUnescaped(self: StringSection; by: string): List<StringSection>; extensionmethod;
-begin
-  Result := new List<StringSection>;
-  while true do
-  begin
-    var sep := self.SubSectionOfFirstUnescaped(by);
-    if sep.IsInvalid then break;
-    Result += self.WithI2(sep.I1);
-    self.range.i1 := sep.I2;
-  end;
-  Result += self;
-end;
-
 static function FixerUtils.DeTemplateName(name, body: string): array of (string, string);
 begin
   if name=nil then
