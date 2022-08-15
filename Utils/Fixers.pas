@@ -44,41 +44,26 @@ type
     // 
     private static function DeTemplateName(name, body: string): array of (string, string);
     
-    public static function ReadBlocks(lines: sequence of string; power_sign: string; concat_blocks: boolean): sequence of (string, array of string);
+    public static function ReadBlockTemplates(lines: sequence of string; power_sign: string; concat_blocks: boolean): sequence of (array of string, array of string);
     begin
-      //TODO #2203
-      Result := System.Linq.Enumerable.Empty&<(string, array of string)>;
-      
       var res := new List<string>;
       var names := new List<string>;
       var start := true;
       var bl_start := true;
       
-      //TODO #????
-      var make_body: function: string := ()->
+      //TODO #2683
+      var make_res: function: (array of string,array of string) := ()->
       begin
         var lc := res.Count;
         while (lc<>0) and string.IsNullOrWhiteSpace(res[lc-1]) do lc -= 1;
-        Result := res.Take(lc).JoinToString(#10);
+        res.RemoveRange(lc, res.Count-lc);
+        
+        if names.Count=0 then
+          names += default(string);
+        
+        Result := (names.ToArray, res.ToArray);
+        
         res.Clear;
-      end;
-      
-      //TODO #2683
-      var make_res_seq: function: sequence of (string,array of string) := ()->
-      begin
-        var body := make_body();
-        Result := names.DefaultIfEmpty
-          .SelectMany(name->
-            DetemplateName(name, body)
-            //TODO #2685
-            .Select(t->
-            begin
-              var lns := t[1].Split(#10);
-              if lns.SequenceEqual(|''|) then
-                lns := System.Array.Empty&<string>;
-              Result := (t[0], lns);
-            end)
-          ).ToArray; //TODO #2203: Убрать .ToArray
       end;
       
       foreach var l in lines do
@@ -88,7 +73,7 @@ type
           if not (bl_start and concat_blocks) then
           begin
             if not (start and (res.Count=0)) then
-              Result := Result+make_res_seq();
+              yield make_res();
             names.Clear;
           end;
           
@@ -105,7 +90,7 @@ type
         end;
       
       if not (start and (res.Count=0)) then
-        Result := Result+make_res_seq();
+        yield make_res();
       
 //      $'=== ORIGINAL ==='.Println;
 //      lines.PrintLines;
@@ -118,6 +103,17 @@ type
 //        Println;
 //      end;
     end;
+    public static function ReadBlocks(lines: sequence of string; power_sign: string; concat_blocks: boolean) :=
+    ReadBlockTemplates(lines, power_sign, concat_blocks)
+    .SelectMany(\(names,lines)->names.SelectMany(name->
+      DetemplateName(name, lines.JoinToString(#10))
+      .Select(\(name, body)->(name,
+        body='' ?
+          System.Array.Empty&<string> :
+          body.Split(#10)
+      ))
+    ));
+    
     public static function ReadBlocks(fname: string; concat_blocks: boolean) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
     
   end;
