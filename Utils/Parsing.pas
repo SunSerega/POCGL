@@ -495,6 +495,19 @@ type
       end;
     end;
     
+    public function SplitByUnescaped(by: string): List<StringSection>;
+    begin
+      Result := new List<StringSection>;
+      while true do
+      begin
+        var sep := self.SubSectionOfFirstUnescaped(by);
+        if sep.IsInvalid then break;
+        Result += self.WithI2(sep.I1);
+        self.range.i1 := sep.I2;
+      end;
+      Result += self;
+    end;
+    
     public function ToString: string; override :=
     if self.IsInvalid then 'StringSection.Invalid' else range.ToString(text);
     public property AsString: string read ToString;
