@@ -12964,8 +12964,8 @@
     z_FlushVertexArrayRangeAPPLE_1(length, _pointer);
     
     private z_VertexArrayParameteriAPPLE_adr := GetProcAddress('glVertexArrayParameteriAPPLE');
-    private z_VertexArrayParameteriAPPLE_1 := GetProcOrNil&<procedure(pname: VertexArrayPNameAPPLE; param: Int32)>(z_VertexArrayParameteriAPPLE_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayParameteriAPPLE(pname: VertexArrayPNameAPPLE; param: Int32) :=
+    private z_VertexArrayParameteriAPPLE_1 := GetProcOrNil&<procedure(pname: VertexArrayParameterName; param: Int32)>(z_VertexArrayParameteriAPPLE_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexArrayParameteriAPPLE(pname: VertexArrayParameterName; param: Int32) :=
     z_VertexArrayParameteriAPPLE_1(pname, param);
     
   end;
@@ -37708,8 +37708,8 @@
     public const _ExtStr = 'gl_pgi_misc_hints';
     
     private z_HintPGI_adr := GetProcAddress('glHintPGI');
-    private z_HintPGI_1 := GetProcOrNil&<procedure(target: HintTargetPGI; mode: VertexHintsMask)>(z_HintPGI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure HintPGI(target: HintTargetPGI; mode: VertexHintsMask) :=
+    private z_HintPGI_1 := GetProcOrNil&<procedure(target: HintTarget; mode: VertexHintsMask)>(z_HintPGI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure HintPGI(target: HintTarget; mode: VertexHintsMask) :=
     z_HintPGI_1(target, mode);
     
   end;
@@ -38630,64 +38630,64 @@
     public const _ExtStr = 'gl_sgi_color_table';
     
     private z_ColorTableSGI_adr := GetProcAddress('glColorTableSGI');
-    private z_ColorTableSGI_1 := GetProcOrNil&<procedure(target: ColorTableTargetSGI; _internalformat: InternalFormat; width: Int32; format: PixelFormat; &type: PixelType; table: IntPtr)>(z_ColorTableSGI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableSGI(target: ColorTableTargetSGI; _internalformat: InternalFormat; width: Int32; format: PixelFormat; &type: PixelType; table: IntPtr) :=
+    private z_ColorTableSGI_1 := GetProcOrNil&<procedure(target: ColorTableTarget; _internalformat: InternalFormat; width: Int32; format: PixelFormat; &type: PixelType; table: IntPtr)>(z_ColorTableSGI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableSGI(target: ColorTableTarget; _internalformat: InternalFormat; width: Int32; format: PixelFormat; &type: PixelType; table: IntPtr) :=
     z_ColorTableSGI_1(target, _internalformat, width, format, &type, table);
     
     private z_ColorTableParameterfvSGI_adr := GetProcAddress('glColorTableParameterfvSGI');
-    private z_ColorTableParameterfvSGI_1 := GetProcOrNil&<procedure(target: ColorTableTargetSGI; pname: ColorTableParameterPName; &params: IntPtr)>(z_ColorTableParameterfvSGI_adr);
-    private z_ColorTableParameterfvSGI_2 := GetProcOrNil&<procedure(target: ColorTableTargetSGI; pname: ColorTableParameterPName; var &params: single)>(z_ColorTableParameterfvSGI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfvSGI(target: ColorTableTargetSGI; pname: ColorTableParameterPName; &params: array of single);
+    private z_ColorTableParameterfvSGI_1 := GetProcOrNil&<procedure(target: ColorTableTarget; pname: ColorTableParameterPName; &params: IntPtr)>(z_ColorTableParameterfvSGI_adr);
+    private z_ColorTableParameterfvSGI_2 := GetProcOrNil&<procedure(target: ColorTableTarget; pname: ColorTableParameterPName; var &params: single)>(z_ColorTableParameterfvSGI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfvSGI(target: ColorTableTarget; pname: ColorTableParameterPName; &params: array of single);
     type Psingle=^single;
     begin
       if (&params<>nil) and (&params.Length<>0) then
         z_ColorTableParameterfvSGI_2(target, pname, &params[0]) else
         z_ColorTableParameterfvSGI_2(target, pname, Psingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfvSGI(target: ColorTableTargetSGI; pname: ColorTableParameterPName; var &params: single) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfvSGI(target: ColorTableTarget; pname: ColorTableParameterPName; var &params: single) :=
     z_ColorTableParameterfvSGI_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfvSGI(target: ColorTableTargetSGI; pname: ColorTableParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfvSGI(target: ColorTableTarget; pname: ColorTableParameterPName; &params: IntPtr) :=
     z_ColorTableParameterfvSGI_1(target, pname, &params);
     
     private z_ColorTableParameterivSGI_adr := GetProcAddress('glColorTableParameterivSGI');
-    private z_ColorTableParameterivSGI_1 := GetProcOrNil&<procedure(target: ColorTableTargetSGI; pname: ColorTableParameterPName; &params: IntPtr)>(z_ColorTableParameterivSGI_adr);
-    private z_ColorTableParameterivSGI_2 := GetProcOrNil&<procedure(target: ColorTableTargetSGI; pname: ColorTableParameterPName; var &params: Int32)>(z_ColorTableParameterivSGI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterivSGI(target: ColorTableTargetSGI; pname: ColorTableParameterPName; &params: array of Int32);
+    private z_ColorTableParameterivSGI_1 := GetProcOrNil&<procedure(target: ColorTableTarget; pname: ColorTableParameterPName; &params: IntPtr)>(z_ColorTableParameterivSGI_adr);
+    private z_ColorTableParameterivSGI_2 := GetProcOrNil&<procedure(target: ColorTableTarget; pname: ColorTableParameterPName; var &params: Int32)>(z_ColorTableParameterivSGI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterivSGI(target: ColorTableTarget; pname: ColorTableParameterPName; &params: array of Int32);
     type PInt32=^Int32;
     begin
       if (&params<>nil) and (&params.Length<>0) then
         z_ColorTableParameterivSGI_2(target, pname, &params[0]) else
         z_ColorTableParameterivSGI_2(target, pname, PInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterivSGI(target: ColorTableTargetSGI; pname: ColorTableParameterPName; var &params: Int32) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterivSGI(target: ColorTableTarget; pname: ColorTableParameterPName; var &params: Int32) :=
     z_ColorTableParameterivSGI_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterivSGI(target: ColorTableTargetSGI; pname: ColorTableParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterivSGI(target: ColorTableTarget; pname: ColorTableParameterPName; &params: IntPtr) :=
     z_ColorTableParameterivSGI_1(target, pname, &params);
     
     private z_CopyColorTableSGI_adr := GetProcAddress('glCopyColorTableSGI');
-    private z_CopyColorTableSGI_1 := GetProcOrNil&<procedure(target: ColorTableTargetSGI; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32)>(z_CopyColorTableSGI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyColorTableSGI(target: ColorTableTargetSGI; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32) :=
+    private z_CopyColorTableSGI_1 := GetProcOrNil&<procedure(target: ColorTableTarget; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32)>(z_CopyColorTableSGI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CopyColorTableSGI(target: ColorTableTarget; _internalformat: InternalFormat; x: Int32; y: Int32; width: Int32) :=
     z_CopyColorTableSGI_1(target, _internalformat, x, y, width);
     
     private z_GetColorTableSGI_adr := GetProcAddress('glGetColorTableSGI');
-    private z_GetColorTableSGI_1 := GetProcOrNil&<procedure(target: ColorTableTargetSGI; format: PixelFormat; &type: PixelType; table: IntPtr)>(z_GetColorTableSGI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetColorTableSGI(target: ColorTableTargetSGI; format: PixelFormat; &type: PixelType; table: IntPtr) :=
+    private z_GetColorTableSGI_1 := GetProcOrNil&<procedure(target: ColorTableTarget; format: PixelFormat; &type: PixelType; table: IntPtr)>(z_GetColorTableSGI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetColorTableSGI(target: ColorTableTarget; format: PixelFormat; &type: PixelType; table: IntPtr) :=
     z_GetColorTableSGI_1(target, format, &type, table);
     
     private z_GetColorTableParameterfvSGI_adr := GetProcAddress('glGetColorTableParameterfvSGI');
-    private z_GetColorTableParameterfvSGI_1 := GetProcOrNil&<procedure(target: ColorTableTargetSGI; pname: ColorTableParameterPName; &params: IntPtr)>(z_GetColorTableParameterfvSGI_adr);
-    private z_GetColorTableParameterfvSGI_2 := GetProcOrNil&<procedure(target: ColorTableTargetSGI; pname: ColorTableParameterPName; var &params: single)>(z_GetColorTableParameterfvSGI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetColorTableParameterfvSGI(target: ColorTableTargetSGI; pname: ColorTableParameterPName; var &params: single) :=
+    private z_GetColorTableParameterfvSGI_1 := GetProcOrNil&<procedure(target: ColorTableTarget; pname: ColorTableParameterPName; &params: IntPtr)>(z_GetColorTableParameterfvSGI_adr);
+    private z_GetColorTableParameterfvSGI_2 := GetProcOrNil&<procedure(target: ColorTableTarget; pname: ColorTableParameterPName; var &params: single)>(z_GetColorTableParameterfvSGI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetColorTableParameterfvSGI(target: ColorTableTarget; pname: ColorTableParameterPName; var &params: single) :=
     z_GetColorTableParameterfvSGI_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetColorTableParameterfvSGI(target: ColorTableTargetSGI; pname: ColorTableParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetColorTableParameterfvSGI(target: ColorTableTarget; pname: ColorTableParameterPName; &params: IntPtr) :=
     z_GetColorTableParameterfvSGI_1(target, pname, &params);
     
     private z_GetColorTableParameterivSGI_adr := GetProcAddress('glGetColorTableParameterivSGI');
-    private z_GetColorTableParameterivSGI_1 := GetProcOrNil&<procedure(target: ColorTableTargetSGI; pname: ColorTableParameterPName; &params: IntPtr)>(z_GetColorTableParameterivSGI_adr);
-    private z_GetColorTableParameterivSGI_2 := GetProcOrNil&<procedure(target: ColorTableTargetSGI; pname: ColorTableParameterPName; var &params: Int32)>(z_GetColorTableParameterivSGI_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetColorTableParameterivSGI(target: ColorTableTargetSGI; pname: ColorTableParameterPName; var &params: Int32) :=
+    private z_GetColorTableParameterivSGI_1 := GetProcOrNil&<procedure(target: ColorTableTarget; pname: ColorTableParameterPName; &params: IntPtr)>(z_GetColorTableParameterivSGI_adr);
+    private z_GetColorTableParameterivSGI_2 := GetProcOrNil&<procedure(target: ColorTableTarget; pname: ColorTableParameterPName; var &params: Int32)>(z_GetColorTableParameterivSGI_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetColorTableParameterivSGI(target: ColorTableTarget; pname: ColorTableParameterPName; var &params: Int32) :=
     z_GetColorTableParameterivSGI_2(target, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetColorTableParameterivSGI(target: ColorTableTargetSGI; pname: ColorTableParameterPName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetColorTableParameterivSGI(target: ColorTableTarget; pname: ColorTableParameterPName; &params: IntPtr) :=
     z_GetColorTableParameterivSGI_1(target, pname, &params);
     
   end;

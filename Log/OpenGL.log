@@ -8,17 +8,7 @@ Template[OpenGL]: Compiling: OK
 Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack Most.exe]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Reading .bin
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Fixing all
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Group [FogPointerTypeIBM] was merged into [FogPointerType]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Group [ConvolutionTargetEXT] was merged into [ConvolutionTarget]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Group [SeparableTargetEXT] was merged into [SeparableTarget]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Group [HistogramTargetEXT] was merged into [HistogramTarget]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Group [MinmaxTargetEXT] was merged into [MinmaxTarget]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Group [SamplePatternEXT] was merged into [SamplePattern]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Group [ColorTableTargetSGI] had different enums from [ColorTableTarget]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Group [VertexArrayPNameAPPLE] had different enums from [VertexArrayPName]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Group [VertexAttribEnumNV] had different enums from [VertexAttribEnum]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Group [ShadingRateQCOM] was merged into [ShadingRate]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Group [HintTargetPGI] had different enums from [HintTarget]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing funcs code
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glDrawCommandsStatesNV]
 Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glDrawCommandsStatesAddressNV]

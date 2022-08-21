@@ -7112,9 +7112,9 @@
 	length | pointer |
 
 # glVertexArrayParameteriAPPLE[1]:
-	VertexArrayPNameAPPLE | Int32 |
-	--------------------- | ----- |
-	pname                 | param |
+	VertexArrayParameterName | Int32 |
+	------------------------ | ----- |
+	pname                    | param |
 
 # glEnableVertexAttribAPPLE[1]:
 	UInt32 | DummyEnum |
@@ -17028,9 +17028,9 @@
 	target            | attachment            | texture    | level | baseViewIndex | numViews |
 
 # glHintPGI[1]:
-	HintTargetPGI | VertexHintsMask |
-	------------- | --------------- |
-	target        | mode            |
+	HintTarget | VertexHintsMask |
+	---------- | --------------- |
+	target     | mode            |
 
 # glDetailTexFuncSGIS[3]:
 	TextureTarget | Int32 | array of single |
@@ -17437,45 +17437,45 @@
 # glTagSampleBufferSGIX[1]:
 
 # glColorTableSGI[1]:
-	ColorTableTargetSGI | InternalFormat | Int32 | PixelFormat | PixelType | IntPtr |
-	------------------- | -------------- | ----- | ----------- | --------- | ------ |
-	target              | internalformat | width | format      | type      | table  |
+	ColorTableTarget | InternalFormat | Int32 | PixelFormat | PixelType | IntPtr |
+	---------------- | -------------- | ----- | ----------- | --------- | ------ |
+	target           | internalformat | width | format      | type      | table  |
 
 # glColorTableParameterfvSGI[3]:
-	ColorTableTargetSGI | ColorTableParameterPName | array of single |
-	ColorTableTargetSGI | ColorTableParameterPName | var single      |
-	ColorTableTargetSGI | ColorTableParameterPName | IntPtr          |
-	------------------- | ------------------------ | --------------- |
-	target              | pname                    | params          |
+	ColorTableTarget | ColorTableParameterPName | array of single |
+	ColorTableTarget | ColorTableParameterPName | var single      |
+	ColorTableTarget | ColorTableParameterPName | IntPtr          |
+	---------------- | ------------------------ | --------------- |
+	target           | pname                    | params          |
 
 # glColorTableParameterivSGI[3]:
-	ColorTableTargetSGI | ColorTableParameterPName | array of Int32 |
-	ColorTableTargetSGI | ColorTableParameterPName | var Int32      |
-	ColorTableTargetSGI | ColorTableParameterPName | IntPtr         |
-	------------------- | ------------------------ | -------------- |
-	target              | pname                    | params         |
+	ColorTableTarget | ColorTableParameterPName | array of Int32 |
+	ColorTableTarget | ColorTableParameterPName | var Int32      |
+	ColorTableTarget | ColorTableParameterPName | IntPtr         |
+	---------------- | ------------------------ | -------------- |
+	target           | pname                    | params         |
 
 # glCopyColorTableSGI[1]:
-	ColorTableTargetSGI | InternalFormat | Int32 | Int32 | Int32 |
-	------------------- | -------------- | ----- | ----- | ----- |
-	target              | internalformat | x     | y     | width |
+	ColorTableTarget | InternalFormat | Int32 | Int32 | Int32 |
+	---------------- | -------------- | ----- | ----- | ----- |
+	target           | internalformat | x     | y     | width |
 
 # glGetColorTableSGI[1]:
-	ColorTableTargetSGI | PixelFormat | PixelType | IntPtr |
-	------------------- | ----------- | --------- | ------ |
-	target              | format      | type      | table  |
+	ColorTableTarget | PixelFormat | PixelType | IntPtr |
+	---------------- | ----------- | --------- | ------ |
+	target           | format      | type      | table  |
 
 # glGetColorTableParameterfvSGI[2]:
-	ColorTableTargetSGI | ColorTableParameterPName | var single |
-	ColorTableTargetSGI | ColorTableParameterPName | IntPtr     |
-	------------------- | ------------------------ | ---------- |
-	target              | pname                    | params     |
+	ColorTableTarget | ColorTableParameterPName | var single |
+	ColorTableTarget | ColorTableParameterPName | IntPtr     |
+	---------------- | ------------------------ | ---------- |
+	target           | pname                    | params     |
 
 # glGetColorTableParameterivSGI[2]:
-	ColorTableTargetSGI | ColorTableParameterPName | var Int32 |
-	ColorTableTargetSGI | ColorTableParameterPName | IntPtr    |
-	------------------- | ------------------------ | --------- |
-	target              | pname                    | params    |
+	ColorTableTarget | ColorTableParameterPName | var Int32 |
+	ColorTableTarget | ColorTableParameterPName | IntPtr    |
+	---------------- | ------------------------ | --------- |
+	target           | pname                    | params    |
 
 # glFinishTextureSUNX[1]:
 

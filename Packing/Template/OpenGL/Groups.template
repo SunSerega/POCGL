@@ -1208,38 +1208,14 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
+    public static property TEXTURE_COLOR_TABLE:                 ColorTableTarget read new ColorTableTarget($80BC);
+    public static property PROXY_TEXTURE_COLOR_TABLE:           ColorTableTarget read new ColorTableTarget($80BD);
     public static property COLOR_TABLE:                         ColorTableTarget read new ColorTableTarget($80D0);
     public static property POST_CONVOLUTION_COLOR_TABLE:        ColorTableTarget read new ColorTableTarget($80D1);
     public static property POST_COLOR_MATRIX_COLOR_TABLE:       ColorTableTarget read new ColorTableTarget($80D2);
     public static property PROXY_COLOR_TABLE:                   ColorTableTarget read new ColorTableTarget($80D3);
     public static property PROXY_POST_CONVOLUTION_COLOR_TABLE:  ColorTableTarget read new ColorTableTarget($80D4);
     public static property PROXY_POST_COLOR_MATRIX_COLOR_TABLE: ColorTableTarget read new ColorTableTarget($80D5);
-    
-    public function ToString: string; override;
-    begin
-      if self.val = UInt32($80D0) then Result := 'COLOR_TABLE' else
-      if self.val = UInt32($80D1) then Result := 'POST_CONVOLUTION_COLOR_TABLE' else
-      if self.val = UInt32($80D2) then Result := 'POST_COLOR_MATRIX_COLOR_TABLE' else
-      if self.val = UInt32($80D3) then Result := 'PROXY_COLOR_TABLE' else
-      if self.val = UInt32($80D4) then Result := 'PROXY_POST_CONVOLUTION_COLOR_TABLE' else
-      if self.val = UInt32($80D5) then Result := 'PROXY_POST_COLOR_MATRIX_COLOR_TABLE' else
-        Result := $'ColorTableTarget[{self.val}]';
-    end;
-    
-  end;
-  
-  ColorTableTargetSGI = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property TEXTURE_COLOR_TABLE:                 ColorTableTargetSGI read new ColorTableTargetSGI($80BC);
-    public static property PROXY_TEXTURE_COLOR_TABLE:           ColorTableTargetSGI read new ColorTableTargetSGI($80BD);
-    public static property COLOR_TABLE:                         ColorTableTargetSGI read new ColorTableTargetSGI($80D0);
-    public static property POST_CONVOLUTION_COLOR_TABLE:        ColorTableTargetSGI read new ColorTableTargetSGI($80D1);
-    public static property POST_COLOR_MATRIX_COLOR_TABLE:       ColorTableTargetSGI read new ColorTableTargetSGI($80D2);
-    public static property PROXY_COLOR_TABLE:                   ColorTableTargetSGI read new ColorTableTargetSGI($80D3);
-    public static property PROXY_POST_CONVOLUTION_COLOR_TABLE:  ColorTableTargetSGI read new ColorTableTargetSGI($80D4);
-    public static property PROXY_POST_COLOR_MATRIX_COLOR_TABLE: ColorTableTargetSGI read new ColorTableTargetSGI($80D5);
     
     public function ToString: string; override;
     begin
@@ -1251,7 +1227,7 @@
       if self.val = UInt32($80D3) then Result := 'PROXY_COLOR_TABLE' else
       if self.val = UInt32($80D4) then Result := 'PROXY_POST_CONVOLUTION_COLOR_TABLE' else
       if self.val = UInt32($80D5) then Result := 'PROXY_POST_COLOR_MATRIX_COLOR_TABLE' else
-        Result := $'ColorTableTargetSGI[{self.val}]';
+        Result := $'ColorTableTarget[{self.val}]';
     end;
     
   end;
@@ -5412,26 +5388,6 @@
       if self.val = UInt32($1A22C) then Result := 'MATERIAL_SIDE_HINT' else
       if self.val = UInt32($1A22D) then Result := 'MAX_VERTEX_HINT' else
         Result := $'HintTarget[{self.val}]';
-    end;
-    
-  end;
-  
-  HintTargetPGI = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property VERTEX_DATA_HINT:       HintTargetPGI read new HintTargetPGI($1A22A);
-    public static property VERTEX_CONSISTENT_HINT: HintTargetPGI read new HintTargetPGI($1A22B);
-    public static property MATERIAL_SIDE_HINT:     HintTargetPGI read new HintTargetPGI($1A22C);
-    public static property MAX_VERTEX_HINT:        HintTargetPGI read new HintTargetPGI($1A22D);
-    
-    public function ToString: string; override;
-    begin
-      if self.val = UInt32($1A22A) then Result := 'VERTEX_DATA_HINT' else
-      if self.val = UInt32($1A22B) then Result := 'VERTEX_CONSISTENT_HINT' else
-      if self.val = UInt32($1A22C) then Result := 'MATERIAL_SIDE_HINT' else
-      if self.val = UInt32($1A22D) then Result := 'MAX_VERTEX_HINT' else
-        Result := $'HintTargetPGI[{self.val}]';
     end;
     
   end;
@@ -10972,6 +10928,24 @@
     
   end;
   
+  VertexArrayParameterName = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property STORAGE_CLIENT: VertexArrayParameterName read new VertexArrayParameterName($85B4);
+    public static property STORAGE_CACHED: VertexArrayParameterName read new VertexArrayParameterName($85BE);
+    public static property STORAGE_SHARED: VertexArrayParameterName read new VertexArrayParameterName($85BF);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($85B4) then Result := 'STORAGE_CLIENT' else
+      if self.val = UInt32($85BE) then Result := 'STORAGE_CACHED' else
+      if self.val = UInt32($85BF) then Result := 'STORAGE_SHARED' else
+        Result := $'VertexArrayParameterName[{self.val}]';
+    end;
+    
+  end;
+  
   VertexArrayPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10998,24 +10972,6 @@
       if self.val = UInt32($88FD) then Result := 'VERTEX_ATTRIB_ARRAY_INTEGER' else
       if self.val = UInt32($88FE) then Result := 'VERTEX_ATTRIB_ARRAY_DIVISOR' else
         Result := $'VertexArrayPName[{self.val}]';
-    end;
-    
-  end;
-  
-  VertexArrayPNameAPPLE = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property STORAGE_CLIENT: VertexArrayPNameAPPLE read new VertexArrayPNameAPPLE($85B4);
-    public static property STORAGE_CACHED: VertexArrayPNameAPPLE read new VertexArrayPNameAPPLE($85BE);
-    public static property STORAGE_SHARED: VertexArrayPNameAPPLE read new VertexArrayPNameAPPLE($85BF);
-    
-    public function ToString: string; override;
-    begin
-      if self.val = UInt32($85B4) then Result := 'STORAGE_CLIENT' else
-      if self.val = UInt32($85BE) then Result := 'STORAGE_CACHED' else
-      if self.val = UInt32($85BF) then Result := 'STORAGE_SHARED' else
-        Result := $'VertexArrayPNameAPPLE[{self.val}]';
     end;
     
   end;

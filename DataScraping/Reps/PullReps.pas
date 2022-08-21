@@ -56,7 +56,7 @@ begin
     Init;
     Arr(
       new class( nick := 'OpenCL Docs',     name := 'OpenCL-Docs',     branch := 'main' ),
-      new class( nick := 'OpenGL Registry', name := 'OpenGL-Registry', branch := 'unused-groups' )
+      new class( nick := 'OpenGL Registry', name := 'OpenGL-Registry', branch := 'custom' )
     ).ForEach(r->PullRep(r.name, r.branch, r.nick));
   except
     on e: Exception do ErrOtp(e);
