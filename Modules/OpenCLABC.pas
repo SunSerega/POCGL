@@ -244,6 +244,11 @@ unit OpenCLABC;
 //===================================
 // Запланированное:
 
+//TODO Папка с расширениями OpenCLABC, что то типа:
+// - uses 'OpenCLABC\GL';		  // Связь с OpenGLABC
+// - uses 'OpenCLABC\Custom';	// Пользовательские очереди
+// - uses 'OpenCLABC\Ext';		// Расширения OpenCL
+
 //TODO Потоко-безопастность CCQ.AddCommand
 
 //TODO Комментарии "Использовано в" энумам н.у. модулей
