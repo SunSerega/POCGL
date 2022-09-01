@@ -115,36 +115,31 @@ type
     skipped := new AsyncQueue<(CommentableBase,boolean)>;
     missing := new AsyncQueue<string>;
     
-    static procedure WriteAll(s: sequence of string; wr: Writer) :=
-    foreach var c in s.Distinct do
-    begin
-      wr += '# ';
-      wr += c;
-      wr += #10;
-    end;
-    
     procedure Finish;
     begin
       skipped.Finish;
       missing.Finish;
     end;
     
-    procedure Write(ignored_types: HashSet<string>; wr_missing: Writer);
+    procedure Write(ignored_types: HashSet<string>; wr_missing: Writer) :=
+    foreach var c in skipped.Where(\(c,need_report)->
     begin
-      WriteAll(skipped.Where(\(c,need_report)->
-      begin
-        match c with
-          
-          CommentableType(var ct): Result :=
-          ignored_types.Add(ct.FullName);
-          
-          CommentableTypeMember(var cm): Result :=
-          (cm.Type=nil) or not ignored_types.Contains(cm.Type.FullName);
-          
-          else raise new System.NotImplementedException($'{c.GetType}');
-        end;
-        Result := Result and need_report;
-      end).Select(\(c,need_report)->c.FullName) + missing, wr_missing);
+      match c with
+        
+        CommentableType(var ct): Result :=
+        ignored_types.Add(ct.FullName);
+        
+        CommentableTypeMember(var cm): Result :=
+        (cm.Type=nil) or not ignored_types.Contains(cm.Type.FullName);
+        
+        else raise new System.NotImplementedException($'{c.GetType}');
+      end;
+      Result := Result and need_report;
+    end).Select(\(c,need_report)->c.FullName).Concat(missing).Distinct do
+    begin
+      wr_missing += '# ';
+      wr_missing += c;
+      wr_missing += #10#10;
     end;
     
   end;
@@ -184,7 +179,6 @@ begin
         foreach var key in CommentData.all.Keys do
           if not CommentData.all[key].used then
           begin
-            wr_unused += '# ';
             wr_unused += key;
             wr_unused += #10;
           end;
