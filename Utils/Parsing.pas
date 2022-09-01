@@ -104,7 +104,7 @@ type
     public static function operator in(ind: StringIndex; range: SIndexRange) := (ind>=range.i1) and (ind<=range.i2);
     
     public function ToString: string; override := $'{i1}..{i2}';
-    public function ToString(whole_text: string) := whole_text.SubString(i1, i2-i1);
+    public function ToString(whole_text: string) := whole_text.SubString(i1, self.Length);
     
   end;
   
@@ -145,7 +145,6 @@ type
       ValidateInd(ind);
       text[self.i1+ind] := value;
     end; default;
-    public function Last := text[i2-1];
     
     public function Prev(low_bound_incl: StringIndex): char? := self.I1>low_bound_incl ? text[I1-1] : nil;
     public function Prev(bounds: StringSection) := Prev(bounds.I1);
@@ -200,6 +199,9 @@ type
       Result := new StringSection(self.text, self.i2-len, self.i2);
     end;
     
+    public function First := self[0];
+    public function Last := self.TakeLast(1).First;
+    
     public function TrimFirstWhile(ch_validator: char->boolean): StringSection;
     begin
       Result := self;
@@ -253,7 +255,7 @@ type
     public function All(ch_validator: char->boolean): boolean;
     begin
       Result := true;
-      for var i: integer := i1 to i2-1 do
+      for var i: integer := i1 to integer(i2)-1 do
       begin
         Result := ch_validator( text[i] );
         if not Result then break;
@@ -262,15 +264,24 @@ type
     public function CountOf(ch: char): integer;
     begin
       for var i: integer := i1 to i2-1 do
-        Result += integer( text[i].ToUpper = ch.ToUpper );
+        Result += integer( text[i] = ch );
     end;
     
     public static function operator=(text1, text2: StringSection): boolean;
     begin
-      Result := false;
+      begin
+        var inv_c := Ord(text1.IsInvalid) + Ord(text2.IsInvalid);
+        if inv_c<>0 then
+        begin
+          Result := inv_c = 2;
+          exit;
+        end;
+      end;
+      Result := object.ReferenceEquals(text1.text, text2.text) and (text1.range=text2.range);
+      if Result then exit;
       if text1.Length <> text2.Length then exit;
       for var i := 0 to text1.Length-1 do
-        if text1[i].ToUpper<>text2[i].ToUpper then exit;
+        if text1[i]<>text2[i] then exit;
       Result := true;
     end;
     public static function operator=(text: StringSection; str: string): boolean;
@@ -280,7 +291,7 @@ type
       if text.IsInvalid then exit;
       if text.Length<>str.Length then exit;
       for var i := 0 to str.Length-1 do
-        if text[i].ToUpper<>str[i].ToUpper then exit;
+        if text[i]<>str[i] then exit;
       Result := true;
     end;
     public static function operator=(str: string; text: StringSection): boolean := text=str;
@@ -294,7 +305,7 @@ type
       Result := false;
       if self.Length<str.Length then exit;
       for var i := 0 to str.Length-1 do
-        if str[i].ToUpper <> self[i].ToUpper then
+        if str[i] <> self[i] then
           exit;
       Result := true;
     end;
@@ -304,16 +315,15 @@ type
       if self.Length<str.Length then exit;
       var shift := self.Length-str.Length;
       for var i := 0 to str.Length-1 do
-        if str[i].ToUpper <> self[i+shift].ToUpper then
+        if str[i] <> self[i+shift] then
           exit;
       Result := true;
     end;
     
     public function IndexOf(ch: char): StringIndex;
     begin
-      ch := ch.ToUpper;
       for var i: integer := self.i1 to self.i2-1 do
-        if text[i].ToUpper = ch then
+        if text[i] = ch then
         begin
           Result := i - integer(self.i1);
           exit;
@@ -339,9 +349,8 @@ type
     
     public function LastIndexOf(ch: char): StringIndex;
     begin
-      ch := ch.ToUpper;
       for var i: integer := self.i2-1 downto self.i1 do
-        if text[i].ToUpper = ch then
+        if text[i] = ch then
         begin
           Result := i - integer(self.i1);
           exit;
@@ -380,7 +389,6 @@ type
     public function IndexOf(str: string): StringIndex;
     begin
       if str.Length=0 then raise new System.ArgumentException;
-      str := str.ToUpper;
       var header := KMP_GetHeader(str);
       var curr_ind := StringIndex.Invalid;
       
@@ -388,7 +396,7 @@ type
         while true do
         begin
           var next_ind := curr_ind.UnsafeInc;
-          if text[i].ToUpper = str[next_ind] then
+          if text[i] = str[next_ind] then
           begin
             curr_ind := next_ind;
             if curr_ind = str.Length-1 then
@@ -422,13 +430,12 @@ type
       if self.Length<min_str_len then exit;
       if min_str_len=0 then raise new System.ArgumentException(strs.JoinToString(#10));
       
-      strs.Transform(str->str.ToUpper);
       var headers := strs.ConvertAll(KMP_GetHeader);
       var curr_inds := ArrFill(strs.Length, StringIndex.Invalid);
       
       for var text_i: integer := self.i1 to self.i2-1 do
       begin
-        var text_ch := text[text_i].ToUpper;
+        var text_ch := text[text_i];
         for var str_i := 0 to strs.Length-1 do
         begin
           var str := strs[str_i];
@@ -481,6 +488,24 @@ type
       var res := new StringBuilder(self.Length);
       UnescapeTo(res);
       Result := res.ToString;
+    end;
+    
+    public function IndexOfUnescaped(str: string): StringIndex;
+    begin
+      var ind := 0;
+      while true do
+      begin
+        Result := self.IndexOf(ind, str);
+        if Result.IsInvalid then break;
+        if not self.TrimFirst(Result).IsEscaped(self.I1) then break;
+        ind := Result+1;
+      end;
+    end;
+    public function IndexOfUnescaped(from: StringIndex; str: string): StringIndex;
+    begin
+      Result := self.TrimFirst(from).IndexOfUnescaped(str);
+      if Result.IsInvalid then exit;
+      Result += from;
     end;
     
     public function SubSectionOfFirstUnescaped(params strs: array of string): StringSection;
