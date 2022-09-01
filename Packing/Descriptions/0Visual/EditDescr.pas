@@ -278,6 +278,7 @@ type
       var system_text_change := false;
       var remark_wh := new System.Threading.ManualResetEventSlim(false);
       var last_text := default(string);
+      var last_added_new_line := false;
       
         //TODO #????
         var write_timings := false;
@@ -474,11 +475,6 @@ type
             var old_r_c := old_key_map.Values.EachCount;
             var new_r_c := cuts.EachCount;
             
-            var last_new_line := false;
-            begin
-              var prev_ins := body.tb.CaretPosition.GetNextInsertionPosition(LogicalDirection.Backward);
-              last_new_line := (prev_ins<>nil) and (prev_ins.GetOffsetToPosition(body.tb.CaretPosition)>1);
-            end;
 //            TextRange.Create(body.tb.Document.ContentStart, body.tb.CaretPosition).Text.Select(c->c.Code).Println;
             var cur_pos := TextRange.Create(body.tb.Document.ContentStart, body.tb.CaretPosition).Text.Length;
             
@@ -560,8 +556,12 @@ type
               end;
 //              Writeln('='*30);
               
-              if last_new_line then
-                ptr := ptr.GetNextInsertionPosition(LogicalDirection.Forward).GetLineStartPosition(1) ?? ptr;
+              if last_added_new_line then
+              begin
+                if ptr.GetOffsetToPosition(ptr.GetLineStartPosition(1))=0 then
+                  ptr := ptr.GetNextInsertionPosition(LogicalDirection.Forward);
+                ptr := ptr.GetLineStartPosition(1) ?? ptr;
+              end;
             end;
             body.tb.CaretPosition := ptr;
 //            $'[{TextRange.Create(body.tb.Document.ContentStart, ptr).Text}]'.Println;
@@ -597,6 +597,11 @@ type
       begin
         if system_text_change then exit;
         last_text := TextRange.Create(body.tb.Document.ContentStart, body.tb.Document.ContentEnd).Text;
+        
+        var ch := e.Changes.Last;
+        var ptr := body.tb.Document.ContentStart.GetPositionAtOffset(ch.Offset);
+        last_added_new_line := TextRange.Create(ptr, ptr.GetPositionAtOffset(ch.AddedLength)).Text.EndsWith(#10);
+        
         remark_wh.Set;
       end;
       
