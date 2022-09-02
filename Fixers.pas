@@ -42,7 +42,8 @@ type
     //# abc[%1,2,3%]
     //def{%0%}gh
     // 
-    private static function DeTemplateName(name, body: string): array of (string, string);
+    public static function DeTemplateName(name: StringSection): array of (string, string->string);
+    public static function DeTemplateName(name: string) := DeTemplateName(new StringSection(name));
     
     public static function ReadBlockTemplates(lines: sequence of string; power_sign: string; concat_blocks: boolean): sequence of (array of string, array of string);
     begin
@@ -106,13 +107,20 @@ type
     public static function ReadBlocks(lines: sequence of string; power_sign: string; concat_blocks: boolean) :=
     ReadBlockTemplates(lines, power_sign, concat_blocks)
     .SelectMany(\(names,lines)->names.SelectMany(name->
-      DetemplateName(name, lines.JoinToString(#10))
-      .Select(\(name, body)->(name,
-        body='' ?
-          System.Array.Empty&<string> :
-          body.Split(#10)
-      ))
-    ));
+    begin
+      if name=nil then
+      begin
+        Result := |(name,lines)|;
+        exit;
+      end;
+      var name_mirriad := DetemplateName(name);
+      if lines.Length=0 then
+        Result := name_mirriad.Select(\(name,conv)->(name,lines)) else
+      begin
+        var body := if lines.Length=0 then nil else lines.JoinToString(#10);
+        Result := name_mirriad.Select(\(name,conv)->(name,conv(body).Split(#10)));
+      end;
+    end));
     
     public static function ReadBlocks(fname: string; concat_blocks: boolean) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
     
@@ -188,16 +196,12 @@ type
     vals: array of string;
   end;
   
-static function FixerUtils.DeTemplateName(name, body: string): array of (string, string);
+static function FixerUtils.DeTemplateName(name: StringSection): array of (string, string->string);
 begin
-  if name=nil then
-  begin
-    Result := |(name,body)|;
-    exit;
-  end;
+  var conv: function(f: string->string): string->string := f->f;
   
   {$region name_parts}
-  var name_parts := FindTemplateInsertions(new StringSection(name), '[%','%]')
+  var name_parts := FindTemplateInsertions(name, '[%','%]')
     .Select(\(is_v, s)->
     begin
       Result := new SVariants;
@@ -305,10 +309,12 @@ begin
       AppendWithInsertions(name_sb, name_parts[i].vals[choise]);
     end;
     
-    var body_sb := new StringBuilder;
-    AppendWithInsertions(body_sb, body);
-    
-    Result := (name_sb.ToString, body_sb.ToString);
+    Result := (name_sb.ToString, conv(body->
+    begin
+      var body_sb := new StringBuilder;
+      AppendWithInsertions(body_sb, body);
+      Result := body_sb.ToString;
+    end));
   end);
 end;
 
