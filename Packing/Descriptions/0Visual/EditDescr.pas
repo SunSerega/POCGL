@@ -271,18 +271,20 @@ type
     private body := new FixedTextBox;
     private headers := new List<(array of string, Run)>;
     
-    private static function MakeHeaderColor(names: array of string; unused: HashSet<string>): SolidColorBrush;
+    private static function MakeHeaderColor(names: array of string; unused, used: HashSet<string>): SolidColorBrush;
     begin
       var c := names.Count(unused.Contains);
       Result :=
+        if c+names.Count(used.Contains) < names.Length then
+          Brushes.Transparent else
         if c=0 then
           Brushes.LightGreen else
         if c=names.Length then
-          Brushes.Pink else
-          Brushes.LightBlue;
+          Brushes.Red else
+          Brushes.Orange;
     end;
     
-    public constructor(fname: string; readonly: boolean; unused_headers: HashSet<string>);
+    public constructor(fname: string; readonly: boolean; update: ()->(); unused_headers, used_headers: HashSet<string>);
     begin
       
       var TODO_long := 0; //TODO Proper spans/cuts system, with recursion, abstract classes and etc.
@@ -312,7 +314,14 @@ type
           var named_spans := new Dictionary<integer, array of string>;
           var text := new StringSection(last_text.Remove(#13));
           if text.EndsWith(#10) then text := text.TrimLast(1);
-          if not readonly then WriteAllText(fname, text.ToString, enc);
+          if not readonly then
+          begin
+            var temp_fname := fname+'.backup';
+            System.IO.File.Move(fname, temp_fname);
+            WriteAllText(fname, text.ToString, enc);
+            System.IO.File.Delete(temp_fname);
+            update;
+          end;
           
           {$region Find markables}
           begin
@@ -321,6 +330,7 @@ type
             //TODO #????
             var body := body;
             var unused_headers := unused_headers;
+            var used_headers := used_headers;
             
             DescrFileMarksInfo.Instance.MarkAll(text, (s,eot,info)->
             begin
@@ -358,7 +368,9 @@ type
                         var text := s.TrimFirst(1).TrimWhile(char.IsWhiteSpace);
                         var names := FixerUtils.DeTemplateName(text).ConvertAll(\(name,conv)->name);
                         named_spans.Add(spans.Count, names);
-                        spans += (s.TakeFirst(1).range, MakeHeaderColor(names, unused_headers));
+                        spans += (s.TakeFirst(1).range, body.Dispatcher.Invoke(()->
+                          MakeHeaderColor(names, unused_headers, used_headers)
+                        ));
                         
                         var i := 0;
                         m.MarkAll(text, (s,eot,info)->
@@ -654,9 +666,9 @@ type
     
     public function Visual := body;
     
-    public procedure UpdateHeaders(unused: HashSet<string>) :=
+    public procedure UpdateHeaders(unused, used: HashSet<string>) :=
     foreach var (names, r) in headers do
-      r.Background := MakeHeaderColor(names, unused);
+      r.Background := MakeHeaderColor(names, unused, used);
     
   end;
   
@@ -680,36 +692,50 @@ type
       var curr_file_view := default(InpFileView);
       
       var unused_headers := new HashSet<string>;
+      var used_headers := new HashSet<string>;
       
       var file_display := new ContentControl;
       
-      var update := procedure->
-      begin
+      var apply_changes_wh := new System.Threading.ManualResetEventSlim(true);
+      System.Threading.Thread.Create(()->
+      while true do
+      try
+        apply_changes_wh.Wait;
+        apply_changes_wh.Reset;
         
-        var TODO := 0; // Run "..\PackDescriptions"
+        var TODO0 := 0; // Run "..\PackDescriptions"
         
-        unused_headers.Clear;
-        unused_headers.UnionWith(ReadLines(module_dir+'.unused.log', enc));
         self.Dispatcher.Invoke(()->
         begin
+          
+          unused_headers.Clear;
+          unused_headers.UnionWith(ReadLines(module_dir+'.unused.log', enc));
+          
+          used_headers.Clear;
+          used_headers.UnionWith(ReadLines(module_dir+'.used.log', enc).Where(l->l.StartsWith('#')).Select(l->l.SubString(1).Trim));
+          
           if curr_file_view<>nil then
-            curr_file_view.UpdateHeaders(unused_headers);
+            curr_file_view.UpdateHeaders(unused_headers, used_headers);
         end);
-      end;
-      update;
+        
+      except
+        on e: Exception do MessageBox.Show(e.ToString);
+      end).Start;
+      
+      var file_view_cache := new Dictionary<string, InpFileView>;
       
       var open_file := procedure(fname: string)->
       begin
-        curr_file_view := new InpFileView(fname, false, unused_headers);
+        if not file_view_cache.TryGetValue(fname, curr_file_view) then
+        begin
+          curr_file_view := new InpFileView(
+            fname, false,
+            apply_changes_wh.Set,
+            unused_headers, used_headers
+          );
+          file_view_cache[fname] := curr_file_view;
+        end;
         file_display.Content := curr_file_view.Visual;
-        var TODO0 := 0;
-        //TODO
-        // - File caching (delete when updated outside)
-        // - Ctrl+S
-        // --- Currently just autosaved
-        // --- But without backup inbetween
-        // - Replace unused_headers with used_headers
-        // --- Or maybe keep both and don't color the #
       end;
       
       var g := new Grid;
@@ -723,7 +749,7 @@ type
         cont_by_dir.Add(module_dir, tw);
         
         foreach var path in EnumerateAllDirectories(module_dir)+EnumerateAllFiles(module_dir, '*'+inp_file_ext) do
-          new FileListItem(cont_by_dir, path, update, open_file);
+          new FileListItem(cont_by_dir, path, apply_changes_wh.Set, open_file);
         
         begin
           var missing_item := new TreeViewItem;
