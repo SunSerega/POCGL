@@ -27,7 +27,7 @@ var enc := new System.Text.UTF8Encoding(true);
 function ColorFromKey(key: object): Color;
 begin
   var rng := new System.Random(key.ToString.GetHashCode);
-  Result := Color.FromRgb(rng.Next(200,250), rng.Next(50,200), rng.Next(50,200));
+  Result := Color.FromRgb(rng.Next(200,250), rng.Next(150,200), rng.Next(150,200));
 end;
 
 //TODO Наверное придётся засунуть весь текст файла в один FixedTextBox
@@ -269,9 +269,23 @@ type
   
   InpFileView = sealed class
     private body := new FixedTextBox;
+    private headers := new List<(array of string, Run)>;
     
-    public constructor(fname: string);
+    private static function MakeHeaderColor(names: array of string; unused: HashSet<string>): SolidColorBrush;
     begin
+      var c := names.Count(unused.Contains);
+      Result :=
+        if c=0 then
+          Brushes.LightGreen else
+        if c=names.Length then
+          Brushes.Pink else
+          Brushes.LightBlue;
+    end;
+    
+    public constructor(fname: string; readonly: boolean; unused_headers: HashSet<string>);
+    begin
+      
+      var TODO_long := 0; //TODO Proper spans/cuts system, with recursion, abstract classes and etc.
       
       {$region Remarking thread}
       
@@ -295,19 +309,24 @@ type
             sw.Restart;
           
           var spans := new List<(SIndexRange, SolidColorBrush)>;
+          var named_spans := new Dictionary<integer, array of string>;
           var text := new StringSection(last_text.Remove(#13));
           if text.EndsWith(#10) then text := text.TrimLast(1);
-          WriteAllText(fname, text.ToString, enc);
+          if not readonly then WriteAllText(fname, text.ToString, enc);
           
           {$region Find markables}
           begin
             var known_template_names: HashSet<string>;
             
+            //TODO #????
+            var body := body;
+            var unused_headers := unused_headers;
+            
             DescrFileMarksInfo.Instance.MarkAll(text, (s,eot,info)->
             begin
               match info with
                 DescrBlockMarks(var m):
-                if s.Next(text.Length)='#' then // "not eot" baked in
+                if not eot and (s.Next(text.I2)='#') then
                   Result := StringIndex.Invalid else // Continue search for the end of heads
                 begin
                   begin
@@ -336,7 +355,11 @@ type
                         end;
                         var curr_head_template_names := new HashSet<string>;
                         
-                        var text := s;
+                        var text := s.TrimFirst(1).TrimWhile(char.IsWhiteSpace);
+                        var names := FixerUtils.DeTemplateName(text).ConvertAll(\(name,conv)->name);
+                        named_spans.Add(spans.Count, names);
+                        spans += (s.TakeFirst(1).range, MakeHeaderColor(names, unused_headers));
+                        
                         var i := 0;
                         m.MarkAll(text, (s,eot,info)->
                         begin
@@ -352,7 +375,8 @@ type
                               if not curr_head_template_names.Add(name) then exit;
                               i += 1;
                               
-                              spans += (s.range, Brushes.LightBlue);
+                              var b := body.Dispatcher.Invoke(()->new SolidColorBrush(ColorFromKey(name)));
+                              spans += (s.range, b);
                               
                             end;
                             else raise new NotImplementedException;
@@ -383,10 +407,11 @@ type
                     inner.TakeFirst(ind)
                   ;
                   
+                  var name := name_s.ToString;
                   spans += (s.range,
-                    if name_s.ToString in known_template_names then
-                      Brushes.LightGreen else
-                      Brushes.Pink
+                    if name in known_template_names then
+                      body.Dispatcher.Invoke(()->new SolidColorBrush(ColorFromKey(name))) else
+                      Brushes.LightGray
                   );
                   
                 end;
@@ -405,10 +430,11 @@ type
           if remark_wh.IsSet then continue;
           
           var cuts := new List<(string, SolidColorBrush)>;
+          var named_cuts := new Dictionary<integer, array of string>;
           begin
             var head := text;
             
-            foreach var (r,b) in spans do
+            foreach var (r,b) in spans index i do
             begin
               if head.I1<>r.i1 then
               begin
@@ -416,6 +442,9 @@ type
                 head.range.i1 := r.i1;
               end;
               
+              var names := named_spans.Get(i);
+              if names<>nil then
+                named_cuts.Add(cuts.Count, names);
               cuts += (head.WithI2(r.i2).ToString, b);
               head.range.i1 := r.i2;
             end;
@@ -489,6 +518,8 @@ type
                 bl.Inlines.InsertBefore(before, Result);
             end;
             
+            var new_headers := new List<(array of string, Run)>;
+            
             var next_cut_ind := 0;
 //            bl.Inlines.Count.Println;
             foreach var inl in bl.Inlines.ToArray do
@@ -508,6 +539,8 @@ type
               if old_key=new_key then
               begin
                 if write_acts then Writeln('pass already right');
+                var names := named_cuts.Get(next_cut_ind);
+                if names<>nil then new_headers += (names, r);
                 next_cut_ind += 1;
                 old_r_c[new_key] -= 1;
                 new_r_c[new_key] -= 1;
@@ -517,7 +550,10 @@ type
               if new_r_c.Get(new_key)<old_r_c.Get(new_key) then
               begin
                 var (s,b) := new_key;
-                new_run(s, b, r);
+                if write_acts then Writeln('create missing');
+                var nr := new_run(s, b, r);
+                var names := named_cuts.Get(next_cut_ind);
+                if names<>nil then new_headers += (names, nr);
                 next_cut_ind += 1;
                 new_r_c[new_key] -= 1;
               end else
@@ -532,8 +568,13 @@ type
             for var i := next_cut_ind to cuts.Count-1 do
             begin
               var (s,b) := cuts[i];
-              new_run(s, b, nil);
+              if write_acts then Writeln('create leftover');
+              var nr := new_run(s, b, nil);
+              var names := named_cuts.Get(i);
+              if names<>nil then new_headers += (names, nr);
             end;
+            
+            self.headers := new_headers;
             
             var ptrs_len := body.tb.Document.ContentStart.GetOffsetToPosition(body.tb.Document.ContentEnd);
             var ptr := body.tb.Document.ContentStart;
@@ -605,16 +646,17 @@ type
         remark_wh.Set;
       end;
       
-      body.tb.Dispatcher.Invoke(()->
-      begin
-        var text := ReadAllText(fname, enc);
-        Paragraph(body.tb.Document.Blocks.FirstBlock).Inlines.Add(text);
-      end);
-      
+      Paragraph(body.tb.Document.Blocks.FirstBlock).Inlines.Add(ReadAllText(fname,enc));
+      body.tb.IsReadOnly := readonly;
+      body.tb.AutoWordSelection := false;
     end;
     private constructor := raise new System.InvalidOperationException;
     
     public function Visual := body;
+    
+    public procedure UpdateHeaders(unused: HashSet<string>) :=
+    foreach var (names, r) in headers do
+      r.Background := MakeHeaderColor(names, unused);
     
   end;
   
@@ -634,6 +676,11 @@ type
         end;
       end;
       
+      var module_dir := GetFullPathRTA('..\'+name);
+      var curr_file_view := default(InpFileView);
+      
+      var unused_headers := new HashSet<string>;
+      
       var file_display := new ContentControl;
       
       var update := procedure->
@@ -641,17 +688,28 @@ type
         
         var TODO := 0; // Run "..\PackDescriptions"
         
+        unused_headers.Clear;
+        unused_headers.UnionWith(ReadLines(module_dir+'.unused.log', enc));
+        self.Dispatcher.Invoke(()->
+        begin
+          if curr_file_view<>nil then
+            curr_file_view.UpdateHeaders(unused_headers);
+        end);
       end;
+      update;
       
       var open_file := procedure(fname: string)->
       begin
-        var fview := new InpFileView(fname);
-        file_display.Content := fview.Visual;
-//        file_display.Content := ReadAllText(path);
-        var TODO := 0;
+        curr_file_view := new InpFileView(fname, false, unused_headers);
+        file_display.Content := curr_file_view.Visual;
+        var TODO0 := 0;
         //TODO
         // - File caching (delete when updated outside)
         // - Ctrl+S
+        // --- Currently just autosaved
+        // --- But without backup inbetween
+        // - Replace unused_headers with used_headers
+        // --- Or maybe keep both and don't color the #
       end;
       
       var g := new Grid;
@@ -662,7 +720,6 @@ type
         var tw := new TreeView;
         var cont_by_dir := new Dictionary<string, ItemsControl>;
         
-        var module_dir := GetFullPathRTA('..\'+name);
         cont_by_dir.Add(module_dir, tw);
         
         foreach var path in EnumerateAllDirectories(module_dir)+EnumerateAllFiles(module_dir, '*'+inp_file_ext) do
@@ -676,7 +733,10 @@ type
           missing_item.Selected += (o,e)->
           begin
             file_display.Content := ReadAllText(module_dir+'.missing.log');
-            var TODO := 0; //TODO Open missing (this is virtual file)
+            var TODO := 0;
+            //TODO Open missing (this is a virtual file)
+            // - Wait, why virtual?
+//            file_display.Content := InpFileView.Create(module_dir+'.missing.log', true).Visual;
           end;
           
         end;
@@ -728,10 +788,19 @@ type
 begin
   var w := new Window;
   w.WindowState := WindowState.Maximized;
-      
-  w.KeyDown += (o,e)->
-  case e.Key of
-    System.Windows.Input.Key.Escape: w.Close;
+  
+  begin
+    var last_esc_t := DateTime.MinValue;
+    w.KeyDown += (o,e)->
+    case e.Key of
+      System.Windows.Input.Key.Escape:
+      begin
+        var t := DateTime.Now;
+        if (t-last_esc_t).TotalSeconds<0.3 then
+          w.Close;
+        last_esc_t := t;
+      end;
+    end;
   end;
   
   w.Loaded += (o,e)->
