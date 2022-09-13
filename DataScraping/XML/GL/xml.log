@@ -14,43 +14,33 @@ Enum "GL_VERSION_ES_CM_1_1" was in SpecialNumbers
 Enum "GL_VERSION_ES_CL_1_1" was in SpecialNumbers
 Enum "GL_UUID_SIZE_EXT" was in SpecialNumbers
 Enum "GL_LUID_SIZE_EXT" was in SpecialNumbers
-Empty group [SyncBehaviorFlags] in api [gl]
-Skipped group attrib for type [GLfloat]
-Group [WinCoord] isn't defined
-Group [CheckedInt32] isn't defined
-Group [StencilValue] isn't defined
-Group [MaskedStencilValue] isn't defined
-Skipped group attrib for type [GLboolean]
-Group [List] isn't defined
-Skipped group attrib for type [GLbyte]
-Skipped group attrib for type [GLdouble]
-Group [ColorI] isn't defined
-Skipped group attrib for type [GLshort]
-Skipped group attrib for type [GLubyte]
-Group [ColorUI] isn't defined
-Skipped group attrib for type [GLushort]
-Group [ColorIndexValueI] isn't defined
-Group [CoordI] isn't defined
-Group [SelectName] isn't defined
-Group [MaskedColorIndexValueI] isn't defined
-Skipped group attrib for type [GLsizei]
-Skipped group attrib for type [void]
-Skipped group attrib for type [GLsizeiptr]
-Skipped group attrib for type [GLintptr]
-Group [DrawBufferName] isn't defined
-Group [SyncBehaviorFlags] isn't defined
-Group [FenceNV] isn't defined
-Skipped group attrib for type [struct _cl_context]
-Skipped group attrib for type [struct _cl_event]
-Skipped group attrib for type [GLhandleARB]
-Skipped group attrib for type [GLsizeiptrARB]
-Skipped group attrib for type [GLintptrARB]
-Group [ClampedStencilValue] isn't defined
-Skipped group attrib for type [GLclampd]
-Skipped group attrib for type [GLclampf]
+Group SyncBehaviorFlags was autoset to gt_bitmask, because of GL_NONE in enums, need fixing
+Kind [Coord] was not utilised
+Kind [Clamped01] was not utilised
+Kind [BufferOffset] was not utilised
+Kind [BufferSize] was not utilised
+Kind [Color] was not utilised
+Kind [DrawBufferIndex] was not utilised
+Kind [ClampedFloat32] was not described
+Kind [ClampedFloat32] was not utilised
+Kind [ColorIndexMask] was not utilised
+Kind [StencilValue] was not utilised
+Kind [CheckedFloat32] was not described
+Kind [CheckedFloat32] was not utilised
+Kind [CheckedInt32] was not described
+Kind [CheckedInt32] was not utilised
+Kind [CompressedTextureARB] was not utilised
+Kind [WinCoord] was not utilised
+Kind [Path] was not described
+Kind [Path] was not utilised
+Kind [FenceNV] was not described
+Kind [FenceNV] was not utilised
+Kind [ClampedFloat64] was not described
+Kind [ClampedFloat64] was not utilised
+Kind [FeedbackElement] was not utilised
+Kind [ColorIndexValue] was not utilised
+Kind [StencilMask] was not utilised
+Kind [SelectName] was not utilised
+Kind [ClampedStencilValue] was not described
+Kind [ClampedStencilValue] was not utilised
 Group [SampleMaskNV] isn't defined
-Skipped group attrib for type [GLhalfNV]
-Group [Path] isn't defined
-Skipped group attrib for type [GLvdpauSurfaceNV]
-Skipped group attrib for type [GLfixed]
-Group InternalFormat had multiple different base types: GLuint GLint

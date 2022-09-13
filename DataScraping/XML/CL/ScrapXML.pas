@@ -108,9 +108,10 @@ type
   end;
   
   Group = sealed class
-    private name, t: string;
+    private name: string;
     private bitmask: boolean;
     private enums := new Dictionary<string, int64>;
+    private t := default(string);
     //
     public static All := new Dictionary<string, Group>;
     private static AllEnums := new Dictionary<string, int64>;
@@ -133,9 +134,8 @@ type
       
       begin
         var t := n['type'];
-        if t=nil then t := 'enum';
         
-        case t of
+        case t??'enum' of
           'enum': self.bitmask := false;
           'bitmask': self.bitmask := true;
           else raise new MessageException($'Wrong enum type: [{t}]');
@@ -153,6 +153,8 @@ type
         end else
         begin
           if td.ptr<>0 then raise new MessageException($'Group [{self.name}] has type with ptr');
+          if self.t not in |nil, td.name| then
+            raise new MessageException($'Different underlying group types: [{self.t}] and [{td.name}] for group [{self.name}]');
           self.t := td.name;
         end;
       end;
@@ -256,14 +258,18 @@ type
     public procedure Save(bw: System.IO.BinaryWriter);
     begin
       bw.Write(name);
-      bw.Write(t);
       bw.Write(bitmask);
       bw.Write(enums.Count);
+      
       foreach var key in enums.Keys do
       begin
         bw.Write(key);
         bw.Write(enums[key]);
       end;
+      
+      bw.Write(1); // Count of possible types
+      bw.Write(t);
+      
     end;
     
   end;

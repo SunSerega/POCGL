@@ -109,9 +109,12 @@ type
     end;
     protected procedure Rename(new_name: string);
     begin
-      name_cache.Remove(name);
-      name_cache.Add(new_name, TSelf(self));
-      name_remap.Add(name, new_name);
+      if name_cache<>nil then
+      begin
+        name_cache.Remove(name);
+        name_cache.Add(new_name, TSelf(self));
+        name_remap.Add(name, new_name);
+      end;
       self.name := new_name;
     end;
     
@@ -166,14 +169,16 @@ type
   // - сделать конструктор, принемающий фиксер
 //  GroupFixer = class;
   Group = sealed class(WriteableNode<Group>)
-    private t: string;
     private bitmask: boolean;
     private enums: Dictionary<string, int64>;
+    
+    private types: List<string>;
+    private types_use_replacements: Dictionary<string, string>;
+    
     private custom_members := new List<array of string>;
+    private function BoundToAllEnums := not bitmask;
     
     private static all_enums := new Dictionary<string, int64>;
-    
-    private function BoundToAllEnums := not bitmask;
     
     private procedure AddKeyVal(key: string; val: int64);
     begin
@@ -195,7 +200,6 @@ type
     begin
       
       name := br.ReadString;
-      t := TypeTable.Convert(br.ReadString, nil);
       if TypeTable.All.ContainsKey(name) then
         Otp($'ERROR: Record name [{name}] in TypeTable') else
         TypeTable.All.Add(name, name);
@@ -220,6 +224,64 @@ type
         AddKeyVal(key, br.ReadInt64);
         
       end;
+      
+      types := new List<string>(br.ReadInt32);
+      types_use_replacements := new Dictionary<string, string>(types.Capacity);
+      loop types.Capacity do
+      begin
+        var new_t := TypeTable.Convert(br.ReadString, nil);
+        var found := false;
+        for var i := 0 to types.Count-1 do
+        begin
+          var old_t := types[i];
+          if old_t=new_t then raise new System.InvalidOperationException;
+          
+          if old_t.TrimStart('U')=new_t.TrimStart('U') then
+          begin
+            var unsigned_t := |old_t,new_t|.Single(t->t.StartsWith('U'));
+            types[i] := unsigned_t.SubString(1);
+            types_use_replacements.Add(unsigned_t, types[i]);
+            found := true;
+            break;
+          end;
+          
+        end;
+        
+        if not found then
+          types += new_t;
+      end;
+      types.Sort((t1,t2)->
+      begin
+        Result := 0;
+        if t1=t2 then exit;
+        
+        var t_size := function(t: string): integer ->
+        case t of
+          'Byte': Result := 1;
+          'UInt32': Result := 4;
+          else raise new System.NotImplementedException(t);
+        end;
+        
+        // Size (ascending)
+        Result += t_size(t1);
+        Result -= t_size(t2);
+        if Result<>0 then exit;
+        
+        Otp($'ERROR: Group [{self.name}]: Failed to sort types [{t1}] vs [{t2}]');
+      end);
+      
+    end;
+    
+    public function SuffixForType(t: string): string;
+    begin
+      if types_use_replacements.TryGetValue(t, Result) then
+        t := Result;
+      
+      if t in |self.types[0],self.name| then
+        Result := '' else
+      if t in self.types then
+        Result := t else
+        raise new System.InvalidOperationException($'Group [{self.name}]: Type [{t}] is not in [{self.types.JoinToString}] or [{self.types_use_replacements.JoinToString}]');
       
     end;
     
@@ -328,11 +390,11 @@ type
     public static procedure FixCL_Names :=
     foreach var gr in All do
       if gr.name.StartsWith('cl_') then
-        gr.name := gr.name.ToWords('_').Skip(1).Select(w->
+        gr.Rename(gr.name.ToWords('_').Skip(1).Select(w->
         begin
           w[0] := w[0].ToUpper;
           Result := w;
-        end).JoinToString('');
+        end).JoinToString(''));
     
     private function EnumrKeys := enums.Keys.OrderBy(ename->Abs(enums[ename]));//.ThenBy(ename->ename);
     private property ValueStr[ename: string]: string read
@@ -344,7 +406,7 @@ type
     begin
       if not referenced then exit;
       
-      log_groups.Otp($'# {name}[{t}]');
+      log_groups.Otp($'# {name}[{types.JoinToString(''/'')}]');
       foreach var ename in EnumrKeys do
         log_groups.Otp($'{#9}{ename} = {enums[ename]:X}');
       log_groups.Otp('');
@@ -359,75 +421,90 @@ type
       if not writeable then exit;
       if enums.Count=0 then Otp($'WARNING: Group [{name}] had 0 enums');
       var max_scr_w := screened_enums.Values.DefaultIfEmpty('').Max(ename->ename.Length);
-      wr +=       $'  {name} = record' + #10;
       
-      wr +=       $'    public val: {t};' + #10;
-      wr +=       $'    public constructor(val: {t}) := self.val := val;' + #10;
-      if t = 'IntPtr' then
-        wr +=     $'    public constructor(val: Int32) := self.val := new {t}(val);' + #10;
-      wr +=       $'    ' + #10;
-      
-      foreach var ename in EnumrKeys do
-        wr +=     $'    public static property {screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} {name} read new {name}({ValueStr[ename]});' + #10;
-      wr +=       $'    ' + #10;
-      
-      if bitmask then
+      foreach var t in types index i do
       begin
+        var cur_name := name;
+        if i<>0 then cur_name += t;
         
-        wr +=     $'    public static function operator+(f1,f2: {name}) := new {name}(f1.val or f2.val);' + #10;
-        wr +=     $'    public static function operator or(f1,f2: {name}) := f1+f2;' + #10;
-        wr +=     $'    ' + #10;
+        wr +=       $'  {cur_name} = record' + #10;
         
-        wr +=     $'    public static procedure operator+=(var f1: {name}; f2: {name}) := f1 := f1+f2;' + #10;
-        wr +=     $'    ' + #10;
+        wr +=       $'    public val: {t};' + #10;
+        wr +=       $'    public constructor(val: {t}) := self.val := val;' + #10;
+        if t in |'IntPtr', 'UIntPtr'| then
+          wr +=     $'    public constructor(val: Int32) := self.val := new {t}(val);' + #10;
+        wr +=       $'    ' + #10;
+        
+        if i<>0 then
+        begin
+          wr +=     $'    public static function operator implicit(v: {cur_name}): {name} := new {    name}(v.val);' + #10;
+          wr +=     $'    public static function operator implicit(v: {name}): {cur_name} := new {cur_name}(v.val);' + #10;
+          wr +=     $'    ' + #10;
+        end;
         
         foreach var ename in EnumrKeys do
-          if enums[ename]<>0 then
-            wr += $'    public property HAS_FLAG_{screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} boolean read self.val and {ValueStr[ename]} <> 0;' + #10 else
-            wr += $'    public property ANY_FLAGS: boolean read self.val<>0;' + #10;
-        wr +=     $'    ' + #10;
+          wr +=     $'    public static property {screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} {cur_name} read new {cur_name}({ValueStr[ename]});' + #10;
+        wr +=       $'    ' + #10;
         
-      end;
-      
-      wr +=       $'    public function ToString: string; override;' + #10;
-      wr +=       $'    begin' + #10;
-      if bitmask then
-        wr +=     $'      var res := new StringBuilder;'+#10;
-      foreach var ename in EnumrKeys do
-      begin
-        if bitmask and (enums[ename]=0) then continue;
-        wr +=     $'      if self.val ';
-        var val_str := ValueStr[ename];
-        if bitmask then wr += $'and {t}({val_str}) ';
-        wr += $'= {t}({val_str}) then ';
         if bitmask then
-          wr +=   $'res += ''{ename}+'';' else
-          wr +=   $'Result := ''{ename}'' else';
-        wr += #10;
+        begin
+          
+          wr +=     $'    public static function operator+(f1,f2: {cur_name}) := new {cur_name}(f1.val or f2.val);' + #10;
+          wr +=     $'    public static function operator or(f1,f2: {cur_name}) := f1+f2;' + #10;
+          wr +=     $'    ' + #10;
+          
+          wr +=     $'    public static procedure operator+=(var f1: {cur_name}; f2: {cur_name}) := f1 := f1+f2;' + #10;
+          wr +=     $'    ' + #10;
+          
+          foreach var ename in EnumrKeys do
+            if enums[ename]<>0 then
+              wr += $'    public property HAS_FLAG_{screened_enums[ename]}:{'' ''*(max_scr_w-screened_enums[ename].Length)} boolean read self.val and {ValueStr[ename]} <> 0;' + #10 else
+              wr += $'    public property ANY_FLAGS: boolean read self.val<>0;' + #10;
+          wr +=     $'    ' + #10;
+          
+        end;
+        
+        wr +=       $'    public function ToString: string; override;' + #10;
+        wr +=       $'    begin' + #10;
+        if bitmask then
+          wr +=     $'      var res := new StringBuilder;'+#10;
+        foreach var ename in EnumrKeys do
+        begin
+          if bitmask and (enums[ename]=0) then continue;
+          wr +=     $'      if self.val ';
+          var val_str := ValueStr[ename];
+          if bitmask then wr += $'and {t}({val_str}) ';
+          wr += $'= {t}({val_str}) then ';
+          if bitmask then
+            wr +=   $'res += ''{ename}+'';' else
+            wr +=   $'Result := ''{ename}'' else';
+          wr += #10;
+        end;
+        if bitmask then
+        begin
+          wr +=     $'      if res.Length<>0 then'+#10;
+          wr +=     $'      begin'+#10;
+          wr +=     $'        res.Length -= 1;'+#10;
+          wr +=     $'        Result := res.ToString;'+#10;
+          wr +=     $'      end else'+#10;
+          wr +=     $'      if self.val=0 then'+#10;
+          wr +=     $'        Result := ''NONE'' else'+#10;
+        end;
+        wr +=       $'        Result := $''{cur_name}[{{self.val}}]'';'+#10;
+        wr +=       $'    end;' + #10;
+        wr +=       $'    ' + #10;
+        
+        foreach var m in custom_members do
+        begin
+          foreach var l in m do
+            wr +=   $'    {l}' + #10;
+          wr +=     $'    ' + #10;
+        end;
+        
+        wr +=       $'  end;'+#10;
+        wr +=       $'  ' + #10;
       end;
-      if bitmask then
-      begin
-        wr +=     $'      if res.Length<>0 then'+#10;
-        wr +=     $'      begin'+#10;
-        wr +=     $'        res.Length -= 1;'+#10;
-        wr +=     $'        Result := res.ToString;'+#10;
-        wr +=     $'      end else'+#10;
-        wr +=     $'      if self.val=0 then'+#10;
-        wr +=     $'        Result := ''NONE'' else'+#10;
-      end;
-      wr +=       $'        Result := $''{name}[{{self.val}}]'';'+#10;
-      wr +=       $'    end;' + #10;
-      wr +=       $'    ' + #10;
       
-      foreach var m in custom_members do
-      begin
-        foreach var l in m do
-          wr +=   $'    {l}' + #10;
-        wr +=     $'    ' + #10;
-      end;
-      
-      wr +=       $'  end;'+#10;
-      wr +=       $'  ' + #10;
     end;
     public static procedure WriteAll(wr: Writer) :=
     foreach var gr in All.OrderBy(gr->gr.name) do gr.Write(wr);
@@ -481,17 +558,19 @@ type
       if br.ReadInt32 <> -1 then raise new System.NotSupportedException;
       
       var gr_ind := br.ReadInt32;
-      self.gr := gr_ind=-1 ? nil : Group.All[gr_ind];
+      self.gr := if gr_ind=-1 then nil else Group.All[gr_ind];
       
       var base_t: (string, integer) := nil;
       if br.ReadBoolean then
         base_t := (br.ReadString, br.ReadInt32);
       
       self.t := TypeTable.Convert(self.t, base_t);
+      var gr_suffix := if gr=nil then '' else gr.SuffixForType(self.t);
+      
       self.ptr -= self.t.Count(ch->ch='-');
       if self.ptr<0 then raise new System.InvalidOperationException;
 //      if self.ptr>0 then raise new System.NotSupportedException(name); // cl_dx9_surface_info_khr содержит поле-указатель
-      self.t := self.t.Remove('-').Trim;
+      self.t := self.t.Remove('-').Trim + gr_suffix;
       
     end;
     
@@ -724,6 +803,7 @@ type
     public ptr: integer;
     public static_arr_len := -1; //TODO Нигде не использовано
     public gr := default(Group);
+    public gr_suffix := default(string);
     
     private static KnownClasses: HashSet<string>;
     public static procedure LoadClasses(br: System.IO.BinaryReader);
@@ -776,6 +856,7 @@ type
       end else
       begin
         self.t := TypeTable.Convert(self.t, base_t);
+        if gr<>nil then self.gr_suffix := gr.SuffixForType(self.t);
         
         self.ptr += self.t.Count(ch->ch='*') - self.t.Count(ch->ch='-');
         self.t := self.t.Remove('*','-').Trim;
@@ -797,7 +878,7 @@ type
       Result := t;
       if gr=nil then exit;
       gr := Group.ByName(gr.name);
-      Result := gr.name;
+      Result := gr.name + gr_suffix;
     end;
     
   end;
@@ -2728,7 +2809,7 @@ type
     public function Apply(gr: Group): boolean; override;
     begin
       gr.name     := self.name;
-      gr.t        := self.t;
+      gr.types    := new List<string>(|self.t|);
       gr.bitmask  := self.bitmask;
       gr.enums    := new Dictionary<string, int64>(self.enums.Count);
       foreach var (key, val) in self.enums do
@@ -2766,9 +2847,9 @@ type
     
     public function Apply(gr: Group): boolean; override;
     begin
-      if gr.t=new_base then
-        log.Otp($'Group [{gr.name}] fixer did not change base type, it was already [{gr.t}]');
-      gr.t := new_base;
+      if gr.types.SingleOrDefault=new_base then
+        log.Otp($'Group [{gr.name}] fixer did not change base type, it was already [{gr.types.Single}]');
+      gr.types := new List<string>(|new_base|);
       self.used := true;
       Result := false;
     end;
@@ -2785,7 +2866,7 @@ type
     
     public function Apply(gr: Group): boolean; override;
     begin
-      gr.name := new_name;
+      gr.Rename(new_name);
       self.used := true;
       Result := false;
     end;

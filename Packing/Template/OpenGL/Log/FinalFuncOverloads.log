@@ -906,9 +906,9 @@
 # glEndTransformFeedback[1]:
 
 # glFenceSync[1]:
-	gl_sync | SyncCondition | DummyFlags |
-	------- | ------------- | ---------- |
-	        | condition     | flags      |
+	gl_sync | SyncCondition | SyncBehaviorFlags |
+	------- | ------------- | ----------------- |
+	        | condition     | flags             |
 
 # glFinish[1]:
 
@@ -4126,9 +4126,9 @@
 	index  | v               |
 
 # glWaitSync[1]:
-	gl_sync | DummyFlags | UInt64  |
-	------- | ---------- | ------- |
-	sync    | flags      | timeout |
+	gl_sync | SyncBehaviorFlags | UInt64  |
+	------- | ----------------- | ------- |
+	sync    | flags             | timeout |
 
 # glAccum[1]:
 	AccumOp | single |
@@ -4168,9 +4168,9 @@
 	width | height | xorig  | yorig  | xmove  | ymove  | bitmap        |
 
 # glCallList[1]:
-	UInt32 |
-	------ |
-	list   |
+	gl_display_list |
+	--------------- |
+	list            |
 
 # glCallLists[1]:
 	Int32 | ListNameType | IntPtr |
@@ -4826,9 +4826,9 @@
 	factor | pattern |
 
 # glListBase[1]:
-	UInt32 |
-	------ |
-	base   |
+	gl_display_list |
+	--------------- |
+	base            |
 
 # glLoadIdentity[1]:
 
@@ -5164,9 +5164,9 @@
 	m               |
 
 # glNewList[1]:
-	UInt32 | ListMode |
-	------ | -------- |
-	list   | mode     |
+	gl_display_list | ListMode |
+	--------------- | -------- |
+	list            | mode     |
 
 # glNormal3b[1]:
 	SByte | SByte | SByte |
@@ -14674,28 +14674,28 @@
 	        | path   |
 
 # glPathCommandsNV[3]:
-	UInt32 | Int32       | array of Byte | Int32     | PathCoordType | IntPtr |
-	UInt32 | Int32       | var Byte      | Int32     | PathCoordType | IntPtr |
-	UInt32 | Int32       | IntPtr        | Int32     | PathCoordType | IntPtr |
-	------ | ----------- | ------------- | --------- | ------------- | ------ |
-	path   | numCommands | commands      | numCoords | coordType     | coords |
+	UInt32 | Int32       | array of PathCoordType | Int32     | PathCoordTypeUInt32 | IntPtr |
+	UInt32 | Int32       | var PathCoordType      | Int32     | PathCoordTypeUInt32 | IntPtr |
+	UInt32 | Int32       | IntPtr                 | Int32     | PathCoordTypeUInt32 | IntPtr |
+	------ | ----------- | ---------------------- | --------- | ------------------- | ------ |
+	path   | numCommands | commands               | numCoords | coordType           | coords |
 
 # glPathCoordsNV[1]:
-	UInt32 | Int32     | PathCoordType | IntPtr |
-	------ | --------- | ------------- | ------ |
-	path   | numCoords | coordType     | coords |
+	UInt32 | Int32     | PathCoordTypeUInt32 | IntPtr |
+	------ | --------- | ------------------- | ------ |
+	path   | numCoords | coordType           | coords |
 
 # glPathSubCommandsNV[3]:
-	UInt32 | Int32        | Int32            | Int32       | array of Byte | Int32     | PathCoordType | IntPtr |
-	UInt32 | Int32        | Int32            | Int32       | var Byte      | Int32     | PathCoordType | IntPtr |
-	UInt32 | Int32        | Int32            | Int32       | IntPtr        | Int32     | PathCoordType | IntPtr |
-	------ | ------------ | ---------------- | ----------- | ------------- | --------- | ------------- | ------ |
-	path   | commandStart | commandsToDelete | numCommands | commands      | numCoords | coordType     | coords |
+	UInt32 | Int32        | Int32            | Int32       | array of PathCoordType | Int32     | PathCoordTypeUInt32 | IntPtr |
+	UInt32 | Int32        | Int32            | Int32       | var PathCoordType      | Int32     | PathCoordTypeUInt32 | IntPtr |
+	UInt32 | Int32        | Int32            | Int32       | IntPtr                 | Int32     | PathCoordTypeUInt32 | IntPtr |
+	------ | ------------ | ---------------- | ----------- | ---------------------- | --------- | ------------------- | ------ |
+	path   | commandStart | commandsToDelete | numCommands | commands               | numCoords | coordType           | coords |
 
 # glPathSubCoordsNV[1]:
-	UInt32 | Int32      | Int32     | PathCoordType | IntPtr |
-	------ | ---------- | --------- | ------------- | ------ |
-	path   | coordStart | numCoords | coordType     | coords |
+	UInt32 | Int32      | Int32     | PathCoordTypeUInt32 | IntPtr |
+	------ | ---------- | --------- | ------------------- | ------ |
+	path   | coordStart | numCoords | coordType           | coords |
 
 # glPathStringNV[1]:
 	UInt32 | PathStringFormat | Int32  | IntPtr     |
@@ -14819,18 +14819,18 @@
 	path   | coverMode     |
 
 # glCoverFillPathInstancedNV[3]:
-	Int32    | PathElementType | IntPtr | UInt32   | PathCoverMode | PathTransformType | array of single |
-	Int32    | PathElementType | IntPtr | UInt32   | PathCoverMode | PathTransformType | var single      |
-	Int32    | PathElementType | IntPtr | UInt32   | PathCoverMode | PathTransformType | IntPtr          |
-	-------- | --------------- | ------ | -------- | ------------- | ----------------- | --------------- |
-	numPaths | pathNameType    | paths  | pathBase | coverMode     | transformType     | transformValues |
+	Int32    | PathElementType | IntPtr | UInt32   | InstancedPathCoverMode | PathTransformType | array of single |
+	Int32    | PathElementType | IntPtr | UInt32   | InstancedPathCoverMode | PathTransformType | var single      |
+	Int32    | PathElementType | IntPtr | UInt32   | InstancedPathCoverMode | PathTransformType | IntPtr          |
+	-------- | --------------- | ------ | -------- | ---------------------- | ----------------- | --------------- |
+	numPaths | pathNameType    | paths  | pathBase | coverMode              | transformType     | transformValues |
 
 # glCoverStrokePathInstancedNV[3]:
-	Int32    | PathElementType | IntPtr | UInt32   | PathCoverMode | PathTransformType | array of single |
-	Int32    | PathElementType | IntPtr | UInt32   | PathCoverMode | PathTransformType | var single      |
-	Int32    | PathElementType | IntPtr | UInt32   | PathCoverMode | PathTransformType | IntPtr          |
-	-------- | --------------- | ------ | -------- | ------------- | ----------------- | --------------- |
-	numPaths | pathNameType    | paths  | pathBase | coverMode     | transformType     | transformValues |
+	Int32    | PathElementType | IntPtr | UInt32   | InstancedPathCoverMode | PathTransformType | array of single |
+	Int32    | PathElementType | IntPtr | UInt32   | InstancedPathCoverMode | PathTransformType | var single      |
+	Int32    | PathElementType | IntPtr | UInt32   | InstancedPathCoverMode | PathTransformType | IntPtr          |
+	-------- | --------------- | ------ | -------- | ---------------------- | ----------------- | --------------- |
+	numPaths | pathNameType    | paths  | pathBase | coverMode              | transformType     | transformValues |
 
 # glGetPathParameterivNV[2]:
 	UInt32 | PathParameter | var Int32 |
@@ -14845,10 +14845,10 @@
 	path   | pname         | value      |
 
 # glGetPathCommandsNV[2]:
-	UInt32 | var Byte |
-	UInt32 | IntPtr   |
-	------ | -------- |
-	path   | commands |
+	UInt32 | var PathCoordType |
+	UInt32 | IntPtr            |
+	------ | ----------------- |
+	path   | commands          |
 
 # glGetPathCoordsNV[2]:
 	UInt32 | var single |
@@ -14946,28 +14946,28 @@
 	matrixMode | m               |
 
 # glStencilThenCoverFillPathNV[1]:
-	UInt32 | DummyEnum | UInt32 | DummyEnum |
-	------ | --------- | ------ | --------- |
-	path   | fillMode  | mask   | coverMode |
+	UInt32 | PathFillMode | UInt32 | PathCoverMode |
+	------ | ------------ | ------ | ------------- |
+	path   | fillMode     | mask   | coverMode     |
 
 # glStencilThenCoverStrokePathNV[1]:
-	UInt32 | Int32     | UInt32 | DummyEnum |
-	------ | --------- | ------ | --------- |
-	path   | reference | mask   | coverMode |
+	UInt32 | Int32     | UInt32 | PathCoverMode |
+	------ | --------- | ------ | ------------- |
+	path   | reference | mask   | coverMode     |
 
 # glStencilThenCoverFillPathInstancedNV[3]:
-	Int32    | DummyEnum    | IntPtr | UInt32   | DummyEnum | UInt32 | DummyEnum | DummyEnum     | array of single |
-	Int32    | DummyEnum    | IntPtr | UInt32   | DummyEnum | UInt32 | DummyEnum | DummyEnum     | var single      |
-	Int32    | DummyEnum    | IntPtr | UInt32   | DummyEnum | UInt32 | DummyEnum | DummyEnum     | IntPtr          |
-	-------- | ------------ | ------ | -------- | --------- | ------ | --------- | ------------- | --------------- |
-	numPaths | pathNameType | paths  | pathBase | fillMode  | mask   | coverMode | transformType | transformValues |
+	Int32    | PathElementType | IntPtr | UInt32   | PathFillMode | UInt32 | InstancedPathCoverMode | PathTransformType | array of single |
+	Int32    | PathElementType | IntPtr | UInt32   | PathFillMode | UInt32 | InstancedPathCoverMode | PathTransformType | var single      |
+	Int32    | PathElementType | IntPtr | UInt32   | PathFillMode | UInt32 | InstancedPathCoverMode | PathTransformType | IntPtr          |
+	-------- | --------------- | ------ | -------- | ------------ | ------ | ---------------------- | ----------------- | --------------- |
+	numPaths | pathNameType    | paths  | pathBase | fillMode     | mask   | coverMode              | transformType     | transformValues |
 
 # glStencilThenCoverStrokePathInstancedNV[3]:
-	Int32    | DummyEnum    | IntPtr | UInt32   | Int32     | UInt32 | DummyEnum | DummyEnum     | array of single |
-	Int32    | DummyEnum    | IntPtr | UInt32   | Int32     | UInt32 | DummyEnum | DummyEnum     | var single      |
-	Int32    | DummyEnum    | IntPtr | UInt32   | Int32     | UInt32 | DummyEnum | DummyEnum     | IntPtr          |
-	-------- | ------------ | ------ | -------- | --------- | ------ | --------- | ------------- | --------------- |
-	numPaths | pathNameType | paths  | pathBase | reference | mask   | coverMode | transformType | transformValues |
+	Int32    | PathElementType | IntPtr | UInt32   | Int32     | UInt32 | InstancedPathCoverMode | PathTransformType | array of single |
+	Int32    | PathElementType | IntPtr | UInt32   | Int32     | UInt32 | InstancedPathCoverMode | PathTransformType | var single      |
+	Int32    | PathElementType | IntPtr | UInt32   | Int32     | UInt32 | InstancedPathCoverMode | PathTransformType | IntPtr          |
+	-------- | --------------- | ------ | -------- | --------- | ------ | ---------------------- | ----------------- | --------------- |
+	numPaths | pathNameType    | paths  | pathBase | reference | mask   | coverMode              | transformType     | transformValues |
 
 # glPathGlyphIndexRangeNV[3]:
 	DummyEnum | DummyEnum  | IntPtr   | PathFontStyle | UInt32                | single  | array of UInt32 |
@@ -15811,11 +15811,10 @@
 	---------- | ------------------ | --------- |
 	id         | pname              | params    |
 
-# glGetProgramStringNV[2]:
-	gl_program | VertexAttribEnumNV | var Byte |
-	gl_program | VertexAttribEnumNV | IntPtr   |
-	---------- | ------------------ | -------- |
-	id         | pname              | program  |
+# glGetProgramStringNV[1]:
+	gl_program | VertexAttribEnumNV | IntPtr  |
+	---------- | ------------------ | ------- |
+	id         | pname              | program |
 
 # glGetTrackMatrixivNV[2]:
 	VertexAttribEnumNV | UInt32  | VertexAttribEnumNV | var Int32 |
@@ -17339,40 +17338,40 @@
 	marker |
 
 # glGetListParameterfvSGIX[2]:
-	UInt32 | ListParameterName | var single |
-	UInt32 | ListParameterName | IntPtr     |
-	------ | ----------------- | ---------- |
-	list   | pname             | params     |
+	gl_display_list | ListParameterName | var single |
+	gl_display_list | ListParameterName | IntPtr     |
+	--------------- | ----------------- | ---------- |
+	list            | pname             | params     |
 
 # glGetListParameterivSGIX[2]:
-	UInt32 | ListParameterName | var Int32 |
-	UInt32 | ListParameterName | IntPtr    |
-	------ | ----------------- | --------- |
-	list   | pname             | params    |
+	gl_display_list | ListParameterName | var Int32 |
+	gl_display_list | ListParameterName | IntPtr    |
+	--------------- | ----------------- | --------- |
+	list            | pname             | params    |
 
 # glListParameterfSGIX[1]:
-	UInt32 | ListParameterName | single |
-	------ | ----------------- | ------ |
-	list   | pname             | param  |
+	gl_display_list | ListParameterName | single |
+	--------------- | ----------------- | ------ |
+	list            | pname             | param  |
 
 # glListParameterfvSGIX[3]:
-	UInt32 | ListParameterName | array of single |
-	UInt32 | ListParameterName | var single      |
-	UInt32 | ListParameterName | IntPtr          |
-	------ | ----------------- | --------------- |
-	list   | pname             | params          |
+	gl_display_list | ListParameterName | array of single |
+	gl_display_list | ListParameterName | var single      |
+	gl_display_list | ListParameterName | IntPtr          |
+	--------------- | ----------------- | --------------- |
+	list            | pname             | params          |
 
 # glListParameteriSGIX[1]:
-	UInt32 | ListParameterName | Int32 |
-	------ | ----------------- | ----- |
-	list   | pname             | param |
+	gl_display_list | ListParameterName | Int32 |
+	--------------- | ----------------- | ----- |
+	list            | pname             | param |
 
 # glListParameterivSGIX[3]:
-	UInt32 | ListParameterName | array of Int32 |
-	UInt32 | ListParameterName | var Int32      |
-	UInt32 | ListParameterName | IntPtr         |
-	------ | ----------------- | -------------- |
-	list   | pname             | params         |
+	gl_display_list | ListParameterName | array of Int32 |
+	gl_display_list | ListParameterName | var Int32      |
+	gl_display_list | ListParameterName | IntPtr         |
+	--------------- | ----------------- | -------------- |
+	list            | pname             | params         |
 
 # glPixelTexGenSGIX[1]:
 	PixelTexGenMode |

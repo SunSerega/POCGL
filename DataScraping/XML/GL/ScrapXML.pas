@@ -5,33 +5,65 @@ uses XMLUtils    in '..\XMLUtils';
 type
   LogCache = static class
     
+    static kinds_undescribed            := new HashSet<string>;
+    static kinds_unutilised             := new HashSet<string>;
     static invalid_type_for_group       := new HashSet<string>;
     static missing_group                := new HashSet<string>;
     static func_with_enum_without_group := new HashSet<string>;
-    static group_multi_base             := new Dictionary<string, HashSet<string>>;
     
+  end;
+  
+  Kinds = static class
+    static described  := new HashSet<string>;
+    static mentioned  := new HashSet<string>
   end;
   
   Group = sealed class
     private name: string;
-    private t := default(string);
     private bitmask: boolean;
     private enums := new Dictionary<string, int64>;
+    
+    private types := new HashSet<string>;
     
     public static All := new Dictionary<string, Group>;
     public static Used := new HashSet<string>;
     
+    public procedure MakeTypeCompatible(var t1, t2: string; func_name: string);
+    begin
+      if t1=t2 then exit;
+      
+      begin
+        var t1s := if t1.StartsWith('GLu') then t1.Remove(2,1) else t1;
+        var t2s := if t2.StartsWith('GLu') then t2.Remove(2,1) else t2;
+        if t1s=t2s then
+        begin
+          t1 := t1s;
+          t2 := t2s;
+          exit;
+        end;
+      end;
+      
+      raise new MessageException($'Incompatible underlying group types: [{t1}] and [{t2}] in func [{func_name}]');
+    end;
+    
     public procedure Save(bw: System.IO.BinaryWriter);
     begin
       bw.Write(name);
-      bw.Write(t ?? 'GLuint');
       bw.Write(bitmask);
       bw.Write(enums.Count);
+      
       foreach var key in enums.Keys do
       begin
         bw.Write(key);
         bw.Write(enums[key]);
       end;
+      
+      if types.Count=0 then
+        types += 'GLuint';
+      bw.Write(types.Count);
+      foreach var t in types do
+        bw.Write(t);
+      
     end;
     
   end;
@@ -73,7 +105,7 @@ type
           
           if eval=0 then
           begin
-            if gname in |'EmptyFlags'| then
+            if 'Flags' in gname then
             begin
               group_t := gt_bitmask;
               var TODO := 0;
@@ -122,7 +154,6 @@ type
     public on_used: ()->();
     
     private enum_types := |'GLenum', 'GLbitfield'|;
-    private maybe_enum_types := |'GLint', 'GLuint'|;
     public constructor(func_name: string; n: XmlNode);
     begin
       
@@ -155,23 +186,29 @@ type
           self.rep_c := StrToInt64(len_str);
       end;
       
-      var gname := n['group'];
-      if gname<>nil then
+      if n['kind'] is string(var kind_s) then foreach var kind in kind_s.Split(',') do
       begin
-        Group.Used += gname;
+        if kind in Kinds.described then
+          Kinds.mentioned += kind else
+        if LogCache.kinds_undescribed.Add(kind) then
+          log.WriteLine($'Kind [{kind}] was not described');
         
-        if self.t not in enum_types+maybe_enum_types then
-        begin
-          if gname='String' then
+        case kind of
+          
+          'String':
           begin
-            if self.t <> 'GLubyte' then raise new MessageException($'ERROR: Group [{gname}] was applied to type [{self.t}]');
+            if self.t <> 'GLubyte' then raise new MessageException($'ERROR: Kind [{kind}] was applied to type [{self.t}]');
             self.t := 'GLchar';
-          end else
-          if class_name=nil then
-            on_used += ()->
-            if LogCache.invalid_type_for_group.Add(t) then
-              log.WriteLine($'Skipped group attrib for type [{t}]');
-        end else
+          end;
+          
+          else if LogCache.kinds_unutilised.Add(kind) then
+            log.WriteLine($'Kind [{kind}] was not utilised');
+        end;
+      end;
+      
+      if n['group'] is string(var gname) then
+      begin
+        
         if not Group.All.TryGetValue(gname, self.gr) then
         begin
           on_used += ()->
@@ -179,32 +216,17 @@ type
             log.WriteLine($'Group [{gname}] isn''t defined');
         end else
         begin
+          Group.Used += gname;
           if self.t in enum_types then
             self.t := 'GLuint';
-          if gr.t=nil then
-            gr.t := self.t else
-          if gr.t<>self.t then
-          begin
-            var base_l: HashSet<string>;
-            if not LogCache.group_multi_base.TryGetValue(gname, base_l) then
-            begin
-              base_l := new HashSet<string>;
-              LogCache.group_multi_base.Add(gname, base_l);
-            end;
-            base_l += gr.t;
-            base_l += self.t;
-          end;
+          gr.types += self.t;
         end;
         
       end else
       if self.t in enum_types then
         on_used += ()->
-          //TODO func_name, похоже, используется только для этого
           if LogCache.func_with_enum_without_group.Add(func_name) then
             ;
-//            Otp(func_name);
-//            log.WriteLine($'Command [{func_name}] has enum parameter without group');
-      var TODO := 0;
       
     end;
     
@@ -349,6 +371,19 @@ begin
   var root := new XmlNode(GetFullPathRTA($'..\..\Reps\OpenGL-Registry\xml\{api_name}.xml'));
 //  var root := new XmlNode(GetFullPathRTA($'C:\0Prog\Test\OpenGL-Registry (fork)\xml\{api_name}.xml'));
   
+  begin
+    var ns := root.Nodes['kinds'];
+    if ns.Any then foreach var k in ns.Single.Nodes['kind'] do
+    begin
+      var kind := k['name'];
+      var desc := k['desc'];
+      if not Kinds.described.Add(kind) then
+        Otp($'WARNING: Kind [{kind}] defined multiple times');
+      if string.IsNullOrWhiteSpace(desc) then
+        Otp($'WARNING: Kind [{kind}] had empty description');
+    end;
+  end;
+  
   foreach var enums in root.Nodes['enums'] do
   begin
     var bitmask := false;
@@ -486,11 +521,12 @@ begin
     ScrapFile('gl');
     ScrapFile('wgl');
     ScrapFile('glx');
-    //TODO Убрать
-    LogCache.func_with_enum_without_group.WriteLines(GetFullPathRTA('enum_without_group.txt'));
     
-    foreach var kvp in LogCache.group_multi_base do
-      log.WriteLine($'Group {kvp.Key} had multiple different base types: {kvp.Value.JoinToString}');
+    //TODO Turn into WARNING's
+    LogCache.func_with_enum_without_group .WriteLines(GetFullPathRTA('enum_without_group.txt'));
+    
+    foreach var kind in Kinds.described.Except(Kinds.mentioned) do
+      Otp($'WARNING: Kind [{kind}] has description, but was not mentioned');
     
     foreach var fname in xmls do
       log.WriteLine($'File [{fname}] wasn''t used');

@@ -1546,8 +1546,8 @@
     
     // added in gl3.2
     private z_FenceSync_adr := GetProcAddress('glFenceSync');
-    private z_FenceSync_1 := GetProcOrNil&<function(condition: SyncCondition; flags: DummyFlags): gl_sync>(z_FenceSync_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function FenceSync(condition: SyncCondition; flags: DummyFlags): gl_sync :=
+    private z_FenceSync_1 := GetProcOrNil&<function(condition: SyncCondition; flags: SyncBehaviorFlags): gl_sync>(z_FenceSync_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function FenceSync(condition: SyncCondition; flags: SyncBehaviorFlags): gl_sync :=
     z_FenceSync_1(condition, flags);
     
     // added in gl1.0
@@ -7414,8 +7414,8 @@
     
     // added in gl3.2
     private z_WaitSync_adr := GetProcAddress('glWaitSync');
-    private z_WaitSync_1 := GetProcOrNil&<procedure(sync: gl_sync; flags: DummyFlags; timeout: UInt64)>(z_WaitSync_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure WaitSync(sync: gl_sync; flags: DummyFlags; timeout: UInt64) :=
+    private z_WaitSync_1 := GetProcOrNil&<procedure(sync: gl_sync; flags: SyncBehaviorFlags; timeout: UInt64)>(z_WaitSync_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure WaitSync(sync: gl_sync; flags: SyncBehaviorFlags; timeout: UInt64) :=
     z_WaitSync_1(sync, flags, timeout);
     
   end;
@@ -7501,8 +7501,8 @@
     
     // added in gl1.0, deprecated in gl3.2
     private z_CallList_adr := GetProcAddress('glCallList');
-    private z_CallList_1 := GetProcOrNil&<procedure(list: UInt32)>(z_CallList_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CallList(list: UInt32) :=
+    private z_CallList_1 := GetProcOrNil&<procedure(list: gl_display_list)>(z_CallList_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CallList(list: gl_display_list) :=
     z_CallList_1(list);
     
     // added in gl1.0, deprecated in gl3.2
@@ -8607,8 +8607,8 @@
     
     // added in gl1.0, deprecated in gl3.2
     private z_ListBase_adr := GetProcAddress('glListBase');
-    private z_ListBase_1 := GetProcOrNil&<procedure(base: UInt32)>(z_ListBase_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListBase(base: UInt32) :=
+    private z_ListBase_1 := GetProcOrNil&<procedure(base: gl_display_list)>(z_ListBase_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListBase(base: gl_display_list) :=
     z_ListBase_1(base);
     
     // added in gl1.0, deprecated in gl3.2
@@ -9246,8 +9246,8 @@
     
     // added in gl1.0, deprecated in gl3.2
     private z_NewList_adr := GetProcAddress('glNewList');
-    private z_NewList_1 := GetProcOrNil&<procedure(list: UInt32; mode: ListMode)>(z_NewList_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NewList(list: UInt32; mode: ListMode) :=
+    private z_NewList_1 := GetProcOrNil&<procedure(list: gl_display_list; mode: ListMode)>(z_NewList_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NewList(list: gl_display_list; mode: ListMode) :=
     z_NewList_1(list, mode);
     
     // added in gl1.0, deprecated in gl3.2
@@ -19115,8 +19115,8 @@
     public const _ExtStr = 'gl_arb_sync';
     
     private z_FenceSync_adr := GetProcAddress('glFenceSync');
-    private z_FenceSync_1 := GetProcOrNil&<function(condition: SyncCondition; flags: DummyFlags): gl_sync>(z_FenceSync_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function FenceSync(condition: SyncCondition; flags: DummyFlags): gl_sync :=
+    private z_FenceSync_1 := GetProcOrNil&<function(condition: SyncCondition; flags: SyncBehaviorFlags): gl_sync>(z_FenceSync_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function FenceSync(condition: SyncCondition; flags: SyncBehaviorFlags): gl_sync :=
     z_FenceSync_1(condition, flags);
     
     private z_IsSync_adr := GetProcAddress('glIsSync');
@@ -19135,8 +19135,8 @@
     z_ClientWaitSync_1(sync, flags, timeout);
     
     private z_WaitSync_adr := GetProcAddress('glWaitSync');
-    private z_WaitSync_1 := GetProcOrNil&<procedure(sync: gl_sync; flags: DummyFlags; timeout: UInt64)>(z_WaitSync_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure WaitSync(sync: gl_sync; flags: DummyFlags; timeout: UInt64) :=
+    private z_WaitSync_1 := GetProcOrNil&<procedure(sync: gl_sync; flags: SyncBehaviorFlags; timeout: UInt64)>(z_WaitSync_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure WaitSync(sync: gl_sync; flags: SyncBehaviorFlags; timeout: UInt64) :=
     z_WaitSync_1(sync, flags, timeout);
     
     private z_GetInteger64v_adr := GetProcAddress('glGetInteger64v');
@@ -33060,43 +33060,43 @@
     0<>z_IsPathNV_1(path);
     
     private z_PathCommandsNV_adr := GetProcAddress('glPathCommandsNV');
-    private z_PathCommandsNV_1 := GetProcOrNil&<procedure(path: UInt32; numCommands: Int32; commands: IntPtr; numCoords: Int32; coordType: PathCoordType; coords: IntPtr)>(z_PathCommandsNV_adr);
-    private z_PathCommandsNV_2 := GetProcOrNil&<procedure(path: UInt32; numCommands: Int32; var commands: Byte; numCoords: Int32; coordType: PathCoordType; coords: IntPtr)>(z_PathCommandsNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathCommandsNV(path: UInt32; numCommands: Int32; commands: array of Byte; numCoords: Int32; coordType: PathCoordType; coords: IntPtr);
-    type PByte=^Byte;
+    private z_PathCommandsNV_1 := GetProcOrNil&<procedure(path: UInt32; numCommands: Int32; commands: IntPtr; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr)>(z_PathCommandsNV_adr);
+    private z_PathCommandsNV_2 := GetProcOrNil&<procedure(path: UInt32; numCommands: Int32; var commands: PathCoordType; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr)>(z_PathCommandsNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathCommandsNV(path: UInt32; numCommands: Int32; commands: array of PathCoordType; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr);
+    type PPathCoordType=^PathCoordType;
     begin
       if (commands<>nil) and (commands.Length<>0) then
         z_PathCommandsNV_2(path, numCommands, commands[0], numCoords, coordType, coords) else
-        z_PathCommandsNV_2(path, numCommands, PByte(nil)^, numCoords, coordType, coords);
+        z_PathCommandsNV_2(path, numCommands, PPathCoordType(nil)^, numCoords, coordType, coords);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathCommandsNV(path: UInt32; numCommands: Int32; var commands: Byte; numCoords: Int32; coordType: PathCoordType; coords: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathCommandsNV(path: UInt32; numCommands: Int32; var commands: PathCoordType; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr) :=
     z_PathCommandsNV_2(path, numCommands, commands, numCoords, coordType, coords);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathCommandsNV(path: UInt32; numCommands: Int32; commands: IntPtr; numCoords: Int32; coordType: PathCoordType; coords: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathCommandsNV(path: UInt32; numCommands: Int32; commands: IntPtr; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr) :=
     z_PathCommandsNV_1(path, numCommands, commands, numCoords, coordType, coords);
     
     private z_PathCoordsNV_adr := GetProcAddress('glPathCoordsNV');
-    private z_PathCoordsNV_1 := GetProcOrNil&<procedure(path: UInt32; numCoords: Int32; coordType: PathCoordType; coords: IntPtr)>(z_PathCoordsNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathCoordsNV(path: UInt32; numCoords: Int32; coordType: PathCoordType; coords: IntPtr) :=
+    private z_PathCoordsNV_1 := GetProcOrNil&<procedure(path: UInt32; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr)>(z_PathCoordsNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathCoordsNV(path: UInt32; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr) :=
     z_PathCoordsNV_1(path, numCoords, coordType, coords);
     
     private z_PathSubCommandsNV_adr := GetProcAddress('glPathSubCommandsNV');
-    private z_PathSubCommandsNV_1 := GetProcOrNil&<procedure(path: UInt32; commandStart: Int32; commandsToDelete: Int32; numCommands: Int32; commands: IntPtr; numCoords: Int32; coordType: PathCoordType; coords: IntPtr)>(z_PathSubCommandsNV_adr);
-    private z_PathSubCommandsNV_2 := GetProcOrNil&<procedure(path: UInt32; commandStart: Int32; commandsToDelete: Int32; numCommands: Int32; var commands: Byte; numCoords: Int32; coordType: PathCoordType; coords: IntPtr)>(z_PathSubCommandsNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathSubCommandsNV(path: UInt32; commandStart: Int32; commandsToDelete: Int32; numCommands: Int32; commands: array of Byte; numCoords: Int32; coordType: PathCoordType; coords: IntPtr);
-    type PByte=^Byte;
+    private z_PathSubCommandsNV_1 := GetProcOrNil&<procedure(path: UInt32; commandStart: Int32; commandsToDelete: Int32; numCommands: Int32; commands: IntPtr; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr)>(z_PathSubCommandsNV_adr);
+    private z_PathSubCommandsNV_2 := GetProcOrNil&<procedure(path: UInt32; commandStart: Int32; commandsToDelete: Int32; numCommands: Int32; var commands: PathCoordType; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr)>(z_PathSubCommandsNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathSubCommandsNV(path: UInt32; commandStart: Int32; commandsToDelete: Int32; numCommands: Int32; commands: array of PathCoordType; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr);
+    type PPathCoordType=^PathCoordType;
     begin
       if (commands<>nil) and (commands.Length<>0) then
         z_PathSubCommandsNV_2(path, commandStart, commandsToDelete, numCommands, commands[0], numCoords, coordType, coords) else
-        z_PathSubCommandsNV_2(path, commandStart, commandsToDelete, numCommands, PByte(nil)^, numCoords, coordType, coords);
+        z_PathSubCommandsNV_2(path, commandStart, commandsToDelete, numCommands, PPathCoordType(nil)^, numCoords, coordType, coords);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathSubCommandsNV(path: UInt32; commandStart: Int32; commandsToDelete: Int32; numCommands: Int32; var commands: Byte; numCoords: Int32; coordType: PathCoordType; coords: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathSubCommandsNV(path: UInt32; commandStart: Int32; commandsToDelete: Int32; numCommands: Int32; var commands: PathCoordType; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr) :=
     z_PathSubCommandsNV_2(path, commandStart, commandsToDelete, numCommands, commands, numCoords, coordType, coords);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathSubCommandsNV(path: UInt32; commandStart: Int32; commandsToDelete: Int32; numCommands: Int32; commands: IntPtr; numCoords: Int32; coordType: PathCoordType; coords: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathSubCommandsNV(path: UInt32; commandStart: Int32; commandsToDelete: Int32; numCommands: Int32; commands: IntPtr; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr) :=
     z_PathSubCommandsNV_1(path, commandStart, commandsToDelete, numCommands, commands, numCoords, coordType, coords);
     
     private z_PathSubCoordsNV_adr := GetProcAddress('glPathSubCoordsNV');
-    private z_PathSubCoordsNV_1 := GetProcOrNil&<procedure(path: UInt32; coordStart: Int32; numCoords: Int32; coordType: PathCoordType; coords: IntPtr)>(z_PathSubCoordsNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathSubCoordsNV(path: UInt32; coordStart: Int32; numCoords: Int32; coordType: PathCoordType; coords: IntPtr) :=
+    private z_PathSubCoordsNV_1 := GetProcOrNil&<procedure(path: UInt32; coordStart: Int32; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr)>(z_PathSubCoordsNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PathSubCoordsNV(path: UInt32; coordStart: Int32; numCoords: Int32; coordType: PathCoordTypeUInt32; coords: IntPtr) :=
     z_PathSubCoordsNV_1(path, coordStart, numCoords, coordType, coords);
     
     private z_PathStringNV_adr := GetProcAddress('glPathStringNV');
@@ -33286,33 +33286,33 @@
     z_CoverStrokePathNV_1(path, coverMode);
     
     private z_CoverFillPathInstancedNV_adr := GetProcAddress('glCoverFillPathInstancedNV');
-    private z_CoverFillPathInstancedNV_1 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: PathCoverMode; transformType: PathTransformType; transformValues: IntPtr)>(z_CoverFillPathInstancedNV_adr);
-    private z_CoverFillPathInstancedNV_2 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: PathCoverMode; transformType: PathTransformType; var transformValues: single)>(z_CoverFillPathInstancedNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CoverFillPathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: PathCoverMode; transformType: PathTransformType; transformValues: array of single);
+    private z_CoverFillPathInstancedNV_1 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; transformValues: IntPtr)>(z_CoverFillPathInstancedNV_adr);
+    private z_CoverFillPathInstancedNV_2 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; var transformValues: single)>(z_CoverFillPathInstancedNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CoverFillPathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; transformValues: array of single);
     type Psingle=^single;
     begin
       if (transformValues<>nil) and (transformValues.Length<>0) then
         z_CoverFillPathInstancedNV_2(numPaths, pathNameType, paths, pathBase, coverMode, transformType, transformValues[0]) else
         z_CoverFillPathInstancedNV_2(numPaths, pathNameType, paths, pathBase, coverMode, transformType, Psingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CoverFillPathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: PathCoverMode; transformType: PathTransformType; var transformValues: single) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CoverFillPathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; var transformValues: single) :=
     z_CoverFillPathInstancedNV_2(numPaths, pathNameType, paths, pathBase, coverMode, transformType, transformValues);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CoverFillPathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: PathCoverMode; transformType: PathTransformType; transformValues: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CoverFillPathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; transformValues: IntPtr) :=
     z_CoverFillPathInstancedNV_1(numPaths, pathNameType, paths, pathBase, coverMode, transformType, transformValues);
     
     private z_CoverStrokePathInstancedNV_adr := GetProcAddress('glCoverStrokePathInstancedNV');
-    private z_CoverStrokePathInstancedNV_1 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: PathCoverMode; transformType: PathTransformType; transformValues: IntPtr)>(z_CoverStrokePathInstancedNV_adr);
-    private z_CoverStrokePathInstancedNV_2 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: PathCoverMode; transformType: PathTransformType; var transformValues: single)>(z_CoverStrokePathInstancedNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CoverStrokePathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: PathCoverMode; transformType: PathTransformType; transformValues: array of single);
+    private z_CoverStrokePathInstancedNV_1 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; transformValues: IntPtr)>(z_CoverStrokePathInstancedNV_adr);
+    private z_CoverStrokePathInstancedNV_2 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; var transformValues: single)>(z_CoverStrokePathInstancedNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CoverStrokePathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; transformValues: array of single);
     type Psingle=^single;
     begin
       if (transformValues<>nil) and (transformValues.Length<>0) then
         z_CoverStrokePathInstancedNV_2(numPaths, pathNameType, paths, pathBase, coverMode, transformType, transformValues[0]) else
         z_CoverStrokePathInstancedNV_2(numPaths, pathNameType, paths, pathBase, coverMode, transformType, Psingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CoverStrokePathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: PathCoverMode; transformType: PathTransformType; var transformValues: single) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CoverStrokePathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; var transformValues: single) :=
     z_CoverStrokePathInstancedNV_2(numPaths, pathNameType, paths, pathBase, coverMode, transformType, transformValues);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CoverStrokePathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: PathCoverMode; transformType: PathTransformType; transformValues: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure CoverStrokePathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; transformValues: IntPtr) :=
     z_CoverStrokePathInstancedNV_1(numPaths, pathNameType, paths, pathBase, coverMode, transformType, transformValues);
     
     private z_GetPathParameterivNV_adr := GetProcAddress('glGetPathParameterivNV');
@@ -33333,8 +33333,8 @@
     
     private z_GetPathCommandsNV_adr := GetProcAddress('glGetPathCommandsNV');
     private z_GetPathCommandsNV_1 := GetProcOrNil&<procedure(path: UInt32; commands: IntPtr)>(z_GetPathCommandsNV_adr);
-    private z_GetPathCommandsNV_2 := GetProcOrNil&<procedure(path: UInt32; var commands: Byte)>(z_GetPathCommandsNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetPathCommandsNV(path: UInt32; var commands: Byte) :=
+    private z_GetPathCommandsNV_2 := GetProcOrNil&<procedure(path: UInt32; var commands: PathCoordType)>(z_GetPathCommandsNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetPathCommandsNV(path: UInt32; var commands: PathCoordType) :=
     z_GetPathCommandsNV_2(path, commands);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetPathCommandsNV(path: UInt32; commands: IntPtr) :=
     z_GetPathCommandsNV_1(path, commands);
@@ -33499,43 +33499,43 @@
     z_MatrixMultTranspose3x3fNV_1(matrixMode, m);
     
     private z_StencilThenCoverFillPathNV_adr := GetProcAddress('glStencilThenCoverFillPathNV');
-    private z_StencilThenCoverFillPathNV_1 := GetProcOrNil&<procedure(path: UInt32; fillMode: DummyEnum; mask: UInt32; coverMode: DummyEnum)>(z_StencilThenCoverFillPathNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverFillPathNV(path: UInt32; fillMode: DummyEnum; mask: UInt32; coverMode: DummyEnum) :=
+    private z_StencilThenCoverFillPathNV_1 := GetProcOrNil&<procedure(path: UInt32; fillMode: PathFillMode; mask: UInt32; coverMode: PathCoverMode)>(z_StencilThenCoverFillPathNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverFillPathNV(path: UInt32; fillMode: PathFillMode; mask: UInt32; coverMode: PathCoverMode) :=
     z_StencilThenCoverFillPathNV_1(path, fillMode, mask, coverMode);
     
     private z_StencilThenCoverStrokePathNV_adr := GetProcAddress('glStencilThenCoverStrokePathNV');
-    private z_StencilThenCoverStrokePathNV_1 := GetProcOrNil&<procedure(path: UInt32; reference: Int32; mask: UInt32; coverMode: DummyEnum)>(z_StencilThenCoverStrokePathNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverStrokePathNV(path: UInt32; reference: Int32; mask: UInt32; coverMode: DummyEnum) :=
+    private z_StencilThenCoverStrokePathNV_1 := GetProcOrNil&<procedure(path: UInt32; reference: Int32; mask: UInt32; coverMode: PathCoverMode)>(z_StencilThenCoverStrokePathNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverStrokePathNV(path: UInt32; reference: Int32; mask: UInt32; coverMode: PathCoverMode) :=
     z_StencilThenCoverStrokePathNV_1(path, reference, mask, coverMode);
     
     private z_StencilThenCoverFillPathInstancedNV_adr := GetProcAddress('glStencilThenCoverFillPathInstancedNV');
-    private z_StencilThenCoverFillPathInstancedNV_1 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: DummyEnum; paths: IntPtr; pathBase: UInt32; fillMode: DummyEnum; mask: UInt32; coverMode: DummyEnum; transformType: DummyEnum; transformValues: IntPtr)>(z_StencilThenCoverFillPathInstancedNV_adr);
-    private z_StencilThenCoverFillPathInstancedNV_2 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: DummyEnum; paths: IntPtr; pathBase: UInt32; fillMode: DummyEnum; mask: UInt32; coverMode: DummyEnum; transformType: DummyEnum; var transformValues: single)>(z_StencilThenCoverFillPathInstancedNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverFillPathInstancedNV(numPaths: Int32; pathNameType: DummyEnum; paths: IntPtr; pathBase: UInt32; fillMode: DummyEnum; mask: UInt32; coverMode: DummyEnum; transformType: DummyEnum; transformValues: array of single);
+    private z_StencilThenCoverFillPathInstancedNV_1 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; fillMode: PathFillMode; mask: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; transformValues: IntPtr)>(z_StencilThenCoverFillPathInstancedNV_adr);
+    private z_StencilThenCoverFillPathInstancedNV_2 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; fillMode: PathFillMode; mask: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; var transformValues: single)>(z_StencilThenCoverFillPathInstancedNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverFillPathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; fillMode: PathFillMode; mask: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; transformValues: array of single);
     type Psingle=^single;
     begin
       if (transformValues<>nil) and (transformValues.Length<>0) then
         z_StencilThenCoverFillPathInstancedNV_2(numPaths, pathNameType, paths, pathBase, fillMode, mask, coverMode, transformType, transformValues[0]) else
         z_StencilThenCoverFillPathInstancedNV_2(numPaths, pathNameType, paths, pathBase, fillMode, mask, coverMode, transformType, Psingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverFillPathInstancedNV(numPaths: Int32; pathNameType: DummyEnum; paths: IntPtr; pathBase: UInt32; fillMode: DummyEnum; mask: UInt32; coverMode: DummyEnum; transformType: DummyEnum; var transformValues: single) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverFillPathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; fillMode: PathFillMode; mask: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; var transformValues: single) :=
     z_StencilThenCoverFillPathInstancedNV_2(numPaths, pathNameType, paths, pathBase, fillMode, mask, coverMode, transformType, transformValues);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverFillPathInstancedNV(numPaths: Int32; pathNameType: DummyEnum; paths: IntPtr; pathBase: UInt32; fillMode: DummyEnum; mask: UInt32; coverMode: DummyEnum; transformType: DummyEnum; transformValues: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverFillPathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; fillMode: PathFillMode; mask: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; transformValues: IntPtr) :=
     z_StencilThenCoverFillPathInstancedNV_1(numPaths, pathNameType, paths, pathBase, fillMode, mask, coverMode, transformType, transformValues);
     
     private z_StencilThenCoverStrokePathInstancedNV_adr := GetProcAddress('glStencilThenCoverStrokePathInstancedNV');
-    private z_StencilThenCoverStrokePathInstancedNV_1 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: DummyEnum; paths: IntPtr; pathBase: UInt32; reference: Int32; mask: UInt32; coverMode: DummyEnum; transformType: DummyEnum; transformValues: IntPtr)>(z_StencilThenCoverStrokePathInstancedNV_adr);
-    private z_StencilThenCoverStrokePathInstancedNV_2 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: DummyEnum; paths: IntPtr; pathBase: UInt32; reference: Int32; mask: UInt32; coverMode: DummyEnum; transformType: DummyEnum; var transformValues: single)>(z_StencilThenCoverStrokePathInstancedNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverStrokePathInstancedNV(numPaths: Int32; pathNameType: DummyEnum; paths: IntPtr; pathBase: UInt32; reference: Int32; mask: UInt32; coverMode: DummyEnum; transformType: DummyEnum; transformValues: array of single);
+    private z_StencilThenCoverStrokePathInstancedNV_1 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; reference: Int32; mask: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; transformValues: IntPtr)>(z_StencilThenCoverStrokePathInstancedNV_adr);
+    private z_StencilThenCoverStrokePathInstancedNV_2 := GetProcOrNil&<procedure(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; reference: Int32; mask: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; var transformValues: single)>(z_StencilThenCoverStrokePathInstancedNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverStrokePathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; reference: Int32; mask: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; transformValues: array of single);
     type Psingle=^single;
     begin
       if (transformValues<>nil) and (transformValues.Length<>0) then
         z_StencilThenCoverStrokePathInstancedNV_2(numPaths, pathNameType, paths, pathBase, reference, mask, coverMode, transformType, transformValues[0]) else
         z_StencilThenCoverStrokePathInstancedNV_2(numPaths, pathNameType, paths, pathBase, reference, mask, coverMode, transformType, Psingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverStrokePathInstancedNV(numPaths: Int32; pathNameType: DummyEnum; paths: IntPtr; pathBase: UInt32; reference: Int32; mask: UInt32; coverMode: DummyEnum; transformType: DummyEnum; var transformValues: single) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverStrokePathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; reference: Int32; mask: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; var transformValues: single) :=
     z_StencilThenCoverStrokePathInstancedNV_2(numPaths, pathNameType, paths, pathBase, reference, mask, coverMode, transformType, transformValues);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverStrokePathInstancedNV(numPaths: Int32; pathNameType: DummyEnum; paths: IntPtr; pathBase: UInt32; reference: Int32; mask: UInt32; coverMode: DummyEnum; transformType: DummyEnum; transformValues: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StencilThenCoverStrokePathInstancedNV(numPaths: Int32; pathNameType: PathElementType; paths: IntPtr; pathBase: UInt32; reference: Int32; mask: UInt32; coverMode: InstancedPathCoverMode; transformType: PathTransformType; transformValues: IntPtr) :=
     z_StencilThenCoverStrokePathInstancedNV_1(numPaths, pathNameType, paths, pathBase, reference, mask, coverMode, transformType, transformValues);
     
     private z_PathGlyphIndexRangeNV_adr := GetProcAddress('glPathGlyphIndexRangeNV');
@@ -35352,9 +35352,6 @@
     
     private z_GetProgramStringNV_adr := GetProcAddress('glGetProgramStringNV');
     private z_GetProgramStringNV_1 := GetProcOrNil&<procedure(id: gl_program; pname: VertexAttribEnumNV; &program: IntPtr)>(z_GetProgramStringNV_adr);
-    private z_GetProgramStringNV_2 := GetProcOrNil&<procedure(id: gl_program; pname: VertexAttribEnumNV; var &program: Byte)>(z_GetProgramStringNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramStringNV(id: gl_program; pname: VertexAttribEnumNV; var &program: Byte) :=
-    z_GetProgramStringNV_2(id, pname, &program);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramStringNV(id: gl_program; pname: VertexAttribEnumNV; &program: IntPtr) :=
     z_GetProgramStringNV_1(id, pname, &program);
     
@@ -38391,59 +38388,59 @@
     public const _ExtStr = 'gl_sgix_list_priority';
     
     private z_GetListParameterfvSGIX_adr := GetProcAddress('glGetListParameterfvSGIX');
-    private z_GetListParameterfvSGIX_1 := GetProcOrNil&<procedure(list: UInt32; pname: ListParameterName; &params: IntPtr)>(z_GetListParameterfvSGIX_adr);
-    private z_GetListParameterfvSGIX_2 := GetProcOrNil&<procedure(list: UInt32; pname: ListParameterName; var &params: single)>(z_GetListParameterfvSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetListParameterfvSGIX(list: UInt32; pname: ListParameterName; var &params: single) :=
+    private z_GetListParameterfvSGIX_1 := GetProcOrNil&<procedure(list: gl_display_list; pname: ListParameterName; &params: IntPtr)>(z_GetListParameterfvSGIX_adr);
+    private z_GetListParameterfvSGIX_2 := GetProcOrNil&<procedure(list: gl_display_list; pname: ListParameterName; var &params: single)>(z_GetListParameterfvSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetListParameterfvSGIX(list: gl_display_list; pname: ListParameterName; var &params: single) :=
     z_GetListParameterfvSGIX_2(list, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetListParameterfvSGIX(list: UInt32; pname: ListParameterName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetListParameterfvSGIX(list: gl_display_list; pname: ListParameterName; &params: IntPtr) :=
     z_GetListParameterfvSGIX_1(list, pname, &params);
     
     private z_GetListParameterivSGIX_adr := GetProcAddress('glGetListParameterivSGIX');
-    private z_GetListParameterivSGIX_1 := GetProcOrNil&<procedure(list: UInt32; pname: ListParameterName; &params: IntPtr)>(z_GetListParameterivSGIX_adr);
-    private z_GetListParameterivSGIX_2 := GetProcOrNil&<procedure(list: UInt32; pname: ListParameterName; var &params: Int32)>(z_GetListParameterivSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetListParameterivSGIX(list: UInt32; pname: ListParameterName; var &params: Int32) :=
+    private z_GetListParameterivSGIX_1 := GetProcOrNil&<procedure(list: gl_display_list; pname: ListParameterName; &params: IntPtr)>(z_GetListParameterivSGIX_adr);
+    private z_GetListParameterivSGIX_2 := GetProcOrNil&<procedure(list: gl_display_list; pname: ListParameterName; var &params: Int32)>(z_GetListParameterivSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetListParameterivSGIX(list: gl_display_list; pname: ListParameterName; var &params: Int32) :=
     z_GetListParameterivSGIX_2(list, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetListParameterivSGIX(list: UInt32; pname: ListParameterName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetListParameterivSGIX(list: gl_display_list; pname: ListParameterName; &params: IntPtr) :=
     z_GetListParameterivSGIX_1(list, pname, &params);
     
     private z_ListParameterfSGIX_adr := GetProcAddress('glListParameterfSGIX');
-    private z_ListParameterfSGIX_1 := GetProcOrNil&<procedure(list: UInt32; pname: ListParameterName; param: single)>(z_ListParameterfSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterfSGIX(list: UInt32; pname: ListParameterName; param: single) :=
+    private z_ListParameterfSGIX_1 := GetProcOrNil&<procedure(list: gl_display_list; pname: ListParameterName; param: single)>(z_ListParameterfSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterfSGIX(list: gl_display_list; pname: ListParameterName; param: single) :=
     z_ListParameterfSGIX_1(list, pname, param);
     
     private z_ListParameterfvSGIX_adr := GetProcAddress('glListParameterfvSGIX');
-    private z_ListParameterfvSGIX_1 := GetProcOrNil&<procedure(list: UInt32; pname: ListParameterName; &params: IntPtr)>(z_ListParameterfvSGIX_adr);
-    private z_ListParameterfvSGIX_2 := GetProcOrNil&<procedure(list: UInt32; pname: ListParameterName; var &params: single)>(z_ListParameterfvSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterfvSGIX(list: UInt32; pname: ListParameterName; &params: array of single);
+    private z_ListParameterfvSGIX_1 := GetProcOrNil&<procedure(list: gl_display_list; pname: ListParameterName; &params: IntPtr)>(z_ListParameterfvSGIX_adr);
+    private z_ListParameterfvSGIX_2 := GetProcOrNil&<procedure(list: gl_display_list; pname: ListParameterName; var &params: single)>(z_ListParameterfvSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterfvSGIX(list: gl_display_list; pname: ListParameterName; &params: array of single);
     type Psingle=^single;
     begin
       if (&params<>nil) and (&params.Length<>0) then
         z_ListParameterfvSGIX_2(list, pname, &params[0]) else
         z_ListParameterfvSGIX_2(list, pname, Psingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterfvSGIX(list: UInt32; pname: ListParameterName; var &params: single) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterfvSGIX(list: gl_display_list; pname: ListParameterName; var &params: single) :=
     z_ListParameterfvSGIX_2(list, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterfvSGIX(list: UInt32; pname: ListParameterName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterfvSGIX(list: gl_display_list; pname: ListParameterName; &params: IntPtr) :=
     z_ListParameterfvSGIX_1(list, pname, &params);
     
     private z_ListParameteriSGIX_adr := GetProcAddress('glListParameteriSGIX');
-    private z_ListParameteriSGIX_1 := GetProcOrNil&<procedure(list: UInt32; pname: ListParameterName; param: Int32)>(z_ListParameteriSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameteriSGIX(list: UInt32; pname: ListParameterName; param: Int32) :=
+    private z_ListParameteriSGIX_1 := GetProcOrNil&<procedure(list: gl_display_list; pname: ListParameterName; param: Int32)>(z_ListParameteriSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameteriSGIX(list: gl_display_list; pname: ListParameterName; param: Int32) :=
     z_ListParameteriSGIX_1(list, pname, param);
     
     private z_ListParameterivSGIX_adr := GetProcAddress('glListParameterivSGIX');
-    private z_ListParameterivSGIX_1 := GetProcOrNil&<procedure(list: UInt32; pname: ListParameterName; &params: IntPtr)>(z_ListParameterivSGIX_adr);
-    private z_ListParameterivSGIX_2 := GetProcOrNil&<procedure(list: UInt32; pname: ListParameterName; var &params: Int32)>(z_ListParameterivSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterivSGIX(list: UInt32; pname: ListParameterName; &params: array of Int32);
+    private z_ListParameterivSGIX_1 := GetProcOrNil&<procedure(list: gl_display_list; pname: ListParameterName; &params: IntPtr)>(z_ListParameterivSGIX_adr);
+    private z_ListParameterivSGIX_2 := GetProcOrNil&<procedure(list: gl_display_list; pname: ListParameterName; var &params: Int32)>(z_ListParameterivSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterivSGIX(list: gl_display_list; pname: ListParameterName; &params: array of Int32);
     type PInt32=^Int32;
     begin
       if (&params<>nil) and (&params.Length<>0) then
         z_ListParameterivSGIX_2(list, pname, &params[0]) else
         z_ListParameterivSGIX_2(list, pname, PInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterivSGIX(list: UInt32; pname: ListParameterName; var &params: Int32) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterivSGIX(list: gl_display_list; pname: ListParameterName; var &params: Int32) :=
     z_ListParameterivSGIX_2(list, pname, &params);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterivSGIX(list: UInt32; pname: ListParameterName; &params: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ListParameterivSGIX(list: gl_display_list; pname: ListParameterName; &params: IntPtr) :=
     z_ListParameterivSGIX_1(list, pname, &params);
     
   end;

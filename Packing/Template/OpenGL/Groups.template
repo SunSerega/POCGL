@@ -5516,6 +5516,26 @@
     
   end;
   
+  InstancedPathCoverMode = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property PATH_FILL_COVER_MODE:           InstancedPathCoverMode read new InstancedPathCoverMode($9082);
+    public static property CONVEX_HULL:                    InstancedPathCoverMode read new InstancedPathCoverMode($908B);
+    public static property BOUNDING_BOX:                   InstancedPathCoverMode read new InstancedPathCoverMode($908D);
+    public static property BOUNDING_BOX_OF_BOUNDING_BOXES: InstancedPathCoverMode read new InstancedPathCoverMode($909C);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($9082) then Result := 'PATH_FILL_COVER_MODE' else
+      if self.val = UInt32($908B) then Result := 'CONVEX_HULL' else
+      if self.val = UInt32($908D) then Result := 'BOUNDING_BOX' else
+      if self.val = UInt32($909C) then Result := 'BOUNDING_BOX_OF_BOUNDING_BOXES' else
+        Result := $'InstancedPathCoverMode[{self.val}]';
+    end;
+    
+  end;
+  
   InterleavedArrayFormat = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -5557,8 +5577,8 @@
   end;
   
   InternalFormat = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
+    public val: Int32;
+    public constructor(val: Int32) := self.val := val;
     
     public static property STENCIL_INDEX:                             InternalFormat read new InternalFormat($1901);
     public static property DEPTH_COMPONENT:                           InternalFormat read new InternalFormat($1902);
@@ -5798,241 +5818,241 @@
     
     public function ToString: string; override;
     begin
-      if self.val = UInt32($1901) then Result := 'STENCIL_INDEX' else
-      if self.val = UInt32($1902) then Result := 'DEPTH_COMPONENT' else
-      if self.val = UInt32($1903) then Result := 'RED' else
-      if self.val = UInt32($1907) then Result := 'RGB' else
-      if self.val = UInt32($1908) then Result := 'RGBA' else
-      if self.val = UInt32($2A10) then Result := 'R3_G3_B2' else
-      if self.val = UInt32($803B) then Result := 'ALPHA4' else
-      if self.val = UInt32($803C) then Result := 'ALPHA8' else
-      if self.val = UInt32($803D) then Result := 'ALPHA12' else
-      if self.val = UInt32($803E) then Result := 'ALPHA16' else
-      if self.val = UInt32($803F) then Result := 'LUMINANCE4' else
-      if self.val = UInt32($8040) then Result := 'LUMINANCE8' else
-      if self.val = UInt32($8041) then Result := 'LUMINANCE12' else
-      if self.val = UInt32($8042) then Result := 'LUMINANCE16' else
-      if self.val = UInt32($8043) then Result := 'LUMINANCE4_ALPHA4' else
-      if self.val = UInt32($8044) then Result := 'LUMINANCE6_ALPHA2' else
-      if self.val = UInt32($8045) then Result := 'LUMINANCE8_ALPHA8' else
-      if self.val = UInt32($8046) then Result := 'LUMINANCE12_ALPHA4' else
-      if self.val = UInt32($8047) then Result := 'LUMINANCE12_ALPHA12' else
-      if self.val = UInt32($8048) then Result := 'LUMINANCE16_ALPHA16' else
-      if self.val = UInt32($8049) then Result := 'INTENSITY' else
-      if self.val = UInt32($804A) then Result := 'INTENSITY4' else
-      if self.val = UInt32($804B) then Result := 'INTENSITY8' else
-      if self.val = UInt32($804C) then Result := 'INTENSITY12' else
-      if self.val = UInt32($804D) then Result := 'INTENSITY16' else
-      if self.val = UInt32($804E) then Result := 'RGB2' else
-      if self.val = UInt32($804F) then Result := 'RGB4' else
-      if self.val = UInt32($8050) then Result := 'RGB5' else
-      if self.val = UInt32($8051) then Result := 'RGB8' else
-      if self.val = UInt32($8052) then Result := 'RGB10' else
-      if self.val = UInt32($8053) then Result := 'RGB12' else
-      if self.val = UInt32($8054) then Result := 'RGB16' else
-      if self.val = UInt32($8055) then Result := 'RGBA2' else
-      if self.val = UInt32($8056) then Result := 'RGBA4' else
-      if self.val = UInt32($8057) then Result := 'RGB5_A1' else
-      if self.val = UInt32($8058) then Result := 'RGBA8' else
-      if self.val = UInt32($8059) then Result := 'RGB10_A2' else
-      if self.val = UInt32($805A) then Result := 'RGBA12' else
-      if self.val = UInt32($805B) then Result := 'RGBA16' else
-      if self.val = UInt32($8110) then Result := 'DUAL_ALPHA4' else
-      if self.val = UInt32($8111) then Result := 'DUAL_ALPHA8' else
-      if self.val = UInt32($8112) then Result := 'DUAL_ALPHA12' else
-      if self.val = UInt32($8113) then Result := 'DUAL_ALPHA16' else
-      if self.val = UInt32($8114) then Result := 'DUAL_LUMINANCE4' else
-      if self.val = UInt32($8115) then Result := 'DUAL_LUMINANCE8' else
-      if self.val = UInt32($8116) then Result := 'DUAL_LUMINANCE12' else
-      if self.val = UInt32($8117) then Result := 'DUAL_LUMINANCE16' else
-      if self.val = UInt32($8118) then Result := 'DUAL_INTENSITY4' else
-      if self.val = UInt32($8119) then Result := 'DUAL_INTENSITY8' else
-      if self.val = UInt32($811A) then Result := 'DUAL_INTENSITY12' else
-      if self.val = UInt32($811B) then Result := 'DUAL_INTENSITY16' else
-      if self.val = UInt32($811C) then Result := 'DUAL_LUMINANCE_ALPHA4' else
-      if self.val = UInt32($811D) then Result := 'DUAL_LUMINANCE_ALPHA8' else
-      if self.val = UInt32($811E) then Result := 'QUAD_ALPHA4' else
-      if self.val = UInt32($811F) then Result := 'QUAD_ALPHA8' else
-      if self.val = UInt32($8120) then Result := 'QUAD_LUMINANCE4' else
-      if self.val = UInt32($8121) then Result := 'QUAD_LUMINANCE8' else
-      if self.val = UInt32($8122) then Result := 'QUAD_INTENSITY4' else
-      if self.val = UInt32($8123) then Result := 'QUAD_INTENSITY8' else
-      if self.val = UInt32($81A5) then Result := 'DEPTH_COMPONENT16' else
-      if self.val = UInt32($81A6) then Result := 'DEPTH_COMPONENT24' else
-      if self.val = UInt32($81A7) then Result := 'DEPTH_COMPONENT32' else
-      if self.val = UInt32($8225) then Result := 'COMPRESSED_RED' else
-      if self.val = UInt32($8226) then Result := 'COMPRESSED_RG' else
-      if self.val = UInt32($8227) then Result := 'RG' else
-      if self.val = UInt32($8229) then Result := 'R8' else
-      if self.val = UInt32($822A) then Result := 'R16' else
-      if self.val = UInt32($822B) then Result := 'RG8' else
-      if self.val = UInt32($822C) then Result := 'RG16' else
-      if self.val = UInt32($822D) then Result := 'R16F' else
-      if self.val = UInt32($822E) then Result := 'R32F' else
-      if self.val = UInt32($822F) then Result := 'RG16F' else
-      if self.val = UInt32($8230) then Result := 'RG32F' else
-      if self.val = UInt32($8231) then Result := 'R8I' else
-      if self.val = UInt32($8232) then Result := 'R8UI' else
-      if self.val = UInt32($8233) then Result := 'R16I' else
-      if self.val = UInt32($8234) then Result := 'R16UI' else
-      if self.val = UInt32($8235) then Result := 'R32I' else
-      if self.val = UInt32($8236) then Result := 'R32UI' else
-      if self.val = UInt32($8237) then Result := 'RG8I' else
-      if self.val = UInt32($8238) then Result := 'RG8UI' else
-      if self.val = UInt32($8239) then Result := 'RG16I' else
-      if self.val = UInt32($823A) then Result := 'RG16UI' else
-      if self.val = UInt32($823B) then Result := 'RG32I' else
-      if self.val = UInt32($823C) then Result := 'RG32UI' else
-      if self.val = UInt32($83F0) then Result := 'COMPRESSED_RGB_S3TC_DXT1' else
-      if self.val = UInt32($83F1) then Result := 'COMPRESSED_RGBA_S3TC_DXT1' else
-      if self.val = UInt32($83F2) then Result := 'COMPRESSED_RGBA_S3TC_DXT3' else
-      if self.val = UInt32($83F3) then Result := 'COMPRESSED_RGBA_S3TC_DXT5' else
-      if self.val = UInt32($84ED) then Result := 'COMPRESSED_RGB' else
-      if self.val = UInt32($84EE) then Result := 'COMPRESSED_RGBA' else
-      if self.val = UInt32($84F9) then Result := 'DEPTH_STENCIL' else
-      if self.val = UInt32($8750) then Result := 'DEPTH_STENCIL_MESA' else
-      if self.val = UInt32($8814) then Result := 'RGBA32F' else
-      if self.val = UInt32($8815) then Result := 'RGB32F' else
-      if self.val = UInt32($881A) then Result := 'RGBA16F' else
-      if self.val = UInt32($881B) then Result := 'RGB16F' else
-      if self.val = UInt32($88F0) then Result := 'DEPTH24_STENCIL8' else
-      if self.val = UInt32($8C3A) then Result := 'R11F_G11F_B10F' else
-      if self.val = UInt32($8C3D) then Result := 'RGB9_E5' else
-      if self.val = UInt32($8C40) then Result := 'SRGB' else
-      if self.val = UInt32($8C41) then Result := 'SRGB8' else
-      if self.val = UInt32($8C42) then Result := 'SRGB_ALPHA' else
-      if self.val = UInt32($8C43) then Result := 'SRGB8_ALPHA8' else
-      if self.val = UInt32($8C48) then Result := 'COMPRESSED_SRGB' else
-      if self.val = UInt32($8C49) then Result := 'COMPRESSED_SRGB_ALPHA' else
-      if self.val = UInt32($8C4C) then Result := 'COMPRESSED_SRGB_S3TC_DXT1' else
-      if self.val = UInt32($8C4D) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT1' else
-      if self.val = UInt32($8C4E) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT3' else
-      if self.val = UInt32($8C4F) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT5' else
-      if self.val = UInt32($8CAC) then Result := 'DEPTH_COMPONENT32F' else
-      if self.val = UInt32($8CAD) then Result := 'DEPTH32F_STENCIL8' else
-      if self.val = UInt32($8D46) then Result := 'STENCIL_INDEX1' else
-      if self.val = UInt32($8D47) then Result := 'STENCIL_INDEX4' else
-      if self.val = UInt32($8D48) then Result := 'STENCIL_INDEX8' else
-      if self.val = UInt32($8D49) then Result := 'STENCIL_INDEX16' else
-      if self.val = UInt32($8D62) then Result := 'RGB565' else
-      if self.val = UInt32($8D64) then Result := 'ETC1_RGB8' else
-      if self.val = UInt32($8D70) then Result := 'RGBA32UI' else
-      if self.val = UInt32($8D71) then Result := 'RGB32UI' else
-      if self.val = UInt32($8D72) then Result := 'ALPHA32UI' else
-      if self.val = UInt32($8D73) then Result := 'INTENSITY32UI' else
-      if self.val = UInt32($8D74) then Result := 'LUMINANCE32UI' else
-      if self.val = UInt32($8D75) then Result := 'LUMINANCE_ALPHA32UI' else
-      if self.val = UInt32($8D76) then Result := 'RGBA16UI' else
-      if self.val = UInt32($8D77) then Result := 'RGB16UI' else
-      if self.val = UInt32($8D78) then Result := 'ALPHA16UI' else
-      if self.val = UInt32($8D79) then Result := 'INTENSITY16UI' else
-      if self.val = UInt32($8D7A) then Result := 'LUMINANCE16UI' else
-      if self.val = UInt32($8D7B) then Result := 'LUMINANCE_ALPHA16UI' else
-      if self.val = UInt32($8D7C) then Result := 'RGBA8UI' else
-      if self.val = UInt32($8D7D) then Result := 'RGB8UI' else
-      if self.val = UInt32($8D7E) then Result := 'ALPHA8UI' else
-      if self.val = UInt32($8D7F) then Result := 'INTENSITY8UI' else
-      if self.val = UInt32($8D80) then Result := 'LUMINANCE8UI' else
-      if self.val = UInt32($8D81) then Result := 'LUMINANCE_ALPHA8UI' else
-      if self.val = UInt32($8D82) then Result := 'RGBA32I' else
-      if self.val = UInt32($8D83) then Result := 'RGB32I' else
-      if self.val = UInt32($8D84) then Result := 'ALPHA32I' else
-      if self.val = UInt32($8D85) then Result := 'INTENSITY32I' else
-      if self.val = UInt32($8D86) then Result := 'LUMINANCE32I' else
-      if self.val = UInt32($8D87) then Result := 'LUMINANCE_ALPHA32I' else
-      if self.val = UInt32($8D88) then Result := 'RGBA16I' else
-      if self.val = UInt32($8D89) then Result := 'RGB16I' else
-      if self.val = UInt32($8D8A) then Result := 'ALPHA16I' else
-      if self.val = UInt32($8D8B) then Result := 'INTENSITY16I' else
-      if self.val = UInt32($8D8C) then Result := 'LUMINANCE16I' else
-      if self.val = UInt32($8D8D) then Result := 'LUMINANCE_ALPHA16I' else
-      if self.val = UInt32($8D8E) then Result := 'RGBA8I' else
-      if self.val = UInt32($8D8F) then Result := 'RGB8I' else
-      if self.val = UInt32($8D90) then Result := 'ALPHA8I' else
-      if self.val = UInt32($8D91) then Result := 'INTENSITY8I' else
-      if self.val = UInt32($8D92) then Result := 'LUMINANCE8I' else
-      if self.val = UInt32($8D93) then Result := 'LUMINANCE_ALPHA8I' else
-      if self.val = UInt32($8DAB) then Result := 'DEPTH_COMPONENT32F_NV' else
-      if self.val = UInt32($8DAC) then Result := 'DEPTH32F_STENCIL8_NV' else
-      if self.val = UInt32($8DBB) then Result := 'COMPRESSED_RED_RGTC1' else
-      if self.val = UInt32($8DBC) then Result := 'COMPRESSED_SIGNED_RED_RGTC1' else
-      if self.val = UInt32($8DBD) then Result := 'COMPRESSED_RED_GREEN_RGTC2' else
-      if self.val = UInt32($8DBD) then Result := 'COMPRESSED_RG_RGTC2' else
-      if self.val = UInt32($8DBE) then Result := 'COMPRESSED_SIGNED_RED_GREEN_RGTC2' else
-      if self.val = UInt32($8DBE) then Result := 'COMPRESSED_SIGNED_RG_RGTC2' else
-      if self.val = UInt32($8E8C) then Result := 'COMPRESSED_RGBA_BPTC_UNORM' else
-      if self.val = UInt32($8E8D) then Result := 'COMPRESSED_SRGB_ALPHA_BPTC_UNORM' else
-      if self.val = UInt32($8E8E) then Result := 'COMPRESSED_RGB_BPTC_SIGNED_FLOAT' else
-      if self.val = UInt32($8E8F) then Result := 'COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT' else
-      if self.val = UInt32($8F94) then Result := 'R8_SNORM' else
-      if self.val = UInt32($8F95) then Result := 'RG8_SNORM' else
-      if self.val = UInt32($8F96) then Result := 'RGB8_SNORM' else
-      if self.val = UInt32($8F97) then Result := 'RGBA8_SNORM' else
-      if self.val = UInt32($8F98) then Result := 'R16_SNORM' else
-      if self.val = UInt32($8F99) then Result := 'RG16_SNORM' else
-      if self.val = UInt32($8F9A) then Result := 'RGB16_SNORM' else
-      if self.val = UInt32($8F9B) then Result := 'RGBA16_SNORM' else
-      if self.val = UInt32($8FBD) then Result := 'SR8' else
-      if self.val = UInt32($8FBE) then Result := 'SRG8' else
-      if self.val = UInt32($906F) then Result := 'RGB10_A2UI' else
-      if self.val = UInt32($9270) then Result := 'COMPRESSED_R11_EAC' else
-      if self.val = UInt32($9271) then Result := 'COMPRESSED_SIGNED_R11_EAC' else
-      if self.val = UInt32($9272) then Result := 'COMPRESSED_RG11_EAC' else
-      if self.val = UInt32($9273) then Result := 'COMPRESSED_SIGNED_RG11_EAC' else
-      if self.val = UInt32($9274) then Result := 'COMPRESSED_RGB8_ETC2' else
-      if self.val = UInt32($9275) then Result := 'COMPRESSED_SRGB8_ETC2' else
-      if self.val = UInt32($9276) then Result := 'COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2' else
-      if self.val = UInt32($9277) then Result := 'COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2' else
-      if self.val = UInt32($9278) then Result := 'COMPRESSED_RGBA8_ETC2_EAC' else
-      if self.val = UInt32($9279) then Result := 'COMPRESSED_SRGB8_ALPHA8_ETC2_EAC' else
-      if self.val = UInt32($93B0) then Result := 'COMPRESSED_RGBA_ASTC_4x4' else
-      if self.val = UInt32($93B1) then Result := 'COMPRESSED_RGBA_ASTC_5x4' else
-      if self.val = UInt32($93B2) then Result := 'COMPRESSED_RGBA_ASTC_5x5' else
-      if self.val = UInt32($93B3) then Result := 'COMPRESSED_RGBA_ASTC_6x5' else
-      if self.val = UInt32($93B4) then Result := 'COMPRESSED_RGBA_ASTC_6x6' else
-      if self.val = UInt32($93B5) then Result := 'COMPRESSED_RGBA_ASTC_8x5' else
-      if self.val = UInt32($93B6) then Result := 'COMPRESSED_RGBA_ASTC_8x6' else
-      if self.val = UInt32($93B7) then Result := 'COMPRESSED_RGBA_ASTC_8x8' else
-      if self.val = UInt32($93B8) then Result := 'COMPRESSED_RGBA_ASTC_10x5' else
-      if self.val = UInt32($93B9) then Result := 'COMPRESSED_RGBA_ASTC_10x6' else
-      if self.val = UInt32($93BA) then Result := 'COMPRESSED_RGBA_ASTC_10x8' else
-      if self.val = UInt32($93BB) then Result := 'COMPRESSED_RGBA_ASTC_10x10' else
-      if self.val = UInt32($93BC) then Result := 'COMPRESSED_RGBA_ASTC_12x10' else
-      if self.val = UInt32($93BD) then Result := 'COMPRESSED_RGBA_ASTC_12x12' else
-      if self.val = UInt32($93C0) then Result := 'COMPRESSED_RGBA_ASTC_3x3x3' else
-      if self.val = UInt32($93C1) then Result := 'COMPRESSED_RGBA_ASTC_4x3x3' else
-      if self.val = UInt32($93C2) then Result := 'COMPRESSED_RGBA_ASTC_4x4x3' else
-      if self.val = UInt32($93C3) then Result := 'COMPRESSED_RGBA_ASTC_4x4x4' else
-      if self.val = UInt32($93C4) then Result := 'COMPRESSED_RGBA_ASTC_5x4x4' else
-      if self.val = UInt32($93C5) then Result := 'COMPRESSED_RGBA_ASTC_5x5x4' else
-      if self.val = UInt32($93C6) then Result := 'COMPRESSED_RGBA_ASTC_5x5x5' else
-      if self.val = UInt32($93C7) then Result := 'COMPRESSED_RGBA_ASTC_6x5x5' else
-      if self.val = UInt32($93C8) then Result := 'COMPRESSED_RGBA_ASTC_6x6x5' else
-      if self.val = UInt32($93C9) then Result := 'COMPRESSED_RGBA_ASTC_6x6x6' else
-      if self.val = UInt32($93D0) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x4' else
-      if self.val = UInt32($93D1) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x4' else
-      if self.val = UInt32($93D2) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x5' else
-      if self.val = UInt32($93D3) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x5' else
-      if self.val = UInt32($93D4) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x6' else
-      if self.val = UInt32($93D5) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_8x5' else
-      if self.val = UInt32($93D6) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_8x6' else
-      if self.val = UInt32($93D7) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_8x8' else
-      if self.val = UInt32($93D8) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x5' else
-      if self.val = UInt32($93D9) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x6' else
-      if self.val = UInt32($93DA) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x8' else
-      if self.val = UInt32($93DB) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x10' else
-      if self.val = UInt32($93DC) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_12x10' else
-      if self.val = UInt32($93DD) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_12x12' else
-      if self.val = UInt32($93E0) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_3x3x3' else
-      if self.val = UInt32($93E1) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x3x3' else
-      if self.val = UInt32($93E2) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x3' else
-      if self.val = UInt32($93E3) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x4' else
-      if self.val = UInt32($93E4) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x4x4' else
-      if self.val = UInt32($93E5) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x4' else
-      if self.val = UInt32($93E6) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x5' else
-      if self.val = UInt32($93E7) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x5x5' else
-      if self.val = UInt32($93E8) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x5' else
-      if self.val = UInt32($93E9) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x6' else
+      if self.val = Int32($1901) then Result := 'STENCIL_INDEX' else
+      if self.val = Int32($1902) then Result := 'DEPTH_COMPONENT' else
+      if self.val = Int32($1903) then Result := 'RED' else
+      if self.val = Int32($1907) then Result := 'RGB' else
+      if self.val = Int32($1908) then Result := 'RGBA' else
+      if self.val = Int32($2A10) then Result := 'R3_G3_B2' else
+      if self.val = Int32($803B) then Result := 'ALPHA4' else
+      if self.val = Int32($803C) then Result := 'ALPHA8' else
+      if self.val = Int32($803D) then Result := 'ALPHA12' else
+      if self.val = Int32($803E) then Result := 'ALPHA16' else
+      if self.val = Int32($803F) then Result := 'LUMINANCE4' else
+      if self.val = Int32($8040) then Result := 'LUMINANCE8' else
+      if self.val = Int32($8041) then Result := 'LUMINANCE12' else
+      if self.val = Int32($8042) then Result := 'LUMINANCE16' else
+      if self.val = Int32($8043) then Result := 'LUMINANCE4_ALPHA4' else
+      if self.val = Int32($8044) then Result := 'LUMINANCE6_ALPHA2' else
+      if self.val = Int32($8045) then Result := 'LUMINANCE8_ALPHA8' else
+      if self.val = Int32($8046) then Result := 'LUMINANCE12_ALPHA4' else
+      if self.val = Int32($8047) then Result := 'LUMINANCE12_ALPHA12' else
+      if self.val = Int32($8048) then Result := 'LUMINANCE16_ALPHA16' else
+      if self.val = Int32($8049) then Result := 'INTENSITY' else
+      if self.val = Int32($804A) then Result := 'INTENSITY4' else
+      if self.val = Int32($804B) then Result := 'INTENSITY8' else
+      if self.val = Int32($804C) then Result := 'INTENSITY12' else
+      if self.val = Int32($804D) then Result := 'INTENSITY16' else
+      if self.val = Int32($804E) then Result := 'RGB2' else
+      if self.val = Int32($804F) then Result := 'RGB4' else
+      if self.val = Int32($8050) then Result := 'RGB5' else
+      if self.val = Int32($8051) then Result := 'RGB8' else
+      if self.val = Int32($8052) then Result := 'RGB10' else
+      if self.val = Int32($8053) then Result := 'RGB12' else
+      if self.val = Int32($8054) then Result := 'RGB16' else
+      if self.val = Int32($8055) then Result := 'RGBA2' else
+      if self.val = Int32($8056) then Result := 'RGBA4' else
+      if self.val = Int32($8057) then Result := 'RGB5_A1' else
+      if self.val = Int32($8058) then Result := 'RGBA8' else
+      if self.val = Int32($8059) then Result := 'RGB10_A2' else
+      if self.val = Int32($805A) then Result := 'RGBA12' else
+      if self.val = Int32($805B) then Result := 'RGBA16' else
+      if self.val = Int32($8110) then Result := 'DUAL_ALPHA4' else
+      if self.val = Int32($8111) then Result := 'DUAL_ALPHA8' else
+      if self.val = Int32($8112) then Result := 'DUAL_ALPHA12' else
+      if self.val = Int32($8113) then Result := 'DUAL_ALPHA16' else
+      if self.val = Int32($8114) then Result := 'DUAL_LUMINANCE4' else
+      if self.val = Int32($8115) then Result := 'DUAL_LUMINANCE8' else
+      if self.val = Int32($8116) then Result := 'DUAL_LUMINANCE12' else
+      if self.val = Int32($8117) then Result := 'DUAL_LUMINANCE16' else
+      if self.val = Int32($8118) then Result := 'DUAL_INTENSITY4' else
+      if self.val = Int32($8119) then Result := 'DUAL_INTENSITY8' else
+      if self.val = Int32($811A) then Result := 'DUAL_INTENSITY12' else
+      if self.val = Int32($811B) then Result := 'DUAL_INTENSITY16' else
+      if self.val = Int32($811C) then Result := 'DUAL_LUMINANCE_ALPHA4' else
+      if self.val = Int32($811D) then Result := 'DUAL_LUMINANCE_ALPHA8' else
+      if self.val = Int32($811E) then Result := 'QUAD_ALPHA4' else
+      if self.val = Int32($811F) then Result := 'QUAD_ALPHA8' else
+      if self.val = Int32($8120) then Result := 'QUAD_LUMINANCE4' else
+      if self.val = Int32($8121) then Result := 'QUAD_LUMINANCE8' else
+      if self.val = Int32($8122) then Result := 'QUAD_INTENSITY4' else
+      if self.val = Int32($8123) then Result := 'QUAD_INTENSITY8' else
+      if self.val = Int32($81A5) then Result := 'DEPTH_COMPONENT16' else
+      if self.val = Int32($81A6) then Result := 'DEPTH_COMPONENT24' else
+      if self.val = Int32($81A7) then Result := 'DEPTH_COMPONENT32' else
+      if self.val = Int32($8225) then Result := 'COMPRESSED_RED' else
+      if self.val = Int32($8226) then Result := 'COMPRESSED_RG' else
+      if self.val = Int32($8227) then Result := 'RG' else
+      if self.val = Int32($8229) then Result := 'R8' else
+      if self.val = Int32($822A) then Result := 'R16' else
+      if self.val = Int32($822B) then Result := 'RG8' else
+      if self.val = Int32($822C) then Result := 'RG16' else
+      if self.val = Int32($822D) then Result := 'R16F' else
+      if self.val = Int32($822E) then Result := 'R32F' else
+      if self.val = Int32($822F) then Result := 'RG16F' else
+      if self.val = Int32($8230) then Result := 'RG32F' else
+      if self.val = Int32($8231) then Result := 'R8I' else
+      if self.val = Int32($8232) then Result := 'R8UI' else
+      if self.val = Int32($8233) then Result := 'R16I' else
+      if self.val = Int32($8234) then Result := 'R16UI' else
+      if self.val = Int32($8235) then Result := 'R32I' else
+      if self.val = Int32($8236) then Result := 'R32UI' else
+      if self.val = Int32($8237) then Result := 'RG8I' else
+      if self.val = Int32($8238) then Result := 'RG8UI' else
+      if self.val = Int32($8239) then Result := 'RG16I' else
+      if self.val = Int32($823A) then Result := 'RG16UI' else
+      if self.val = Int32($823B) then Result := 'RG32I' else
+      if self.val = Int32($823C) then Result := 'RG32UI' else
+      if self.val = Int32($83F0) then Result := 'COMPRESSED_RGB_S3TC_DXT1' else
+      if self.val = Int32($83F1) then Result := 'COMPRESSED_RGBA_S3TC_DXT1' else
+      if self.val = Int32($83F2) then Result := 'COMPRESSED_RGBA_S3TC_DXT3' else
+      if self.val = Int32($83F3) then Result := 'COMPRESSED_RGBA_S3TC_DXT5' else
+      if self.val = Int32($84ED) then Result := 'COMPRESSED_RGB' else
+      if self.val = Int32($84EE) then Result := 'COMPRESSED_RGBA' else
+      if self.val = Int32($84F9) then Result := 'DEPTH_STENCIL' else
+      if self.val = Int32($8750) then Result := 'DEPTH_STENCIL_MESA' else
+      if self.val = Int32($8814) then Result := 'RGBA32F' else
+      if self.val = Int32($8815) then Result := 'RGB32F' else
+      if self.val = Int32($881A) then Result := 'RGBA16F' else
+      if self.val = Int32($881B) then Result := 'RGB16F' else
+      if self.val = Int32($88F0) then Result := 'DEPTH24_STENCIL8' else
+      if self.val = Int32($8C3A) then Result := 'R11F_G11F_B10F' else
+      if self.val = Int32($8C3D) then Result := 'RGB9_E5' else
+      if self.val = Int32($8C40) then Result := 'SRGB' else
+      if self.val = Int32($8C41) then Result := 'SRGB8' else
+      if self.val = Int32($8C42) then Result := 'SRGB_ALPHA' else
+      if self.val = Int32($8C43) then Result := 'SRGB8_ALPHA8' else
+      if self.val = Int32($8C48) then Result := 'COMPRESSED_SRGB' else
+      if self.val = Int32($8C49) then Result := 'COMPRESSED_SRGB_ALPHA' else
+      if self.val = Int32($8C4C) then Result := 'COMPRESSED_SRGB_S3TC_DXT1' else
+      if self.val = Int32($8C4D) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT1' else
+      if self.val = Int32($8C4E) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT3' else
+      if self.val = Int32($8C4F) then Result := 'COMPRESSED_SRGB_ALPHA_S3TC_DXT5' else
+      if self.val = Int32($8CAC) then Result := 'DEPTH_COMPONENT32F' else
+      if self.val = Int32($8CAD) then Result := 'DEPTH32F_STENCIL8' else
+      if self.val = Int32($8D46) then Result := 'STENCIL_INDEX1' else
+      if self.val = Int32($8D47) then Result := 'STENCIL_INDEX4' else
+      if self.val = Int32($8D48) then Result := 'STENCIL_INDEX8' else
+      if self.val = Int32($8D49) then Result := 'STENCIL_INDEX16' else
+      if self.val = Int32($8D62) then Result := 'RGB565' else
+      if self.val = Int32($8D64) then Result := 'ETC1_RGB8' else
+      if self.val = Int32($8D70) then Result := 'RGBA32UI' else
+      if self.val = Int32($8D71) then Result := 'RGB32UI' else
+      if self.val = Int32($8D72) then Result := 'ALPHA32UI' else
+      if self.val = Int32($8D73) then Result := 'INTENSITY32UI' else
+      if self.val = Int32($8D74) then Result := 'LUMINANCE32UI' else
+      if self.val = Int32($8D75) then Result := 'LUMINANCE_ALPHA32UI' else
+      if self.val = Int32($8D76) then Result := 'RGBA16UI' else
+      if self.val = Int32($8D77) then Result := 'RGB16UI' else
+      if self.val = Int32($8D78) then Result := 'ALPHA16UI' else
+      if self.val = Int32($8D79) then Result := 'INTENSITY16UI' else
+      if self.val = Int32($8D7A) then Result := 'LUMINANCE16UI' else
+      if self.val = Int32($8D7B) then Result := 'LUMINANCE_ALPHA16UI' else
+      if self.val = Int32($8D7C) then Result := 'RGBA8UI' else
+      if self.val = Int32($8D7D) then Result := 'RGB8UI' else
+      if self.val = Int32($8D7E) then Result := 'ALPHA8UI' else
+      if self.val = Int32($8D7F) then Result := 'INTENSITY8UI' else
+      if self.val = Int32($8D80) then Result := 'LUMINANCE8UI' else
+      if self.val = Int32($8D81) then Result := 'LUMINANCE_ALPHA8UI' else
+      if self.val = Int32($8D82) then Result := 'RGBA32I' else
+      if self.val = Int32($8D83) then Result := 'RGB32I' else
+      if self.val = Int32($8D84) then Result := 'ALPHA32I' else
+      if self.val = Int32($8D85) then Result := 'INTENSITY32I' else
+      if self.val = Int32($8D86) then Result := 'LUMINANCE32I' else
+      if self.val = Int32($8D87) then Result := 'LUMINANCE_ALPHA32I' else
+      if self.val = Int32($8D88) then Result := 'RGBA16I' else
+      if self.val = Int32($8D89) then Result := 'RGB16I' else
+      if self.val = Int32($8D8A) then Result := 'ALPHA16I' else
+      if self.val = Int32($8D8B) then Result := 'INTENSITY16I' else
+      if self.val = Int32($8D8C) then Result := 'LUMINANCE16I' else
+      if self.val = Int32($8D8D) then Result := 'LUMINANCE_ALPHA16I' else
+      if self.val = Int32($8D8E) then Result := 'RGBA8I' else
+      if self.val = Int32($8D8F) then Result := 'RGB8I' else
+      if self.val = Int32($8D90) then Result := 'ALPHA8I' else
+      if self.val = Int32($8D91) then Result := 'INTENSITY8I' else
+      if self.val = Int32($8D92) then Result := 'LUMINANCE8I' else
+      if self.val = Int32($8D93) then Result := 'LUMINANCE_ALPHA8I' else
+      if self.val = Int32($8DAB) then Result := 'DEPTH_COMPONENT32F_NV' else
+      if self.val = Int32($8DAC) then Result := 'DEPTH32F_STENCIL8_NV' else
+      if self.val = Int32($8DBB) then Result := 'COMPRESSED_RED_RGTC1' else
+      if self.val = Int32($8DBC) then Result := 'COMPRESSED_SIGNED_RED_RGTC1' else
+      if self.val = Int32($8DBD) then Result := 'COMPRESSED_RED_GREEN_RGTC2' else
+      if self.val = Int32($8DBD) then Result := 'COMPRESSED_RG_RGTC2' else
+      if self.val = Int32($8DBE) then Result := 'COMPRESSED_SIGNED_RED_GREEN_RGTC2' else
+      if self.val = Int32($8DBE) then Result := 'COMPRESSED_SIGNED_RG_RGTC2' else
+      if self.val = Int32($8E8C) then Result := 'COMPRESSED_RGBA_BPTC_UNORM' else
+      if self.val = Int32($8E8D) then Result := 'COMPRESSED_SRGB_ALPHA_BPTC_UNORM' else
+      if self.val = Int32($8E8E) then Result := 'COMPRESSED_RGB_BPTC_SIGNED_FLOAT' else
+      if self.val = Int32($8E8F) then Result := 'COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT' else
+      if self.val = Int32($8F94) then Result := 'R8_SNORM' else
+      if self.val = Int32($8F95) then Result := 'RG8_SNORM' else
+      if self.val = Int32($8F96) then Result := 'RGB8_SNORM' else
+      if self.val = Int32($8F97) then Result := 'RGBA8_SNORM' else
+      if self.val = Int32($8F98) then Result := 'R16_SNORM' else
+      if self.val = Int32($8F99) then Result := 'RG16_SNORM' else
+      if self.val = Int32($8F9A) then Result := 'RGB16_SNORM' else
+      if self.val = Int32($8F9B) then Result := 'RGBA16_SNORM' else
+      if self.val = Int32($8FBD) then Result := 'SR8' else
+      if self.val = Int32($8FBE) then Result := 'SRG8' else
+      if self.val = Int32($906F) then Result := 'RGB10_A2UI' else
+      if self.val = Int32($9270) then Result := 'COMPRESSED_R11_EAC' else
+      if self.val = Int32($9271) then Result := 'COMPRESSED_SIGNED_R11_EAC' else
+      if self.val = Int32($9272) then Result := 'COMPRESSED_RG11_EAC' else
+      if self.val = Int32($9273) then Result := 'COMPRESSED_SIGNED_RG11_EAC' else
+      if self.val = Int32($9274) then Result := 'COMPRESSED_RGB8_ETC2' else
+      if self.val = Int32($9275) then Result := 'COMPRESSED_SRGB8_ETC2' else
+      if self.val = Int32($9276) then Result := 'COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2' else
+      if self.val = Int32($9277) then Result := 'COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2' else
+      if self.val = Int32($9278) then Result := 'COMPRESSED_RGBA8_ETC2_EAC' else
+      if self.val = Int32($9279) then Result := 'COMPRESSED_SRGB8_ALPHA8_ETC2_EAC' else
+      if self.val = Int32($93B0) then Result := 'COMPRESSED_RGBA_ASTC_4x4' else
+      if self.val = Int32($93B1) then Result := 'COMPRESSED_RGBA_ASTC_5x4' else
+      if self.val = Int32($93B2) then Result := 'COMPRESSED_RGBA_ASTC_5x5' else
+      if self.val = Int32($93B3) then Result := 'COMPRESSED_RGBA_ASTC_6x5' else
+      if self.val = Int32($93B4) then Result := 'COMPRESSED_RGBA_ASTC_6x6' else
+      if self.val = Int32($93B5) then Result := 'COMPRESSED_RGBA_ASTC_8x5' else
+      if self.val = Int32($93B6) then Result := 'COMPRESSED_RGBA_ASTC_8x6' else
+      if self.val = Int32($93B7) then Result := 'COMPRESSED_RGBA_ASTC_8x8' else
+      if self.val = Int32($93B8) then Result := 'COMPRESSED_RGBA_ASTC_10x5' else
+      if self.val = Int32($93B9) then Result := 'COMPRESSED_RGBA_ASTC_10x6' else
+      if self.val = Int32($93BA) then Result := 'COMPRESSED_RGBA_ASTC_10x8' else
+      if self.val = Int32($93BB) then Result := 'COMPRESSED_RGBA_ASTC_10x10' else
+      if self.val = Int32($93BC) then Result := 'COMPRESSED_RGBA_ASTC_12x10' else
+      if self.val = Int32($93BD) then Result := 'COMPRESSED_RGBA_ASTC_12x12' else
+      if self.val = Int32($93C0) then Result := 'COMPRESSED_RGBA_ASTC_3x3x3' else
+      if self.val = Int32($93C1) then Result := 'COMPRESSED_RGBA_ASTC_4x3x3' else
+      if self.val = Int32($93C2) then Result := 'COMPRESSED_RGBA_ASTC_4x4x3' else
+      if self.val = Int32($93C3) then Result := 'COMPRESSED_RGBA_ASTC_4x4x4' else
+      if self.val = Int32($93C4) then Result := 'COMPRESSED_RGBA_ASTC_5x4x4' else
+      if self.val = Int32($93C5) then Result := 'COMPRESSED_RGBA_ASTC_5x5x4' else
+      if self.val = Int32($93C6) then Result := 'COMPRESSED_RGBA_ASTC_5x5x5' else
+      if self.val = Int32($93C7) then Result := 'COMPRESSED_RGBA_ASTC_6x5x5' else
+      if self.val = Int32($93C8) then Result := 'COMPRESSED_RGBA_ASTC_6x6x5' else
+      if self.val = Int32($93C9) then Result := 'COMPRESSED_RGBA_ASTC_6x6x6' else
+      if self.val = Int32($93D0) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x4' else
+      if self.val = Int32($93D1) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x4' else
+      if self.val = Int32($93D2) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x5' else
+      if self.val = Int32($93D3) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x5' else
+      if self.val = Int32($93D4) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x6' else
+      if self.val = Int32($93D5) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_8x5' else
+      if self.val = Int32($93D6) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_8x6' else
+      if self.val = Int32($93D7) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_8x8' else
+      if self.val = Int32($93D8) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x5' else
+      if self.val = Int32($93D9) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x6' else
+      if self.val = Int32($93DA) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x8' else
+      if self.val = Int32($93DB) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_10x10' else
+      if self.val = Int32($93DC) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_12x10' else
+      if self.val = Int32($93DD) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_12x12' else
+      if self.val = Int32($93E0) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_3x3x3' else
+      if self.val = Int32($93E1) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x3x3' else
+      if self.val = Int32($93E2) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x3' else
+      if self.val = Int32($93E3) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_4x4x4' else
+      if self.val = Int32($93E4) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x4x4' else
+      if self.val = Int32($93E5) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x4' else
+      if self.val = Int32($93E6) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_5x5x5' else
+      if self.val = Int32($93E7) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x5x5' else
+      if self.val = Int32($93E8) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x5' else
+      if self.val = Int32($93E9) then Result := 'COMPRESSED_SRGB8_ALPHA8_ASTC_6x6x6' else
         Result := $'InternalFormat[{self.val}]';
     end;
     
@@ -7159,8 +7179,8 @@
   end;
   
   PathCoordType = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
+    public val: Byte;
+    public constructor(val: Byte) := self.val := val;
     
     public static property CLOSE_PATH:                         PathCoordType read new PathCoordType($0000);
     public static property MOVE_TO:                            PathCoordType read new PathCoordType($0002);
@@ -7210,6 +7230,111 @@
     
     public function ToString: string; override;
     begin
+      if self.val = Byte($0000) then Result := 'CLOSE_PATH' else
+      if self.val = Byte($0002) then Result := 'MOVE_TO' else
+      if self.val = Byte($0003) then Result := 'RELATIVE_MOVE_TO' else
+      if self.val = Byte($0004) then Result := 'LINE_TO' else
+      if self.val = Byte($0005) then Result := 'RELATIVE_LINE_TO' else
+      if self.val = Byte($0006) then Result := 'HORIZONTAL_LINE_TO' else
+      if self.val = Byte($0007) then Result := 'RELATIVE_HORIZONTAL_LINE_TO' else
+      if self.val = Byte($0008) then Result := 'VERTICAL_LINE_TO' else
+      if self.val = Byte($0009) then Result := 'RELATIVE_VERTICAL_LINE_TO' else
+      if self.val = Byte($000A) then Result := 'QUADRATIC_CURVE_TO' else
+      if self.val = Byte($000B) then Result := 'RELATIVE_QUADRATIC_CURVE_TO' else
+      if self.val = Byte($000C) then Result := 'CUBIC_CURVE_TO' else
+      if self.val = Byte($000D) then Result := 'RELATIVE_CUBIC_CURVE_TO' else
+      if self.val = Byte($000E) then Result := 'SMOOTH_QUADRATIC_CURVE_TO' else
+      if self.val = Byte($000F) then Result := 'RELATIVE_SMOOTH_QUADRATIC_CURVE_TO' else
+      if self.val = Byte($0010) then Result := 'SMOOTH_CUBIC_CURVE_TO' else
+      if self.val = Byte($0011) then Result := 'RELATIVE_SMOOTH_CUBIC_CURVE_TO' else
+      if self.val = Byte($0012) then Result := 'SMALL_CCW_ARC_TO' else
+      if self.val = Byte($0013) then Result := 'RELATIVE_SMALL_CCW_ARC_TO' else
+      if self.val = Byte($0014) then Result := 'SMALL_CW_ARC_TO' else
+      if self.val = Byte($0015) then Result := 'RELATIVE_SMALL_CW_ARC_TO' else
+      if self.val = Byte($0016) then Result := 'LARGE_CCW_ARC_TO' else
+      if self.val = Byte($0017) then Result := 'RELATIVE_LARGE_CCW_ARC_TO' else
+      if self.val = Byte($0018) then Result := 'LARGE_CW_ARC_TO' else
+      if self.val = Byte($0019) then Result := 'RELATIVE_LARGE_CW_ARC_TO' else
+      if self.val = Byte($001A) then Result := 'CONIC_CURVE_TO' else
+      if self.val = Byte($001B) then Result := 'RELATIVE_CONIC_CURVE_TO' else
+      if self.val = Byte($00E8) then Result := 'ROUNDED_RECT' else
+      if self.val = Byte($00E9) then Result := 'RELATIVE_ROUNDED_RECT' else
+      if self.val = Byte($00EA) then Result := 'ROUNDED_RECT2' else
+      if self.val = Byte($00EB) then Result := 'RELATIVE_ROUNDED_RECT2' else
+      if self.val = Byte($00EC) then Result := 'ROUNDED_RECT4' else
+      if self.val = Byte($00ED) then Result := 'RELATIVE_ROUNDED_RECT4' else
+      if self.val = Byte($00EE) then Result := 'ROUNDED_RECT8' else
+      if self.val = Byte($00EF) then Result := 'RELATIVE_ROUNDED_RECT8' else
+      if self.val = Byte($00F0) then Result := 'RESTART_PATH' else
+      if self.val = Byte($00F2) then Result := 'DUP_FIRST_CUBIC_CURVE_TO' else
+      if self.val = Byte($00F4) then Result := 'DUP_LAST_CUBIC_CURVE_TO' else
+      if self.val = Byte($00F6) then Result := 'RECT' else
+      if self.val = Byte($00F7) then Result := 'RELATIVE_RECT' else
+      if self.val = Byte($00F8) then Result := 'CIRCULAR_CCW_ARC_TO' else
+      if self.val = Byte($00FA) then Result := 'CIRCULAR_CW_ARC_TO' else
+      if self.val = Byte($00FC) then Result := 'CIRCULAR_TANGENT_ARC_TO' else
+      if self.val = Byte($00FE) then Result := 'ARC_TO' else
+      if self.val = Byte($00FF) then Result := 'RELATIVE_ARC_TO' else
+        Result := $'PathCoordType[{self.val}]';
+    end;
+    
+  end;
+  
+  PathCoordTypeUInt32 = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static function operator implicit(v: PathCoordTypeUInt32): PathCoordType := new PathCoordType(v.val);
+    public static function operator implicit(v: PathCoordType): PathCoordTypeUInt32 := new PathCoordTypeUInt32(v.val);
+    
+    public static property CLOSE_PATH:                         PathCoordTypeUInt32 read new PathCoordTypeUInt32($0000);
+    public static property MOVE_TO:                            PathCoordTypeUInt32 read new PathCoordTypeUInt32($0002);
+    public static property RELATIVE_MOVE_TO:                   PathCoordTypeUInt32 read new PathCoordTypeUInt32($0003);
+    public static property LINE_TO:                            PathCoordTypeUInt32 read new PathCoordTypeUInt32($0004);
+    public static property RELATIVE_LINE_TO:                   PathCoordTypeUInt32 read new PathCoordTypeUInt32($0005);
+    public static property HORIZONTAL_LINE_TO:                 PathCoordTypeUInt32 read new PathCoordTypeUInt32($0006);
+    public static property RELATIVE_HORIZONTAL_LINE_TO:        PathCoordTypeUInt32 read new PathCoordTypeUInt32($0007);
+    public static property VERTICAL_LINE_TO:                   PathCoordTypeUInt32 read new PathCoordTypeUInt32($0008);
+    public static property RELATIVE_VERTICAL_LINE_TO:          PathCoordTypeUInt32 read new PathCoordTypeUInt32($0009);
+    public static property QUADRATIC_CURVE_TO:                 PathCoordTypeUInt32 read new PathCoordTypeUInt32($000A);
+    public static property RELATIVE_QUADRATIC_CURVE_TO:        PathCoordTypeUInt32 read new PathCoordTypeUInt32($000B);
+    public static property CUBIC_CURVE_TO:                     PathCoordTypeUInt32 read new PathCoordTypeUInt32($000C);
+    public static property RELATIVE_CUBIC_CURVE_TO:            PathCoordTypeUInt32 read new PathCoordTypeUInt32($000D);
+    public static property SMOOTH_QUADRATIC_CURVE_TO:          PathCoordTypeUInt32 read new PathCoordTypeUInt32($000E);
+    public static property RELATIVE_SMOOTH_QUADRATIC_CURVE_TO: PathCoordTypeUInt32 read new PathCoordTypeUInt32($000F);
+    public static property SMOOTH_CUBIC_CURVE_TO:              PathCoordTypeUInt32 read new PathCoordTypeUInt32($0010);
+    public static property RELATIVE_SMOOTH_CUBIC_CURVE_TO:     PathCoordTypeUInt32 read new PathCoordTypeUInt32($0011);
+    public static property SMALL_CCW_ARC_TO:                   PathCoordTypeUInt32 read new PathCoordTypeUInt32($0012);
+    public static property RELATIVE_SMALL_CCW_ARC_TO:          PathCoordTypeUInt32 read new PathCoordTypeUInt32($0013);
+    public static property SMALL_CW_ARC_TO:                    PathCoordTypeUInt32 read new PathCoordTypeUInt32($0014);
+    public static property RELATIVE_SMALL_CW_ARC_TO:           PathCoordTypeUInt32 read new PathCoordTypeUInt32($0015);
+    public static property LARGE_CCW_ARC_TO:                   PathCoordTypeUInt32 read new PathCoordTypeUInt32($0016);
+    public static property RELATIVE_LARGE_CCW_ARC_TO:          PathCoordTypeUInt32 read new PathCoordTypeUInt32($0017);
+    public static property LARGE_CW_ARC_TO:                    PathCoordTypeUInt32 read new PathCoordTypeUInt32($0018);
+    public static property RELATIVE_LARGE_CW_ARC_TO:           PathCoordTypeUInt32 read new PathCoordTypeUInt32($0019);
+    public static property CONIC_CURVE_TO:                     PathCoordTypeUInt32 read new PathCoordTypeUInt32($001A);
+    public static property RELATIVE_CONIC_CURVE_TO:            PathCoordTypeUInt32 read new PathCoordTypeUInt32($001B);
+    public static property ROUNDED_RECT:                       PathCoordTypeUInt32 read new PathCoordTypeUInt32($00E8);
+    public static property RELATIVE_ROUNDED_RECT:              PathCoordTypeUInt32 read new PathCoordTypeUInt32($00E9);
+    public static property ROUNDED_RECT2:                      PathCoordTypeUInt32 read new PathCoordTypeUInt32($00EA);
+    public static property RELATIVE_ROUNDED_RECT2:             PathCoordTypeUInt32 read new PathCoordTypeUInt32($00EB);
+    public static property ROUNDED_RECT4:                      PathCoordTypeUInt32 read new PathCoordTypeUInt32($00EC);
+    public static property RELATIVE_ROUNDED_RECT4:             PathCoordTypeUInt32 read new PathCoordTypeUInt32($00ED);
+    public static property ROUNDED_RECT8:                      PathCoordTypeUInt32 read new PathCoordTypeUInt32($00EE);
+    public static property RELATIVE_ROUNDED_RECT8:             PathCoordTypeUInt32 read new PathCoordTypeUInt32($00EF);
+    public static property RESTART_PATH:                       PathCoordTypeUInt32 read new PathCoordTypeUInt32($00F0);
+    public static property DUP_FIRST_CUBIC_CURVE_TO:           PathCoordTypeUInt32 read new PathCoordTypeUInt32($00F2);
+    public static property DUP_LAST_CUBIC_CURVE_TO:            PathCoordTypeUInt32 read new PathCoordTypeUInt32($00F4);
+    public static property RECT:                               PathCoordTypeUInt32 read new PathCoordTypeUInt32($00F6);
+    public static property RELATIVE_RECT:                      PathCoordTypeUInt32 read new PathCoordTypeUInt32($00F7);
+    public static property CIRCULAR_CCW_ARC_TO:                PathCoordTypeUInt32 read new PathCoordTypeUInt32($00F8);
+    public static property CIRCULAR_CW_ARC_TO:                 PathCoordTypeUInt32 read new PathCoordTypeUInt32($00FA);
+    public static property CIRCULAR_TANGENT_ARC_TO:            PathCoordTypeUInt32 read new PathCoordTypeUInt32($00FC);
+    public static property ARC_TO:                             PathCoordTypeUInt32 read new PathCoordTypeUInt32($00FE);
+    public static property RELATIVE_ARC_TO:                    PathCoordTypeUInt32 read new PathCoordTypeUInt32($00FF);
+    
+    public function ToString: string; override;
+    begin
       if self.val = UInt32($0000) then Result := 'CLOSE_PATH' else
       if self.val = UInt32($0002) then Result := 'MOVE_TO' else
       if self.val = UInt32($0003) then Result := 'RELATIVE_MOVE_TO' else
@@ -7255,7 +7380,7 @@
       if self.val = UInt32($00FC) then Result := 'CIRCULAR_TANGENT_ARC_TO' else
       if self.val = UInt32($00FE) then Result := 'ARC_TO' else
       if self.val = UInt32($00FF) then Result := 'RELATIVE_ARC_TO' else
-        Result := $'PathCoordType[{self.val}]';
+        Result := $'PathCoordTypeUInt32[{self.val}]';
     end;
     
   end;
@@ -7264,17 +7389,15 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property PATH_FILL_COVER_MODE:           PathCoverMode read new PathCoverMode($9082);
-    public static property CONVEX_HULL:                    PathCoverMode read new PathCoverMode($908B);
-    public static property BOUNDING_BOX:                   PathCoverMode read new PathCoverMode($908D);
-    public static property BOUNDING_BOX_OF_BOUNDING_BOXES: PathCoverMode read new PathCoverMode($909C);
+    public static property PATH_FILL_COVER_MODE: PathCoverMode read new PathCoverMode($9082);
+    public static property CONVEX_HULL:          PathCoverMode read new PathCoverMode($908B);
+    public static property BOUNDING_BOX:         PathCoverMode read new PathCoverMode($908D);
     
     public function ToString: string; override;
     begin
       if self.val = UInt32($9082) then Result := 'PATH_FILL_COVER_MODE' else
       if self.val = UInt32($908B) then Result := 'CONVEX_HULL' else
       if self.val = UInt32($908D) then Result := 'BOUNDING_BOX' else
-      if self.val = UInt32($909C) then Result := 'BOUNDING_BOX_OF_BOUNDING_BOXES' else
         Result := $'PathCoverMode[{self.val}]';
     end;
     
@@ -9677,6 +9800,34 @@
       if self.val = UInt32($8978) then Result := 'SWIZZLE_STR_DR' else
       if self.val = UInt32($8979) then Result := 'SWIZZLE_STQ_DQ' else
         Result := $'SwizzleOp[{self.val}]';
+    end;
+    
+  end;
+  
+  SyncBehaviorFlags = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property NONE: SyncBehaviorFlags read new SyncBehaviorFlags($0000);
+    
+    public static function operator+(f1,f2: SyncBehaviorFlags) := new SyncBehaviorFlags(f1.val or f2.val);
+    public static function operator or(f1,f2: SyncBehaviorFlags) := f1+f2;
+    
+    public static procedure operator+=(var f1: SyncBehaviorFlags; f2: SyncBehaviorFlags) := f1 := f1+f2;
+    
+    public property ANY_FLAGS: boolean read self.val<>0;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      if res.Length<>0 then
+      begin
+        res.Length -= 1;
+        Result := res.ToString;
+      end else
+      if self.val=0 then
+        Result := 'NONE' else
+        Result := $'SyncBehaviorFlags[{self.val}]';
     end;
     
   end;
