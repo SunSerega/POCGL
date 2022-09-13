@@ -40,6 +40,8 @@ type
     end;
     public constructor(s: string; general: boolean := false) := Create(s, pack_timer.ElapsedTicks, general);
     
+    public property Text: string read s;
+    
     public static function operator implicit(s: string): OtpLine := new OtpLine(s);
     public static function operator implicit(s: char): OtpLine := new OtpLine(s);
     

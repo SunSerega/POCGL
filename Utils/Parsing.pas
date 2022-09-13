@@ -433,10 +433,12 @@ type
     public function IndexOf(str: string): StringIndex;
     begin
       if str.Length=0 then raise new System.ArgumentException;
+      Result := StringIndex.Invalid;
+      if self.Length<str.Length then exit;
       var header := KMP_GetHeader(str);
       var curr_ind := StringIndex.Invalid;
       
-      for var i: integer := self.i1 to self.i2-str.Length do
+      for var i: integer := self.i1 to self.i2-1 do
         while true do
         begin
           var next_ind := curr_ind.UnsafeInc;
@@ -457,7 +459,6 @@ type
           break;
         end;
       
-      Result := StringIndex.Invalid;
     end;
     public function IndexOf(from: StringIndex; str: string): StringIndex;
     begin

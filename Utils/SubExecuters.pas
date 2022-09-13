@@ -93,6 +93,9 @@ end;
 function GetUsedModules(fname: string) := GetUsedModules(fname, new string[0]);
 var GetUsedModules_lock := new object;
 
+procedure ZeroOtp(l: OtpLine) := exit;
+function SimpleOtp(f: string->()): OtpLine->() := l->f(l.Text);
+
 {$endregion Helpers}
 
 {$region Core}

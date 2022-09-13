@@ -66,6 +66,9 @@ unit OpenCLABC;
 // - Ctrl-тык на ссылки в описаниях
 // --- Кнопки назад/вперёд
 
+//TODO k.Exec(a, b, c), где любой из массивов=nil
+// - Поидее должна быть перегрузка clEnqueueNDRangeKernel, принимающая массивы
+
 //TODO После cl.Enqueue нужно в любом случае UserEvent
 // - Следующие команды игнорирует ошибку в ивенте на 2/3 реализациях, если она не в UserEvent
 // - А в колбеке ивента команды надо сначала проверять ошибки prev_ev, потому что их может скопировать в ивент команды
@@ -35404,7 +35407,7 @@ begin
     var rng := new Random;
     var test_arr := ArrGen(test_size, i->rng.Next);
      Q_Test :=
-       CLKernelCCQ.Create(P_Prog.ThenConvert(p->p['k'], false, true))
+       P_Prog.ThenConvert(p->p['k'], false, true).MakeCCQ
          .ThenExec1(test_size, P_Arr.MakeCCQ
            .ThenWriteArray(test_arr)
          ) +
