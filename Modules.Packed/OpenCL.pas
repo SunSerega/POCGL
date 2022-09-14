@@ -404,6 +404,22 @@ type
     
   end;
   
+  CommandBufferStructureTypeKhr = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property STRUCTURE_TYPE_MUTABLE_BASE_CONFIG:     CommandBufferStructureTypeKhr read new CommandBufferStructureTypeKhr($0000);
+    public static property STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG: CommandBufferStructureTypeKhr read new CommandBufferStructureTypeKhr($0001);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($0000) then Result := 'STRUCTURE_TYPE_MUTABLE_BASE_CONFIG' else
+      if self.val = UInt32($0001) then Result := 'STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG' else
+        Result := $'CommandBufferStructureTypeKhr[{self.val}]';
+    end;
+    
+  end;
+  
   CommandExecutionStatus = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -461,6 +477,7 @@ type
     public static property QUEUE_PROFILING_ENABLE:              CommandQueueProperties read new CommandQueueProperties($0002);
     public static property QUEUE_ON_DEVICE:                     CommandQueueProperties read new CommandQueueProperties($0004);
     public static property QUEUE_ON_DEVICE_DEFAULT:             CommandQueueProperties read new CommandQueueProperties($0008);
+    public static property QUEUE_NO_SYNC_OPERATIONS:            CommandQueueProperties read new CommandQueueProperties($20000000);
     public static property QUEUE_RESERVED:                      CommandQueueProperties read new CommandQueueProperties($40000000);
     public static property QUEUE_THREAD_LOCAL_EXEC_ENABLE:      CommandQueueProperties read new CommandQueueProperties($80000000);
     
@@ -474,6 +491,7 @@ type
     public property HAS_FLAG_QUEUE_PROFILING_ENABLE:              boolean read self.val and $0002 <> 0;
     public property HAS_FLAG_QUEUE_ON_DEVICE:                     boolean read self.val and $0004 <> 0;
     public property HAS_FLAG_QUEUE_ON_DEVICE_DEFAULT:             boolean read self.val and $0008 <> 0;
+    public property HAS_FLAG_QUEUE_NO_SYNC_OPERATIONS:            boolean read self.val and $20000000 <> 0;
     public property HAS_FLAG_QUEUE_RESERVED:                      boolean read self.val and $40000000 <> 0;
     public property HAS_FLAG_QUEUE_THREAD_LOCAL_EXEC_ENABLE:      boolean read self.val and $80000000 <> 0;
     
@@ -484,6 +502,7 @@ type
       if self.val and UInt64($0002) = UInt64($0002) then res += 'QUEUE_PROFILING_ENABLE+';
       if self.val and UInt64($0004) = UInt64($0004) then res += 'QUEUE_ON_DEVICE+';
       if self.val and UInt64($0008) = UInt64($0008) then res += 'QUEUE_ON_DEVICE_DEFAULT+';
+      if self.val and UInt64($20000000) = UInt64($20000000) then res += 'QUEUE_NO_SYNC_OPERATIONS+';
       if self.val and UInt64($40000000) = UInt64($40000000) then res += 'QUEUE_RESERVED+';
       if self.val and UInt64($80000000) = UInt64($80000000) then res += 'QUEUE_THREAD_LOCAL_EXEC_ENABLE+';
       if res.Length<>0 then
@@ -1030,6 +1049,7 @@ type
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED: DeviceInfo read new DeviceInfo($1075);
     public static property DEVICE_COMMAND_BUFFER_CAPABILITIES:                               DeviceInfo read new DeviceInfo($12A9);
     public static property DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES:                  DeviceInfo read new DeviceInfo($12AA);
+    public static property DEVICE_MUTABLE_DISPATCH_CAPABILITIES:                             DeviceInfo read new DeviceInfo($12B0);
     public static property DEVICE_TERMINATE_CAPABILITY:                                      DeviceInfo read new DeviceInfo($2031);
     public static property DEVICE_MAX_NAMED_BARRIER_COUNT:                                   DeviceInfo read new DeviceInfo($2035);
     public static property DEVICE_SEMAPHORE_TYPES:                                           DeviceInfo read new DeviceInfo($204C);
@@ -1090,7 +1110,9 @@ type
     public static property DEVICE_SINGLE_DEVICE_SHARED_MEM_CAPABILITIES:                     DeviceInfo read new DeviceInfo($4192);
     public static property DEVICE_CROSS_DEVICE_SHARED_MEM_CAPABILITIES:                      DeviceInfo read new DeviceInfo($4193);
     public static property DEVICE_SHARED_SYSTEM_MEM_CAPABILITIES:                            DeviceInfo read new DeviceInfo($4194);
+    public static property DEVICE_JOB_SLOTS:                                                 DeviceInfo read new DeviceInfo($41E0);
     public static property DEVICE_SCHEDULING_CONTROLS_CAPABILITIES:                          DeviceInfo read new DeviceInfo($41E4);
+    public static property DEVICE_MAX_WARP_COUNT:                                            DeviceInfo read new DeviceInfo($41EA);
     public static property DEVICE_SUPPORTED_REGISTER_ALLOCATIONS:                            DeviceInfo read new DeviceInfo($41EB);
     public static property DEVICE_CONTROLLED_TERMINATION_CAPABILITIES:                       DeviceInfo read new DeviceInfo($41EE);
     public static property DEVICE_CXX_FOR_OPENCL_NUMERIC_VERSION:                            DeviceInfo read new DeviceInfo($4230);
@@ -1228,6 +1250,7 @@ type
       if self.val = UInt32($1075) then Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED' else
       if self.val = UInt32($12A9) then Result := 'DEVICE_COMMAND_BUFFER_CAPABILITIES' else
       if self.val = UInt32($12AA) then Result := 'DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES' else
+      if self.val = UInt32($12B0) then Result := 'DEVICE_MUTABLE_DISPATCH_CAPABILITIES' else
       if self.val = UInt32($2031) then Result := 'DEVICE_TERMINATE_CAPABILITY' else
       if self.val = UInt32($2035) then Result := 'DEVICE_MAX_NAMED_BARRIER_COUNT' else
       if self.val = UInt32($204C) then Result := 'DEVICE_SEMAPHORE_TYPES' else
@@ -1288,7 +1311,9 @@ type
       if self.val = UInt32($4192) then Result := 'DEVICE_SINGLE_DEVICE_SHARED_MEM_CAPABILITIES' else
       if self.val = UInt32($4193) then Result := 'DEVICE_CROSS_DEVICE_SHARED_MEM_CAPABILITIES' else
       if self.val = UInt32($4194) then Result := 'DEVICE_SHARED_SYSTEM_MEM_CAPABILITIES' else
+      if self.val = UInt32($41E0) then Result := 'DEVICE_JOB_SLOTS' else
       if self.val = UInt32($41E4) then Result := 'DEVICE_SCHEDULING_CONTROLS_CAPABILITIES' else
+      if self.val = UInt32($41EA) then Result := 'DEVICE_MAX_WARP_COUNT' else
       if self.val = UInt32($41EB) then Result := 'DEVICE_SUPPORTED_REGISTER_ALLOCATIONS' else
       if self.val = UInt32($41EE) then Result := 'DEVICE_CONTROLLED_TERMINATION_CAPABILITIES' else
       if self.val = UInt32($4230) then Result := 'DEVICE_CXX_FOR_OPENCL_NUMERIC_VERSION' else
@@ -1640,6 +1665,7 @@ type
     public static property INVALID_COMMAND_BUFFER:                    ErrorCode read new ErrorCode(-1138);
     public static property INVALID_SYNC_POINT_WAIT_LIST:              ErrorCode read new ErrorCode(-1139);
     public static property INCOMPATIBLE_COMMAND_QUEUE:                ErrorCode read new ErrorCode(-1140);
+    public static property INVALID_MUTABLE_COMMAND:                   ErrorCode read new ErrorCode(-1141);
     public static property INVALID_SEMAPHORE:                         ErrorCode read new ErrorCode(-1142);
     public static property NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE:       ErrorCode read new ErrorCode(-9999);
     
@@ -1750,6 +1776,7 @@ type
       if self.val = Int32(-1138) then Result := 'INVALID_COMMAND_BUFFER' else
       if self.val = Int32(-1139) then Result := 'INVALID_SYNC_POINT_WAIT_LIST' else
       if self.val = Int32(-1140) then Result := 'INCOMPATIBLE_COMMAND_QUEUE' else
+      if self.val = Int32(-1141) then Result := 'INVALID_MUTABLE_COMMAND' else
       if self.val = Int32(-1142) then Result := 'INVALID_SEMAPHORE' else
       if self.val = Int32(-9999) then Result := 'NV_KERNEL_ILLEGAL_BUFFER_READ_WRITE' else
         Result := $'ErrorCode[{self.val}]';
@@ -1953,6 +1980,7 @@ type
     public constructor(val: UInt32) := self.val := val;
     
     public static property IMAGE_REQUIREMENTS_ROW_PITCH_ALIGNMENT:    ImageRequirementsInfoExt read new ImageRequirementsInfoExt($1290);
+    public static property IMAGE_REQUIREMENTS_SLICE_PITCH_ALIGNMENT:  ImageRequirementsInfoExt read new ImageRequirementsInfoExt($1291);
     public static property IMAGE_REQUIREMENTS_BASE_ADDRESS_ALIGNMENT: ImageRequirementsInfoExt read new ImageRequirementsInfoExt($1292);
     public static property IMAGE_REQUIREMENTS_SIZE:                   ImageRequirementsInfoExt read new ImageRequirementsInfoExt($12B2);
     public static property IMAGE_REQUIREMENTS_MAX_WIDTH:              ImageRequirementsInfoExt read new ImageRequirementsInfoExt($12B3);
@@ -1963,6 +1991,7 @@ type
     public function ToString: string; override;
     begin
       if self.val = UInt32($1290) then Result := 'IMAGE_REQUIREMENTS_ROW_PITCH_ALIGNMENT' else
+      if self.val = UInt32($1291) then Result := 'IMAGE_REQUIREMENTS_SLICE_PITCH_ALIGNMENT' else
       if self.val = UInt32($1292) then Result := 'IMAGE_REQUIREMENTS_BASE_ADDRESS_ALIGNMENT' else
       if self.val = UInt32($12B2) then Result := 'IMAGE_REQUIREMENTS_SIZE' else
       if self.val = UInt32($12B3) then Result := 'IMAGE_REQUIREMENTS_MAX_WIDTH' else
@@ -2111,14 +2140,16 @@ type
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property KERNEL_EXEC_INFO_SVM_PTRS:                      KernelExecInfo read new KernelExecInfo($11B6);
-    public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM:         KernelExecInfo read new KernelExecInfo($11B7);
-    public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE:          KernelExecInfo read new KernelExecInfo($41E5);
-    public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER: KernelExecInfo read new KernelExecInfo($41E6);
-    public static property KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS:          KernelExecInfo read new KernelExecInfo($4200);
-    public static property KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS:        KernelExecInfo read new KernelExecInfo($4201);
-    public static property KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS:        KernelExecInfo read new KernelExecInfo($4202);
-    public static property KERNEL_EXEC_INFO_USM_PTRS:                      KernelExecInfo read new KernelExecInfo($4203);
+    public static property KERNEL_EXEC_INFO_SVM_PTRS:                        KernelExecInfo read new KernelExecInfo($11B6);
+    public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM:           KernelExecInfo read new KernelExecInfo($11B7);
+    public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE:            KernelExecInfo read new KernelExecInfo($41E5);
+    public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER:   KernelExecInfo read new KernelExecInfo($41E6);
+    public static property KERNEL_EXEC_INFO_WARP_COUNT_LIMIT:                KernelExecInfo read new KernelExecInfo($41E8);
+    public static property KERNEL_EXEC_INFO_COMPUTE_UNIT_MAX_QUEUED_BATCHES: KernelExecInfo read new KernelExecInfo($41F1);
+    public static property KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS:            KernelExecInfo read new KernelExecInfo($4200);
+    public static property KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS:          KernelExecInfo read new KernelExecInfo($4201);
+    public static property KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS:          KernelExecInfo read new KernelExecInfo($4202);
+    public static property KERNEL_EXEC_INFO_USM_PTRS:                        KernelExecInfo read new KernelExecInfo($4203);
     
     public function ToString: string; override;
     begin
@@ -2126,6 +2157,8 @@ type
       if self.val = UInt32($11B7) then Result := 'KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM' else
       if self.val = UInt32($41E5) then Result := 'KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE' else
       if self.val = UInt32($41E6) then Result := 'KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER' else
+      if self.val = UInt32($41E8) then Result := 'KERNEL_EXEC_INFO_WARP_COUNT_LIMIT' else
+      if self.val = UInt32($41F1) then Result := 'KERNEL_EXEC_INFO_COMPUTE_UNIT_MAX_QUEUED_BATCHES' else
       if self.val = UInt32($4200) then Result := 'KERNEL_EXEC_INFO_INDIRECT_HOST_ACCESS' else
       if self.val = UInt32($4201) then Result := 'KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS' else
       if self.val = UInt32($4202) then Result := 'KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS' else
@@ -2161,6 +2194,7 @@ type
     public static property KERNEL_CONTEXT:         KernelInfo read new KernelInfo($1193);
     public static property KERNEL_PROGRAM:         KernelInfo read new KernelInfo($1194);
     public static property KERNEL_ATTRIBUTES:      KernelInfo read new KernelInfo($1195);
+    public static property KERNEL_MAX_WARP_COUNT:  KernelInfo read new KernelInfo($41E9);
     
     public function ToString: string; override;
     begin
@@ -2170,6 +2204,7 @@ type
       if self.val = UInt32($1193) then Result := 'KERNEL_CONTEXT' else
       if self.val = UInt32($1194) then Result := 'KERNEL_PROGRAM' else
       if self.val = UInt32($1195) then Result := 'KERNEL_ATTRIBUTES' else
+      if self.val = UInt32($41E9) then Result := 'KERNEL_MAX_WARP_COUNT' else
         Result := $'KernelInfo[{self.val}]';
     end;
     
@@ -2560,6 +2595,50 @@ type
     
   end;
   
+  MutableCommandInfoKhr = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property MUTABLE_COMMAND_COMMAND_QUEUE:       MutableCommandInfoKhr read new MutableCommandInfoKhr($12A0);
+    public static property MUTABLE_COMMAND_COMMAND_BUFFER:      MutableCommandInfoKhr read new MutableCommandInfoKhr($12A1);
+    public static property MUTABLE_DISPATCH_PROPERTIES_ARRAY:   MutableCommandInfoKhr read new MutableCommandInfoKhr($12A2);
+    public static property MUTABLE_DISPATCH_KERNEL:             MutableCommandInfoKhr read new MutableCommandInfoKhr($12A3);
+    public static property MUTABLE_DISPATCH_DIMENSIONS:         MutableCommandInfoKhr read new MutableCommandInfoKhr($12A4);
+    public static property MUTABLE_DISPATCH_GLOBAL_WORK_OFFSET: MutableCommandInfoKhr read new MutableCommandInfoKhr($12A5);
+    public static property MUTABLE_DISPATCH_GLOBAL_WORK_SIZE:   MutableCommandInfoKhr read new MutableCommandInfoKhr($12A6);
+    public static property MUTABLE_DISPATCH_LOCAL_WORK_SIZE:    MutableCommandInfoKhr read new MutableCommandInfoKhr($12A7);
+    public static property MUTABLE_COMMAND_COMMAND_TYPE:        MutableCommandInfoKhr read new MutableCommandInfoKhr($12AD);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt32($12A0) then Result := 'MUTABLE_COMMAND_COMMAND_QUEUE' else
+      if self.val = UInt32($12A1) then Result := 'MUTABLE_COMMAND_COMMAND_BUFFER' else
+      if self.val = UInt32($12A2) then Result := 'MUTABLE_DISPATCH_PROPERTIES_ARRAY' else
+      if self.val = UInt32($12A3) then Result := 'MUTABLE_DISPATCH_KERNEL' else
+      if self.val = UInt32($12A4) then Result := 'MUTABLE_DISPATCH_DIMENSIONS' else
+      if self.val = UInt32($12A5) then Result := 'MUTABLE_DISPATCH_GLOBAL_WORK_OFFSET' else
+      if self.val = UInt32($12A6) then Result := 'MUTABLE_DISPATCH_GLOBAL_WORK_SIZE' else
+      if self.val = UInt32($12A7) then Result := 'MUTABLE_DISPATCH_LOCAL_WORK_SIZE' else
+      if self.val = UInt32($12AD) then Result := 'MUTABLE_COMMAND_COMMAND_TYPE' else
+        Result := $'MutableCommandInfoKhr[{self.val}]';
+    end;
+    
+  end;
+  
+  NDRangeKernelCommandPropertiesKhr = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property MUTABLE_DISPATCH_UPDATABLE_FIELDS: NDRangeKernelCommandPropertiesKhr read new NDRangeKernelCommandPropertiesKhr($12B1);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = UInt64($12B1) then Result := 'MUTABLE_DISPATCH_UPDATABLE_FIELDS' else
+        Result := $'NDRangeKernelCommandPropertiesKhr[{self.val}]';
+    end;
+    
+  end;
+  
   PipeInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2726,6 +2805,7 @@ type
     public static property QUEUE_THROTTLE:        QueueProperties read new QueueProperties($1097);
     public static property QUEUE_FAMILY:          QueueProperties read new QueueProperties($418C);
     public static property QUEUE_INDEX:           QueueProperties read new QueueProperties($418D);
+    public static property QUEUE_JOB_SLOT:        QueueProperties read new QueueProperties($41E1);
     public static property QUEUE_KERNEL_BATCHING: QueueProperties read new QueueProperties($41E7);
     public static property QUEUE_DEFERRED_FLUSH:  QueueProperties read new QueueProperties($41EC);
     
@@ -2735,6 +2815,7 @@ type
       if self.val = UInt64($1097) then Result := 'QUEUE_THROTTLE' else
       if self.val = UInt64($418C) then Result := 'QUEUE_FAMILY' else
       if self.val = UInt64($418D) then Result := 'QUEUE_INDEX' else
+      if self.val = UInt64($41E1) then Result := 'QUEUE_JOB_SLOT' else
       if self.val = UInt64($41E7) then Result := 'QUEUE_KERNEL_BATCHING' else
       if self.val = UInt64($41EC) then Result := 'QUEUE_DEFERRED_FLUSH' else
         Result := $'QueueProperties[{self.val}]';
@@ -2997,6 +3078,84 @@ type
     begin
       self.image_channel_order := image_channel_order;
       self.image_channel_data_type := image_channel_data_type;
+    end;
+    
+  end;
+  
+  cl_mutable_dispatch_arg_khr = record
+    public arg_index: UInt32;
+    public arg_size: UIntPtr;
+    public arg_value: IntPtr;
+    
+    public constructor(arg_index: UInt32; arg_size: UIntPtr; arg_value: IntPtr);
+    begin
+      self.arg_index := arg_index;
+      self.arg_size := arg_size;
+      self.arg_value := arg_value;
+    end;
+    
+  end;
+  
+  cl_mutable_dispatch_exec_info_khr = record
+    public param_name: UInt32;
+    public param_value_size: UIntPtr;
+    public param_value: IntPtr;
+    
+    public constructor(param_name: UInt32; param_value_size: UIntPtr; param_value: IntPtr);
+    begin
+      self.param_name := param_name;
+      self.param_value_size := param_value_size;
+      self.param_value := param_value;
+    end;
+    
+  end;
+  
+  cl_mutable_dispatch_config_khr = record
+    public &type: CommandBufferStructureTypeKhr;
+    public next: IntPtr;
+    public command: cl_mutable_command;
+    public num_args: UInt32;
+    public num_svm_args: UInt32;
+    public num_exec_infos: UInt32;
+    public work_dim: UInt32;
+    public arg_list: ^cl_mutable_dispatch_arg_khr;
+    public arg_svm_list: ^cl_mutable_dispatch_arg_khr;
+    public exec_info_list: ^cl_mutable_dispatch_exec_info_khr;
+    public global_work_offset: ^UIntPtr;
+    public global_work_size: ^UIntPtr;
+    public local_work_size: ^UIntPtr;
+    
+    public constructor(&type: CommandBufferStructureTypeKhr; next: IntPtr; command: cl_mutable_command; num_args: UInt32; num_svm_args: UInt32; num_exec_infos: UInt32; work_dim: UInt32; arg_list: ^cl_mutable_dispatch_arg_khr; arg_svm_list: ^cl_mutable_dispatch_arg_khr; exec_info_list: ^cl_mutable_dispatch_exec_info_khr; global_work_offset: ^UIntPtr; global_work_size: ^UIntPtr; local_work_size: ^UIntPtr);
+    begin
+      self.type := &type;
+      self.next := next;
+      self.command := command;
+      self.num_args := num_args;
+      self.num_svm_args := num_svm_args;
+      self.num_exec_infos := num_exec_infos;
+      self.work_dim := work_dim;
+      self.arg_list := arg_list;
+      self.arg_svm_list := arg_svm_list;
+      self.exec_info_list := exec_info_list;
+      self.global_work_offset := global_work_offset;
+      self.global_work_size := global_work_size;
+      self.local_work_size := local_work_size;
+    end;
+    
+  end;
+  
+  cl_mutable_base_config_khr = record
+    public &type: CommandBufferStructureTypeKhr;
+    public next: IntPtr;
+    public num_mutable_dispatch: UInt32;
+    public mutable_dispatch_list: ^cl_mutable_dispatch_config_khr;
+    
+    public constructor(&type: CommandBufferStructureTypeKhr; next: IntPtr; num_mutable_dispatch: UInt32; mutable_dispatch_list: ^cl_mutable_dispatch_config_khr);
+    begin
+      self.type := &type;
+      self.next := next;
+      self.num_mutable_dispatch := num_mutable_dispatch;
+      self.mutable_dispatch_list := mutable_dispatch_list;
     end;
     
   end;
@@ -12563,21 +12722,21 @@ type
     external 'opencl' name 'clCommandNDRangeKernelKHR';
     private static function z_CommandNDRangeKernelKHR_4(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
     external 'opencl' name 'clCommandNDRangeKernelKHR';
-    private static function z_CommandNDRangeKernelKHR_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    private static function z_CommandNDRangeKernelKHR_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
     external 'opencl' name 'clCommandNDRangeKernelKHR';
-    private static function z_CommandNDRangeKernelKHR_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    private static function z_CommandNDRangeKernelKHR_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
     external 'opencl' name 'clCommandNDRangeKernelKHR';
-    private static function z_CommandNDRangeKernelKHR_7(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    private static function z_CommandNDRangeKernelKHR_7(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
     external 'opencl' name 'clCommandNDRangeKernelKHR';
-    private static function z_CommandNDRangeKernelKHR_8(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    private static function z_CommandNDRangeKernelKHR_8(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
     external 'opencl' name 'clCommandNDRangeKernelKHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
     z_CommandNDRangeKernelKHR_8(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
     z_CommandNDRangeKernelKHR_7(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
     z_CommandNDRangeKernelKHR_6(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
     z_CommandNDRangeKernelKHR_5(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
     z_CommandNDRangeKernelKHR_4(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
@@ -12911,6 +13070,38 @@ type
     z_GetImageRequirementsInfoEXT_2(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetImageRequirementsInfoEXT_1(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    
+  end;
+  
+  [PCUNotRestore]
+  [System.Security.SuppressUnmanagedCodeSecurity]
+  clCommandBufferMutableDispatchKHR = static class
+    public const _ExtStr = 'cl_khr_command_buffer_mutable_dispatch';
+    
+    private static function z_UpdateMutableCommandsKHR_1(command_buffer: cl_command_buffer; mutable_config: IntPtr): ErrorCode;
+    external 'opencl' name 'clUpdateMutableCommandsKHR';
+    private static function z_UpdateMutableCommandsKHR_2(command_buffer: cl_command_buffer; var mutable_config: cl_mutable_base_config_khr): ErrorCode;
+    external 'opencl' name 'clUpdateMutableCommandsKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; mutable_config: array of cl_mutable_base_config_khr): ErrorCode;
+    type Pcl_mutable_base_config_khr=^cl_mutable_base_config_khr;
+    begin
+      Result := if (mutable_config<>nil) and (mutable_config.Length<>0) then
+        z_UpdateMutableCommandsKHR_2(command_buffer, mutable_config[0]) else
+        z_UpdateMutableCommandsKHR_2(command_buffer, Pcl_mutable_base_config_khr(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; var mutable_config: cl_mutable_base_config_khr): ErrorCode :=
+    z_UpdateMutableCommandsKHR_2(command_buffer, mutable_config);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; mutable_config: IntPtr): ErrorCode :=
+    z_UpdateMutableCommandsKHR_1(command_buffer, mutable_config);
+    
+    private static function z_GetMutableCommandInfoKHR_1(command: cl_mutable_command; param_name: MutableCommandInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl' name 'clGetMutableCommandInfoKHR';
+    private static function z_GetMutableCommandInfoKHR_2(command: cl_mutable_command; param_name: MutableCommandInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl' name 'clGetMutableCommandInfoKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR(command: cl_mutable_command; param_name: MutableCommandInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetMutableCommandInfoKHR_2(command, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR(command: cl_mutable_command; param_name: MutableCommandInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetMutableCommandInfoKHR_1(command, param_name, param_value_size, param_value, param_value_size_ret);
     
   end;
   

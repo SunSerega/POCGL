@@ -27,7 +27,6 @@ Type conversion for [cl_mem_advice_intel] not found, so base type [uint32_t] con
 Type conversion for [cl_semaphore_payload_khr] not found, so base type [uint64_t] converted to [UInt64]
 Invalid ext name [CL] of [clSetContentSizeBufferPoCL], replaced with []
 Type conversion for [cl_sync_point_khr] not found, so base type [uint32_t] converted to [UInt32]
-Type conversion for [cl_ndrange_kernel_command_properties_khr] not found, so base type [uint64_t] converted to [UInt64]
 Group [ErrorCode]: Enum [DEVICE_PARTITION_FAILED_EXT]=$FFFFFFFFFFFFFBDF, but without [_EXT]=$FFFFFFFFFFFFFFEE
 Group [cl_mem_flags]: Enum [MEM_RESERVED0_QCOM]=$2000000000, but without [_QCOM]=$100000000
 Group [cl_mem_flags]: Enum [MEM_RESERVED1_QCOM]=$4000000000, but without [_QCOM]=$200000000
@@ -61,6 +60,7 @@ Struct [cl_queue_family_properties_intel] was not referenced
 Struct [cl_device_integer_dot_product_acceleration_properties_khr] was not referenced
 Group [DeviceAtomicCapabilities] was not referenced
 Group [DeviceEnqueueCapabilities] was not referenced
+Group [DeviceTerminateCapabilityKhr] was not referenced
 Group [QueuePriorityKhr] was not referenced
 Group [QueueThrottleKhr] was not referenced
 Group [DeviceUnifiedSharedMemoryCapabilitiesIntel] was not referenced
@@ -74,6 +74,7 @@ Group [DeviceIntegerDotProductCapabilitiesKhr] was not referenced
 Group [SemaphoreTypeKhr] was not referenced
 Group [CommandBufferFlagsKhr] was not referenced
 Group [CommandBufferStateKhr] was not referenced
+Group [MutableDispatchFieldsKhr] was not referenced
 Group [DeviceFpAtomicCapabilitiesExt] was not referenced
 Group [KhronosVendorId] was not referenced
 Group [DeviceSvmCapabilitiesArm] was not referenced

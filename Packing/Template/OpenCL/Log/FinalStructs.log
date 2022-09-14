@@ -21,4 +21,35 @@
 	image_channel_order: ChannelOrder
 	image_channel_data_type: ChannelType
 
+# cl_mutable_dispatch_arg_khr
+	arg_index: UInt32
+	arg_size: UIntPtr
+	arg_value: IntPtr
+
+# cl_mutable_dispatch_exec_info_khr
+	param_name: UInt32
+	param_value_size: UIntPtr
+	param_value: IntPtr
+
+# cl_mutable_dispatch_config_khr
+	&type: CommandBufferStructureTypeKhr
+	next: IntPtr
+	command: cl_mutable_command
+	num_args: UInt32
+	num_svm_args: UInt32
+	num_exec_infos: UInt32
+	work_dim: UInt32
+	arg_list: ^cl_mutable_dispatch_arg_khr
+	arg_svm_list: ^cl_mutable_dispatch_arg_khr
+	exec_info_list: ^cl_mutable_dispatch_exec_info_khr
+	global_work_offset: ^UIntPtr
+	global_work_size: ^UIntPtr
+	local_work_size: ^UIntPtr
+
+# cl_mutable_base_config_khr
+	&type: CommandBufferStructureTypeKhr
+	next: IntPtr
+	num_mutable_dispatch: UInt32
+	mutable_dispatch_list: ^cl_mutable_dispatch_config_khr
+
 

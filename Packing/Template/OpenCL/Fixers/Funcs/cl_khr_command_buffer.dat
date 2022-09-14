@@ -39,9 +39,9 @@
 
 # clCommandNDRangeKernelKHR
 !possible_par_types
- *	| *	| *	| -array of UInt64	| *	| *	| -array of UIntPtr	| -array of UIntPtr	| -array of UIntPtr	| *	| -array of UInt32	| -array of UInt32 -IntPtr	| -array of cl_mutable_command	|
+ *	| *	| *	| -array of NDRangeKernelCommandPropertiesKhr	| *	| *	| -array of UIntPtr	| -array of UIntPtr	| -array of UIntPtr	| *	| -array of UInt32	| -array of UInt32 -IntPtr	| -array of cl_mutable_command	|
 !limit_ovrs
- *	| *	| *	| var UInt64		| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *					| *							| *								|
- *	| *	| *	| IntPtr			| *	| *	| IntPtr			| IntPtr			| IntPtr			| *	| *					| *							| *								|
+ *	| *	| *	| var NDRangeKernelCommandPropertiesKhr			| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *					| *							| *								|
+ *	| *	| *	| IntPtr										| *	| *	| IntPtr			| IntPtr			| IntPtr			| *	| *					| *							| *								|
 
 

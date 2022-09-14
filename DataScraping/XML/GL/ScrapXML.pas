@@ -146,9 +146,9 @@ type
     
     private name, t: string;
     private rep_c: int64 := 1;
-    private readonly: boolean;
     private ptr: integer;
     private static_arr_len := -1;
+    private readonly_lvls := new List<integer>; // "const int * * const * v": Levels 1 and 3 are readonly
     private gr: Group := nil;
     
     public on_used: ()->();
@@ -156,6 +156,7 @@ type
     private enum_types := |'GLenum', 'GLbitfield'|;
     public constructor(func_name: string; n: XmlNode);
     begin
+      var text := n.Text;
       
       if n['len'] is string(var static_arr_len_str) then
       begin
@@ -172,19 +173,14 @@ type
       self.t :=
         class_name ??
         n.Nodes['ptype'].SingleOrDefault?.Text ??
-        n.Text.Remove(n.Text.LastIndexOf(' ')).Remove('const').Trim;
+        text.Remove(text.LastIndexOf(' ')).Remove('const').Trim;
       ;
-      self.readonly := n.Text.Contains('const');
       
-      self.ptr := n.Text.Count(ch->ch='*');
-      if n.Text.EndsWith(']') then
-      begin
-        var ind := n.Text.LastIndexOf('[', n.Text.Length-2);
-        var len_str := n.Text.SubString(ind+1, n.Text.Length-ind-2);
-        if len_str='' then
-          self.ptr += 1 else
-          self.rep_c := StrToInt64(len_str);
-      end;
+      foreach var s in text.Split('*').Reverse index i do
+        if 'const' in s then
+          self.readonly_lvls += i;
+      
+      self.ptr := text.Count(ch->ch='*');
       
       if n['kind'] is string(var kind_s) then foreach var kind in kind_s.Split(',') do
       begin
@@ -201,7 +197,7 @@ type
             self.t := 'GLchar';
           end;
           
-          else if LogCache.kinds_unutilised.Add(kind) then
+          else if (kind in Kinds.described) and LogCache.kinds_unutilised.Add(kind) then
             log.WriteLine($'Kind [{kind}] was not utilised');
         end;
       end;
@@ -235,9 +231,12 @@ type
       bw.Write(name);
       bw.Write(t);
       bw.Write(rep_c);
-      bw.Write(readonly);
       bw.Write(ptr);
       bw.Write(static_arr_len);
+      
+      bw.Write(readonly_lvls.Count);
+      foreach var lvl in readonly_lvls do
+        bw.Write(lvl);
       
       var ind := gr=nil ? -1 : grs.IndexOf(gr);
       if (gr<>nil) and (ind=-1) then raise new MessageException($'ERROR: Group [{gr.name}] not found in saved list');

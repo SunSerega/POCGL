@@ -2405,16 +2405,16 @@
 	          | command_buffer    | command_queue    | image  | fill_color | origin      | region      | num_sync_points_in_wait_list | sync_point_wait_list | sync_point | mutable_handle         |
 
 # clCommandNDRangeKernelKHR[8]:
-	ErrorCode | cl_command_buffer | cl_command_queue | var UInt64 | cl_kernel | UInt32   | var UIntPtr        | var UIntPtr      | var UIntPtr     | UInt32                       | var UInt32           | var UInt32 | var cl_mutable_command |
-	ErrorCode | cl_command_buffer | cl_command_queue | var UInt64 | cl_kernel | UInt32   | var UIntPtr        | var UIntPtr      | var UIntPtr     | UInt32                       | var UInt32           | var UInt32 | IntPtr                 |
-	ErrorCode | cl_command_buffer | cl_command_queue | var UInt64 | cl_kernel | UInt32   | var UIntPtr        | var UIntPtr      | var UIntPtr     | UInt32                       | IntPtr               | var UInt32 | var cl_mutable_command |
-	ErrorCode | cl_command_buffer | cl_command_queue | var UInt64 | cl_kernel | UInt32   | var UIntPtr        | var UIntPtr      | var UIntPtr     | UInt32                       | IntPtr               | var UInt32 | IntPtr                 |
-	ErrorCode | cl_command_buffer | cl_command_queue | IntPtr     | cl_kernel | UInt32   | IntPtr             | IntPtr           | IntPtr          | UInt32                       | var UInt32           | var UInt32 | var cl_mutable_command |
-	ErrorCode | cl_command_buffer | cl_command_queue | IntPtr     | cl_kernel | UInt32   | IntPtr             | IntPtr           | IntPtr          | UInt32                       | var UInt32           | var UInt32 | IntPtr                 |
-	ErrorCode | cl_command_buffer | cl_command_queue | IntPtr     | cl_kernel | UInt32   | IntPtr             | IntPtr           | IntPtr          | UInt32                       | IntPtr               | var UInt32 | var cl_mutable_command |
-	ErrorCode | cl_command_buffer | cl_command_queue | IntPtr     | cl_kernel | UInt32   | IntPtr             | IntPtr           | IntPtr          | UInt32                       | IntPtr               | var UInt32 | IntPtr                 |
-	--------- | ----------------- | ---------------- | ---------- | --------- | -------- | ------------------ | ---------------- | --------------- | ---------------------------- | -------------------- | ---------- | ---------------------- |
-	          | command_buffer    | command_queue    | properties | kernel    | work_dim | global_work_offset | global_work_size | local_work_size | num_sync_points_in_wait_list | sync_point_wait_list | sync_point | mutable_handle         |
+	ErrorCode | cl_command_buffer | cl_command_queue | var NDRangeKernelCommandPropertiesKhr | cl_kernel | UInt32   | var UIntPtr        | var UIntPtr      | var UIntPtr     | UInt32                       | var UInt32           | var UInt32 | var cl_mutable_command |
+	ErrorCode | cl_command_buffer | cl_command_queue | var NDRangeKernelCommandPropertiesKhr | cl_kernel | UInt32   | var UIntPtr        | var UIntPtr      | var UIntPtr     | UInt32                       | var UInt32           | var UInt32 | IntPtr                 |
+	ErrorCode | cl_command_buffer | cl_command_queue | var NDRangeKernelCommandPropertiesKhr | cl_kernel | UInt32   | var UIntPtr        | var UIntPtr      | var UIntPtr     | UInt32                       | IntPtr               | var UInt32 | var cl_mutable_command |
+	ErrorCode | cl_command_buffer | cl_command_queue | var NDRangeKernelCommandPropertiesKhr | cl_kernel | UInt32   | var UIntPtr        | var UIntPtr      | var UIntPtr     | UInt32                       | IntPtr               | var UInt32 | IntPtr                 |
+	ErrorCode | cl_command_buffer | cl_command_queue | IntPtr                                | cl_kernel | UInt32   | IntPtr             | IntPtr           | IntPtr          | UInt32                       | var UInt32           | var UInt32 | var cl_mutable_command |
+	ErrorCode | cl_command_buffer | cl_command_queue | IntPtr                                | cl_kernel | UInt32   | IntPtr             | IntPtr           | IntPtr          | UInt32                       | var UInt32           | var UInt32 | IntPtr                 |
+	ErrorCode | cl_command_buffer | cl_command_queue | IntPtr                                | cl_kernel | UInt32   | IntPtr             | IntPtr           | IntPtr          | UInt32                       | IntPtr               | var UInt32 | var cl_mutable_command |
+	ErrorCode | cl_command_buffer | cl_command_queue | IntPtr                                | cl_kernel | UInt32   | IntPtr             | IntPtr           | IntPtr          | UInt32                       | IntPtr               | var UInt32 | IntPtr                 |
+	--------- | ----------------- | ---------------- | ------------------------------------- | --------- | -------- | ------------------ | ---------------- | --------------- | ---------------------------- | -------------------- | ---------- | ---------------------- |
+	          | command_buffer    | command_queue    | properties                            | kernel    | work_dim | global_work_offset | global_work_size | local_work_size | num_sync_points_in_wait_list | sync_point_wait_list | sync_point | mutable_handle         |
 
 # clGetCommandBufferInfoKHR[2]:
 	ErrorCode | cl_command_buffer | CommandBufferInfoKhr | UIntPtr          | IntPtr      | var UIntPtr          |
@@ -2475,5 +2475,18 @@
 	ErrorCode | cl_context | IntPtr                 | MemFlags | IntPtr                   | IntPtr                 | ImageRequirementsInfoExt | UIntPtr          | IntPtr      | IntPtr               |
 	--------- | ---------- | ---------------------- | -------- | ------------------------ | ---------------------- | ------------------------ | ---------------- | ----------- | -------------------- |
 	          | context    | properties             | flags    | image_format             | image_desc             | param_name               | param_value_size | param_value | param_value_size_ret |
+
+# clUpdateMutableCommandsKHR[3]:
+	ErrorCode | cl_command_buffer | array of cl_mutable_base_config_khr |
+	ErrorCode | cl_command_buffer | var cl_mutable_base_config_khr      |
+	ErrorCode | cl_command_buffer | IntPtr                              |
+	--------- | ----------------- | ----------------------------------- |
+	          | command_buffer    | mutable_config                      |
+
+# clGetMutableCommandInfoKHR[2]:
+	ErrorCode | cl_mutable_command | MutableCommandInfoKhr | UIntPtr          | IntPtr      | var UIntPtr          |
+	ErrorCode | cl_mutable_command | MutableCommandInfoKhr | UIntPtr          | IntPtr      | IntPtr               |
+	--------- | ------------------ | --------------------- | ---------------- | ----------- | -------------------- |
+	          | command            | param_name            | param_value_size | param_value | param_value_size_ret |
 
 

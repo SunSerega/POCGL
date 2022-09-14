@@ -550,12 +550,16 @@ type
       self.t := br.ReadString;
       self.rep_c := br.ReadInt64;
       
-      if br.ReadBoolean then raise new System.NotSupportedException; // readonly
-      
       self.ptr := br.ReadInt32;
       
       // static_arr_len
       if br.ReadInt32 <> -1 then raise new System.NotSupportedException;
+      
+      //TODO More uses? (only for sanity checks rn)
+      var readonly_lvls := ArrGen(br.ReadInt32, i->br.ReadInt32);
+      if 0 in readonly_lvls then
+        // Unassignable field
+        raise new System.NotSupportedException;
       
       var gr_ind := br.ReadInt32;
       self.gr := if gr_ind=-1 then nil else Group.All[gr_ind];
@@ -584,6 +588,8 @@ type
     public function MakeDef: string;
     begin
       var res := new StringBuilder;
+      if name in pas_keywords then
+        res += '&';
       res += name;
       res += ': ';
       res.Append('^',ptr);
@@ -751,7 +757,15 @@ type
       wr += ');'#10;
       wr += '    begin'#10;
       foreach var fld in constr_flds do
-        wr += $'      self.{fld.name} := {fld.name};'+#10;
+      begin
+        wr += '      self.';
+        wr += fld.name;
+        wr += ' := ';
+        if fld.name in pas_keywords then
+          wr += '&';
+        wr += fld.name;
+        wr += ';'#10;
+      end;
       wr += '    end;'#10;
       wr += '    '#10;
       
@@ -760,15 +774,21 @@ type
     end;
     public static procedure WriteAll(wr: Writer);
     begin
-      var sorted := new List<Struct>;
-      foreach var s in All.OrderBy(s->s.name) do
+      var left := All.ToHashSet;
+      
+      var WriteWithDep: procedure(s: Struct); WriteWithDep := s->
       begin
-        var ind := sorted.FindIndex(ps->ps.flds.Any(fld->fld.t=s.name));
-        if ind=-1 then
-          sorted += s else
-          sorted.Insert(ind, s);
+        if s not in left then exit;
+        foreach var fld in s.flds do
+          if ByName(fld.t) is Struct(var dep) then
+            WriteWithDep(dep);
+        left.Remove(s);
+        s.Write(wr);
       end;
-      foreach var s in sorted do s.Write(wr);
+      
+      while left.Any do
+        WriteWithDep( left.MinBy(s->s.name) );
+      
     end;
     
   end;
@@ -799,9 +819,9 @@ type
   
   FuncOrgParam = sealed class
     public name, t: string;
-    public readonly: boolean;
     public ptr: integer;
     public static_arr_len := -1; //TODO Нигде не использовано
+    public readonly_lvls := new List<integer>; //TODO Использовать в маршлинге на полную
     public gr := default(Group);
     public gr_suffix := default(string);
     
@@ -831,11 +851,13 @@ type
         rep_c := 1;
       end;
       
-      self.readonly := br.ReadBoolean;
-      
       self.ptr := br.ReadInt32;
       
       self.static_arr_len := br.ReadInt32;
+      
+      self.readonly_lvls.Capacity := br.ReadInt32;
+      loop readonly_lvls.Capacity do
+        readonly_lvls += br.ReadInt32;
       
       var gr_ind := br.ReadInt32;
       self.gr := gr_ind=-1 ? nil : Group.All[gr_ind];
@@ -858,16 +880,16 @@ type
         self.t := TypeTable.Convert(self.t, base_t);
         if gr<>nil then self.gr_suffix := gr.SuffixForType(self.t);
         
-        self.ptr += self.t.Count(ch->ch='*') - self.t.Count(ch->ch='-');
-        self.t := self.t.Remove('*','-').Trim;
+        foreach var s in self.t.Split('*').Reverse index i do
+          if 'const' in s then
+            self.readonly_lvls += self.ptr+i;
+        
+        self.ptr += self.t.Count(ch->ch='*');
+        self.ptr -= self.t.Count(ch->ch='-');
+        self.t := self.t.Remove('*','-','const').Trim;
+        
         if self.ptr<0 then
           raise new MessageException($'ERROR: par [{name}] with type [{self.t}] got negative ref count: [{self.ptr}]');
-        
-        if self.t.StartsWith('const ') then
-        begin
-          self.readonly := true;
-          self.t := self.t.Remove(0, 'const '.Length);
-        end;
         
       end;
       
@@ -968,17 +990,17 @@ type
     
   end;
   
-  FuncParamMarshaler = sealed class public
-    par: FuncParamT;
+  FuncParamMarshaler = sealed class
+    public par: FuncParamT;
     
     /// Changes to name of var with marshaled value
-    par_str := default(string);
+    public par_str := default(string);
     /// 'abc('#0')' will call abc() func on result
-    res_par_conv := default(string);
+    public res_par_conv := default(string);
     
-    vars := new List<(string, string)>;
-    init := new StringBuilder;
-    fnls := new StringBuilder;
+    public vars := new List<(string, string)>;
+    public init := new StringBuilder;
+    public fnls := new StringBuilder;
     
     public constructor(par: FuncParamT; par_str: string);
     begin
@@ -1175,7 +1197,7 @@ type
           
           var need_var := ptr<>0;
           var need_arr := need_var and (t<>'boolean');
-          var need_plain := if is_string then par.readonly or (ptr<>0) else true;
+          var need_plain := if is_string then (par.ptr in par.readonly_lvls) or (ptr<>0) else true;
           var need_str_ptr := (par_i<>0) and is_string;
           var skip_last_arr := need_arr and ( (ptr>1) or is_string );
           var cap := ptr*ord(need_arr) + ord(need_var) + Ord(need_plain) + ord(need_str_ptr) - ord(skip_last_arr);
@@ -1228,10 +1250,12 @@ type
       
       for var par_i := 1 to possible_par_types.Length-1 do
       begin
-        var need_keep := org_par[par_i].readonly;
+        var ppt := possible_par_types[par_i];
+        if ppt[0].arr_lvl<>1 then continue;
+        var need_keep := ppt[0].arr_lvl in org_par[par_i].readonly_lvls;
         var need_rem := fix_pars[par_i] or (fix_all_pars and not need_keep);
         if need_keep and need_rem then raise new System.NotImplementedException(name);
-        if need_rem then possible_par_types[par_i].RemoveAll(par->par.arr_lvl=1);
+        if need_rem then ppt.RemoveAll(par->par.arr_lvl=1);
       end;
       
     end;
@@ -1650,7 +1674,7 @@ type
                 fnls += ' := Marshal.PtrToStringAnsi(';
                 fnls += str_ptr_name;
                 fnls += ');';
-                if not org_par[par_i].readonly then
+                if org_par[par_i].ptr not in org_par[par_i].readonly_lvls then
                 begin
                   fnls += #10;
                   fnls += 'Marshal.FreeHGlobal(';
@@ -3108,24 +3132,27 @@ type
       foreach var l in data do
       begin
         if string.IsNullOrWhiteSpace(l) then continue;
+        
         var par := new FuncOrgParam;
-        var ls := l.Split(|'|'|,2);
         
-        par.ptr := ls[0].CountOf('*');
-        var ts := ls[0].ToWords('* ');
-        if pars.Count=0 then ts := ts+|name|;
-        if ts.Length<>2 then raise new System.FormatException;
+        var text := l.Trim;
+        if pars.Count=0 then
+          par.name := name else
+        begin
+          var ind := text.LastIndexOfAny(|' ',#9|);
+          if ind=-1 then raise new System.FormatException($'[{name}]: [{text}]');
+          par.name := text.SubString(ind+1);
+          text := text.Remove(ind).TrimEnd;
+        end;
         
-        (par.t,par.name) := ts.Select(s->s.Trim);
+        par.ptr := text.CountOf('*');
+        
+        foreach var s in text.Split('*').Reverse index i do
+          if 'const' in s then
+            par.readonly_lvls += i;
+        par.t := text.Remove('*','const').Trim;
+        
         if (pars.Count=0) and (par.t='void') and (par.ptr=0) then par.t := nil;
-        
-        if ls.Length=2 then foreach var attr in ls[1].ToWords do
-          case attr.ToLower of
-            
-            'readonly': par.readonly := true;
-            
-            else raise new System.InvalidOperationException(attr);
-          end;
         
         pars += par;
       end;
@@ -3153,10 +3180,10 @@ type
       f.org_par := pars.ToArray;
       
       f.org_par[0] := new FuncOrgParam;
-      f.org_par[0].name     := api+self.name;
-      f.org_par[0].t        := pars[0].t;
-      f.org_par[0].ptr      := pars[0].ptr;
-      f.org_par[0].readonly := pars[0].readonly;
+      f.org_par[0].name           := api+self.name;
+      f.org_par[0].t              := pars[0].t;
+      f.org_par[0].ptr            := pars[0].ptr;
+      f.org_par[0].readonly_lvls  := pars[0].readonly_lvls;
       f.BasicInit;
       
       Func.fixed_names += f.name;

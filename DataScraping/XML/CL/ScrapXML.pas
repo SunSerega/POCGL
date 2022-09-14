@@ -277,7 +277,7 @@ type
   ParData = sealed class
     private name, t: string;
     private rep_c: int64 := 1;
-    private readonly: boolean;
+    private readonly_lvls := new List<integer>; // "const int * * const * v": Levels 1 and 3 are readonly
     private ptr: integer;
     private gr: Group := nil;
     private base_t: (string, integer);
@@ -315,7 +315,9 @@ type
           self.ptr += 1;
       end;
       
-      self.readonly := text.Contains('const');
+      foreach var s in text.Split('*').Reverse index i do
+        if 'const' in s then
+          self.readonly_lvls += i;
       
       if (self.t<>'CL_CALLBACK') and not Group.All.TryGetValue(self.t, self.gr) then
       begin
@@ -335,9 +337,12 @@ type
       bw.Write(name);
       bw.Write(t);
       bw.Write(rep_c);
-      bw.Write(readonly);
       bw.Write(ptr);
       bw.Write(-1); // static_arr_len - in OpenGL controled by n['len'], no analogy in OpenCL
+      
+      bw.Write(readonly_lvls.Count);
+      foreach var lvl in readonly_lvls do
+        bw.Write(lvl);
       
       var ind := gr=nil ? -1 : grs.IndexOf(gr);
       if (gr<>nil) and (ind=-1) then raise new MessageException($'ERROR: Group [{gr.name}] not found in saved list');

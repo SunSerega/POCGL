@@ -200,6 +200,10 @@
 # clImageRequirementsInfoEXT (cl_ext_image_requirements_info)
 	clGetImageRequirementsInfoEXT
 
+# clCommandBufferMutableDispatchKHR (cl_khr_command_buffer_mutable_dispatch)
+	clUpdateMutableCommandsKHR
+	clGetMutableCommandInfoKHR
+
 
 
 

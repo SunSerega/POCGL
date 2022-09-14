@@ -9540,21 +9540,21 @@
     external 'opencl' name 'clCommandNDRangeKernelKHR';
     private static function z_CommandNDRangeKernelKHR_4(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
     external 'opencl' name 'clCommandNDRangeKernelKHR';
-    private static function z_CommandNDRangeKernelKHR_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    private static function z_CommandNDRangeKernelKHR_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
     external 'opencl' name 'clCommandNDRangeKernelKHR';
-    private static function z_CommandNDRangeKernelKHR_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    private static function z_CommandNDRangeKernelKHR_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
     external 'opencl' name 'clCommandNDRangeKernelKHR';
-    private static function z_CommandNDRangeKernelKHR_7(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
+    private static function z_CommandNDRangeKernelKHR_7(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode;
     external 'opencl' name 'clCommandNDRangeKernelKHR';
-    private static function z_CommandNDRangeKernelKHR_8(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
+    private static function z_CommandNDRangeKernelKHR_8(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode;
     external 'opencl' name 'clCommandNDRangeKernelKHR';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
     z_CommandNDRangeKernelKHR_8(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
     z_CommandNDRangeKernelKHR_7(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
     z_CommandNDRangeKernelKHR_6(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: UInt64; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; var properties: NDRangeKernelCommandPropertiesKhr; kernel: cl_kernel; work_dim: UInt32; var global_work_offset: UIntPtr; var global_work_size: UIntPtr; var local_work_size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): ErrorCode :=
     z_CommandNDRangeKernelKHR_5(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): ErrorCode :=
     z_CommandNDRangeKernelKHR_4(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
@@ -9888,6 +9888,38 @@
     z_GetImageRequirementsInfoEXT_2(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: MemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: ImageRequirementsInfoExt; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetImageRequirementsInfoEXT_1(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    
+  end;
+  
+  [PCUNotRestore]
+  [System.Security.SuppressUnmanagedCodeSecurity]
+  clCommandBufferMutableDispatchKHR = static class
+    public const _ExtStr = 'cl_khr_command_buffer_mutable_dispatch';
+    
+    private static function z_UpdateMutableCommandsKHR_1(command_buffer: cl_command_buffer; mutable_config: IntPtr): ErrorCode;
+    external 'opencl' name 'clUpdateMutableCommandsKHR';
+    private static function z_UpdateMutableCommandsKHR_2(command_buffer: cl_command_buffer; var mutable_config: cl_mutable_base_config_khr): ErrorCode;
+    external 'opencl' name 'clUpdateMutableCommandsKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; mutable_config: array of cl_mutable_base_config_khr): ErrorCode;
+    type Pcl_mutable_base_config_khr=^cl_mutable_base_config_khr;
+    begin
+      Result := if (mutable_config<>nil) and (mutable_config.Length<>0) then
+        z_UpdateMutableCommandsKHR_2(command_buffer, mutable_config[0]) else
+        z_UpdateMutableCommandsKHR_2(command_buffer, Pcl_mutable_base_config_khr(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; var mutable_config: cl_mutable_base_config_khr): ErrorCode :=
+    z_UpdateMutableCommandsKHR_2(command_buffer, mutable_config);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; mutable_config: IntPtr): ErrorCode :=
+    z_UpdateMutableCommandsKHR_1(command_buffer, mutable_config);
+    
+    private static function z_GetMutableCommandInfoKHR_1(command: cl_mutable_command; param_name: MutableCommandInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode;
+    external 'opencl' name 'clGetMutableCommandInfoKHR';
+    private static function z_GetMutableCommandInfoKHR_2(command: cl_mutable_command; param_name: MutableCommandInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
+    external 'opencl' name 'clGetMutableCommandInfoKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR(command: cl_mutable_command; param_name: MutableCommandInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode :=
+    z_GetMutableCommandInfoKHR_2(command, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR(command: cl_mutable_command; param_name: MutableCommandInfoKhr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
+    z_GetMutableCommandInfoKHR_1(command, param_name, param_value_size, param_value, param_value_size_ret);
     
   end;
   

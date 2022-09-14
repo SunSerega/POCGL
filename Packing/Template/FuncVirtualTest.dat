@@ -8,11 +8,11 @@ void
 # 2InpString[%RO:,ReadOnly%]
 !add
 void
-ntv_char* s | {%RO%}
+ntv_char {%RO?:const%} * s
 
 # 3ResString[%RO:,ReadOnly%]
 !add
-ntv_char* | {%RO%}
+ntv_char {%RO?:const%} *
 
 # 4Arrrrrray
 !add
@@ -34,9 +34,9 @@ T* a
 
 # 7Mix
 !add
-ntv_char*
-ntv_char*	s1
-ntv_char*	s2	| ReadOnly
+ntv_char *
+ntv_char *	s1
+ntv_char const *	s2
 T1*			gen
 T2****		a
 
