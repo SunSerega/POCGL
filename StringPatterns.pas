@@ -84,7 +84,7 @@ type
     
     public property Length: CharsCount read; abstract;
     
-    public function TryApply(text: StringSection): sequence of StringSection; abstract;
+    public function TryApply(text: StringSection; c_min, c_max: integer): sequence of StringSection; abstract;
     
     public function EnmrSymbols: sequence of StringPatternSymJump; abstract;
     
@@ -112,8 +112,8 @@ type
     
     public property Length: CharsCount read new CharsCount(val.Length); override;
     
-    public function TryApply(text: StringSection): sequence of StringSection; override :=
-    if text.StartsWith(val) then
+    public function TryApply(text: StringSection; c_min, c_max: integer): sequence of StringSection; override :=
+    if val.Length.InRange(c_min, c_max) and text.StartsWith(val) then
       |text.TakeFirst(val.Length)| else
       System.Array.Empty&<StringSection>;
     
@@ -224,28 +224,24 @@ type
     
     public property Length: CharsCount read count; override;
     
-    public function TryApply(text: StringSection): sequence of StringSection; override;
+    public function TryApply(text: StringSection; c_min, c_max: integer): sequence of StringSection; override;
     begin
-      //TODO Comment out
-      var ResultL := new List<StringSection>;
-      Result := ResultL;
       
-      var try_c := text.Length;
-      if not count.max.IsInvalid then
-        try_c := try_c.ClampTop(count.max);
-      try_c -= count.min;
+      if text.Length>c_max then
+        text := text.TakeFirst(c_max);
+      if not self.count.max.IsInvalid and (text.Length>count.max) then
+        text := text.TakeFirst(count.max);
+      text := text.TakeFirstWhile(allowed.Contains);
       
-      var res := text.TakeFirst(integer(count.min));
-      if not res.All(allowed.Contains) then exit;
-//      yield res;
-      ResultL += res;
+      if c_min<self.count.min then
+        c_min := count.min;
       
-      loop try_c do
+      var res := text.TakeFirst(c_min);
+      while true do
       begin
-        if res.Next not in allowed then exit;
+        yield res;
+        if res.I2=text.I2 then break;
         res.range.i2 += 1;
-//        yield res;
-        ResultL += res;
       end;
       
     end;
@@ -425,26 +421,12 @@ begin
     
     if enmrs[part_i]=nil then
     begin
-      var seq := parts[part_i].TryApply(leftover);
-      
-      var left_len := leftover.Length;
       var caps := len_caps[part_i];
-      
-      if not caps.max.IsInvalid then
-      begin
-        //TODO #????: implicit conv to StringIndex doesn't happen
-        var c1 := StringIndex(left_len)-caps.max;
-        seq := seq.SkipWhile(s->s.Length<c1);
-      end;
-      
-      begin
-        var c2 := left_len-caps.min;
-        seq := seq.TakeWhile(s->s.Length<=c2);
-      end;
-      
-//      seq := seq.ToArray;
-      
-      enmrs[part_i] := seq.GetEnumerator;
+      var left_len := leftover.Length;
+      enmrs[part_i] := parts[part_i].TryApply(leftover,
+        if caps.max.IsInvalid then 0 else (left_len-integer(caps.max)).ClampBottom(0),
+        left_len-caps.min
+      ).ToArray.AsEnumerable.GetEnumerator;
     end;
     
     if not enmrs[part_i].MoveNext then
