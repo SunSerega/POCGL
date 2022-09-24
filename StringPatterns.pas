@@ -94,7 +94,14 @@ type
     private const wild_end = ']';
     private const count_chs_sep = '*';
     private const range_sep = '..';
+    
     private static escapable_chs := (wild_beg+wild_end+count_chs_sep+range_sep+'\').ToHashSet;
+    protected static procedure AddEscaped(res: StringBuilder; ch: char);
+    begin
+      if ch in escapable_chs then
+        res += '\';
+      res += ch;
+    end;
     
   end;
   StringPatternPartSolid = sealed class(StringPatternPart)
@@ -114,12 +121,7 @@ type
     val.Select(ch->new StringPatternSymJump(1,1, ch));
     
     public procedure ToString(res: StringBuilder); override :=
-    foreach var ch in val do
-    begin
-      if ch in escapable_chs then
-        res += '\';
-      res += ch;
-    end;
+    foreach var ch in val do AddEscaped(res, ch);
     
   end;
   StringPatternPartWild = sealed class(StringPatternPart)
@@ -251,6 +253,19 @@ type
     public function EnmrSymbols: sequence of StringPatternSymJump; override :=
     |new StringPatternSymJump(count, allowed.Order.JoinToString)|;
     
+    private static function AreCharsCombineable(ch1, ch2: char): boolean;
+    begin
+      Result := false;
+      if ch2.Code-ch1.Code <> 1 then exit;
+      if ch1.IsDigit then
+        Result := ch2.IsDigit else
+      if ch1.IsLetter then
+      begin
+        if not ch2.IsLetter then exit;
+        Result := ch1.IsUpper=ch2.IsUpper;
+      end;
+    end;
+    
     public procedure ToString(res: StringBuilder); override;
     begin
       res += wild_beg;
@@ -270,45 +285,25 @@ type
       var enmr := allowed.Order.GetEnumerator;
       if enmr.MoveNext then
       begin
-        var AddCh := procedure(ch: char)->
-        begin
-          if ch in escapable_chs then
-            res += '\';
-          res += ch;
-        end;
-        
-        var Combineable := function(ch1, ch2: char): boolean ->
-        begin
-          Result := false;
-          if ch2.Code-ch1.Code <> 1 then exit;
-          if ch1.IsDigit then
-            Result := ch2.IsDigit else
-          if ch1.IsLetter then
-          begin
-            if not ch2.IsLetter then exit;
-            Result := ch1.IsUpper=ch2.IsUpper;
-          end;
-        end;
-        
         var ch1 := enmr.Current;
         var ch2 := ch1;
         
         var FlushPrev := procedure->
         begin
-          AddCh(ch1);
+          AddEscaped(res, ch1);
           if ch1<>ch2 then
           begin
             if ch2.Code-ch1.Code <> 1 then
               //TODO #????: Need "StringPatternPart."
               res += StringPatternPart.range_sep;
-            AddCh(ch2);
+            AddEscaped(res, ch2);
           end;
         end;
         
         while enmr.MoveNext do
         begin
           var ch := enmr.Current;
-          if Combineable(ch2, ch) then
+          if AreCharsCombineable(ch2, ch) then
             ch2 := ch else
           begin
             FlushPrev;
