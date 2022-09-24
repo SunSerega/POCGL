@@ -146,10 +146,12 @@ type
       text[self.i1+ind] := value;
     end; default;
     
-    public function Prev(low_bound_incl: StringIndex): char? := self.I1>low_bound_incl ? text[I1-1] : nil;
+    public function Prev := text[I1-1];
+    public function Prev(low_bound_incl: StringIndex): char? := self.I1>low_bound_incl ? Prev : nil;
     public function Prev(bounds: StringSection) := Prev(bounds.I1);
     
-    public function Next(upr_bound_n_in: StringIndex): char? := self.I2<upr_bound_n_in ? text[I2] : nil;
+    public function Next := text[I2];
+    public function Next(upr_bound_n_in: StringIndex): char? := self.I2<upr_bound_n_in ? Next : nil;
     public function Next(bounds: StringSection) := Next(bounds.I2);
     
     public function PrevWhile(low_bound_incl: StringIndex; ch_validator: char->boolean; min_expand: StringIndex): StringSection;
