@@ -32,33 +32,47 @@ type
   CharsMinT = cardinal;
   CharsMaxT = StringIndex;
   
+  CharsCount = record
+    min: CharsMinT;
+    max: CharsMaxT;
+    
+    property IsSimple: boolean read min=max;
+    
+    constructor(min: CharsMinT; max: CharsMaxT);
+    begin
+      self.min := min;
+      self.max := max;
+    end;
+    constructor(c: integer) := Create(c, c);
+    constructor := exit;
+    
+    static function CombineInline(c1, c2: CharsCount): CharsCount;
+    begin
+      Result.min := c1.min+c2.min;
+      Result.max := if c1.max.IsInvalid or c2.max.IsInvalid then
+        CharsMaxT.Invalid else c1.max + c2.max;
+    end;
+    
+    static function CombineParallel(c1, c2: CharsCount): CharsCount;
+    begin
+      Result.min := PABCSystem.Min(c1.min,c2.min);
+      Result.max := if c1.max.IsInvalid or c2.max.IsInvalid then
+        CharsMaxT.Invalid else PABCSystem.Max(integer(c1.max), integer(c2.max));
+    end;
+    
+  end;
+  
   StringPatternSymJump = record
-    c_min := CharsMinT(0);
-    c_max := CharsMaxT(0);
+    count: CharsCount;
     valid := '';
     
-    constructor(c_min: CharsMinT; c_max: CharsMaxT; valid: string);
+    constructor(count: CharsCount; valid: string);
     begin
-      self.c_min := c_min;
-      self.c_max := c_max;
+      self.count := count;
       self.valid := valid;
     end;
-    
-    static function CombineInline(j1, j2: StringPatternSymJump; valid: string): StringPatternSymJump;
-    begin
-      Result.c_min := j1.c_min+j2.c_min;
-      Result.c_max := if j1.c_max.IsInvalid or j2.c_max.IsInvalid then
-        CharsMaxT.Invalid else j1.c_max + j2.c_max;
-      Result.valid := valid;
-    end;
-    
-    static function CombineParallel(j1, j2: StringPatternSymJump; valid: string): StringPatternSymJump;
-    begin
-      Result.c_min := Min(j1.c_min,j2.c_min);
-      Result.c_max := if j1.c_max.IsInvalid or j2.c_max.IsInvalid then
-        CharsMaxT.Invalid else Max(integer(j1.c_max), integer(j2.c_max));
-      Result.valid := valid;
-    end;
+    constructor(c_min: CharsMinT; c_max: CharsMaxT; valid: string) :=
+    Create(new CharsCount(c_min,c_max), valid);
     
   end;
   
@@ -68,8 +82,7 @@ type
   
   StringPatternPart = abstract class
     
-    public property CharsMin: CharsMinT read; abstract;
-    public property CharsMax: CharsMaxT read; abstract;
+    public property Length: CharsCount read; abstract;
     
     public function TryApply(text: StringSection): sequence of StringSection; abstract;
     
@@ -90,8 +103,7 @@ type
     public constructor(val: string) := self.val := val;
     private constructor := raise new System.InvalidOperationException;
     
-    public property CharsMin: CharsMinT read val.Length; override;
-    public property CharsMax: CharsMaxT read val.Length; override;
+    public property Length: CharsCount read new CharsCount(val.Length); override;
     
     public function TryApply(text: StringSection): sequence of StringSection; override :=
     if text.StartsWith(val) then
@@ -111,16 +123,14 @@ type
     
   end;
   StringPatternPartWild = sealed class(StringPatternPart)
-    private c_min: CharsMinT;
-    private c_max: CharsMaxT;
+    private count: CharsCount;
     private allowed: HashSet<char>;
     
     {$region constructor's}
     
-    public constructor(c_min: CharsMinT; c_max: CharsMaxT; allowed: HashSet<char>);
+    public constructor(count: CharsCount; allowed: HashSet<char>);
     begin
-      self.c_min := c_min;
-      self.c_max := c_max;
+      self.count := count;
       self.allowed := allowed;
     end;
     private constructor := raise new System.InvalidOperationException;
@@ -134,6 +144,13 @@ type
         c := s.ToString.ToInteger else
         exit;
       Result := true;
+    end;
+    private static function TryParseCountFrom(s: StringSection; var c: CharsMinT): boolean;
+    begin
+      var nc: StringIndex;
+      Result := TryParseCountFrom(s, nc);
+      if not Result then exit;
+      c := if nc.IsInvalid then 0 else nc;
     end;
     
     public static function TryParse(read_head: StringSection): System.ValueTuple<StringSection,StringPatternPartWild>;
@@ -153,21 +170,19 @@ type
         if count_chs_sep_s.IsInvalid then continue;
         var count_s := body.WithI2(count_chs_sep_s.I1);
         
-        var c1 := CharsMinT(0);
-        var c2 := CharsMaxT.Invalid;
+        var count := new CharsCount(0, CharsMaxT.Invalid);
         if count_s.Length<>0 then
         begin
           var count_sep_s := count_s.SubSectionOfFirst(range_sep);
           
           if count_sep_s.IsInvalid then
           begin
-            if not TryParseCountFrom(count_s, c2) then continue;
-            c1 := if c2.IsInvalid then 0 else c2;
+            if not TryParseCountFrom(count_s, count.max) then continue;
+            count.min := if count.max.IsInvalid then 0 else count.max;
           end else
           begin
-            if not TryParseCountFrom(count_s.WithI2(count_sep_s.I1), c2) then continue;
-            c1 := if c2.IsInvalid then 0 else c2;
-            if not TryParseCountFrom(count_s.WithI1(count_sep_s.I2), c2) then continue;
+            if not TryParseCountFrom(count_s.WithI2(count_sep_s.I1), count.min) then continue;
+            if not TryParseCountFrom(count_s.WithI1(count_sep_s.I2), count.max) then continue;
           end;
           
         end;
@@ -193,7 +208,7 @@ type
         end;
         
         Result.Item1 := wild_beg_s.WithI2(wild_end_s.I2);
-        Result.Item2 := new StringPatternPartWild(c1,c2, allowed);
+        Result.Item2 := new StringPatternPartWild(count, allowed);
         
         if allowed.Count=0 then
           raise new System.InvalidOperationException($'Pattern {Result.Item1} had 0 allowed chars');
@@ -205,8 +220,7 @@ type
     
     {$endregion constructor's}
     
-    public property CharsMin: CharsMinT read c_min; override;
-    public property CharsMax: CharsMaxT read c_max; override;
+    public property Length: CharsCount read count; override;
     
     public function TryApply(text: StringSection): sequence of StringSection; override;
     begin
@@ -215,11 +229,11 @@ type
       Result := ResultL;
       
       var try_c := text.Length;
-      if not c_max.IsInvalid then
-        try_c := try_c.ClampTop(c_max);
-      try_c -= c_min;
+      if not count.max.IsInvalid then
+        try_c := try_c.ClampTop(count.max);
+      try_c -= count.min;
       
-      var res := text.TakeFirst(integer(c_min));
+      var res := text.TakeFirst(integer(count.min));
       if not res.All(allowed.Contains) then exit;
 //      yield res;
       ResultL += res;
@@ -235,14 +249,14 @@ type
     end;
     
     public function EnmrSymbols: sequence of StringPatternSymJump; override :=
-    |new StringPatternSymJump(c_min,c_max, allowed.Order.JoinToString)|;
+    |new StringPatternSymJump(count, allowed.Order.JoinToString)|;
     
     public procedure ToString(res: StringBuilder); override;
     begin
       res += wild_beg;
       
-      var c_min_s := if c_min=0 then '' else c_min.ToString;
-      var c_max_s := if c_max.IsInvalid then '' else c_max.ToString;
+      var c_min_s := if count.min=0 then '' else count.min.ToString;
+      var c_max_s := if count.max.IsInvalid then '' else count.max.ToString;
       
       res += c_min_s;
       if c_max_s<>c_min_s then
@@ -346,33 +360,18 @@ end;
 type
   StringPattern = sealed partial class
     private parts: array of StringPatternPart;
-    private len_caps: array of record
-      min: CharsMinT;
-      max: CharsMaxT;
-    end;
+    private len_caps: array of CharsCount;
     
     private constructor(parts: array of StringPatternPart);
     begin
       self.parts := parts;
       SetLength(len_caps, parts.Count);
       
-      var min := CharsMinT(0);
-      var max := CharsMaxT(0);
+      var cap := new CharsCount(0);
       for var i := parts.Count-1 to 0 step -1 do
       begin
-        
-        len_caps[i].min := min;
-        min += parts[i].CharsMin;
-        
-        len_caps[i].max := max;
-        if not max.IsInvalid then
-        begin
-          var curr_max := parts[i].CharsMax;
-          if curr_max.IsInvalid then
-            max := curr_max else
-            max += curr_max;
-        end;
-        
+        len_caps[i] := cap;
+        cap := CharsCount.CombineInline(cap, parts[i].Length);
       end;
       
     end;
@@ -396,13 +395,7 @@ begin
       yield last;
       last := curr;
     end else
-    begin
-      last.c_min += curr.c_min;
-      last.c_max :=
-        if last.c_max.IsInvalid or curr.c_max.IsInvalid then
-          CharsMaxT.Invalid else
-          last.c_max + curr.c_max;
-    end;
+      last.count := CharsCount.CombineInline(last.count, curr.count);
   end;
   
   yield last;
@@ -698,9 +691,11 @@ begin
       var syms_x_r := syms_x.Take(ex).Skip(x);
       var syms_y_r := syms_y.Take(ey).Skip(y);
       
-      jumps += StringPatternSymJump.CombineParallel(
-        syms_x_r.DefaultIfEmpty.Aggregate((j1,j2)->StringPatternSymJump.CombineInline(j1,j2,nil)),
-        syms_y_r.DefaultIfEmpty.Aggregate((j1,j2)->StringPatternSymJump.CombineInline(j1,j2,nil)),
+      jumps += new StringPatternSymJump(
+        CharsCount.CombineParallel(
+          syms_x_r.Select(sym->sym.count).DefaultIfEmpty.Aggregate((c1,c2)->CharsCount.CombineInline(c1,c2)),
+          syms_y_r.Select(sym->sym.count).DefaultIfEmpty.Aggregate((c1,c2)->CharsCount.CombineInline(c1,c2))
+        ),
         (syms_x_r.SelectMany(j->j.valid)+syms_y_r.SelectMany(j->j.valid)).ToHashSet.Order.JoinToString
       );
       
@@ -733,7 +728,10 @@ begin
           {$ifdef DEBUG}
           if sym_x.valid<>sym_y.valid then raise new System.InvalidOperationException;
           {$endif DEBUG}
-          jumps += StringPatternSymJump.CombineParallel(sym_x, sym_y, sym_x.valid);
+          jumps += new StringPatternSymJump(
+            CharsCount.CombineParallel(sym_x.count, sym_y.count),
+            sym_x.valid
+          );
         end;
         
       end;
@@ -751,15 +749,15 @@ begin
   var last_solid := new StringBuilder;
   
   foreach var jump in jumps do
-    if (jump.valid.Length=1) and (jump.c_min=jump.c_max) then
-      last_solid.Append(jump.valid.Single, jump.c_min) else
+    if (jump.valid.Length=1) and (jump.count.IsSimple) then
+      last_solid.Append(jump.valid.Single, jump.count.min) else
     begin
       if last_solid.Length<>0 then
       begin
         parts.Add(new StringPatternPartSolid(last_solid.ToString));
         last_solid.Clear;
       end;
-      parts.Add(new StringPatternPartWild(jump.c_min, jump.c_max, jump.valid.ToHashSet));
+      parts.Add(new StringPatternPartWild(jump.count, jump.valid.ToHashSet));
     end;
   if last_solid.Length<>0 then
     parts.Add(new StringPatternPartSolid(last_solid.ToString));
