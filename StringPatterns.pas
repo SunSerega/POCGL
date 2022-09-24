@@ -4,6 +4,7 @@
 interface
 
 uses Parsing;
+uses ColoredStrings;
 
 type
   StringPattern = sealed partial class
@@ -19,8 +20,19 @@ type
     
     public static function operator*(p1, p2: StringPattern): StringPattern;
     
+    private procedure WriteTo(b: ColoredStringBuilderBase<string>);
+    public function ToColoredString: ColoredString<string>;
+    begin
+      var b := new ColoredStringBuilder<string>('root');
+      WriteTo(b);
+      Result := b.Finish;
+    end;
     public function ToString: string; override;
-    public function ToStringParts: array of System.ValueTuple<boolean, string>;
+    begin
+      var b := new UnColoredStringBuilder<string>;
+      WriteTo(b);
+      Result := b.Finish;
+    end;
     
   end;
   
@@ -88,7 +100,7 @@ type
     
     public function EnmrSymbols: sequence of StringPatternSymJump; abstract;
     
-    public procedure ToString(res: StringBuilder); abstract;
+    public procedure WriteTo(b: ColoredStringBuilderBase<string>); abstract;
     
     private const wild_beg = '@[';
     private const wild_end = ']';
@@ -96,11 +108,11 @@ type
     private const range_sep = '..';
     
     private static escapable_chs := (wild_beg+wild_end+count_chs_sep+range_sep+'\').ToHashSet;
-    protected static procedure AddEscaped(res: StringBuilder; ch: char);
+    protected static procedure AddEscaped(b: ColoredStringBuilderBase<string>; ch: char);
     begin
       if ch in escapable_chs then
-        res += '\';
-      res += ch;
+        b += '\';
+      b += ch;
     end;
     
   end;
@@ -120,8 +132,10 @@ type
     public function EnmrSymbols: sequence of StringPatternSymJump; override :=
     val.Select(ch->new StringPatternSymJump(1,1, ch));
     
-    public procedure ToString(res: StringBuilder); override :=
-    foreach var ch in val do AddEscaped(res, ch);
+    public procedure WriteTo(b: ColoredStringBuilderBase<string>); override :=
+    b.AddSubRange('solid', b->
+      foreach var ch in self.val do AddEscaped(b, ch)
+    );
     
   end;
   StringPatternPartWild = sealed class(StringPatternPart)
@@ -262,39 +276,46 @@ type
       end;
     end;
     
-    public procedure ToString(res: StringBuilder); override;
+    public procedure WriteTo(b: ColoredStringBuilderBase<string>); override :=
+    b.AddSubRange('wild', b->
     begin
-      res += wild_beg;
+      b += wild_beg;
       
-      var c_min_s := if count.min=0 then '' else count.min.ToString;
-      var c_max_s := if count.max.IsInvalid then '' else count.max.ToString;
-      
-      res += c_min_s;
-      if c_max_s<>c_min_s then
+      b.AddSubRange('count', b->
       begin
-        res += range_sep;
-        res += c_max_s;
-      end;
+        var c_min_s := if count.min=0 then '' else count.min.ToString;
+        var c_max_s := if count.max.IsInvalid then '' else count.max.ToString;
+        
+        b += c_min_s;
+        if c_max_s<>c_min_s then
+        begin
+          b += range_sep;
+          b += c_max_s;
+        end;
+        
+      end);
       
-      res += count_chs_sep;
+      b += count_chs_sep;
       
-      var enmr := allowed.Order.GetEnumerator;
-      if enmr.MoveNext then
+      b.AddSubRange('chars', b->
       begin
+        var enmr := allowed.Order.GetEnumerator;
+        if not enmr.MoveNext then raise new System.InvalidOperationException;
+        
         var ch1 := enmr.Current;
         var ch2 := ch1;
         
-        var FlushPrev := procedure->
+        var FlushPrev := procedure->b.AddSubRange('sym', b->
         begin
-          AddEscaped(res, ch1);
+          AddEscaped(b, ch1);
           if ch1<>ch2 then
           begin
             if ch2.Code-ch1.Code <> 1 then
               //TODO #????: Need "StringPatternPart."
-              res += StringPatternPart.range_sep;
-            AddEscaped(res, ch2);
+              b += StringPatternPart.range_sep;
+            AddEscaped(b, ch2);
           end;
-        end;
+        end);
         
         while enmr.MoveNext do
         begin
@@ -309,10 +330,10 @@ type
         end;
         
         FlushPrev;
-      end;
+      end);
       
-      res += wild_end;
-    end;
+      b += wild_end;
+    end);
     
   end;
   
@@ -746,29 +767,8 @@ end;
 
 {$region StringPattern.ToString}
 
-function StringPattern.ToString: string;
-begin
-  var res := new StringBuilder;
-  foreach var part in parts do
-    part.ToString(res);
-  Result := res.ToString;
-end;
-
-function StringPattern.ToStringParts: array of System.ValueTuple<boolean, string>;
-begin
-  SetLength(Result, parts.Length);
-  var res := new StringBuilder;
-  foreach var part in parts index i do
-  begin
-    
-    Result[i].Item1 := part is StringPatternPartWild;
-    
-    part.ToString(res);
-    Result[i].Item2 := res.ToString;
-    res.Clear;
-    
-  end;
-end;
+procedure StringPattern.WriteTo(b: ColoredStringBuilderBase<string>) :=
+foreach var part in parts do part.WriteTo(b);
 
 {$endregion StringPattern.ToString}
 

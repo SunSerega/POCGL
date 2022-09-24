@@ -101,6 +101,13 @@ type
     end;
     public constructor := raise new System.InvalidOperationException;
     
+    private static function MakeInvalid: SIndexRange;
+    begin
+      Result.i1 := StringIndex.Invalid;
+      Result.i2 := StringIndex.Invalid;
+    end;
+    public static property Invalid: SIndexRange read MakeInvalid;
+    
     public static function operator in(ind: StringIndex; range: SIndexRange) := (ind>=range.i1) and (ind<=range.i2);
     
     public function ToString: string; override := $'{i1}..{i2}';
@@ -110,7 +117,7 @@ type
   
   StringSection = record
     public text := default(string);
-    public range: SIndexRange := (i1: StringIndex.Invalid; i2: StringIndex.Invalid);
+    public range := SIndexRange.Invalid;
     
     public property I1: StringIndex read range.i1;
     public property I2: StringIndex read range.i2;
