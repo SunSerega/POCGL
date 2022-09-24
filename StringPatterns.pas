@@ -553,9 +553,30 @@ type
       var min_k := 0;
       var max_k := 0;
       
+      var limit_min_k := procedure(k: integer)->
+      begin
+        if k<=min_k then exit;
+        for var i := min_k+len_x to (k-1)+len_x do
+          best_per_k[i].Item1 := nil;
+        min_k := k;
+      end;
+      var limit_max_k := procedure(k: integer)->
+      begin
+        if k>=max_k then exit;
+        for var i := (k+1)+len_x to max_k+len_x do
+          best_per_k[i].Item1 := nil;
+        max_k := k;
+      end;
+      
       for var allowed_cost := 1 to (len_x+len_y)*cost_max do
-        for var k := min_k to max_k do
+      begin
+        var k := min_k-1;
+        
+        while true do
         begin
+          k += 1;
+          if k>max_k then break;
+          
           var ind := k+len_x;
           var (node, cost) := best_per_k[ind];
           var cost_step := allowed_cost - cost;
@@ -568,13 +589,13 @@ type
               var x := node.x_to;
               if x=len_x then
               begin
-//                min_k := min_k.ClampBottom(k+1);
+                limit_min_k(k);
                 continue;
               end;
               var y := x+k;
               if y=len_y then
               begin
-//                max_k := max_k.ClampTop(k-1);
+                limit_max_k(k);
                 continue;
               end;
               if syms_x[x].valid<>syms_y[y].valid then continue;
@@ -604,7 +625,7 @@ type
                 begin
                   if nx>len_x then
                   begin
-                    min_k := min_k.ClampBottom(nk+1);
+                    limit_min_k(nk+1);
                     continue;
                   end;
                   if k=min_k then
@@ -613,7 +634,7 @@ type
                 begin
                   if ny>len_y then
                   begin
-                    max_k := max_k.ClampTop(nk-1);
+                    limit_max_k(nk-1);
                     continue;
                   end;
                   if k=max_k then
@@ -645,7 +666,10 @@ type
             {$endregion Jump k}
             
           end;
+          
         end;
+        
+      end;
       
       raise new System.InvalidOperationException;
     end;
