@@ -37,6 +37,8 @@ Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\CLKernelArg.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\CombineQueues.pas"
 Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[OpenCLABC\CombineQueues.exe]
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\CombineQueues.exe]: WARNING: Lazy not implemented
+Template[OpenCLABC]: TemplateCommand[OpenCLABC\CombineQueues.exe]: WARNING: Lazy not implemented
 Template[OpenCLABC]: Finished runing TemplateCommand[OpenCLABC\CombineQueues.exe]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\QueueStaticArrayWithWork.pas"
 Template[OpenCLABC]: Compiling: OK
