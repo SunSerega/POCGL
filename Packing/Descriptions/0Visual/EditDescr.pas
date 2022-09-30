@@ -1,4 +1,4 @@
-﻿{$apptype windows}
+{$apptype windows}
 
 {$reference PresentationFramework.dll}
 {$reference PresentationCore.dll}
@@ -13,6 +13,7 @@ uses System.Windows.Documents;
 uses Fixers       in '..\..\..\Utils\Fixers';
 uses Parsing      in '..\..\..\Utils\Parsing';
 uses PathUtils    in '..\..\..\Utils\PathUtils';
+uses SubExecuters in '..\..\..\Utils\SubExecuters';
 
 uses Markings;
 
@@ -27,7 +28,7 @@ var enc := new System.Text.UTF8Encoding(true);
 function ColorFromKey(key: object): Color;
 begin
   var rng := new System.Random(key.ToString.GetHashCode);
-  Result := Color.FromRgb(rng.Next(200,250), rng.Next(150,200), rng.Next(150,200));
+  Result := Color.FromRgb(rng.Next(100,150), rng.Next(150,250), rng.Next(150,250));
 end;
 
 //TODO Наверное придётся засунуть весь текст файла в один FixedTextBox
@@ -133,6 +134,7 @@ type
   end;
   
   FileListItem = sealed class(TreeViewItem)
+  FileState = (FS_OK, FS_Unused, FS_Error);
     
     public static function MakeName(path: string): string;
     begin
@@ -140,6 +142,34 @@ type
       var s := Result.Split(|' '|,2);
       if (s.Length=2) and s[0].All(char.IsDigit) then
         Result := s[1];
+    end;
+    
+    private parent_item: FileListItem;
+    private state := FS_OK;
+    private all_names := new HashSet<string>;
+    private own_names := new HashSet<string>;
+    private procedure ResetState;
+    begin
+      var sub_items := Items.Cast&<FileListItem>;
+      var new_state := sub_items.Max(i->i.state);
+      
+      if new_state < FS_Error then
+      begin
+        all_names.Clear;
+        all_names.UnionWith(own_names);
+        foreach var i in sub_items do
+        begin
+          var c := all_names.Count + i.all_names.Count;
+          all_names.UnionWith(i.all_names);
+          if all_names.Count <> c then new_state := FS_Error;
+        end;
+      end;
+      
+      if self.state = new_state then exit;
+      self.state := new_state;
+      var TODO_main := 0; //TODO А что если одно имя 2 раза в совсем разных папках
+      // Нужен Dict<header, HashSet<FileListItem>>
+      if parent_item<>nil then parent_item.ResetState;
     end;
     
     public constructor(cont_by_dir: Dictionary<string, ItemsControl>; path: string; update: ()->(); on_selected: string->());
@@ -154,6 +184,7 @@ type
       
       var cont := cont_by_dir[System.IO.Path.GetDirectoryName(path)];
       cont.Items.Add(self);
+      self.parent_item := cont as FileListItem;
       
       var is_file := FileExists(path);
       if is_file then
@@ -284,17 +315,19 @@ type
           Brushes.Orange;
     end;
     
-    public constructor(fname: string; readonly: boolean; update: ()->(); unused_headers, used_headers: HashSet<string>);
+    public constructor(fname: string; readonly: boolean; file_lock: Object; update: ()->(); unused_headers, used_headers: HashSet<string>);
     begin
       
-      var TODO_long := 0; //TODO Proper spans/cuts system, with recursion, abstract classes and etc.
+      var TODO_long := 0;
+      //TODO Proper spans/cuts system, with recursion, abstract classes and etc.
+      // - Openable templates (any in the name), creating own new textbox ('s?)
+      // - %key% with a Ctrl+Click to tp to definition
       
       {$region Remarking thread}
       
       var system_text_change := false;
       var remark_wh := new System.Threading.ManualResetEventSlim(false);
       var last_text := default(string);
-      var last_added_new_line := false;
       
         //TODO #????
         var write_timings := false;
@@ -314,7 +347,8 @@ type
           var named_spans := new Dictionary<integer, array of string>;
           var text := new StringSection(last_text.Remove(#13));
           if text.EndsWith(#10) then text := text.TrimLast(1);
-          if not readonly then
+          //TODO Better send to update thread
+          if not readonly then lock file_lock do
           begin
             var temp_fname := fname+'.backup';
             System.IO.File.Move(fname, temp_fname);
@@ -423,7 +457,7 @@ type
                   spans += (s.range,
                     if name in known_template_names then
                       body.Dispatcher.Invoke(()->new SolidColorBrush(ColorFromKey(name))) else
-                      Brushes.LightGray
+                      Brushes.Salmon
                   );
                   
                 end;
@@ -487,6 +521,11 @@ type
               body.tb.Document.PageWidth := FormattedText(ft).Width*1.1+12;
             end;
             
+//            'Chars before prev caret'.Print; TextRange.Create(body.tb.Document.ContentStart, body.tb.CaretPosition).Text.Select(c->c.Code).Println;
+            // Before merging blocks, because it messes up newly added line breaks
+            var cur_pos := TextRange.Create(body.tb.Document.ContentStart, body.tb.CaretPosition).Text.Remove(#13).Length;
+            
+            //TODO Dispatcher not needed
             var bl := body.Dispatcher.Invoke(()->
             begin
               var bls := body.tb.Document.Blocks.Cast&<Paragraph>.ToArray;
@@ -515,9 +554,6 @@ type
               ));
             var old_r_c := old_key_map.Values.EachCount;
             var new_r_c := cuts.EachCount;
-            
-//            TextRange.Create(body.tb.Document.ContentStart, body.tb.CaretPosition).Text.Select(c->c.Code).Println;
-            var cur_pos := TextRange.Create(body.tb.Document.ContentStart, body.tb.CaretPosition).Text.Length;
             
             var write_acts := false;
             
@@ -596,7 +632,7 @@ type
   //            $'[{TextRange.Create(body.tb.Document.ContentStart, ptr).Text}]'.Println;
               while true do
               begin
-//                TextRange.Create(body.tb.Document.ContentStart, ptr).Text.Select(c->c.Code).Println;
+//                'Chars before next caret'.Print; TextRange.Create(body.tb.Document.ContentStart, ptr).Text.Select(c->c.Code).Println;
                 var rel_cur_pos := cur_pos - TextRange.Create(body.tb.Document.ContentStart, ptr).Text.Length;
 //                $'cur_pos={cur_pos}; rel_cur_pos={rel_cur_pos}'.Println;
                 if rel_cur_pos=0 then break;
@@ -609,13 +645,11 @@ type
               end;
 //              Writeln('='*30);
               
-              if last_added_new_line then
-              begin
-                if ptr.GetOffsetToPosition(ptr.GetLineStartPosition(1))=0 then
-                  ptr := ptr.GetNextInsertionPosition(LogicalDirection.Forward);
-                ptr := ptr.GetLineStartPosition(1) ?? ptr;
-              end;
             end;
+            
+            // ptr.LogicalDirection := LogicalDirection.Forward
+            ptr := TextRange.Create(body.tb.Document.ContentStart, ptr).End;
+            
             body.tb.CaretPosition := ptr;
 //            $'[{TextRange.Create(body.tb.Document.ContentStart, ptr).Text}]'.Println;
             
@@ -648,12 +682,9 @@ type
       
       body.tb.TextChanged += (o,e)->
       begin
+        if e.Changes.Count=0 then exit;
         if system_text_change then exit;
         last_text := TextRange.Create(body.tb.Document.ContentStart, body.tb.Document.ContentEnd).Text;
-        
-        var ch := e.Changes.Last;
-        var ptr := body.tb.Document.ContentStart.GetPositionAtOffset(ch.Offset);
-        last_added_new_line := TextRange.Create(ptr, ptr.GetPositionAtOffset(ch.AddedLength)).Text.EndsWith(#10);
         
         remark_wh.Set;
       end;
@@ -672,6 +703,7 @@ type
     
   end;
   
+  DescriptionsPackCanceled = sealed class(Exception) end;
   ModuleView = sealed class(ContentControl)
     
     public constructor(name: string);
@@ -690,23 +722,53 @@ type
       
       var module_dir := GetFullPathRTA('..\'+name);
       var curr_file_view := default(InpFileView);
+      var file_lock := new Object;
       
       var unused_headers := new HashSet<string>;
       var used_headers := new HashSet<string>;
       
       var file_display := new ContentControl;
       
-      var apply_changes_wh := new System.Threading.ManualResetEventSlim(true);
+      {$region Apply changes}
+      var apply_changes_wh := new System.Threading.ManualResetEventSlim(false);
       System.Threading.Thread.Create(()->
-      while true do
-      try
-        apply_changes_wh.Wait;
-        apply_changes_wh.Reset;
+      begin
+        var descr_packer_fname := GetFullPathRTA('..\PackDescriptions.pas');
+        CompilePasFile(descr_packer_fname, ZeroOtp, err->MessageBox.Show(err), false, '/Debug:1');
+        descr_packer_fname := System.IO.Path.ChangeExtension(descr_packer_fname, '.exe');
         
-        var TODO0 := 0; // Run "..\PackDescriptions"
-        
-        self.Dispatcher.Invoke(()->
-        begin
+        while true do
+        try
+          apply_changes_wh.Wait;
+          apply_changes_wh.Reset;
+          
+          try
+            lock file_lock do RunFile(descr_packer_fname, nil, SimpleOtp(l->
+            begin
+              var TODO0 := 0;
+              var text := new StringSection(l);
+              var ind := text.IndexOf('template is not defined. All templates:');
+              if not ind.IsInvalid then
+              begin
+                text := text.TakeFirst(ind).TrimLastWhile(ch->ch<>':').TrimLast(2);
+                text := text.TrimFirst(text.IndexOf('[')+1);
+                var names := FixerUtils.DeTemplateName(text).ConvertAll(t->t[0]);
+                'broken template in:'.Println;
+                names.PrintLines;
+                Writeln('='*30);
+                raise new DescriptionsPackCanceled;
+              end else
+              begin
+//                Writeln(l+NewLine*1);
+                MessageBox.Show(l);
+              end;
+            end), e->exit(), 'UseLastPreDoc', $'nick={name}', $'fname=Modules.Packed\{name}.pas');
+          except
+            on DescriptionsPackCanceled do ;
+          end;
+          
+          self.Dispatcher.Invoke(()->
+          begin
           
           unused_headers.Clear;
           unused_headers.UnionWith(ReadLines(module_dir+'.unused.log', enc));
@@ -717,19 +779,22 @@ type
           if curr_file_view<>nil then
             curr_file_view.UpdateHeaders(unused_headers, used_headers);
         end);
-        
-      except
-        on e: Exception do MessageBox.Show(e.ToString);
+          
+        except
+          on e: Exception do MessageBox.Show(e.ToString);
+        end;
       end).Start;
+      {$endregion Apply changes}
       
       var file_view_cache := new Dictionary<string, InpFileView>;
       
       var open_file := procedure(fname: string)->
       begin
-        if not file_view_cache.TryGetValue(fname, curr_file_view) then
+        if file_view_cache.TryGetValue(fname, curr_file_view) then
+          curr_file_view.UpdateHeaders(used_headers, unused_headers) else
         begin
           curr_file_view := new InpFileView(
-            fname, false,
+            fname, false, file_lock,
             apply_changes_wh.Set,
             unused_headers, used_headers
           );
@@ -806,6 +871,7 @@ type
         Grid.SetColumn(file_display, 2);
       end;
       
+      apply_changes_wh.Set;
     end;
     private constructor := raise new System.InvalidOperationException;
     
@@ -814,6 +880,7 @@ type
 begin
   var w := new Window;
   w.WindowState := WindowState.Maximized;
+  Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(GetCurrentDir);
   
   begin
     var last_esc_t := DateTime.MinValue;
