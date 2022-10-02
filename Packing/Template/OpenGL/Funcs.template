@@ -725,30 +725,30 @@
     
     // added in gl3.3
     private z_ColorP3ui_adr := GetProcAddress('glColorP3ui');
-    private z_ColorP3ui_1 := GetProcOrNil&<procedure(&type: ColorPointerType; color: UInt32)>(z_ColorP3ui_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3ui(&type: ColorPointerType; color: UInt32) :=
+    private z_ColorP3ui_1 := GetProcOrNil&<procedure(&type: DummyEnum; color: UInt32)>(z_ColorP3ui_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3ui(&type: DummyEnum; color: UInt32) :=
     z_ColorP3ui_1(&type, color);
     
     // added in gl3.3
     private z_ColorP3uiv_adr := GetProcAddress('glColorP3uiv');
-    private z_ColorP3uiv_1 := GetProcOrNil&<procedure(&type: ColorPointerType; color: IntPtr)>(z_ColorP3uiv_adr);
-    private z_ColorP3uiv_2 := GetProcOrNil&<procedure(&type: ColorPointerType; var color: UInt32)>(z_ColorP3uiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3uiv(&type: ColorPointerType; color: array of UInt32);
+    private z_ColorP3uiv_1 := GetProcOrNil&<procedure(&type: DummyEnum; color: IntPtr)>(z_ColorP3uiv_adr);
+    private z_ColorP3uiv_2 := GetProcOrNil&<procedure(&type: DummyEnum; var color: UInt32)>(z_ColorP3uiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3uiv(&type: DummyEnum; color: array of UInt32);
     type PUInt32=^UInt32;
     begin
       if (color<>nil) and (color.Length<>0) then
         z_ColorP3uiv_2(&type, color[0]) else
         z_ColorP3uiv_2(&type, PUInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3uiv(&type: ColorPointerType; var color: UInt32) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3uiv(&type: DummyEnum; var color: UInt32) :=
     z_ColorP3uiv_2(&type, color);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3uiv(&type: ColorPointerType; color: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3uiv(&type: DummyEnum; color: IntPtr) :=
     z_ColorP3uiv_1(&type, color);
     
     // added in gl3.3
     private z_ColorP4ui_adr := GetProcAddress('glColorP4ui');
-    private z_ColorP4ui_1 := GetProcOrNil&<procedure(&type: ColorPointerType; color: UInt32)>(z_ColorP4ui_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP4ui(&type: ColorPointerType; color: UInt32) :=
+    private z_ColorP4ui_1 := GetProcOrNil&<procedure(&type: DummyEnum; color: UInt32)>(z_ColorP4ui_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP4ui(&type: DummyEnum; color: UInt32) :=
     z_ColorP4ui_1(&type, color);
     
     // added in gl3.3
@@ -4852,24 +4852,24 @@
     
     // added in gl3.3
     private z_SecondaryColorP3ui_adr := GetProcAddress('glSecondaryColorP3ui');
-    private z_SecondaryColorP3ui_1 := GetProcOrNil&<procedure(&type: ColorPointerType; color: UInt32)>(z_SecondaryColorP3ui_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3ui(&type: ColorPointerType; color: UInt32) :=
+    private z_SecondaryColorP3ui_1 := GetProcOrNil&<procedure(&type: DummyEnum; color: UInt32)>(z_SecondaryColorP3ui_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3ui(&type: DummyEnum; color: UInt32) :=
     z_SecondaryColorP3ui_1(&type, color);
     
     // added in gl3.3
     private z_SecondaryColorP3uiv_adr := GetProcAddress('glSecondaryColorP3uiv');
-    private z_SecondaryColorP3uiv_1 := GetProcOrNil&<procedure(&type: ColorPointerType; color: IntPtr)>(z_SecondaryColorP3uiv_adr);
-    private z_SecondaryColorP3uiv_2 := GetProcOrNil&<procedure(&type: ColorPointerType; var color: UInt32)>(z_SecondaryColorP3uiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3uiv(&type: ColorPointerType; color: array of UInt32);
+    private z_SecondaryColorP3uiv_1 := GetProcOrNil&<procedure(&type: DummyEnum; color: IntPtr)>(z_SecondaryColorP3uiv_adr);
+    private z_SecondaryColorP3uiv_2 := GetProcOrNil&<procedure(&type: DummyEnum; var color: UInt32)>(z_SecondaryColorP3uiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3uiv(&type: DummyEnum; color: array of UInt32);
     type PUInt32=^UInt32;
     begin
       if (color<>nil) and (color.Length<>0) then
         z_SecondaryColorP3uiv_2(&type, color[0]) else
         z_SecondaryColorP3uiv_2(&type, PUInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3uiv(&type: ColorPointerType; var color: UInt32) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3uiv(&type: DummyEnum; var color: UInt32) :=
     z_SecondaryColorP3uiv_2(&type, color);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3uiv(&type: ColorPointerType; color: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3uiv(&type: DummyEnum; color: IntPtr) :=
     z_SecondaryColorP3uiv_1(&type, color);
     
     // added in gl4.1
@@ -21752,28 +21752,28 @@
     z_NormalP3uiv_1(&type, coords);
     
     private z_ColorP3ui_adr := GetProcAddress('glColorP3ui');
-    private z_ColorP3ui_1 := GetProcOrNil&<procedure(&type: ColorPointerType; color: UInt32)>(z_ColorP3ui_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3ui(&type: ColorPointerType; color: UInt32) :=
+    private z_ColorP3ui_1 := GetProcOrNil&<procedure(&type: DummyEnum; color: UInt32)>(z_ColorP3ui_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3ui(&type: DummyEnum; color: UInt32) :=
     z_ColorP3ui_1(&type, color);
     
     private z_ColorP3uiv_adr := GetProcAddress('glColorP3uiv');
-    private z_ColorP3uiv_1 := GetProcOrNil&<procedure(&type: ColorPointerType; color: IntPtr)>(z_ColorP3uiv_adr);
-    private z_ColorP3uiv_2 := GetProcOrNil&<procedure(&type: ColorPointerType; var color: UInt32)>(z_ColorP3uiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3uiv(&type: ColorPointerType; color: array of UInt32);
+    private z_ColorP3uiv_1 := GetProcOrNil&<procedure(&type: DummyEnum; color: IntPtr)>(z_ColorP3uiv_adr);
+    private z_ColorP3uiv_2 := GetProcOrNil&<procedure(&type: DummyEnum; var color: UInt32)>(z_ColorP3uiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3uiv(&type: DummyEnum; color: array of UInt32);
     type PUInt32=^UInt32;
     begin
       if (color<>nil) and (color.Length<>0) then
         z_ColorP3uiv_2(&type, color[0]) else
         z_ColorP3uiv_2(&type, PUInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3uiv(&type: ColorPointerType; var color: UInt32) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3uiv(&type: DummyEnum; var color: UInt32) :=
     z_ColorP3uiv_2(&type, color);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3uiv(&type: ColorPointerType; color: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP3uiv(&type: DummyEnum; color: IntPtr) :=
     z_ColorP3uiv_1(&type, color);
     
     private z_ColorP4ui_adr := GetProcAddress('glColorP4ui');
-    private z_ColorP4ui_1 := GetProcOrNil&<procedure(&type: ColorPointerType; color: UInt32)>(z_ColorP4ui_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP4ui(&type: ColorPointerType; color: UInt32) :=
+    private z_ColorP4ui_1 := GetProcOrNil&<procedure(&type: DummyEnum; color: UInt32)>(z_ColorP4ui_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorP4ui(&type: DummyEnum; color: UInt32) :=
     z_ColorP4ui_1(&type, color);
     
     private z_ColorP4uiv_adr := GetProcAddress('glColorP4uiv');
@@ -21792,23 +21792,23 @@
     z_ColorP4uiv_1(&type, color);
     
     private z_SecondaryColorP3ui_adr := GetProcAddress('glSecondaryColorP3ui');
-    private z_SecondaryColorP3ui_1 := GetProcOrNil&<procedure(&type: ColorPointerType; color: UInt32)>(z_SecondaryColorP3ui_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3ui(&type: ColorPointerType; color: UInt32) :=
+    private z_SecondaryColorP3ui_1 := GetProcOrNil&<procedure(&type: DummyEnum; color: UInt32)>(z_SecondaryColorP3ui_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3ui(&type: DummyEnum; color: UInt32) :=
     z_SecondaryColorP3ui_1(&type, color);
     
     private z_SecondaryColorP3uiv_adr := GetProcAddress('glSecondaryColorP3uiv');
-    private z_SecondaryColorP3uiv_1 := GetProcOrNil&<procedure(&type: ColorPointerType; color: IntPtr)>(z_SecondaryColorP3uiv_adr);
-    private z_SecondaryColorP3uiv_2 := GetProcOrNil&<procedure(&type: ColorPointerType; var color: UInt32)>(z_SecondaryColorP3uiv_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3uiv(&type: ColorPointerType; color: array of UInt32);
+    private z_SecondaryColorP3uiv_1 := GetProcOrNil&<procedure(&type: DummyEnum; color: IntPtr)>(z_SecondaryColorP3uiv_adr);
+    private z_SecondaryColorP3uiv_2 := GetProcOrNil&<procedure(&type: DummyEnum; var color: UInt32)>(z_SecondaryColorP3uiv_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3uiv(&type: DummyEnum; color: array of UInt32);
     type PUInt32=^UInt32;
     begin
       if (color<>nil) and (color.Length<>0) then
         z_SecondaryColorP3uiv_2(&type, color[0]) else
         z_SecondaryColorP3uiv_2(&type, PUInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3uiv(&type: ColorPointerType; var color: UInt32) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3uiv(&type: DummyEnum; var color: UInt32) :=
     z_SecondaryColorP3uiv_2(&type, color);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3uiv(&type: ColorPointerType; color: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColorP3uiv(&type: DummyEnum; color: IntPtr) :=
     z_SecondaryColorP3uiv_1(&type, color);
     
   end;
@@ -35188,8 +35188,8 @@
     z_NormalFormatNV_1(&type, stride);
     
     private z_ColorFormatNV_adr := GetProcAddress('glColorFormatNV');
-    private z_ColorFormatNV_1 := GetProcOrNil&<procedure(size: Int32; &type: DummyEnum; stride: Int32)>(z_ColorFormatNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorFormatNV(size: Int32; &type: DummyEnum; stride: Int32) :=
+    private z_ColorFormatNV_1 := GetProcOrNil&<procedure(size: Int32; &type: ColorPointerType; stride: Int32)>(z_ColorFormatNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorFormatNV(size: Int32; &type: ColorPointerType; stride: Int32) :=
     z_ColorFormatNV_1(size, &type, stride);
     
     private z_IndexFormatNV_adr := GetProcAddress('glIndexFormatNV');

@@ -16,13 +16,15 @@ Enum "GL_UUID_SIZE_EXT" was in SpecialNumbers
 Enum "GL_LUID_SIZE_EXT" was in SpecialNumbers
 Group SyncBehaviorFlags was autoset to gt_bitmask, because of GL_NONE in enums, need fixing
 Kind [Coord] was not utilised
-Kind [Clamped01] was not utilised
+Kind [Clamped[0; 1]] was not utilised
 Kind [BufferOffset] was not utilised
 Kind [BufferSize] was not utilised
 Kind [Color] was not utilised
+Kind [Clamped[-1] was not described
+Kind [ 1]] was not described
 Kind [DrawBufferIndex] was not utilised
-Kind [ClampedFloat32] was not described
-Kind [ColorIndexMask] was not utilised
+Kind [Clamp01] was not described
+Kind [ColorIndexValue] was not utilised
 Kind [StencilValue] was not utilised
 Kind [CheckedFloat32] was not described
 Kind [CheckedInt32] was not described
@@ -30,10 +32,8 @@ Kind [CompressedTextureARB] was not utilised
 Kind [WinCoord] was not utilised
 Kind [Path] was not described
 Kind [FenceNV] was not described
-Kind [ClampedFloat64] was not described
 Kind [FeedbackElement] was not utilised
-Kind [ColorIndexValue] was not utilised
+Kind [ColorIndexMask] was not utilised
 Kind [StencilMask] was not utilised
 Kind [SelectName] was not utilised
-Kind [ClampedStencilValue] was not described
 Group [SampleMaskNV] isn't defined

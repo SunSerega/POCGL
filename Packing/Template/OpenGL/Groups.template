@@ -2153,6 +2153,7 @@
     public static property TEXTURE_CUBE_MAP_SEAMLESS:          EnableCap read new EnableCap($884F);
     public static property SAMPLE_SHADING:                     EnableCap read new EnableCap($8C36);
     public static property RASTERIZER_DISCARD:                 EnableCap read new EnableCap($8C89);
+    public static property TEXTURE_GEN_STR:                    EnableCap read new EnableCap($8D60);
     public static property PRIMITIVE_RESTART_FIXED_INDEX:      EnableCap read new EnableCap($8D69);
     public static property FRAMEBUFFER_SRGB:                   EnableCap read new EnableCap($8DB9);
     public static property SAMPLE_MASK:                        EnableCap read new EnableCap($8E51);
@@ -2289,6 +2290,7 @@
       if self.val = UInt32($884F) then Result := 'TEXTURE_CUBE_MAP_SEAMLESS' else
       if self.val = UInt32($8C36) then Result := 'SAMPLE_SHADING' else
       if self.val = UInt32($8C89) then Result := 'RASTERIZER_DISCARD' else
+      if self.val = UInt32($8D60) then Result := 'TEXTURE_GEN_STR' else
       if self.val = UInt32($8D69) then Result := 'PRIMITIVE_RESTART_FIXED_INDEX' else
       if self.val = UInt32($8DB9) then Result := 'FRAMEBUFFER_SRGB' else
       if self.val = UInt32($8E51) then Result := 'SAMPLE_MASK' else
@@ -4370,6 +4372,7 @@
     public static property RENDERBUFFER_BINDING:                                                GetPName read new GetPName($8CA7);
     public static property READ_FRAMEBUFFER_BINDING:                                            GetPName read new GetPName($8CAA);
     public static property MAX_COLOR_ATTACHMENTS:                                               GetPName read new GetPName($8CDF);
+    public static property TEXTURE_GEN_STR:                                                     GetPName read new GetPName($8D60);
     public static property MAX_ELEMENT_INDEX:                                                   GetPName read new GetPName($8D6B);
     public static property MAX_GEOMETRY_UNIFORM_COMPONENTS:                                     GetPName read new GetPName($8DDF);
     public static property SHADER_BINARY_FORMATS:                                               GetPName read new GetPName($8DF8);
@@ -4937,6 +4940,7 @@
       if self.val = UInt32($8CA7) then Result := 'RENDERBUFFER_BINDING' else
       if self.val = UInt32($8CAA) then Result := 'READ_FRAMEBUFFER_BINDING' else
       if self.val = UInt32($8CDF) then Result := 'MAX_COLOR_ATTACHMENTS' else
+      if self.val = UInt32($8D60) then Result := 'TEXTURE_GEN_STR' else
       if self.val = UInt32($8D6B) then Result := 'MAX_ELEMENT_INDEX' else
       if self.val = UInt32($8DDF) then Result := 'MAX_GEOMETRY_UNIFORM_COMPONENTS' else
       if self.val = UInt32($8DF8) then Result := 'SHADER_BINARY_FORMATS' else
@@ -5131,6 +5135,8 @@
     public static property TEXTURE_MAX_CLAMP_S:                  GetTextureParameter read new GetTextureParameter($8369);
     public static property TEXTURE_MAX_CLAMP_T:                  GetTextureParameter read new GetTextureParameter($836A);
     public static property TEXTURE_MAX_CLAMP_R:                  GetTextureParameter read new GetTextureParameter($836B);
+    public static property NORMAL_MAP:                           GetTextureParameter read new GetTextureParameter($8511);
+    public static property REFLECTION_MAP:                       GetTextureParameter read new GetTextureParameter($8512);
     public static property TEXTURE_UNNORMALIZED_COORDINATES_ARM: GetTextureParameter read new GetTextureParameter($8F6A);
     public static property SURFACE_COMPRESSION:                  GetTextureParameter read new GetTextureParameter($96C0);
     
@@ -5189,6 +5195,8 @@
       if self.val = UInt32($8369) then Result := 'TEXTURE_MAX_CLAMP_S' else
       if self.val = UInt32($836A) then Result := 'TEXTURE_MAX_CLAMP_T' else
       if self.val = UInt32($836B) then Result := 'TEXTURE_MAX_CLAMP_R' else
+      if self.val = UInt32($8511) then Result := 'NORMAL_MAP' else
+      if self.val = UInt32($8512) then Result := 'REFLECTION_MAP' else
       if self.val = UInt32($8F6A) then Result := 'TEXTURE_UNNORMALIZED_COORDINATES_ARM' else
       if self.val = UInt32($96C0) then Result := 'SURFACE_COMPRESSION' else
         Result := $'GetTextureParameter[{self.val}]';
@@ -8259,26 +8267,32 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property BYTE:                        PixelType read new PixelType($1400);
-    public static property UNSIGNED_BYTE:               PixelType read new PixelType($1401);
-    public static property SHORT:                       PixelType read new PixelType($1402);
-    public static property UNSIGNED_SHORT:              PixelType read new PixelType($1403);
-    public static property INT:                         PixelType read new PixelType($1404);
-    public static property UNSIGNED_INT:                PixelType read new PixelType($1405);
-    public static property FLOAT:                       PixelType read new PixelType($1406);
-    public static property BITMAP:                      PixelType read new PixelType($1A00);
-    public static property UNSIGNED_BYTE_3_3_2:         PixelType read new PixelType($8032);
-    public static property UNSIGNED_SHORT_4_4_4_4:      PixelType read new PixelType($8033);
-    public static property UNSIGNED_SHORT_5_5_5_1:      PixelType read new PixelType($8034);
-    public static property UNSIGNED_INT_8_8_8_8:        PixelType read new PixelType($8035);
-    public static property UNSIGNED_INT_10_10_10_2:     PixelType read new PixelType($8036);
-    public static property UNSIGNED_BYTE_2_3_3_REV:     PixelType read new PixelType($8362);
-    public static property UNSIGNED_SHORT_5_6_5:        PixelType read new PixelType($8363);
-    public static property UNSIGNED_SHORT_5_6_5_REV:    PixelType read new PixelType($8364);
-    public static property UNSIGNED_SHORT_4_4_4_4_REV:  PixelType read new PixelType($8365);
-    public static property UNSIGNED_SHORT_1_5_5_5_REV:  PixelType read new PixelType($8366);
-    public static property UNSIGNED_INT_8_8_8_8_REV:    PixelType read new PixelType($8367);
-    public static property UNSIGNED_INT_2_10_10_10_REV: PixelType read new PixelType($8368);
+    public static property BYTE:                           PixelType read new PixelType($1400);
+    public static property UNSIGNED_BYTE:                  PixelType read new PixelType($1401);
+    public static property SHORT:                          PixelType read new PixelType($1402);
+    public static property UNSIGNED_SHORT:                 PixelType read new PixelType($1403);
+    public static property INT:                            PixelType read new PixelType($1404);
+    public static property UNSIGNED_INT:                   PixelType read new PixelType($1405);
+    public static property FLOAT:                          PixelType read new PixelType($1406);
+    public static property HALF_FLOAT:                     PixelType read new PixelType($140B);
+    public static property HALF:                           PixelType read new PixelType($140B);
+    public static property BITMAP:                         PixelType read new PixelType($1A00);
+    public static property UNSIGNED_BYTE_3_3_2:            PixelType read new PixelType($8032);
+    public static property UNSIGNED_SHORT_4_4_4_4:         PixelType read new PixelType($8033);
+    public static property UNSIGNED_SHORT_5_5_5_1:         PixelType read new PixelType($8034);
+    public static property UNSIGNED_INT_8_8_8_8:           PixelType read new PixelType($8035);
+    public static property UNSIGNED_INT_10_10_10_2:        PixelType read new PixelType($8036);
+    public static property UNSIGNED_BYTE_2_3_3_REV:        PixelType read new PixelType($8362);
+    public static property UNSIGNED_SHORT_5_6_5:           PixelType read new PixelType($8363);
+    public static property UNSIGNED_SHORT_5_6_5_REV:       PixelType read new PixelType($8364);
+    public static property UNSIGNED_SHORT_4_4_4_4_REV:     PixelType read new PixelType($8365);
+    public static property UNSIGNED_SHORT_1_5_5_5_REV:     PixelType read new PixelType($8366);
+    public static property UNSIGNED_INT_8_8_8_8_REV:       PixelType read new PixelType($8367);
+    public static property UNSIGNED_INT_2_10_10_10_REV:    PixelType read new PixelType($8368);
+    public static property UNSIGNED_INT_24_8:              PixelType read new PixelType($84FA);
+    public static property UNSIGNED_INT_10F_11F_11F_REV:   PixelType read new PixelType($8C3B);
+    public static property UNSIGNED_INT_5_9_9_9_REV:       PixelType read new PixelType($8C3E);
+    public static property FLOAT_32_UNSIGNED_INT_24_8_REV: PixelType read new PixelType($8DAD);
     
     public function ToString: string; override;
     begin
@@ -8289,6 +8303,8 @@
       if self.val = UInt32($1404) then Result := 'INT' else
       if self.val = UInt32($1405) then Result := 'UNSIGNED_INT' else
       if self.val = UInt32($1406) then Result := 'FLOAT' else
+      if self.val = UInt32($140B) then Result := 'HALF_FLOAT' else
+      if self.val = UInt32($140B) then Result := 'HALF' else
       if self.val = UInt32($1A00) then Result := 'BITMAP' else
       if self.val = UInt32($8032) then Result := 'UNSIGNED_BYTE_3_3_2' else
       if self.val = UInt32($8033) then Result := 'UNSIGNED_SHORT_4_4_4_4' else
@@ -8302,6 +8318,10 @@
       if self.val = UInt32($8366) then Result := 'UNSIGNED_SHORT_1_5_5_5_REV' else
       if self.val = UInt32($8367) then Result := 'UNSIGNED_INT_8_8_8_8_REV' else
       if self.val = UInt32($8368) then Result := 'UNSIGNED_INT_2_10_10_10_REV' else
+      if self.val = UInt32($84FA) then Result := 'UNSIGNED_INT_24_8' else
+      if self.val = UInt32($8C3B) then Result := 'UNSIGNED_INT_10F_11F_11F_REV' else
+      if self.val = UInt32($8C3E) then Result := 'UNSIGNED_INT_5_9_9_9_REV' else
+      if self.val = UInt32($8DAD) then Result := 'FLOAT_32_UNSIGNED_INT_24_8_REV' else
         Result := $'PixelType[{self.val}]';
     end;
     
@@ -9993,10 +10013,11 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property S: TextureCoordName read new TextureCoordName($2000);
-    public static property T: TextureCoordName read new TextureCoordName($2001);
-    public static property R: TextureCoordName read new TextureCoordName($2002);
-    public static property Q: TextureCoordName read new TextureCoordName($2003);
+    public static property S:               TextureCoordName read new TextureCoordName($2000);
+    public static property T:               TextureCoordName read new TextureCoordName($2001);
+    public static property R:               TextureCoordName read new TextureCoordName($2002);
+    public static property Q:               TextureCoordName read new TextureCoordName($2003);
+    public static property TEXTURE_GEN_STR: TextureCoordName read new TextureCoordName($8D60);
     
     public function ToString: string; override;
     begin
@@ -10004,6 +10025,7 @@
       if self.val = UInt32($2001) then Result := 'T' else
       if self.val = UInt32($2002) then Result := 'R' else
       if self.val = UInt32($2003) then Result := 'Q' else
+      if self.val = UInt32($8D60) then Result := 'TEXTURE_GEN_STR' else
         Result := $'TextureCoordName[{self.val}]';
     end;
     

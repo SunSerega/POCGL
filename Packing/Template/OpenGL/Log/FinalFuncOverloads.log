@@ -400,21 +400,21 @@
 	index  | r       | g       | b       | a       |
 
 # glColorP3ui[1]:
-	ColorPointerType | UInt32 |
-	---------------- | ------ |
-	type             | color  |
+	DummyEnum | UInt32 |
+	--------- | ------ |
+	type      | color  |
 
 # glColorP3uiv[3]:
-	ColorPointerType | array of UInt32 |
-	ColorPointerType | var UInt32      |
-	ColorPointerType | IntPtr          |
-	---------------- | --------------- |
-	type             | color           |
+	DummyEnum | array of UInt32 |
+	DummyEnum | var UInt32      |
+	DummyEnum | IntPtr          |
+	--------- | --------------- |
+	type      | color           |
 
 # glColorP4ui[1]:
-	ColorPointerType | UInt32 |
-	---------------- | ------ |
-	type             | color  |
+	DummyEnum | UInt32 |
+	--------- | ------ |
+	type      | color  |
 
 # glColorP4uiv[3]:
 	ColorPointerType | array of UInt32 |
@@ -2783,16 +2783,16 @@
 	index  | v              |
 
 # glSecondaryColorP3ui[1]:
-	ColorPointerType | UInt32 |
-	---------------- | ------ |
-	type             | color  |
+	DummyEnum | UInt32 |
+	--------- | ------ |
+	type      | color  |
 
 # glSecondaryColorP3uiv[3]:
-	ColorPointerType | array of UInt32 |
-	ColorPointerType | var UInt32      |
-	ColorPointerType | IntPtr          |
-	---------------- | --------------- |
-	type             | color           |
+	DummyEnum | array of UInt32 |
+	DummyEnum | var UInt32      |
+	DummyEnum | IntPtr          |
+	--------- | --------------- |
+	type      | color           |
 
 # glShaderBinary[3]:
 	Int32 | array of gl_shader | ShaderBinaryFormat | IntPtr | Int32  |
@@ -15712,9 +15712,9 @@
 	type      | stride |
 
 # glColorFormatNV[1]:
-	Int32 | DummyEnum | Int32  |
-	----- | --------- | ------ |
-	size  | type      | stride |
+	Int32 | ColorPointerType | Int32  |
+	----- | ---------------- | ------ |
+	size  | type             | stride |
 
 # glIndexFormatNV[1]:
 	DummyEnum | Int32  |
