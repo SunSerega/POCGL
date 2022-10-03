@@ -353,7 +353,10 @@ end;
 // Потому что лямбды не работают в finalization
 procedure MakeSureToExit;
 begin
-  if Logger.main is ConsoleLogger then ReadString(#10'Press Enter to exit:');
+  if
+//    Logger.main is ConsoleLogger
+    System.Environment.GetCommandLineArgs.Skip(1).FirstOrDefault <> '[REDIRECTIOMODE]'
+  then ReadString(#10'Press Enter to exit:');
   StartBgThread(()->
   begin
     Sleep(5000);
