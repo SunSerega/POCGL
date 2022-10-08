@@ -3,115 +3,146 @@
 
 interface
 
-uses Parsing;
-uses ColoredStrings;
+uses System;
+
+uses Parsing in '../Parsing';
+uses Patterns in '../Patterns';
+uses ColoredStrings in '../ColoredStrings';
+
+//TODO Сделать так, чтобы работало не только для паттернов из символов
+// - Загрузка из- и сохранение в строки являются основной загвоздкой
+
+//TODO Всё же реализовать мульти-указатели ICharMultiEnumerator
+// - Но сделать весь алгоритм operator* на их основе
+// - Это позволит не выделять массив прыжков на вход, и в целом всё стандартизирует
+// - GetNext:
+// --- Массив или с валидатором?
+// --- Сначала продумать вычисление пересечений, а из него выводить GetNext
+// --- Но в итоге стоит всё же сделать Pattern.IncludingBoth
+// ----- С произвольным типом элементов T
+// ----- С функцией получения прыжков get_jumps: (i1,i2)->sequence of VT<TJump,TJumpCost, TIter,TIter>
+// ----- С функцией объединения прыжков combine_jumps: (j1,j2)->TJump?
+// --- А StringPattern оставить как специализацию
+//TODO А алгоритму Includes не нужна история нод, достаточно лучший результат для каждого k
+// - Сначала сделать 2 отдельных метода, а потом уже пытаться объединять...
+
+//TODO При создании StringPattern оптимизировать "@[..1*a]@[..2*a]" => "@[..3*a]"
+
+//TODO Возможность при парсинге и сохранении в строку указывать символ для эскейпинга ("\", "%" и т.п.)
+// - И называть парсинг StringPattern.Parse, а не конструктором
+//TODO И не эксейпить всё подряд всё же...
+// - В Solid достаточно только "@"
+// - В Wild достаточно только "]"
+// - Ну и в обоих случаях так же сам символ экскейпа
+//TODO Всё равно понадобится экскейпить *
+// - "star"=>"st@ar", "*"=>"@star"
+
+//TODO GetLeftLength всё ещё не используется
 
 type
+  PatternLengthMinT = cardinal;
+  PatternLengthMaxT = StringIndex;
+  
+  PatternLength = record
+    public min: PatternLengthMinT;
+    public max: PatternLengthMaxT;
+    
+    public property IsSimple: boolean read min=max;
+    
+    public constructor(min: PatternLengthMinT; max: PatternLengthMaxT);
+    begin
+      self.min := min;
+      self.max := max;
+    end;
+    public constructor(c: integer) := Create(c, c);
+    public constructor := exit;
+    
+    public static function CombineInline(c1, c2: PatternLength): PatternLength;
+    begin
+      Result.min := c1.min+c2.min;
+      Result.max := if c1.max.IsInvalid or c2.max.IsInvalid then
+        PatternLengthMaxT.Invalid else c1.max + c2.max;
+    end;
+    
+    public static function CombineParallel(c1, c2: PatternLength): PatternLength;
+    begin
+      Result.min := PABCSystem.Min(c1.min,c2.min);
+      Result.max := if c1.max.IsInvalid or c2.max.IsInvalid then
+        PatternLengthMaxT.Invalid else PABCSystem.Max(integer(c1.max), integer(c2.max));
+    end;
+    
+  end;
+  
   StringPattern = sealed partial class
     
-    public constructor(pattern: StringSection);
-    public constructor(pattern: string) := Create(new StringSection(pattern));
     private constructor := raise new System.InvalidOperationException;
     
     public static function Literal(s: string): StringPattern;
     
-    public function Includes(text: StringSection): boolean;
-    public function Includes(text: string) := Includes(new StringSection(text));
+    public static function Parse(s: StringSection; escape_sym: char := '\'): StringPattern;
+    public static function Parse(s: string; escape_sym: char := '\') := Parse(new StringSection(s), escape_sym);
+    
+//    public function Includes(text: string): boolean;
+//    public function Includes(text: StringPattern): boolean;
+//    public function Includes<TIter>(iter: TIter): boolean; where TIter: ICharMultiEnumerator<char, TIter>;
     
     public static function operator*(p1, p2: StringPattern): StringPattern;
     
-    private procedure WriteTo(b: ColoredStringBuilderBase<string>);
-    public function ToColoredString: ColoredString<string>;
+    private procedure WriteTo(b: ColoredStringBuilderBase<string>; escape_sym: char);
+    public function ToColoredString(escape_sym: char := '\'): ColoredString<string>;
     begin
       var b := new ColoredStringBuilder<string>('root');
-      WriteTo(b);
+      WriteTo(b, escape_sym);
       Result := b.Finish;
     end;
-    public function ToString: string; override;
+    public function ToString(escape_sym: char): string;
     begin
       var b := new UnColoredStringBuilder<string>;
-      WriteTo(b);
+      WriteTo(b, escape_sym);
       Result := b.Finish;
     end;
+    public function ToString: string; override := ToString('\');
     
   end;
   
 implementation
 
-type
-  {$region Misc}
-  
-  CharsMinT = cardinal;
-  CharsMaxT = StringIndex;
-  
-  CharsCount = record
-    min: CharsMinT;
-    max: CharsMaxT;
-    
-    property IsSimple: boolean read min=max;
-    
-    constructor(min: CharsMinT; max: CharsMaxT);
-    begin
-      self.min := min;
-      self.max := max;
-    end;
-    constructor(c: integer) := Create(c, c);
-    constructor := exit;
-    
-    static function CombineInline(c1, c2: CharsCount): CharsCount;
-    begin
-      Result.min := c1.min+c2.min;
-      Result.max := if c1.max.IsInvalid or c2.max.IsInvalid then
-        CharsMaxT.Invalid else c1.max + c2.max;
-    end;
-    
-    static function CombineParallel(c1, c2: CharsCount): CharsCount;
-    begin
-      Result.min := PABCSystem.Min(c1.min,c2.min);
-      Result.max := if c1.max.IsInvalid or c2.max.IsInvalid then
-        CharsMaxT.Invalid else PABCSystem.Max(integer(c1.max), integer(c2.max));
-    end;
-    
-  end;
+{$region StringPatternPart} type
   
   StringPatternSymJump = record
-    count: CharsCount;
+    count: PatternLength;
     valid := '';
     
-    constructor(count: CharsCount; valid: string);
+    constructor(count: PatternLength; valid: string);
     begin
       self.count := count;
       self.valid := valid;
     end;
-    constructor(c_min: CharsMinT; c_max: CharsMaxT; valid: string) :=
-    Create(new CharsCount(c_min,c_max), valid);
+    constructor(c_min: PatternLengthMinT; c_max: PatternLengthMaxT; valid: string) :=
+    Create(new PatternLength(c_min,c_max), valid);
     
   end;
   
-  {$endregion Misc}
-  
-  {$region StringPatternPart}
-  
   StringPatternPart = abstract class
     
-    public property Length: CharsCount read; abstract;
+    public property Length: PatternLength read; abstract;
     
     public function TryApply(text: StringSection; c_min, c_max: integer): sequence of StringSection; abstract;
     
     public function EnmrSymbols: sequence of StringPatternSymJump; abstract;
     
-    public procedure WriteTo(b: ColoredStringBuilderBase<string>); abstract;
+    public procedure WriteTo(b: ColoredStringBuilderBase<string>; escape_sym: char); abstract;
     
     private const wild_beg = '@[';
     private const wild_end = ']';
     private const count_chs_sep = '*';
     private const range_sep = '..';
     
-    private static escapable_chs := (wild_beg+wild_end+count_chs_sep+range_sep+'\').ToHashSet;
-    protected static procedure AddEscaped(b: ColoredStringBuilderBase<string>; ch: char);
+    private static escapable_chs := (wild_beg+wild_end+count_chs_sep+range_sep).ToHashSet;
+    protected static procedure AddEscaped(b: ColoredStringBuilderBase<string>; ch, escape_sym: char);
     begin
-      if ch in escapable_chs then
-        b += '\';
+      if (ch=escape_sym) or (ch in escapable_chs) then
+        b += escape_sym;
       b += ch;
     end;
     
@@ -122,7 +153,7 @@ type
     public constructor(val: string) := self.val := val;
     private constructor := raise new System.InvalidOperationException;
     
-    public property Length: CharsCount read new CharsCount(val.Length); override;
+    public property Length: PatternLength read new PatternLength(val.Length); override;
     
     public function TryApply(text: StringSection; c_min, c_max: integer): sequence of StringSection; override :=
     if val.Length.InRange(c_min, c_max) and text.StartsWith(val) then
@@ -132,19 +163,19 @@ type
     public function EnmrSymbols: sequence of StringPatternSymJump; override :=
     val.Select(ch->new StringPatternSymJump(1,1, ch));
     
-    public procedure WriteTo(b: ColoredStringBuilderBase<string>); override :=
+    public procedure WriteTo(b: ColoredStringBuilderBase<string>; escape_sym: char); override :=
     b.AddSubRange('solid', b->
-      foreach var ch in self.val do AddEscaped(b, ch)
+      foreach var ch in self.val do AddEscaped(b, ch, escape_sym)
     );
     
   end;
   StringPatternPartWild = sealed class(StringPatternPart)
-    private count: CharsCount;
+    private count: PatternLength;
     private allowed: HashSet<char>;
     
     {$region constructor's}
     
-    public constructor(count: CharsCount; allowed: HashSet<char>);
+    public constructor(count: PatternLength; allowed: HashSet<char>);
     begin
       self.count := count;
       self.allowed := allowed;
@@ -161,7 +192,7 @@ type
         exit;
       Result := true;
     end;
-    private static function TryParseCountFrom(s: StringSection; var c: CharsMinT): boolean;
+    private static function TryParseCountFrom(s: StringSection; var c: PatternLengthMinT): boolean;
     begin
       var nc: StringIndex;
       Result := TryParseCountFrom(s, nc);
@@ -186,7 +217,7 @@ type
         if count_chs_sep_s.IsInvalid then continue;
         var count_s := body.WithI2(count_chs_sep_s.I1);
         
-        var count := new CharsCount(0, CharsMaxT.Invalid);
+        var count := new PatternLength(0, PatternLengthMaxT.Invalid);
         if count_s.Length<>0 then
         begin
           var count_sep_s := count_s.SubSectionOfFirst(range_sep);
@@ -236,7 +267,7 @@ type
     
     {$endregion constructor's}
     
-    public property Length: CharsCount read count; override;
+    public property Length: PatternLength read count; override;
     
     public function TryApply(text: StringSection; c_min, c_max: integer): sequence of StringSection; override;
     begin
@@ -276,10 +307,11 @@ type
       end;
     end;
     
-    public procedure WriteTo(b: ColoredStringBuilderBase<string>); override :=
+    public procedure WriteTo(b: ColoredStringBuilderBase<string>; escape_sym: char); override :=
     b.AddSubRange('wild', b->
     begin
-      b += wild_beg;
+      //TODO #????
+      b += StringPatternPart.wild_beg;
       
       b.AddSubRange('count', b->
       begin
@@ -289,13 +321,15 @@ type
         b += c_min_s;
         if c_max_s<>c_min_s then
         begin
-          b += range_sep;
+          //TODO #????
+          b += StringPatternPart.range_sep;
           b += c_max_s;
         end;
         
       end);
       
-      b += count_chs_sep;
+      //TODO #????
+      b += StringPatternPart.count_chs_sep;
       
       b.AddSubRange('chars', b->
       begin
@@ -307,13 +341,13 @@ type
         
         var FlushPrev := procedure->b.AddSubRange('sym', b->
         begin
-          AddEscaped(b, ch1);
+          AddEscaped(b, ch1, escape_sym);
           if ch1<>ch2 then
           begin
             if ch2.Code-ch1.Code <> 1 then
               //TODO #????: Need "StringPatternPart."
               b += StringPatternPart.range_sep;
-            AddEscaped(b, ch2);
+            AddEscaped(b, ch2, escape_sym);
           end;
         end);
         
@@ -332,18 +366,20 @@ type
         FlushPrev;
       end);
       
-      b += wild_end;
+      //TODO #????
+      b += StringPatternPart.wild_end;
     end);
     
   end;
   
-  {$endregion StringPatternPart}
-  
+{$endregion StringPatternPart}
+
 {$region StringPattern.Create}
 
 //TODO #2714
 function StringPattern_MakeParts(pattern: StringSection): sequence of StringPatternPart;
 begin
+  //TODO Replace used_head with leftover
   
   var used_head := pattern.TakeFirst(0);
   //TODO #2715
@@ -372,18 +408,18 @@ end;
 type
   StringPattern = sealed partial class
     private parts: array of StringPatternPart;
-    private len_caps: array of CharsCount;
+    private len_caps: array of PatternLength;
     
     private constructor(parts: array of StringPatternPart);
     begin
       self.parts := parts;
       SetLength(len_caps, parts.Count);
       
-      var cap := new CharsCount(0);
+      var cap := new PatternLength(0);
       for var i := parts.Count-1 to 0 step -1 do
       begin
         len_caps[i] := cap;
-        cap := CharsCount.CombineInline(cap, parts[i].Length);
+        cap := PatternLength.CombineInline(cap, parts[i].Length);
       end;
       
     end;
@@ -407,69 +443,103 @@ begin
       yield last;
       last := curr;
     end else
-      last.count := CharsCount.CombineInline(last.count, curr.count);
+      last.count := PatternLength.CombineInline(last.count, curr.count);
   end;
   
   yield last;
 end;
 
-constructor StringPattern.Create(pattern: StringSection) := Create(StringPattern_MakeParts(pattern).ToArray);
-
 static function StringPattern.Literal(s: string) :=
 //TODO #????: adding params breaks case where array is passed to "new StringPattern"
 new StringPattern(new StringPatternPart[](new StringPatternPartSolid(s)));
+
+static function StringPattern.Parse(s: StringSection; escape_sym: char): StringPattern;
+begin
+  
+end;
 
 {$endregion StringPattern.Create}
 
 {$region StringPattern.Includes}
 
-function StringPattern.Includes(text: StringSection): boolean;
-begin
-  Result := false;
-  var leftover := text;
-  
-  var enmrs := new IEnumerator<StringSection>[parts.Length];
-  var part_i := 0;
-  
-  if part_i=parts.Length then
-  begin
-    Result := leftover.Length=0;
-    exit;
-  end;
-  
-  while true do
-  begin
-    
-    if enmrs[part_i]=nil then
-    begin
-      var caps := len_caps[part_i];
-      var left_len := leftover.Length;
-      enmrs[part_i] := parts[part_i].TryApply(leftover,
-        if caps.max.IsInvalid then 0 else (left_len-integer(caps.max)).ClampBottom(0),
-        left_len-caps.min
-      ).ToArray.AsEnumerable.GetEnumerator;
-    end;
-    
-    if not enmrs[part_i].MoveNext then
-    begin
-      enmrs[part_i] := nil;
-      part_i -= 1;
-      if part_i<0 then exit;
-      leftover.range.i1 := enmrs[part_i].Current.I2;
-    end else
-    begin
-      leftover.range.i1 := enmrs[part_i].Current.I2;
-      part_i += 1;
-      if part_i=parts.Length then
-      begin
-        Result := leftover.Length=0;
-        exit;
-      end;
-    end;
-    
-  end;
-  
-end;
+//{$region string}
+//
+//function StringPattern.Includes(text: string): boolean;
+//begin
+//  
+//end;
+//
+//{$endregion string}
+//
+//{$region StringPattern}
+//
+//function StringPattern.Includes(text: StringPattern): boolean;
+//begin
+//  
+//end;
+//
+//{$endregion StringPattern}
+//
+//{$region Generic}
+//
+//function StringPattern.Includes<TIter>(iter: TIter): boolean;
+//begin
+//  Result := false;
+//  
+//  var st := new Stack<ValueTuple<TIter, IEnumerator<TIter>>>;
+//  
+//  
+//end;
+//
+//{$endregion Generic}
+
+//function StringPattern.Includes(text: StringSection): boolean;
+//begin
+//  Result := false;
+//  var leftover := text;
+//  
+//  var enmrs := new IEnumerator<StringSection>[parts.Length];
+//  var part_i := 0;
+//  
+//  if part_i=parts.Length then
+//  begin
+//    Result := leftover.Length=0;
+//    exit;
+//  end;
+//  
+//  while true do
+//  begin
+//    
+//    if enmrs[part_i]=nil then
+//    begin
+//      var caps := len_caps[part_i];
+//      var left_len := leftover.Length;
+//      enmrs[part_i] := parts[part_i].TryApply(leftover,
+//        if caps.max.IsInvalid then 0 else (left_len-integer(caps.max)).ClampBottom(0),
+//        left_len-caps.min
+//      ).ToArray.AsEnumerable.GetEnumerator;
+//    end;
+//    
+//    if not enmrs[part_i].MoveNext then
+//    begin
+//      enmrs[part_i] := nil;
+//      part_i -= 1;
+//      if part_i<0 then exit;
+//      leftover.range.i1 := enmrs[part_i].Current.I2;
+//    end else
+//    begin
+//      leftover.range.i1 := enmrs[part_i].Current.I2;
+//      part_i += 1;
+//      if part_i=parts.Length then
+//      begin
+//        Result := leftover.Length=0;
+//        exit;
+//      end;
+//    end;
+//    
+//  end;
+//  
+//end;
 
 {$endregion StringPattern.Includes}
 
@@ -690,9 +760,9 @@ begin
       var syms_y_r := syms_y.Take(ey).Skip(y);
       
       jumps += new StringPatternSymJump(
-        CharsCount.CombineParallel(
-          syms_x_r.Select(sym->sym.count).DefaultIfEmpty.Aggregate((c1,c2)->CharsCount.CombineInline(c1,c2)),
-          syms_y_r.Select(sym->sym.count).DefaultIfEmpty.Aggregate((c1,c2)->CharsCount.CombineInline(c1,c2))
+        PatternLength.CombineParallel(
+          syms_x_r.Select(sym->sym.count).DefaultIfEmpty.Aggregate((c1,c2)->PatternLength.CombineInline(c1,c2)),
+          syms_y_r.Select(sym->sym.count).DefaultIfEmpty.Aggregate((c1,c2)->PatternLength.CombineInline(c1,c2))
         ),
         (syms_x_r.SelectMany(j->j.valid)+syms_y_r.SelectMany(j->j.valid)).ToHashSet.Order.JoinToString
       );
@@ -727,7 +797,7 @@ begin
           if sym_x.valid<>sym_y.valid then raise new System.InvalidOperationException;
           {$endif DEBUG}
           jumps += new StringPatternSymJump(
-            CharsCount.CombineParallel(sym_x.count, sym_y.count),
+            PatternLength.CombineParallel(sym_x.count, sym_y.count),
             sym_x.valid
           );
         end;
@@ -767,8 +837,8 @@ end;
 
 {$region StringPattern.ToString}
 
-procedure StringPattern.WriteTo(b: ColoredStringBuilderBase<string>) :=
-foreach var part in parts do part.WriteTo(b);
+procedure StringPattern.WriteTo(b: ColoredStringBuilderBase<string>; escape_sym: char) :=
+foreach var part in parts do part.WriteTo(b, escape_sym);
 
 {$endregion StringPattern.ToString}
 

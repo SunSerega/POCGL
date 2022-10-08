@@ -3,7 +3,7 @@
 
 type
   
-  StringIndex = record
+  StringIndex = record(IComparable<StringIndex>)
     private val: integer;
     
     private static function MakeInvalid: StringIndex;
@@ -18,7 +18,11 @@ type
       if ind<0 then raise new System.IndexOutOfRangeException($'Index was {ind}');
       Result.val := ind;
     end;
-    public static function operator implicit(ind: StringIndex): integer := ind.val;
+    public static function operator implicit(ind: StringIndex): integer;
+    begin
+      if ind.IsInvalid then raise new System.ArgumentOutOfRangeException('ind');
+      Result := ind.val;
+    end;
     
     public static function operator=(ind1, ind2: StringIndex) := ind1.val=ind2.val;
     public static function operator=(ind1: StringIndex; ind2: integer) :=
@@ -46,6 +50,13 @@ type
     end;
     public static function operator<=(ind1, ind2: StringIndex) := not (ind1>ind2);
     public static function operator>=(ind1, ind2: StringIndex) := not (ind1<ind2);
+    
+    public function CompareTo(ind: StringIndex): integer;
+    begin
+      if self.IsInvalid <> ind.IsInvalid then
+        raise new System.ArgumentOutOfRangeException(if self.IsInvalid then 'self' else 'ind');
+      Result := Sign(self.val - ind.val);
+    end;
     
     public static function operator+(ind: StringIndex; shift: integer): StringIndex;
     begin
@@ -110,7 +121,7 @@ type
     
     public static function operator in(ind: StringIndex; range: SIndexRange) := (ind>=range.i1) and (ind<=range.i2);
     
-    public function ToString: string; override := $'{i1}..{i2}';
+    public function ToString: string; override := $'[{i1}..{i2})';
     public function ToString(whole_text: string) := whole_text.SubString(i1, self.Length);
     
   end;
@@ -138,7 +149,7 @@ type
     public procedure ValidateInd(ind: StringIndex) :=
     if (ind >= StringIndex(Length)) then raise new System.IndexOutOfRangeException($'Index {ind} was >= {Length}');
     public procedure ValidateLen(len: StringIndex) :=
-    if (len > StringIndex(Length)) then raise new System.IndexOutOfRangeException($'Length {len} was > {Length}');
+    if (len >  StringIndex(Length)) then raise new System.IndexOutOfRangeException($'Length {len} was > {Length}');
     
     public static function operator in(ind: StringIndex; s: StringSection) := ind in s.range;
     

@@ -73,7 +73,7 @@ type
       Result := new System.Collections.ObjectModel.ReadOnlyCollection<ColoredStringPart<TKey>>(key_lookup[key]);
     end;
     public property ByKey[key: TKey]: IList<ColoredStringPart<TKey>> read GetByKey; default;
-    public function GetAllKeys := key_lookup.Keys;
+    public function GetAllKeys{: ICollection<TKey>} := key_lookup.Keys;
     
   end;
   
@@ -93,21 +93,16 @@ type
   end;
   
   ColoredStringBuilderBase<TKey> = abstract class
-    private _key: TKey;
     
     protected sb: StringBuilder;
     protected range := SIndexRange.Invalid;
     
-    public constructor(key: TKey; sb: StringBuilder);
+    public constructor(sb: StringBuilder);
     begin
-      self._key := key;
       self.sb := sb;
       range.i1 := sb.Length;
     end;
-    public constructor(key: TKey) := Create(key, new StringBuilder);
-    private constructor := raise new System.InvalidOperationException;
-    
-    public property Key: TKey read _key;
+    public constructor := Create(new StringBuilder);
     
     {$region Append}
     
@@ -148,9 +143,6 @@ type
   end;
   UnColoredStringBuilder<TKey> = sealed class(ColoredStringBuilderBase<TKey>)
     
-    public constructor(sb: StringBuilder) := inherited Create(default(TKey), sb);
-    public constructor := inherited Create(default(TKey));
-    
     public procedure AddSubRange(key: TKey; build: ColoredStringBuilderBase<TKey> -> ()); override := build(self);
     
     public function Finish := GetText;
@@ -158,6 +150,17 @@ type
   end;
   ColoredStringBuilder<TKey> = sealed class(ColoredStringBuilderBase<TKey>)
     private parts := new List<ColoredStringBuilder<TKey>>;
+    private _key: TKey;
+    
+    public constructor(key: TKey; sb: StringBuilder);
+    begin
+      inherited Create(sb);
+      self._key := key;
+    end;
+    public constructor(key: TKey) := Create(key, new StringBuilder);
+    private constructor := raise new System.InvalidOperationException;
+    
+    public property Key: TKey read _key;
     
     public procedure AddSubRange(key: TKey; build: ColoredStringBuilderBase<TKey> -> ()); override;
     begin
