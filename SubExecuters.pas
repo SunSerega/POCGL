@@ -142,8 +142,9 @@ begin
   try
     if e.Data=nil then
     begin
-      if pipe_connection_established<>true then
-        thr_otp.Finish;
+      // Only .Finish here, in case output after pipe is closed
+//      if pipe_connection_established<>true then
+      thr_otp.Finish;
     end else
       thr_otp.Enq(e.Data);
   except
@@ -180,7 +181,8 @@ begin
           
           2:
           begin
-            thr_otp.Finish;
+            // .Finish in OutputDataReceived, in case error comes there after pipe closing
+//            thr_otp.Finish;
             curr_timer.Load(br);
             br.Close;
             break;
