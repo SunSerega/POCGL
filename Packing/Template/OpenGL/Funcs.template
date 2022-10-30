@@ -38556,8 +38556,8 @@
     public const _ExtStr = 'gl_sgix_sprite';
     
     private z_SpriteParameterfSGIX_adr := GetProcAddress('glSpriteParameterfSGIX');
-    private z_SpriteParameterfSGIX_1 := GetProcOrNil&<procedure(pname: SpriteParameterName; param: single)>(z_SpriteParameterfSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpriteParameterfSGIX(pname: SpriteParameterName; param: single) :=
+    private z_SpriteParameterfSGIX_1 := GetProcOrNil&<procedure(pname: SpriteParameterName; param: SpriteModeSingle)>(z_SpriteParameterfSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpriteParameterfSGIX(pname: SpriteParameterName; param: SpriteModeSingle) :=
     z_SpriteParameterfSGIX_1(pname, param);
     
     private z_SpriteParameterfvSGIX_adr := GetProcAddress('glSpriteParameterfvSGIX');
@@ -38576,21 +38576,21 @@
     z_SpriteParameterfvSGIX_1(pname, &params);
     
     private z_SpriteParameteriSGIX_adr := GetProcAddress('glSpriteParameteriSGIX');
-    private z_SpriteParameteriSGIX_1 := GetProcOrNil&<procedure(pname: SpriteParameterName; param: Int32)>(z_SpriteParameteriSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpriteParameteriSGIX(pname: SpriteParameterName; param: Int32) :=
+    private z_SpriteParameteriSGIX_1 := GetProcOrNil&<procedure(pname: SpriteParameterName; param: SpriteMode)>(z_SpriteParameteriSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpriteParameteriSGIX(pname: SpriteParameterName; param: SpriteMode) :=
     z_SpriteParameteriSGIX_1(pname, param);
     
     private z_SpriteParameterivSGIX_adr := GetProcAddress('glSpriteParameterivSGIX');
     private z_SpriteParameterivSGIX_1 := GetProcOrNil&<procedure(pname: SpriteParameterName; &params: IntPtr)>(z_SpriteParameterivSGIX_adr);
-    private z_SpriteParameterivSGIX_2 := GetProcOrNil&<procedure(pname: SpriteParameterName; var &params: Int32)>(z_SpriteParameterivSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpriteParameterivSGIX(pname: SpriteParameterName; &params: array of Int32);
-    type PInt32=^Int32;
+    private z_SpriteParameterivSGIX_2 := GetProcOrNil&<procedure(pname: SpriteParameterName; var &params: SpriteMode)>(z_SpriteParameterivSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpriteParameterivSGIX(pname: SpriteParameterName; &params: array of SpriteMode);
+    type PSpriteMode=^SpriteMode;
     begin
       if (&params<>nil) and (&params.Length<>0) then
         z_SpriteParameterivSGIX_2(pname, &params[0]) else
-        z_SpriteParameterivSGIX_2(pname, PInt32(nil)^);
+        z_SpriteParameterivSGIX_2(pname, PSpriteMode(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpriteParameterivSGIX(pname: SpriteParameterName; var &params: Int32) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpriteParameterivSGIX(pname: SpriteParameterName; var &params: SpriteMode) :=
     z_SpriteParameterivSGIX_2(pname, &params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpriteParameterivSGIX(pname: SpriteParameterName; &params: IntPtr) :=
     z_SpriteParameterivSGIX_1(pname, &params);

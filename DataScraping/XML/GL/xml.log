@@ -36,3 +36,4 @@ Kind [ColorIndexMask] was not utilised
 Kind [StencilMask] was not utilised
 Kind [SelectName] was not utilised
 Group [SampleMaskNV] isn't defined
+Clampable types: GLfixed GLfloat GLdouble GLclampf GLclampd

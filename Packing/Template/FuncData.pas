@@ -255,13 +255,24 @@ type
         Result := 0;
         if t1=t2 then exit;
         
+        var t_float := function(t: string): boolean ->
+        case t of
+          'Byte':   Result := false;
+          'UInt32': Result := false;
+          'single': Result := true;
+        end;
+        // Is floating point (false, true)
+        Result += Ord(t_float(t1));
+        Result -= Ord(t_float(t2));
+        if Result<>0 then exit;
+        
         var t_size := function(t: string): integer ->
         case t of
-          'Byte': Result := 1;
+          'Byte':   Result := 1;
           'UInt32': Result := 4;
+          'single': Result := 4;
           else raise new System.NotImplementedException(t);
         end;
-        
         // Size (ascending)
         Result += t_size(t1);
         Result -= t_size(t2);
@@ -280,7 +291,7 @@ type
       if t in |self.types[0],self.name| then
         Result := '' else
       if t in self.types then
-        Result := t else
+        Result := t.First.ToUpper + t.Substring(1) else
         raise new System.InvalidOperationException($'Group [{self.name}]: Type [{t}] is not in [{self.types.JoinToString}] or [{self.types_use_replacements.JoinToString}]');
       
     end;
@@ -424,9 +435,7 @@ type
       
       foreach var t in types index i do
       begin
-        var cur_name := name;
-        if i<>0 then cur_name += t;
-        
+        var cur_name := name+SuffixForType(t);
         wr +=       $'  {cur_name} = record' + #10;
         
         wr +=       $'    public val: {t};' + #10;
@@ -437,8 +446,10 @@ type
         
         if i<>0 then
         begin
-          wr +=     $'    public static function operator implicit(v: {cur_name}): {name} := new {    name}(v.val);' + #10;
-          wr +=     $'    public static function operator implicit(v: {name}): {cur_name} := new {cur_name}(v.val);' + #10;
+          var val_str1 := 'v.val'; if t in |'single'| then val_str1 := $'Round({val_str1})';
+          var val_str2 := 'v.val';
+          wr +=     $'    public static function operator implicit(v: {cur_name}): {name} := new {    name}({val_str1});' + #10;
+          wr +=     $'    public static function operator implicit(v: {name}): {cur_name} := new {cur_name}({val_str2});' + #10;
           wr +=     $'    ' + #10;
         end;
         
@@ -2834,11 +2845,12 @@ type
     public function Apply(gr: Group): boolean; override;
     begin
       gr.name     := self.name;
-      gr.types    := new List<string>(|self.t|);
       gr.bitmask  := self.bitmask;
       gr.enums    := new Dictionary<string, int64>(self.enums.Count);
       foreach var (key, val) in self.enums do
         gr.AddKeyVal(key, val);
+      gr.types    := new List<string>(|self.t|);
+      gr.types_use_replacements := new Dictionary<string, string>;
       gr.explicit_existence := true;
       Group.name_cache := nil;
       Result := false;

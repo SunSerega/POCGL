@@ -9639,6 +9639,45 @@
     
   end;
   
+  SpriteMode = record
+    public val: Int32;
+    public constructor(val: Int32) := self.val := val;
+    
+    public static property SPRITE_AXIAL:          SpriteMode read new SpriteMode($814C);
+    public static property SPRITE_OBJECT_ALIGNED: SpriteMode read new SpriteMode($814D);
+    public static property SPRITE_EYE_ALIGNED:    SpriteMode read new SpriteMode($814E);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = Int32($814C) then Result := 'SPRITE_AXIAL' else
+      if self.val = Int32($814D) then Result := 'SPRITE_OBJECT_ALIGNED' else
+      if self.val = Int32($814E) then Result := 'SPRITE_EYE_ALIGNED' else
+        Result := $'SpriteMode[{self.val}]';
+    end;
+    
+  end;
+  
+  SpriteModeSingle = record
+    public val: single;
+    public constructor(val: single) := self.val := val;
+    
+    public static function operator implicit(v: SpriteModeSingle): SpriteMode := new SpriteMode(Round(v.val));
+    public static function operator implicit(v: SpriteMode): SpriteModeSingle := new SpriteModeSingle(v.val);
+    
+    public static property SPRITE_AXIAL:          SpriteModeSingle read new SpriteModeSingle($814C);
+    public static property SPRITE_OBJECT_ALIGNED: SpriteModeSingle read new SpriteModeSingle($814D);
+    public static property SPRITE_EYE_ALIGNED:    SpriteModeSingle read new SpriteModeSingle($814E);
+    
+    public function ToString: string; override;
+    begin
+      if self.val = single($814C) then Result := 'SPRITE_AXIAL' else
+      if self.val = single($814D) then Result := 'SPRITE_OBJECT_ALIGNED' else
+      if self.val = single($814E) then Result := 'SPRITE_EYE_ALIGNED' else
+        Result := $'SpriteModeSingle[{self.val}]';
+    end;
+    
+  end;
+  
   SpriteParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;

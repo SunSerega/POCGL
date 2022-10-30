@@ -17410,9 +17410,9 @@
 	equation      |
 
 # glSpriteParameterfSGIX[1]:
-	SpriteParameterName | single |
-	------------------- | ------ |
-	pname               | param  |
+	SpriteParameterName | SpriteModeSingle |
+	------------------- | ---------------- |
+	pname               | param            |
 
 # glSpriteParameterfvSGIX[3]:
 	SpriteParameterName | array of single |
@@ -17422,16 +17422,16 @@
 	pname               | params          |
 
 # glSpriteParameteriSGIX[1]:
-	SpriteParameterName | Int32 |
-	------------------- | ----- |
-	pname               | param |
+	SpriteParameterName | SpriteMode |
+	------------------- | ---------- |
+	pname               | param      |
 
 # glSpriteParameterivSGIX[3]:
-	SpriteParameterName | array of Int32 |
-	SpriteParameterName | var Int32      |
-	SpriteParameterName | IntPtr         |
-	------------------- | -------------- |
-	pname               | params         |
+	SpriteParameterName | array of SpriteMode |
+	SpriteParameterName | var SpriteMode      |
+	SpriteParameterName | IntPtr              |
+	------------------- | ------------------- |
+	pname               | params              |
 
 # glTagSampleBufferSGIX[1]:
 
