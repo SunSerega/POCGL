@@ -35,7 +35,7 @@ begin
   p.StartInfo := psi;
   
   var p_otp := new AsyncProcOtp(AsyncProcOtp.curr);
-  p.OutputDataReceived += (o,e)->if e.Data=nil then              else p_otp.Enq( $'{nick}[OUT] : {e.Data.Trim(#32)}'                );
+  p.OutputDataReceived += (o,e)->if e.Data=nil then              else p_otp.Enq( $'{nick}[OUT] : {e.Data.Trim(#32)}'         );
   p.ErrorDataReceived  += (o,e)->if e.Data=nil then p_otp.Finish else p_otp.Enq( $'{nick}[ERR] : {e.Data.Trim(|''='',#32|)}' );
   
   p.Start;

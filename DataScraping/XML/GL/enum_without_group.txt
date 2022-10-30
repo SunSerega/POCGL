@@ -1,9 +1,4 @@
 ﻿glSampleMaski
-glColorP3ui
-glColorP3uiv
-glColorP4ui
-glSecondaryColorP3ui
-glSecondaryColorP3uiv
 glGetProgramBinary
 glProgramBinary
 glDebugMessageEnableAMD

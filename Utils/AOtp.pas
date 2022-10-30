@@ -55,8 +55,9 @@ type
       bw.Write(self.general);
     end;
     
+    public function ToString: string; override := s;
     public procedure Println; virtual :=
-    Console.WriteLine(s);
+    Console.WriteLine(self);
     
   end;
   OtpLineColored = sealed class(OtpLine)
@@ -354,8 +355,8 @@ end;
 procedure MakeSureToExit;
 begin
   if
-//    Logger.main is ConsoleLogger
-    System.Environment.GetCommandLineArgs.Skip(1).FirstOrDefault <> '[REDIRECTIOMODE]'
+    (Logger.main is ConsoleLogger) and
+    ('[REDIRECTIOMODE]' not in System.Environment.GetCommandLineArgs.Skip(1).Take(1))
   then ReadString(#10'Press Enter to exit:');
   StartBgThread(()->
   begin

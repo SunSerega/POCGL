@@ -20,8 +20,7 @@ Kind [Clamped[0; 1]] was not utilised
 Kind [BufferOffset] was not utilised
 Kind [BufferSize] was not utilised
 Kind [Color] was not utilised
-Kind [Clamped[-1] was not described
-Kind [ 1]] was not described
+Kind [Clamped[-1; 1]] was not utilised
 Kind [DrawBufferIndex] was not utilised
 Kind [Clamp01] was not described
 Kind [ColorIndexValue] was not utilised

@@ -1871,6 +1871,7 @@ type
             //TODO Instead of boolean check, parameter should have type BooleanByte
             // - And boolean itself should be disallowed except for plain case
             // - glAreTexturesResidentEXT rn only returns 1 value
+            //TODO Tho type manipulation with [FieldOffset] to convert boolean to byte - also works
             if par.IsGeneric or (par.tname='boolean') then
             begin
               // Ovr's like "p<T>(o: T)" don't make sense
