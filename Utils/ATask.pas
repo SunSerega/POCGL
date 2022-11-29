@@ -1,4 +1,4 @@
-unit ATask;
+﻿unit ATask;
 
 uses System.Threading;
 
@@ -191,7 +191,7 @@ procedure operator*=(var p1: AsyncTask; p2: AsyncTask); extensionmethod := p1 :=
 function CompTask(fname: string; general_task: boolean := false; args: string := nil) :=
 ProcTask(()->CompilePasFile(fname, general_task, args));
 
-function ExecTask(fname, nick: string; params pars: array of string) :=
+function ExecTask(fname, nick: string; params pars: array of string): AsyncTask :=
 new AsyncTaskProcessExec(fname, nick, pars);
 
 function SetEvTask(ev: ManualResetEvent) := ProcTask(()->ev.Set());
