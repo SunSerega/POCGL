@@ -21,7 +21,7 @@ begin
     parts += $'echo [remove origin push] && git remote set-url --push "{remote_official}" NO_PUSH_URL';
     parts += $'echo [add own remote] && git remote add --fetch -t {branch} "{remote_own}" "git@github.com:{remote_own}/{name}.git" || cd .';
   end;
-  parts += $'echo [checkout] && git checkout {branch}';
+  parts += $'echo [checkout] && git checkout {branch} 2>&1';
   parts += $'echo [pull] && git pull {remote_official} main & echo [pull-own]: && git pull {remote_own} {branch}';
   parts += $'echo [push] && git push {remote_own} {branch}';
   
