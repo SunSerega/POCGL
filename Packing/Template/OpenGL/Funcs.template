@@ -1444,8 +1444,8 @@
     
     // added in gl4.2
     private z_DrawElementsInstancedBaseInstance_adr := GetProcAddress('glDrawElementsInstancedBaseInstance');
-    private z_DrawElementsInstancedBaseInstance_1 := GetProcOrNil&<procedure(mode: PrimitiveType; count: Int32; &type: PrimitiveType; indices: IntPtr; instancecount: Int32; baseinstance: UInt32)>(z_DrawElementsInstancedBaseInstance_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawElementsInstancedBaseInstance(mode: PrimitiveType; count: Int32; &type: PrimitiveType; indices: IntPtr; instancecount: Int32; baseinstance: UInt32) :=
+    private z_DrawElementsInstancedBaseInstance_1 := GetProcOrNil&<procedure(mode: PrimitiveType; count: Int32; &type: DrawElementsType; indices: IntPtr; instancecount: Int32; baseinstance: UInt32)>(z_DrawElementsInstancedBaseInstance_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawElementsInstancedBaseInstance(mode: PrimitiveType; count: Int32; &type: DrawElementsType; indices: IntPtr; instancecount: Int32; baseinstance: UInt32) :=
     z_DrawElementsInstancedBaseInstance_1(mode, count, &type, indices, instancecount, baseinstance);
     
     // added in gl3.2
@@ -13168,8 +13168,8 @@
     z_DrawArraysInstancedBaseInstance_1(mode, first, count, instancecount, baseinstance);
     
     private z_DrawElementsInstancedBaseInstance_adr := GetProcAddress('glDrawElementsInstancedBaseInstance');
-    private z_DrawElementsInstancedBaseInstance_1 := GetProcOrNil&<procedure(mode: PrimitiveType; count: Int32; &type: PrimitiveType; indices: IntPtr; instancecount: Int32; baseinstance: UInt32)>(z_DrawElementsInstancedBaseInstance_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawElementsInstancedBaseInstance(mode: PrimitiveType; count: Int32; &type: PrimitiveType; indices: IntPtr; instancecount: Int32; baseinstance: UInt32) :=
+    private z_DrawElementsInstancedBaseInstance_1 := GetProcOrNil&<procedure(mode: PrimitiveType; count: Int32; &type: DrawElementsType; indices: IntPtr; instancecount: Int32; baseinstance: UInt32)>(z_DrawElementsInstancedBaseInstance_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure DrawElementsInstancedBaseInstance(mode: PrimitiveType; count: Int32; &type: DrawElementsType; indices: IntPtr; instancecount: Int32; baseinstance: UInt32) :=
     z_DrawElementsInstancedBaseInstance_1(mode, count, &type, indices, instancecount, baseinstance);
     
     private z_DrawElementsInstancedBaseVertexBaseInstance_adr := GetProcAddress('glDrawElementsInstancedBaseVertexBaseInstance');

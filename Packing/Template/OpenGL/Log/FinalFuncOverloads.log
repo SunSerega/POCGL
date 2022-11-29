@@ -827,9 +827,9 @@
 	mode          | count | type             | indices | instancecount |
 
 # glDrawElementsInstancedBaseInstance[1]:
-	PrimitiveType | Int32 | PrimitiveType | IntPtr  | Int32         | UInt32       |
-	------------- | ----- | ------------- | ------- | ------------- | ------------ |
-	mode          | count | type          | indices | instancecount | baseinstance |
+	PrimitiveType | Int32 | DrawElementsType | IntPtr  | Int32         | UInt32       |
+	------------- | ----- | ---------------- | ------- | ------------- | ------------ |
+	mode          | count | type             | indices | instancecount | baseinstance |
 
 # glDrawElementsInstancedBaseVertex[1]:
 	PrimitiveType | Int32 | DrawElementsType | IntPtr  | Int32         | Int32      |

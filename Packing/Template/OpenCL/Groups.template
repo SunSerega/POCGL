@@ -2407,15 +2407,19 @@
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    public static property DEVICE_HANDLE_LIST_END: MemProperties read new MemProperties($0000);
-    public static property DEVICE_HANDLE_LIST:     MemProperties read new MemProperties($2051);
-    public static property MEM_ALLOC_FLAGS_IMG:    MemProperties read new MemProperties($40D7);
+    public static property DEVICE_HANDLE_LIST_END:        MemProperties read new MemProperties($0000);
+    public static property DEVICE_HANDLE_LIST:            MemProperties read new MemProperties($2051);
+    public static property MEM_ALLOC_FLAGS_IMG:           MemProperties read new MemProperties($40D7);
+    public static property MEM_LOCALLY_UNCACHED_RESOURCE: MemProperties read new MemProperties($4218);
+    public static property MEM_DEVICE_ID:                 MemProperties read new MemProperties($4219);
     
     public function ToString: string; override;
     begin
       if self.val = UInt64($0000) then Result := 'DEVICE_HANDLE_LIST_END' else
       if self.val = UInt64($2051) then Result := 'DEVICE_HANDLE_LIST' else
       if self.val = UInt64($40D7) then Result := 'MEM_ALLOC_FLAGS_IMG' else
+      if self.val = UInt64($4218) then Result := 'MEM_LOCALLY_UNCACHED_RESOURCE' else
+      if self.val = UInt64($4219) then Result := 'MEM_DEVICE_ID' else
         Result := $'MemProperties[{self.val}]';
     end;
     
