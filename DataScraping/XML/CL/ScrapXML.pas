@@ -355,6 +355,8 @@ type
         bw.Write(base_t[1]);
       end;
       
+      bw.Write(false); // value_mlt - for Vec and Mtr from OpenGL 
+      
     end;
     
   end;

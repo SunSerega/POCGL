@@ -151,6 +151,14 @@ type
     private readonly_lvls := new List<integer>; // "const int * * const * v": Levels 1 and 3 are readonly
     private gr: Group := nil;
     
+    {$region kind info}
+    
+    // float with value_mlt of [2,3] is Mtr2x3f
+    // double with value_mlt of [4] is Vec4d
+    private value_mlt: (string, array of integer);
+    
+    {$endregion kind info}
+    
     {$region Sanity data}
     
     private is_color: boolean;
@@ -166,6 +174,26 @@ type
     begin
       on_used();
       on_used -= on_used;
+    end;
+    
+    private procedure ApplyKind(kind: string) :=
+    case kind of
+      
+      'String':
+      begin
+        if self.t <> 'GLubyte' then raise new MessageException($'ERROR: Kind [{kind}] was applied to type [{self.t}]');
+        self.t := 'GLchar';
+      end;
+      
+      else
+      begin
+        
+        if |'Matrix'|.Find(kind.StartsWith) is string(var kind_mlt) then
+          self.value_mlt := (kind_mlt, kind.Remove(0, kind_mlt.Length).Split('x').ConvertAll(s->s.ToInteger)) else
+        
+        if (kind in Kinds.described) and LogCache.kinds_unutilised.Add(kind) then
+          log.WriteLine($'Kind [{kind}] was not utilised');
+      end;
     end;
     
     private enum_types := |'GLenum', 'GLbitfield'|;
@@ -213,17 +241,7 @@ type
           self.is_clamped := true;
         end;
         
-        case kind of
-          
-          'String':
-          begin
-            if self.t <> 'GLubyte' then raise new MessageException($'ERROR: Kind [{kind}] was applied to type [{self.t}]');
-            self.t := 'GLchar';
-          end;
-          
-          else if (kind in Kinds.described) and LogCache.kinds_unutilised.Add(kind) then
-            log.WriteLine($'Kind [{kind}] was not utilised');
-        end;
+        ApplyKind(kind);
       end;
       
       if n['group'] is string(var gname) then
@@ -267,6 +285,16 @@ type
       bw.Write(ind);
       
       bw.Write(false); // base_t - onlt relevant for OpenCL, because there is no class's
+      
+      bw.Write(value_mlt<>nil);
+      if value_mlt<>nil then
+      begin
+        var (kind, mlt) := value_mlt;
+        bw.Write(kind);
+        bw.Write(mlt.Length);
+        foreach var v in mlt do
+          bw.Write(v);
+      end;
       
     end;
     

@@ -2546,120 +2546,137 @@
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix2fv[3]:
+# glProgramUniformMatrix2fv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr2x2f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix2x3dv[3]:
+# glProgramUniformMatrix2x3dv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr2x3d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix2x3fv[3]:
+# glProgramUniformMatrix2x3fv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr2x3f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix2x4dv[3]:
+# glProgramUniformMatrix2x4dv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr2x4d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix2x4fv[3]:
+# glProgramUniformMatrix2x4fv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr2x4f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix3dv[3]:
+# glProgramUniformMatrix3dv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr3x3d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix3fv[3]:
+# glProgramUniformMatrix3fv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr3x3f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix3x2dv[3]:
+# glProgramUniformMatrix3x2dv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr3x2d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix3x2fv[3]:
+# glProgramUniformMatrix3x2fv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr3x2f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix3x4dv[3]:
+# glProgramUniformMatrix3x4dv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr3x4d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix3x4fv[3]:
+# glProgramUniformMatrix3x4fv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr3x4f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix4dv[3]:
+# glProgramUniformMatrix4dv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr4x4d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix4fv[3]:
+# glProgramUniformMatrix4fv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr4x4f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix4x2dv[3]:
+# glProgramUniformMatrix4x2dv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr4x2d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix4x2fv[3]:
+# glProgramUniformMatrix4x2fv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr4x2f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix4x3dv[3]:
+# glProgramUniformMatrix4x3dv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr4x3d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix4x3fv[3]:
+# glProgramUniformMatrix4x3fv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr4x3f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
@@ -3370,120 +3387,137 @@
 	-------- | ----- | --------- | ------------- |
 	location | count | transpose | value         |
 
-# glUniformMatrix2fv[3]:
+# glUniformMatrix2fv[4]:
 	Int32    | Int32 | boolean   | array of single |
+	Int32    | Int32 | boolean   | var Mtr2x2f     |
 	Int32    | Int32 | boolean   | var single      |
 	Int32    | Int32 | boolean   | IntPtr          |
 	-------- | ----- | --------- | --------------- |
 	location | count | transpose | value           |
 
-# glUniformMatrix2x3dv[3]:
+# glUniformMatrix2x3dv[4]:
 	Int32    | Int32 | boolean   | array of real |
+	Int32    | Int32 | boolean   | var Mtr2x3d   |
 	Int32    | Int32 | boolean   | var real      |
 	Int32    | Int32 | boolean   | IntPtr        |
 	-------- | ----- | --------- | ------------- |
 	location | count | transpose | value         |
 
-# glUniformMatrix2x3fv[3]:
+# glUniformMatrix2x3fv[4]:
 	Int32    | Int32 | boolean   | array of single |
+	Int32    | Int32 | boolean   | var Mtr2x3f     |
 	Int32    | Int32 | boolean   | var single      |
 	Int32    | Int32 | boolean   | IntPtr          |
 	-------- | ----- | --------- | --------------- |
 	location | count | transpose | value           |
 
-# glUniformMatrix2x4dv[3]:
+# glUniformMatrix2x4dv[4]:
 	Int32    | Int32 | boolean   | array of real |
+	Int32    | Int32 | boolean   | var Mtr2x4d   |
 	Int32    | Int32 | boolean   | var real      |
 	Int32    | Int32 | boolean   | IntPtr        |
 	-------- | ----- | --------- | ------------- |
 	location | count | transpose | value         |
 
-# glUniformMatrix2x4fv[3]:
+# glUniformMatrix2x4fv[4]:
 	Int32    | Int32 | boolean   | array of single |
+	Int32    | Int32 | boolean   | var Mtr2x4f     |
 	Int32    | Int32 | boolean   | var single      |
 	Int32    | Int32 | boolean   | IntPtr          |
 	-------- | ----- | --------- | --------------- |
 	location | count | transpose | value           |
 
-# glUniformMatrix3dv[3]:
+# glUniformMatrix3dv[4]:
 	Int32    | Int32 | boolean   | array of real |
+	Int32    | Int32 | boolean   | var Mtr3x3d   |
 	Int32    | Int32 | boolean   | var real      |
 	Int32    | Int32 | boolean   | IntPtr        |
 	-------- | ----- | --------- | ------------- |
 	location | count | transpose | value         |
 
-# glUniformMatrix3fv[3]:
+# glUniformMatrix3fv[4]:
 	Int32    | Int32 | boolean   | array of single |
+	Int32    | Int32 | boolean   | var Mtr3x3f     |
 	Int32    | Int32 | boolean   | var single      |
 	Int32    | Int32 | boolean   | IntPtr          |
 	-------- | ----- | --------- | --------------- |
 	location | count | transpose | value           |
 
-# glUniformMatrix3x2dv[3]:
+# glUniformMatrix3x2dv[4]:
 	Int32    | Int32 | boolean   | array of real |
+	Int32    | Int32 | boolean   | var Mtr3x2d   |
 	Int32    | Int32 | boolean   | var real      |
 	Int32    | Int32 | boolean   | IntPtr        |
 	-------- | ----- | --------- | ------------- |
 	location | count | transpose | value         |
 
-# glUniformMatrix3x2fv[3]:
+# glUniformMatrix3x2fv[4]:
 	Int32    | Int32 | boolean   | array of single |
+	Int32    | Int32 | boolean   | var Mtr3x2f     |
 	Int32    | Int32 | boolean   | var single      |
 	Int32    | Int32 | boolean   | IntPtr          |
 	-------- | ----- | --------- | --------------- |
 	location | count | transpose | value           |
 
-# glUniformMatrix3x4dv[3]:
+# glUniformMatrix3x4dv[4]:
 	Int32    | Int32 | boolean   | array of real |
+	Int32    | Int32 | boolean   | var Mtr3x4d   |
 	Int32    | Int32 | boolean   | var real      |
 	Int32    | Int32 | boolean   | IntPtr        |
 	-------- | ----- | --------- | ------------- |
 	location | count | transpose | value         |
 
-# glUniformMatrix3x4fv[3]:
+# glUniformMatrix3x4fv[4]:
 	Int32    | Int32 | boolean   | array of single |
+	Int32    | Int32 | boolean   | var Mtr3x4f     |
 	Int32    | Int32 | boolean   | var single      |
 	Int32    | Int32 | boolean   | IntPtr          |
 	-------- | ----- | --------- | --------------- |
 	location | count | transpose | value           |
 
-# glUniformMatrix4dv[3]:
+# glUniformMatrix4dv[4]:
 	Int32    | Int32 | boolean   | array of real |
+	Int32    | Int32 | boolean   | var Mtr4x4d   |
 	Int32    | Int32 | boolean   | var real      |
 	Int32    | Int32 | boolean   | IntPtr        |
 	-------- | ----- | --------- | ------------- |
 	location | count | transpose | value         |
 
-# glUniformMatrix4fv[3]:
+# glUniformMatrix4fv[4]:
 	Int32    | Int32 | boolean   | array of single |
+	Int32    | Int32 | boolean   | var Mtr4x4f     |
 	Int32    | Int32 | boolean   | var single      |
 	Int32    | Int32 | boolean   | IntPtr          |
 	-------- | ----- | --------- | --------------- |
 	location | count | transpose | value           |
 
-# glUniformMatrix4x2dv[3]:
+# glUniformMatrix4x2dv[4]:
 	Int32    | Int32 | boolean   | array of real |
+	Int32    | Int32 | boolean   | var Mtr4x2d   |
 	Int32    | Int32 | boolean   | var real      |
 	Int32    | Int32 | boolean   | IntPtr        |
 	-------- | ----- | --------- | ------------- |
 	location | count | transpose | value         |
 
-# glUniformMatrix4x2fv[3]:
+# glUniformMatrix4x2fv[4]:
 	Int32    | Int32 | boolean   | array of single |
+	Int32    | Int32 | boolean   | var Mtr4x2f     |
 	Int32    | Int32 | boolean   | var single      |
 	Int32    | Int32 | boolean   | IntPtr          |
 	-------- | ----- | --------- | --------------- |
 	location | count | transpose | value           |
 
-# glUniformMatrix4x3dv[3]:
+# glUniformMatrix4x3dv[4]:
 	Int32    | Int32 | boolean   | array of real |
+	Int32    | Int32 | boolean   | var Mtr4x3d   |
 	Int32    | Int32 | boolean   | var real      |
 	Int32    | Int32 | boolean   | IntPtr        |
 	-------- | ----- | --------- | ------------- |
 	location | count | transpose | value         |
 
-# glUniformMatrix4x3fv[3]:
+# glUniformMatrix4x3fv[4]:
 	Int32    | Int32 | boolean   | array of single |
+	Int32    | Int32 | boolean   | var Mtr4x3f     |
 	Int32    | Int32 | boolean   | var single      |
 	Int32    | Int32 | boolean   | IntPtr          |
 	-------- | ----- | --------- | --------------- |
@@ -8477,22 +8511,25 @@
 	-------- | ----- | -------------- |
 	location | count | value          |
 
-# glUniformMatrix2fvARB[3]:
+# glUniformMatrix2fvARB[4]:
 	Int32    | Int32 | boolean   | array of single |
+	Int32    | Int32 | boolean   | var Mtr2x2f     |
 	Int32    | Int32 | boolean   | var single      |
 	Int32    | Int32 | boolean   | IntPtr          |
 	-------- | ----- | --------- | --------------- |
 	location | count | transpose | value           |
 
-# glUniformMatrix3fvARB[3]:
+# glUniformMatrix3fvARB[4]:
 	Int32    | Int32 | boolean   | array of single |
+	Int32    | Int32 | boolean   | var Mtr3x3f     |
 	Int32    | Int32 | boolean   | var single      |
 	Int32    | Int32 | boolean   | IntPtr          |
 	-------- | ----- | --------- | --------------- |
 	location | count | transpose | value           |
 
-# glUniformMatrix4fvARB[3]:
+# glUniformMatrix4fvARB[4]:
 	Int32    | Int32 | boolean   | array of single |
+	Int32    | Int32 | boolean   | var Mtr4x4f     |
 	Int32    | Int32 | boolean   | var single      |
 	Int32    | Int32 | boolean   | IntPtr          |
 	-------- | ----- | --------- | --------------- |
@@ -10762,29 +10799,33 @@
 	---------- | -------- | ----- | -------------- |
 	program    | location | count | value          |
 
-# glProgramUniformMatrix2fvEXT[3]:
+# glProgramUniformMatrix2fvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr2x2f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix3fvEXT[3]:
+# glProgramUniformMatrix3fvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr3x3f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix4fvEXT[3]:
+# glProgramUniformMatrix4fvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr4x4f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix2x3fvEXT[3]:
+# glProgramUniformMatrix2x3fvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr2x3f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
@@ -10797,29 +10838,33 @@
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix2x4fvEXT[3]:
+# glProgramUniformMatrix2x4fvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr2x4f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix4x2fvEXT[3]:
+# glProgramUniformMatrix4x2fvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr4x2f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix3x4fvEXT[3]:
+# glProgramUniformMatrix3x4fvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr3x4f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix4x3fvEXT[3]:
+# glProgramUniformMatrix4x3fvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr4x3f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
@@ -11383,57 +11428,65 @@
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix3dvEXT[3]:
+# glProgramUniformMatrix3dvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr3x3d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix4dvEXT[3]:
+# glProgramUniformMatrix4dvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr4x4d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix2x3dvEXT[3]:
+# glProgramUniformMatrix2x3dvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr2x3d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix2x4dvEXT[3]:
+# glProgramUniformMatrix2x4dvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr2x4d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix3x2dvEXT[3]:
+# glProgramUniformMatrix3x2dvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr3x2d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix3x4dvEXT[3]:
+# glProgramUniformMatrix3x4dvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr3x4d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix4x2dvEXT[3]:
+# glProgramUniformMatrix4x2dvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr4x2d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
 	program    | location | count | transpose | value         |
 
-# glProgramUniformMatrix4x3dvEXT[3]:
+# glProgramUniformMatrix4x3dvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr4x3d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |

@@ -579,6 +579,10 @@ type
       if br.ReadBoolean then
         base_t := (br.ReadString, br.ReadInt32);
       
+      // value_mlt
+      if br.ReadBoolean then
+        raise new System.NotSupportedException;
+      
       self.t := TypeTable.Convert(self.t, base_t);
       var gr_suffix := if gr=nil then '' else gr.SuffixForType(self.t);
       
@@ -835,6 +839,7 @@ type
     public readonly_lvls := new List<integer>; //TODO Использовать в маршлинге на полную
     public gr := default(Group);
     public gr_suffix := default(string);
+    public value_mlt: (string, array of integer);
     
     private static KnownClasses: HashSet<string>;
     public static procedure LoadClasses(br: System.IO.BinaryReader);
@@ -876,6 +881,9 @@ type
       var base_t: (string, integer) := nil;
       if br.ReadBoolean then
         base_t := (br.ReadString, br.ReadInt32);
+      
+      if br.ReadBoolean then
+        value_mlt := (br.ReadString, ArrGen(br.ReadInt32, i->br.ReadInt32));
       
       if self.t in KnownClasses then
       begin
@@ -952,6 +960,7 @@ type
     
     public property IsGeneric: boolean read tname.StartsWith('T') and tname.Skip(1).All(char.IsDigit);
     
+    // For overload ordering only
     public property IsNakedType: boolean read (Group.ByName(tname)=nil) and (Struct.ByName(tname)=nil);
     
     public function ToString(generate_code: boolean; with_var: boolean := false): string;
@@ -1211,7 +1220,7 @@ type
           var need_plain := if is_string then (par.ptr in par.readonly_lvls) or (ptr<>0) else true;
           var need_str_ptr := (par_i<>0) and is_string;
           var skip_last_arr := need_arr and ( (ptr>1) or is_string );
-          var cap := ptr*ord(need_arr) + ord(need_var) + Ord(need_plain) + ord(need_str_ptr) - ord(skip_last_arr);
+          var cap := ord(need_str_ptr) + ptr*ord(need_arr) + ord(par.value_mlt<>nil) + ord(need_var) + Ord(need_plain) - ord(skip_last_arr);
           Result := new List<FuncParamT>(cap);
           
           if need_str_ptr and (ptr<>0) then
@@ -1225,6 +1234,32 @@ type
             if (i=1) and (t<>org_t) then break;
             Result += new FuncParamT(false, i, t);
             if i>1 then t := 'IntPtr';
+          end;
+          
+          if par.value_mlt<>nil then
+          begin
+            var (kind, mlt) := par.value_mlt;
+            if ptr<>1 then raise new System.InvalidOperationException;
+            var mtr_t := new StringBuilder;
+            
+            case kind of
+              'Matrix':
+              begin
+                mtr_t += 'Mtr';
+                if mlt.Length<>2 then raise new System.InvalidOperationException;
+              end;
+              else raise new System.NotSupportedException;
+            end;
+            
+            mtr_t += mlt.JoinToString('x');
+            
+            case org_t of
+              'single': mtr_t += 'f';
+              'real':   mtr_t += 'd';
+              else raise new System.InvalidOperationException(org_t);
+            end;
+            
+            Result += new FuncParamT(true, 0, mtr_t.ToString);
           end;
           
           if ptr>0 then
