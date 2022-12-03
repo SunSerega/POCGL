@@ -176,7 +176,7 @@ type
       on_used -= on_used;
     end;
     
-    private procedure ApplyKind(kind: string) :=
+    private procedure ApplyKind(func_name: string; n: XmlNode; kind: string) :=
     case kind of
       
       'String':
@@ -188,8 +188,22 @@ type
       else
       begin
         
-        if |'Matrix'|.Find(kind.StartsWith) is string(var kind_mlt) then
-          self.value_mlt := (kind_mlt, kind.Remove(0, kind_mlt.Length).Split('x').ConvertAll(s->s.ToInteger)) else
+        if |'Matrix'|.Find(kind.StartsWith) is string(var mlt_kind) then
+        begin
+          var mlt := kind.Remove(0, mlt_kind.Length).Split('x').ConvertAll(s->s.ToInteger);
+          if self.ptr<>1 then raise new System.InvalidOperationException;
+          
+          if n['len'] is string(var len) then
+          begin
+            if len.StartsWith('count*') then
+              len := len.Substring('count*'.Length);
+            if len.ToInteger<>mlt.Product then
+              raise new System.InvalidOperationException;
+          end else
+            log.WriteLine($'{func_name}: Par with kind [{kind}] does not have len');
+          
+          self.value_mlt := (mlt_kind, mlt);
+        end else
         
         if (kind in Kinds.described) and LogCache.kinds_unutilised.Add(kind) then
           log.WriteLine($'Kind [{kind}] was not utilised');
@@ -241,7 +255,7 @@ type
           self.is_clamped := true;
         end;
         
-        ApplyKind(kind);
+        ApplyKind(func_name, n, kind);
       end;
       
       if n['group'] is string(var gname) then
