@@ -188,13 +188,15 @@ type
       else
       begin
         
-        if |'Matrix'|.Find(kind.StartsWith) is string(var mlt_kind) then
+        if |'Matrix', 'Vector'|.Find(kind.StartsWith) is string(var mlt_kind) then
         begin
           var mlt := kind.Remove(0, mlt_kind.Length).Split('x').ConvertAll(s->s.ToInteger);
           if self.ptr<>1 then raise new System.InvalidOperationException;
           
           if n['len'] is string(var len) then
           begin
+            if len='count' then
+              len := '1' else
             if len.StartsWith('count*') then
               len := len.Substring('count*'.Length);
             if len.ToInteger<>mlt.Product then

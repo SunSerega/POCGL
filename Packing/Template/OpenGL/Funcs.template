@@ -4018,6 +4018,7 @@
     private z_ProgramUniform1dv_adr := GetProcAddress('glProgramUniform1dv');
     private z_ProgramUniform1dv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1dv_adr);
     private z_ProgramUniform1dv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: real)>(z_ProgramUniform1dv_adr);
+    private z_ProgramUniform1dv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1d)>(z_ProgramUniform1dv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1dv(&program: gl_program; location: Int32; count: Int32; value: array of real);
     type Preal=^real;
     begin
@@ -4025,6 +4026,8 @@
         z_ProgramUniform1dv_2(&program, location, count, value[0]) else
         z_ProgramUniform1dv_2(&program, location, count, Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1dv(&program: gl_program; location: Int32; count: Int32; var value: Vec1d) :=
+    z_ProgramUniform1dv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1dv(&program: gl_program; location: Int32; count: Int32; var value: real) :=
     z_ProgramUniform1dv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1dv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4040,6 +4043,7 @@
     private z_ProgramUniform1fv_adr := GetProcAddress('glProgramUniform1fv');
     private z_ProgramUniform1fv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1fv_adr);
     private z_ProgramUniform1fv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: single)>(z_ProgramUniform1fv_adr);
+    private z_ProgramUniform1fv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1f)>(z_ProgramUniform1fv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1fv(&program: gl_program; location: Int32; count: Int32; value: array of single);
     type Psingle=^single;
     begin
@@ -4047,6 +4051,8 @@
         z_ProgramUniform1fv_2(&program, location, count, value[0]) else
         z_ProgramUniform1fv_2(&program, location, count, Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1fv(&program: gl_program; location: Int32; count: Int32; var value: Vec1f) :=
+    z_ProgramUniform1fv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1fv(&program: gl_program; location: Int32; count: Int32; var value: single) :=
     z_ProgramUniform1fv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1fv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4062,6 +4068,7 @@
     private z_ProgramUniform1iv_adr := GetProcAddress('glProgramUniform1iv');
     private z_ProgramUniform1iv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1iv_adr);
     private z_ProgramUniform1iv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int32)>(z_ProgramUniform1iv_adr);
+    private z_ProgramUniform1iv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1i)>(z_ProgramUniform1iv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1iv(&program: gl_program; location: Int32; count: Int32; value: array of Int32);
     type PInt32=^Int32;
     begin
@@ -4069,6 +4076,8 @@
         z_ProgramUniform1iv_2(&program, location, count, value[0]) else
         z_ProgramUniform1iv_2(&program, location, count, PInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1iv(&program: gl_program; location: Int32; count: Int32; var value: Vec1i) :=
+    z_ProgramUniform1iv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1iv(&program: gl_program; location: Int32; count: Int32; var value: Int32) :=
     z_ProgramUniform1iv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1iv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4084,6 +4093,7 @@
     private z_ProgramUniform1uiv_adr := GetProcAddress('glProgramUniform1uiv');
     private z_ProgramUniform1uiv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1uiv_adr);
     private z_ProgramUniform1uiv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt32)>(z_ProgramUniform1uiv_adr);
+    private z_ProgramUniform1uiv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1ui)>(z_ProgramUniform1uiv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1uiv(&program: gl_program; location: Int32; count: Int32; value: array of UInt32);
     type PUInt32=^UInt32;
     begin
@@ -4091,6 +4101,8 @@
         z_ProgramUniform1uiv_2(&program, location, count, value[0]) else
         z_ProgramUniform1uiv_2(&program, location, count, PUInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1uiv(&program: gl_program; location: Int32; count: Int32; var value: Vec1ui) :=
+    z_ProgramUniform1uiv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1uiv(&program: gl_program; location: Int32; count: Int32; var value: UInt32) :=
     z_ProgramUniform1uiv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1uiv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4106,6 +4118,7 @@
     private z_ProgramUniform2dv_adr := GetProcAddress('glProgramUniform2dv');
     private z_ProgramUniform2dv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2dv_adr);
     private z_ProgramUniform2dv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: real)>(z_ProgramUniform2dv_adr);
+    private z_ProgramUniform2dv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2d)>(z_ProgramUniform2dv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2dv(&program: gl_program; location: Int32; count: Int32; value: array of real);
     type Preal=^real;
     begin
@@ -4113,6 +4126,8 @@
         z_ProgramUniform2dv_2(&program, location, count, value[0]) else
         z_ProgramUniform2dv_2(&program, location, count, Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2dv(&program: gl_program; location: Int32; count: Int32; var value: Vec2d) :=
+    z_ProgramUniform2dv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2dv(&program: gl_program; location: Int32; count: Int32; var value: real) :=
     z_ProgramUniform2dv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2dv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4128,6 +4143,7 @@
     private z_ProgramUniform2fv_adr := GetProcAddress('glProgramUniform2fv');
     private z_ProgramUniform2fv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2fv_adr);
     private z_ProgramUniform2fv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: single)>(z_ProgramUniform2fv_adr);
+    private z_ProgramUniform2fv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2f)>(z_ProgramUniform2fv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2fv(&program: gl_program; location: Int32; count: Int32; value: array of single);
     type Psingle=^single;
     begin
@@ -4135,6 +4151,8 @@
         z_ProgramUniform2fv_2(&program, location, count, value[0]) else
         z_ProgramUniform2fv_2(&program, location, count, Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2fv(&program: gl_program; location: Int32; count: Int32; var value: Vec2f) :=
+    z_ProgramUniform2fv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2fv(&program: gl_program; location: Int32; count: Int32; var value: single) :=
     z_ProgramUniform2fv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2fv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4150,6 +4168,7 @@
     private z_ProgramUniform2iv_adr := GetProcAddress('glProgramUniform2iv');
     private z_ProgramUniform2iv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2iv_adr);
     private z_ProgramUniform2iv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int32)>(z_ProgramUniform2iv_adr);
+    private z_ProgramUniform2iv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2i)>(z_ProgramUniform2iv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2iv(&program: gl_program; location: Int32; count: Int32; value: array of Int32);
     type PInt32=^Int32;
     begin
@@ -4157,6 +4176,8 @@
         z_ProgramUniform2iv_2(&program, location, count, value[0]) else
         z_ProgramUniform2iv_2(&program, location, count, PInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2iv(&program: gl_program; location: Int32; count: Int32; var value: Vec2i) :=
+    z_ProgramUniform2iv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2iv(&program: gl_program; location: Int32; count: Int32; var value: Int32) :=
     z_ProgramUniform2iv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2iv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4172,6 +4193,7 @@
     private z_ProgramUniform2uiv_adr := GetProcAddress('glProgramUniform2uiv');
     private z_ProgramUniform2uiv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2uiv_adr);
     private z_ProgramUniform2uiv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt32)>(z_ProgramUniform2uiv_adr);
+    private z_ProgramUniform2uiv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2ui)>(z_ProgramUniform2uiv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2uiv(&program: gl_program; location: Int32; count: Int32; value: array of UInt32);
     type PUInt32=^UInt32;
     begin
@@ -4179,6 +4201,8 @@
         z_ProgramUniform2uiv_2(&program, location, count, value[0]) else
         z_ProgramUniform2uiv_2(&program, location, count, PUInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2uiv(&program: gl_program; location: Int32; count: Int32; var value: Vec2ui) :=
+    z_ProgramUniform2uiv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2uiv(&program: gl_program; location: Int32; count: Int32; var value: UInt32) :=
     z_ProgramUniform2uiv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2uiv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4194,6 +4218,7 @@
     private z_ProgramUniform3dv_adr := GetProcAddress('glProgramUniform3dv');
     private z_ProgramUniform3dv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3dv_adr);
     private z_ProgramUniform3dv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: real)>(z_ProgramUniform3dv_adr);
+    private z_ProgramUniform3dv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3d)>(z_ProgramUniform3dv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3dv(&program: gl_program; location: Int32; count: Int32; value: array of real);
     type Preal=^real;
     begin
@@ -4201,6 +4226,8 @@
         z_ProgramUniform3dv_2(&program, location, count, value[0]) else
         z_ProgramUniform3dv_2(&program, location, count, Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3dv(&program: gl_program; location: Int32; count: Int32; var value: Vec3d) :=
+    z_ProgramUniform3dv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3dv(&program: gl_program; location: Int32; count: Int32; var value: real) :=
     z_ProgramUniform3dv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3dv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4216,6 +4243,7 @@
     private z_ProgramUniform3fv_adr := GetProcAddress('glProgramUniform3fv');
     private z_ProgramUniform3fv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3fv_adr);
     private z_ProgramUniform3fv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: single)>(z_ProgramUniform3fv_adr);
+    private z_ProgramUniform3fv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3f)>(z_ProgramUniform3fv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3fv(&program: gl_program; location: Int32; count: Int32; value: array of single);
     type Psingle=^single;
     begin
@@ -4223,6 +4251,8 @@
         z_ProgramUniform3fv_2(&program, location, count, value[0]) else
         z_ProgramUniform3fv_2(&program, location, count, Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3fv(&program: gl_program; location: Int32; count: Int32; var value: Vec3f) :=
+    z_ProgramUniform3fv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3fv(&program: gl_program; location: Int32; count: Int32; var value: single) :=
     z_ProgramUniform3fv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3fv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4238,6 +4268,7 @@
     private z_ProgramUniform3iv_adr := GetProcAddress('glProgramUniform3iv');
     private z_ProgramUniform3iv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3iv_adr);
     private z_ProgramUniform3iv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int32)>(z_ProgramUniform3iv_adr);
+    private z_ProgramUniform3iv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3i)>(z_ProgramUniform3iv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3iv(&program: gl_program; location: Int32; count: Int32; value: array of Int32);
     type PInt32=^Int32;
     begin
@@ -4245,6 +4276,8 @@
         z_ProgramUniform3iv_2(&program, location, count, value[0]) else
         z_ProgramUniform3iv_2(&program, location, count, PInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3iv(&program: gl_program; location: Int32; count: Int32; var value: Vec3i) :=
+    z_ProgramUniform3iv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3iv(&program: gl_program; location: Int32; count: Int32; var value: Int32) :=
     z_ProgramUniform3iv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3iv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4260,6 +4293,7 @@
     private z_ProgramUniform3uiv_adr := GetProcAddress('glProgramUniform3uiv');
     private z_ProgramUniform3uiv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3uiv_adr);
     private z_ProgramUniform3uiv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt32)>(z_ProgramUniform3uiv_adr);
+    private z_ProgramUniform3uiv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3ui)>(z_ProgramUniform3uiv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3uiv(&program: gl_program; location: Int32; count: Int32; value: array of UInt32);
     type PUInt32=^UInt32;
     begin
@@ -4267,6 +4301,8 @@
         z_ProgramUniform3uiv_2(&program, location, count, value[0]) else
         z_ProgramUniform3uiv_2(&program, location, count, PUInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3uiv(&program: gl_program; location: Int32; count: Int32; var value: Vec3ui) :=
+    z_ProgramUniform3uiv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3uiv(&program: gl_program; location: Int32; count: Int32; var value: UInt32) :=
     z_ProgramUniform3uiv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3uiv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4282,6 +4318,7 @@
     private z_ProgramUniform4dv_adr := GetProcAddress('glProgramUniform4dv');
     private z_ProgramUniform4dv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4dv_adr);
     private z_ProgramUniform4dv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: real)>(z_ProgramUniform4dv_adr);
+    private z_ProgramUniform4dv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4d)>(z_ProgramUniform4dv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4dv(&program: gl_program; location: Int32; count: Int32; value: array of real);
     type Preal=^real;
     begin
@@ -4289,6 +4326,8 @@
         z_ProgramUniform4dv_2(&program, location, count, value[0]) else
         z_ProgramUniform4dv_2(&program, location, count, Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4dv(&program: gl_program; location: Int32; count: Int32; var value: Vec4d) :=
+    z_ProgramUniform4dv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4dv(&program: gl_program; location: Int32; count: Int32; var value: real) :=
     z_ProgramUniform4dv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4dv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4304,6 +4343,7 @@
     private z_ProgramUniform4fv_adr := GetProcAddress('glProgramUniform4fv');
     private z_ProgramUniform4fv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4fv_adr);
     private z_ProgramUniform4fv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: single)>(z_ProgramUniform4fv_adr);
+    private z_ProgramUniform4fv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4f)>(z_ProgramUniform4fv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4fv(&program: gl_program; location: Int32; count: Int32; value: array of single);
     type Psingle=^single;
     begin
@@ -4311,6 +4351,8 @@
         z_ProgramUniform4fv_2(&program, location, count, value[0]) else
         z_ProgramUniform4fv_2(&program, location, count, Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4fv(&program: gl_program; location: Int32; count: Int32; var value: Vec4f) :=
+    z_ProgramUniform4fv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4fv(&program: gl_program; location: Int32; count: Int32; var value: single) :=
     z_ProgramUniform4fv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4fv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4326,6 +4368,7 @@
     private z_ProgramUniform4iv_adr := GetProcAddress('glProgramUniform4iv');
     private z_ProgramUniform4iv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4iv_adr);
     private z_ProgramUniform4iv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int32)>(z_ProgramUniform4iv_adr);
+    private z_ProgramUniform4iv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4i)>(z_ProgramUniform4iv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4iv(&program: gl_program; location: Int32; count: Int32; value: array of Int32);
     type PInt32=^Int32;
     begin
@@ -4333,6 +4376,8 @@
         z_ProgramUniform4iv_2(&program, location, count, value[0]) else
         z_ProgramUniform4iv_2(&program, location, count, PInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4iv(&program: gl_program; location: Int32; count: Int32; var value: Vec4i) :=
+    z_ProgramUniform4iv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4iv(&program: gl_program; location: Int32; count: Int32; var value: Int32) :=
     z_ProgramUniform4iv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4iv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4348,6 +4393,7 @@
     private z_ProgramUniform4uiv_adr := GetProcAddress('glProgramUniform4uiv');
     private z_ProgramUniform4uiv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4uiv_adr);
     private z_ProgramUniform4uiv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt32)>(z_ProgramUniform4uiv_adr);
+    private z_ProgramUniform4uiv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4ui)>(z_ProgramUniform4uiv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4uiv(&program: gl_program; location: Int32; count: Int32; value: array of UInt32);
     type PUInt32=^UInt32;
     begin
@@ -4355,6 +4401,8 @@
         z_ProgramUniform4uiv_2(&program, location, count, value[0]) else
         z_ProgramUniform4uiv_2(&program, location, count, PUInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4uiv(&program: gl_program; location: Int32; count: Int32; var value: Vec4ui) :=
+    z_ProgramUniform4uiv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4uiv(&program: gl_program; location: Int32; count: Int32; var value: UInt32) :=
     z_ProgramUniform4uiv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4uiv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -4364,6 +4412,7 @@
     private z_ProgramUniformMatrix2dv_adr := GetProcAddress('glProgramUniformMatrix2dv');
     private z_ProgramUniformMatrix2dv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; transpose: byte; value: IntPtr)>(z_ProgramUniformMatrix2dv_adr);
     private z_ProgramUniformMatrix2dv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; transpose: byte; var value: real)>(z_ProgramUniformMatrix2dv_adr);
+    private z_ProgramUniformMatrix2dv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; transpose: byte; var value: Mtr2x2d)>(z_ProgramUniformMatrix2dv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix2dv(&program: gl_program; location: Int32; count: Int32; transpose: boolean; value: array of real);
     type Preal=^real;
     begin
@@ -4371,6 +4420,8 @@
         z_ProgramUniformMatrix2dv_2(&program, location, count, byte(transpose), value[0]) else
         z_ProgramUniformMatrix2dv_2(&program, location, count, byte(transpose), Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix2dv(&program: gl_program; location: Int32; count: Int32; transpose: boolean; var value: Mtr2x2d) :=
+    z_ProgramUniformMatrix2dv_3(&program, location, count, byte(transpose), value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix2dv(&program: gl_program; location: Int32; count: Int32; transpose: boolean; var value: real) :=
     z_ProgramUniformMatrix2dv_2(&program, location, count, byte(transpose), value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix2dv(&program: gl_program; location: Int32; count: Int32; transpose: boolean; value: IntPtr) :=
@@ -6011,6 +6062,7 @@
     private z_UniformMatrix2dv_adr := GetProcAddress('glUniformMatrix2dv');
     private z_UniformMatrix2dv_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; transpose: byte; value: IntPtr)>(z_UniformMatrix2dv_adr);
     private z_UniformMatrix2dv_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; transpose: byte; var value: real)>(z_UniformMatrix2dv_adr);
+    private z_UniformMatrix2dv_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; transpose: byte; var value: Mtr2x2d)>(z_UniformMatrix2dv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UniformMatrix2dv(location: Int32; count: Int32; transpose: boolean; value: array of real);
     type Preal=^real;
     begin
@@ -6018,6 +6070,8 @@
         z_UniformMatrix2dv_2(location, count, byte(transpose), value[0]) else
         z_UniformMatrix2dv_2(location, count, byte(transpose), Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UniformMatrix2dv(location: Int32; count: Int32; transpose: boolean; var value: Mtr2x2d) :=
+    z_UniformMatrix2dv_3(location, count, byte(transpose), value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UniformMatrix2dv(location: Int32; count: Int32; transpose: boolean; var value: real) :=
     z_UniformMatrix2dv_2(location, count, byte(transpose), value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UniformMatrix2dv(location: Int32; count: Int32; transpose: boolean; value: IntPtr) :=
@@ -12103,6 +12157,7 @@
     private z_Uniform1i64vNV_adr := GetProcAddress('glUniform1i64vNV');
     private z_Uniform1i64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform1i64vNV_adr);
     private z_Uniform1i64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Int64)>(z_Uniform1i64vNV_adr);
+    private z_Uniform1i64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec1i64)>(z_Uniform1i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1i64vNV(location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -12110,6 +12165,8 @@
         z_Uniform1i64vNV_2(location, count, value[0]) else
         z_Uniform1i64vNV_2(location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1i64vNV(location: Int32; count: Int32; var value: Vec1i64) :=
+    z_Uniform1i64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1i64vNV(location: Int32; count: Int32; var value: Int64) :=
     z_Uniform1i64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1i64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -12118,6 +12175,7 @@
     private z_Uniform2i64vNV_adr := GetProcAddress('glUniform2i64vNV');
     private z_Uniform2i64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform2i64vNV_adr);
     private z_Uniform2i64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Int64)>(z_Uniform2i64vNV_adr);
+    private z_Uniform2i64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec2i64)>(z_Uniform2i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2i64vNV(location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -12125,6 +12183,8 @@
         z_Uniform2i64vNV_2(location, count, value[0]) else
         z_Uniform2i64vNV_2(location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2i64vNV(location: Int32; count: Int32; var value: Vec2i64) :=
+    z_Uniform2i64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2i64vNV(location: Int32; count: Int32; var value: Int64) :=
     z_Uniform2i64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2i64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -12133,6 +12193,7 @@
     private z_Uniform3i64vNV_adr := GetProcAddress('glUniform3i64vNV');
     private z_Uniform3i64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform3i64vNV_adr);
     private z_Uniform3i64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Int64)>(z_Uniform3i64vNV_adr);
+    private z_Uniform3i64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec3i64)>(z_Uniform3i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3i64vNV(location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -12140,6 +12201,8 @@
         z_Uniform3i64vNV_2(location, count, value[0]) else
         z_Uniform3i64vNV_2(location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3i64vNV(location: Int32; count: Int32; var value: Vec3i64) :=
+    z_Uniform3i64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3i64vNV(location: Int32; count: Int32; var value: Int64) :=
     z_Uniform3i64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3i64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -12148,6 +12211,7 @@
     private z_Uniform4i64vNV_adr := GetProcAddress('glUniform4i64vNV');
     private z_Uniform4i64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform4i64vNV_adr);
     private z_Uniform4i64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Int64)>(z_Uniform4i64vNV_adr);
+    private z_Uniform4i64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec4i64)>(z_Uniform4i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4i64vNV(location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -12155,6 +12219,8 @@
         z_Uniform4i64vNV_2(location, count, value[0]) else
         z_Uniform4i64vNV_2(location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4i64vNV(location: Int32; count: Int32; var value: Vec4i64) :=
+    z_Uniform4i64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4i64vNV(location: Int32; count: Int32; var value: Int64) :=
     z_Uniform4i64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4i64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -12183,6 +12249,7 @@
     private z_Uniform1ui64vNV_adr := GetProcAddress('glUniform1ui64vNV');
     private z_Uniform1ui64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform1ui64vNV_adr);
     private z_Uniform1ui64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: UInt64)>(z_Uniform1ui64vNV_adr);
+    private z_Uniform1ui64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec1ui64)>(z_Uniform1ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1ui64vNV(location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -12190,6 +12257,8 @@
         z_Uniform1ui64vNV_2(location, count, value[0]) else
         z_Uniform1ui64vNV_2(location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1ui64vNV(location: Int32; count: Int32; var value: Vec1ui64) :=
+    z_Uniform1ui64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1ui64vNV(location: Int32; count: Int32; var value: UInt64) :=
     z_Uniform1ui64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1ui64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -12198,6 +12267,7 @@
     private z_Uniform2ui64vNV_adr := GetProcAddress('glUniform2ui64vNV');
     private z_Uniform2ui64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform2ui64vNV_adr);
     private z_Uniform2ui64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: UInt64)>(z_Uniform2ui64vNV_adr);
+    private z_Uniform2ui64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec2ui64)>(z_Uniform2ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2ui64vNV(location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -12205,6 +12275,8 @@
         z_Uniform2ui64vNV_2(location, count, value[0]) else
         z_Uniform2ui64vNV_2(location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2ui64vNV(location: Int32; count: Int32; var value: Vec2ui64) :=
+    z_Uniform2ui64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2ui64vNV(location: Int32; count: Int32; var value: UInt64) :=
     z_Uniform2ui64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2ui64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -12213,6 +12285,7 @@
     private z_Uniform3ui64vNV_adr := GetProcAddress('glUniform3ui64vNV');
     private z_Uniform3ui64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform3ui64vNV_adr);
     private z_Uniform3ui64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: UInt64)>(z_Uniform3ui64vNV_adr);
+    private z_Uniform3ui64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec3ui64)>(z_Uniform3ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3ui64vNV(location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -12220,6 +12293,8 @@
         z_Uniform3ui64vNV_2(location, count, value[0]) else
         z_Uniform3ui64vNV_2(location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3ui64vNV(location: Int32; count: Int32; var value: Vec3ui64) :=
+    z_Uniform3ui64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3ui64vNV(location: Int32; count: Int32; var value: UInt64) :=
     z_Uniform3ui64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3ui64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -12228,6 +12303,7 @@
     private z_Uniform4ui64vNV_adr := GetProcAddress('glUniform4ui64vNV');
     private z_Uniform4ui64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform4ui64vNV_adr);
     private z_Uniform4ui64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: UInt64)>(z_Uniform4ui64vNV_adr);
+    private z_Uniform4ui64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec4ui64)>(z_Uniform4ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4ui64vNV(location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -12235,6 +12311,8 @@
         z_Uniform4ui64vNV_2(location, count, value[0]) else
         z_Uniform4ui64vNV_2(location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4ui64vNV(location: Int32; count: Int32; var value: Vec4ui64) :=
+    z_Uniform4ui64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4ui64vNV(location: Int32; count: Int32; var value: UInt64) :=
     z_Uniform4ui64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4ui64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -12279,6 +12357,7 @@
     private z_ProgramUniform1i64vNV_adr := GetProcAddress('glProgramUniform1i64vNV');
     private z_ProgramUniform1i64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1i64vNV_adr);
     private z_ProgramUniform1i64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int64)>(z_ProgramUniform1i64vNV_adr);
+    private z_ProgramUniform1i64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1i64)>(z_ProgramUniform1i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i64vNV(&program: gl_program; location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -12286,6 +12365,8 @@
         z_ProgramUniform1i64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform1i64vNV_2(&program, location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec1i64) :=
+    z_ProgramUniform1i64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Int64) :=
     z_ProgramUniform1i64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -12294,6 +12375,7 @@
     private z_ProgramUniform2i64vNV_adr := GetProcAddress('glProgramUniform2i64vNV');
     private z_ProgramUniform2i64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2i64vNV_adr);
     private z_ProgramUniform2i64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int64)>(z_ProgramUniform2i64vNV_adr);
+    private z_ProgramUniform2i64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2i64)>(z_ProgramUniform2i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i64vNV(&program: gl_program; location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -12301,6 +12383,8 @@
         z_ProgramUniform2i64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform2i64vNV_2(&program, location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec2i64) :=
+    z_ProgramUniform2i64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Int64) :=
     z_ProgramUniform2i64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -12309,6 +12393,7 @@
     private z_ProgramUniform3i64vNV_adr := GetProcAddress('glProgramUniform3i64vNV');
     private z_ProgramUniform3i64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3i64vNV_adr);
     private z_ProgramUniform3i64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int64)>(z_ProgramUniform3i64vNV_adr);
+    private z_ProgramUniform3i64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3i64)>(z_ProgramUniform3i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i64vNV(&program: gl_program; location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -12316,6 +12401,8 @@
         z_ProgramUniform3i64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform3i64vNV_2(&program, location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec3i64) :=
+    z_ProgramUniform3i64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Int64) :=
     z_ProgramUniform3i64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -12324,6 +12411,7 @@
     private z_ProgramUniform4i64vNV_adr := GetProcAddress('glProgramUniform4i64vNV');
     private z_ProgramUniform4i64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4i64vNV_adr);
     private z_ProgramUniform4i64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int64)>(z_ProgramUniform4i64vNV_adr);
+    private z_ProgramUniform4i64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4i64)>(z_ProgramUniform4i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i64vNV(&program: gl_program; location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -12331,6 +12419,8 @@
         z_ProgramUniform4i64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform4i64vNV_2(&program, location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec4i64) :=
+    z_ProgramUniform4i64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Int64) :=
     z_ProgramUniform4i64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -12359,6 +12449,7 @@
     private z_ProgramUniform1ui64vNV_adr := GetProcAddress('glProgramUniform1ui64vNV');
     private z_ProgramUniform1ui64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1ui64vNV_adr);
     private z_ProgramUniform1ui64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt64)>(z_ProgramUniform1ui64vNV_adr);
+    private z_ProgramUniform1ui64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1ui64)>(z_ProgramUniform1ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui64vNV(&program: gl_program; location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -12366,6 +12457,8 @@
         z_ProgramUniform1ui64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform1ui64vNV_2(&program, location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec1ui64) :=
+    z_ProgramUniform1ui64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: UInt64) :=
     z_ProgramUniform1ui64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -12374,6 +12467,7 @@
     private z_ProgramUniform2ui64vNV_adr := GetProcAddress('glProgramUniform2ui64vNV');
     private z_ProgramUniform2ui64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2ui64vNV_adr);
     private z_ProgramUniform2ui64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt64)>(z_ProgramUniform2ui64vNV_adr);
+    private z_ProgramUniform2ui64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2ui64)>(z_ProgramUniform2ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui64vNV(&program: gl_program; location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -12381,6 +12475,8 @@
         z_ProgramUniform2ui64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform2ui64vNV_2(&program, location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec2ui64) :=
+    z_ProgramUniform2ui64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: UInt64) :=
     z_ProgramUniform2ui64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -12389,6 +12485,7 @@
     private z_ProgramUniform3ui64vNV_adr := GetProcAddress('glProgramUniform3ui64vNV');
     private z_ProgramUniform3ui64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3ui64vNV_adr);
     private z_ProgramUniform3ui64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt64)>(z_ProgramUniform3ui64vNV_adr);
+    private z_ProgramUniform3ui64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3ui64)>(z_ProgramUniform3ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui64vNV(&program: gl_program; location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -12396,6 +12493,8 @@
         z_ProgramUniform3ui64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform3ui64vNV_2(&program, location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec3ui64) :=
+    z_ProgramUniform3ui64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: UInt64) :=
     z_ProgramUniform3ui64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -12404,6 +12503,7 @@
     private z_ProgramUniform4ui64vNV_adr := GetProcAddress('glProgramUniform4ui64vNV');
     private z_ProgramUniform4ui64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4ui64vNV_adr);
     private z_ProgramUniform4ui64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt64)>(z_ProgramUniform4ui64vNV_adr);
+    private z_ProgramUniform4ui64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4ui64)>(z_ProgramUniform4ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui64vNV(&program: gl_program; location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -12411,6 +12511,8 @@
         z_ProgramUniform4ui64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform4ui64vNV_2(&program, location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec4ui64) :=
+    z_ProgramUniform4ui64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: UInt64) :=
     z_ProgramUniform4ui64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -15477,6 +15579,7 @@
     private z_UniformMatrix2dv_adr := GetProcAddress('glUniformMatrix2dv');
     private z_UniformMatrix2dv_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; transpose: byte; value: IntPtr)>(z_UniformMatrix2dv_adr);
     private z_UniformMatrix2dv_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; transpose: byte; var value: real)>(z_UniformMatrix2dv_adr);
+    private z_UniformMatrix2dv_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; transpose: byte; var value: Mtr2x2d)>(z_UniformMatrix2dv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UniformMatrix2dv(location: Int32; count: Int32; transpose: boolean; value: array of real);
     type Preal=^real;
     begin
@@ -15484,6 +15587,8 @@
         z_UniformMatrix2dv_2(location, count, byte(transpose), value[0]) else
         z_UniformMatrix2dv_2(location, count, byte(transpose), Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UniformMatrix2dv(location: Int32; count: Int32; transpose: boolean; var value: Mtr2x2d) :=
+    z_UniformMatrix2dv_3(location, count, byte(transpose), value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UniformMatrix2dv(location: Int32; count: Int32; transpose: boolean; var value: real) :=
     z_UniformMatrix2dv_2(location, count, byte(transpose), value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UniformMatrix2dv(location: Int32; count: Int32; transpose: boolean; value: IntPtr) :=
@@ -15677,6 +15782,7 @@
     private z_Uniform1i64vARB_adr := GetProcAddress('glUniform1i64vARB');
     private z_Uniform1i64vARB_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform1i64vARB_adr);
     private z_Uniform1i64vARB_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Int64)>(z_Uniform1i64vARB_adr);
+    private z_Uniform1i64vARB_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec1i64)>(z_Uniform1i64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1i64vARB(location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -15684,6 +15790,8 @@
         z_Uniform1i64vARB_2(location, count, value[0]) else
         z_Uniform1i64vARB_2(location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1i64vARB(location: Int32; count: Int32; var value: Vec1i64) :=
+    z_Uniform1i64vARB_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1i64vARB(location: Int32; count: Int32; var value: Int64) :=
     z_Uniform1i64vARB_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1i64vARB(location: Int32; count: Int32; value: IntPtr) :=
@@ -15692,6 +15800,7 @@
     private z_Uniform2i64vARB_adr := GetProcAddress('glUniform2i64vARB');
     private z_Uniform2i64vARB_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform2i64vARB_adr);
     private z_Uniform2i64vARB_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Int64)>(z_Uniform2i64vARB_adr);
+    private z_Uniform2i64vARB_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec2i64)>(z_Uniform2i64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2i64vARB(location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -15699,6 +15808,8 @@
         z_Uniform2i64vARB_2(location, count, value[0]) else
         z_Uniform2i64vARB_2(location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2i64vARB(location: Int32; count: Int32; var value: Vec2i64) :=
+    z_Uniform2i64vARB_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2i64vARB(location: Int32; count: Int32; var value: Int64) :=
     z_Uniform2i64vARB_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2i64vARB(location: Int32; count: Int32; value: IntPtr) :=
@@ -15707,6 +15818,7 @@
     private z_Uniform3i64vARB_adr := GetProcAddress('glUniform3i64vARB');
     private z_Uniform3i64vARB_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform3i64vARB_adr);
     private z_Uniform3i64vARB_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Int64)>(z_Uniform3i64vARB_adr);
+    private z_Uniform3i64vARB_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec3i64)>(z_Uniform3i64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3i64vARB(location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -15714,6 +15826,8 @@
         z_Uniform3i64vARB_2(location, count, value[0]) else
         z_Uniform3i64vARB_2(location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3i64vARB(location: Int32; count: Int32; var value: Vec3i64) :=
+    z_Uniform3i64vARB_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3i64vARB(location: Int32; count: Int32; var value: Int64) :=
     z_Uniform3i64vARB_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3i64vARB(location: Int32; count: Int32; value: IntPtr) :=
@@ -15722,6 +15836,7 @@
     private z_Uniform4i64vARB_adr := GetProcAddress('glUniform4i64vARB');
     private z_Uniform4i64vARB_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform4i64vARB_adr);
     private z_Uniform4i64vARB_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Int64)>(z_Uniform4i64vARB_adr);
+    private z_Uniform4i64vARB_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec4i64)>(z_Uniform4i64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4i64vARB(location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -15729,6 +15844,8 @@
         z_Uniform4i64vARB_2(location, count, value[0]) else
         z_Uniform4i64vARB_2(location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4i64vARB(location: Int32; count: Int32; var value: Vec4i64) :=
+    z_Uniform4i64vARB_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4i64vARB(location: Int32; count: Int32; var value: Int64) :=
     z_Uniform4i64vARB_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4i64vARB(location: Int32; count: Int32; value: IntPtr) :=
@@ -15757,6 +15874,7 @@
     private z_Uniform1ui64vARB_adr := GetProcAddress('glUniform1ui64vARB');
     private z_Uniform1ui64vARB_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform1ui64vARB_adr);
     private z_Uniform1ui64vARB_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: UInt64)>(z_Uniform1ui64vARB_adr);
+    private z_Uniform1ui64vARB_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec1ui64)>(z_Uniform1ui64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1ui64vARB(location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -15764,6 +15882,8 @@
         z_Uniform1ui64vARB_2(location, count, value[0]) else
         z_Uniform1ui64vARB_2(location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1ui64vARB(location: Int32; count: Int32; var value: Vec1ui64) :=
+    z_Uniform1ui64vARB_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1ui64vARB(location: Int32; count: Int32; var value: UInt64) :=
     z_Uniform1ui64vARB_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1ui64vARB(location: Int32; count: Int32; value: IntPtr) :=
@@ -15772,6 +15892,7 @@
     private z_Uniform2ui64vARB_adr := GetProcAddress('glUniform2ui64vARB');
     private z_Uniform2ui64vARB_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform2ui64vARB_adr);
     private z_Uniform2ui64vARB_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: UInt64)>(z_Uniform2ui64vARB_adr);
+    private z_Uniform2ui64vARB_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec2ui64)>(z_Uniform2ui64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2ui64vARB(location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -15779,6 +15900,8 @@
         z_Uniform2ui64vARB_2(location, count, value[0]) else
         z_Uniform2ui64vARB_2(location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2ui64vARB(location: Int32; count: Int32; var value: Vec2ui64) :=
+    z_Uniform2ui64vARB_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2ui64vARB(location: Int32; count: Int32; var value: UInt64) :=
     z_Uniform2ui64vARB_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2ui64vARB(location: Int32; count: Int32; value: IntPtr) :=
@@ -15787,6 +15910,7 @@
     private z_Uniform3ui64vARB_adr := GetProcAddress('glUniform3ui64vARB');
     private z_Uniform3ui64vARB_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform3ui64vARB_adr);
     private z_Uniform3ui64vARB_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: UInt64)>(z_Uniform3ui64vARB_adr);
+    private z_Uniform3ui64vARB_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec3ui64)>(z_Uniform3ui64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3ui64vARB(location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -15794,6 +15918,8 @@
         z_Uniform3ui64vARB_2(location, count, value[0]) else
         z_Uniform3ui64vARB_2(location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3ui64vARB(location: Int32; count: Int32; var value: Vec3ui64) :=
+    z_Uniform3ui64vARB_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3ui64vARB(location: Int32; count: Int32; var value: UInt64) :=
     z_Uniform3ui64vARB_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3ui64vARB(location: Int32; count: Int32; value: IntPtr) :=
@@ -15802,6 +15928,7 @@
     private z_Uniform4ui64vARB_adr := GetProcAddress('glUniform4ui64vARB');
     private z_Uniform4ui64vARB_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform4ui64vARB_adr);
     private z_Uniform4ui64vARB_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: UInt64)>(z_Uniform4ui64vARB_adr);
+    private z_Uniform4ui64vARB_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec4ui64)>(z_Uniform4ui64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4ui64vARB(location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -15809,6 +15936,8 @@
         z_Uniform4ui64vARB_2(location, count, value[0]) else
         z_Uniform4ui64vARB_2(location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4ui64vARB(location: Int32; count: Int32; var value: Vec4ui64) :=
+    z_Uniform4ui64vARB_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4ui64vARB(location: Int32; count: Int32; var value: UInt64) :=
     z_Uniform4ui64vARB_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4ui64vARB(location: Int32; count: Int32; value: IntPtr) :=
@@ -15869,6 +15998,7 @@
     private z_ProgramUniform1i64vARB_adr := GetProcAddress('glProgramUniform1i64vARB');
     private z_ProgramUniform1i64vARB_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1i64vARB_adr);
     private z_ProgramUniform1i64vARB_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int64)>(z_ProgramUniform1i64vARB_adr);
+    private z_ProgramUniform1i64vARB_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1i64)>(z_ProgramUniform1i64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i64vARB(&program: gl_program; location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -15876,6 +16006,8 @@
         z_ProgramUniform1i64vARB_2(&program, location, count, value[0]) else
         z_ProgramUniform1i64vARB_2(&program, location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i64vARB(&program: gl_program; location: Int32; count: Int32; var value: Vec1i64) :=
+    z_ProgramUniform1i64vARB_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i64vARB(&program: gl_program; location: Int32; count: Int32; var value: Int64) :=
     z_ProgramUniform1i64vARB_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i64vARB(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -15884,6 +16016,7 @@
     private z_ProgramUniform2i64vARB_adr := GetProcAddress('glProgramUniform2i64vARB');
     private z_ProgramUniform2i64vARB_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2i64vARB_adr);
     private z_ProgramUniform2i64vARB_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int64)>(z_ProgramUniform2i64vARB_adr);
+    private z_ProgramUniform2i64vARB_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2i64)>(z_ProgramUniform2i64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i64vARB(&program: gl_program; location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -15891,6 +16024,8 @@
         z_ProgramUniform2i64vARB_2(&program, location, count, value[0]) else
         z_ProgramUniform2i64vARB_2(&program, location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i64vARB(&program: gl_program; location: Int32; count: Int32; var value: Vec2i64) :=
+    z_ProgramUniform2i64vARB_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i64vARB(&program: gl_program; location: Int32; count: Int32; var value: Int64) :=
     z_ProgramUniform2i64vARB_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i64vARB(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -15899,6 +16034,7 @@
     private z_ProgramUniform3i64vARB_adr := GetProcAddress('glProgramUniform3i64vARB');
     private z_ProgramUniform3i64vARB_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3i64vARB_adr);
     private z_ProgramUniform3i64vARB_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int64)>(z_ProgramUniform3i64vARB_adr);
+    private z_ProgramUniform3i64vARB_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3i64)>(z_ProgramUniform3i64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i64vARB(&program: gl_program; location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -15906,6 +16042,8 @@
         z_ProgramUniform3i64vARB_2(&program, location, count, value[0]) else
         z_ProgramUniform3i64vARB_2(&program, location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i64vARB(&program: gl_program; location: Int32; count: Int32; var value: Vec3i64) :=
+    z_ProgramUniform3i64vARB_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i64vARB(&program: gl_program; location: Int32; count: Int32; var value: Int64) :=
     z_ProgramUniform3i64vARB_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i64vARB(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -15914,6 +16052,7 @@
     private z_ProgramUniform4i64vARB_adr := GetProcAddress('glProgramUniform4i64vARB');
     private z_ProgramUniform4i64vARB_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4i64vARB_adr);
     private z_ProgramUniform4i64vARB_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int64)>(z_ProgramUniform4i64vARB_adr);
+    private z_ProgramUniform4i64vARB_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4i64)>(z_ProgramUniform4i64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i64vARB(&program: gl_program; location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -15921,6 +16060,8 @@
         z_ProgramUniform4i64vARB_2(&program, location, count, value[0]) else
         z_ProgramUniform4i64vARB_2(&program, location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i64vARB(&program: gl_program; location: Int32; count: Int32; var value: Vec4i64) :=
+    z_ProgramUniform4i64vARB_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i64vARB(&program: gl_program; location: Int32; count: Int32; var value: Int64) :=
     z_ProgramUniform4i64vARB_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i64vARB(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -15949,6 +16090,7 @@
     private z_ProgramUniform1ui64vARB_adr := GetProcAddress('glProgramUniform1ui64vARB');
     private z_ProgramUniform1ui64vARB_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1ui64vARB_adr);
     private z_ProgramUniform1ui64vARB_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt64)>(z_ProgramUniform1ui64vARB_adr);
+    private z_ProgramUniform1ui64vARB_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1ui64)>(z_ProgramUniform1ui64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui64vARB(&program: gl_program; location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -15956,6 +16098,8 @@
         z_ProgramUniform1ui64vARB_2(&program, location, count, value[0]) else
         z_ProgramUniform1ui64vARB_2(&program, location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui64vARB(&program: gl_program; location: Int32; count: Int32; var value: Vec1ui64) :=
+    z_ProgramUniform1ui64vARB_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui64vARB(&program: gl_program; location: Int32; count: Int32; var value: UInt64) :=
     z_ProgramUniform1ui64vARB_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui64vARB(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -15964,6 +16108,7 @@
     private z_ProgramUniform2ui64vARB_adr := GetProcAddress('glProgramUniform2ui64vARB');
     private z_ProgramUniform2ui64vARB_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2ui64vARB_adr);
     private z_ProgramUniform2ui64vARB_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt64)>(z_ProgramUniform2ui64vARB_adr);
+    private z_ProgramUniform2ui64vARB_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2ui64)>(z_ProgramUniform2ui64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui64vARB(&program: gl_program; location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -15971,6 +16116,8 @@
         z_ProgramUniform2ui64vARB_2(&program, location, count, value[0]) else
         z_ProgramUniform2ui64vARB_2(&program, location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui64vARB(&program: gl_program; location: Int32; count: Int32; var value: Vec2ui64) :=
+    z_ProgramUniform2ui64vARB_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui64vARB(&program: gl_program; location: Int32; count: Int32; var value: UInt64) :=
     z_ProgramUniform2ui64vARB_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui64vARB(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -15979,6 +16126,7 @@
     private z_ProgramUniform3ui64vARB_adr := GetProcAddress('glProgramUniform3ui64vARB');
     private z_ProgramUniform3ui64vARB_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3ui64vARB_adr);
     private z_ProgramUniform3ui64vARB_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt64)>(z_ProgramUniform3ui64vARB_adr);
+    private z_ProgramUniform3ui64vARB_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3ui64)>(z_ProgramUniform3ui64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui64vARB(&program: gl_program; location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -15986,6 +16134,8 @@
         z_ProgramUniform3ui64vARB_2(&program, location, count, value[0]) else
         z_ProgramUniform3ui64vARB_2(&program, location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui64vARB(&program: gl_program; location: Int32; count: Int32; var value: Vec3ui64) :=
+    z_ProgramUniform3ui64vARB_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui64vARB(&program: gl_program; location: Int32; count: Int32; var value: UInt64) :=
     z_ProgramUniform3ui64vARB_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui64vARB(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -15994,6 +16144,7 @@
     private z_ProgramUniform4ui64vARB_adr := GetProcAddress('glProgramUniform4ui64vARB');
     private z_ProgramUniform4ui64vARB_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4ui64vARB_adr);
     private z_ProgramUniform4ui64vARB_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt64)>(z_ProgramUniform4ui64vARB_adr);
+    private z_ProgramUniform4ui64vARB_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4ui64)>(z_ProgramUniform4ui64vARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui64vARB(&program: gl_program; location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -16001,6 +16152,8 @@
         z_ProgramUniform4ui64vARB_2(&program, location, count, value[0]) else
         z_ProgramUniform4ui64vARB_2(&program, location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui64vARB(&program: gl_program; location: Int32; count: Int32; var value: Vec4ui64) :=
+    z_ProgramUniform4ui64vARB_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui64vARB(&program: gl_program; location: Int32; count: Int32; var value: UInt64) :=
     z_ProgramUniform4ui64vARB_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui64vARB(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -17817,6 +17970,7 @@
     private z_ProgramUniform1iv_adr := GetProcAddress('glProgramUniform1iv');
     private z_ProgramUniform1iv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1iv_adr);
     private z_ProgramUniform1iv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int32)>(z_ProgramUniform1iv_adr);
+    private z_ProgramUniform1iv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1i)>(z_ProgramUniform1iv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1iv(&program: gl_program; location: Int32; count: Int32; value: array of Int32);
     type PInt32=^Int32;
     begin
@@ -17824,6 +17978,8 @@
         z_ProgramUniform1iv_2(&program, location, count, value[0]) else
         z_ProgramUniform1iv_2(&program, location, count, PInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1iv(&program: gl_program; location: Int32; count: Int32; var value: Vec1i) :=
+    z_ProgramUniform1iv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1iv(&program: gl_program; location: Int32; count: Int32; var value: Int32) :=
     z_ProgramUniform1iv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1iv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -17837,6 +17993,7 @@
     private z_ProgramUniform1fv_adr := GetProcAddress('glProgramUniform1fv');
     private z_ProgramUniform1fv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1fv_adr);
     private z_ProgramUniform1fv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: single)>(z_ProgramUniform1fv_adr);
+    private z_ProgramUniform1fv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1f)>(z_ProgramUniform1fv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1fv(&program: gl_program; location: Int32; count: Int32; value: array of single);
     type Psingle=^single;
     begin
@@ -17844,6 +18001,8 @@
         z_ProgramUniform1fv_2(&program, location, count, value[0]) else
         z_ProgramUniform1fv_2(&program, location, count, Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1fv(&program: gl_program; location: Int32; count: Int32; var value: Vec1f) :=
+    z_ProgramUniform1fv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1fv(&program: gl_program; location: Int32; count: Int32; var value: single) :=
     z_ProgramUniform1fv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1fv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -17857,6 +18016,7 @@
     private z_ProgramUniform1dv_adr := GetProcAddress('glProgramUniform1dv');
     private z_ProgramUniform1dv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1dv_adr);
     private z_ProgramUniform1dv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: real)>(z_ProgramUniform1dv_adr);
+    private z_ProgramUniform1dv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1d)>(z_ProgramUniform1dv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1dv(&program: gl_program; location: Int32; count: Int32; value: array of real);
     type Preal=^real;
     begin
@@ -17864,6 +18024,8 @@
         z_ProgramUniform1dv_2(&program, location, count, value[0]) else
         z_ProgramUniform1dv_2(&program, location, count, Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1dv(&program: gl_program; location: Int32; count: Int32; var value: Vec1d) :=
+    z_ProgramUniform1dv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1dv(&program: gl_program; location: Int32; count: Int32; var value: real) :=
     z_ProgramUniform1dv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1dv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -17877,6 +18039,7 @@
     private z_ProgramUniform1uiv_adr := GetProcAddress('glProgramUniform1uiv');
     private z_ProgramUniform1uiv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1uiv_adr);
     private z_ProgramUniform1uiv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt32)>(z_ProgramUniform1uiv_adr);
+    private z_ProgramUniform1uiv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1ui)>(z_ProgramUniform1uiv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1uiv(&program: gl_program; location: Int32; count: Int32; value: array of UInt32);
     type PUInt32=^UInt32;
     begin
@@ -17884,6 +18047,8 @@
         z_ProgramUniform1uiv_2(&program, location, count, value[0]) else
         z_ProgramUniform1uiv_2(&program, location, count, PUInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1uiv(&program: gl_program; location: Int32; count: Int32; var value: Vec1ui) :=
+    z_ProgramUniform1uiv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1uiv(&program: gl_program; location: Int32; count: Int32; var value: UInt32) :=
     z_ProgramUniform1uiv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1uiv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -17897,6 +18062,7 @@
     private z_ProgramUniform2iv_adr := GetProcAddress('glProgramUniform2iv');
     private z_ProgramUniform2iv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2iv_adr);
     private z_ProgramUniform2iv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int32)>(z_ProgramUniform2iv_adr);
+    private z_ProgramUniform2iv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2i)>(z_ProgramUniform2iv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2iv(&program: gl_program; location: Int32; count: Int32; value: array of Int32);
     type PInt32=^Int32;
     begin
@@ -17904,6 +18070,8 @@
         z_ProgramUniform2iv_2(&program, location, count, value[0]) else
         z_ProgramUniform2iv_2(&program, location, count, PInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2iv(&program: gl_program; location: Int32; count: Int32; var value: Vec2i) :=
+    z_ProgramUniform2iv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2iv(&program: gl_program; location: Int32; count: Int32; var value: Int32) :=
     z_ProgramUniform2iv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2iv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -17917,6 +18085,7 @@
     private z_ProgramUniform2fv_adr := GetProcAddress('glProgramUniform2fv');
     private z_ProgramUniform2fv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2fv_adr);
     private z_ProgramUniform2fv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: single)>(z_ProgramUniform2fv_adr);
+    private z_ProgramUniform2fv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2f)>(z_ProgramUniform2fv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2fv(&program: gl_program; location: Int32; count: Int32; value: array of single);
     type Psingle=^single;
     begin
@@ -17924,6 +18093,8 @@
         z_ProgramUniform2fv_2(&program, location, count, value[0]) else
         z_ProgramUniform2fv_2(&program, location, count, Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2fv(&program: gl_program; location: Int32; count: Int32; var value: Vec2f) :=
+    z_ProgramUniform2fv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2fv(&program: gl_program; location: Int32; count: Int32; var value: single) :=
     z_ProgramUniform2fv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2fv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -17937,6 +18108,7 @@
     private z_ProgramUniform2dv_adr := GetProcAddress('glProgramUniform2dv');
     private z_ProgramUniform2dv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2dv_adr);
     private z_ProgramUniform2dv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: real)>(z_ProgramUniform2dv_adr);
+    private z_ProgramUniform2dv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2d)>(z_ProgramUniform2dv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2dv(&program: gl_program; location: Int32; count: Int32; value: array of real);
     type Preal=^real;
     begin
@@ -17944,6 +18116,8 @@
         z_ProgramUniform2dv_2(&program, location, count, value[0]) else
         z_ProgramUniform2dv_2(&program, location, count, Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2dv(&program: gl_program; location: Int32; count: Int32; var value: Vec2d) :=
+    z_ProgramUniform2dv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2dv(&program: gl_program; location: Int32; count: Int32; var value: real) :=
     z_ProgramUniform2dv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2dv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -17957,6 +18131,7 @@
     private z_ProgramUniform2uiv_adr := GetProcAddress('glProgramUniform2uiv');
     private z_ProgramUniform2uiv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2uiv_adr);
     private z_ProgramUniform2uiv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt32)>(z_ProgramUniform2uiv_adr);
+    private z_ProgramUniform2uiv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2ui)>(z_ProgramUniform2uiv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2uiv(&program: gl_program; location: Int32; count: Int32; value: array of UInt32);
     type PUInt32=^UInt32;
     begin
@@ -17964,6 +18139,8 @@
         z_ProgramUniform2uiv_2(&program, location, count, value[0]) else
         z_ProgramUniform2uiv_2(&program, location, count, PUInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2uiv(&program: gl_program; location: Int32; count: Int32; var value: Vec2ui) :=
+    z_ProgramUniform2uiv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2uiv(&program: gl_program; location: Int32; count: Int32; var value: UInt32) :=
     z_ProgramUniform2uiv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2uiv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -17977,6 +18154,7 @@
     private z_ProgramUniform3iv_adr := GetProcAddress('glProgramUniform3iv');
     private z_ProgramUniform3iv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3iv_adr);
     private z_ProgramUniform3iv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int32)>(z_ProgramUniform3iv_adr);
+    private z_ProgramUniform3iv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3i)>(z_ProgramUniform3iv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3iv(&program: gl_program; location: Int32; count: Int32; value: array of Int32);
     type PInt32=^Int32;
     begin
@@ -17984,6 +18162,8 @@
         z_ProgramUniform3iv_2(&program, location, count, value[0]) else
         z_ProgramUniform3iv_2(&program, location, count, PInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3iv(&program: gl_program; location: Int32; count: Int32; var value: Vec3i) :=
+    z_ProgramUniform3iv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3iv(&program: gl_program; location: Int32; count: Int32; var value: Int32) :=
     z_ProgramUniform3iv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3iv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -17997,6 +18177,7 @@
     private z_ProgramUniform3fv_adr := GetProcAddress('glProgramUniform3fv');
     private z_ProgramUniform3fv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3fv_adr);
     private z_ProgramUniform3fv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: single)>(z_ProgramUniform3fv_adr);
+    private z_ProgramUniform3fv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3f)>(z_ProgramUniform3fv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3fv(&program: gl_program; location: Int32; count: Int32; value: array of single);
     type Psingle=^single;
     begin
@@ -18004,6 +18185,8 @@
         z_ProgramUniform3fv_2(&program, location, count, value[0]) else
         z_ProgramUniform3fv_2(&program, location, count, Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3fv(&program: gl_program; location: Int32; count: Int32; var value: Vec3f) :=
+    z_ProgramUniform3fv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3fv(&program: gl_program; location: Int32; count: Int32; var value: single) :=
     z_ProgramUniform3fv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3fv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -18017,6 +18200,7 @@
     private z_ProgramUniform3dv_adr := GetProcAddress('glProgramUniform3dv');
     private z_ProgramUniform3dv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3dv_adr);
     private z_ProgramUniform3dv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: real)>(z_ProgramUniform3dv_adr);
+    private z_ProgramUniform3dv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3d)>(z_ProgramUniform3dv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3dv(&program: gl_program; location: Int32; count: Int32; value: array of real);
     type Preal=^real;
     begin
@@ -18024,6 +18208,8 @@
         z_ProgramUniform3dv_2(&program, location, count, value[0]) else
         z_ProgramUniform3dv_2(&program, location, count, Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3dv(&program: gl_program; location: Int32; count: Int32; var value: Vec3d) :=
+    z_ProgramUniform3dv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3dv(&program: gl_program; location: Int32; count: Int32; var value: real) :=
     z_ProgramUniform3dv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3dv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -18037,6 +18223,7 @@
     private z_ProgramUniform3uiv_adr := GetProcAddress('glProgramUniform3uiv');
     private z_ProgramUniform3uiv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3uiv_adr);
     private z_ProgramUniform3uiv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt32)>(z_ProgramUniform3uiv_adr);
+    private z_ProgramUniform3uiv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3ui)>(z_ProgramUniform3uiv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3uiv(&program: gl_program; location: Int32; count: Int32; value: array of UInt32);
     type PUInt32=^UInt32;
     begin
@@ -18044,6 +18231,8 @@
         z_ProgramUniform3uiv_2(&program, location, count, value[0]) else
         z_ProgramUniform3uiv_2(&program, location, count, PUInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3uiv(&program: gl_program; location: Int32; count: Int32; var value: Vec3ui) :=
+    z_ProgramUniform3uiv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3uiv(&program: gl_program; location: Int32; count: Int32; var value: UInt32) :=
     z_ProgramUniform3uiv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3uiv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -18057,6 +18246,7 @@
     private z_ProgramUniform4iv_adr := GetProcAddress('glProgramUniform4iv');
     private z_ProgramUniform4iv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4iv_adr);
     private z_ProgramUniform4iv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int32)>(z_ProgramUniform4iv_adr);
+    private z_ProgramUniform4iv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4i)>(z_ProgramUniform4iv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4iv(&program: gl_program; location: Int32; count: Int32; value: array of Int32);
     type PInt32=^Int32;
     begin
@@ -18064,6 +18254,8 @@
         z_ProgramUniform4iv_2(&program, location, count, value[0]) else
         z_ProgramUniform4iv_2(&program, location, count, PInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4iv(&program: gl_program; location: Int32; count: Int32; var value: Vec4i) :=
+    z_ProgramUniform4iv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4iv(&program: gl_program; location: Int32; count: Int32; var value: Int32) :=
     z_ProgramUniform4iv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4iv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -18077,6 +18269,7 @@
     private z_ProgramUniform4fv_adr := GetProcAddress('glProgramUniform4fv');
     private z_ProgramUniform4fv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4fv_adr);
     private z_ProgramUniform4fv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: single)>(z_ProgramUniform4fv_adr);
+    private z_ProgramUniform4fv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4f)>(z_ProgramUniform4fv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4fv(&program: gl_program; location: Int32; count: Int32; value: array of single);
     type Psingle=^single;
     begin
@@ -18084,6 +18277,8 @@
         z_ProgramUniform4fv_2(&program, location, count, value[0]) else
         z_ProgramUniform4fv_2(&program, location, count, Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4fv(&program: gl_program; location: Int32; count: Int32; var value: Vec4f) :=
+    z_ProgramUniform4fv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4fv(&program: gl_program; location: Int32; count: Int32; var value: single) :=
     z_ProgramUniform4fv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4fv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -18097,6 +18292,7 @@
     private z_ProgramUniform4dv_adr := GetProcAddress('glProgramUniform4dv');
     private z_ProgramUniform4dv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4dv_adr);
     private z_ProgramUniform4dv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: real)>(z_ProgramUniform4dv_adr);
+    private z_ProgramUniform4dv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4d)>(z_ProgramUniform4dv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4dv(&program: gl_program; location: Int32; count: Int32; value: array of real);
     type Preal=^real;
     begin
@@ -18104,6 +18300,8 @@
         z_ProgramUniform4dv_2(&program, location, count, value[0]) else
         z_ProgramUniform4dv_2(&program, location, count, Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4dv(&program: gl_program; location: Int32; count: Int32; var value: Vec4d) :=
+    z_ProgramUniform4dv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4dv(&program: gl_program; location: Int32; count: Int32; var value: real) :=
     z_ProgramUniform4dv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4dv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -18117,6 +18315,7 @@
     private z_ProgramUniform4uiv_adr := GetProcAddress('glProgramUniform4uiv');
     private z_ProgramUniform4uiv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4uiv_adr);
     private z_ProgramUniform4uiv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt32)>(z_ProgramUniform4uiv_adr);
+    private z_ProgramUniform4uiv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4ui)>(z_ProgramUniform4uiv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4uiv(&program: gl_program; location: Int32; count: Int32; value: array of UInt32);
     type PUInt32=^UInt32;
     begin
@@ -18124,6 +18323,8 @@
         z_ProgramUniform4uiv_2(&program, location, count, value[0]) else
         z_ProgramUniform4uiv_2(&program, location, count, PUInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4uiv(&program: gl_program; location: Int32; count: Int32; var value: Vec4ui) :=
+    z_ProgramUniform4uiv_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4uiv(&program: gl_program; location: Int32; count: Int32; var value: UInt32) :=
     z_ProgramUniform4uiv_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4uiv(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -18186,6 +18387,7 @@
     private z_ProgramUniformMatrix2dv_adr := GetProcAddress('glProgramUniformMatrix2dv');
     private z_ProgramUniformMatrix2dv_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; transpose: byte; value: IntPtr)>(z_ProgramUniformMatrix2dv_adr);
     private z_ProgramUniformMatrix2dv_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; transpose: byte; var value: real)>(z_ProgramUniformMatrix2dv_adr);
+    private z_ProgramUniformMatrix2dv_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; transpose: byte; var value: Mtr2x2d)>(z_ProgramUniformMatrix2dv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix2dv(&program: gl_program; location: Int32; count: Int32; transpose: boolean; value: array of real);
     type Preal=^real;
     begin
@@ -18193,6 +18395,8 @@
         z_ProgramUniformMatrix2dv_2(&program, location, count, byte(transpose), value[0]) else
         z_ProgramUniformMatrix2dv_2(&program, location, count, byte(transpose), Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix2dv(&program: gl_program; location: Int32; count: Int32; transpose: boolean; var value: Mtr2x2d) :=
+    z_ProgramUniformMatrix2dv_3(&program, location, count, byte(transpose), value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix2dv(&program: gl_program; location: Int32; count: Int32; transpose: boolean; var value: real) :=
     z_ProgramUniformMatrix2dv_2(&program, location, count, byte(transpose), value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix2dv(&program: gl_program; location: Int32; count: Int32; transpose: boolean; value: IntPtr) :=
@@ -24745,6 +24949,7 @@
     private z_ProgramUniform1fvEXT_adr := GetProcAddress('glProgramUniform1fvEXT');
     private z_ProgramUniform1fvEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1fvEXT_adr);
     private z_ProgramUniform1fvEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: single)>(z_ProgramUniform1fvEXT_adr);
+    private z_ProgramUniform1fvEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1f)>(z_ProgramUniform1fvEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1fvEXT(&program: gl_program; location: Int32; count: Int32; value: array of single);
     type Psingle=^single;
     begin
@@ -24752,6 +24957,8 @@
         z_ProgramUniform1fvEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform1fvEXT_2(&program, location, count, Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1fvEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec1f) :=
+    z_ProgramUniform1fvEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1fvEXT(&program: gl_program; location: Int32; count: Int32; var value: single) :=
     z_ProgramUniform1fvEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1fvEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -24760,6 +24967,7 @@
     private z_ProgramUniform2fvEXT_adr := GetProcAddress('glProgramUniform2fvEXT');
     private z_ProgramUniform2fvEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2fvEXT_adr);
     private z_ProgramUniform2fvEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: single)>(z_ProgramUniform2fvEXT_adr);
+    private z_ProgramUniform2fvEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2f)>(z_ProgramUniform2fvEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2fvEXT(&program: gl_program; location: Int32; count: Int32; value: array of single);
     type Psingle=^single;
     begin
@@ -24767,6 +24975,8 @@
         z_ProgramUniform2fvEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform2fvEXT_2(&program, location, count, Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2fvEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec2f) :=
+    z_ProgramUniform2fvEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2fvEXT(&program: gl_program; location: Int32; count: Int32; var value: single) :=
     z_ProgramUniform2fvEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2fvEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -24775,6 +24985,7 @@
     private z_ProgramUniform3fvEXT_adr := GetProcAddress('glProgramUniform3fvEXT');
     private z_ProgramUniform3fvEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3fvEXT_adr);
     private z_ProgramUniform3fvEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: single)>(z_ProgramUniform3fvEXT_adr);
+    private z_ProgramUniform3fvEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3f)>(z_ProgramUniform3fvEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3fvEXT(&program: gl_program; location: Int32; count: Int32; value: array of single);
     type Psingle=^single;
     begin
@@ -24782,6 +24993,8 @@
         z_ProgramUniform3fvEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform3fvEXT_2(&program, location, count, Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3fvEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec3f) :=
+    z_ProgramUniform3fvEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3fvEXT(&program: gl_program; location: Int32; count: Int32; var value: single) :=
     z_ProgramUniform3fvEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3fvEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -24790,6 +25003,7 @@
     private z_ProgramUniform4fvEXT_adr := GetProcAddress('glProgramUniform4fvEXT');
     private z_ProgramUniform4fvEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4fvEXT_adr);
     private z_ProgramUniform4fvEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: single)>(z_ProgramUniform4fvEXT_adr);
+    private z_ProgramUniform4fvEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4f)>(z_ProgramUniform4fvEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4fvEXT(&program: gl_program; location: Int32; count: Int32; value: array of single);
     type Psingle=^single;
     begin
@@ -24797,6 +25011,8 @@
         z_ProgramUniform4fvEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform4fvEXT_2(&program, location, count, Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4fvEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec4f) :=
+    z_ProgramUniform4fvEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4fvEXT(&program: gl_program; location: Int32; count: Int32; var value: single) :=
     z_ProgramUniform4fvEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4fvEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -24805,6 +25021,7 @@
     private z_ProgramUniform1ivEXT_adr := GetProcAddress('glProgramUniform1ivEXT');
     private z_ProgramUniform1ivEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1ivEXT_adr);
     private z_ProgramUniform1ivEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int32)>(z_ProgramUniform1ivEXT_adr);
+    private z_ProgramUniform1ivEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1i)>(z_ProgramUniform1ivEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ivEXT(&program: gl_program; location: Int32; count: Int32; value: array of Int32);
     type PInt32=^Int32;
     begin
@@ -24812,6 +25029,8 @@
         z_ProgramUniform1ivEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform1ivEXT_2(&program, location, count, PInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ivEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec1i) :=
+    z_ProgramUniform1ivEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ivEXT(&program: gl_program; location: Int32; count: Int32; var value: Int32) :=
     z_ProgramUniform1ivEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ivEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -24820,6 +25039,7 @@
     private z_ProgramUniform2ivEXT_adr := GetProcAddress('glProgramUniform2ivEXT');
     private z_ProgramUniform2ivEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2ivEXT_adr);
     private z_ProgramUniform2ivEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int32)>(z_ProgramUniform2ivEXT_adr);
+    private z_ProgramUniform2ivEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2i)>(z_ProgramUniform2ivEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ivEXT(&program: gl_program; location: Int32; count: Int32; value: array of Int32);
     type PInt32=^Int32;
     begin
@@ -24827,6 +25047,8 @@
         z_ProgramUniform2ivEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform2ivEXT_2(&program, location, count, PInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ivEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec2i) :=
+    z_ProgramUniform2ivEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ivEXT(&program: gl_program; location: Int32; count: Int32; var value: Int32) :=
     z_ProgramUniform2ivEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ivEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -24835,6 +25057,7 @@
     private z_ProgramUniform3ivEXT_adr := GetProcAddress('glProgramUniform3ivEXT');
     private z_ProgramUniform3ivEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3ivEXT_adr);
     private z_ProgramUniform3ivEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int32)>(z_ProgramUniform3ivEXT_adr);
+    private z_ProgramUniform3ivEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3i)>(z_ProgramUniform3ivEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ivEXT(&program: gl_program; location: Int32; count: Int32; value: array of Int32);
     type PInt32=^Int32;
     begin
@@ -24842,6 +25065,8 @@
         z_ProgramUniform3ivEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform3ivEXT_2(&program, location, count, PInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ivEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec3i) :=
+    z_ProgramUniform3ivEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ivEXT(&program: gl_program; location: Int32; count: Int32; var value: Int32) :=
     z_ProgramUniform3ivEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ivEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -24850,6 +25075,7 @@
     private z_ProgramUniform4ivEXT_adr := GetProcAddress('glProgramUniform4ivEXT');
     private z_ProgramUniform4ivEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4ivEXT_adr);
     private z_ProgramUniform4ivEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int32)>(z_ProgramUniform4ivEXT_adr);
+    private z_ProgramUniform4ivEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4i)>(z_ProgramUniform4ivEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ivEXT(&program: gl_program; location: Int32; count: Int32; value: array of Int32);
     type PInt32=^Int32;
     begin
@@ -24857,6 +25083,8 @@
         z_ProgramUniform4ivEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform4ivEXT_2(&program, location, count, PInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ivEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec4i) :=
+    z_ProgramUniform4ivEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ivEXT(&program: gl_program; location: Int32; count: Int32; var value: Int32) :=
     z_ProgramUniform4ivEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ivEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -24937,6 +25165,7 @@
     private z_ProgramUniformMatrix3x2fvEXT_adr := GetProcAddress('glProgramUniformMatrix3x2fvEXT');
     private z_ProgramUniformMatrix3x2fvEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; transpose: byte; value: IntPtr)>(z_ProgramUniformMatrix3x2fvEXT_adr);
     private z_ProgramUniformMatrix3x2fvEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; transpose: byte; var value: single)>(z_ProgramUniformMatrix3x2fvEXT_adr);
+    private z_ProgramUniformMatrix3x2fvEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; transpose: byte; var value: Mtr3x2f)>(z_ProgramUniformMatrix3x2fvEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix3x2fvEXT(&program: gl_program; location: Int32; count: Int32; transpose: boolean; value: array of single);
     type Psingle=^single;
     begin
@@ -24944,6 +25173,8 @@
         z_ProgramUniformMatrix3x2fvEXT_2(&program, location, count, byte(transpose), value[0]) else
         z_ProgramUniformMatrix3x2fvEXT_2(&program, location, count, byte(transpose), Psingle(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix3x2fvEXT(&program: gl_program; location: Int32; count: Int32; transpose: boolean; var value: Mtr3x2f) :=
+    z_ProgramUniformMatrix3x2fvEXT_3(&program, location, count, byte(transpose), value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix3x2fvEXT(&program: gl_program; location: Int32; count: Int32; transpose: boolean; var value: single) :=
     z_ProgramUniformMatrix3x2fvEXT_2(&program, location, count, byte(transpose), value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix3x2fvEXT(&program: gl_program; location: Int32; count: Int32; transpose: boolean; value: IntPtr) :=
@@ -25146,6 +25377,7 @@
     private z_ProgramUniform1uivEXT_adr := GetProcAddress('glProgramUniform1uivEXT');
     private z_ProgramUniform1uivEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1uivEXT_adr);
     private z_ProgramUniform1uivEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt32)>(z_ProgramUniform1uivEXT_adr);
+    private z_ProgramUniform1uivEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1ui)>(z_ProgramUniform1uivEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1uivEXT(&program: gl_program; location: Int32; count: Int32; value: array of UInt32);
     type PUInt32=^UInt32;
     begin
@@ -25153,6 +25385,8 @@
         z_ProgramUniform1uivEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform1uivEXT_2(&program, location, count, PUInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1uivEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec1ui) :=
+    z_ProgramUniform1uivEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1uivEXT(&program: gl_program; location: Int32; count: Int32; var value: UInt32) :=
     z_ProgramUniform1uivEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1uivEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -25161,6 +25395,7 @@
     private z_ProgramUniform2uivEXT_adr := GetProcAddress('glProgramUniform2uivEXT');
     private z_ProgramUniform2uivEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2uivEXT_adr);
     private z_ProgramUniform2uivEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt32)>(z_ProgramUniform2uivEXT_adr);
+    private z_ProgramUniform2uivEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2ui)>(z_ProgramUniform2uivEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2uivEXT(&program: gl_program; location: Int32; count: Int32; value: array of UInt32);
     type PUInt32=^UInt32;
     begin
@@ -25168,6 +25403,8 @@
         z_ProgramUniform2uivEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform2uivEXT_2(&program, location, count, PUInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2uivEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec2ui) :=
+    z_ProgramUniform2uivEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2uivEXT(&program: gl_program; location: Int32; count: Int32; var value: UInt32) :=
     z_ProgramUniform2uivEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2uivEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -25176,6 +25413,7 @@
     private z_ProgramUniform3uivEXT_adr := GetProcAddress('glProgramUniform3uivEXT');
     private z_ProgramUniform3uivEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3uivEXT_adr);
     private z_ProgramUniform3uivEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt32)>(z_ProgramUniform3uivEXT_adr);
+    private z_ProgramUniform3uivEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3ui)>(z_ProgramUniform3uivEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3uivEXT(&program: gl_program; location: Int32; count: Int32; value: array of UInt32);
     type PUInt32=^UInt32;
     begin
@@ -25183,6 +25421,8 @@
         z_ProgramUniform3uivEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform3uivEXT_2(&program, location, count, PUInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3uivEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec3ui) :=
+    z_ProgramUniform3uivEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3uivEXT(&program: gl_program; location: Int32; count: Int32; var value: UInt32) :=
     z_ProgramUniform3uivEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3uivEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -25191,6 +25431,7 @@
     private z_ProgramUniform4uivEXT_adr := GetProcAddress('glProgramUniform4uivEXT');
     private z_ProgramUniform4uivEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4uivEXT_adr);
     private z_ProgramUniform4uivEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt32)>(z_ProgramUniform4uivEXT_adr);
+    private z_ProgramUniform4uivEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4ui)>(z_ProgramUniform4uivEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4uivEXT(&program: gl_program; location: Int32; count: Int32; value: array of UInt32);
     type PUInt32=^UInt32;
     begin
@@ -25198,6 +25439,8 @@
         z_ProgramUniform4uivEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform4uivEXT_2(&program, location, count, PUInt32(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4uivEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec4ui) :=
+    z_ProgramUniform4uivEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4uivEXT(&program: gl_program; location: Int32; count: Int32; var value: UInt32) :=
     z_ProgramUniform4uivEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4uivEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -25745,6 +25988,7 @@
     private z_ProgramUniform1dvEXT_adr := GetProcAddress('glProgramUniform1dvEXT');
     private z_ProgramUniform1dvEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1dvEXT_adr);
     private z_ProgramUniform1dvEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: real)>(z_ProgramUniform1dvEXT_adr);
+    private z_ProgramUniform1dvEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1d)>(z_ProgramUniform1dvEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1dvEXT(&program: gl_program; location: Int32; count: Int32; value: array of real);
     type Preal=^real;
     begin
@@ -25752,6 +25996,8 @@
         z_ProgramUniform1dvEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform1dvEXT_2(&program, location, count, Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1dvEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec1d) :=
+    z_ProgramUniform1dvEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1dvEXT(&program: gl_program; location: Int32; count: Int32; var value: real) :=
     z_ProgramUniform1dvEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1dvEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -25760,6 +26006,7 @@
     private z_ProgramUniform2dvEXT_adr := GetProcAddress('glProgramUniform2dvEXT');
     private z_ProgramUniform2dvEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2dvEXT_adr);
     private z_ProgramUniform2dvEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: real)>(z_ProgramUniform2dvEXT_adr);
+    private z_ProgramUniform2dvEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2d)>(z_ProgramUniform2dvEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2dvEXT(&program: gl_program; location: Int32; count: Int32; value: array of real);
     type Preal=^real;
     begin
@@ -25767,6 +26014,8 @@
         z_ProgramUniform2dvEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform2dvEXT_2(&program, location, count, Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2dvEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec2d) :=
+    z_ProgramUniform2dvEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2dvEXT(&program: gl_program; location: Int32; count: Int32; var value: real) :=
     z_ProgramUniform2dvEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2dvEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -25775,6 +26024,7 @@
     private z_ProgramUniform3dvEXT_adr := GetProcAddress('glProgramUniform3dvEXT');
     private z_ProgramUniform3dvEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3dvEXT_adr);
     private z_ProgramUniform3dvEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: real)>(z_ProgramUniform3dvEXT_adr);
+    private z_ProgramUniform3dvEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3d)>(z_ProgramUniform3dvEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3dvEXT(&program: gl_program; location: Int32; count: Int32; value: array of real);
     type Preal=^real;
     begin
@@ -25782,6 +26032,8 @@
         z_ProgramUniform3dvEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform3dvEXT_2(&program, location, count, Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3dvEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec3d) :=
+    z_ProgramUniform3dvEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3dvEXT(&program: gl_program; location: Int32; count: Int32; var value: real) :=
     z_ProgramUniform3dvEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3dvEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -25790,6 +26042,7 @@
     private z_ProgramUniform4dvEXT_adr := GetProcAddress('glProgramUniform4dvEXT');
     private z_ProgramUniform4dvEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4dvEXT_adr);
     private z_ProgramUniform4dvEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: real)>(z_ProgramUniform4dvEXT_adr);
+    private z_ProgramUniform4dvEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4d)>(z_ProgramUniform4dvEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4dvEXT(&program: gl_program; location: Int32; count: Int32; value: array of real);
     type Preal=^real;
     begin
@@ -25797,6 +26050,8 @@
         z_ProgramUniform4dvEXT_2(&program, location, count, value[0]) else
         z_ProgramUniform4dvEXT_2(&program, location, count, Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4dvEXT(&program: gl_program; location: Int32; count: Int32; var value: Vec4d) :=
+    z_ProgramUniform4dvEXT_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4dvEXT(&program: gl_program; location: Int32; count: Int32; var value: real) :=
     z_ProgramUniform4dvEXT_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4dvEXT(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -25805,6 +26060,7 @@
     private z_ProgramUniformMatrix2dvEXT_adr := GetProcAddress('glProgramUniformMatrix2dvEXT');
     private z_ProgramUniformMatrix2dvEXT_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; transpose: byte; value: IntPtr)>(z_ProgramUniformMatrix2dvEXT_adr);
     private z_ProgramUniformMatrix2dvEXT_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; transpose: byte; var value: real)>(z_ProgramUniformMatrix2dvEXT_adr);
+    private z_ProgramUniformMatrix2dvEXT_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; transpose: byte; var value: Mtr2x2d)>(z_ProgramUniformMatrix2dvEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix2dvEXT(&program: gl_program; location: Int32; count: Int32; transpose: boolean; value: array of real);
     type Preal=^real;
     begin
@@ -25812,6 +26068,8 @@
         z_ProgramUniformMatrix2dvEXT_2(&program, location, count, byte(transpose), value[0]) else
         z_ProgramUniformMatrix2dvEXT_2(&program, location, count, byte(transpose), Preal(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix2dvEXT(&program: gl_program; location: Int32; count: Int32; transpose: boolean; var value: Mtr2x2d) :=
+    z_ProgramUniformMatrix2dvEXT_3(&program, location, count, byte(transpose), value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix2dvEXT(&program: gl_program; location: Int32; count: Int32; transpose: boolean; var value: real) :=
     z_ProgramUniformMatrix2dvEXT_2(&program, location, count, byte(transpose), value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniformMatrix2dvEXT(&program: gl_program; location: Int32; count: Int32; transpose: boolean; value: IntPtr) :=
@@ -31786,6 +32044,7 @@
     private z_Uniform1i64vNV_adr := GetProcAddress('glUniform1i64vNV');
     private z_Uniform1i64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform1i64vNV_adr);
     private z_Uniform1i64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Int64)>(z_Uniform1i64vNV_adr);
+    private z_Uniform1i64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec1i64)>(z_Uniform1i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1i64vNV(location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -31793,6 +32052,8 @@
         z_Uniform1i64vNV_2(location, count, value[0]) else
         z_Uniform1i64vNV_2(location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1i64vNV(location: Int32; count: Int32; var value: Vec1i64) :=
+    z_Uniform1i64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1i64vNV(location: Int32; count: Int32; var value: Int64) :=
     z_Uniform1i64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1i64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -31801,6 +32062,7 @@
     private z_Uniform2i64vNV_adr := GetProcAddress('glUniform2i64vNV');
     private z_Uniform2i64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform2i64vNV_adr);
     private z_Uniform2i64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Int64)>(z_Uniform2i64vNV_adr);
+    private z_Uniform2i64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec2i64)>(z_Uniform2i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2i64vNV(location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -31808,6 +32070,8 @@
         z_Uniform2i64vNV_2(location, count, value[0]) else
         z_Uniform2i64vNV_2(location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2i64vNV(location: Int32; count: Int32; var value: Vec2i64) :=
+    z_Uniform2i64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2i64vNV(location: Int32; count: Int32; var value: Int64) :=
     z_Uniform2i64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2i64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -31816,6 +32080,7 @@
     private z_Uniform3i64vNV_adr := GetProcAddress('glUniform3i64vNV');
     private z_Uniform3i64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform3i64vNV_adr);
     private z_Uniform3i64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Int64)>(z_Uniform3i64vNV_adr);
+    private z_Uniform3i64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec3i64)>(z_Uniform3i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3i64vNV(location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -31823,6 +32088,8 @@
         z_Uniform3i64vNV_2(location, count, value[0]) else
         z_Uniform3i64vNV_2(location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3i64vNV(location: Int32; count: Int32; var value: Vec3i64) :=
+    z_Uniform3i64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3i64vNV(location: Int32; count: Int32; var value: Int64) :=
     z_Uniform3i64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3i64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -31831,6 +32098,7 @@
     private z_Uniform4i64vNV_adr := GetProcAddress('glUniform4i64vNV');
     private z_Uniform4i64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform4i64vNV_adr);
     private z_Uniform4i64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Int64)>(z_Uniform4i64vNV_adr);
+    private z_Uniform4i64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec4i64)>(z_Uniform4i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4i64vNV(location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -31838,6 +32106,8 @@
         z_Uniform4i64vNV_2(location, count, value[0]) else
         z_Uniform4i64vNV_2(location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4i64vNV(location: Int32; count: Int32; var value: Vec4i64) :=
+    z_Uniform4i64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4i64vNV(location: Int32; count: Int32; var value: Int64) :=
     z_Uniform4i64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4i64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -31866,6 +32136,7 @@
     private z_Uniform1ui64vNV_adr := GetProcAddress('glUniform1ui64vNV');
     private z_Uniform1ui64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform1ui64vNV_adr);
     private z_Uniform1ui64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: UInt64)>(z_Uniform1ui64vNV_adr);
+    private z_Uniform1ui64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec1ui64)>(z_Uniform1ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1ui64vNV(location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -31873,6 +32144,8 @@
         z_Uniform1ui64vNV_2(location, count, value[0]) else
         z_Uniform1ui64vNV_2(location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1ui64vNV(location: Int32; count: Int32; var value: Vec1ui64) :=
+    z_Uniform1ui64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1ui64vNV(location: Int32; count: Int32; var value: UInt64) :=
     z_Uniform1ui64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform1ui64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -31881,6 +32154,7 @@
     private z_Uniform2ui64vNV_adr := GetProcAddress('glUniform2ui64vNV');
     private z_Uniform2ui64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform2ui64vNV_adr);
     private z_Uniform2ui64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: UInt64)>(z_Uniform2ui64vNV_adr);
+    private z_Uniform2ui64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec2ui64)>(z_Uniform2ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2ui64vNV(location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -31888,6 +32162,8 @@
         z_Uniform2ui64vNV_2(location, count, value[0]) else
         z_Uniform2ui64vNV_2(location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2ui64vNV(location: Int32; count: Int32; var value: Vec2ui64) :=
+    z_Uniform2ui64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2ui64vNV(location: Int32; count: Int32; var value: UInt64) :=
     z_Uniform2ui64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform2ui64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -31896,6 +32172,7 @@
     private z_Uniform3ui64vNV_adr := GetProcAddress('glUniform3ui64vNV');
     private z_Uniform3ui64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform3ui64vNV_adr);
     private z_Uniform3ui64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: UInt64)>(z_Uniform3ui64vNV_adr);
+    private z_Uniform3ui64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec3ui64)>(z_Uniform3ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3ui64vNV(location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -31903,6 +32180,8 @@
         z_Uniform3ui64vNV_2(location, count, value[0]) else
         z_Uniform3ui64vNV_2(location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3ui64vNV(location: Int32; count: Int32; var value: Vec3ui64) :=
+    z_Uniform3ui64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3ui64vNV(location: Int32; count: Int32; var value: UInt64) :=
     z_Uniform3ui64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform3ui64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -31911,6 +32190,7 @@
     private z_Uniform4ui64vNV_adr := GetProcAddress('glUniform4ui64vNV');
     private z_Uniform4ui64vNV_1 := GetProcOrNil&<procedure(location: Int32; count: Int32; value: IntPtr)>(z_Uniform4ui64vNV_adr);
     private z_Uniform4ui64vNV_2 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: UInt64)>(z_Uniform4ui64vNV_adr);
+    private z_Uniform4ui64vNV_3 := GetProcOrNil&<procedure(location: Int32; count: Int32; var value: Vec4ui64)>(z_Uniform4ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4ui64vNV(location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -31918,6 +32198,8 @@
         z_Uniform4ui64vNV_2(location, count, value[0]) else
         z_Uniform4ui64vNV_2(location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4ui64vNV(location: Int32; count: Int32; var value: Vec4ui64) :=
+    z_Uniform4ui64vNV_3(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4ui64vNV(location: Int32; count: Int32; var value: UInt64) :=
     z_Uniform4ui64vNV_2(location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure Uniform4ui64vNV(location: Int32; count: Int32; value: IntPtr) :=
@@ -31954,6 +32236,7 @@
     private z_ProgramUniform1i64vNV_adr := GetProcAddress('glProgramUniform1i64vNV');
     private z_ProgramUniform1i64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1i64vNV_adr);
     private z_ProgramUniform1i64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int64)>(z_ProgramUniform1i64vNV_adr);
+    private z_ProgramUniform1i64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1i64)>(z_ProgramUniform1i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i64vNV(&program: gl_program; location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -31961,6 +32244,8 @@
         z_ProgramUniform1i64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform1i64vNV_2(&program, location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec1i64) :=
+    z_ProgramUniform1i64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Int64) :=
     z_ProgramUniform1i64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1i64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -31969,6 +32254,7 @@
     private z_ProgramUniform2i64vNV_adr := GetProcAddress('glProgramUniform2i64vNV');
     private z_ProgramUniform2i64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2i64vNV_adr);
     private z_ProgramUniform2i64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int64)>(z_ProgramUniform2i64vNV_adr);
+    private z_ProgramUniform2i64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2i64)>(z_ProgramUniform2i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i64vNV(&program: gl_program; location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -31976,6 +32262,8 @@
         z_ProgramUniform2i64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform2i64vNV_2(&program, location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec2i64) :=
+    z_ProgramUniform2i64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Int64) :=
     z_ProgramUniform2i64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2i64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -31984,6 +32272,7 @@
     private z_ProgramUniform3i64vNV_adr := GetProcAddress('glProgramUniform3i64vNV');
     private z_ProgramUniform3i64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3i64vNV_adr);
     private z_ProgramUniform3i64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int64)>(z_ProgramUniform3i64vNV_adr);
+    private z_ProgramUniform3i64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3i64)>(z_ProgramUniform3i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i64vNV(&program: gl_program; location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -31991,6 +32280,8 @@
         z_ProgramUniform3i64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform3i64vNV_2(&program, location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec3i64) :=
+    z_ProgramUniform3i64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Int64) :=
     z_ProgramUniform3i64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3i64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -31999,6 +32290,7 @@
     private z_ProgramUniform4i64vNV_adr := GetProcAddress('glProgramUniform4i64vNV');
     private z_ProgramUniform4i64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4i64vNV_adr);
     private z_ProgramUniform4i64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Int64)>(z_ProgramUniform4i64vNV_adr);
+    private z_ProgramUniform4i64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4i64)>(z_ProgramUniform4i64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i64vNV(&program: gl_program; location: Int32; count: Int32; value: array of Int64);
     type PInt64=^Int64;
     begin
@@ -32006,6 +32298,8 @@
         z_ProgramUniform4i64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform4i64vNV_2(&program, location, count, PInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec4i64) :=
+    z_ProgramUniform4i64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i64vNV(&program: gl_program; location: Int32; count: Int32; var value: Int64) :=
     z_ProgramUniform4i64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4i64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -32034,6 +32328,7 @@
     private z_ProgramUniform1ui64vNV_adr := GetProcAddress('glProgramUniform1ui64vNV');
     private z_ProgramUniform1ui64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform1ui64vNV_adr);
     private z_ProgramUniform1ui64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt64)>(z_ProgramUniform1ui64vNV_adr);
+    private z_ProgramUniform1ui64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec1ui64)>(z_ProgramUniform1ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui64vNV(&program: gl_program; location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -32041,6 +32336,8 @@
         z_ProgramUniform1ui64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform1ui64vNV_2(&program, location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec1ui64) :=
+    z_ProgramUniform1ui64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: UInt64) :=
     z_ProgramUniform1ui64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform1ui64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -32049,6 +32346,7 @@
     private z_ProgramUniform2ui64vNV_adr := GetProcAddress('glProgramUniform2ui64vNV');
     private z_ProgramUniform2ui64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform2ui64vNV_adr);
     private z_ProgramUniform2ui64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt64)>(z_ProgramUniform2ui64vNV_adr);
+    private z_ProgramUniform2ui64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec2ui64)>(z_ProgramUniform2ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui64vNV(&program: gl_program; location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -32056,6 +32354,8 @@
         z_ProgramUniform2ui64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform2ui64vNV_2(&program, location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec2ui64) :=
+    z_ProgramUniform2ui64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: UInt64) :=
     z_ProgramUniform2ui64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform2ui64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -32064,6 +32364,7 @@
     private z_ProgramUniform3ui64vNV_adr := GetProcAddress('glProgramUniform3ui64vNV');
     private z_ProgramUniform3ui64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform3ui64vNV_adr);
     private z_ProgramUniform3ui64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt64)>(z_ProgramUniform3ui64vNV_adr);
+    private z_ProgramUniform3ui64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec3ui64)>(z_ProgramUniform3ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui64vNV(&program: gl_program; location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -32071,6 +32372,8 @@
         z_ProgramUniform3ui64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform3ui64vNV_2(&program, location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec3ui64) :=
+    z_ProgramUniform3ui64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: UInt64) :=
     z_ProgramUniform3ui64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform3ui64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=
@@ -32079,6 +32382,7 @@
     private z_ProgramUniform4ui64vNV_adr := GetProcAddress('glProgramUniform4ui64vNV');
     private z_ProgramUniform4ui64vNV_1 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; value: IntPtr)>(z_ProgramUniform4ui64vNV_adr);
     private z_ProgramUniform4ui64vNV_2 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: UInt64)>(z_ProgramUniform4ui64vNV_adr);
+    private z_ProgramUniform4ui64vNV_3 := GetProcOrNil&<procedure(&program: gl_program; location: Int32; count: Int32; var value: Vec4ui64)>(z_ProgramUniform4ui64vNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui64vNV(&program: gl_program; location: Int32; count: Int32; value: array of UInt64);
     type PUInt64=^UInt64;
     begin
@@ -32086,6 +32390,8 @@
         z_ProgramUniform4ui64vNV_2(&program, location, count, value[0]) else
         z_ProgramUniform4ui64vNV_2(&program, location, count, PUInt64(nil)^);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: Vec4ui64) :=
+    z_ProgramUniform4ui64vNV_3(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui64vNV(&program: gl_program; location: Int32; count: Int32; var value: UInt64) :=
     z_ProgramUniform4ui64vNV_2(&program, location, count, value);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramUniform4ui64vNV(&program: gl_program; location: Int32; count: Int32; value: IntPtr) :=

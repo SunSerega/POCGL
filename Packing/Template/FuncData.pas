@@ -1248,15 +1248,32 @@ type
                 mtr_t += 'Mtr';
                 if mlt.Length<>2 then raise new System.InvalidOperationException;
               end;
-              else raise new System.NotSupportedException;
+              'Vector':
+              begin
+                mtr_t += 'Vec';
+                if mlt.Length<>1 then raise new System.InvalidOperationException;
+              end;
+              else raise new System.NotSupportedException(kind);
             end;
             
             mtr_t += mlt.JoinToString('x');
             
             case org_t of
+              
+               'Int32': mtr_t += 'i';
+              'UInt32': mtr_t += 'ui';
+              
+               'Int64': mtr_t += 'i64';
+              'UInt64': mtr_t += 'ui64';
+              
               'single': mtr_t += 'f';
               'real':   mtr_t += 'd';
-              else raise new System.InvalidOperationException(org_t);
+
+//    'b':     Result := 'SByte';
+//    'ub':    Result :=  'Byte';
+//    's':     Result :=  'Int16';
+//    'us':    Result := 'UInt16';
+              else Otp($'ERROR: Invalid vector val type [{org_t}] for func [{self.name}]');
             end;
             
             Result += new FuncParamT(true, 0, mtr_t.ToString);

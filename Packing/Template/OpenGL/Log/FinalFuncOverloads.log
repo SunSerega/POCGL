@@ -2352,8 +2352,9 @@
 	---------- | -------- | ---- |
 	program    | location | v0   |
 
-# glProgramUniform1dv[3]:
+# glProgramUniform1dv[4]:
 	gl_program | Int32    | Int32 | array of real |
+	gl_program | Int32    | Int32 | var Vec1d     |
 	gl_program | Int32    | Int32 | var real      |
 	gl_program | Int32    | Int32 | IntPtr        |
 	---------- | -------- | ----- | ------------- |
@@ -2364,8 +2365,9 @@
 	---------- | -------- | ------ |
 	program    | location | v0     |
 
-# glProgramUniform1fv[3]:
+# glProgramUniform1fv[4]:
 	gl_program | Int32    | Int32 | array of single |
+	gl_program | Int32    | Int32 | var Vec1f       |
 	gl_program | Int32    | Int32 | var single      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
@@ -2376,8 +2378,9 @@
 	---------- | -------- | ----- |
 	program    | location | v0    |
 
-# glProgramUniform1iv[3]:
+# glProgramUniform1iv[4]:
 	gl_program | Int32    | Int32 | array of Int32 |
+	gl_program | Int32    | Int32 | var Vec1i      |
 	gl_program | Int32    | Int32 | var Int32      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
@@ -2388,8 +2391,9 @@
 	---------- | -------- | ------ |
 	program    | location | v0     |
 
-# glProgramUniform1uiv[3]:
+# glProgramUniform1uiv[4]:
 	gl_program | Int32    | Int32 | array of UInt32 |
+	gl_program | Int32    | Int32 | var Vec1ui      |
 	gl_program | Int32    | Int32 | var UInt32      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
@@ -2400,8 +2404,9 @@
 	---------- | -------- | ---- | ---- |
 	program    | location | v0   | v1   |
 
-# glProgramUniform2dv[3]:
+# glProgramUniform2dv[4]:
 	gl_program | Int32    | Int32 | array of real |
+	gl_program | Int32    | Int32 | var Vec2d     |
 	gl_program | Int32    | Int32 | var real      |
 	gl_program | Int32    | Int32 | IntPtr        |
 	---------- | -------- | ----- | ------------- |
@@ -2412,8 +2417,9 @@
 	---------- | -------- | ------ | ------ |
 	program    | location | v0     | v1     |
 
-# glProgramUniform2fv[3]:
+# glProgramUniform2fv[4]:
 	gl_program | Int32    | Int32 | array of single |
+	gl_program | Int32    | Int32 | var Vec2f       |
 	gl_program | Int32    | Int32 | var single      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
@@ -2424,8 +2430,9 @@
 	---------- | -------- | ----- | ----- |
 	program    | location | v0    | v1    |
 
-# glProgramUniform2iv[3]:
+# glProgramUniform2iv[4]:
 	gl_program | Int32    | Int32 | array of Int32 |
+	gl_program | Int32    | Int32 | var Vec2i      |
 	gl_program | Int32    | Int32 | var Int32      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
@@ -2436,8 +2443,9 @@
 	---------- | -------- | ------ | ------ |
 	program    | location | v0     | v1     |
 
-# glProgramUniform2uiv[3]:
+# glProgramUniform2uiv[4]:
 	gl_program | Int32    | Int32 | array of UInt32 |
+	gl_program | Int32    | Int32 | var Vec2ui      |
 	gl_program | Int32    | Int32 | var UInt32      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
@@ -2448,8 +2456,9 @@
 	---------- | -------- | ---- | ---- | ---- |
 	program    | location | v0   | v1   | v2   |
 
-# glProgramUniform3dv[3]:
+# glProgramUniform3dv[4]:
 	gl_program | Int32    | Int32 | array of real |
+	gl_program | Int32    | Int32 | var Vec3d     |
 	gl_program | Int32    | Int32 | var real      |
 	gl_program | Int32    | Int32 | IntPtr        |
 	---------- | -------- | ----- | ------------- |
@@ -2460,8 +2469,9 @@
 	---------- | -------- | ------ | ------ | ------ |
 	program    | location | v0     | v1     | v2     |
 
-# glProgramUniform3fv[3]:
+# glProgramUniform3fv[4]:
 	gl_program | Int32    | Int32 | array of single |
+	gl_program | Int32    | Int32 | var Vec3f       |
 	gl_program | Int32    | Int32 | var single      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
@@ -2472,8 +2482,9 @@
 	---------- | -------- | ----- | ----- | ----- |
 	program    | location | v0    | v1    | v2    |
 
-# glProgramUniform3iv[3]:
+# glProgramUniform3iv[4]:
 	gl_program | Int32    | Int32 | array of Int32 |
+	gl_program | Int32    | Int32 | var Vec3i      |
 	gl_program | Int32    | Int32 | var Int32      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
@@ -2484,8 +2495,9 @@
 	---------- | -------- | ------ | ------ | ------ |
 	program    | location | v0     | v1     | v2     |
 
-# glProgramUniform3uiv[3]:
+# glProgramUniform3uiv[4]:
 	gl_program | Int32    | Int32 | array of UInt32 |
+	gl_program | Int32    | Int32 | var Vec3ui      |
 	gl_program | Int32    | Int32 | var UInt32      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
@@ -2496,8 +2508,9 @@
 	---------- | -------- | ---- | ---- | ---- | ---- |
 	program    | location | v0   | v1   | v2   | v3   |
 
-# glProgramUniform4dv[3]:
+# glProgramUniform4dv[4]:
 	gl_program | Int32    | Int32 | array of real |
+	gl_program | Int32    | Int32 | var Vec4d     |
 	gl_program | Int32    | Int32 | var real      |
 	gl_program | Int32    | Int32 | IntPtr        |
 	---------- | -------- | ----- | ------------- |
@@ -2508,8 +2521,9 @@
 	---------- | -------- | ------ | ------ | ------ | ------ |
 	program    | location | v0     | v1     | v2     | v3     |
 
-# glProgramUniform4fv[3]:
+# glProgramUniform4fv[4]:
 	gl_program | Int32    | Int32 | array of single |
+	gl_program | Int32    | Int32 | var Vec4f       |
 	gl_program | Int32    | Int32 | var single      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
@@ -2520,8 +2534,9 @@
 	---------- | -------- | ----- | ----- | ----- | ----- |
 	program    | location | v0    | v1    | v2    | v3    |
 
-# glProgramUniform4iv[3]:
+# glProgramUniform4iv[4]:
 	gl_program | Int32    | Int32 | array of Int32 |
+	gl_program | Int32    | Int32 | var Vec4i      |
 	gl_program | Int32    | Int32 | var Int32      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
@@ -2532,15 +2547,17 @@
 	---------- | -------- | ------ | ------ | ------ | ------ |
 	program    | location | v0     | v1     | v2     | v3     |
 
-# glProgramUniform4uiv[3]:
+# glProgramUniform4uiv[4]:
 	gl_program | Int32    | Int32 | array of UInt32 |
+	gl_program | Int32    | Int32 | var Vec4ui      |
 	gl_program | Int32    | Int32 | var UInt32      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniformMatrix2dv[3]:
+# glProgramUniformMatrix2dv[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr2x2d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |
@@ -3380,8 +3397,9 @@
 	---------- | ----------------- | ------------------- |
 	program    | uniformBlockIndex | uniformBlockBinding |
 
-# glUniformMatrix2dv[3]:
+# glUniformMatrix2dv[4]:
 	Int32    | Int32 | boolean   | array of real |
+	Int32    | Int32 | boolean   | var Mtr2x2d   |
 	Int32    | Int32 | boolean   | var real      |
 	Int32    | Int32 | boolean   | IntPtr        |
 	-------- | ----- | --------- | ------------- |
@@ -6666,29 +6684,33 @@
 	-------- | ----- | ----- | ----- | ----- |
 	location | x     | y     | z     | w     |
 
-# glUniform1i64vNV[3]:
+# glUniform1i64vNV[4]:
 	Int32    | Int32 | array of Int64 |
+	Int32    | Int32 | var Vec1i64    |
 	Int32    | Int32 | var Int64      |
 	Int32    | Int32 | IntPtr         |
 	-------- | ----- | -------------- |
 	location | count | value          |
 
-# glUniform2i64vNV[3]:
+# glUniform2i64vNV[4]:
 	Int32    | Int32 | array of Int64 |
+	Int32    | Int32 | var Vec2i64    |
 	Int32    | Int32 | var Int64      |
 	Int32    | Int32 | IntPtr         |
 	-------- | ----- | -------------- |
 	location | count | value          |
 
-# glUniform3i64vNV[3]:
+# glUniform3i64vNV[4]:
 	Int32    | Int32 | array of Int64 |
+	Int32    | Int32 | var Vec3i64    |
 	Int32    | Int32 | var Int64      |
 	Int32    | Int32 | IntPtr         |
 	-------- | ----- | -------------- |
 	location | count | value          |
 
-# glUniform4i64vNV[3]:
+# glUniform4i64vNV[4]:
 	Int32    | Int32 | array of Int64 |
+	Int32    | Int32 | var Vec4i64    |
 	Int32    | Int32 | var Int64      |
 	Int32    | Int32 | IntPtr         |
 	-------- | ----- | -------------- |
@@ -6714,29 +6736,33 @@
 	-------- | ------ | ------ | ------ | ------ |
 	location | x      | y      | z      | w      |
 
-# glUniform1ui64vNV[3]:
+# glUniform1ui64vNV[4]:
 	Int32    | Int32 | array of UInt64 |
+	Int32    | Int32 | var Vec1ui64    |
 	Int32    | Int32 | var UInt64      |
 	Int32    | Int32 | IntPtr          |
 	-------- | ----- | --------------- |
 	location | count | value           |
 
-# glUniform2ui64vNV[3]:
+# glUniform2ui64vNV[4]:
 	Int32    | Int32 | array of UInt64 |
+	Int32    | Int32 | var Vec2ui64    |
 	Int32    | Int32 | var UInt64      |
 	Int32    | Int32 | IntPtr          |
 	-------- | ----- | --------------- |
 	location | count | value           |
 
-# glUniform3ui64vNV[3]:
+# glUniform3ui64vNV[4]:
 	Int32    | Int32 | array of UInt64 |
+	Int32    | Int32 | var Vec3ui64    |
 	Int32    | Int32 | var UInt64      |
 	Int32    | Int32 | IntPtr          |
 	-------- | ----- | --------------- |
 	location | count | value           |
 
-# glUniform4ui64vNV[3]:
+# glUniform4ui64vNV[4]:
 	Int32    | Int32 | array of UInt64 |
+	Int32    | Int32 | var Vec4ui64    |
 	Int32    | Int32 | var UInt64      |
 	Int32    | Int32 | IntPtr          |
 	-------- | ----- | --------------- |
@@ -6774,29 +6800,33 @@
 	---------- | -------- | ----- | ----- | ----- | ----- |
 	program    | location | x     | y     | z     | w     |
 
-# glProgramUniform1i64vNV[3]:
+# glProgramUniform1i64vNV[4]:
 	gl_program | Int32    | Int32 | array of Int64 |
+	gl_program | Int32    | Int32 | var Vec1i64    |
 	gl_program | Int32    | Int32 | var Int64      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
 	program    | location | count | value          |
 
-# glProgramUniform2i64vNV[3]:
+# glProgramUniform2i64vNV[4]:
 	gl_program | Int32    | Int32 | array of Int64 |
+	gl_program | Int32    | Int32 | var Vec2i64    |
 	gl_program | Int32    | Int32 | var Int64      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
 	program    | location | count | value          |
 
-# glProgramUniform3i64vNV[3]:
+# glProgramUniform3i64vNV[4]:
 	gl_program | Int32    | Int32 | array of Int64 |
+	gl_program | Int32    | Int32 | var Vec3i64    |
 	gl_program | Int32    | Int32 | var Int64      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
 	program    | location | count | value          |
 
-# glProgramUniform4i64vNV[3]:
+# glProgramUniform4i64vNV[4]:
 	gl_program | Int32    | Int32 | array of Int64 |
+	gl_program | Int32    | Int32 | var Vec4i64    |
 	gl_program | Int32    | Int32 | var Int64      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
@@ -6822,29 +6852,33 @@
 	---------- | -------- | ------ | ------ | ------ | ------ |
 	program    | location | x      | y      | z      | w      |
 
-# glProgramUniform1ui64vNV[3]:
+# glProgramUniform1ui64vNV[4]:
 	gl_program | Int32    | Int32 | array of UInt64 |
+	gl_program | Int32    | Int32 | var Vec1ui64    |
 	gl_program | Int32    | Int32 | var UInt64      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform2ui64vNV[3]:
+# glProgramUniform2ui64vNV[4]:
 	gl_program | Int32    | Int32 | array of UInt64 |
+	gl_program | Int32    | Int32 | var Vec2ui64    |
 	gl_program | Int32    | Int32 | var UInt64      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform3ui64vNV[3]:
+# glProgramUniform3ui64vNV[4]:
 	gl_program | Int32    | Int32 | array of UInt64 |
+	gl_program | Int32    | Int32 | var Vec3ui64    |
 	gl_program | Int32    | Int32 | var UInt64      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform4ui64vNV[3]:
+# glProgramUniform4ui64vNV[4]:
 	gl_program | Int32    | Int32 | array of UInt64 |
+	gl_program | Int32    | Int32 | var Vec4ui64    |
 	gl_program | Int32    | Int32 | var UInt64      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
@@ -7531,29 +7565,33 @@
 	-------- | ----- | ----- | ----- | ----- |
 	location | x     | y     | z     | w     |
 
-# glUniform1i64vARB[3]:
+# glUniform1i64vARB[4]:
 	Int32    | Int32 | array of Int64 |
+	Int32    | Int32 | var Vec1i64    |
 	Int32    | Int32 | var Int64      |
 	Int32    | Int32 | IntPtr         |
 	-------- | ----- | -------------- |
 	location | count | value          |
 
-# glUniform2i64vARB[3]:
+# glUniform2i64vARB[4]:
 	Int32    | Int32 | array of Int64 |
+	Int32    | Int32 | var Vec2i64    |
 	Int32    | Int32 | var Int64      |
 	Int32    | Int32 | IntPtr         |
 	-------- | ----- | -------------- |
 	location | count | value          |
 
-# glUniform3i64vARB[3]:
+# glUniform3i64vARB[4]:
 	Int32    | Int32 | array of Int64 |
+	Int32    | Int32 | var Vec3i64    |
 	Int32    | Int32 | var Int64      |
 	Int32    | Int32 | IntPtr         |
 	-------- | ----- | -------------- |
 	location | count | value          |
 
-# glUniform4i64vARB[3]:
+# glUniform4i64vARB[4]:
 	Int32    | Int32 | array of Int64 |
+	Int32    | Int32 | var Vec4i64    |
 	Int32    | Int32 | var Int64      |
 	Int32    | Int32 | IntPtr         |
 	-------- | ----- | -------------- |
@@ -7579,29 +7617,33 @@
 	-------- | ------ | ------ | ------ | ------ |
 	location | x      | y      | z      | w      |
 
-# glUniform1ui64vARB[3]:
+# glUniform1ui64vARB[4]:
 	Int32    | Int32 | array of UInt64 |
+	Int32    | Int32 | var Vec1ui64    |
 	Int32    | Int32 | var UInt64      |
 	Int32    | Int32 | IntPtr          |
 	-------- | ----- | --------------- |
 	location | count | value           |
 
-# glUniform2ui64vARB[3]:
+# glUniform2ui64vARB[4]:
 	Int32    | Int32 | array of UInt64 |
+	Int32    | Int32 | var Vec2ui64    |
 	Int32    | Int32 | var UInt64      |
 	Int32    | Int32 | IntPtr          |
 	-------- | ----- | --------------- |
 	location | count | value           |
 
-# glUniform3ui64vARB[3]:
+# glUniform3ui64vARB[4]:
 	Int32    | Int32 | array of UInt64 |
+	Int32    | Int32 | var Vec3ui64    |
 	Int32    | Int32 | var UInt64      |
 	Int32    | Int32 | IntPtr          |
 	-------- | ----- | --------------- |
 	location | count | value           |
 
-# glUniform4ui64vARB[3]:
+# glUniform4ui64vARB[4]:
 	Int32    | Int32 | array of UInt64 |
+	Int32    | Int32 | var Vec4ui64    |
 	Int32    | Int32 | var UInt64      |
 	Int32    | Int32 | IntPtr          |
 	-------- | ----- | --------------- |
@@ -7651,29 +7693,33 @@
 	---------- | -------- | ----- | ----- | ----- | ----- |
 	program    | location | x     | y     | z     | w     |
 
-# glProgramUniform1i64vARB[3]:
+# glProgramUniform1i64vARB[4]:
 	gl_program | Int32    | Int32 | array of Int64 |
+	gl_program | Int32    | Int32 | var Vec1i64    |
 	gl_program | Int32    | Int32 | var Int64      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
 	program    | location | count | value          |
 
-# glProgramUniform2i64vARB[3]:
+# glProgramUniform2i64vARB[4]:
 	gl_program | Int32    | Int32 | array of Int64 |
+	gl_program | Int32    | Int32 | var Vec2i64    |
 	gl_program | Int32    | Int32 | var Int64      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
 	program    | location | count | value          |
 
-# glProgramUniform3i64vARB[3]:
+# glProgramUniform3i64vARB[4]:
 	gl_program | Int32    | Int32 | array of Int64 |
+	gl_program | Int32    | Int32 | var Vec3i64    |
 	gl_program | Int32    | Int32 | var Int64      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
 	program    | location | count | value          |
 
-# glProgramUniform4i64vARB[3]:
+# glProgramUniform4i64vARB[4]:
 	gl_program | Int32    | Int32 | array of Int64 |
+	gl_program | Int32    | Int32 | var Vec4i64    |
 	gl_program | Int32    | Int32 | var Int64      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
@@ -7699,29 +7745,33 @@
 	---------- | -------- | ------ | ------ | ------ | ------ |
 	program    | location | x      | y      | z      | w      |
 
-# glProgramUniform1ui64vARB[3]:
+# glProgramUniform1ui64vARB[4]:
 	gl_program | Int32    | Int32 | array of UInt64 |
+	gl_program | Int32    | Int32 | var Vec1ui64    |
 	gl_program | Int32    | Int32 | var UInt64      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform2ui64vARB[3]:
+# glProgramUniform2ui64vARB[4]:
 	gl_program | Int32    | Int32 | array of UInt64 |
+	gl_program | Int32    | Int32 | var Vec2ui64    |
 	gl_program | Int32    | Int32 | var UInt64      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform3ui64vARB[3]:
+# glProgramUniform3ui64vARB[4]:
 	gl_program | Int32    | Int32 | array of UInt64 |
+	gl_program | Int32    | Int32 | var Vec3ui64    |
 	gl_program | Int32    | Int32 | var UInt64      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform4ui64vARB[3]:
+# glProgramUniform4ui64vARB[4]:
 	gl_program | Int32    | Int32 | array of UInt64 |
+	gl_program | Int32    | Int32 | var Vec4ui64    |
 	gl_program | Int32    | Int32 | var UInt64      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
@@ -10743,57 +10793,65 @@
 	---------- | -------- | ----- | ----- | ----- | ----- |
 	program    | location | v0    | v1    | v2    | v3    |
 
-# glProgramUniform1fvEXT[3]:
+# glProgramUniform1fvEXT[4]:
 	gl_program | Int32    | Int32 | array of single |
+	gl_program | Int32    | Int32 | var Vec1f       |
 	gl_program | Int32    | Int32 | var single      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform2fvEXT[3]:
+# glProgramUniform2fvEXT[4]:
 	gl_program | Int32    | Int32 | array of single |
+	gl_program | Int32    | Int32 | var Vec2f       |
 	gl_program | Int32    | Int32 | var single      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform3fvEXT[3]:
+# glProgramUniform3fvEXT[4]:
 	gl_program | Int32    | Int32 | array of single |
+	gl_program | Int32    | Int32 | var Vec3f       |
 	gl_program | Int32    | Int32 | var single      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform4fvEXT[3]:
+# glProgramUniform4fvEXT[4]:
 	gl_program | Int32    | Int32 | array of single |
+	gl_program | Int32    | Int32 | var Vec4f       |
 	gl_program | Int32    | Int32 | var single      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform1ivEXT[3]:
+# glProgramUniform1ivEXT[4]:
 	gl_program | Int32    | Int32 | array of Int32 |
+	gl_program | Int32    | Int32 | var Vec1i      |
 	gl_program | Int32    | Int32 | var Int32      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
 	program    | location | count | value          |
 
-# glProgramUniform2ivEXT[3]:
+# glProgramUniform2ivEXT[4]:
 	gl_program | Int32    | Int32 | array of Int32 |
+	gl_program | Int32    | Int32 | var Vec2i      |
 	gl_program | Int32    | Int32 | var Int32      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
 	program    | location | count | value          |
 
-# glProgramUniform3ivEXT[3]:
+# glProgramUniform3ivEXT[4]:
 	gl_program | Int32    | Int32 | array of Int32 |
+	gl_program | Int32    | Int32 | var Vec3i      |
 	gl_program | Int32    | Int32 | var Int32      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
 	program    | location | count | value          |
 
-# glProgramUniform4ivEXT[3]:
+# glProgramUniform4ivEXT[4]:
 	gl_program | Int32    | Int32 | array of Int32 |
+	gl_program | Int32    | Int32 | var Vec4i      |
 	gl_program | Int32    | Int32 | var Int32      |
 	gl_program | Int32    | Int32 | IntPtr         |
 	---------- | -------- | ----- | -------------- |
@@ -10831,8 +10889,9 @@
 	---------- | -------- | ----- | --------- | --------------- |
 	program    | location | count | transpose | value           |
 
-# glProgramUniformMatrix3x2fvEXT[3]:
+# glProgramUniformMatrix3x2fvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of single |
+	gl_program | Int32    | Int32 | boolean   | var Mtr3x2f     |
 	gl_program | Int32    | Int32 | boolean   | var single      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr          |
 	---------- | -------- | ----- | --------- | --------------- |
@@ -10952,29 +11011,33 @@
 	---------- | -------- | ------ | ------ | ------ | ------ |
 	program    | location | v0     | v1     | v2     | v3     |
 
-# glProgramUniform1uivEXT[3]:
+# glProgramUniform1uivEXT[4]:
 	gl_program | Int32    | Int32 | array of UInt32 |
+	gl_program | Int32    | Int32 | var Vec1ui      |
 	gl_program | Int32    | Int32 | var UInt32      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform2uivEXT[3]:
+# glProgramUniform2uivEXT[4]:
 	gl_program | Int32    | Int32 | array of UInt32 |
+	gl_program | Int32    | Int32 | var Vec2ui      |
 	gl_program | Int32    | Int32 | var UInt32      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform3uivEXT[3]:
+# glProgramUniform3uivEXT[4]:
 	gl_program | Int32    | Int32 | array of UInt32 |
+	gl_program | Int32    | Int32 | var Vec3ui      |
 	gl_program | Int32    | Int32 | var UInt32      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
 	program    | location | count | value           |
 
-# glProgramUniform4uivEXT[3]:
+# glProgramUniform4uivEXT[4]:
 	gl_program | Int32    | Int32 | array of UInt32 |
+	gl_program | Int32    | Int32 | var Vec4ui      |
 	gl_program | Int32    | Int32 | var UInt32      |
 	gl_program | Int32    | Int32 | IntPtr          |
 	---------- | -------- | ----- | --------------- |
@@ -11393,36 +11456,41 @@
 	---------- | -------- | ---- | ---- | ---- | ---- |
 	program    | location | x    | y    | z    | w    |
 
-# glProgramUniform1dvEXT[3]:
+# glProgramUniform1dvEXT[4]:
 	gl_program | Int32    | Int32 | array of real |
+	gl_program | Int32    | Int32 | var Vec1d     |
 	gl_program | Int32    | Int32 | var real      |
 	gl_program | Int32    | Int32 | IntPtr        |
 	---------- | -------- | ----- | ------------- |
 	program    | location | count | value         |
 
-# glProgramUniform2dvEXT[3]:
+# glProgramUniform2dvEXT[4]:
 	gl_program | Int32    | Int32 | array of real |
+	gl_program | Int32    | Int32 | var Vec2d     |
 	gl_program | Int32    | Int32 | var real      |
 	gl_program | Int32    | Int32 | IntPtr        |
 	---------- | -------- | ----- | ------------- |
 	program    | location | count | value         |
 
-# glProgramUniform3dvEXT[3]:
+# glProgramUniform3dvEXT[4]:
 	gl_program | Int32    | Int32 | array of real |
+	gl_program | Int32    | Int32 | var Vec3d     |
 	gl_program | Int32    | Int32 | var real      |
 	gl_program | Int32    | Int32 | IntPtr        |
 	---------- | -------- | ----- | ------------- |
 	program    | location | count | value         |
 
-# glProgramUniform4dvEXT[3]:
+# glProgramUniform4dvEXT[4]:
 	gl_program | Int32    | Int32 | array of real |
+	gl_program | Int32    | Int32 | var Vec4d     |
 	gl_program | Int32    | Int32 | var real      |
 	gl_program | Int32    | Int32 | IntPtr        |
 	---------- | -------- | ----- | ------------- |
 	program    | location | count | value         |
 
-# glProgramUniformMatrix2dvEXT[3]:
+# glProgramUniformMatrix2dvEXT[4]:
 	gl_program | Int32    | Int32 | boolean   | array of real |
+	gl_program | Int32    | Int32 | boolean   | var Mtr2x2d   |
 	gl_program | Int32    | Int32 | boolean   | var real      |
 	gl_program | Int32    | Int32 | boolean   | IntPtr        |
 	---------- | -------- | ----- | --------- | ------------- |

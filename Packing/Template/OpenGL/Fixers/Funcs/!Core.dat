@@ -30,14 +30,6 @@
 
 
 
-# glUniform[%c:1,2,3,4%][%t:f,d,i,ui%]v
-# glUniform[%c:1,2,3,4%][%t:      ui%]vEXT
-# glUniform[%c:1,2,3,4%][%t:f,  i   %]vARB
-!possible_par_types
- *	| *	| +var Vec{%c%}{%t%}	|
-
-
-
 # glGetActiveAttrib
 # glGetActiveAttribARB
 !possible_par_types
@@ -76,6 +68,5 @@
 # glGetIntegerv
 !possible_par_types
  *	| +var ContextFlagMask +var ContextProfileMask +var SubgroupSupportedFeatures	|
-
 
 
