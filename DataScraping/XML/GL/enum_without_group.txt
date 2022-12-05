@@ -70,6 +70,7 @@ glConservativeRasterParameterfNV
 glConservativeRasterParameteriNV
 glCoverageOperationNV
 glDrawBuffersNV
+glSampleMaskIndexedNV
 glCoverageModulationNV
 glProgramSubroutineParametersuivNV
 glGetProgramSubroutineParameteruivNV

@@ -22,7 +22,6 @@ Kind [BufferSize] was not utilised
 Kind [Color] was not utilised
 Kind [Clamped[-1; 1]] was not utilised
 Kind [DrawBufferIndex] was not utilised
-Kind [Clamp01] was not described
 Kind [ColorIndexValue] was not utilised
 Kind [StencilValue] was not utilised
 Kind [CheckedFloat32] was not described
@@ -35,5 +34,4 @@ Kind [FeedbackElement] was not utilised
 Kind [ColorIndexMask] was not utilised
 Kind [StencilMask] was not utilised
 Kind [SelectName] was not utilised
-Group [SampleMaskNV] isn't defined
 Clampable types: GLfixed GLfloat GLdouble GLclampf GLclampd
