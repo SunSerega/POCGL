@@ -7012,9 +7012,9 @@
 	target        | internalFormat      | width | height | depth | layers | flags              |
 
 # glTextureStorageSparseAMD[1]:
-	gl_texture | DummyEnum | SizedInternalFormat | Int32 | Int32  | Int32 | Int32  | TextureStorageMask |
-	---------- | --------- | ------------------- | ----- | ------ | ----- | ------ | ------------------ |
-	texture    | target    | internalFormat      | width | height | depth | layers | flags              |
+	gl_texture | TextureTarget | SizedInternalFormat | Int32 | Int32  | Int32 | Int32  | TextureStorageMask |
+	---------- | ------------- | ------------------- | ----- | ------ | ----- | ------ | ------------------ |
+	texture    | target        | internalFormat      | width | height | depth | layers | flags              |
 
 # glStencilOpValueAMD[1]:
 	TriangleFace | UInt32 |
@@ -8708,9 +8708,9 @@
 	buffer    | offset | size    | commit  |
 
 # glTexPageCommitmentARB[1]:
-	DummyEnum | Int32 | Int32   | Int32   | Int32   | Int32 | Int32  | Int32 | boolean |
-	--------- | ----- | ------- | ------- | ------- | ----- | ------ | ----- | ------- |
-	target    | level | xoffset | yoffset | zoffset | width | height | depth | commit  |
+	TextureTarget | Int32 | Int32   | Int32   | Int32   | Int32 | Int32  | Int32 | boolean |
+	------------- | ----- | ------- | ------- | ------- | ----- | ------ | ----- | ------- |
+	target        | level | xoffset | yoffset | zoffset | width | height | depth | commit  |
 
 # glTexBufferARB[1]:
 	TextureTarget | SizedInternalFormat | gl_buffer |
@@ -11566,9 +11566,9 @@
 	texture    | target        | internalformat      | buffer    | offset | size    |
 
 # glTextureStorage1DEXT[1]:
-	gl_texture | DummyEnum | Int32  | SizedInternalFormat | Int32 |
-	---------- | --------- | ------ | ------------------- | ----- |
-	texture    | target    | levels | internalformat      | width |
+	gl_texture | TextureTarget | Int32  | SizedInternalFormat | Int32 |
+	---------- | ------------- | ------ | ------------------- | ----- |
+	texture    | target        | levels | internalformat      | width |
 
 # glTextureStorage2DEXT[1]:
 	gl_texture | DummyEnum | Int32  | SizedInternalFormat | Int32 | Int32  |
@@ -17531,9 +17531,9 @@
 	equation      |
 
 # glSpriteParameterfSGIX[1]:
-	SpriteParameterName | SpriteModeSingle |
-	------------------- | ---------------- |
-	pname               | param            |
+	SpriteParameterName | single |
+	------------------- | ------ |
+	pname               | param  |
 
 # glSpriteParameterfvSGIX[3]:
 	SpriteParameterName | array of single |

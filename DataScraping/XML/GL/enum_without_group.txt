@@ -14,7 +14,6 @@ glQueryObjectParameteruiAMD
 glGetPerfMonitorCounterInfoAMD
 glGetPerfMonitorCounterDataAMD
 glSetMultisamplefvAMD
-glTextureStorageSparseAMD
 glTessellationModeAMD
 glBufferParameteriAPPLE
 glObjectPurgeableAPPLE
@@ -32,7 +31,6 @@ glGetObjectParameterivARB
 glNamedStringARB
 glGetNamedStringivARB
 glBufferPageCommitmentARB
-glTexPageCommitmentARB
 glEGLImageTargetTexStorageEXT
 glClipControlEXT
 glLabelObjectEXT
@@ -40,7 +38,6 @@ glGetObjectLabelEXT
 glGetPointerIndexedvEXT
 glGetPointeri_vEXT
 glVertexArrayMultiTexCoordOffsetEXT
-glTextureStorage1DEXT
 glTextureStorage2DEXT
 glTextureStorage3DEXT
 glTextureStorage3DMultisampleEXT
@@ -51,7 +48,6 @@ glDrawBuffersIndexedEXT
 glGetPixelTransformParameterivEXT
 glGetPixelTransformParameterfvEXT
 glUseShaderProgramEXT
-glTexPageCommitmentEXT
 glWindowRectanglesEXT
 glImportSyncEXT
 glFlushStaticDataIBM
@@ -155,7 +151,6 @@ glUnmapBufferOES
 glWeightPointerOES
 glPointSizePointerOES
 glQueryMatrixxOES
-glCopyTexSubImage3DOES
 glAlphaFuncQCOM
 glExtGetTexLevelParameterivQCOM
 glExtTexObjectStateOverrideiQCOM

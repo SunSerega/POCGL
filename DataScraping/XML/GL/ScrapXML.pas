@@ -159,15 +159,6 @@ type
     
     {$endregion kind info}
     
-    {$region Sanity data}
-    
-    private is_color: boolean;
-    
-    private static clampable_types := new HashSet<string>;
-    private is_clamped: boolean;
-    
-    {$endregion Sanity data}
-    
     private event on_used: ()->();
     public procedure MarkUsed :=
     if on_used<>nil then
@@ -247,16 +238,6 @@ type
           Kinds.mentioned += kind else
         if LogCache.kinds_undescribed.Add(kind) then
           log.WriteLine($'Kind [{kind}] was not described');
-        
-        // Non-use, only a sanity check
-        if kind='Color' then
-          self.is_color := true else
-        if kind.StartsWith('Clamped') then
-        begin
-          clampable_types += self.t;
-          self.is_clamped := true;
-        end;
-        
         ApplyKind(func_name, n, kind);
       end;
       
@@ -555,13 +536,6 @@ begin
     features.SelectMany(f->f.add.Concat(f.rem)) +
     extensions.SelectMany(ext->ext.add)
   ).ToHashSet.ToArray;
-  
-  log.WriteLine($'Clampable types: {ParData.clampable_types.JoinToString}');
-  funcs.SelectMany(f->
-    f.pars.Numerate(0)
-    .Where(\(par_i,par)-> (par.t in ParData.clampable_types) and par.is_color and not par.is_clamped )
-    .Select(\(par_i,par)-> $'Func [{f.pars[0].name}] par#{par_i} ({par.name})' )
-  ).WriteLines(GetFullPathRTA('Color without clamp.txt'));
   
   bw.Write(grs.Length);
   foreach var gr in grs do

@@ -12815,8 +12815,8 @@
     z_TexStorageSparseAMD_1(target, internalFormat, width, height, depth, layers, flags);
     
     private z_TextureStorageSparseAMD_adr := GetProcAddress('glTextureStorageSparseAMD');
-    private z_TextureStorageSparseAMD_1 := GetProcOrNil&<procedure(texture: gl_texture; target: DummyEnum; internalFormat: SizedInternalFormat; width: Int32; height: Int32; depth: Int32; layers: Int32; flags: TextureStorageMask)>(z_TextureStorageSparseAMD_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorageSparseAMD(texture: gl_texture; target: DummyEnum; internalFormat: SizedInternalFormat; width: Int32; height: Int32; depth: Int32; layers: Int32; flags: TextureStorageMask) :=
+    private z_TextureStorageSparseAMD_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; internalFormat: SizedInternalFormat; width: Int32; height: Int32; depth: Int32; layers: Int32; flags: TextureStorageMask)>(z_TextureStorageSparseAMD_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorageSparseAMD(texture: gl_texture; target: TextureTarget; internalFormat: SizedInternalFormat; width: Int32; height: Int32; depth: Int32; layers: Int32; flags: TextureStorageMask) :=
     z_TextureStorageSparseAMD_1(texture, target, internalFormat, width, height, depth, layers, flags);
     
   end;
@@ -19487,8 +19487,8 @@
     public const _ExtStr = 'gl_arb_sparse_texture';
     
     private z_TexPageCommitmentARB_adr := GetProcAddress('glTexPageCommitmentARB');
-    private z_TexPageCommitmentARB_1 := GetProcOrNil&<procedure(target: DummyEnum; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; commit: byte)>(z_TexPageCommitmentARB_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexPageCommitmentARB(target: DummyEnum; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; commit: boolean) :=
+    private z_TexPageCommitmentARB_1 := GetProcOrNil&<procedure(target: TextureTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; commit: byte)>(z_TexPageCommitmentARB_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexPageCommitmentARB(target: TextureTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; commit: boolean) :=
     z_TexPageCommitmentARB_1(target, level, xoffset, yoffset, zoffset, width, height, depth, byte(commit));
     
   end;
@@ -26225,8 +26225,8 @@
     z_TextureBufferRangeEXT_1(texture, target, internalformat, buffer, offset, size);
     
     private z_TextureStorage1DEXT_adr := GetProcAddress('glTextureStorage1DEXT');
-    private z_TextureStorage1DEXT_1 := GetProcOrNil&<procedure(texture: gl_texture; target: DummyEnum; levels: Int32; internalformat: SizedInternalFormat; width: Int32)>(z_TextureStorage1DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage1DEXT(texture: gl_texture; target: DummyEnum; levels: Int32; internalformat: SizedInternalFormat; width: Int32) :=
+    private z_TextureStorage1DEXT_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; levels: Int32; internalformat: SizedInternalFormat; width: Int32)>(z_TextureStorage1DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage1DEXT(texture: gl_texture; target: TextureTarget; levels: Int32; internalformat: SizedInternalFormat; width: Int32) :=
     z_TextureStorage1DEXT_1(texture, target, levels, internalformat, width);
     
     private z_TextureStorage2DEXT_adr := GetProcAddress('glTextureStorage2DEXT');
@@ -28537,8 +28537,8 @@
     z_TexStorage3DEXT_1(target, levels, internalformat, width, height, depth);
     
     private z_TextureStorage1DEXT_adr := GetProcAddress('glTextureStorage1DEXT');
-    private z_TextureStorage1DEXT_1 := GetProcOrNil&<procedure(texture: gl_texture; target: DummyEnum; levels: Int32; internalformat: SizedInternalFormat; width: Int32)>(z_TextureStorage1DEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage1DEXT(texture: gl_texture; target: DummyEnum; levels: Int32; internalformat: SizedInternalFormat; width: Int32) :=
+    private z_TextureStorage1DEXT_1 := GetProcOrNil&<procedure(texture: gl_texture; target: TextureTarget; levels: Int32; internalformat: SizedInternalFormat; width: Int32)>(z_TextureStorage1DEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureStorage1DEXT(texture: gl_texture; target: TextureTarget; levels: Int32; internalformat: SizedInternalFormat; width: Int32) :=
     z_TextureStorage1DEXT_1(texture, target, levels, internalformat, width);
     
     private z_TextureStorage2DEXT_adr := GetProcAddress('glTextureStorage2DEXT');
@@ -39096,8 +39096,8 @@
     public const _ExtStr = 'gl_sgix_sprite';
     
     private z_SpriteParameterfSGIX_adr := GetProcAddress('glSpriteParameterfSGIX');
-    private z_SpriteParameterfSGIX_1 := GetProcOrNil&<procedure(pname: SpriteParameterName; param: SpriteModeSingle)>(z_SpriteParameterfSGIX_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpriteParameterfSGIX(pname: SpriteParameterName; param: SpriteModeSingle) :=
+    private z_SpriteParameterfSGIX_1 := GetProcOrNil&<procedure(pname: SpriteParameterName; param: single)>(z_SpriteParameterfSGIX_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpriteParameterfSGIX(pname: SpriteParameterName; param: single) :=
     z_SpriteParameterfSGIX_1(pname, param);
     
     private z_SpriteParameterfvSGIX_adr := GetProcAddress('glSpriteParameterfvSGIX');
