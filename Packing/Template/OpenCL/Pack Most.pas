@@ -12,8 +12,8 @@ begin
     LoadBin('DataScraping\XML\CL\funcs.bin');
     
     Otp($'Fixing all');
-    LoadFixers;
     Group.FixAllEndExt;
+    LoadFixers;
     Group.FixCL_Names;
     Func.FixAllGet;
     Func.FixCL;

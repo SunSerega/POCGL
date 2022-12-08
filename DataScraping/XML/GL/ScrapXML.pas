@@ -20,7 +20,7 @@ type
   
   Group = sealed class
     private name: string;
-    private bitmask: boolean;
+    private bitmask := default(boolean?);
     private enums := new Dictionary<string, int64>;
     
     private types := new HashSet<string>;
@@ -49,7 +49,12 @@ type
     public procedure Save(bw: System.IO.BinaryWriter);
     begin
       bw.Write(name);
-      bw.Write(bitmask);
+      if bitmask=nil then
+      begin
+        bitmask := |'flag','mask','bit'|.Any(w->w in name.ToLower);
+        log.WriteLine($'Group [{name}] autoset to is_bitmask={bitmask}');
+      end;
+      bw.Write(bitmask.Value);
       bw.Write(enums.Count);
       
       foreach var key in enums.Keys do
@@ -69,7 +74,7 @@ type
   end;
   GroupBuilder = sealed class
     private static all := new Dictionary<string, GroupBuilder>;
-    private enums := new List<(string,int64,boolean)>;
+    private enums := new List<(string,int64)>;
     
     private static function GetItem(gname: string): GroupBuilder;
     begin
@@ -81,7 +86,7 @@ type
     end;
     public static property Item[gname: string]: GroupBuilder read GetItem; default;
     
-    public static procedure operator+=(gb: GroupBuilder; enum: (string,int64,boolean)) :=
+    public static procedure operator+=(gb: GroupBuilder; enum: (string,int64)) :=
     gb.enums += enum;
     
     public static procedure SealAll(api_name: string);
@@ -91,49 +96,11 @@ type
       begin
         var res := new Group;
         res.name := gname;
-        
-        var group_t: (gt_any, gt_enum, gt_bitmask, gt_error) := gt_any;
-        foreach var (ename, eval, is_bitmask) in all[gname].enums do
-        begin
-          if res.enums.ContainsKey(ename) then
-          begin
+        foreach var (ename, eval) in all[gname].enums do
+          if ename not in res.enums then
+            res.enums.Add(ename, eval) else
             log.WriteLine($'enum [{ename}] used multiple times in group [{gname}] of api [{api_name}]');
-            continue;
-          end;
-          
-          res.enums.Add(ename, eval);
-          
-          if eval=0 then
-          begin
-            if 'Flags' in gname then
-            begin
-              group_t := gt_bitmask;
-              var TODO := 0;
-              //TODO костыль, надо определять тип групы по тому, как она использована в функциях
-              log.WriteLine($'Group {gname} was autoset to gt_bitmask, because of GL_NONE in enums, need fixing');
-            end;
-          end else
-            case group_t of
-              gt_any:     group_t := is_bitmask ? gt_bitmask : gt_enum;
-              gt_enum:    if     is_bitmask then group_t := gt_error;
-              gt_bitmask: if not is_bitmask then group_t := gt_error;
-              gt_error:   ;
-            end;
-          
-        end;
-        
-        case group_t of
-          
-          gt_any:     log.WriteLine($'Empty group [{gname}] in api [{api_name}]');
-          gt_error:   Otp($'ERROR: Can''t determine type of group [{gname}] in api [{api_name}]');
-          
-          else
-          begin
-            res.bitmask := group_t=gt_bitmask;
-            Group.All.Add(gname, res);
-          end;
-        end;
-        
+        Group.All.Add(gname, res); 
       end;
       
       all.Clear;
@@ -252,6 +219,29 @@ type
         end else
         begin
           Group.Used += gname;
+          
+          var is_bitmask: boolean;
+          case self.t of
+          
+            'GLbitfield':
+            is_bitmask := true;
+            
+            'GLenum',
+            'GLint',
+            'GLuint',
+            'GLubyte':
+            is_bitmask := false;
+            
+            else
+            begin
+              Otp($'WARNING: Func [{func_name}] par [{self.name}] was enum, but with type [{self.t}]');
+              exit;
+            end;
+          end;
+          if gr.bitmask = not is_bitmask then
+            raise new System.InvalidOperationException($'Group [{gr.name}] was Enum/Bitmask in different places');
+          gr.bitmask := is_bitmask;
+          
           if self.t in enum_types then
             self.t := 'GLuint';
           gr.types += self.t;
@@ -432,54 +422,42 @@ begin
     end;
   end;
   
-  foreach var enums in root.Nodes['enums'] do
+  foreach var enum in root.Nodes['enums'].SelectMany(enums->enums.Nodes['enum']) do
   begin
-    var bitmask := false;
-    var enums_t := enums['type'];
+    if enum['group']=nil then continue;
+    var ename := enum['name'];
     
-    if enums_t<>nil then
-      case enums_t of
-        
-        'bitmask': bitmask := true;
-        
-        else log.WriteLine($'Invalid <enums> type: [{enums_t}]');
-      end;
+    //TODO No enum has "api" attribute
+    if enum['api'] is string(var api) then
+      raise new System.InvalidOperationException($'Enum "{ename}" had api "{api}"');
     
-    foreach var enum in enums.Nodes['enum'] do
-    begin
-      if enum['group']=nil then continue;
-      if (enum['api']<>nil) then
-        raise new System.InvalidOperationException($'Enum "{enum[''name'']}" had api "{enum[''api'']}"');
-      
-      var val_str := enum['value'];
-      var val: int64;
-      
-      var groups := enum['group'].ToWords(',').ToList;
-      if groups.Remove('SpecialNumbers') then log.WriteLine($'Enum "{enum[''name'']}" was in SpecialNumbers');
-      if groups.Count=0 then continue;
-      var ename := enum['name'];
-      
-      // у всех энумов из групп пока что тип UInt32, так что этот функционал не нужен
-      if enum['type']<>nil then raise new System.NotImplementedException(enum['name']);
-      
+    var val_str := enum['value'];
+    var val: int64;
+    
+    var groups := enum['group'].ToWords(',').ToList;
+    //TODO Use properly
+    if groups.Remove('SpecialNumbers') then log.WriteLine($'Enum "{ename}" was in SpecialNumbers');
+    if groups.Count=0 then continue;
+    
+    // у всех энумов из групп пока что тип UInt32, так что этот функционал не нужен
+    if enum['type']<>nil then raise new System.NotImplementedException(enum['name']);
+    
 //        var enum_t := enum['type'];
 //        if enum_t=nil then enum_t := 'u' else
 //        Writeln(enum_t);
-      
-      try
-        if val_str.StartsWith('0x') then
-          val := System.Convert.ToInt64(val_str, 16) else
-          val := System.Convert.ToInt64(val_str);
-      except
-        on e: Exception do log.WriteLine($'Error registering value [{val}] of token [{enum[''name'']}] in api [{api_name}]: {e}');
-      end;
-      
-      foreach var gname in groups do
-      begin
-        var gb := GroupBuilder[gname];
-        gb += (ename, val, bitmask);
-      end;
-      
+    
+    try
+      if val_str.StartsWith('0x') then
+        val := System.Convert.ToInt64(val_str, 16) else
+        val := System.Convert.ToInt64(val_str);
+    except
+      on e: Exception do Otp($'Error registering value [{val}] of token [{ename}] in api [{api_name}]: {e}');
+    end;
+    
+    foreach var gname in groups do
+    begin
+      var gb := GroupBuilder[gname];
+      gb += (ename, val);
     end;
     
   end;

@@ -3628,7 +3628,7 @@
     
     public static property LPD_DOUBLEBUFFER:   GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0001);
     public static property LPD_STEREO:         GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0002);
-    public static property LPD_SUPPORT:        GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0010);
+    public static property LPD_SUPPORT_GDI:    GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0010);
     public static property LPD_SUPPORT_OPENGL: GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0020);
     public static property LPD_SHARE_DEPTH:    GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0040);
     public static property LPD_SHARE_STENCIL:  GDI_LayerPlaneFlags read new GDI_LayerPlaneFlags($0080);
@@ -3644,7 +3644,7 @@
     
     public property HAS_FLAG_LPD_DOUBLEBUFFER:   boolean read self.val and $0001 <> 0;
     public property HAS_FLAG_LPD_STEREO:         boolean read self.val and $0002 <> 0;
-    public property HAS_FLAG_LPD_SUPPORT:        boolean read self.val and $0010 <> 0;
+    public property HAS_FLAG_LPD_SUPPORT_GDI:    boolean read self.val and $0010 <> 0;
     public property HAS_FLAG_LPD_SUPPORT_OPENGL: boolean read self.val and $0020 <> 0;
     public property HAS_FLAG_LPD_SHARE_DEPTH:    boolean read self.val and $0040 <> 0;
     public property HAS_FLAG_LPD_SHARE_STENCIL:  boolean read self.val and $0080 <> 0;
@@ -3658,7 +3658,7 @@
       var res := new StringBuilder;
       if self.val and UInt32($0001) = UInt32($0001) then res += 'LPD_DOUBLEBUFFER+';
       if self.val and UInt32($0002) = UInt32($0002) then res += 'LPD_STEREO+';
-      if self.val and UInt32($0010) = UInt32($0010) then res += 'LPD_SUPPORT+';
+      if self.val and UInt32($0010) = UInt32($0010) then res += 'LPD_SUPPORT_GDI+';
       if self.val and UInt32($0020) = UInt32($0020) then res += 'LPD_SUPPORT_OPENGL+';
       if self.val and UInt32($0040) = UInt32($0040) then res += 'LPD_SHARE_DEPTH+';
       if self.val and UInt32($0080) = UInt32($0080) then res += 'LPD_SHARE_STENCIL+';
@@ -3702,7 +3702,7 @@
     public static property PFD_STEREO:                GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0002);
     public static property PFD_DRAW_TO_WINDOW:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0004);
     public static property PFD_DRAW_TO_BITMAP:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0008);
-    public static property PFD_SUPPORT:               GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0010);
+    public static property PFD_SUPPORT_GDI:           GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0010);
     public static property PFD_SUPPORT_OPENGL:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0020);
     public static property PFD_GENERIC_FORMAT:        GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0040);
     public static property PFD_NEED_PALETTE:          GDI_PixelFormatFlags read new GDI_PixelFormatFlags($0080);
@@ -3724,7 +3724,7 @@
     public property HAS_FLAG_PFD_STEREO:                boolean read self.val and $0002 <> 0;
     public property HAS_FLAG_PFD_DRAW_TO_WINDOW:        boolean read self.val and $0004 <> 0;
     public property HAS_FLAG_PFD_DRAW_TO_BITMAP:        boolean read self.val and $0008 <> 0;
-    public property HAS_FLAG_PFD_SUPPORT:               boolean read self.val and $0010 <> 0;
+    public property HAS_FLAG_PFD_SUPPORT_GDI:           boolean read self.val and $0010 <> 0;
     public property HAS_FLAG_PFD_SUPPORT_OPENGL:        boolean read self.val and $0020 <> 0;
     public property HAS_FLAG_PFD_GENERIC_FORMAT:        boolean read self.val and $0040 <> 0;
     public property HAS_FLAG_PFD_NEED_PALETTE:          boolean read self.val and $0080 <> 0;
@@ -3744,7 +3744,7 @@
       if self.val and UInt32($0002) = UInt32($0002) then res += 'PFD_STEREO+';
       if self.val and UInt32($0004) = UInt32($0004) then res += 'PFD_DRAW_TO_WINDOW+';
       if self.val and UInt32($0008) = UInt32($0008) then res += 'PFD_DRAW_TO_BITMAP+';
-      if self.val and UInt32($0010) = UInt32($0010) then res += 'PFD_SUPPORT+';
+      if self.val and UInt32($0010) = UInt32($0010) then res += 'PFD_SUPPORT_GDI+';
       if self.val and UInt32($0020) = UInt32($0020) then res += 'PFD_SUPPORT_OPENGL+';
       if self.val and UInt32($0040) = UInt32($0040) then res += 'PFD_GENERIC_FORMAT+';
       if self.val and UInt32($0080) = UInt32($0080) then res += 'PFD_NEED_PALETTE+';

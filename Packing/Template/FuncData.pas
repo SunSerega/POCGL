@@ -417,7 +417,8 @@ type
     begin
       if not referenced then exit;
       
-      log_groups.Otp($'# {name}[{types.JoinToString(''/'')}]');
+      var bitmask_sym := if bitmask then ' (Flags)' else '';
+      log_groups.Otp($'# {name}[{types.JoinToString(''/'')}]{bitmask_sym}');
       foreach var ename in EnumrKeys do
         log_groups.Otp($'{#9}{ename} = {enums[ename]:X}');
       log_groups.Otp('');
@@ -2961,6 +2962,23 @@ type
     end;
     
   end;
+  GroupSetBitmaskFixer = sealed class(GroupFixer)
+    public bitmask: boolean;
+    
+    public constructor(name: string; data: sequence of string);
+    begin
+      inherited Create(name);
+      self.bitmask := boolean.Parse(data.Single);
+    end;
+    
+    public function Apply(gr: Group): boolean; override;
+    begin
+      gr.bitmask := self.bitmask;
+      self.used := true;
+      Result := false;
+    end;
+    
+  end;
   GroupAddEnumFixer = sealed class(GroupFixer)
     public enums := new List<(string,int64)>;
     
@@ -3035,6 +3053,7 @@ begin
       
       'base':       GroupBaseFixer        .Create(gr[0], bl[1]);
       'rename':     GroupNameFixer        .Create(gr[0], bl[1]);
+      'bitmask':    GroupSetBitmaskFixer  .Create(gr[0], bl[1]);
       'add_enum':   GroupAddEnumFixer     .Create(gr[0], bl[1]);
       'cust_memb':  GroupCustopMemberFixer.Create(gr[0], bl[1]);
       

@@ -10,10 +10,6 @@ public static function operator implicit(b: boolean): Bool := new Bool(UInt32(b)
 !cust_memb
 public static function operator not(b: Bool): Bool := b.val=Bool.FALSE.val ? Bool.TRUE : Bool.FALSE;
 
-# BufferTargetARB
-!rename
-BufferTarget
-
 # FeedBackToken
 !base
 single

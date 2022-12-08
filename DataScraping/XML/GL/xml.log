@@ -14,7 +14,6 @@ Enum "GL_VERSION_ES_CM_1_1" was in SpecialNumbers
 Enum "GL_VERSION_ES_CL_1_1" was in SpecialNumbers
 Enum "GL_UUID_SIZE_EXT" was in SpecialNumbers
 Enum "GL_LUID_SIZE_EXT" was in SpecialNumbers
-Group SyncBehaviorFlags was autoset to gt_bitmask, because of GL_NONE in enums, need fixing
 Kind [Coord] was not utilised
 Kind [Clamped[0; 1]] was not utilised
 Kind [BufferOffset] was not utilised
@@ -37,3 +36,25 @@ Kind [ColorIndexMask] was not utilised
 Kind [StencilMask] was not utilised
 Kind [Clamped[0; 65536]] was not utilised
 Kind [SelectName] was not utilised
+Group [ContextFlagMask] autoset to is_bitmask=True
+Group [ContextProfileMask] autoset to is_bitmask=True
+Group [SubgroupSupportedFeatures] autoset to is_bitmask=False
+Group [TraceMaskMESA] autoset to is_bitmask=True
+Group [FoveationConfigBitQCOM] autoset to is_bitmask=True
+Group [MapTextureFormatINTEL] autoset to is_bitmask=False
+Group [Boolean] autoset to is_bitmask=False
+Group [TextureSwizzle] autoset to is_bitmask=False
+Group [TextureCompareMode] autoset to is_bitmask=False
+Group [TextureEnvMode] autoset to is_bitmask=False
+Group [FeedBackToken] autoset to is_bitmask=False
+Group [FogMode] autoset to is_bitmask=False
+Group [DepthStencilTextureMode] autoset to is_bitmask=False
+Group [TextureGenMode] autoset to is_bitmask=False
+Group [TextureMagFilter] autoset to is_bitmask=False
+Group [TextureMinFilter] autoset to is_bitmask=False
+Group [TextureWrapMode] autoset to is_bitmask=False
+Group [ConvolutionBorderModeEXT] autoset to is_bitmask=False
+Group [LightModelColorControl] autoset to is_bitmask=False
+Group [PixelStoreResampleMode] autoset to is_bitmask=False
+Group [FogCoordSrc] autoset to is_bitmask=False
+Group [PixelStoreSubsampleRate] autoset to is_bitmask=False
