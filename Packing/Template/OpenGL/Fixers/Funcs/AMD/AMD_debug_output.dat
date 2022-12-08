@@ -2,8 +2,6 @@
 
 
 # glGetDebugMessageLogAMD
-!possible_par_types
- *	| *	| *	| -array of DummyEnum	| -array of DebugSeverity	| -array of UInt32	| -array of Int32	| *	|
 !limit_ovrs
  *	| *	| *	| var DummyEnum			| var DebugSeverity			| var UInt32		| var Int32			| *	|
  *	| *	| *	| IntPtr				| IntPtr					| IntPtr			| IntPtr			| *	|

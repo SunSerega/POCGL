@@ -1996,6 +1996,13 @@
     private z_GetBufferSubData_adr := GetProcAddress('glGetBufferSubData');
     private z_GetBufferSubData_1 := GetProcOrNil&<procedure(target: BufferTarget; offset: IntPtr; size: UIntPtr; data: pointer)>(z_GetBufferSubData_adr);
     private z_GetBufferSubData_2 := GetProcOrNil&<procedure(target: BufferTarget; offset: IntPtr; size: UIntPtr; var data: Byte)>(z_GetBufferSubData_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetBufferSubData<T>(target: BufferTarget; offset: IntPtr; size: UIntPtr; data: array of T); where T: record;
+    type PT=^T;
+    begin
+      if (data<>nil) and (data.Length<>0) then
+        GetBufferSubData(target, offset, size, data[0]) else
+        GetBufferSubData(target, offset, size, PT(nil)^);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetBufferSubData<T>(target: BufferTarget; offset: IntPtr; size: UIntPtr; var data: T); where T: record;
     begin
       z_GetBufferSubData_2(target, offset, size, PByte(pointer(@data))^);
@@ -2231,6 +2238,13 @@
     private z_GetNamedBufferSubData_adr := GetProcAddress('glGetNamedBufferSubData');
     private z_GetNamedBufferSubData_1 := GetProcOrNil&<procedure(buffer: gl_buffer; offset: IntPtr; size: UIntPtr; data: pointer)>(z_GetNamedBufferSubData_adr);
     private z_GetNamedBufferSubData_2 := GetProcOrNil&<procedure(buffer: gl_buffer; offset: IntPtr; size: UIntPtr; var data: Byte)>(z_GetNamedBufferSubData_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetNamedBufferSubData<T>(buffer: gl_buffer; offset: IntPtr; size: UIntPtr; data: array of T); where T: record;
+    type PT=^T;
+    begin
+      if (data<>nil) and (data.Length<>0) then
+        GetNamedBufferSubData(buffer, offset, size, data[0]) else
+        GetNamedBufferSubData(buffer, offset, size, PT(nil)^);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetNamedBufferSubData<T>(buffer: gl_buffer; offset: IntPtr; size: UIntPtr; var data: T); where T: record;
     begin
       z_GetNamedBufferSubData_2(buffer, offset, size, PByte(pointer(@data))^);
@@ -14072,6 +14086,13 @@
     private z_GetNamedBufferSubData_adr := GetProcAddress('glGetNamedBufferSubData');
     private z_GetNamedBufferSubData_1 := GetProcOrNil&<procedure(buffer: gl_buffer; offset: IntPtr; size: UIntPtr; data: pointer)>(z_GetNamedBufferSubData_adr);
     private z_GetNamedBufferSubData_2 := GetProcOrNil&<procedure(buffer: gl_buffer; offset: IntPtr; size: UIntPtr; var data: Byte)>(z_GetNamedBufferSubData_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetNamedBufferSubData<T>(buffer: gl_buffer; offset: IntPtr; size: UIntPtr; data: array of T); where T: record;
+    type PT=^T;
+    begin
+      if (data<>nil) and (data.Length<>0) then
+        GetNamedBufferSubData(buffer, offset, size, data[0]) else
+        GetNamedBufferSubData(buffer, offset, size, PT(nil)^);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetNamedBufferSubData<T>(buffer: gl_buffer; offset: IntPtr; size: UIntPtr; var data: T); where T: record;
     begin
       z_GetNamedBufferSubData_2(buffer, offset, size, PByte(pointer(@data))^);
@@ -20609,6 +20630,13 @@
     private z_GetBufferSubDataARB_adr := GetProcAddress('glGetBufferSubDataARB');
     private z_GetBufferSubDataARB_1 := GetProcOrNil&<procedure(target: BufferTarget; offset: IntPtr; size: UIntPtr; data: pointer)>(z_GetBufferSubDataARB_adr);
     private z_GetBufferSubDataARB_2 := GetProcOrNil&<procedure(target: BufferTarget; offset: IntPtr; size: UIntPtr; var data: Byte)>(z_GetBufferSubDataARB_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetBufferSubDataARB<T>(target: BufferTarget; offset: IntPtr; size: UIntPtr; data: array of T); where T: record;
+    type PT=^T;
+    begin
+      if (data<>nil) and (data.Length<>0) then
+        GetBufferSubDataARB(target, offset, size, data[0]) else
+        GetBufferSubDataARB(target, offset, size, PT(nil)^);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetBufferSubDataARB<T>(target: BufferTarget; offset: IntPtr; size: UIntPtr; var data: T); where T: record;
     begin
       z_GetBufferSubDataARB_2(target, offset, size, PByte(pointer(@data))^);
@@ -24899,6 +24927,13 @@
     private z_GetNamedBufferSubDataEXT_adr := GetProcAddress('glGetNamedBufferSubDataEXT');
     private z_GetNamedBufferSubDataEXT_1 := GetProcOrNil&<procedure(buffer: gl_buffer; offset: IntPtr; size: UIntPtr; data: pointer)>(z_GetNamedBufferSubDataEXT_adr);
     private z_GetNamedBufferSubDataEXT_2 := GetProcOrNil&<procedure(buffer: gl_buffer; offset: IntPtr; size: UIntPtr; var data: Byte)>(z_GetNamedBufferSubDataEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetNamedBufferSubDataEXT<T>(buffer: gl_buffer; offset: IntPtr; size: UIntPtr; data: array of T); where T: record;
+    type PT=^T;
+    begin
+      if (data<>nil) and (data.Length<>0) then
+        GetNamedBufferSubDataEXT(buffer, offset, size, data[0]) else
+        GetNamedBufferSubDataEXT(buffer, offset, size, PT(nil)^);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetNamedBufferSubDataEXT<T>(buffer: gl_buffer; offset: IntPtr; size: UIntPtr; var data: T); where T: record;
     begin
       z_GetNamedBufferSubDataEXT_2(buffer, offset, size, PByte(pointer(@data))^);

@@ -30,12 +30,9 @@
 
 
 
-# glGetActiveAttrib
-# glGetActiveAttribARB
-!possible_par_types
- *	| *	| *	| -array of Int32	| -array of Int32	| -array of AttributeType	| *	| 
-
 # glGetActiveUniformsiv
+!possible_par_types
+ *	| *	| *					| *	| +array of Int32	|
 !limit_ovrs
  *	| *	| array of UInt32	| *	| array of Int32	|
  *	| *	| var UInt32		| *	| var Int32			|

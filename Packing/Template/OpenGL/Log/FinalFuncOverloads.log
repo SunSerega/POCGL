@@ -1154,11 +1154,12 @@
 	------------ | ----------------- | ---------- |
 	target       | pname             | params     |
 
-# glGetBufferSubData[2]:
-	BufferTarget | IntPtr | UIntPtr | var T   |
-	BufferTarget | IntPtr | UIntPtr | pointer |
-	------------ | ------ | ------- | ------- |
-	target       | offset | size    | data    |
+# glGetBufferSubData[3]:
+	BufferTarget | IntPtr | UIntPtr | array of T |
+	BufferTarget | IntPtr | UIntPtr | var T      |
+	BufferTarget | IntPtr | UIntPtr | pointer    |
+	------------ | ------ | ------- | ---------- |
+	target       | offset | size    | data       |
 
 # glGetCompressedTexImage[1]:
 	TextureTarget | Int32 | IntPtr |
@@ -1298,11 +1299,12 @@
 	--------- | ----------------- | ---------- |
 	buffer    | pname             | params     |
 
-# glGetNamedBufferSubData[2]:
-	gl_buffer | IntPtr | UIntPtr | var T   |
-	gl_buffer | IntPtr | UIntPtr | pointer |
-	--------- | ------ | ------- | ------- |
-	buffer    | offset | size    | data    |
+# glGetNamedBufferSubData[3]:
+	gl_buffer | IntPtr | UIntPtr | array of T |
+	gl_buffer | IntPtr | UIntPtr | var T      |
+	gl_buffer | IntPtr | UIntPtr | pointer    |
+	--------- | ------ | ------- | ---------- |
+	buffer    | offset | size    | data       |
 
 # glGetNamedFramebufferAttachmentParameteriv[2]:
 	gl_framebuffer | FramebufferAttachment | FramebufferAttachmentParameterName | var Int32 |
@@ -8884,11 +8886,12 @@
 	------------ | ------ | ------- | ---------- |
 	target       | offset | size    | data       |
 
-# glGetBufferSubDataARB[2]:
-	BufferTarget | IntPtr | UIntPtr | var T   |
-	BufferTarget | IntPtr | UIntPtr | pointer |
-	------------ | ------ | ------- | ------- |
-	target       | offset | size    | data    |
+# glGetBufferSubDataARB[3]:
+	BufferTarget | IntPtr | UIntPtr | array of T |
+	BufferTarget | IntPtr | UIntPtr | var T      |
+	BufferTarget | IntPtr | UIntPtr | pointer    |
+	------------ | ------ | ------- | ---------- |
+	target       | offset | size    | data       |
 
 # glMapBufferARB[1]:
 	IntPtr | BufferTarget | BufferAccess |
@@ -10747,11 +10750,12 @@
 	--------- | ----------------- | ---------- |
 	buffer    | pname             | params     |
 
-# glGetNamedBufferSubDataEXT[2]:
-	gl_buffer | IntPtr | UIntPtr | var T   |
-	gl_buffer | IntPtr | UIntPtr | pointer |
-	--------- | ------ | ------- | ------- |
-	buffer    | offset | size    | data    |
+# glGetNamedBufferSubDataEXT[3]:
+	gl_buffer | IntPtr | UIntPtr | array of T |
+	gl_buffer | IntPtr | UIntPtr | var T      |
+	gl_buffer | IntPtr | UIntPtr | pointer    |
+	--------- | ------ | ------- | ---------- |
+	buffer    | offset | size    | data       |
 
 # glProgramUniform1fEXT[1]:
 	gl_program | Int32    | single |

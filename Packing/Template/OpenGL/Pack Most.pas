@@ -12,11 +12,11 @@ begin
     LoadBin('DataScraping\XML\GL\funcs.bin');
     
     Otp($'Fixing all');
-    LoadFixers;
     Group.FixAllEndExt;
-    ApplyFixers;
     Func.FixAllGet;
     Feature.FixGL_GDI;
+    LoadFixers;
+    ApplyFixers;
     MarkReferenced;
     
     begin
