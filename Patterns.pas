@@ -1,56 +1,22 @@
 ﻿unit Patterns;
 {$zerobasedstrings}
 
+//TODO #2739
+{$savepcu false}
+
 interface
 
 uses System;
-uses System.Runtime.CompilerServices;
 uses System.Runtime. InteropServices;
+uses System.Runtime.CompilerServices;
 
 uses Parsing;
 
-//TODO Снова использовать PatternLength
-// - По сути это имеет смысл только в get_*_jumps
-// - А точнее в реализациях IPatternEdgeJumpGeneratable 
-
 //TODO IPatternEdgePointer<TData, TSelf>
+// - Позволит передавать на много меньше данных, но взамен код станет значительно сложнее...
 
 type
   {$region Pattern}
-  
-  IJumpCost<TSelf> = interface(IEquatable<TSelf>, IComparable<TSelf>)
-  where TSelf: IJumpCost<TSelf>;
-    
-    function AddTo(other: TSelf): TSelf;
-    
-  end;
-  
-  PatternJumpLList<TJump> = sealed class
-  where TJump: record, constructor;
-    private jump: TJump;
-    private prev: PatternJumpLList<TJump>;
-    
-    private constructor(jump: TJump; prev: PatternJumpLList<TJump> := nil);
-    begin
-      self.jump := jump;
-      self.prev := prev;
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    public function EnmrTowardsRoot: sequence of TJump;
-    begin
-      var curr := self;
-      repeat
-        yield curr.jump;
-        curr := curr.prev;
-      until curr=nil;
-    end;
-    
-    public function ToString: string; override :=
-    EnmrTowardsRoot.JoinToString(', ');
-//    $'{self.GetType.Name}[{EnmrTowardsRoot.JoinToString('', '')}]';
-    
-  end;
   
   IPatternPoint<TSelf> = interface(IEquatable<TSelf>)
   where TSelf: IPatternPoint<TSelf>;
@@ -62,32 +28,84 @@ type
     
   end;
   
+  PatternJumpNode<TJumpNode> = abstract class
+  where TJumpNode: PatternJumpNode<TJumpNode>;
+    private _prev: TJumpNode;
+    
+    protected constructor(prev: TJumpNode) := self._prev := prev;
+    private constructor := raise new System.InvalidOperationException;
+    
+    public property Prev: TJumpNode read _prev;
+    
+  end;
+  PatternPath<TJumpNode> = record
+  where TJumpNode: PatternJumpNode<TJumpNode>;
+    public n: TJumpNode;
+    public constructor(n: TJumpNode) := self.n := n;
+    public static function operator implicit(n: TJumpNode): PatternPath<TJumpNode> :=
+    new PatternPath<TJumpNode>(n);
+    
+    public function Count: integer;
+    begin
+      Result := 0;
+      var n := self.n;
+      while n<>nil do
+      begin
+        Result += 1;
+        n := n.Prev;
+      end;
+    end;
+    
+    public function ToArray<TRes>(f: TJumpNode->TRes): array of TRes;
+    begin
+      Result := new TRes[self.Count];
+      var n := self.n;
+      for var i := Result.Length-1 downto 0 do
+      begin
+        Result[i] := f(n);
+        n := n.Prev;
+      end;
+    end;
+    
+    public function ToString: string; override :=
+    self.ToArray(n->n).JoinToString(', ');
+    
+  end;
+  
+  IJumpCost<TSelf> = interface(IEquatable<TSelf>, IComparable<TSelf>)
+  where TSelf: IJumpCost<TSelf>;
+    
+    function Plus(other: TSelf): TSelf;
+    
+  end;
+  
   Pattern = static class
     
 //    private constructor := raise new System.InvalidOperationException;
     
     ///p0: The Point looking at the first symbol of all edges
     /// - Must implement IPatternPoint<TSelf>
+    ///
     ///get_zero_jumps: Zero cost jump generator
     ///get_cost_jumps: Non-zero cost jump generator
     /// - Cheapest jump sequence will be returned
-    ///try_combine_jumps: Jump optimizer
-    /// - Only optimizes RAM, by combining nodes of PatternJumpLList
-    /// - 3 parameters are:
-    /// --- Already sealed jump. Will not be combined, use only for reference
-    /// --- Latest jump
-    /// --- Newly created jump (by get_zero_jumps or get_cost_jumps)
-    /// - Return nil if cannot combine
+    ///on_no_path what to do when no path was found
+    /// - If no set and no path found, throws InvalidOperationException
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    static function MinCombination<TPoint, TJump,TJumpCost>(
-      p0: TPoint; zero_cost: TJumpCost
-      ; get_zero_jumps: TPoint -> sequence of ValueTuple<TPoint, TJump>
-      ; get_cost_jumps: TPoint -> sequence of ValueTuple<TPoint, TJump,TJumpCost>
-      ; try_combine_jumps: (TJump?, TJump, TJump) -> TJump?
-    ): PatternJumpLList<TJump>;
+    static function MinPaths<TPoint, TJumpNode,TJumpCost>(
+      p0: TPoint; zero_jump: TJumpNode; zero_cost: TJumpCost
+      ; get_zero_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode>
+      ; get_cost_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode,TJumpCost>
+    ): sequence of TJumpNode;
     where TPoint: IPatternPoint<TPoint>;
-    where TJump: record;
     where TJumpCost: IJumpCost<TJumpCost>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static function AllPaths<TPoint, TJumpNode>(
+      p0: TPoint; zero_jump: TJumpNode
+      ; get_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode>
+    ): sequence of TJumpNode;
+    where TPoint: IPatternPoint<TPoint>;
     
   end;
   
@@ -215,12 +233,9 @@ type
     public static function operator implicit(cost: BasicJumpCost): integer := cost.Value;
     
     public function Equals(cost: BasicJumpCost) := self.val = cost.val;
-    public function CompareTo(cost: BasicJumpCost) := self.val - cost.val;
+    public function CompareTo(cost: BasicJumpCost) := self.val.CompareTo(cost.val);
     
-    public function AddTo(cost: BasicJumpCost): BasicJumpCost;
-    begin
-      Result.val := self.val+cost.val;
-    end;
+    public function Plus(cost: BasicJumpCost): BasicJumpCost := self.val+cost.val;
     
     public function ToString: string; override :=
     $'{TypeName(self)}({val})';
@@ -350,15 +365,12 @@ type
   
   BasicPattern = static class
     
-    public static function MinCombination<TPointer1,TPointer2>(ep1: TPointer1; ep2: TPointer2): array of BasicPatternDiffBase;
+    public static function MinPaths<TPointer1,TPointer2>(ep1: TPointer1; ep2: TPointer2): sequence of array of BasicPatternDiffBase;
     where TPointer1: record, IPatternEdgePointer<TPointer1>;
     where TPointer2: record, IPatternEdgePointer<TPointer2>;
     
-    public static function MinCombination<TPointer>(ep1, ep2: TPointer): sequence of BasicPatternDiff<TPointer>;
-      where TPointer: record, IPatternEdgePointer<TPointer>;
-    begin
-      Result := MinCombination&<TPointer,TPointer>(ep1, ep2).Cast&<BasicPatternDiff<TPointer>>;
-    end;
+    public static function MinPaths<TPointer>(ep1, ep2: TPointer): sequence of array of BasicPatternDiff<TPointer>;
+    where TPointer: record, IPatternEdgePointer<TPointer>;
     
   end;
   
@@ -366,21 +378,20 @@ type
   
 implementation
 
-{$region Pattern.MinCombination}
+{$region Pattern}
 
 type
-  PatternCostStep<TPoint, TJump,TJumpCost> = sealed class
+  PatternCostStep<TPoint, TJumpNode,TJumpCost> = sealed class
   where TPoint: IPatternPoint<TPoint>;
-  where TJump: record;
   where TJumpCost: IJumpCost<TJumpCost>;
     cost: TJumpCost;
-    pts: List<ValueTuple<TPoint, PatternJumpLList<TJump>>>;
-    next := default(PatternCostStep<TPoint, TJump,TJumpCost>);
+    pts: List<ValueTuple<TPoint, TJumpNode>>;
+    next := default(PatternCostStep<TPoint, TJumpNode,TJumpCost>);
     
-    constructor(cost: TJumpCost; pts: List<ValueTuple<TPoint, PatternJumpLList<TJump>>>);
+    constructor(cost: TJumpCost; pts: List<ValueTuple<TPoint, TJumpNode>>);
     begin
       self.cost := cost;
-      self.pts := pts ?? new List<ValueTuple<TPoint, PatternJumpLList<TJump>>>;
+      self.pts := pts ?? new List<ValueTuple<TPoint, TJumpNode>>;
       {$ifdef DEBUG}
       if self.pts.Any then raise new System.InvalidOperationException($'Old buffer was not empty');
       {$endif DEBUG}
@@ -404,14 +415,13 @@ type
     
   end;
   
-  PatternMinCombinationState<TPoint, TJump,TJumpCost> = record
+  PatternMinCombinationState<TPoint, TJumpNode,TJumpCost> = record
   where TPoint: IPatternPoint<TPoint>;
-  where TJump: record;
   where TJumpCost: IJumpCost<TJumpCost>;
-    min_step: PatternCostStep<TPoint, TJump,TJumpCost>;
-    old_step_buff: List<ValueTuple<TPoint, PatternJumpLList<TJump>>> := nil;
+    min_step: PatternCostStep<TPoint, TJumpNode,TJumpCost>;
+    old_step_buff: List<ValueTuple<TPoint, TJumpNode>> := nil;
     
-    function CheckInsertable(p: TPoint; cost: TJumpCost): PatternCostStep<TPoint, TJump,TJumpCost>;
+    function CheckInsertable(p: TPoint; cost: TJumpCost): PatternCostStep<TPoint, TJumpNode,TJumpCost>;
     begin
       Result := nil;
       var curr := Result;
@@ -426,7 +436,7 @@ type
       
       if (next=nil) or (next.cost.CompareTo(cost)<>0) then
       begin
-        Result := new PatternCostStep<TPoint, TJump,TJumpCost>(cost, old_step_buff);
+        Result := new PatternCostStep<TPoint, TJumpNode,TJumpCost>(cost, old_step_buff);
         if curr=nil then
           min_step := Result else
           curr.next := Result;
@@ -450,35 +460,33 @@ type
     
   end;
   
-static function Pattern.MinCombination<TPoint, TJump,TJumpCost>(
-  p0: TPoint; zero_cost: TJumpCost
-  ; get_zero_jumps: TPoint -> sequence of ValueTuple<TPoint, TJump>
-  ; get_cost_jumps: TPoint -> sequence of ValueTuple<TPoint, TJump,TJumpCost>
-  ; try_combine_jumps: (TJump?, TJump, TJump) -> TJump?
-): PatternJumpLList<TJump>;
+static function Pattern.MinPaths<TPoint, TJumpNode,TJumpCost>(
+  p0: TPoint; zero_jump: TJumpNode; zero_cost: TJumpCost
+  ; get_zero_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode>
+  ; get_cost_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode,TJumpCost>
+): sequence of TJumpNode;
 where TPoint: IPatternPoint<TPoint>;
-where TJump: record;
 where TJumpCost: IJumpCost<TJumpCost>;
 begin
-  var state := new PatternMinCombinationState<TPoint, TJump,TJumpCost>;
-  state.min_step := new PatternCostStep<TPoint, TJump, TJumpCost>(zero_cost, nil);
+  var state := new PatternMinCombinationState<TPoint, TJumpNode,TJumpCost>;
+  state.min_step := new PatternCostStep<TPoint, TJumpNode,TJumpCost>(zero_cost, nil);
   
-  foreach var j_res in get_zero_jumps(p0) do
+  var found_res := false;
+  foreach var pj in get_zero_jumps(p0, zero_jump) do
   begin
-    var (p, j) := j_res;
-    var l := new PatternJumpLList<TJump>(j,nil);
-    
+    var (p,j) := pj;
     if p.AllEdgesDone then
     begin
-      Result := l;
-      exit;
+      found_res := true;
+      yield j;
     end;
-    
-    state.min_step.pts += ValueTuple.Create(p, l);
+    if found_res then continue;
+    state.min_step.pts += pj;
   end;
   
   while true do
   begin
+    if found_res then break;
     var consumed_step := state.min_step;
     if consumed_step=nil then break;
     
@@ -486,57 +494,29 @@ begin
     var old_buff := consumed_step.pts;
     state.min_step := consumed_step.next;
     
-    old_buff.PrintLines(\(old_p, old_l)->old_l);
-    Writeln('='*30);
+//    old_buff.PrintLines(\(old_p, old_l)->old_l);
+//    Writeln('='*30);
     
-    foreach var old_j_res in old_buff do
+    foreach var old_pj in old_buff do
     begin
-      var (old_p, old_l) := old_j_res;
+      var (old_p, old_j) := old_pj;
       
       if old_p.AllEdgesDone then
       begin
-        Result := old_l;
-        exit;
+        found_res := true;
+        yield old_j;
       end;
+      if found_res then continue;
       
-      var last_j := old_l.jump;
-      //TODO #2737
-      var prev_j := old_l.prev=nil?default(TJump?):old_l.prev.jump;
-      foreach var mid_j_res in get_cost_jumps(old_p) do
+      foreach var (mid_p, mid_j, cost) in get_cost_jumps(old_p, old_j) do
       begin
-        var (mid_p,mid_j, cost) := mid_j_res;
-        cost := cost.AddTo(old_cost);
+        cost := cost.Plus(old_cost);
         
-        var l_prev_j := prev_j;
-        var l := old_l;
+        foreach var (p,j) in get_zero_jumps(mid_p, mid_j) do
         begin
-          var nj := try_combine_jumps(l_prev_j, last_j, mid_j);
-//          $'({_ObjectToString(l_prev_j)}, {last_j}, {mid_j}) => {_ObjectToString(nj)}'.Println;
-          if nj<>nil then
-          begin
-            l := l.prev;
-            mid_j := nj.Value;
-          end else
-            l_prev_j := last_j;
-        end;
-        
-        foreach var new_j_res in get_zero_jumps(mid_p) do
-        begin
-          var (p,j) := new_j_res;
           var step := state.CheckInsertable(p, cost);
           if step=nil then continue;
-          
-          begin
-            var nj := try_combine_jumps(l_prev_j, mid_j, j);
-//            $'({_ObjectToString(l_prev_j)}, {mid_j}, {j}) => {_ObjectToString(nj)}'.Println;
-            if nj=nil then
-              l := new PatternJumpLList<TJump>(mid_j, l) else
-              j := nj.Value;
-          end;
-          
-          step.pts += ValueTuple.Create(p,
-            new PatternJumpLList<TJump>(j, l)
-          );
+          step.pts += ValueTuple.Create(p, j);
         end;
         
       end;
@@ -547,10 +527,38 @@ begin
     state.old_step_buff := old_buff;
   end;
   
-  Result := nil;
 end;
 
-{$endregion Pattern.MinCombination}
+static function Pattern.AllPaths<TPoint, TJumpNode>(
+  p0: TPoint; zero_jump: TJumpNode
+  ; get_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode>
+): sequence of TJumpNode;
+where TPoint: IPatternPoint<TPoint>;
+begin
+  var st := new Stack<ValueTuple<TPoint,TJumpNode>>;
+  st += ValueTuple.Create(p0, zero_jump);
+  
+  while st.Count<>0 do
+  begin
+    var (old_p, old_j) := st.Pop;
+    
+    foreach var pj in get_jumps(old_p, old_j) do
+    begin
+      var (p,j) := pj;
+      {$ifdef DEBUG}
+      if st.Any and not st.Peek.Item1.IncLessThan(p) then
+        raise new System.InvalidOperationException($'Points should be ordered');
+      {$endif DEBUG}
+      if p.AllEdgesDone then
+        yield j else
+        st.Push(pj);
+    end;
+    
+  end;
+  
+end;
+
+{$endregion Pattern}
 
 {$region Pattern2EdgeJumpGenerator}
 
@@ -579,37 +587,29 @@ type
       
     end;
     
-    static function WrapZero: BasicPatternPoint2<TPointer1, TPointer2> -> sequence of ValueTuple<BasicPatternPoint2<TPointer1, TPointer2>, BasicPatternPoint2<TPointer1, TPointer2>>;
+    static function WrapZero: BasicPatternPoint2<TPointer1, TPointer2> -> sequence of BasicPatternPoint2<TPointer1, TPointer2>;
     begin
       if Pattern2EdgeJumpGenerator&<TPointer1, TPointer2>.make_zero<>nil then
-        Result := p->Pattern2EdgeJumpGenerator&<TPointer1, TPointer2>.make_zero(p.impl.first.ep, p.Edge2).Select(\(ep1,ep2)->
-        begin
-          var res := new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2);
-          Result := ValueTuple.Create(res,res);
-        end) else
+        Result := p ->
+          Pattern2EdgeJumpGenerator&<TPointer1, TPointer2>.make_zero(p.impl.first.ep, p.Edge2)
+          .Select(\(ep1,ep2) -> new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2)) else
       if Pattern2EdgeJumpGenerator&<TPointer2, TPointer1>.make_zero<>nil then
-        Result := p->Pattern2EdgeJumpGenerator&<TPointer2, TPointer1>.make_zero(p.impl.other.ep, p.Edge1).Select(\(ep2,ep1)->
-        begin
-          var res := new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2);
-          Result := ValueTuple.Create(res,res);
-        end) else
+        Result := p ->
+          Pattern2EdgeJumpGenerator&<TPointer2, TPointer1>.make_zero(p.impl.other.ep, p.Edge1)
+          .Select(\(ep2,ep1) -> new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2)) else
         raise new System.InvalidOperationException;
     end;
     
-    static function WrapCost: BasicPatternPoint2<TPointer1, TPointer2> -> sequence of ValueTuple<BasicPatternPoint2<TPointer1, TPointer2>, BasicPatternPoint2<TPointer1, TPointer2>, BasicJumpCost>;
+    static function WrapCost: BasicPatternPoint2<TPointer1, TPointer2> -> sequence of ValueTuple<BasicPatternPoint2<TPointer1, TPointer2>, BasicJumpCost>;
     begin
       if Pattern2EdgeJumpGenerator&<TPointer1, TPointer2>.make_cost<>nil then
-        Result := p->Pattern2EdgeJumpGenerator&<TPointer1, TPointer2>.make_cost(p.impl.first.ep, p.Edge2).Select(\(ep1,ep2, cost)->
-        begin
-          var res := new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2);
-          Result := ValueTuple.Create(res,res, cost);
-        end) else
+        Result := p ->
+          Pattern2EdgeJumpGenerator&<TPointer1, TPointer2>.make_cost(p.impl.first.ep, p.Edge2)
+          .Select(\(ep1,ep2, cost) -> ValueTuple.Create(new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2), cost)) else
       if Pattern2EdgeJumpGenerator&<TPointer2, TPointer1>.make_cost<>nil then
-        Result := p->Pattern2EdgeJumpGenerator&<TPointer2, TPointer1>.make_cost(p.impl.other.ep, p.Edge1).Select(\(ep2,ep1, cost)->
-        begin
-          var res := new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2);
-          Result := ValueTuple.Create(res,res, cost);
-        end) else
+        Result := p->
+          Pattern2EdgeJumpGenerator&<TPointer2, TPointer1>.make_cost(p.impl.other.ep, p.Edge1)
+          .Select(\(ep2,ep1, cost) -> ValueTuple.Create(new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2), cost)) else
         raise new System.InvalidOperationException;
     end;
     
@@ -619,62 +619,55 @@ type
 
 {$region BasicPattern.MinCombination}
 
-static function BasicPattern.MinCombination<TPointer1,TPointer2>(ep1: TPointer1; ep2: TPointer2): array of BasicPatternDiffBase;
+type
+  BasicPatternJumpNode = sealed class(PatternJumpNode<BasicPatternJumpNode>)
+    public diff: BasicPatternDiffBase;
+    public constructor(prev: BasicPatternJumpNode; diff: BasicPatternDiffBase);
+    begin
+      inherited Create(prev);
+      self.diff := diff;
+    end;
+  end;
+  
+function BasicMinCombination<TPointer1,TPointer2>(ep1: TPointer1; ep2: TPointer2): sequence of PatternPath<BasicPatternJumpNode>;
   where TPointer1: record, IPatternEdgePointer<TPointer1>;
   where TPointer2: record, IPatternEdgePointer<TPointer2>;
 begin
   
-  var p0 := new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2);
-  var l := Pattern.MinCombination(p0,
+  foreach var n in Pattern.MinPaths(
+    new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2),
+    default(BasicPatternJumpNode),
     new BasicJumpCost,
-    Pattern2EdgeJumpGenerator&<TPointer1,TPointer2>.WrapZero,
-    Pattern2EdgeJumpGenerator&<TPointer1,TPointer2>.WrapCost,
-    (j0n, j1,j2)->
-    begin
-      Result := default(BasicPatternPoint2<TPointer1, TPointer2>?);
-      
-      if j2.Equals(j1) then
+    
+    (p, j) -> Pattern2EdgeJumpGenerator&<TPointer1,TPointer2>.WrapZero()(p)
+      .Select(np->ValueTuple.Create(np, j)),
+    
+    (p, j) -> Pattern2EdgeJumpGenerator&<TPointer1,TPointer2>.WrapCost()(p)
+      .Select(\(np,cost)->
       begin
-        //TODO #2738
-        Result := new Nullable<BasicPatternPoint2<TPointer1, TPointer2>>(j2);
-        exit;
-      end;
-      
-      var j0 := j0n.GetValueOrDefault(p0);
-      if (j0.Edge1=j1.Edge1) and (j1.Edge1=j2.Edge1) then
-      begin
-        //TODO #2738
-        Result := new Nullable<BasicPatternPoint2<TPointer1, TPointer2>>(j2);
-        exit;
-      end;
-      if (j0.Edge2=j1.Edge2) and (j1.Edge2=j2.Edge2) then
-      begin
-        //TODO #2738
-        Result := new Nullable<BasicPatternPoint2<TPointer1, TPointer2>>(j2);
-        exit;
-      end;
-      
-    end
-  );
+        var nj := j;
+        if p.Edge1 <> np.Edge1 then
+          nj := new BasicPatternJumpNode(nj, new BasicPatternDiff<TPointer1>(1, p.Edge1, np.Edge1));
+        if p.Edge2 <> np.Edge2 then
+          nj := new BasicPatternJumpNode(nj, new BasicPatternDiff<TPointer2>(2, p.Edge2, np.Edge2));
+        Result := ValueTuple.Create(np, nj, cost);
+      end)
+    
+  ) do yield n;
   
-  var res := new List<BasicPatternDiffBase>(l.EnmrTowardsRoot.Count);
-  res.AddRange(
-    l.EnmrTowardsRoot.Append(p0)
-    .Pairwise((j2,j1)->ValueTuple.Create(j1,j2))
-    .Select(\(j1,j2)->
-    begin
-      var e1 := j1.Edge1 <> j2.Edge1;
-      var e2 := j1.Edge2 <> j2.Edge2;
-      if e1=e2 then exit;
-      Result := if e1 then
-        new BasicPatternDiff<TPointer1>(1, j1.Edge1,j2.Edge1) else
-        new BasicPatternDiff<TPointer2>(2, j1.Edge2,j2.Edge2) as BasicPatternDiffBase;
-    end)
-    .Where(diff->diff<>nil)
-  );
-  
-  res.Reverse;
-  Result := res.ToArray;
+end;
+
+static function BasicPattern.MinPaths<TPointer1,TPointer2>(ep1: TPointer1; ep2: TPointer2): sequence of array of BasicPatternDiffBase;
+  where TPointer1: record, IPatternEdgePointer<TPointer1>;
+  where TPointer2: record, IPatternEdgePointer<TPointer2>;
+begin
+  Result := BasicMinCombination(ep1, ep2).Select(p->p.ToArray(n->n.diff));
+end;
+
+static function BasicPattern.MinPaths<TPointer>(ep1, ep2: TPointer): sequence of array of BasicPatternDiff<TPointer>;
+  where TPointer: record, IPatternEdgePointer<TPointer>;
+begin
+  Result := BasicMinCombination(ep1, ep2).Select(p->p.ToArray(n->BasicPatternDiff&<TPointer>(n.diff)));
 end;
 
 {$endregion BasicPattern.MinCombination}

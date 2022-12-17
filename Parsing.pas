@@ -12,6 +12,7 @@ type
     end;
     public static property Invalid: StringIndex read MakeInvalid;
     public property IsInvalid: boolean read val=-1;
+    public property IsValid: boolean read not IsInvalid;
     
     public static function operator implicit(ind: integer): StringIndex;
     begin
@@ -50,6 +51,22 @@ type
     end;
     public static function operator<=(ind1, ind2: StringIndex) := not (ind1>ind2);
     public static function operator>=(ind1, ind2: StringIndex) := not (ind1<ind2);
+    
+    public static function MinOrInvalid(ind1, ind2: StringIndex) :=
+    if ind1.IsInvalid or ind2.IsInvalid then Invalid else
+      Min(ind1.val, ind2.val);
+    public static function MaxOrInvalid(ind1, ind2: StringIndex) :=
+    if ind1.IsInvalid or ind2.IsInvalid then Invalid else
+      Max(ind1.val, ind2.val);
+    
+    public static function MinValid(ind1, ind2: StringIndex) :=
+    if ind2.IsInvalid then ind1 else
+    if ind1.IsInvalid then ind2 else
+      Min(ind1.val, ind2.val);
+    public static function MaxValid(ind1, ind2: StringIndex) :=
+    if ind2.IsInvalid then ind1 else
+    if ind1.IsInvalid then ind2 else
+      Max(ind1.val, ind2.val);
     
     public function CompareTo(ind: StringIndex): integer;
     begin
@@ -489,63 +506,63 @@ type
       
     end;
     
-    public function IsEscaped(min_ind: StringIndex) :=
-    self.TakeFirst(0).PrevWhile(min_ind, ch->ch='\').Length.IsOdd;
+    public function IsEscaped(min_ind: StringIndex; escape_sym: char) :=
+    self.TakeFirst(0).PrevWhile(min_ind, ch->ch=escape_sym).Length.IsOdd;
     
-    public procedure UnescapeTo(res: StringBuilder);
+    public procedure UnescapeTo(res: StringBuilder; escape_sym: char);
     begin
       var escaped := false;
       for i: integer := I1 to I2-1 do
       begin
         var ch := text[i];
-        escaped := (ch='\') and not escaped;
+        escaped := (ch=escape_sym) and not escaped;
         if not escaped then
           res += ch;
       end;
     end;
-    public function Unescape: string;
+    public function Unescape(escape_sym: char): string;
     begin
       var res := new StringBuilder(self.Length);
-      UnescapeTo(res);
+      UnescapeTo(res, escape_sym);
       Result := res.ToString;
     end;
     
-    public function IndexOfUnescaped(str: string): StringIndex;
+    public function IndexOfUnescaped(str: string; escape_sym: char): StringIndex;
     begin
       var ind := 0;
       while true do
       begin
         Result := self.IndexOf(ind, str);
         if Result.IsInvalid then break;
-        if not self.TrimFirst(Result).IsEscaped(self.I1) then break;
+        if not self.TrimFirst(Result).IsEscaped(self.I1, escape_sym) then break;
         ind := Result+1;
       end;
     end;
-    public function IndexOfUnescaped(from: StringIndex; str: string): StringIndex;
+    public function IndexOfUnescaped(from: StringIndex; str: string; escape_sym: char): StringIndex;
     begin
-      Result := self.TrimFirst(from).IndexOfUnescaped(str);
+      Result := self.TrimFirst(from).IndexOfUnescaped(str, escape_sym);
       if Result.IsInvalid then exit;
       Result += from;
     end;
     
-    public function SubSectionOfFirstUnescaped(params strs: array of string): StringSection;
+    public function SubSectionOfFirstUnescaped(escape_sym: char; params strs: array of string): StringSection;
     begin
       Result := self;
       while true do
       begin
         Result := Result.SubSectionOfFirst(strs);
         if Result.IsInvalid then break;
-        if not Result.IsEscaped(self.I1) then break;
+        if not Result.IsEscaped(self.I1, escape_sym) then break;
         Result := Result.TakeLast(0).WithI2(self.I2);
       end;
     end;
     
-    public function SplitByUnescaped(by: string): List<StringSection>;
+    public function SplitByUnescaped(by: string; escape_sym: char): List<StringSection>;
     begin
       Result := new List<StringSection>;
       while true do
       begin
-        var sep := self.SubSectionOfFirstUnescaped(by);
+        var sep := self.SubSectionOfFirstUnescaped(escape_sym, by);
         if sep.IsInvalid then break;
         Result += self.WithI2(sep.I1);
         self.range.i1 := sep.I2;
