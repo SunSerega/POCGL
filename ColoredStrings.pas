@@ -4,7 +4,9 @@
 uses Parsing;
 
 type
-  ColoredString<TKey> = class;
+  ColoredString<TKey> = sealed partial class
+    private constructor := raise new System.InvalidOperationException;
+  end;
   ColoredStringPart<TKey> = class
     private _key: TKey;
     private range: SIndexRange;
@@ -29,6 +31,7 @@ type
     private constructor := raise new System.InvalidOperationException;
     
     public property Key: TKey read _key;
+    public property SubParts: array of ColoredStringPart<TKey> read parts;
     public property TextRange: SIndexRange read range;
     
     public property Root: ColoredString<TKey> read _root;
@@ -77,7 +80,7 @@ type
     
   end;
   
-  ColoredString<TKey> = sealed class(ColoredStringPart<TKey>)
+  ColoredString<TKey> = sealed partial class(ColoredStringPart<TKey>)
     private _text: string;
     
     private constructor(key: TKey; text: string; parts: array of ColoredStringPart<TKey>);
@@ -86,7 +89,6 @@ type
       self._text := text;
       self.ForEach(p->(p._root := self));
     end;
-    private constructor := raise new System.InvalidOperationException;
     
     public property Text: string read _text;
     

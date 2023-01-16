@@ -68,12 +68,19 @@ type
     if ind1.IsInvalid then ind2 else
       Max(ind1.val, ind2.val);
     
-    public function CompareTo(ind: StringIndex): integer;
+    public static function Compare(ind1, ind2: StringIndex; invalid_ord: integer := 0): integer;
     begin
-      if self.IsInvalid <> ind.IsInvalid then
-        raise new System.ArgumentOutOfRangeException(if self.IsInvalid then 'self' else 'ind');
-      Result := Sign(self.val - ind.val);
+      Result := Ord(ind1.IsValid) - Ord(ind2.IsValid);
+      if Result<>0 then
+      begin
+        Result *= invalid_ord;
+        if Result=0 then
+          raise new System.ArgumentOutOfRangeException(if ind1.IsInvalid then 'ind1' else 'ind2');
+        exit;
+      end;
+      Result := Sign(ind1.val - ind2.val);
     end;
+    public function CompareTo(ind: StringIndex) := Compare(self, ind);
     
     public static function operator+(ind: StringIndex; shift: integer): StringIndex;
     begin
