@@ -213,7 +213,7 @@ begin
       end;
       
       begin
-        var name_sep := s.SubSectionOfFirstUnescaped(':');
+        var name_sep := s.SubSectionOfFirstUnescaped(esc_sym, ':');
         if name_sep.IsInvalid then
           Result.name := '' else
         begin
@@ -268,7 +268,7 @@ begin
         var pname, pbody: StringSection;
         
         begin
-          var pname_sep := s.SubSectionOfFirstUnescaped('?');
+          var pname_sep := s.SubSectionOfFirstUnescaped(esc_sym, '?');
           if pname_sep.IsInvalid then
           begin
             pname := s;
