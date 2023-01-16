@@ -6,6 +6,7 @@ uses Parsing;
 
 type
   FixerUtils = static class
+    public static esc_sym := '\';
     
     /// Result = sequence of (
     ///   is_in_template,
@@ -16,10 +17,10 @@ type
       while true do
       begin
         
-        var br1 := s.SubSectionOfFirstUnescaped(br1str);
+        var br1 := s.SubSectionOfFirstUnescaped(esc_sym, br1str);
         if br1.IsInvalid then break;
         
-        var br2 := s.WithI1(br1.I2).SubSectionOfFirstUnescaped(br2str);
+        var br2 := s.WithI1(br1.I2).SubSectionOfFirstUnescaped(esc_sym, br2str);
         if br2.IsInvalid then break;
         
         if s.I1<>br1.I1 then
@@ -221,10 +222,10 @@ begin
         end;
       end;
       
-      var vals := s.SplitByUnescaped(',');
+      var vals := s.SplitByUnescaped(',', esc_sym);
       Result.vals := new string[vals.Count];
       for var i := 0 to vals.Count-1 do
-        Result.vals[i] := vals[i].TrimWhile(char.IsWhiteSpace).Unescape;
+        Result.vals[i] := vals[i].TrimWhile(char.IsWhiteSpace).Unescape(esc_sym);
     end).ToArray;
   {$endregion name_parts}
   
@@ -262,7 +263,7 @@ begin
     var AppendWithInsertions: procedure(sb: StringBuilder; text: string); AppendWithInsertions := (sb,text)->
     foreach var (repl, s) in FindTemplateInsertions(new StringSection(text), '{%','%}') do
       if not repl then
-        s.UnescapeTo(sb) else
+        s.UnescapeTo(sb, esc_sym) else
       begin
         var pname, pbody: StringSection;
         
@@ -293,10 +294,10 @@ begin
         if pbody.Length=0 then
           AppendWithInsertions(sb, name_parts[i].vals[choise]) else
         begin
-          var vals := pbody.SplitByUnescaped(':');
+          var vals := pbody.SplitByUnescaped(':', esc_sym);
           if vals.Count<>name_parts[i].vals.Length then
             raise new System.InvalidOperationException($'[{name}]: Instance of [{name_parts[i].name}] had {vals.Count} vals instead of {name_parts[i].vals.Length}:{#10}'+vals.JoinToString(#10));
-          AppendWithInsertions(sb, vals[choise].TrimWhile(char.IsWhiteSpace).Unescape);
+          AppendWithInsertions(sb, vals[choise].TrimWhile(char.IsWhiteSpace).Unescape(esc_sym));
         end;
         
       end;
