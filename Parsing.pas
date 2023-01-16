@@ -3,7 +3,7 @@
 
 type
   
-  StringIndex = record
+  StringIndex = record(IComparable<StringIndex>)
     private val: integer;
     
     private static function MakeInvalid: StringIndex;
@@ -12,13 +12,18 @@ type
     end;
     public static property Invalid: StringIndex read MakeInvalid;
     public property IsInvalid: boolean read val=-1;
+    public property IsValid: boolean read not IsInvalid;
     
     public static function operator implicit(ind: integer): StringIndex;
     begin
       if ind<0 then raise new System.IndexOutOfRangeException($'Index was {ind}');
       Result.val := ind;
     end;
-    public static function operator implicit(ind: StringIndex): integer := ind.val;
+    public static function operator implicit(ind: StringIndex): integer;
+    begin
+      if ind.IsInvalid then raise new System.ArgumentOutOfRangeException('ind');
+      Result := ind.val;
+    end;
     
     public static function operator=(ind1, ind2: StringIndex) := ind1.val=ind2.val;
     public static function operator=(ind1: StringIndex; ind2: integer) :=
@@ -46,6 +51,36 @@ type
     end;
     public static function operator<=(ind1, ind2: StringIndex) := not (ind1>ind2);
     public static function operator>=(ind1, ind2: StringIndex) := not (ind1<ind2);
+    
+    public static function MinOrInvalid(ind1, ind2: StringIndex) :=
+    if ind1.IsInvalid or ind2.IsInvalid then Invalid else
+      Min(ind1.val, ind2.val);
+    public static function MaxOrInvalid(ind1, ind2: StringIndex) :=
+    if ind1.IsInvalid or ind2.IsInvalid then Invalid else
+      Max(ind1.val, ind2.val);
+    
+    public static function MinValid(ind1, ind2: StringIndex) :=
+    if ind2.IsInvalid then ind1 else
+    if ind1.IsInvalid then ind2 else
+      Min(ind1.val, ind2.val);
+    public static function MaxValid(ind1, ind2: StringIndex) :=
+    if ind2.IsInvalid then ind1 else
+    if ind1.IsInvalid then ind2 else
+      Max(ind1.val, ind2.val);
+    
+    public static function Compare(ind1, ind2: StringIndex; invalid_ord: integer := 0): integer;
+    begin
+      Result := Ord(ind1.IsValid) - Ord(ind2.IsValid);
+      if Result<>0 then
+      begin
+        Result *= invalid_ord;
+        if Result=0 then
+          raise new System.ArgumentOutOfRangeException(if ind1.IsInvalid then 'ind1' else 'ind2');
+        exit;
+      end;
+      Result := Sign(ind1.val - ind2.val);
+    end;
+    public function CompareTo(ind: StringIndex) := Compare(self, ind);
     
     public static function operator+(ind: StringIndex; shift: integer): StringIndex;
     begin
@@ -101,16 +136,23 @@ type
     end;
     public constructor := raise new System.InvalidOperationException;
     
+    private static function MakeInvalid: SIndexRange;
+    begin
+      Result.i1 := StringIndex.Invalid;
+      Result.i2 := StringIndex.Invalid;
+    end;
+    public static property Invalid: SIndexRange read MakeInvalid;
+    
     public static function operator in(ind: StringIndex; range: SIndexRange) := (ind>=range.i1) and (ind<=range.i2);
     
-    public function ToString: string; override := $'{i1}..{i2}';
+    public function ToString: string; override := $'[{i1}..{i2})';
     public function ToString(whole_text: string) := whole_text.SubString(i1, self.Length);
     
   end;
   
   StringSection = record
     public text := default(string);
-    public range: SIndexRange := (i1: StringIndex.Invalid; i2: StringIndex.Invalid);
+    public range := SIndexRange.Invalid;
     
     public property I1: StringIndex read range.i1;
     public property I2: StringIndex read range.i2;
@@ -131,7 +173,7 @@ type
     public procedure ValidateInd(ind: StringIndex) :=
     if (ind >= StringIndex(Length)) then raise new System.IndexOutOfRangeException($'Index {ind} was >= {Length}');
     public procedure ValidateLen(len: StringIndex) :=
-    if (len > StringIndex(Length)) then raise new System.IndexOutOfRangeException($'Length {len} was > {Length}');
+    if (len >  StringIndex(Length)) then raise new System.IndexOutOfRangeException($'Length {len} was > {Length}');
     
     public static function operator in(ind: StringIndex; s: StringSection) := ind in s.range;
     
@@ -146,10 +188,12 @@ type
       text[self.i1+ind] := value;
     end; default;
     
-    public function Prev(low_bound_incl: StringIndex): char? := self.I1>low_bound_incl ? text[I1-1] : nil;
+    public function Prev := text[I1-1];
+    public function Prev(low_bound_incl: StringIndex): char? := self.I1>low_bound_incl ? Prev : nil;
     public function Prev(bounds: StringSection) := Prev(bounds.I1);
     
-    public function Next(upr_bound_n_in: StringIndex): char? := self.I2<upr_bound_n_in ? text[I2] : nil;
+    public function Next := text[I2];
+    public function Next(upr_bound_n_in: StringIndex): char? := self.I2<upr_bound_n_in ? Next : nil;
     public function Next(bounds: StringSection) := Next(bounds.I2);
     
     public function PrevWhile(low_bound_incl: StringIndex; ch_validator: char->boolean; min_expand: StringIndex): StringSection;
@@ -469,63 +513,63 @@ type
       
     end;
     
-    public function IsEscaped(min_ind: StringIndex) :=
-    self.TakeFirst(0).PrevWhile(min_ind, ch->ch='\').Length.IsOdd;
+    public function IsEscaped(min_ind: StringIndex; escape_sym: char) :=
+    self.TakeFirst(0).PrevWhile(min_ind, ch->ch=escape_sym).Length.IsOdd;
     
-    public procedure UnescapeTo(res: StringBuilder);
+    public procedure UnescapeTo(res: StringBuilder; escape_sym: char);
     begin
       var escaped := false;
       for i: integer := I1 to I2-1 do
       begin
         var ch := text[i];
-        escaped := (ch='\') and not escaped;
+        escaped := (ch=escape_sym) and not escaped;
         if not escaped then
           res += ch;
       end;
     end;
-    public function Unescape: string;
+    public function Unescape(escape_sym: char): string;
     begin
       var res := new StringBuilder(self.Length);
-      UnescapeTo(res);
+      UnescapeTo(res, escape_sym);
       Result := res.ToString;
     end;
     
-    public function IndexOfUnescaped(str: string): StringIndex;
+    public function IndexOfUnescaped(str: string; escape_sym: char): StringIndex;
     begin
       var ind := 0;
       while true do
       begin
         Result := self.IndexOf(ind, str);
         if Result.IsInvalid then break;
-        if not self.TrimFirst(Result).IsEscaped(self.I1) then break;
+        if not self.TrimFirst(Result).IsEscaped(self.I1, escape_sym) then break;
         ind := Result+1;
       end;
     end;
-    public function IndexOfUnescaped(from: StringIndex; str: string): StringIndex;
+    public function IndexOfUnescaped(from: StringIndex; str: string; escape_sym: char): StringIndex;
     begin
-      Result := self.TrimFirst(from).IndexOfUnescaped(str);
+      Result := self.TrimFirst(from).IndexOfUnescaped(str, escape_sym);
       if Result.IsInvalid then exit;
       Result += from;
     end;
     
-    public function SubSectionOfFirstUnescaped(params strs: array of string): StringSection;
+    public function SubSectionOfFirstUnescaped(escape_sym: char; params strs: array of string): StringSection;
     begin
       Result := self;
       while true do
       begin
         Result := Result.SubSectionOfFirst(strs);
         if Result.IsInvalid then break;
-        if not Result.IsEscaped(self.I1) then break;
+        if not Result.IsEscaped(self.I1, escape_sym) then break;
         Result := Result.TakeLast(0).WithI2(self.I2);
       end;
     end;
     
-    public function SplitByUnescaped(by: string): List<StringSection>;
+    public function SplitByUnescaped(by: string; escape_sym: char): List<StringSection>;
     begin
       Result := new List<StringSection>;
       while true do
       begin
-        var sep := self.SubSectionOfFirstUnescaped(by);
+        var sep := self.SubSectionOfFirstUnescaped(escape_sym, by);
         if sep.IsInvalid then break;
         Result += self.WithI2(sep.I1);
         self.range.i1 := sep.I2;
