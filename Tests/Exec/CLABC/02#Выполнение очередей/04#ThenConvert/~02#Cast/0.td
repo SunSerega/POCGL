@@ -13,8 +13,9 @@ OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_
 (625, True) 
 [EventDebug]: 2 event's created 
 [QueueRes<T>]: 8 
-	QueueResValDirect<(integer,boolean)>: 1 
-	QueueResValDirect<integer>: 3 
+	QueueResValDirect<(int64,boolean)>: 1 
+	QueueResValDirect<int64>: 1 
+	QueueResValDirect<integer>: 2 
 	QueueResValDirect<Object>: 4 
 
 #ReqModules

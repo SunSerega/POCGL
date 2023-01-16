@@ -6,5 +6,5 @@ CLContext.Default.SyncInvoke(
 ).ToString.Println;
 
 CLContext.Default.SyncInvoke(
-  q.Cast&<object>.ThenConvert((i,c)->(integer(i).Sqr.Sqr, c=CLContext.Default)).Cast&<object>
+  q.Cast&<object>.ThenConvert((i,c)->(Sqr(integer(i).Sqr), c=CLContext.Default)).Cast&<object>
 ).ToString.Println;

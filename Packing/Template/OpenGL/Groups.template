@@ -10055,19 +10055,23 @@
     
     public static property ADD:              TextureEnvMode read new TextureEnvMode($0104);
     public static property BLEND:            TextureEnvMode read new TextureEnvMode($0BE2);
+    public static property REPLACE:          TextureEnvMode read new TextureEnvMode($1E01);
     public static property MODULATE:         TextureEnvMode read new TextureEnvMode($2100);
     public static property DECAL:            TextureEnvMode read new TextureEnvMode($2101);
     public static property REPLACE_EXT:      TextureEnvMode read new TextureEnvMode($8062);
     public static property TEXTURE_ENV_BIAS: TextureEnvMode read new TextureEnvMode($80BE);
+    public static property COMBINE:          TextureEnvMode read new TextureEnvMode($8570);
     
     public function ToString: string; override;
     begin
       if self.val = UInt32($0104) then Result := 'ADD' else
       if self.val = UInt32($0BE2) then Result := 'BLEND' else
+      if self.val = UInt32($1E01) then Result := 'REPLACE' else
       if self.val = UInt32($2100) then Result := 'MODULATE' else
       if self.val = UInt32($2101) then Result := 'DECAL' else
       if self.val = UInt32($8062) then Result := 'REPLACE_EXT' else
       if self.val = UInt32($80BE) then Result := 'TEXTURE_ENV_BIAS' else
+      if self.val = UInt32($8570) then Result := 'COMBINE' else
         Result := $'TextureEnvMode[{self.val}]';
     end;
     
@@ -10077,8 +10081,10 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
+    public static property ALPHA_SCALE:       TextureEnvParameter read new TextureEnvParameter($0D1C);
     public static property TEXTURE_ENV_MODE:  TextureEnvParameter read new TextureEnvParameter($2200);
     public static property TEXTURE_ENV_COLOR: TextureEnvParameter read new TextureEnvParameter($2201);
+    public static property TEXTURE_LOD_BIAS:  TextureEnvParameter read new TextureEnvParameter($8501);
     public static property COMBINE:           TextureEnvParameter read new TextureEnvParameter($8570);
     public static property COMBINE_RGB:       TextureEnvParameter read new TextureEnvParameter($8571);
     public static property COMBINE_ALPHA:     TextureEnvParameter read new TextureEnvParameter($8572);
@@ -10110,11 +10116,14 @@
     public static property OPERAND1_ALPHA:    TextureEnvParameter read new TextureEnvParameter($8599);
     public static property OPERAND2_ALPHA:    TextureEnvParameter read new TextureEnvParameter($859A);
     public static property OPERAND3_ALPHA:    TextureEnvParameter read new TextureEnvParameter($859B);
+    public static property COORD_REPLACE:     TextureEnvParameter read new TextureEnvParameter($8862);
     
     public function ToString: string; override;
     begin
+      if self.val = UInt32($0D1C) then Result := 'ALPHA_SCALE' else
       if self.val = UInt32($2200) then Result := 'TEXTURE_ENV_MODE' else
       if self.val = UInt32($2201) then Result := 'TEXTURE_ENV_COLOR' else
+      if self.val = UInt32($8501) then Result := 'TEXTURE_LOD_BIAS' else
       if self.val = UInt32($8570) then Result := 'COMBINE' else
       if self.val = UInt32($8571) then Result := 'COMBINE_RGB' else
       if self.val = UInt32($8572) then Result := 'COMBINE_ALPHA' else
@@ -10146,6 +10155,7 @@
       if self.val = UInt32($8599) then Result := 'OPERAND1_ALPHA' else
       if self.val = UInt32($859A) then Result := 'OPERAND2_ALPHA' else
       if self.val = UInt32($859B) then Result := 'OPERAND3_ALPHA' else
+      if self.val = UInt32($8862) then Result := 'COORD_REPLACE' else
         Result := $'TextureEnvParameter[{self.val}]';
     end;
     
@@ -10155,11 +10165,15 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property TEXTURE_ENV: TextureEnvTarget read new TextureEnvTarget($2300);
+    public static property TEXTURE_ENV:            TextureEnvTarget read new TextureEnvTarget($2300);
+    public static property TEXTURE_FILTER_CONTROL: TextureEnvTarget read new TextureEnvTarget($8500);
+    public static property POINT_SPRITE:           TextureEnvTarget read new TextureEnvTarget($8861);
     
     public function ToString: string; override;
     begin
       if self.val = UInt32($2300) then Result := 'TEXTURE_ENV' else
+      if self.val = UInt32($8500) then Result := 'TEXTURE_FILTER_CONTROL' else
+      if self.val = UInt32($8861) then Result := 'POINT_SPRITE' else
         Result := $'TextureEnvTarget[{self.val}]';
     end;
     
