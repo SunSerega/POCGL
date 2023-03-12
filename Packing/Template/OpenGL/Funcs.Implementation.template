@@ -585,6 +585,10 @@ type glFramebufferBlitEXT = sealed partial class(api_with_loader) end;
 constructor glFramebufferBlitEXT.Create(loader: PlatformLoader) := inherited Create(loader);
 function glFramebufferBlitEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
 
+type glFramebufferBlitLayersEXT = sealed partial class(api_with_loader) end;
+constructor glFramebufferBlitLayersEXT.Create(loader: PlatformLoader) := inherited Create(loader);
+function glFramebufferBlitLayersEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
 type glFramebufferMultisampleEXT = sealed partial class(api_with_loader) end;
 constructor glFramebufferMultisampleEXT.Create(loader: PlatformLoader) := inherited Create(loader);
 function glFramebufferMultisampleEXT.GetProcAddress(name: string) := loader.GetProcAddress(name);

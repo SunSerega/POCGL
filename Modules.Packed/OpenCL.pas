@@ -2265,10 +2265,12 @@ type
     public constructor(val: UInt32) := self.val := val;
     
     public static property LAYER_API_VERSION: LayerInfo read new LayerInfo($4240);
+    public static property LAYER_NAME:        LayerInfo read new LayerInfo($4241);
     
     public function ToString: string; override;
     begin
       if self.val = UInt32($4240) then Result := 'LAYER_API_VERSION' else
+      if self.val = UInt32($4241) then Result := 'LAYER_NAME' else
         Result := $'LayerInfo[{self.val}]';
     end;
     

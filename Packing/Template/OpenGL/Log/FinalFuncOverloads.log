@@ -11703,6 +11703,16 @@
 	----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | --------------- | --------------------- |
 	srcX0 | srcY0 | srcX1 | srcY1 | dstX0 | dstY0 | dstX1 | dstY1 | mask            | filter                |
 
+# glBlitFramebufferLayersEXT[1]:
+	Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | Int32 | ClearBufferMask | BlitFramebufferFilter |
+	----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | --------------- | --------------------- |
+	srcX0 | srcY0 | srcX1 | srcY1 | dstX0 | dstY0 | dstX1 | dstY1 | mask            | filter                |
+
+# glBlitFramebufferLayerEXT[1]:
+	Int32 | Int32 | Int32 | Int32 | Int32    | Int32 | Int32 | Int32 | Int32 | Int32    | ClearBufferMask | BlitFramebufferFilter |
+	----- | ----- | ----- | ----- | -------- | ----- | ----- | ----- | ----- | -------- | --------------- | --------------------- |
+	srcX0 | srcY0 | srcX1 | srcY1 | srcLayer | dstX0 | dstY0 | dstX1 | dstY1 | dstLayer | mask            | filter                |
+
 # glRenderbufferStorageMultisampleEXT[1]:
 	RenderbufferTarget | Int32   | InternalFormat | Int32 | Int32  |
 	------------------ | ------- | -------------- | ----- | ------ |
@@ -14376,42 +14386,6 @@
 	----------- | ------------- |
 	target      | v             |
 
-# glFogCoordhNV[1]:
-	Half |
-	---- |
-	fog  |
-
-# glFogCoordhvNV[3]:
-	array of Half |
-	var Half      |
-	IntPtr        |
-	------------- |
-	fog           |
-
-# glSecondaryColor3hNV[1]:
-	Half | Half  | Half |
-	---- | ----- | ---- |
-	red  | green | blue |
-
-# glSecondaryColor3hvNV[3]:
-	array of Half |
-	var Half      |
-	IntPtr        |
-	------------- |
-	v             |
-
-# glVertexWeighthNV[1]:
-	Half   |
-	------ |
-	weight |
-
-# glVertexWeighthvNV[3]:
-	array of Half |
-	var Half      |
-	IntPtr        |
-	------------- |
-	weight        |
-
 # glVertexAttrib1hNV[1]:
 	UInt32 | Half |
 	------ | ---- |
@@ -14487,6 +14461,42 @@
 	UInt32 | Int32 | IntPtr        |
 	------ | ----- | ------------- |
 	index  | n     | v             |
+
+# glFogCoordhNV[1]:
+	Half |
+	---- |
+	fog  |
+
+# glFogCoordhvNV[3]:
+	array of Half |
+	var Half      |
+	IntPtr        |
+	------------- |
+	fog           |
+
+# glSecondaryColor3hNV[1]:
+	Half | Half  | Half |
+	---- | ----- | ---- |
+	red  | green | blue |
+
+# glSecondaryColor3hvNV[3]:
+	array of Half |
+	var Half      |
+	IntPtr        |
+	------------- |
+	v             |
+
+# glVertexWeighthNV[1]:
+	Half   |
+	------ |
+	weight |
+
+# glVertexWeighthvNV[3]:
+	array of Half |
+	var Half      |
+	IntPtr        |
+	------------- |
+	weight        |
 
 # glGetInternalformatSampleivNV[2]:
 	TextureTarget | InternalFormat | Int32   | InternalFormatPName | Int32 | var Int32 |

@@ -1625,6 +1625,10 @@
 # glFramebufferBlitEXT (GL_EXT_framebuffer_blit)
 	glBlitFramebufferEXT
 
+# glFramebufferBlitLayersEXT (GL_EXT_framebuffer_blit_layers)
+	glBlitFramebufferLayersEXT
+	glBlitFramebufferLayerEXT
+
 # glFramebufferMultisampleEXT (GL_EXT_framebuffer_multisample)
 	glRenderbufferStorageMultisampleEXT
 
@@ -2323,12 +2327,6 @@
 	glMultiTexCoord3hvNV
 	glMultiTexCoord4hNV
 	glMultiTexCoord4hvNV
-	glFogCoordhNV
-	glFogCoordhvNV
-	glSecondaryColor3hNV
-	glSecondaryColor3hvNV
-	glVertexWeighthNV
-	glVertexWeighthvNV
 	glVertexAttrib1hNV
 	glVertexAttrib1hvNV
 	glVertexAttrib2hNV
@@ -2341,6 +2339,12 @@
 	glVertexAttribs2hvNV
 	glVertexAttribs3hvNV
 	glVertexAttribs4hvNV
+	glFogCoordhNV
+	glFogCoordhvNV
+	glSecondaryColor3hNV
+	glSecondaryColor3hvNV
+	glVertexWeighthNV
+	glVertexWeighthvNV
 
 # glInternalformatSampleQueryNV (GL_NV_internalformat_sample_query)
 	glGetInternalformatSampleivNV
