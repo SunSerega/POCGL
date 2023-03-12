@@ -770,6 +770,7 @@
 
 # LayerInfo[UInt32]
 	LAYER_API_VERSION = 4240
+	LAYER_NAME = 4241
 
 # MapFlags[UInt64] (Flags)
 	MAP_READ = 1

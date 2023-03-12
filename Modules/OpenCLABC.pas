@@ -43,6 +43,11 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO Использовать StringPattern в тестере
+
+//TODO Аргументы Kernel'ов вроде как могут удаляться до выполнения Enqueue
+// - Проверить, как это у меня обрабатывается
+
 //TODO Улучшить систему описаний:
 // - Описание для unit
 // - Описания для extensionmethod
@@ -3768,7 +3773,7 @@ begin
       p.Invoke(inp, nil);
       if typeof(TInp)<>typeof(TRes) then
         raise new OpenCLABCInternalException($'Proc inp [{TypeToTypeName(typeof(TInp))}] <> res [{TypeToTypeName(typeof(TRes))}]');
-      Result := inp as TRes;
+      Result := TRes(object(inp)); //TODO Убрать object. Пока не заменил as на TRes(...) - работало без него
     end;
     else raise new OpenCLABCInternalException($'Wrong DC type: [{TypeName(self)}] is not [{TypeToTypeName(typeof(TInp))}]=>[{TypeToTypeName(typeof(TRes))}]');
   end;

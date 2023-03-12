@@ -26522,6 +26522,29 @@
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  glFramebufferBlitLayersEXT = sealed partial class
+    public constructor(loader: PlatformLoader);
+    private constructor := raise new System.NotSupportedException;
+    private function GetProcAddress(name: string): IntPtr;
+    private static function GetProcOrNil<T>(fadr: IntPtr) :=
+    fadr=IntPtr.Zero ? default(T) :
+    Marshal.GetDelegateForFunctionPointer&<T>(fadr);
+    public const _ExtStr = 'gl_ext_framebuffer_blit_layers';
+    
+    private z_BlitFramebufferLayersEXT_adr := GetProcAddress('glBlitFramebufferLayersEXT');
+    private z_BlitFramebufferLayersEXT_1 := GetProcOrNil&<procedure(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: ClearBufferMask; filter: BlitFramebufferFilter)>(z_BlitFramebufferLayersEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlitFramebufferLayersEXT(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: ClearBufferMask; filter: BlitFramebufferFilter) :=
+    z_BlitFramebufferLayersEXT_1(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+    
+    private z_BlitFramebufferLayerEXT_adr := GetProcAddress('glBlitFramebufferLayerEXT');
+    private z_BlitFramebufferLayerEXT_1 := GetProcOrNil&<procedure(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; srcLayer: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; dstLayer: Int32; mask: ClearBufferMask; filter: BlitFramebufferFilter)>(z_BlitFramebufferLayerEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlitFramebufferLayerEXT(srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; srcLayer: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; dstLayer: Int32; mask: ClearBufferMask; filter: BlitFramebufferFilter) :=
+    z_BlitFramebufferLayerEXT_1(srcX0, srcY0, srcX1, srcY1, srcLayer, dstX0, dstY0, dstX1, dstY1, dstLayer, mask, filter);
+    
+  end;
+  
+  [PCUNotRestore]
+  [System.Security.SuppressUnmanagedCodeSecurity]
   glFramebufferMultisampleEXT = sealed partial class
     public constructor(loader: PlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -32725,66 +32748,6 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MultiTexCoord4hvNV(target: TextureUnit; v: IntPtr) :=
     z_MultiTexCoord4hvNV_1(target, v);
     
-    private z_FogCoordhNV_adr := GetProcAddress('glFogCoordhNV');
-    private z_FogCoordhNV_1 := GetProcOrNil&<procedure(fog: Half)>(z_FogCoordhNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordhNV(fog: Half) :=
-    z_FogCoordhNV_1(fog);
-    
-    private z_FogCoordhvNV_adr := GetProcAddress('glFogCoordhvNV');
-    private z_FogCoordhvNV_1 := GetProcOrNil&<procedure(fog: IntPtr)>(z_FogCoordhvNV_adr);
-    private z_FogCoordhvNV_2 := GetProcOrNil&<procedure(var fog: Half)>(z_FogCoordhvNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordhvNV(fog: array of Half);
-    type PHalf=^Half;
-    begin
-      if (fog<>nil) and (fog.Length<>0) then
-        z_FogCoordhvNV_2(fog[0]) else
-        z_FogCoordhvNV_2(PHalf(nil)^);
-    end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordhvNV(var fog: Half) :=
-    z_FogCoordhvNV_2(fog);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordhvNV(fog: IntPtr) :=
-    z_FogCoordhvNV_1(fog);
-    
-    private z_SecondaryColor3hNV_adr := GetProcAddress('glSecondaryColor3hNV');
-    private z_SecondaryColor3hNV_1 := GetProcOrNil&<procedure(red: Half; green: Half; blue: Half)>(z_SecondaryColor3hNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColor3hNV(red: Half; green: Half; blue: Half) :=
-    z_SecondaryColor3hNV_1(red, green, blue);
-    
-    private z_SecondaryColor3hvNV_adr := GetProcAddress('glSecondaryColor3hvNV');
-    private z_SecondaryColor3hvNV_1 := GetProcOrNil&<procedure(v: IntPtr)>(z_SecondaryColor3hvNV_adr);
-    private z_SecondaryColor3hvNV_2 := GetProcOrNil&<procedure(var v: Half)>(z_SecondaryColor3hvNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColor3hvNV(v: array of Half);
-    type PHalf=^Half;
-    begin
-      if (v<>nil) and (v.Length<>0) then
-        z_SecondaryColor3hvNV_2(v[0]) else
-        z_SecondaryColor3hvNV_2(PHalf(nil)^);
-    end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColor3hvNV(var v: Half) :=
-    z_SecondaryColor3hvNV_2(v);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColor3hvNV(v: IntPtr) :=
-    z_SecondaryColor3hvNV_1(v);
-    
-    private z_VertexWeighthNV_adr := GetProcAddress('glVertexWeighthNV');
-    private z_VertexWeighthNV_1 := GetProcOrNil&<procedure(weight: Half)>(z_VertexWeighthNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexWeighthNV(weight: Half) :=
-    z_VertexWeighthNV_1(weight);
-    
-    private z_VertexWeighthvNV_adr := GetProcAddress('glVertexWeighthvNV');
-    private z_VertexWeighthvNV_1 := GetProcOrNil&<procedure(weight: IntPtr)>(z_VertexWeighthvNV_adr);
-    private z_VertexWeighthvNV_2 := GetProcOrNil&<procedure(var weight: Half)>(z_VertexWeighthvNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexWeighthvNV(weight: array of Half);
-    type PHalf=^Half;
-    begin
-      if (weight<>nil) and (weight.Length<>0) then
-        z_VertexWeighthvNV_2(weight[0]) else
-        z_VertexWeighthvNV_2(PHalf(nil)^);
-    end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexWeighthvNV(var weight: Half) :=
-    z_VertexWeighthvNV_2(weight);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexWeighthvNV(weight: IntPtr) :=
-    z_VertexWeighthvNV_1(weight);
-    
     private z_VertexAttrib1hNV_adr := GetProcAddress('glVertexAttrib1hNV');
     private z_VertexAttrib1hNV_1 := GetProcOrNil&<procedure(index: UInt32; x: Half)>(z_VertexAttrib1hNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexAttrib1hNV(index: UInt32; x: Half) :=
@@ -32924,6 +32887,66 @@
     z_VertexAttribs4hvNV_2(index, n, v);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexAttribs4hvNV(index: UInt32; n: Int32; v: IntPtr) :=
     z_VertexAttribs4hvNV_1(index, n, v);
+    
+    private z_FogCoordhNV_adr := GetProcAddress('glFogCoordhNV');
+    private z_FogCoordhNV_1 := GetProcOrNil&<procedure(fog: Half)>(z_FogCoordhNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordhNV(fog: Half) :=
+    z_FogCoordhNV_1(fog);
+    
+    private z_FogCoordhvNV_adr := GetProcAddress('glFogCoordhvNV');
+    private z_FogCoordhvNV_1 := GetProcOrNil&<procedure(fog: IntPtr)>(z_FogCoordhvNV_adr);
+    private z_FogCoordhvNV_2 := GetProcOrNil&<procedure(var fog: Half)>(z_FogCoordhvNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordhvNV(fog: array of Half);
+    type PHalf=^Half;
+    begin
+      if (fog<>nil) and (fog.Length<>0) then
+        z_FogCoordhvNV_2(fog[0]) else
+        z_FogCoordhvNV_2(PHalf(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordhvNV(var fog: Half) :=
+    z_FogCoordhvNV_2(fog);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FogCoordhvNV(fog: IntPtr) :=
+    z_FogCoordhvNV_1(fog);
+    
+    private z_SecondaryColor3hNV_adr := GetProcAddress('glSecondaryColor3hNV');
+    private z_SecondaryColor3hNV_1 := GetProcOrNil&<procedure(red: Half; green: Half; blue: Half)>(z_SecondaryColor3hNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColor3hNV(red: Half; green: Half; blue: Half) :=
+    z_SecondaryColor3hNV_1(red, green, blue);
+    
+    private z_SecondaryColor3hvNV_adr := GetProcAddress('glSecondaryColor3hvNV');
+    private z_SecondaryColor3hvNV_1 := GetProcOrNil&<procedure(v: IntPtr)>(z_SecondaryColor3hvNV_adr);
+    private z_SecondaryColor3hvNV_2 := GetProcOrNil&<procedure(var v: Half)>(z_SecondaryColor3hvNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColor3hvNV(v: array of Half);
+    type PHalf=^Half;
+    begin
+      if (v<>nil) and (v.Length<>0) then
+        z_SecondaryColor3hvNV_2(v[0]) else
+        z_SecondaryColor3hvNV_2(PHalf(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColor3hvNV(var v: Half) :=
+    z_SecondaryColor3hvNV_2(v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SecondaryColor3hvNV(v: IntPtr) :=
+    z_SecondaryColor3hvNV_1(v);
+    
+    private z_VertexWeighthNV_adr := GetProcAddress('glVertexWeighthNV');
+    private z_VertexWeighthNV_1 := GetProcOrNil&<procedure(weight: Half)>(z_VertexWeighthNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexWeighthNV(weight: Half) :=
+    z_VertexWeighthNV_1(weight);
+    
+    private z_VertexWeighthvNV_adr := GetProcAddress('glVertexWeighthvNV');
+    private z_VertexWeighthvNV_1 := GetProcOrNil&<procedure(weight: IntPtr)>(z_VertexWeighthvNV_adr);
+    private z_VertexWeighthvNV_2 := GetProcOrNil&<procedure(var weight: Half)>(z_VertexWeighthvNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexWeighthvNV(weight: array of Half);
+    type PHalf=^Half;
+    begin
+      if (weight<>nil) and (weight.Length<>0) then
+        z_VertexWeighthvNV_2(weight[0]) else
+        z_VertexWeighthvNV_2(PHalf(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexWeighthvNV(var weight: Half) :=
+    z_VertexWeighthvNV_2(weight);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VertexWeighthvNV(weight: IntPtr) :=
+    z_VertexWeighthvNV_1(weight);
     
   end;
   
