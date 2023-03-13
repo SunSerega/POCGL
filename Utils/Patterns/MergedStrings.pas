@@ -230,6 +230,7 @@ type
       Result := p1.data = p2.data;
     end;
     public static function operator<>(p1, p2: MergedStringPointer) := not(p1=p2);
+    public function Equals(p: MergedStringPointer) := self=p;
     
     public static function Compare(p1, p2: MergedStringPointer): integer;
     begin
@@ -753,8 +754,7 @@ type
     
     public static function ToMergedString(edge1: MergedString; n: MergedStringJumpNode) :=
     new MergedString(MergedString.OptimizeParts(
-      PatternPath&<MergedStringJumpNode>(n)
-      .ToArray(n->n.ToParts(edge1)).SelectMany(ps->ps)
+      n.ToPath.ToArray(n->n.ToParts(edge1)).SelectMany(ps->ps)
     ).ToArray);
     
   end;
@@ -871,7 +871,6 @@ function NextZeroJumpPoint(p: MergedStringPoint2): MergedStringPoint2;
 begin
   var ep1 := p.Edge1;
   var ep2 := p.Edge2;
-  var s := ep1.s;
   
   while true do
   begin
@@ -1129,7 +1128,7 @@ Pattern.MinPaths(
   (p, j)->
   MergedStringMltCostJumpData.Create(p, j).AllCostJumps
   
-).Select(n->
+).Item1.Select(n->
 begin
   Result := MergedStringJumpNode.ToMergedString(s1, n);
   {$ifdef DEBUG}
@@ -1178,7 +1177,6 @@ begin
     end;
     exit;
   end;
-  var s := ep1.s;
   
   var part2 := EdgePart(ep2);
   if part2 is MergedStringPartSolid then

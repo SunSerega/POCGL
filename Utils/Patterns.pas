@@ -1,22 +1,19 @@
 ﻿unit Patterns;
 {$zerobasedstrings}
 
-//TODO #2739
-{$savepcu false}
-
 interface
 
 uses System;
-uses System.Runtime. InteropServices;
 uses System.Runtime.CompilerServices;
-
-uses Parsing;
 
 //TODO IPatternEdgePointer<TData, TSelf>
 // - Позволит передавать на много меньше данных, но взамен код станет значительно сложнее...
 
 type
-  {$region Pattern}
+  
+  {$region Generic Pattern}
+  
+  {$region Point}
   
   IPatternPoint<TSelf> = interface(IEquatable<TSelf>)
   where TSelf: IPatternPoint<TSelf>;
@@ -27,6 +24,173 @@ type
     function IncLessThan(p: TSelf): boolean;
     
   end;
+  
+  {$endregion Point}
+  
+  {$region Cost}
+  
+  IJumpCost<TSelf> = interface(IEquatable<TSelf>, IComparable<TSelf>)
+  where TSelf: IJumpCost<TSelf>;
+    
+    function Plus(other: TSelf): TSelf;
+    
+  end;
+  
+  {$endregion Cost}
+  
+  {$region Algorithm}
+  
+  Pattern = static class
+    
+//    private constructor := raise new System.InvalidOperationException;
+    
+    ///p0: The Point looking at the first symbol of all edges
+    /// - Must implement IPatternPoint<TSelf>
+    ///
+    ///get_zero_jumps: Zero cost jump generator
+    ///get_cost_jumps: Non-zero cost jump generator
+    /// - Cheapest jump sequence will be returned
+    ///on_no_path what to do when no path was found
+    /// - If no set and no path found, throws InvalidOperationException
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static function MinPaths<TPoint, TJumpNode,TJumpCost>(
+      p0: TPoint; zero_jump: TJumpNode; zero_cost: TJumpCost
+      ; get_zero_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode>
+      ; get_cost_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode,TJumpCost>
+    ): ValueTuple<sequence of TJumpNode, TJumpCost>;
+    where TPoint: IPatternPoint<TPoint>;
+    where TJumpCost: IJumpCost<TJumpCost>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static function AllPaths<TPoint, TJumpNode>(
+      p0: TPoint; zero_jump: TJumpNode
+      ; get_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode>
+    ): sequence of TJumpNode;
+    where TPoint: IPatternPoint<TPoint>;
+    
+  end;
+  
+  {$endregion Algorithm}
+  
+  {$endregion Generic Pattern}
+  
+  {$region Basic Pattern}
+  
+  {$region Edge}
+  
+  IPatternEdgePointer<TSelf> = interface(IComparable<TSelf>, IEquatable<TSelf>)
+  where TSelf: IPatternEdgePointer<TSelf>;
+    
+    function IsOut: boolean;
+    
+  end;
+  
+  IPatternEdgeJumpGeneratable<TSelf, TOther, TCost> = interface(IPatternEdgePointer<TSelf>)
+  where TSelf:  IPatternEdgePointer<TSelf>, IPatternEdgeJumpGeneratable<TSelf, TOther, TCost>;
+  where TOther: IPatternEdgePointer<TOther>;
+    
+    function MakeZeroJumps(other: TOther): sequence of ValueTuple<TSelf, TOther>;
+    function MakeCostJumps(other: TOther): sequence of ValueTuple<TSelf, TOther, TCost>;
+    
+  end;
+  
+  {$endregion Edge}
+  
+  {$region Point}
+  
+  BasicPatternPoint1<TPointer> = record(IPatternPoint<BasicPatternPoint1<TPointer>>)
+  where TPointer: IPatternEdgePointer<TPointer>;
+    private ep: TPointer;
+    
+    public constructor(ep: TPointer) := self.ep := ep;
+    public constructor := Create(default(TPointer));
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AnyEdgesDone := ep.IsOut;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AllEdgesDone := ep.IsOut;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function IncLessThan(p: BasicPatternPoint1<TPointer>) := self.ep.CompareTo(p.ep)<=0;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Equals(p: BasicPatternPoint1<TPointer>) := self.ep.Equals(p.ep);
+    
+    public static function operator implicit(ep: TPointer): BasicPatternPoint1<TPointer> :=
+    new BasicPatternPoint1<TPointer>(ep);
+    
+    public property Edge: TPointer read ep;
+    
+    public function ToString: string; override :=
+    $'{self.GetType.Name}(Edge={Edge})';
+    
+  end;
+  
+  BasicPatternPointRec<TPointer, TOther> = record(IPatternPoint<BasicPatternPointRec<TPointer, TOther>>)
+  where TPointer: IPatternEdgePointer<TPointer>;
+  where TOther: IPatternPoint<TOther>;
+    private first: BasicPatternPoint1<TPointer>;
+    private other: TOther;
+    
+    public constructor(first: BasicPatternPoint1<TPointer>; other: TOther);
+    begin
+      self.first := first;
+      self.other := other;
+    end;
+    public constructor := Create(default(TPointer), default(TOther));
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AnyEdgesDone := first.AnyEdgesDone  or other.AnyEdgesDone;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AllEdgesDone := first.AllEdgesDone and other.AllEdgesDone;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function IncLessThan(p: BasicPatternPointRec<TPointer, TOther>) := first.IncLessThan(p.first) and other.IncLessThan(p.other);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Equals(p: BasicPatternPointRec<TPointer, TOther>) := self.first.Equals(p.first) and self.other.Equals(p.other);
+    
+    public property FirstEdge: TPointer read first.Edge;
+    public property OtherEdges: TOther read other;
+    
+    public function ToString: string; override :=
+    $'{self.GetType.Name}(FirstEdge={FirstEdge}; OtherEdges={OtherEdges})';
+    
+  end;
+  
+  BasicPatternPoint2<TPointer1, TPointer2> = record(IPatternPoint<BasicPatternPoint2<TPointer1, TPointer2>>)
+  where TPointer1: IPatternEdgePointer<TPointer1>;
+  where TPointer2: IPatternEdgePointer<TPointer2>;
+    private impl: BasicPatternPointRec<TPointer1, BasicPatternPoint1<TPointer2>>;
+    
+    public constructor(ep1: TPointer1; ep2: TPointer2) := impl :=
+    new BasicPatternPointRec<TPointer1, BasicPatternPoint1<TPointer2>>(ep1, ep2);
+    public static function operator implicit(p: ValueTuple<TPointer1, TPointer2>): BasicPatternPoint2<TPointer1, TPointer2> :=
+    new BasicPatternPoint2<TPointer1, TPointer2>(p.Item1, p.Item2);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AnyEdgesDone := impl.AnyEdgesDone;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AllEdgesDone := impl.AllEdgesDone;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function IncLessThan(p: BasicPatternPoint2<TPointer1, TPointer2>) := impl.IncLessThan(p.impl);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Equals(p: BasicPatternPoint2<TPointer1, TPointer2>) := impl.Equals(p.impl);
+    
+    public property Edge1: TPointer1 read impl.FirstEdge;
+    public property Edge2: TPointer2 read impl.OtherEdges.Edge;
+    
+    public function ToString: string; override :=
+    $'({Edge1}; {Edge2})';
+//    $'{self.GetType.Name}(Edge1={Edge1}; Edge2={Edge2})';
+    
+  end;
+  
+  {$endregion Point}
+  
+  {$region Jump}
   
   PatternJumpNode<TJumpNode> = abstract class
   where TJumpNode: PatternJumpNode<TJumpNode>;
@@ -72,155 +236,10 @@ type
     
   end;
   
-  IJumpCost<TSelf> = interface(IEquatable<TSelf>, IComparable<TSelf>)
-  where TSelf: IJumpCost<TSelf>;
-    
-    function Plus(other: TSelf): TSelf;
-    
-  end;
+  {$endregion Jump}
   
-  Pattern = static class
-    
-//    private constructor := raise new System.InvalidOperationException;
-    
-    ///p0: The Point looking at the first symbol of all edges
-    /// - Must implement IPatternPoint<TSelf>
-    ///
-    ///get_zero_jumps: Zero cost jump generator
-    ///get_cost_jumps: Non-zero cost jump generator
-    /// - Cheapest jump sequence will be returned
-    ///on_no_path what to do when no path was found
-    /// - If no set and no path found, throws InvalidOperationException
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    static function MinPaths<TPoint, TJumpNode,TJumpCost>(
-      p0: TPoint; zero_jump: TJumpNode; zero_cost: TJumpCost
-      ; get_zero_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode>
-      ; get_cost_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode,TJumpCost>
-    ): sequence of TJumpNode;
-    where TPoint: IPatternPoint<TPoint>;
-    where TJumpCost: IJumpCost<TJumpCost>;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    static function AllPaths<TPoint, TJumpNode>(
-      p0: TPoint; zero_jump: TJumpNode
-      ; get_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode>
-    ): sequence of TJumpNode;
-    where TPoint: IPatternPoint<TPoint>;
-    
-  end;
+  {$region Cost}
   
-  {$endregion Pattern}
-  
-  {$region Basic PatternPoint's}
-  
-  IPatternEdgePointer<TSelf> = interface(IComparable<TSelf>)
-  where TSelf: IPatternEdgePointer<TSelf>;
-    
-    function IsOut: boolean;
-    
-  end;
-  
-  BasicPatternPointDummy<TPointer> = record(IPatternPoint<BasicPatternPointDummy<TPointer>>)
-  where TPointer: IPatternEdgePointer<TPointer>;
-    private ep: TPointer;
-    
-    public constructor(ep: TPointer) := self.ep := ep;
-    public constructor := Create(default(TPointer));
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AnyEdgesDone := ep.IsOut;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AllEdgesDone := ep.IsOut;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function IncLessThan(p: BasicPatternPointDummy<TPointer>) := self.ep.CompareTo(p.ep)<=0;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Equals(p: BasicPatternPointDummy<TPointer>) := self.ep = p.ep;
-    
-    public static function operator implicit(ep: TPointer): BasicPatternPointDummy<TPointer> :=
-    new BasicPatternPointDummy<TPointer>(ep);
-    
-    public property Edge: TPointer read ep;
-    
-    public function ToString: string; override :=
-    $'{self.GetType.Name}(Edge={Edge})';
-    
-  end;
-  
-  BasicPatternPointRec<TPointer, TOther> = record(IPatternPoint<BasicPatternPointRec<TPointer, TOther>>)
-  where TPointer: IPatternEdgePointer<TPointer>;
-  where TOther: IPatternPoint<TOther>;
-    private first: BasicPatternPointDummy<TPointer>;
-    private other: TOther;
-    
-    public constructor(first: BasicPatternPointDummy<TPointer>; other: TOther);
-    begin
-      self.first := first;
-      self.other := other;
-    end;
-    public constructor := Create(default(TPointer), default(TOther));
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AnyEdgesDone := first.AnyEdgesDone  or other.AnyEdgesDone;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AllEdgesDone := first.AllEdgesDone and other.AllEdgesDone;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function IncLessThan(p: BasicPatternPointRec<TPointer, TOther>) := first.IncLessThan(p.first) and other.IncLessThan(p.other);
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Equals(p: BasicPatternPointRec<TPointer, TOther>) := self.first.Equals(p.first) and self.other.Equals(p.other);
-    
-    public property FirstEdge: TPointer read first.Edge;
-    public property OtherEdges: TOther read other;
-    
-    public function ToString: string; override :=
-    $'{self.GetType.Name}(FirstEdge={FirstEdge}; OtherEdges={OtherEdges})';
-    
-  end;
-  
-  BasicPatternPoint2<TPointer1, TPointer2> = record(IPatternPoint<BasicPatternPoint2<TPointer1, TPointer2>>)
-  where TPointer1: IPatternEdgePointer<TPointer1>;
-  where TPointer2: IPatternEdgePointer<TPointer2>;
-    private impl: BasicPatternPointRec<TPointer1, BasicPatternPointDummy<TPointer2>>;
-    
-    public constructor(ep1: TPointer1; ep2: TPointer2) := impl :=
-    new BasicPatternPointRec<TPointer1, BasicPatternPointDummy<TPointer2>>(ep1, ep2);
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AnyEdgesDone := impl.AnyEdgesDone;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AllEdgesDone := impl.AllEdgesDone;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function IncLessThan(p: BasicPatternPoint2<TPointer1, TPointer2>) := impl.IncLessThan(p.impl);
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Equals(p: BasicPatternPoint2<TPointer1, TPointer2>) := impl.Equals(p.impl);
-    
-    public property Edge1: TPointer1 read impl.FirstEdge;
-    public property Edge2: TPointer2 read impl.OtherEdges.Edge;
-    
-    public function ToString: string; override :=
-    $'({Edge1}; {Edge2})';
-//    $'{self.GetType.Name}(Edge1={Edge1}; Edge2={Edge2})';
-    
-  end;
-  
-  {$endregion Basic PatternPoint's}
-  
-  {$region BasicCharIterator}
-  
-  //TODO Move
-  IPatternEdgeJumpGeneratable<TOther, TSelf, TCost> = interface
-    
-    function MakeZeroJumps(other: TOther): sequence of ValueTuple<TSelf, TOther>;
-    function MakeCostJumps(other: TOther): sequence of ValueTuple<TSelf, TOther, TCost>;
-    
-  end;
-  
-  //TODO Move
   BasicJumpCost = record(IJumpCost<BasicJumpCost>)
     private val: integer;
     
@@ -242,101 +261,9 @@ type
     
   end;
   
-  BasicCharIterator = record(IPatternEdgePointer<BasicCharIterator>, IPatternEdgeJumpGeneratable<BasicCharIterator, BasicCharIterator, BasicJumpCost>)
-    private s: StringSection;
-    
-    public constructor(s: StringSection) := self.s := s;
-    public constructor(s: string) := Create(new StringSection(s));
-    public constructor := Create('');
-    
-    public static function operator implicit(s: StringSection): BasicCharIterator := new BasicCharIterator(s);
-    public static function operator implicit(s: string): BasicCharIterator := new BasicCharIterator(s);
-    
-    public function IsOut := s.Length=0;
-    
-    {$ifdef DEBUG}
-    private static procedure EnsureRelated(i1,i2: BasicCharIterator);
-    begin
-      if (i1.s.text <> i2.s.text) or (i1.s.I2   <> i2.s.I2) then
-        raise new System.InvalidOperationException($'{i1.s.text}[{i1.s.range}] ~ {i2.s.text}[{i2.s.range}]');
-    end;
-    {$endif DEBUG}
-    public function CompareTo(i: BasicCharIterator): integer;
-    begin
-      {$ifdef DEBUG}
-      EnsureRelated(self, i);
-      {$endif DEBUG}
-      Result := self.s.I1.CompareTo(i.s.I1);
-    end;
-    
-    public static function operator=(i1, i2: BasicCharIterator): boolean;
-    begin
-      {$ifdef DEBUG}
-      EnsureRelated(i1, i2);
-      {$endif DEBUG}
-      Result := i1.s.I1 = i2.s.I1;
-    end;
-    public static function operator<>(i1, i2: BasicCharIterator) := not (i1=i2);
-    public function Equals(i: BasicCharIterator) := self=i;
-    public function Equals(o: object): boolean; override :=
-    (o is BasicCharIterator(var i)) and self.Equals(i);
-    
-    public property Current: char read s.First;
-    
-    public static function Between(i1, i2: BasicCharIterator): StringSection;
-    begin
-      {$ifdef DEBUG}
-      EnsureRelated(i1, i2);
-      {$endif DEBUG}
-      Result := i1.s.WithI2(i2.s.I1);
-    end;
-    
-    public static function MakeZeroJumps(i1, i2: BasicCharIterator): sequence of ValueTuple<BasicCharIterator, BasicCharIterator>;
-    begin
-      
-      loop Min(i1.s.Length, i2.s.Length) do
-      begin
-        if i1.Current <> i2.Current then break;
-        i1.s.range.i1 += 1;
-        i2.s.range.i1 += 1;
-      end;
-      
-      Result := |ValueTuple.Create(i1,i2)|;
-    end;
-    public function MakeZeroJumps(i: BasicCharIterator) := BasicCharIterator.MakeZeroJumps(self, i);
-    
-    public static function MakeCostJumps(i1, i2: BasicCharIterator): sequence of ValueTuple<BasicCharIterator, BasicCharIterator, BasicJumpCost>;
-    begin
-      var need1 := not i1.IsOut;
-      var need2 := not i2.IsOut;
-      
-      var res := new ValueTuple<BasicCharIterator, BasicCharIterator, BasicJumpCost>[Ord(need1)+Ord(need2)];
-      if need1 then
-      begin
-        res[Ord(false)].Item1 := i1.s.TrimFirst(1);
-        res[Ord(false)].Item2 := i2;
-        res[Ord(false)].Item3 := 1;
-      end;
-      if need2 then
-      begin
-        res[Ord(need1)].Item1 := i1;
-        res[Ord(need1)].Item2 := i2.s.TrimFirst(1);
-        res[Ord(need1)].Item3 := 1;
-      end;
-      
-      Result := res;
-    end;
-    public function MakeCostJumps(i: BasicCharIterator) := BasicCharIterator.MakeCostJumps(self, i);
-    
-    public function ToString: string; override :=
-    s.I1.ToString;
-//    $'{TypeName(self)}(ind={s.I1}; left={s})';
-    
-  end;
+  {$endregion Cost}
   
-  {$endregion BasicCharIterator}
-  
-  {$region BasicPattern}
+  {$region Algorithm}
   
   BasicPatternDiffBase = abstract class
     private ind: integer;
@@ -374,9 +301,17 @@ type
     
   end;
   
-  {$endregion BasicPattern}
+  {$endregion Algorithm}
+  
+  {$endregion Basic Pattern}
   
 implementation
+
+function ToPath<TJumpNode>(self: TJumpNode): PatternPath<TJumpNode>; extensionmethod;
+  where TJumpNode: PatternJumpNode<TJumpNode>;
+begin
+  Result := self;
+end;
 
 {$region Pattern}
 
@@ -464,29 +399,32 @@ static function Pattern.MinPaths<TPoint, TJumpNode,TJumpCost>(
   p0: TPoint; zero_jump: TJumpNode; zero_cost: TJumpCost
   ; get_zero_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode>
   ; get_cost_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode,TJumpCost>
-): sequence of TJumpNode;
+): ValueTuple<sequence of TJumpNode, TJumpCost>;
 where TPoint: IPatternPoint<TPoint>;
 where TJumpCost: IJumpCost<TJumpCost>;
 begin
   var state := new PatternMinCombinationState<TPoint, TJumpNode,TJumpCost>;
   state.min_step := new PatternCostStep<TPoint, TJumpNode,TJumpCost>(zero_cost, nil);
   
-  var found_res := false;
-  foreach var pj in get_zero_jumps(p0, zero_jump) do
   begin
-    var (p,j) := pj;
-    if p.AllEdgesDone then
+    var pjs := get_zero_jumps(p0, zero_jump);
+    foreach var pj in pjs index i do
     begin
-      found_res := true;
-      yield j;
+      var (p,j) := pj;
+      if p.AllEdgesDone then
+      begin
+        Result := ValueTuple.Create(
+          j + pjs.Skip(i+1).Where(\(p,j)->p.AllEdgesDone).Select(\(p,j)->j),
+          zero_cost
+        );
+        exit;
+      end;
+      state.min_step.pts += pj;
     end;
-    if found_res then continue;
-    state.min_step.pts += pj;
   end;
   
   while true do
   begin
-    if found_res then break;
     var consumed_step := state.min_step;
     if consumed_step=nil then break;
     
@@ -497,20 +435,22 @@ begin
 //    old_buff.PrintLines(\(old_p, old_l)->old_l);
 //    Writeln('='*30);
     
-    foreach var old_pj in old_buff do
+    foreach var old_pj in old_buff index i do
     begin
       var (old_p, old_j) := old_pj;
       
       if old_p.AllEdgesDone then
       begin
-        found_res := true;
-        yield old_j;
+        Result := ValueTuple.Create(
+          old_j + old_buff.Skip(i+1).Where(\(p,j)->p.AllEdgesDone).Select(\(p,j)->j),
+          old_cost
+        );
+        exit;
       end;
-      if found_res then continue;
       
       foreach var (mid_p, mid_j, cost) in get_cost_jumps(old_p, old_j) do
       begin
-        cost := cost.Plus(old_cost);
+        cost := old_cost.Plus(cost);
         
         foreach var (p,j) in get_zero_jumps(mid_p, mid_j) do
         begin
@@ -575,7 +515,15 @@ type
     
     static constructor;
     begin
-      var gen_intr := typeof(IPatternEdgeJumpGeneratable<TPointer2, TPointer1, BasicJumpCost>);
+      var gen_intr := typeof(IPatternEdgeJumpGeneratable<,,>);
+      try
+        gen_intr := gen_intr.MakeGenericType(
+          typeof(TPointer1), typeof(TPointer2),
+          typeof(BasicJumpCost)
+        );
+      except
+        on ArgumentException do exit;
+      end;
 //      $'{TypeToTypeName(gen_intr)}.IsAssignableFrom({TypeToTypeName(typeof(TPointer1))}) ='.Print;
       if not gen_intr.IsAssignableFrom(typeof(TPointer1)){.Println} then exit;
       
@@ -653,7 +601,7 @@ begin
         Result := ValueTuple.Create(np, nj, cost);
       end)
     
-  ) do yield n;
+  ).Item1 do yield n;
   
 end;
 

@@ -1,17 +1,18 @@
 ﻿##
 
-(**
+(**)
 uses Patterns in '../Patterns';
 
-var s1 := $'abada';
-var s2 := $'acaea';
-foreach var diff in BasicPattern.MinCombination&<BasicCharIterator>(s1, s2) do
+var s1 := (#0..char.MaxValue).JoinToString;
+var s2 := (#0..char.MaxValue).Select(ch->ch+'').Order.JoinToString('');
+
+foreach var diff in BasicPattern.MinPaths&<BasicCharIterator>(s1, s2).First do
 begin
   var ss := BasicCharIterator.Between(diff.JumpF,diff.JumpT);
   $'s{diff.Index} added [{ss}] at {ss.range}'.Println;
 end;
 $'Done'.Println;
-
+Readln;
 (*)
 
 //Console.SetError( Console.Out );
@@ -22,7 +23,7 @@ uses
 
 var escape_sym := '%';
 
-{}
+{
 //var p := MergedString.Parse('a@[*0..z]a');
 
 var count_minuses := function(s: MergedString): integer->
@@ -37,10 +38,10 @@ end;
 
 var p: MergedString;
 begin
-  var ps := EnumerateFiles('G:\0Prog\AutoMaximize\Classes\1 What')
+  var ps := EnumerateFiles('G:\0Prog\AutoMaximize\Classes\2 Dont')
     .Select(System.IO.Path.GetFileName)
     .Where(fname->fname.StartsWith('HwndWrapper'))
-    .Select(MergedString.Literal)
+    .Select(line->MergedString.Parse(line,'%'))
     .ToHashSet;
   while ps.Count.Println>1 do
   begin
@@ -110,7 +111,7 @@ end;
 //  ('='*30).Println;
 //end);
 
-{
+{}
 
 var p1 := MergedString.Parse('_____');
 var p2 := MergedString.Parse('_____');
