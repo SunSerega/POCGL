@@ -5,8 +5,4 @@
 !possible_par_types
  *	| *	| *	| +var cl_layer_api_version	| *	|
 
-# clInitLayer
-!possible_par_types
- *	| *	| *	| *	| -array of IntPtr	|
-
 

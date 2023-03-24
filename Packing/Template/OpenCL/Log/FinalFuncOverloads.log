@@ -1458,12 +1458,12 @@
 	          | param_name | param_value_size | param_value              | param_value_size_ret |
 
 # clInitLayer[4]:
-	ErrorCode | UInt32      | IntPtr          | var UInt32      | var IntPtr     |
-	ErrorCode | UInt32      | IntPtr          | var UInt32      | pointer        |
-	ErrorCode | UInt32      | IntPtr          | IntPtr          | var IntPtr     |
-	ErrorCode | UInt32      | IntPtr          | IntPtr          | pointer        |
-	--------- | ----------- | --------------- | --------------- | -------------- |
-	          | num_entries | target_dispatch | num_entries_ret | layer_dispatch |
+	ErrorCode | UInt32      | IntPtr          | var UInt32      | var IntPtr         |
+	ErrorCode | UInt32      | IntPtr          | var UInt32      | pointer            |
+	ErrorCode | UInt32      | IntPtr          | IntPtr          | var IntPtr         |
+	ErrorCode | UInt32      | IntPtr          | IntPtr          | pointer            |
+	--------- | ----------- | --------------- | --------------- | ------------------ |
+	          | num_entries | target_dispatch | num_entries_ret | layer_dispatch_ret |
 
 # clCreateProgramWithILKHR[3]:
 	cl_program | cl_context | array of byte | UIntPtr | var ErrorCode |

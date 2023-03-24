@@ -9043,22 +9043,22 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerInfo(param_name: LayerInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): ErrorCode :=
     z_GetLayerInfo_1(param_name, param_value_size, param_value, param_value_size_ret);
     
-    private static function z_InitLayer_1(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; layer_dispatch: pointer): ErrorCode;
+    private static function z_InitLayer_1(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; layer_dispatch_ret: pointer): ErrorCode;
     external 'opencl' name 'clInitLayer';
-    private static function z_InitLayer_2(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; var layer_dispatch: IntPtr): ErrorCode;
+    private static function z_InitLayer_2(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; var layer_dispatch_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clInitLayer';
-    private static function z_InitLayer_3(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; layer_dispatch: pointer): ErrorCode;
+    private static function z_InitLayer_3(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; layer_dispatch_ret: pointer): ErrorCode;
     external 'opencl' name 'clInitLayer';
-    private static function z_InitLayer_4(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; var layer_dispatch: IntPtr): ErrorCode;
+    private static function z_InitLayer_4(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; var layer_dispatch_ret: IntPtr): ErrorCode;
     external 'opencl' name 'clInitLayer';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; var layer_dispatch: IntPtr): ErrorCode :=
-    z_InitLayer_4(num_entries, target_dispatch, num_entries_ret, layer_dispatch);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; layer_dispatch: pointer): ErrorCode :=
-    z_InitLayer_3(num_entries, target_dispatch, num_entries_ret, layer_dispatch);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; var layer_dispatch: IntPtr): ErrorCode :=
-    z_InitLayer_2(num_entries, target_dispatch, num_entries_ret, layer_dispatch);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; layer_dispatch: pointer): ErrorCode :=
-    z_InitLayer_1(num_entries, target_dispatch, num_entries_ret, layer_dispatch);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; var layer_dispatch_ret: IntPtr): ErrorCode :=
+    z_InitLayer_4(num_entries, target_dispatch, num_entries_ret, layer_dispatch_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; var num_entries_ret: UInt32; layer_dispatch_ret: pointer): ErrorCode :=
+    z_InitLayer_3(num_entries, target_dispatch, num_entries_ret, layer_dispatch_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; var layer_dispatch_ret: IntPtr): ErrorCode :=
+    z_InitLayer_2(num_entries, target_dispatch, num_entries_ret, layer_dispatch_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function InitLayer(num_entries: UInt32; target_dispatch: IntPtr; num_entries_ret: IntPtr; layer_dispatch_ret: pointer): ErrorCode :=
+    z_InitLayer_1(num_entries, target_dispatch, num_entries_ret, layer_dispatch_ret);
     
   end;
   

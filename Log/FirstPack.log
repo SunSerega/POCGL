@@ -3,15 +3,15 @@ Runing SubReps Update
 SubReps Update: Pulling OpenCL
 SubReps Update: cmd /c "(echo [checkout] && git checkout main 2>&1) && (echo [pull] && git pull 0_official main & echo [pull-own]: && git pull SunSerega main) && (echo [push] && git push SunSerega main)" 
 SubReps Update: OpenCL[OUT] : [checkout]
-SubReps Update: OpenCL[OUT] : Your branch is up to date with 'SunSerega/main'.
+SubReps Update: OpenCL[OUT] : Your branch is up to date with '0_official/main'.
 SubReps Update: OpenCL[OUT] : Already on 'main'
 SubReps Update: OpenCL[OUT] : [pull]
 SubReps Update: OpenCL[ERR] : From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch              main       -> FETCH_HEAD
+SubReps Update: OpenCL[ERR] : * branch            main       -> FETCH_HEAD
 SubReps Update: OpenCL[OUT] : Already up to date.
 SubReps Update: OpenCL[OUT] : [pull-own]:
 SubReps Update: OpenCL[ERR] : From github.com:SunSerega/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch              main       -> FETCH_HEAD
+SubReps Update: OpenCL[ERR] : * branch            main       -> FETCH_HEAD
 SubReps Update: OpenCL[OUT] : Already up to date.
 SubReps Update: OpenCL[OUT] : [push]
 SubReps Update: OpenCL[ERR] : Everything up-to-date
