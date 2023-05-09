@@ -367,6 +367,10 @@ unit OpenCLABC;
 // - #2607
 // - #2610
 
+//TODO Issue mono:
+//TODO https://github.com/mono/mono/issues/{id}
+// - #11034
+
 {$endregion Upstream bugs}
 
 interface
@@ -4885,9 +4889,11 @@ type
     
     public procedure InvokeActions(c: CLContext) := base.complition_delegate.Invoke(c);
     
-    public function IQueueRes.MakeWrapWithImpl(new_ev: EventList): IQueueRes := new QueueResNil(new_ev);
+    //TODO mono#11034
+    public function {IQueueRes.}MakeWrapWithImpl(new_ev: EventList): IQueueRes := new QueueResNil(new_ev);
     
-    public procedure IQueueRes.SetRes<TRes>(res: TRes) := exit;
+    //TODO mono#11034
+    public procedure {IQueueRes.}SetRes<TRes>(res: TRes) := exit;
     
   end;
   
@@ -5925,7 +5931,8 @@ type
       
     end;
     
-    public procedure ITypedCQUser.UseNil(cq: CommandQueueNil);
+    //TODO mono#11034
+    public procedure {ITypedCQUser.}UseNil(cq: CommandQueueNil);
     begin
       if has_next or last_added_nil then
       begin
@@ -5938,7 +5945,8 @@ type
         last_added_nil := true;
       end;
     end;
-    public procedure ITypedCQUser.Use<T>(cq: CommandQueue<T>);
+    //TODO mono#11034
+    public procedure {ITypedCQUser.}Use<T>(cq: CommandQueue<T>);
     begin
       if has_next then
       begin
@@ -7222,8 +7230,9 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    public function IWaitHandlerSub.HandleChildInc(data: integer) := self.IncState;
-    public procedure IWaitHandlerSub.HandleChildDec(data: integer) := self.DecState;
+    //TODO mono#11034
+    public function {IWaitHandlerSub.}HandleChildInc(data: integer) := self.IncState;
+    public procedure {IWaitHandlerSub.}HandleChildDec(data: integer) := self.DecState;
     
     protected function TryConsume: boolean; override;
     begin
@@ -7321,7 +7330,8 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
+    //TODO mono#11034
+    public function {IWaitHandlerSub.}HandleChildInc(data: integer): boolean;
     begin
       var new_done_c := Interlocked.Increment(done_c);
       
@@ -7331,7 +7341,8 @@ type
       
       Result := (new_done_c=sources.Length) and sub.HandleChildInc(sub_data);
     end;
-    public procedure IWaitHandlerSub.HandleChildDec(data: integer);
+    //TODO mono#11034
+    public procedure {IWaitHandlerSub.}HandleChildDec(data: integer);
     begin
       var prev_done_c := Interlocked.Decrement(done_c)+1;
       
@@ -7392,7 +7403,8 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
+    //TODO mono#11034
+    public function {IWaitHandlerSub.}HandleChildInc(data: integer): boolean;
     begin
       var new_done_c := Interlocked.Increment(done_c);
       
@@ -7402,7 +7414,8 @@ type
       
       Result := (new_done_c=sources.Length) and self.IncState;
     end;
-    public procedure IWaitHandlerSub.HandleChildDec(data: integer);
+    //TODO mono#11034
+    public procedure {IWaitHandlerSub.}HandleChildDec(data: integer);
     begin
       var prev_done_c := Interlocked.Decrement(done_c)+1;
       
@@ -7511,7 +7524,8 @@ type
     end;
     public constructor := raise new OpenCLABCInternalException;
     
-    public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
+    //TODO mono#11034
+    public function {IWaitHandlerSub.}HandleChildInc(data: integer): boolean;
     begin
       var new_done_c := Interlocked.Increment(done_c);
       
@@ -7521,7 +7535,8 @@ type
       
       Result := (new_done_c=1) and self.IncState;
     end;
-    public procedure IWaitHandlerSub.HandleChildDec(data: integer);
+    //TODO mono#11034
+    public procedure {IWaitHandlerSub.}HandleChildDec(data: integer);
     begin
       var prev_done_c := Interlocked.Decrement(done_c)+1;
       
