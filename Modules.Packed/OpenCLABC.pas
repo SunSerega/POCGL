@@ -380,6 +380,10 @@ unit OpenCLABC;
 // - #2607
 // - #2610
 
+//TODO Issue mono:
+//TODO https://github.com/mono/mono/issues/{id}
+// - #11034
+
 {$endregion Upstream bugs}
 
 interface
@@ -9531,9 +9535,11 @@ type
     
     public procedure InvokeActions(c: CLContext) := base.complition_delegate.Invoke(c);
     
-    public function IQueueRes.MakeWrapWithImpl(new_ev: EventList): IQueueRes := new QueueResNil(new_ev);
+    //TODO mono#11034
+    public function {IQueueRes.}MakeWrapWithImpl(new_ev: EventList): IQueueRes := new QueueResNil(new_ev);
     
-    public procedure IQueueRes.SetRes<TRes>(res: TRes) := exit;
+    //TODO mono#11034
+    public procedure {IQueueRes.}SetRes<TRes>(res: TRes) := exit;
     
   end;
   
@@ -10571,7 +10577,8 @@ type
       
     end;
     
-    public procedure ITypedCQUser.UseNil(cq: CommandQueueNil);
+    //TODO mono#11034
+    public procedure {ITypedCQUser.}UseNil(cq: CommandQueueNil);
     begin
       if has_next or last_added_nil then
       begin
@@ -10584,7 +10591,8 @@ type
         last_added_nil := true;
       end;
     end;
-    public procedure ITypedCQUser.Use<T>(cq: CommandQueue<T>);
+    //TODO mono#11034
+    public procedure {ITypedCQUser.}Use<T>(cq: CommandQueue<T>);
     begin
       if has_next then
       begin
@@ -14611,8 +14619,9 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    public function IWaitHandlerSub.HandleChildInc(data: integer) := self.IncState;
-    public procedure IWaitHandlerSub.HandleChildDec(data: integer) := self.DecState;
+    //TODO mono#11034
+    public function {IWaitHandlerSub.}HandleChildInc(data: integer) := self.IncState;
+    public procedure {IWaitHandlerSub.}HandleChildDec(data: integer) := self.DecState;
     
     protected function TryConsume: boolean; override;
     begin
@@ -14710,7 +14719,8 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
+    //TODO mono#11034
+    public function {IWaitHandlerSub.}HandleChildInc(data: integer): boolean;
     begin
       var new_done_c := Interlocked.Increment(done_c);
       
@@ -14720,7 +14730,8 @@ type
       
       Result := (new_done_c=sources.Length) and sub.HandleChildInc(sub_data);
     end;
-    public procedure IWaitHandlerSub.HandleChildDec(data: integer);
+    //TODO mono#11034
+    public procedure {IWaitHandlerSub.}HandleChildDec(data: integer);
     begin
       var prev_done_c := Interlocked.Decrement(done_c)+1;
       
@@ -14781,7 +14792,8 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
+    //TODO mono#11034
+    public function {IWaitHandlerSub.}HandleChildInc(data: integer): boolean;
     begin
       var new_done_c := Interlocked.Increment(done_c);
       
@@ -14791,7 +14803,8 @@ type
       
       Result := (new_done_c=sources.Length) and self.IncState;
     end;
-    public procedure IWaitHandlerSub.HandleChildDec(data: integer);
+    //TODO mono#11034
+    public procedure {IWaitHandlerSub.}HandleChildDec(data: integer);
     begin
       var prev_done_c := Interlocked.Decrement(done_c)+1;
       
@@ -14900,7 +14913,8 @@ type
     end;
     public constructor := raise new OpenCLABCInternalException;
     
-    public function IWaitHandlerSub.HandleChildInc(data: integer): boolean;
+    //TODO mono#11034
+    public function {IWaitHandlerSub.}HandleChildInc(data: integer): boolean;
     begin
       var new_done_c := Interlocked.Increment(done_c);
       
@@ -14910,7 +14924,8 @@ type
       
       Result := (new_done_c=1) and self.IncState;
     end;
-    public procedure IWaitHandlerSub.HandleChildDec(data: integer);
+    //TODO mono#11034
+    public procedure {IWaitHandlerSub.}HandleChildDec(data: integer);
     begin
       var prev_done_c := Interlocked.Decrement(done_c)+1;
       
@@ -35059,9 +35074,9 @@ type
   CLPlatformProperties = partial class(NtvPropertiesBase<cl_platform_id, PlatformInfo>)
     
     private static function clGetSize(ntv: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetPlatformInfo';
+    external 'OpenCL' name 'clGetPlatformInfo';
     private static function clGetVal(ntv: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetPlatformInfo';
+    external 'OpenCL' name 'clGetPlatformInfo';
     
     protected procedure GetSizeImpl(id: PlatformInfo; var sz: UIntPtr); override :=
     clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
@@ -35087,9 +35102,9 @@ type
   CLDeviceProperties = partial class(NtvPropertiesBase<cl_device_id, DeviceInfo>)
     
     private static function clGetSize(ntv: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetDeviceInfo';
+    external 'OpenCL' name 'clGetDeviceInfo';
     private static function clGetVal(ntv: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetDeviceInfo';
+    external 'OpenCL' name 'clGetDeviceInfo';
     
     protected procedure GetSizeImpl(id: DeviceInfo; var sz: UIntPtr); override :=
     clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
@@ -35201,9 +35216,9 @@ type
   CLSubDeviceProperties = partial class(CLDeviceProperties)
     
     private static function clGetSize(ntv: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetDeviceInfo';
+    external 'OpenCL' name 'clGetDeviceInfo';
     private static function clGetVal(ntv: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetDeviceInfo';
+    external 'OpenCL' name 'clGetDeviceInfo';
     
     protected procedure GetSizeImpl(id: DeviceInfo; var sz: UIntPtr); override :=
     clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
@@ -35223,9 +35238,9 @@ type
   CLContextProperties = partial class(NtvPropertiesBase<cl_context, ContextInfo>)
     
     private static function clGetSize(ntv: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetContextInfo';
+    external 'OpenCL' name 'clGetContextInfo';
     private static function clGetVal(ntv: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetContextInfo';
+    external 'OpenCL' name 'clGetContextInfo';
     
     protected procedure GetSizeImpl(id: ContextInfo; var sz: UIntPtr); override :=
     clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
@@ -35248,9 +35263,9 @@ type
   CLCodeProperties = partial class(NtvPropertiesBase<cl_program, ProgramInfo>)
     
     private static function clGetSize(ntv: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetProgramInfo';
+    external 'OpenCL' name 'clGetProgramInfo';
     private static function clGetVal(ntv: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetProgramInfo';
+    external 'OpenCL' name 'clGetProgramInfo';
     
     protected procedure GetSizeImpl(id: ProgramInfo; var sz: UIntPtr); override :=
     clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
@@ -35275,9 +35290,9 @@ type
   CLMemoryProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
     
     private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
+    external 'OpenCL' name 'clGetMemObjectInfo';
     private static function clGetVal(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
+    external 'OpenCL' name 'clGetMemObjectInfo';
     
     protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
     clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
@@ -35302,9 +35317,9 @@ type
   CLMemorySubSegmentProperties = partial class(CLMemoryProperties)
     
     private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
+    external 'OpenCL' name 'clGetMemObjectInfo';
     private static function clGetVal(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
+    external 'OpenCL' name 'clGetMemObjectInfo';
     
     protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
     clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
@@ -35325,9 +35340,9 @@ type
   CLValueProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
     
     private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
+    external 'OpenCL' name 'clGetMemObjectInfo';
     private static function clGetVal(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
+    external 'OpenCL' name 'clGetMemObjectInfo';
     
     protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
     clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
@@ -35352,9 +35367,9 @@ type
   CLArrayProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
     
     private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
+    external 'OpenCL' name 'clGetMemObjectInfo';
     private static function clGetVal(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
+    external 'OpenCL' name 'clGetMemObjectInfo';
     
     protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
     clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;

@@ -2853,7 +2853,7 @@ begin
     'glx':  Result := 'libGL.so.1';
     'gdi':  Result := 'gdi32.dll';
     
-    'cl':   Result := 'opencl';
+    'cl':   Result := 'OpenCL';
     
     else raise new System.NotSupportedException(api);
   end;

@@ -202,7 +202,7 @@ begin
       m += info_t;
       m += '; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;'#10;
       
-      m += '    external ''opencl.dll'' name ''';
+      m += '    external ''OpenCL'' name ''';
       m += ntv_proc_name;
       m += ''';'#10;
       
@@ -212,7 +212,7 @@ begin
       m += info_t;
       m += '; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;'#10;
       
-      m += '    external ''opencl.dll'' name ''';
+      m += '    external ''OpenCL'' name ''';
       m += ntv_proc_name;
       m += ''';'#10;
       
