@@ -1,0 +1,102 @@
+﻿
+
+
+# Vec2b (TypeComboName[2x1 of SByte (b)])
+
+# Vec2d (TypeComboName[2x1 of double (d)])
+
+# Vec2f (TypeComboName[2x1 of single (f)])
+
+# Vec2i (TypeComboName[2x1 of Int32 (i)])
+
+# Vec2i64 (TypeComboName[2x1 of Int64 (i64)])
+
+# Vec2s (TypeComboName[2x1 of Int16 (s)])
+
+# Vec2ui (TypeComboName[2x1 of UInt32 (ui)])
+
+# Vec2ui64 (TypeComboName[2x1 of UInt64 (ui64)])
+
+# Vec3b (TypeComboName[3x1 of SByte (b)])
+
+# Vec3d (TypeComboName[3x1 of double (d)])
+
+# Vec3f (TypeComboName[3x1 of single (f)])
+
+# Vec3i (TypeComboName[3x1 of Int32 (i)])
+
+# Vec3i64 (TypeComboName[3x1 of Int64 (i64)])
+
+# Vec3s (TypeComboName[3x1 of Int16 (s)])
+
+# Vec3ub (TypeComboName[3x1 of Byte (ub)])
+
+# Vec3ui (TypeComboName[3x1 of UInt32 (ui)])
+
+# Vec3ui64 (TypeComboName[3x1 of UInt64 (ui64)])
+
+# Vec3us (TypeComboName[3x1 of UInt16 (us)])
+
+# Vec4b (TypeComboName[4x1 of SByte (b)])
+
+# Vec4d (TypeComboName[4x1 of double (d)])
+
+# Vec4f (TypeComboName[4x1 of single (f)])
+
+# Vec4i (TypeComboName[4x1 of Int32 (i)])
+
+# Vec4i64 (TypeComboName[4x1 of Int64 (i64)])
+
+# Vec4s (TypeComboName[4x1 of Int16 (s)])
+
+# Vec4ub (TypeComboName[4x1 of Byte (ub)])
+
+# Vec4ui (TypeComboName[4x1 of UInt32 (ui)])
+
+# Vec4ui64 (TypeComboName[4x1 of UInt64 (ui64)])
+
+# Vec4us (TypeComboName[4x1 of UInt16 (us)])
+
+# Vec5f (TypeComboName[5x1 of single (f)])
+
+# Vec5i (TypeComboName[5x1 of Int32 (i)])
+
+# Vec5s (TypeComboName[5x1 of Int16 (s)])
+
+# Mtr2d (TypeComboName[2x2 of double (d)])
+
+# Mtr2f (TypeComboName[2x2 of single (f)])
+
+# Mtr2x3d (TypeComboName[2x3 of double (d)])
+
+# Mtr2x3f (TypeComboName[2x3 of single (f)])
+
+# Mtr2x4d (TypeComboName[2x4 of double (d)])
+
+# Mtr2x4f (TypeComboName[2x4 of single (f)])
+
+# Mtr3x2d (TypeComboName[3x2 of double (d)])
+
+# Mtr3x2f (TypeComboName[3x2 of single (f)])
+
+# Mtr3d (TypeComboName[3x3 of double (d)])
+
+# Mtr3f (TypeComboName[3x3 of single (f)])
+
+# Mtr3x4d (TypeComboName[3x4 of double (d)])
+
+# Mtr3x4f (TypeComboName[3x4 of single (f)])
+
+# Mtr4x2d (TypeComboName[4x2 of double (d)])
+
+# Mtr4x2f (TypeComboName[4x2 of single (f)])
+
+# Mtr4x3d (TypeComboName[4x3 of double (d)])
+
+# Mtr4x3f (TypeComboName[4x3 of single (f)])
+
+# Mtr4d (TypeComboName[4x4 of double (d)])
+
+# Mtr4f (TypeComboName[4x4 of single (f)])
+
+

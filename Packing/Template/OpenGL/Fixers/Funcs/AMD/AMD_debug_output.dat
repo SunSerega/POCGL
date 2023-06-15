@@ -1,9 +1,0 @@
-﻿
-
-
-# glGetDebugMessageLogAMD
-!limit_ovrs
- *	| *	| *	| var DummyEnum			| var DebugSeverity			| var UInt32		| var Int32			| *	|
- *	| *	| *	| IntPtr				| IntPtr					| IntPtr			| IntPtr			| *	|
-
-

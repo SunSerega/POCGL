@@ -1,0 +1,12 @@
+﻿
+
+
+# gl::Tex[%,ture%]Parameteri
+!possible_par_types
+ *	| *	| +gl::ConvolutionBorderMode	|
+ 
+# gl::TextureParameteri+EXT
+!possible_par_types
+ *	| *	| *	| +gl::ConvolutionBorderMode	|
+
+

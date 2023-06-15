@@ -1,0 +1,102 @@
+﻿
+
+
+# x_color_map (x::color_map) : IntPtr
+
+# x_direct_memory_buffer (x::direct_memory_buffer) : IntPtr
+
+# x_direct_memory_params (x::direct_memory_params) : IntPtr
+
+# x_display_ptr (x::display_ptr) : IntPtr
+
+# x_font (x::font) : IntPtr
+
+# x_pixel_map (x::pixel_map) : IntPtr
+
+# x_visual_info_ptr (x::visual_info_ptr) : IntPtr
+
+# x_window (x::window) : IntPtr
+
+# gl_buffer (gl::buffer) : UInt32
+
+# gl_display_list (gl::display list) : UInt32
+
+# gl_fixed (gl::fixed) : UInt32
+
+# gl_framebuffer (gl::framebuffer) : UInt32
+
+# gl_half (gl::half) : UInt16
+
+# gl_perf_query_handle (gl::perf query handle) : UInt32
+
+# gl_perf_query_id (gl::perf query id) : UInt32
+
+# gl_program (gl::program) : UInt32
+
+# gl_program_pipeline (gl::program pipeline) : UInt32
+
+# gl_query (gl::query) : UInt32
+
+# gl_renderbuffer (gl::renderbuffer) : UInt32
+
+# gl_sampler (gl::sampler) : UInt32
+
+# gl_shader (gl::shader) : UInt32
+
+# gl_sync (gl::sync) : IntPtr
+
+# gl_texture (gl::texture) : UInt32
+
+# gl_transform_feedback (gl::transform feedback) : UInt32
+
+# gl_vdpau_surface (gl::vdpau_surface) : IntPtr
+
+# gl_vertex_array (gl::vertex array) : UInt32
+
+# gl_handle_ARB (gl::handle + ARB) : UInt32
+
+# gdi_device_context (gdi::device_context) : IntPtr
+
+# gdi_enhanced_metafile_handle (gdi::enhanced_metafile_handle) : IntPtr
+
+# gdi_rendering_context (gdi::rendering_context) : IntPtr
+
+# glx_context (glx::context) : IntPtr
+
+# glx_context_id (glx::context_id) : IntPtr
+
+# glx_drawable (glx::drawable) : IntPtr
+
+# glx_frame_buffer_config (glx::frame_buffer_config) : IntPtr
+
+# glx_pixel_buffer (glx::pixel_buffer) : IntPtr
+
+# glx_pixel_map (glx::pixel_map) : IntPtr
+
+# glx_vl_node (glx::vl_node) : IntPtr
+
+# glx_vl_path (glx::vl_path) : IntPtr
+
+# glx_vl_server (glx::vl_server) : IntPtr
+
+# glx_window (glx::window) : IntPtr
+
+# glx_video_capture_device_NV (glx::video_capture_device + NV) : IntPtr
+
+# glx_video_device_NV (glx::video_device + NV) : UInt32
+
+# glx_video_source_SGIX (glx::video_source + SGIX) : IntPtr
+
+# wgl_pixel_buffer (wgl::pixel_buffer) : IntPtr
+
+# wgl_gpu_NV (wgl::gpu + NV) : IntPtr
+
+# wgl_gpu_device_NV (wgl::gpu_device + NV) : IntPtr
+
+# wgl_video_device_NV (wgl::video_device + NV) : IntPtr
+
+# wgl_video_input_device_handle_NV (wgl::video_input_device_handle + NV) : IntPtr
+
+# wgl_video_output_device_handle_NV (wgl::video_output_device_handle + NV) : IntPtr
+
+

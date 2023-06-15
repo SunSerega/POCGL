@@ -1,0 +1,46 @@
+﻿
+
+
+# glDebugProc (gl::DebugProc)
+	procedure
+	source: DummyEnum
+	type: DummyEnum
+	id: UInt32
+	severity: DummyEnum
+	length: Int32
+	message: string
+	userParam: IntPtr
+
+# glDebugProcAMD (gl::DebugProc + AMD)
+	procedure
+	id: UInt32
+	category: DummyEnum
+	severity: DummyEnum
+	length: Int32
+	message: string
+	userParam: IntPtr
+
+# glDebugProcARB (gl::DebugProc + ARB)
+	procedure
+	source: DummyEnum
+	type: DummyEnum
+	id: UInt32
+	severity: DummyEnum
+	length: Int32
+	message: string
+	userParam: IntPtr
+
+# glDebugProcKHR (gl::DebugProc + KHR)
+	procedure
+	source: DummyEnum
+	type: DummyEnum
+	id: UInt32
+	severity: DummyEnum
+	length: Int32
+	message: string
+	userParam: IntPtr
+
+# glVulkanProcNV (gl::VulkanProc + NV)
+	procedure
+
+

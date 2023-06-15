@@ -1,0 +1,115 @@
+﻿Loading VendorSuffix items
+Loading VendorSuffix fixers canceled: No folder
+Loading Enum items
+Loading Enum fixers canceled: No folder
+Loading LoadedBasicType items
+Loading LoadedBasicType fixers canceled: No folder
+Loading Group items
+Loading Group fixers
+Loading IdClass items
+Loading IdClass fixers
+Loading Struct items
+Loading Struct fixers
+Loading Delegate items
+Loading Delegate fixers
+Loading Func items
+Loading Func fixers
+WARNING: Func [cl::CreateBuffer] fixer comments
+WARNING: Func [cl::CreateAccelerator+INTEL] fixer comments
+Loading Feature items
+Loading Feature fixers canceled: No folder
+Loading Extension items
+Loading Extension fixers canceled: No folder
+Fixing Group items
+Fixing IdClass items
+Fixing Delegate items
+Fixing Func items
+Dumping Feature items
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_WORK_GROUP_SIZE]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_MAX_WORK_GROUP_SIZE + AMD]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_CONSTANT_BUFFER_SIZE]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PCIE_ID]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PROFILING_TIMER_OFFSET]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_TOPOLOGY]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_BOARD_NAME]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_FREE_MEMORY]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_SIMD_PER_COMPUTE_UNIT]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_SIMD_WIDTH]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_SIMD_INSTRUCTION_WIDTH]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_WAVEFRONT_WIDTH]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_MEM_CHANNELS]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_MEM_CHANNEL_BANKS]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_MEM_CHANNEL_BANK_WIDTH]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_LOCAL_MEM_SIZE_PER_COMPUTE_UNIT]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_LOCAL_MEM_BANKS]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_THREAD_TRACE_SUPPORTED]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GFXIP_MAJOR]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GFXIP_MINOR]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_AVAILABLE_ASYNC_QUEUES]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_EXT_MEM_PADDING_IN_BYTES]
+WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PAGE_SIZE]
+WARNING: 18>12 overloads of non-fixed Func [cl::CompileProgram]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueFillBuffer]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMapImage]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMigrateMemObjects]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueNativeKernel]
+WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueNDRangeKernel]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReadBuffer]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMFree]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMemFill]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMigrateMem]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueWriteBuffer]
+WARNING: 180>12 overloads of non-fixed Func [cl::GetDeviceInfo]
+WARNING: 20>12 overloads of non-fixed Func [cl::GetImageInfo]
+WARNING: 27>12 overloads of non-fixed Func [cl::GetMemObjectInfo]
+WARNING: 17>12 overloads of non-fixed Func [cl::GetPlatformInfo]
+WARNING: 17>12 overloads of non-fixed Func [cl::GetProgramInfo]
+Dumping Extension items
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMFree + ARM]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMemFill + ARM]
+WARNING: 27>12 overloads of non-fixed Func [cl::GetImageRequirementsInfo + EXT]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMigrateMemObject + EXT]
+WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueGenerateMipmap + IMG]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGrallocObjects + IMG]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGrallocObjects + IMG]
+WARNING: Func [cl::GetAcceleratorInfo + INTEL] could not generate overload: no output type info for Group [cl::AcceleratorInfo] Enum [cl::ACCELERATOR_DESCRIPTOR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireDX9Objects + INTEL]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseDX9Objects + INTEL]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireVA_APIMediaSurfaces + INTEL]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseVA_APIMediaSurfaces + INTEL]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueCommandBuffer + KHR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireD3D10Objects + KHR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseD3D10Objects + KHR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireD3D11Objects + KHR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseD3D11Objects + KHR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireDX9MediaSurfaces + KHR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseDX9MediaSurfaces + KHR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireEGLObjects + KHR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseEGLObjects + KHR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireExternalMemObjects + KHR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseExternalMemObjects + KHR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGLObjects]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGLObjects]
+WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueWaitSemaphores + KHR]
+WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueSignalSemaphores + KHR]
+Logging PascalBasicType items
+Logging TypeCombo items
+Logging Group items
+Logging IdClass items
+Logging Struct items
+Logging Delegate items
+Dumping PascalBasicType items
+Dumping TypeCombo items
+Dumping Group items
+Dumping IdClass items
+Dumping Struct items
+Dumping Delegate items
+PascalBasicType: Packed 11 items
+Group: Packed 111 items
+IdClass: Packed 28 items
+Struct: Packed 17 items
+Delegate: Packed 7 items
+Func: Packed 237 items
+Feature: Packed 1 items
+Extension: Packed 102 items
+Cleanup

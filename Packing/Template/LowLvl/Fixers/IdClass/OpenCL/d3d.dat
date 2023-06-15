@@ -1,0 +1,18 @@
+
+
+
+# d3d::surface9
+# d3d10::buffer
+# d3d11::buffer
+# d3d10::texture_2d
+# d3d11::texture_2d
+# d3d10::texture_3d
+# d3d11::texture_3d
+!add
+IntPtr
+
+# d3d::pixel_format
+!add
+UInt32
+
+

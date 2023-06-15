@@ -1,0 +1,42 @@
+﻿Enum "gl::FALSE + /core\" was in SpecialNumbers
+Enum "gl::NO_ERROR + /core\" was in SpecialNumbers
+Enum "gl::ZERO + /core\" was in SpecialNumbers
+Enum "gl::NONE + /core\" was in SpecialNumbers
+Enum "gl::NONE + OES" was in SpecialNumbers
+Enum "gl::TRUE + /core\" was in SpecialNumbers
+Enum "gl::ONE + /core\" was in SpecialNumbers
+Enum "gl::INVALID_INDEX + /core\" was in SpecialNumbers
+Enum "gl::ALL_PIXELS + AMD" was in SpecialNumbers
+Enum "gl::TIMEOUT_IGNORED + /core\" was in SpecialNumbers
+Enum "gl::TIMEOUT_IGNORED + APPLE" was in SpecialNumbers
+Enum "gl::VERSION_ES_CL_1_0 + /core\" was in SpecialNumbers
+Enum "gl::VERSION_ES_CM_1_1 + /core\" was in SpecialNumbers
+Enum "gl::VERSION_ES_CL_1_1 + /core\" was in SpecialNumbers
+Enum "gl::UUID_SIZE + EXT" was in SpecialNumbers
+Enum "gl::LUID_SIZE + EXT" was in SpecialNumbers
+ParData with type [const GLXContext]: const in lvl0
+Group [gl::SyncBehaviorFlags + /core\] had no non-zero enums
+Kind [Coord] was not utilised
+Kind [Clamped[0; 1]] was not utilised
+Kind [BufferOffset] was not utilised
+Kind [BufferSize] was not utilised
+Kind [Binormal] was not utilised
+Kind [Color] was not utilised
+Kind [Clamped[-1; 1]] was not utilised
+Kind [DrawBufferIndex] was not utilised
+Kind [ColorIndexValue] was not utilised
+Kind [StencilValue] was not utilised
+Kind [Normal] was not utilised
+Kind [Range[0; x]] was not utilised
+Kind [Zero] was not utilised
+Kind [CompressedTextureARB] was not utilised
+Kind [WinCoord] was not utilised
+Kind [Range[1; x]] was not utilised
+Kind [FeedbackElement] was not utilised
+Kind [NDCCoord] was not utilised
+Kind [ColorIndexMask] was not utilised
+Kind [StencilMask] was not utilised
+Kind [Clamped[0; 65536]] was not utilised
+Kind [SelectName] was not utilised
+Kind [Tangent] was not utilised
+No Struct to save

@@ -1,0 +1,12 @@
+
+
+
+# va::surface_id
+!add
+IntPtr
+
+# va::image_format
+!add
+UInt32
+
+

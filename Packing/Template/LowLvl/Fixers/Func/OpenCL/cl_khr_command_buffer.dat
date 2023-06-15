@@ -1,0 +1,47 @@
+﻿
+
+
+# cl::CommandCopyBufferRect+KHR
+!possible_par_types
+ *	| *	| *	| *	| *	| -array of UIntPtr	| -array of UIntPtr	| -array of UIntPtr	| *	| *	| *	| *	| *	| -array of UInt32	| -array of UInt32 -IntPtr	| -array of cl::mutable_command	|
+!limit_ovrs
+ *	| *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *	| *	| *	| *	| *					| *							| *								|
+ *	| *	| *	| *	| *	| IntPtr			| IntPtr			| IntPtr			| *	| *	| *	| *	| *	| *					| *							| *								|
+
+# cl::CommandCopyImage+KHR
+!possible_par_types
+ *	| *	| *	| *	| *	| -array of UIntPtr	| -array of UIntPtr	| -array of UIntPtr	| *	| -array of UInt32	| -array of UInt32 -IntPtr	| -array of cl::mutable_command	|
+!limit_ovrs
+ *	| *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *					| *							| *								|
+ *	| *	| *	| *	| *	| IntPtr			| IntPtr			| IntPtr			| *	| *					| *							| *								|
+
+# cl::CommandCopyBufferToImage+KHR
+!possible_par_types
+ *	| *	| *	| *	| *	| *	| -array of UIntPtr	| -array of UIntPtr	| *	| -array of UInt32	| -array of UInt32 -IntPtr	| -array of cl::mutable_command	|
+!limit_ovrs
+ *	| *	| *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *	| *					| *							| *								|
+ *	| *	| *	| *	| *	| *	| IntPtr			| IntPtr			| *	| *					| *							| *								|
+
+# cl::CommandCopyImageToBuffer+KHR
+!possible_par_types
+ *	| *	| *	| *	| *	| -array of UIntPtr	| -array of UIntPtr	| *	| *	| -array of UInt32	| -array of UInt32 -IntPtr	| -array of cl::mutable_command	|
+!limit_ovrs
+ *	| *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *	| *	| *					| *							| *								|
+ *	| *	| *	| *	| *	| IntPtr			| IntPtr			| *	| *	| *					| *							| *								|
+
+
+
+# cl::CommandFillImage+KHR
+!possible_par_types
+ *	| *	| *	| *	| +var T	| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| -array of UInt32	| -array of UInt32 -IntPtr	| -array of cl::mutable_command	|
+
+
+
+# cl::CommandNDRangeKernel+KHR
+!possible_par_types
+ *	| *	| *	| -array of cl::NDRangeKernelCommandProperties	| *	| *	| -array of UIntPtr	| -array of UIntPtr	| -array of UIntPtr	| *	| -array of UInt32	| -array of UInt32 -IntPtr	| -array of cl::mutable_command	|
+!limit_ovrs
+ *	| *	| *	| var cl::NDRangeKernelCommandProperties		| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *					| *							| *								|
+ *	| *	| *	| IntPtr										| *	| *	| IntPtr			| IntPtr			| IntPtr			| *	| *					| *							| *								|
+
+

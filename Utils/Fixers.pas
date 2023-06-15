@@ -105,7 +105,7 @@ type
 //        Println;
 //      end;
     end;
-    public static function ReadBlocks(lines: sequence of string; power_sign: string; concat_blocks: boolean) :=
+    public static function ReadBlocks(lines: sequence of string; power_sign: string; concat_blocks: boolean): sequence of (string,array of string) :=
     ReadBlockTemplates(lines, power_sign, concat_blocks)
     .SelectMany(\(names,lines)->names.SelectMany(name->
     begin
@@ -127,65 +127,120 @@ type
     
   end;
   
-  Fixer<TFixer, TFixable> = abstract class
-  where TFixer: Fixer<TFixer, TFixable>;
-    protected name: string;
-    protected used: boolean;
+  Fixer<TSelf, TFixable, TName> = abstract class
+  where TSelf: Fixer<TSelf, TFixable, TName>;
+//  where TFixable: class; //TODO #2736
+  where TName: System.IEquatable<TName>;
+    private _name: TName;
+    private used: boolean;
     
-    private static all := new Dictionary<string, List<TFixer>>;
-    private static function GetItem(name: string): List<TFixer>;
+    private static adders := new List<TSelf>;
+    private static all := new Dictionary<TName, List<TSelf>>;
+    
+    private static GetFixableName: TFixable->TName;
+    protected static procedure RegisterFixableNameExtractor(f: TFixable->TName);
+    begin
+      if GetFixableName<>nil then
+        raise new System.InvalidOperationException;
+      GetFixableName := f;
+    end;
+    private static MakeNewFixable: TSelf->TFixable;
+    protected static procedure RegisterPreAdder(f: TSelf->TFixable);
+    begin
+      if MakeNewFixable<>nil then
+        raise new System.InvalidOperationException;
+      MakeNewFixable := f;
+    end;
+    
+    static constructor;
+    begin
+      if not typeof(TFixable).IsClass then
+        raise new System.NotSupportedException;
+      foreach var t in SeqWhile(typeof(TSelf), t->t.BaseType, t->t<>nil).Reverse do
+        System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(t.TypeHandle);
+    end;
+    
+    protected constructor(name: TName; is_adder: boolean);
+    begin
+      self._name := name;
+      
+      var typed_self := TSelf(self);
+      if is_adder then
+        adders += typed_self else
+        ByName[name].Add(typed_self);
+      
+    end;
+    
+    public property Name: TName read _name;
+    
+    private static function GetByName(name: TName): List<TSelf>;
     begin
       if not all.TryGetValue(name, Result) then
       begin
-        Result := new List<TFixer>;
+        Result := new List<TSelf>;
         all[name] := Result;
       end;
     end;
-    public static property Item[name: string]: List<TFixer> read GetItem; default;
+    private static property ByName[name: TName]: List<TSelf> read GetByName;
     
-    private static adders := new List<TFixer>;
-    protected procedure RegisterAsAdder := adders.Add( TFixer(self) );
+    public static property AnyExist: boolean read adders.Any or all.Any;
     
-    protected static GetFixableName: TFixable->string;
-    protected static MakeNewFixable: TFixer->TFixable;
+    protected procedure ReportUsed := self.used := true;
     
-    protected constructor(name: string);
-    begin
-      self.name := name;
-      if name=nil then exit;
-      Item[name].Add( TFixer(self) );
-    end;
-    
-    protected function ApplyOrderBase; virtual := 0;
+    protected function ApplyOrderBase: integer; virtual := 0;
     /// Return "True" if "o" needs to be deleted
     protected function Apply(o: TFixable): boolean; abstract;
-    public static procedure ApplyAll(lst: List<TFixable>);
+    public static procedure ApplyAll(ensure_add_cap: integer->(); add: TFixable->(); remove_where: Func<TFixable,boolean>->());
     begin
-      lst.Capacity := lst.Count + adders.Count;
+      if ensure_add_cap<>nil then
+        ensure_add_cap(adders.Count);
       
+      if (adders.Count<>0) and (MakeNewFixable=nil) then
+        raise new System.NotImplementedException;
       foreach var a in adders do
-        lst += MakeNewFixable(a);
-      
-      for var i := lst.Count-1 downto 0 do
       begin
-        var o := lst[i];
-        foreach var f in Item[GetFixableName(o)].OrderBy(f->f.ApplyOrderBase) do
-          if f.Apply(o) then
-            lst.RemoveAt(i);
+        var item := MakeNewFixable(a);
+        if add<>nil then add( item );
       end;
       
+      if GetFixableName=nil then
+        raise new System.NotImplementedException;
+      remove_where(o->
+      begin
+        var fixers: List<TSelf>;
+        // Do not create lists if there are no fixers
+        if not all.TryGetValue(GetFixableName(o), fixers) then exit;
+        
+        Result := false;
+        foreach var f in fixers.OrderBy(f->f.ApplyOrderBase) do
+          if f.Apply(o) then
+          begin
+            Result := true;
+            break;
+          end;
+        
+      end);
+      
+      WarnAllUnused;
+    end;
+    public static procedure ApplyAll(lst: List<TFixable>);
+    begin
+      ApplyAll(
+        add_cap->(lst.Capacity := lst.Count+add_cap),
+        lst.Add, pred->lst.RemoveAll(pred)
+      );
       lst.TrimExcess;
     end;
     
-    protected procedure WarnUnused(all_unused_for_name: List<TFixer>); abstract;
-    public static procedure WarnAllUnused :=
-    foreach var l in all.Values do
-    begin
-      var unused := l.ToList;
-      unused.RemoveAll(f->f.used);
-      if unused.Count=0 then continue;
-      unused[0].WarnUnused(unused);
-    end;
+    protected procedure WarnUnused(all_unused_for_name: List<TSelf>); abstract;
+    private static procedure WarnAllUnused :=
+      foreach var l in all.Values do
+      begin
+        var unused := l.ToList;
+        unused.RemoveAll(f->f.used);
+        if unused.Count=0 then continue;
+        unused[0].WarnUnused(unused);
+      end;
     
   end;
   

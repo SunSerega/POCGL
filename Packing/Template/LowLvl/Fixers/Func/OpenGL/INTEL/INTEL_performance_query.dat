@@ -1,0 +1,18 @@
+﻿
+
+
+# gl::GetPerfQueryIdByName+INTEL
+!possible_par_types
+ +string	| *	|
+
+# gl::GetPerfQueryInfo+INTEL
+!limit_ovrs
+ *	| *	| *	| var UInt32	| var UInt32	| var UInt32	| var gl::PerformanceQueryCapsMask	|
+ *	| *	| *	| IntPtr		| IntPtr		| IntPtr		| IntPtr							|
+
+# gl::GetPerfCounterInfo+INTEL
+!limit_ovrs
+ *	| *	| *	| *	| *	| *	| var UInt32	| var UInt32	| var UInt32	| var UInt32	| var UInt64	|
+ *	| *	| *	| *	| *	| *	| IntPtr		| IntPtr		| IntPtr		| IntPtr		| IntPtr		|
+
+

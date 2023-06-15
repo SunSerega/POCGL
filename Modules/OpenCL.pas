@@ -13,6 +13,8 @@
 ///
 unit OpenCL;
 
+{$zerobasedstrings}
+
 interface
 
 uses System;

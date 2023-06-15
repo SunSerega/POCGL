@@ -1,0 +1,12 @@
+﻿Enum [cl::COMMAND_ACQUIRE_D3D9_OBJECTS] was not referenced
+Enum [cl::COMMAND_RELEASE_D3D9_OBJECTS] was not referenced
+Enum [cl::DEVICE_MAX_HOST_READ_PIPES] was not referenced
+Enum [cl::DEVICE_MAX_HOST_WRITE_PIPES] was not referenced
+Enum [cl::KERNEL_ARG_HOST_ACCESSIBLE_PIPE] was not referenced
+Enum [cl::PIPE_EMPTY] was not referenced
+Enum [cl::PIPE_FULL] was not referenced
+LoadedBasicType [double] was not referenced
+LoadedBasicType [int16_t] was not referenced
+LoadedBasicType [int64_t] was not referenced
+LoadedBasicType [int8_t] was not referenced
+LoadedBasicType [uint16_t] was not referenced

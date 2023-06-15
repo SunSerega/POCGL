@@ -1,0 +1,167 @@
+﻿
+
+
+# cl::CreateSubDevices
+# cl::CreateSubDevices+EXT
+!possible_par_types
+ *	| *	| *	| *	| -array of cl::device_id	| *	|
+
+
+
+# cl::CreateBuffer
+!possible_par_types
+ *	| *	| *	| *	| +array of T +var T	| *	|
+
+# cl::CreateSubBuffer
+!possible_par_types
+ *	| *	| *	| *	| +var cl::buffer_region	| *	|
+
+# cl::Enqueue[%Read,Write%]Buffer
+!possible_par_types
+ *	| *	| *	| *	| *	| *	| +array of T +var T	| *	| *	| *	|
+
+# cl::Enqueue[%Read,Write%]BufferRect
+!possible_par_types
+ *	| *	| *	| *	| -array of UIntPtr -IntPtr | -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| *	| *	| +var T	| *	| *	| *	|
+
+# cl::EnqueueCopyBufferRect
+!possible_par_types
+ *	| *	| *	| *	| -IntPtr			| -IntPtr			| -IntPtr			| *	| *	| *	| *	| *	| *	| *	|
+!limit_ovrs
+ *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| array of UIntPtr	| *	| *	| *	| *	| *	| *	| *	|
+ *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *	| *	| *	| *	| *	| *	|
+
+# cl::EnqueueFillBuffer
+!possible_par_types
+ *	| *	| *	| +array of T +var T	| *	| *	| *	| *	| *	| *	|
+
+# cl::EnqueueMapBuffer
+
+# cl::CreateImage
+!possible_par_types
+ *	| *	| *	| -array of cl::image_format -IntPtr	| -array of cl::image_desc -IntPtr	| +array of T +var T	| *	|
+
+# cl::CreateImageWithProperties
+!possible_par_types
+ *	| *	| *	| *	| -array of cl::image_format -IntPtr	| -array of cl::image_desc -IntPtr	| +array of T +var T	| *	|
+
+# cl::CreateImage2D
+!possible_par_types
+ *	| *	| *	| -array of cl::image_format -IntPtr	| *	| *	| *	| *	| *	|
+
+# cl::CreateImage3D
+!possible_par_types
+ *	| *	| *	| -array of cl::image_format -IntPtr	| *	| *	| *	| *	| *	| *	| *	|
+
+# cl::Enqueue[%Read,Write%]Image
+!possible_par_types
+ *	| *	| *	| *	| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	| +var T	| *	| *	| *	|
+
+# cl::EnqueueFillImage
+!possible_par_types
+ *	| *	| *	| +var T	| -array of UIntPtr -IntPtr | -array of UIntPtr -IntPtr	| *	| *	| *	|
+
+# cl::EnqueueCopyImage
+!possible_par_types
+ *	| *	| *	| *	| -IntPtr			| -IntPtr			| -IntPtr			| *	| *	| *	|
+!limit_ovrs
+ *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| array of UIntPtr	| *	| *	| *	|
+ *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| var UIntPtr		| *	| *	| *	|
+
+# cl::EnqueueCopyImageToBuffer
+!possible_par_types
+ *	| *	| *	| *	| -IntPtr			| -IntPtr			| *	| *	| *	| *	|
+!limit_ovrs
+ *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| *	| *	| *	| *	|
+ *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *	| *	| *	| *	|
+
+# cl::EnqueueCopyBufferToImage
+!possible_par_types
+ *	| *	| *	| *	| *	| -IntPtr			| -IntPtr			| *	| *	| *	|
+!limit_ovrs
+ *	| *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| *	| *	| *	|
+ *	| *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *	| *	| *	|
+
+# cl::EnqueueMapImage
+!possible_par_types
+ *	| *	| *	| *	| *	| *					| *					| -array of UIntPtr -IntPtr	| -array of UIntPtr -IntPtr	| *	| *	|*	| *	|
+!limit_ovrs
+ *	| *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| *							| *							| *	| *	| *	| *	|
+ *	| *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *							| *							| *	| *	| *	| *	|
+ *	| *	| *	| *	| *	| IntPtr			| IntPtr			| *							| *							| *	| *	| *	| *	|
+
+# cl::CreatePipe
+!possible_par_types
+ *	| *	| *	| *	| *	| -array of IntPtr -var IntPtr	| *	|
+
+# cl::EnqueueSVMMemFill
+# cl::EnqueueSVMMemFill+ARM
+!possible_par_types
+ *	| *	| *	| +array of T +var T	| *	| *	| *	| *	| *	|
+
+# cl::EnqueueSVMMigrateMem
+!limit_ovrs
+ *	| *	| *	| array of IntPtr	| array of UIntPtr	| *	| *	| *	| *	|
+ *	| *	| *	| var IntPtr		| var UIntPtr		| *	| *	| *	| *	|
+ *	| *	| *	| pointer			| IntPtr			| *	| *	| *	| *	|
+
+# cl::CreateProgramWithSource
+
+# cl::CreateProgramWithIL
+# cl::CreateProgramWithIL+KHR
+!possible_par_types
+ *	| *	| +array of Byte +var Byte	| *	| *	|
+
+# cl::CreateProgramWithBinary
+!possible_par_types
+ *	| *	| *	| *							| *					| *							| *							| +IntPtr			|
+!limit_ovrs
+ *	| *	| *	| *							| *					| *							| array of cl::ErrorCode	| var cl::ErrorCode	|
+ *	| *	| *	| *							| *					| *							| array of cl::ErrorCode	| IntPtr			|
+ *	| *	| *	| *							| *					| *							| var cl::ErrorCode			| var cl::ErrorCode	|
+ *	| *	| *	| *							| *					| *							| var cl::ErrorCode			| IntPtr			|
+ *	| *	| *	| *							| *					| *							| IntPtr					| var cl::ErrorCode	|
+!limit_ovrs
+ *	| *	| *	| array of cl::device_id	| array of UIntPtr	| array of array of Byte	| *							| *					|
+ *	| *	| *	| var cl::device_id			| var UIntPtr		| var IntPtr				| *							| *					|
+ *	| *	| *	| IntPtr					| IntPtr			| pointer					| *							| *					|
+
+# cl::SetProgramSpecializationConstant
+!possible_par_types
+ *	| *	| *	| *	| +array of T +var T	|
+
+
+
+# cl::CreateKernelsInProgram
+!possible_par_types
+ *	| *	| *	| -array of cl::kernel	| *	|
+
+# cl::SetKernelArg
+!possible_par_types
+ *	| *	| *	| *	| +var T	|
+
+# cl::EnqueueNDRangeKernel
+!possible_par_types
+ *	| *	| *	| *	| *					| -IntPtr			| *					| *	| *	| *	|
+!limit_ovrs
+ *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| *					| *	| *	| *	|
+ *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *					| *	| *	| *	|
+ *	| *	| *	| *	| IntPtr			| var UIntPtr		| *					| *	| *	| *	|
+!limit_ovrs
+ *	| *	| *	| *	| *					| array of UIntPtr	| array of UIntPtr	| *	| *	| *	|
+ *	| *	| *	| *	| *					| var UIntPtr		| var UIntPtr		| *	| *	| *	|
+ *	| *	| *	| *	| *					| var UIntPtr		| IntPtr			| *	| *	| *	|
+
+# cl::EnqueueNativeKernel
+!limit_ovrs
+ *	| *	| *	| *	| *	| *	| array of cl::mem	| array of IntPtr	| *	| *	| *	|
+ *	| *	| *	| *	| *	| *	| var cl::mem		| var IntPtr		| *	| *	| *	|
+ *	| *	| *	| *	| *	| *	| IntPtr			| pointer			| *	| *	| *	|
+
+
+
+# cl::EnqueueMarkerWithWaitList
+!possible_par_types
+ *	| *	| *	| *	| -IntPtr	|
+
+

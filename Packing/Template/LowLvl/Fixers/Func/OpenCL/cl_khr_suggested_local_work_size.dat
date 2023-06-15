@@ -1,0 +1,12 @@
+﻿
+
+
+# cl::GetKernelSuggestedLocalWorkSize+KHR
+!limit_ovrs
+ *	| *	| *	| *	| array of UIntPtr	| array of UIntPtr	| *	|
+ *	| *	| *	| *	| var UIntPtr		| var UIntPtr		| *	|
+ *	| *	| *	| *	| var UIntPtr		| IntPtr			| *	|
+ *	| *	| *	| *	| IntPtr			| var UIntPtr		| *	|
+ *	| *	| *	| *	| IntPtr			| IntPtr			| *	|
+
+

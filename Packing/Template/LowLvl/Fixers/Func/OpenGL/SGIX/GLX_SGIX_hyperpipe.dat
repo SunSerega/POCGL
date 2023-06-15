@@ -1,0 +1,38 @@
+﻿
+
+
+# glx::QueryHyperpipeNetwork+SGIX
+!possible_par_types
+ *	| *	| -array of Int32	|
+
+# glx::HyperpipeConfig+SGIX
+!possible_par_types
+ *	| *	| *	| *	| *	| -array of Int32	|
+
+# glx::QueryHyperpipeConfig+SGIX
+!possible_par_types
+ *	| *	| *	| -array of Int32	|
+
+# glx::QueryHyperpipeBestAttrib+SGIX
+-!possible_par_types
+ *	| *	| *	| *	| *	| +array of glx::pipe_rect+SGIX			+var glx::pipe_rect+SGIX		| +array of glx::pipe_rect+SGIX			+var glx::pipe_rect+SGIX		|
+-!possible_par_types
+ *	| *	| *	| *	| *	| +array of glx::pipe_rect_limits+SGIX	+var glx::pipe_rect_limits+SGIX	| +array of glx::pipe_rect_limits+SGIX	+var glx::pipe_rect_limits+SGIX	|
+-!limit_ovrs
+ *	| *	| *	| *	| *	| array of glx::pipe_rect+SGIX			| array of glx::pipe_rect+SGIX			|
+ *	| *	| *	| *	| *	| array of glx::pipe_rect_limits+SGIX	| array of glx::pipe_rect_limits+SGIX	|
+ *	| *	| *	| *	| *	| var glx::pipe_rect+SGIX				| var glx::pipe_rect+SGIX				|
+ *	| *	| *	| *	| *	| var glx::pipe_rect_limits+SGIX		| var glx::pipe_rect_limits+SGIX		|
+ *	| *	| *	| *	| *	| IntPtr								| IntPtr								|
+
+# glx::HyperpipeAttrib+SGIX
+-!possible_par_types
+ *	| *	| *	| *	| *	| +array of glx::pipe_rect+SGIX +var glx::pipe_rect+SGIX +var Int32	|
+
+# glx::QueryHyperpipeAttrib+SGIX
+-!possible_par_types
+ *	| *	| *	| *	| *	| +array of glx::pipe_rect+SGIX			+var glx::pipe_rect+SGIX		|
+-!possible_par_types
+ *	| *	| *	| *	| *	| +array of glx::pipe_rect_limits+SGIX	+var glx::pipe_rect_limits+SGIX	|
+
+

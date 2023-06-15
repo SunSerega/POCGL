@@ -1,0 +1,31 @@
+
+
+
+# cl::CreateBuffer
+// CL_MEM_EXT_HOST_PTR_QCOM when in flags turns host_ptr from void* to struct{void*}*
+// cl_qcom_ext_host_ptr:					cl_mem_ext_host_ptr
+// cl_qcom_android_native_buffer_host_ptr:	cl_mem_ion_host_ptr
+// cl_qcom_android_native_buffer_host_ptr:	cl_mem_android_native_buffer_host_ptr
+!possible_par_types
+ *	| *	| *	| *	| +var cl::mem_ext_host_ptr +var cl::mem_ion_host_ptr +var cl::mem_android_native_buffer_host_ptr	| *	|
+
+# cl::CreateImage
+!possible_par_types
+ *	| *	| *	| *	| *	| +var cl::mem_ext_host_ptr +var cl::mem_ion_host_ptr +var cl::mem_android_native_buffer_host_ptr	| *	|
+
+# cl::CreateImage2D
+!possible_par_types
+ *	| *	| *	| *	| *	| *	| *	| +var cl::mem_ext_host_ptr +var cl::mem_ion_host_ptr +var cl::mem_android_native_buffer_host_ptr	| *	|
+
+# cl::CreateImage3D
+!possible_par_types
+ *	| *	| *	| *	| *	| *	| *	| *	| *	| +var cl::mem_ext_host_ptr +var cl::mem_ion_host_ptr	| *	|
+
+
+
+# cl::CreateAccelerator+INTEL
+// accelerator_type=CL_ACCELERATOR_TYPE_MOTION_ESTIMATION_INTEL turns descriptor from void* to exact struct*
+!possible_par_types
+ *	| *	| *	| *	| +var cl::motion_estimation_desc	| *	|
+
+

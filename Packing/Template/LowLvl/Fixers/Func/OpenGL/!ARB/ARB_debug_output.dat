@@ -1,0 +1,10 @@
+﻿
+
+
+# gl::GetDebugMessageLog
+# gl::GetDebugMessageLog+ARB
+!limit_ovrs
+ *	| *	| *	| var gl::DebugSource	| var gl::DebugType	| var UInt32	| var gl::DebugSeverity	| var Int32	| *	|
+ *	| *	| *	| IntPtr				| IntPtr			| IntPtr		| IntPtr				| IntPtr	| *	|
+
+

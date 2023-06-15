@@ -6,7 +6,8 @@ uses AOtp           in 'Utils\AOtp';
 uses PathUtils      in 'Utils\PathUtils';
 
 type
-  MessageException = AOtp.MessageException;
+  OtpLine           = AOtp.OtpLine;
+  MessageException  = AOtp.MessageException;
   
 procedure Otp(l: OtpLine) := AOtp.Otp(l);
 procedure ErrOtp(e: Exception) := AOtp.ErrOtp(e);

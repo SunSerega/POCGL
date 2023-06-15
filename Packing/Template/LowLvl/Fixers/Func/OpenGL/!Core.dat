@@ -1,0 +1,69 @@
+﻿
+
+
+# gl::[%,Named%]Buffer[%Data,Storage%]
+# gl::NamedBuffer[%Data,Storage%]+EXT
+# gl::BufferData+ARB
+!possible_par_types
+ *	| *	| +array of T +var T	| *	|
+
+# gl::[%,Get%][%,Named%]BufferSubData
+# gl::[%,Get%]NamedBufferSubData+EXT
+# gl::[%,Get%]BufferSubData+ARB
+!possible_par_types
+ *	| *	| *	| +array of T +var T	|
+
+# gl::Clear[%,Named%]BufferData
+# gl::ClearNamedBufferData+EXT
+!possible_par_types
+ *	| *	| *	| *	| +array of T +var T	|
+
+# gl::Clear[%,Named%]BufferSubData
+# gl::ClearNamedBufferSubData+EXT
+!possible_par_types
+ *	| *	| *	| *	| *	| *	| +array of T +var T	|
+
+# glx::GetProcAddress
+# glx::GetProcAddress+ARB
+!possible_par_types
+ *	| -array of Byte -var Byte +string	|
+
+
+
+# gl::GetActiveUniformsiv
+!possible_par_types
+ *	| *	| *					| *	| +array of Int32	|
+!limit_ovrs
+ *	| *	| array of UInt32	| *	| array of Int32	|
+ *	| *	| var UInt32		| *	| var Int32			|
+ *	| *	| IntPtr			| *	| IntPtr			|
+
+# gl::Tex[%,ture%]Parameteri
+!possible_par_types
+ *	| *	| +gl::TextureMinFilter +gl::TextureMagFilter +gl::TextureWrapMode +gl::DepthStencilTextureMode +gl::TextureSwizzle +gl::TextureCompareMode +gl::MapTextureFormat +gl::FoveationConfigBit	|
+
+# gl::TextureParameteri+EXT
+!possible_par_types
+ *	| *	| *	| +gl::TextureMinFilter +gl::TextureMagFilter +gl::TextureWrapMode +gl::DepthStencilTextureMode +gl::TextureSwizzle +gl::TextureCompareMode +gl::MapTextureFormat +gl::FoveationConfigBit	|
+
+# gl::TexGeni
+!possible_par_types
+ *	| *	| +gl::TextureGenMode	|
+
+# gl::FeedbackBuffer
+!possible_par_types
+ *	| *	| -array of single -var single +array of gl::FeedBackToken +var gl::FeedBackToken	|
+
+# gl::Fogi
+!possible_par_types
+ *	| +gl::FogMode +gl::FogCoordSrc	|
+
+# gl::TexEnvi
+!possible_par_types
+ *	| *	| +gl::TextureEnvMode	|
+
+# gl::GetIntegerv
+!possible_par_types
+ *	| +var gl::ContextFlagMask +var gl::ContextProfileMask +var gl::SubgroupSupportedFeatures	|
+
+

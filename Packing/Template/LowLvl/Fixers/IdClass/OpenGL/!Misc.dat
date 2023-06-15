@@ -1,0 +1,70 @@
+﻿
+
+
+# gl::fixed
+!add
+UInt32
+
+# gl::half
+!add
+UInt16
+
+# gl::handle+ARB
+!add
+UInt32
+
+# gl::vdpau_surface
+!add
+IntPtr
+
+
+
+# gdi::device_context
+# gdi::enhanced_metafile_handle
+# gdi::rendering_context
+!add
+IntPtr
+
+# wgl::pixel_buffer
+# wgl::video_device+NV
+# wgl::gpu_device+NV
+# wgl::gpu+NV
+# wgl::video_output_device_handle+NV
+# wgl::video_input_device_handle+NV
+!add
+IntPtr
+
+
+
+
+# x::visual_info_ptr
+# x::display_ptr
+# x::window
+# x::pixel_map
+# x::color_map
+# x::font
+# x::direct_memory_params
+# x::direct_memory_buffer
+!add
+IntPtr
+
+# glx::context
+# glx::context_id
+# glx::drawable
+# glx::frame_buffer_config
+# glx::window
+# glx::pixel_map
+# glx::pixel_buffer
+# glx::video_capture_device+NV
+# glx::video_source+SGIX
+# glx::vl_server
+# glx::vl_path
+# glx::vl_node
+!add
+IntPtr
+
+# glx::video_device+NV
+!add
+UInt32
+
+

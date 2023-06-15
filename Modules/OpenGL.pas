@@ -13,6 +13,8 @@
 ///
 unit OpenGL;
 
+{$zerobasedstrings}
+
 interface
 
 uses System;
@@ -35,11 +37,11 @@ type
   
   {$region Делегаты}
   
-  [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-  GL_DEBUG_PROC = procedure(source: DebugSource; &type: DebugType; id: UInt32; severity: DebugSeverity; length: Int32; message_text: IntPtr; userParam: pointer);
-  
-  [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-  GL_VULKAN_PROC_NV = procedure;
+//  [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+//  GL_DEBUG_PROC = procedure(source: DebugSource; &type: DebugType; id: UInt32; severity: DebugSeverity; length: Int32; message_text: IntPtr; userParam: pointer);
+//  
+//  [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+//  GL_VULKAN_PROC_NV = procedure;
   
   {$endregion Делегаты}
   
@@ -76,11 +78,6 @@ type
   
   PlatformLoader = abstract class
     
-    protected static function LoadLibrary(name: string): IntPtr;
-    external 'kernel32.dll';
-    protected static function GetProcAddress(lib: IntPtr; name: string): IntPtr;
-    external 'kernel32.dll';
-    
     public function GetProcAddress(name: string): IntPtr; abstract;
     
   end;
@@ -97,10 +94,12 @@ type
   
   /// Платформа Windows
   PlWin = sealed class(PlatformLoader)
-    private lib: IntPtr;
+    private static lib := LoadLibrary('opengl32.dll');
     
-    public constructor := lib :=
-    LoadLibrary('opengl32.dll');
+    private static function LoadLibrary(name: string): IntPtr;
+    external 'kernel32.dll';
+    private static function GetProcAddress(lib: IntPtr; name: string): IntPtr;
+    external 'kernel32.dll';
     
     public function GetProcAddress(name: string): IntPtr; override;
     begin
@@ -112,11 +111,13 @@ type
   
   /// Платформа XWindow (используется в UNIX-подобных системах)
   PlX = sealed class(PlatformLoader)
+    
     public function GetProcAddress(name: string): IntPtr; override;
     begin
-      Result := glx.GetProcAddress(name);
+      Result := glx.GetProcAddress(name); if Result<>IntPtr.Zero then exit;
       //TODO Then try from 'libGL.so.1'
     end;
+    
   end;
   
   {$endregion Платформы}

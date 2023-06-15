@@ -1,0 +1,43 @@
+﻿
+
+
+# clContextDestructorCallback (cl::ContextDestructorCallback)
+	procedure
+	context: cl_context
+	user_data: IntPtr
+
+# clCreateContextCallback (cl::CreateContextCallback)
+	procedure
+	errinfo: string
+	private_info: IntPtr
+	cb: UIntPtr
+	user_data: IntPtr
+
+# clEnqueueNativeKernelCallback (cl::EnqueueNativeKernelCallback)
+	procedure
+	arg1: IntPtr
+
+# clEnqueueSVMFreeCallback (cl::EnqueueSVMFreeCallback)
+	procedure
+	queue: cl_command_queue
+	num_svm_pointers: UInt32
+	svm_pointers: array of IntPtr
+	user_data: IntPtr
+
+# clEventCallback (cl::EventCallback)
+	procedure
+	event: cl_event
+	event_command_status: clCommandExecutionStatus
+	user_data: IntPtr
+
+# clMemObjectDestructorCallback (cl::MemObjectDestructorCallback)
+	procedure
+	memobj: cl_mem
+	user_data: IntPtr
+
+# clProgramCallback (cl::ProgramCallback)
+	procedure
+	program: cl_program
+	user_data: IntPtr
+
+

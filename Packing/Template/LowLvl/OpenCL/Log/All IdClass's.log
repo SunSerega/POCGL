@@ -1,0 +1,60 @@
+﻿
+
+
+# cl_accelerator (cl::accelerator) : IntPtr
+
+# cl_command_buffer (cl::command_buffer) : IntPtr
+
+# cl_command_queue (cl::command_queue) : IntPtr
+
+# cl_context (cl::context) : IntPtr
+
+# cl_device_id (cl::device_id) : IntPtr
+
+# cl_eglDisplay (cl::eglDisplay) : IntPtr
+
+# cl_eglImage (cl::eglImage) : IntPtr
+
+# cl_eglSync (cl::eglSync) : IntPtr
+
+# cl_event (cl::event) : IntPtr
+
+# cl_GLsync (cl::GLsync) : IntPtr
+
+# cl_icd_dispatch (cl::icd_dispatch) : IntPtr
+
+# cl_kernel (cl::kernel) : IntPtr
+
+# cl_mem (cl::mem) : IntPtr
+
+# cl_mutable_command (cl::mutable_command) : IntPtr
+
+# cl_platform_id (cl::platform_id) : IntPtr
+
+# cl_program (cl::program) : IntPtr
+
+# cl_sampler (cl::sampler) : IntPtr
+
+# cl_semaphore (cl::semaphore) : IntPtr
+
+# va_image_format (va::image_format) : UInt32
+
+# va_surface_id (va::surface_id) : IntPtr
+
+# d3d_pixel_format (d3d::pixel_format) : UInt32
+
+# d3d_surface9 (d3d::surface9) : IntPtr
+
+# d3d10_buffer (d3d10::buffer) : IntPtr
+
+# d3d10_texture_2d (d3d10::texture_2d) : IntPtr
+
+# d3d10_texture_3d (d3d10::texture_3d) : IntPtr
+
+# d3d11_buffer (d3d11::buffer) : IntPtr
+
+# d3d11_texture_2d (d3d11::texture_2d) : IntPtr
+
+# d3d11_texture_3d (d3d11::texture_3d) : IntPtr
+
+

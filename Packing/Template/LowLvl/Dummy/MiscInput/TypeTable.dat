@@ -1,0 +1,15 @@
+﻿
+
+
+void						= void
+
+enum_base					= EnumBase
+
+size_t						= UIntPtr
+
+ntv_char					= ntv_char
+
+ntv_generic					= T
+ntv_generic2				= T2
+
+

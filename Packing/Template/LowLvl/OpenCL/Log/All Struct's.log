@@ -1,0 +1,105 @@
+﻿
+
+
+# value_ansi_string_64 (value_ansi_string_64)
+	 body: string[64]
+
+# cl_buffer_region (cl::buffer_region)
+	origin: UIntPtr
+	size: UIntPtr
+
+# cl_device_integer_dot_product_acceleration_properties (cl::device_integer_dot_product_acceleration_properties)
+	signed_accelerated: clBool
+	unsigned_accelerated: clBool
+	mixed_signedness_accelerated: clBool
+	accumulating_saturating_signed_accelerated: clBool
+	accumulating_saturating_unsigned_accelerated: clBool
+	accumulating_saturating_mixed_signedness_accelerated: clBool
+
+# cl_device_pci_bus_info (cl::device_pci_bus_info)
+	pci_domain: UInt32
+	pci_bus: UInt32
+	pci_device: UInt32
+	pci_function: UInt32
+
+# cl_dx9_surface_info (cl::dx9_surface_info)
+	resource: d3d_surface9
+	shared_handle: IntPtr
+
+# cl_image_desc (cl::image_desc)
+	image_type: clMemObjectType
+	image_width: UIntPtr
+	image_height: UIntPtr
+	image_depth: UIntPtr
+	image_array_size: UIntPtr
+	image_row_pitch: UIntPtr
+	image_slice_pitch: UIntPtr
+	num_mip_levels: UInt32
+	num_samples: UInt32
+	mem_object: cl_mem
+
+# cl_image_format (cl::image_format)
+	image_channel_order: clChannelOrder
+	image_channel_data_type: clChannelType
+
+# cl_mem_android_native_buffer_host_ptr (cl::mem_android_native_buffer_host_ptr)
+	ext_host_ptr: cl_mem_ext_host_ptr
+	anb_ptr: IntPtr
+
+# cl_mem_ext_host_ptr (cl::mem_ext_host_ptr)
+	allocation_type: clAllocationType
+	host_cache_policy: clHostCachePolicy
+
+# cl_mem_ion_host_ptr (cl::mem_ion_host_ptr)
+	ext_host_ptr: cl_mem_ext_host_ptr
+	ion_filedesc: Int32
+	ion_hostptr: IntPtr
+
+# cl_motion_estimation_desc (cl::motion_estimation_desc)
+	mb_block_type: clMbBlockType
+	subpixel_mode: clSubpixelMode
+	sad_adjust_mode: clSadAdjustMode
+	search_path_type: clSearchPathType
+
+# cl_mutable_base_config (cl::mutable_base_config)
+	type: clCommandBufferStructureType
+	next: IntPtr
+	num_mutable_dispatch: UInt32
+	mutable_dispatch_list: ^cl_mutable_dispatch_config
+
+# cl_mutable_dispatch_arg (cl::mutable_dispatch_arg)
+	arg_index: UInt32
+	arg_size: UIntPtr
+	arg_value: IntPtr
+
+# cl_mutable_dispatch_config (cl::mutable_dispatch_config)
+	type: clCommandBufferStructureType
+	next: IntPtr
+	command: cl_mutable_command
+	num_args: UInt32
+	num_svm_args: UInt32
+	num_exec_infos: UInt32
+	work_dim: UInt32
+	arg_list: ^cl_mutable_dispatch_arg
+	arg_svm_list: ^cl_mutable_dispatch_arg
+	exec_info_list: ^cl_mutable_dispatch_exec_info
+	global_work_offset: ^UIntPtr
+	global_work_size: ^UIntPtr
+	local_work_size: ^UIntPtr
+
+# cl_mutable_dispatch_exec_info (cl::mutable_dispatch_exec_info)
+	param_name: UInt32
+	param_value_size: UIntPtr
+	param_value: IntPtr
+
+# cl_name_version (cl::name_version)
+	version: UInt32
+	name: value_ansi_string_64
+
+# cl_queue_family_properties (cl::queue_family_properties)
+	properties: clCommandQueueProperties
+	capabilities: clCommandQueueCapabilities
+	count: UInt32
+	name: value_ansi_string_64
+
+

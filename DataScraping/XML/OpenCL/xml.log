@@ -1,0 +1,26 @@
+﻿Extension [cl::loader_layers + /core\]: No suffix
+Extension [cl::loader_info + /core\]: No suffix
+Enum [cl::DEVICE_PROFILING_TIMER_OFFSET + AMD]: "void[]" extra type
+Enum [cl::DEVICE_TOPOLOGY + AMD]: "void[]" extra type
+Enum [cl::DEVICE_BOARD_NAME + AMD]: "void[]" extra type
+Enum [cl::DEVICE_GLOBAL_FREE_MEMORY + AMD]: "void[]" extra type
+Enum [cl::DEVICE_SIMD_PER_COMPUTE_UNIT + AMD]: "void[]" extra type
+Enum [cl::DEVICE_SIMD_WIDTH + AMD]: "void[]" extra type
+Enum [cl::DEVICE_SIMD_INSTRUCTION_WIDTH + AMD]: "void[]" extra type
+Enum [cl::DEVICE_WAVEFRONT_WIDTH + AMD]: "void[]" extra type
+Enum [cl::DEVICE_GLOBAL_MEM_CHANNELS + AMD]: "void[]" extra type
+Enum [cl::DEVICE_GLOBAL_MEM_CHANNEL_BANKS + AMD]: "void[]" extra type
+Enum [cl::DEVICE_GLOBAL_MEM_CHANNEL_BANK_WIDTH + AMD]: "void[]" extra type
+Enum [cl::DEVICE_LOCAL_MEM_SIZE_PER_COMPUTE_UNIT + AMD]: "void[]" extra type
+Enum [cl::DEVICE_LOCAL_MEM_BANKS + AMD]: "void[]" extra type
+Enum [cl::DEVICE_THREAD_TRACE_SUPPORTED + AMD]: "void[]" extra type
+Enum [cl::DEVICE_GFXIP_MAJOR + AMD]: "void[]" extra type
+Enum [cl::DEVICE_GFXIP_MINOR + AMD]: "void[]" extra type
+Enum [cl::DEVICE_AVAILABLE_ASYNC_QUEUES + AMD]: "void[]" extra type
+Enum [cl::DEVICE_PREFERRED_WORK_GROUP_SIZE + AMD]: "void[]" extra type
+Enum [cl::DEVICE_MAX_WORK_GROUP_SIZE + AMD]: "void[]" extra type
+Enum [cl::DEVICE_PREFERRED_CONSTANT_BUFFER_SIZE + AMD]: "void[]" extra type
+Enum [cl::DEVICE_PCIE_ID + AMD]: "void[]" extra type
+Enum [cl::DEVICE_EXT_MEM_PADDING_IN_BYTES + QCOM]: "void[]" extra type
+Enum [cl::DEVICE_PAGE_SIZE + QCOM]: "void[]" extra type
+Enum [cl::ACCELERATOR_DESCRIPTOR + INTEL]: "void[]" extra type

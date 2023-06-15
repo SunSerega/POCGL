@@ -1,0 +1,12 @@
+﻿
+
+
+type gl = sealed partial class(api_with_loader) end;
+constructor gl.Create(loader: PlatformLoader) := inherited Create(loader);
+function gl.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+type glD = sealed partial class(api_with_loader) end;
+constructor glD.Create(loader: PlatformLoader) := inherited Create(loader);
+function glD.GetProcAddress(name: string) := loader.GetProcAddress(name);
+
+

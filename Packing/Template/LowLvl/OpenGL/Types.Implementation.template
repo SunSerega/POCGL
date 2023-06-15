@@ -1,0 +1,2137 @@
+﻿
+
+
+function operator explicit(v: Vec2d): Vec2b; extensionmethod := new Vec2b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1));
+function operator implicit(v: Vec2b): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+
+function operator explicit(v: Vec2f): Vec2b; extensionmethod := new Vec2b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1));
+function operator implicit(v: Vec2b): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+
+function operator implicit(v: Vec2f): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator implicit(v: Vec2d): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+
+function operator implicit(v: Vec2i): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator implicit(v: Vec2b): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+
+function operator implicit(v: Vec2i): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec2i; extensionmethod := new Vec2i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1));
+
+function operator implicit(v: Vec2i): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec2i; extensionmethod := new Vec2i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1));
+
+function operator implicit(v: Vec2i64): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator implicit(v: Vec2b): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+
+function operator implicit(v: Vec2i64): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec2i64; extensionmethod := new Vec2i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1));
+
+function operator implicit(v: Vec2i64): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec2i64; extensionmethod := new Vec2i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1));
+
+function operator implicit(v: Vec2i64): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator implicit(v: Vec2i): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+
+function operator implicit(v: Vec2s): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator implicit(v: Vec2b): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+
+function operator implicit(v: Vec2s): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec2s; extensionmethod := new Vec2s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1));
+
+function operator implicit(v: Vec2s): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec2s; extensionmethod := new Vec2s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1));
+
+function operator implicit(v: Vec2s): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator implicit(v: Vec2i): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+
+function operator implicit(v: Vec2s): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator implicit(v: Vec2i64): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+
+function operator implicit(v: Vec2ui): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator implicit(v: Vec2b): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+
+function operator implicit(v: Vec2ui): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec2ui; extensionmethod := new Vec2ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1));
+
+function operator implicit(v: Vec2ui): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec2ui; extensionmethod := new Vec2ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1));
+
+function operator implicit(v: Vec2ui): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator implicit(v: Vec2i): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+
+function operator implicit(v: Vec2ui): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator implicit(v: Vec2i64): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+
+function operator implicit(v: Vec2ui): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator implicit(v: Vec2s): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+
+function operator implicit(v: Vec2ui64): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator implicit(v: Vec2b): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+
+function operator implicit(v: Vec2ui64): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec2ui64; extensionmethod := new Vec2ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1));
+
+function operator implicit(v: Vec2ui64): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec2ui64; extensionmethod := new Vec2ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1));
+
+function operator implicit(v: Vec2ui64): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator implicit(v: Vec2i): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+
+function operator implicit(v: Vec2ui64): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator implicit(v: Vec2i64): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+
+function operator implicit(v: Vec2ui64): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator implicit(v: Vec2s): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+
+function operator implicit(v: Vec2ui64): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator implicit(v: Vec2ui): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+
+function operator implicit(v: Vec3b): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3b): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec3b; extensionmethod := new Vec3b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1), 0);
+
+function operator implicit(v: Vec3b): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec3b; extensionmethod := new Vec3b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1), 0);
+
+function operator implicit(v: Vec3b): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3b): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3b): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3b): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3b): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3d): Vec2b; extensionmethod := new Vec2b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1));
+function operator explicit(v: Vec2b): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3d): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3d): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3d): Vec2i; extensionmethod := new Vec2i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1));
+function operator explicit(v: Vec2i): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3d): Vec2i64; extensionmethod := new Vec2i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1));
+function operator explicit(v: Vec2i64): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3d): Vec2s; extensionmethod := new Vec2s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1));
+function operator explicit(v: Vec2s): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3d): Vec2ui; extensionmethod := new Vec2ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1));
+function operator explicit(v: Vec2ui): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3d): Vec2ui64; extensionmethod := new Vec2ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1));
+function operator explicit(v: Vec2ui64): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3d): Vec3b; extensionmethod := new Vec3b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1), Convert.ToSByte(v.val2));
+function operator implicit(v: Vec3b): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+
+function operator explicit(v: Vec3f): Vec2b; extensionmethod := new Vec2b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1));
+function operator explicit(v: Vec2b): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3f): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3f): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3f): Vec2i; extensionmethod := new Vec2i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1));
+function operator explicit(v: Vec2i): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3f): Vec2i64; extensionmethod := new Vec2i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1));
+function operator explicit(v: Vec2i64): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3f): Vec2s; extensionmethod := new Vec2s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1));
+function operator explicit(v: Vec2s): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3f): Vec2ui; extensionmethod := new Vec2ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1));
+function operator explicit(v: Vec2ui): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3f): Vec2ui64; extensionmethod := new Vec2ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1));
+function operator explicit(v: Vec2ui64): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, 0);
+
+function operator explicit(v: Vec3f): Vec3b; extensionmethod := new Vec3b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1), Convert.ToSByte(v.val2));
+function operator implicit(v: Vec3b): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3f): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3d): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3i): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3i): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec3i; extensionmethod := new Vec3i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1), 0);
+
+function operator implicit(v: Vec3i): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec3i; extensionmethod := new Vec3i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1), 0);
+
+function operator implicit(v: Vec3i): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3i): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3i): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3i): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3i): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3i): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3b): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3i): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec3i; extensionmethod := new Vec3i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1), Convert.ToInt32(v.val2));
+
+function operator implicit(v: Vec3i): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec3i; extensionmethod := new Vec3i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1), Convert.ToInt32(v.val2));
+
+function operator implicit(v: Vec3i64): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3i64): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec3i64; extensionmethod := new Vec3i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1), 0);
+
+function operator implicit(v: Vec3i64): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec3i64; extensionmethod := new Vec3i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1), 0);
+
+function operator implicit(v: Vec3i64): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3i64): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3i64): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3i64): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3i64): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3i64): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3b): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3i64): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec3i64; extensionmethod := new Vec3i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1), Convert.ToInt64(v.val2));
+
+function operator implicit(v: Vec3i64): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec3i64; extensionmethod := new Vec3i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1), Convert.ToInt64(v.val2));
+
+function operator implicit(v: Vec3i64): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3i): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3s): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3s): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec3s; extensionmethod := new Vec3s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1), 0);
+
+function operator implicit(v: Vec3s): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec3s; extensionmethod := new Vec3s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1), 0);
+
+function operator implicit(v: Vec3s): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3s): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3s): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3s): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3s): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3s): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3b): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3s): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec3s; extensionmethod := new Vec3s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1), Convert.ToInt16(v.val2));
+
+function operator implicit(v: Vec3s): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec3s; extensionmethod := new Vec3s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1), Convert.ToInt16(v.val2));
+
+function operator implicit(v: Vec3s): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3i): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3s): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3i64): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ub): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ub): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec3ub; extensionmethod := new Vec3ub(Convert.ToByte(v.val0), Convert.ToByte(v.val1), 0);
+
+function operator implicit(v: Vec3ub): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec3ub; extensionmethod := new Vec3ub(Convert.ToByte(v.val0), Convert.ToByte(v.val1), 0);
+
+function operator implicit(v: Vec3ub): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ub): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ub): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ub): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ub): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ub): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3b): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ub): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec3ub; extensionmethod := new Vec3ub(Convert.ToByte(v.val0), Convert.ToByte(v.val1), Convert.ToByte(v.val2));
+
+function operator implicit(v: Vec3ub): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec3ub; extensionmethod := new Vec3ub(Convert.ToByte(v.val0), Convert.ToByte(v.val1), Convert.ToByte(v.val2));
+
+function operator implicit(v: Vec3ub): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3i): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ub): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3i64): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ub): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3s): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ui): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ui): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec3ui; extensionmethod := new Vec3ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1), 0);
+
+function operator implicit(v: Vec3ui): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec3ui; extensionmethod := new Vec3ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1), 0);
+
+function operator implicit(v: Vec3ui): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ui): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ui): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ui): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ui): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ui): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3b): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ui): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec3ui; extensionmethod := new Vec3ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1), Convert.ToUInt32(v.val2));
+
+function operator implicit(v: Vec3ui): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec3ui; extensionmethod := new Vec3ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1), Convert.ToUInt32(v.val2));
+
+function operator implicit(v: Vec3ui): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3i): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ui): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3i64): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ui): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3s): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ui): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3ub): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ui64): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ui64): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec3ui64; extensionmethod := new Vec3ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1), 0);
+
+function operator implicit(v: Vec3ui64): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec3ui64; extensionmethod := new Vec3ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1), 0);
+
+function operator implicit(v: Vec3ui64): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ui64): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ui64): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ui64): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ui64): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3ui64): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3b): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ui64): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec3ui64; extensionmethod := new Vec3ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1), Convert.ToUInt64(v.val2));
+
+function operator implicit(v: Vec3ui64): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec3ui64; extensionmethod := new Vec3ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1), Convert.ToUInt64(v.val2));
+
+function operator implicit(v: Vec3ui64): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3i): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ui64): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3i64): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ui64): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3s): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ui64): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3ub): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3ui64): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3ui): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3us): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3us): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec3us; extensionmethod := new Vec3us(Convert.ToUInt16(v.val0), Convert.ToUInt16(v.val1), 0);
+
+function operator implicit(v: Vec3us): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec3us; extensionmethod := new Vec3us(Convert.ToUInt16(v.val0), Convert.ToUInt16(v.val1), 0);
+
+function operator implicit(v: Vec3us): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3us): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3us): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3us): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3us): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, 0);
+
+function operator implicit(v: Vec3us): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3b): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3us): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec3us; extensionmethod := new Vec3us(Convert.ToUInt16(v.val0), Convert.ToUInt16(v.val1), Convert.ToUInt16(v.val2));
+
+function operator implicit(v: Vec3us): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec3us; extensionmethod := new Vec3us(Convert.ToUInt16(v.val0), Convert.ToUInt16(v.val1), Convert.ToUInt16(v.val2));
+
+function operator implicit(v: Vec3us): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3i): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3us): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3i64): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3us): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3s): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3us): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3ub): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3us): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3ui): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec3us): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+function operator implicit(v: Vec3ui64): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+
+function operator implicit(v: Vec4b): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4b): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec4b; extensionmethod := new Vec4b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1), 0, 0);
+
+function operator implicit(v: Vec4b): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec4b; extensionmethod := new Vec4b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1), 0, 0);
+
+function operator implicit(v: Vec4b): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4b): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4b): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4b): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4b): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4b): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3b): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4b): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec4b; extensionmethod := new Vec4b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1), Convert.ToSByte(v.val2), 0);
+
+function operator implicit(v: Vec4b): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec4b; extensionmethod := new Vec4b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1), Convert.ToSByte(v.val2), 0);
+
+function operator implicit(v: Vec4b): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4b): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i64): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4b): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3s): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4b): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ub): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4b): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4b): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui64): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4b): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3us): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4d): Vec2b; extensionmethod := new Vec2b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1));
+function operator explicit(v: Vec2b): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4d): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4d): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, 0, 0);
+
+function operator explicit(v: Vec4d): Vec2i; extensionmethod := new Vec2i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1));
+function operator explicit(v: Vec2i): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, 0, 0);
+
+function operator explicit(v: Vec4d): Vec2i64; extensionmethod := new Vec2i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1));
+function operator explicit(v: Vec2i64): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, 0, 0);
+
+function operator explicit(v: Vec4d): Vec2s; extensionmethod := new Vec2s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1));
+function operator explicit(v: Vec2s): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, 0, 0);
+
+function operator explicit(v: Vec4d): Vec2ui; extensionmethod := new Vec2ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1));
+function operator explicit(v: Vec2ui): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, 0, 0);
+
+function operator explicit(v: Vec4d): Vec2ui64; extensionmethod := new Vec2ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1));
+function operator explicit(v: Vec2ui64): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, 0, 0);
+
+function operator explicit(v: Vec4d): Vec3b; extensionmethod := new Vec3b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1), Convert.ToSByte(v.val2));
+function operator explicit(v: Vec3b): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4d): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4d): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4d): Vec3i; extensionmethod := new Vec3i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1), Convert.ToInt32(v.val2));
+function operator explicit(v: Vec3i): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4d): Vec3i64; extensionmethod := new Vec3i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1), Convert.ToInt64(v.val2));
+function operator explicit(v: Vec3i64): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4d): Vec3s; extensionmethod := new Vec3s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1), Convert.ToInt16(v.val2));
+function operator explicit(v: Vec3s): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4d): Vec3ub; extensionmethod := new Vec3ub(Convert.ToByte(v.val0), Convert.ToByte(v.val1), Convert.ToByte(v.val2));
+function operator explicit(v: Vec3ub): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4d): Vec3ui; extensionmethod := new Vec3ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1), Convert.ToUInt32(v.val2));
+function operator explicit(v: Vec3ui): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4d): Vec3ui64; extensionmethod := new Vec3ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1), Convert.ToUInt64(v.val2));
+function operator explicit(v: Vec3ui64): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4d): Vec3us; extensionmethod := new Vec3us(Convert.ToUInt16(v.val0), Convert.ToUInt16(v.val1), Convert.ToUInt16(v.val2));
+function operator explicit(v: Vec3us): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4d): Vec4b; extensionmethod := new Vec4b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1), Convert.ToSByte(v.val2), Convert.ToSByte(v.val3));
+function operator implicit(v: Vec4b): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, v.val3);
+
+function operator explicit(v: Vec4f): Vec2b; extensionmethod := new Vec2b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1));
+function operator explicit(v: Vec2b): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4f): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4f): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, 0, 0);
+
+function operator explicit(v: Vec4f): Vec2i; extensionmethod := new Vec2i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1));
+function operator explicit(v: Vec2i): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, 0, 0);
+
+function operator explicit(v: Vec4f): Vec2i64; extensionmethod := new Vec2i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1));
+function operator explicit(v: Vec2i64): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, 0, 0);
+
+function operator explicit(v: Vec4f): Vec2s; extensionmethod := new Vec2s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1));
+function operator explicit(v: Vec2s): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, 0, 0);
+
+function operator explicit(v: Vec4f): Vec2ui; extensionmethod := new Vec2ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1));
+function operator explicit(v: Vec2ui): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, 0, 0);
+
+function operator explicit(v: Vec4f): Vec2ui64; extensionmethod := new Vec2ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1));
+function operator explicit(v: Vec2ui64): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, 0, 0);
+
+function operator explicit(v: Vec4f): Vec3b; extensionmethod := new Vec3b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1), Convert.ToSByte(v.val2));
+function operator explicit(v: Vec3b): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4f): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4f): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4f): Vec3i; extensionmethod := new Vec3i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1), Convert.ToInt32(v.val2));
+function operator explicit(v: Vec3i): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4f): Vec3i64; extensionmethod := new Vec3i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1), Convert.ToInt64(v.val2));
+function operator explicit(v: Vec3i64): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4f): Vec3s; extensionmethod := new Vec3s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1), Convert.ToInt16(v.val2));
+function operator explicit(v: Vec3s): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4f): Vec3ub; extensionmethod := new Vec3ub(Convert.ToByte(v.val0), Convert.ToByte(v.val1), Convert.ToByte(v.val2));
+function operator explicit(v: Vec3ub): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4f): Vec3ui; extensionmethod := new Vec3ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1), Convert.ToUInt32(v.val2));
+function operator explicit(v: Vec3ui): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4f): Vec3ui64; extensionmethod := new Vec3ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1), Convert.ToUInt64(v.val2));
+function operator explicit(v: Vec3ui64): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4f): Vec3us; extensionmethod := new Vec3us(Convert.ToUInt16(v.val0), Convert.ToUInt16(v.val1), Convert.ToUInt16(v.val2));
+function operator explicit(v: Vec3us): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, 0);
+
+function operator explicit(v: Vec4f): Vec4b; extensionmethod := new Vec4b(Convert.ToSByte(v.val0), Convert.ToSByte(v.val1), Convert.ToSByte(v.val2), Convert.ToSByte(v.val3));
+function operator implicit(v: Vec4b): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4f): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4d): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4i): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4i): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec4i; extensionmethod := new Vec4i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1), 0, 0);
+
+function operator implicit(v: Vec4i): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec4i; extensionmethod := new Vec4i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1), 0, 0);
+
+function operator implicit(v: Vec4i): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4i): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4i): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4i): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4i): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4i): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3b): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec4i; extensionmethod := new Vec4i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1), Convert.ToInt32(v.val2), 0);
+
+function operator implicit(v: Vec4i): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec4i; extensionmethod := new Vec4i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1), Convert.ToInt32(v.val2), 0);
+
+function operator implicit(v: Vec4i): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i64): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3s): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ub): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui64): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3us): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4b): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4i): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4d): Vec4i; extensionmethod := new Vec4i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1), Convert.ToInt32(v.val2), Convert.ToInt32(v.val3));
+
+function operator implicit(v: Vec4i): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4f): Vec4i; extensionmethod := new Vec4i(Convert.ToInt32(v.val0), Convert.ToInt32(v.val1), Convert.ToInt32(v.val2), Convert.ToInt32(v.val3));
+
+function operator implicit(v: Vec4i64): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4i64): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec4i64; extensionmethod := new Vec4i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1), 0, 0);
+
+function operator implicit(v: Vec4i64): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec4i64; extensionmethod := new Vec4i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1), 0, 0);
+
+function operator implicit(v: Vec4i64): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4i64): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4i64): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4i64): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4i64): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4i64): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3b): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i64): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec4i64; extensionmethod := new Vec4i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1), Convert.ToInt64(v.val2), 0);
+
+function operator implicit(v: Vec4i64): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec4i64; extensionmethod := new Vec4i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1), Convert.ToInt64(v.val2), 0);
+
+function operator implicit(v: Vec4i64): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i64): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i64): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i64): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3s): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i64): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ub): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i64): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i64): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui64): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i64): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3us): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4i64): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4b): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4i64): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4d): Vec4i64; extensionmethod := new Vec4i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1), Convert.ToInt64(v.val2), Convert.ToInt64(v.val3));
+
+function operator implicit(v: Vec4i64): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4f): Vec4i64; extensionmethod := new Vec4i64(Convert.ToInt64(v.val0), Convert.ToInt64(v.val1), Convert.ToInt64(v.val2), Convert.ToInt64(v.val3));
+
+function operator implicit(v: Vec4i64): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4i): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4s): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4s): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec4s; extensionmethod := new Vec4s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1), 0, 0);
+
+function operator implicit(v: Vec4s): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec4s; extensionmethod := new Vec4s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1), 0, 0);
+
+function operator implicit(v: Vec4s): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4s): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4s): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4s): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4s): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4s): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3b): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4s): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec4s; extensionmethod := new Vec4s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1), Convert.ToInt16(v.val2), 0);
+
+function operator implicit(v: Vec4s): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec4s; extensionmethod := new Vec4s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1), Convert.ToInt16(v.val2), 0);
+
+function operator implicit(v: Vec4s): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4s): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i64): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4s): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3s): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4s): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ub): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4s): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4s): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui64): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4s): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3us): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4s): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4b): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4s): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4d): Vec4s; extensionmethod := new Vec4s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1), Convert.ToInt16(v.val2), Convert.ToInt16(v.val3));
+
+function operator implicit(v: Vec4s): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4f): Vec4s; extensionmethod := new Vec4s(Convert.ToInt16(v.val0), Convert.ToInt16(v.val1), Convert.ToInt16(v.val2), Convert.ToInt16(v.val3));
+
+function operator implicit(v: Vec4s): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4i): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4s): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4i64): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ub): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ub): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec4ub; extensionmethod := new Vec4ub(Convert.ToByte(v.val0), Convert.ToByte(v.val1), 0, 0);
+
+function operator implicit(v: Vec4ub): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec4ub; extensionmethod := new Vec4ub(Convert.ToByte(v.val0), Convert.ToByte(v.val1), 0, 0);
+
+function operator implicit(v: Vec4ub): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ub): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ub): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ub): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ub): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ub): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3b): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ub): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec4ub; extensionmethod := new Vec4ub(Convert.ToByte(v.val0), Convert.ToByte(v.val1), Convert.ToByte(v.val2), 0);
+
+function operator implicit(v: Vec4ub): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec4ub; extensionmethod := new Vec4ub(Convert.ToByte(v.val0), Convert.ToByte(v.val1), Convert.ToByte(v.val2), 0);
+
+function operator implicit(v: Vec4ub): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ub): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i64): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ub): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3s): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ub): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ub): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ub): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ub): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui64): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ub): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3us): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ub): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4b): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ub): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4d): Vec4ub; extensionmethod := new Vec4ub(Convert.ToByte(v.val0), Convert.ToByte(v.val1), Convert.ToByte(v.val2), Convert.ToByte(v.val3));
+
+function operator implicit(v: Vec4ub): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4f): Vec4ub; extensionmethod := new Vec4ub(Convert.ToByte(v.val0), Convert.ToByte(v.val1), Convert.ToByte(v.val2), Convert.ToByte(v.val3));
+
+function operator implicit(v: Vec4ub): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4i): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ub): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4i64): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ub): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4s): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ui): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ui): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec4ui; extensionmethod := new Vec4ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1), 0, 0);
+
+function operator implicit(v: Vec4ui): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec4ui; extensionmethod := new Vec4ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1), 0, 0);
+
+function operator implicit(v: Vec4ui): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ui): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ui): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ui): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ui): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ui): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3b): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec4ui; extensionmethod := new Vec4ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1), Convert.ToUInt32(v.val2), 0);
+
+function operator implicit(v: Vec4ui): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec4ui; extensionmethod := new Vec4ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1), Convert.ToUInt32(v.val2), 0);
+
+function operator implicit(v: Vec4ui): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i64): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3s): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ub): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui64): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3us): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4b): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ui): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4d): Vec4ui; extensionmethod := new Vec4ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1), Convert.ToUInt32(v.val2), Convert.ToUInt32(v.val3));
+
+function operator implicit(v: Vec4ui): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4f): Vec4ui; extensionmethod := new Vec4ui(Convert.ToUInt32(v.val0), Convert.ToUInt32(v.val1), Convert.ToUInt32(v.val2), Convert.ToUInt32(v.val3));
+
+function operator implicit(v: Vec4ui): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4i): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ui): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4i64): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ui): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4s): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ui): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4ub): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ui64): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ui64): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec4ui64; extensionmethod := new Vec4ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1), 0, 0);
+
+function operator implicit(v: Vec4ui64): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec4ui64; extensionmethod := new Vec4ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1), 0, 0);
+
+function operator implicit(v: Vec4ui64): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ui64): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ui64): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ui64): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ui64): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4ui64): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3b): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui64): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec4ui64; extensionmethod := new Vec4ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1), Convert.ToUInt64(v.val2), 0);
+
+function operator implicit(v: Vec4ui64): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec4ui64; extensionmethod := new Vec4ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1), Convert.ToUInt64(v.val2), 0);
+
+function operator implicit(v: Vec4ui64): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui64): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i64): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui64): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3s): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui64): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ub): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui64): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui64): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui64): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui64): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3us): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4ui64): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4b): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ui64): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4d): Vec4ui64; extensionmethod := new Vec4ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1), Convert.ToUInt64(v.val2), Convert.ToUInt64(v.val3));
+
+function operator implicit(v: Vec4ui64): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4f): Vec4ui64; extensionmethod := new Vec4ui64(Convert.ToUInt64(v.val0), Convert.ToUInt64(v.val1), Convert.ToUInt64(v.val2), Convert.ToUInt64(v.val3));
+
+function operator implicit(v: Vec4ui64): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4i): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ui64): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4i64): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ui64): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4s): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ui64): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4ub): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4ui64): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4ui): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4us): Vec2b; extensionmethod := new Vec2b(v.val0, v.val1);
+function operator explicit(v: Vec2b): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4us): Vec2d; extensionmethod := new Vec2d(v.val0, v.val1);
+function operator explicit(v: Vec2d): Vec4us; extensionmethod := new Vec4us(Convert.ToUInt16(v.val0), Convert.ToUInt16(v.val1), 0, 0);
+
+function operator implicit(v: Vec4us): Vec2f; extensionmethod := new Vec2f(v.val0, v.val1);
+function operator explicit(v: Vec2f): Vec4us; extensionmethod := new Vec4us(Convert.ToUInt16(v.val0), Convert.ToUInt16(v.val1), 0, 0);
+
+function operator implicit(v: Vec4us): Vec2i; extensionmethod := new Vec2i(v.val0, v.val1);
+function operator explicit(v: Vec2i): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4us): Vec2i64; extensionmethod := new Vec2i64(v.val0, v.val1);
+function operator explicit(v: Vec2i64): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4us): Vec2s; extensionmethod := new Vec2s(v.val0, v.val1);
+function operator explicit(v: Vec2s): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4us): Vec2ui; extensionmethod := new Vec2ui(v.val0, v.val1);
+function operator explicit(v: Vec2ui): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4us): Vec2ui64; extensionmethod := new Vec2ui64(v.val0, v.val1);
+function operator explicit(v: Vec2ui64): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, 0, 0);
+
+function operator implicit(v: Vec4us): Vec3b; extensionmethod := new Vec3b(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3b): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4us): Vec3d; extensionmethod := new Vec3d(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3d): Vec4us; extensionmethod := new Vec4us(Convert.ToUInt16(v.val0), Convert.ToUInt16(v.val1), Convert.ToUInt16(v.val2), 0);
+
+function operator implicit(v: Vec4us): Vec3f; extensionmethod := new Vec3f(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3f): Vec4us; extensionmethod := new Vec4us(Convert.ToUInt16(v.val0), Convert.ToUInt16(v.val1), Convert.ToUInt16(v.val2), 0);
+
+function operator implicit(v: Vec4us): Vec3i; extensionmethod := new Vec3i(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4us): Vec3i64; extensionmethod := new Vec3i64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3i64): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4us): Vec3s; extensionmethod := new Vec3s(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3s): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4us): Vec3ub; extensionmethod := new Vec3ub(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ub): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4us): Vec3ui; extensionmethod := new Vec3ui(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4us): Vec3ui64; extensionmethod := new Vec3ui64(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3ui64): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4us): Vec3us; extensionmethod := new Vec3us(v.val0, v.val1, v.val2);
+function operator explicit(v: Vec3us): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, 0);
+
+function operator implicit(v: Vec4us): Vec4b; extensionmethod := new Vec4b(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4b): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4us): Vec4d; extensionmethod := new Vec4d(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4d): Vec4us; extensionmethod := new Vec4us(Convert.ToUInt16(v.val0), Convert.ToUInt16(v.val1), Convert.ToUInt16(v.val2), Convert.ToUInt16(v.val3));
+
+function operator implicit(v: Vec4us): Vec4f; extensionmethod := new Vec4f(v.val0, v.val1, v.val2, v.val3);
+function operator explicit(v: Vec4f): Vec4us; extensionmethod := new Vec4us(Convert.ToUInt16(v.val0), Convert.ToUInt16(v.val1), Convert.ToUInt16(v.val2), Convert.ToUInt16(v.val3));
+
+function operator implicit(v: Vec4us): Vec4i; extensionmethod := new Vec4i(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4i): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4us): Vec4i64; extensionmethod := new Vec4i64(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4i64): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4us): Vec4s; extensionmethod := new Vec4s(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4s): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4us): Vec4ub; extensionmethod := new Vec4ub(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4ub): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4us): Vec4ui; extensionmethod := new Vec4ui(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4ui): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, v.val3);
+
+function operator implicit(v: Vec4us): Vec4ui64; extensionmethod := new Vec4ui64(v.val0, v.val1, v.val2, v.val3);
+function operator implicit(v: Vec4ui64): Vec4us; extensionmethod := new Vec4us(v.val0, v.val1, v.val2, v.val3);
+
+function operator*(m: Mtr2d; v: Vec2d); extensionmethod :=
+  new Vec2d(m.Row0*v, m.Row1*v);
+
+function operator*(v: Vec2d; m: Mtr2d); extensionmethod :=
+  new Vec2d(m.Col0*v, m.Col1*v);
+
+function operator*(m1: Mtr2d; m2: Mtr2d); extensionmethod :=
+  Mtr2d.FromCols(
+    new Vec2d(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2d(m1.Row0*m2.Col1, m1.Row1*m2.Col1)
+  );
+
+function Transpose(self: Mtr2d); extensionmethod :=
+  Mtr2d.FromCols(self.Row0, self.Row1);
+
+function operator*(m: Mtr2f; v: Vec2f); extensionmethod :=
+  new Vec2f(m.Row0*v, m.Row1*v);
+
+function operator*(v: Vec2f; m: Mtr2f); extensionmethod :=
+  new Vec2f(m.Col0*v, m.Col1*v);
+
+function operator implicit(m: Mtr2f): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator implicit(m: Mtr2d): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+
+function operator*(m1: Mtr2f; m2: Mtr2f); extensionmethod :=
+  Mtr2f.FromCols(
+    new Vec2f(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2f(m1.Row0*m2.Col1, m1.Row1*m2.Col1)
+  );
+
+function Transpose(self: Mtr2f); extensionmethod :=
+  Mtr2f.FromCols(self.Row0, self.Row1);
+
+function operator*(v: Vec2d; m: Mtr2x3d); extensionmethod :=
+  new Vec3d(m.Col0*v, m.Col1*v, m.Col2*v);
+
+function operator*(m: Mtr2x3d; v: Vec3d); extensionmethod :=
+  new Vec2d(m.Row0*v, m.Row1*v);
+
+function operator implicit(m: Mtr2x3d): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, default(Vec2d));
+
+function operator*(m1: Mtr2d; m2: Mtr2x3d); extensionmethod :=
+  Mtr2x3d.FromCols(
+    new Vec2d(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2d(m1.Row0*m2.Col1, m1.Row1*m2.Col1),
+    new Vec2d(m1.Row0*m2.Col2, m1.Row1*m2.Col2)
+  );
+
+function operator implicit(m: Mtr2x3d): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, default(Vec2d));
+
+function Transpose(self: Mtr2x3d); extensionmethod :=
+  Mtr3x2d.FromCols(self.Row0, self.Row1);
+
+function operator*(v: Vec2f; m: Mtr2x3f); extensionmethod :=
+  new Vec3f(m.Col0*v, m.Col1*v, m.Col2*v);
+
+function operator*(m: Mtr2x3f; v: Vec3f); extensionmethod :=
+  new Vec2f(m.Row0*v, m.Row1*v);
+
+function operator implicit(m: Mtr2x3f): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, default(Vec2f));
+
+function operator implicit(m: Mtr2x3f): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, default(Vec2f));
+
+function operator*(m1: Mtr2f; m2: Mtr2x3f); extensionmethod :=
+  Mtr2x3f.FromCols(
+    new Vec2f(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2f(m1.Row0*m2.Col1, m1.Row1*m2.Col1),
+    new Vec2f(m1.Row0*m2.Col2, m1.Row1*m2.Col2)
+  );
+
+function operator implicit(m: Mtr2x3f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, default(Vec2d));
+function operator implicit(m: Mtr2x3d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, default(Vec2f));
+
+function Transpose(self: Mtr2x3f); extensionmethod :=
+  Mtr3x2f.FromCols(self.Row0, self.Row1);
+
+function operator*(v: Vec2d; m: Mtr2x4d); extensionmethod :=
+  new Vec4d(m.Col0*v, m.Col1*v, m.Col2*v, m.Col3*v);
+
+function operator*(m: Mtr2x4d; v: Vec4d); extensionmethod :=
+  new Vec2d(m.Row0*v, m.Row1*v);
+
+function operator implicit(m: Mtr2x4d): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
+
+function operator*(m1: Mtr2d; m2: Mtr2x4d); extensionmethod :=
+  Mtr2x4d.FromCols(
+    new Vec2d(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2d(m1.Row0*m2.Col1, m1.Row1*m2.Col1),
+    new Vec2d(m1.Row0*m2.Col2, m1.Row1*m2.Col2),
+    new Vec2d(m1.Row0*m2.Col3, m1.Row1*m2.Col3)
+  );
+
+function operator implicit(m: Mtr2x4d): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
+
+function operator implicit(m: Mtr2x4d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, default(Vec2d));
+function operator explicit(m: Mtr2x3d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
+
+function operator implicit(m: Mtr2x4d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, default(Vec2f));
+function operator explicit(m: Mtr2x3f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
+
+function Transpose(self: Mtr2x4d); extensionmethod :=
+  Mtr4x2d.FromCols(self.Row0, self.Row1);
+
+function operator*(v: Vec2f; m: Mtr2x4f); extensionmethod :=
+  new Vec4f(m.Col0*v, m.Col1*v, m.Col2*v, m.Col3*v);
+
+function operator*(m: Mtr2x4f; v: Vec4f); extensionmethod :=
+  new Vec2f(m.Row0*v, m.Row1*v);
+
+function operator implicit(m: Mtr2x4f): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, default(Vec2f), default(Vec2f));
+
+function operator implicit(m: Mtr2x4f): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, default(Vec2f), default(Vec2f));
+
+function operator*(m1: Mtr2f; m2: Mtr2x4f); extensionmethod :=
+  Mtr2x4f.FromCols(
+    new Vec2f(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2f(m1.Row0*m2.Col1, m1.Row1*m2.Col1),
+    new Vec2f(m1.Row0*m2.Col2, m1.Row1*m2.Col2),
+    new Vec2f(m1.Row0*m2.Col3, m1.Row1*m2.Col3)
+  );
+
+function operator implicit(m: Mtr2x4f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, default(Vec2d));
+function operator explicit(m: Mtr2x3d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, default(Vec2f), default(Vec2f));
+
+function operator implicit(m: Mtr2x4f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, default(Vec2f));
+function operator explicit(m: Mtr2x3f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, default(Vec2f), default(Vec2f));
+
+function operator implicit(m: Mtr2x4f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
+function operator implicit(m: Mtr2x4d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, default(Vec2f), default(Vec2f));
+
+function Transpose(self: Mtr2x4f); extensionmethod :=
+  Mtr4x2f.FromCols(self.Row0, self.Row1);
+
+function operator*(m: Mtr3x2d; v: Vec2d); extensionmethod :=
+  new Vec3d(m.Row0*v, m.Row1*v, m.Row2*v);
+
+function operator*(v: Vec3d; m: Mtr3x2d); extensionmethod :=
+  new Vec2d(m.Col0*v, m.Col1*v);
+
+function operator implicit(m: Mtr3x2d): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1));
+
+function operator*(m1: Mtr3x2d; m2: Mtr2d); extensionmethod :=
+  Mtr3x2d.FromCols(
+    new Vec3d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1)
+  );
+
+function operator implicit(m: Mtr3x2d): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1));
+
+function operator explicit(m: Mtr3x2d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1));
+
+function operator*(m1: Mtr3x2d; m2: Mtr2x3d); extensionmethod :=
+  Mtr3d.FromCols(
+    new Vec3d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1),
+    new Vec3d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2)
+  );
+
+function operator*(m1: Mtr2x3d; m2: Mtr3x2d); extensionmethod :=
+  Mtr2d.FromCols(
+    new Vec2d(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2d(m1.Row0*m2.Col1, m1.Row1*m2.Col1)
+  );
+
+function operator explicit(m: Mtr3x2d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1));
+
+function operator explicit(m: Mtr3x2d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
+function operator explicit(m: Mtr2x4d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1));
+
+function operator*(m1: Mtr3x2d; m2: Mtr2x4d); extensionmethod :=
+  Mtr3x4d.FromCols(
+    new Vec3d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1),
+    new Vec3d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2),
+    new Vec3d(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3)
+  );
+
+function operator explicit(m: Mtr3x2d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
+function operator explicit(m: Mtr2x4f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1));
+
+function Transpose(self: Mtr3x2d); extensionmethod :=
+  Mtr2x3d.FromCols(self.Row0, self.Row1, self.Row2);
+
+function operator*(m: Mtr3x2f; v: Vec2f); extensionmethod :=
+  new Vec3f(m.Row0*v, m.Row1*v, m.Row2*v);
+
+function operator*(v: Vec3f; m: Mtr3x2f); extensionmethod :=
+  new Vec2f(m.Col0*v, m.Col1*v);
+
+function operator implicit(m: Mtr3x2f): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1));
+
+function operator implicit(m: Mtr3x2f): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1));
+
+function operator*(m1: Mtr3x2f; m2: Mtr2f); extensionmethod :=
+  Mtr3x2f.FromCols(
+    new Vec3f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1)
+  );
+
+function operator explicit(m: Mtr3x2f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1));
+
+function operator explicit(m: Mtr3x2f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1));
+
+function operator*(m1: Mtr3x2f; m2: Mtr2x3f); extensionmethod :=
+  Mtr3f.FromCols(
+    new Vec3f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1),
+    new Vec3f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2)
+  );
+
+function operator*(m1: Mtr2x3f; m2: Mtr3x2f); extensionmethod :=
+  Mtr2f.FromCols(
+    new Vec2f(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2f(m1.Row0*m2.Col1, m1.Row1*m2.Col1)
+  );
+
+function operator explicit(m: Mtr3x2f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
+function operator explicit(m: Mtr2x4d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1));
+
+function operator explicit(m: Mtr3x2f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
+function operator explicit(m: Mtr2x4f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1));
+
+function operator*(m1: Mtr3x2f; m2: Mtr2x4f); extensionmethod :=
+  Mtr3x4f.FromCols(
+    new Vec3f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1),
+    new Vec3f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2),
+    new Vec3f(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3)
+  );
+
+function operator implicit(m: Mtr3x2f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
+function operator implicit(m: Mtr3x2d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
+
+function Transpose(self: Mtr3x2f); extensionmethod :=
+  Mtr2x3f.FromCols(self.Row0, self.Row1, self.Row2);
+
+function operator*(m: Mtr3d; v: Vec3d); extensionmethod :=
+  new Vec3d(m.Row0*v, m.Row1*v, m.Row2*v);
+
+function operator*(v: Vec3d; m: Mtr3d); extensionmethod :=
+  new Vec3d(m.Col0*v, m.Col1*v, m.Col2*v);
+
+function operator implicit(m: Mtr3d): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr3d): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr3d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0));
+
+function operator*(m1: Mtr2x3d; m2: Mtr3d); extensionmethod :=
+  Mtr2x3d.FromCols(
+    new Vec2d(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2d(m1.Row0*m2.Col1, m1.Row1*m2.Col1),
+    new Vec2d(m1.Row0*m2.Col2, m1.Row1*m2.Col2)
+  );
+
+function operator implicit(m: Mtr3d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0));
+
+function operator explicit(m: Mtr3d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
+function operator explicit(m: Mtr2x4d): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0));
+
+function operator explicit(m: Mtr3d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
+function operator explicit(m: Mtr2x4f): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0));
+
+function operator implicit(m: Mtr3d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2d): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+
+function operator*(m1: Mtr3d; m2: Mtr3x2d); extensionmethod :=
+  Mtr3x2d.FromCols(
+    new Vec3d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1)
+  );
+
+function operator implicit(m: Mtr3d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2f): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+
+function operator*(m1: Mtr3d; m2: Mtr3d); extensionmethod :=
+  Mtr3d.FromCols(
+    new Vec3d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1),
+    new Vec3d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2)
+  );
+
+function Transpose(self: Mtr3d); extensionmethod :=
+  Mtr3d.FromCols(self.Row0, self.Row1, self.Row2);
+
+function operator*(m: Mtr3f; v: Vec3f); extensionmethod :=
+  new Vec3f(m.Row0*v, m.Row1*v, m.Row2*v);
+
+function operator*(v: Vec3f; m: Mtr3f); extensionmethod :=
+  new Vec3f(m.Col0*v, m.Col1*v, m.Col2*v);
+
+function operator implicit(m: Mtr3f): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr3f): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr3f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0));
+
+function operator implicit(m: Mtr3f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0));
+
+function operator*(m1: Mtr2x3f; m2: Mtr3f); extensionmethod :=
+  Mtr2x3f.FromCols(
+    new Vec2f(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2f(m1.Row0*m2.Col1, m1.Row1*m2.Col1),
+    new Vec2f(m1.Row0*m2.Col2, m1.Row1*m2.Col2)
+  );
+
+function operator explicit(m: Mtr3f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
+function operator explicit(m: Mtr2x4d): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0));
+
+function operator explicit(m: Mtr3f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
+function operator explicit(m: Mtr2x4f): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0));
+
+function operator implicit(m: Mtr3f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2d): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+
+function operator implicit(m: Mtr3f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2f): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+
+function operator*(m1: Mtr3f; m2: Mtr3x2f); extensionmethod :=
+  Mtr3x2f.FromCols(
+    new Vec3f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1)
+  );
+
+function operator implicit(m: Mtr3f): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator implicit(m: Mtr3d): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+
+function operator*(m1: Mtr3f; m2: Mtr3f); extensionmethod :=
+  Mtr3f.FromCols(
+    new Vec3f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1),
+    new Vec3f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2)
+  );
+
+function Transpose(self: Mtr3f); extensionmethod :=
+  Mtr3f.FromCols(self.Row0, self.Row1, self.Row2);
+
+function operator*(v: Vec3d; m: Mtr3x4d); extensionmethod :=
+  new Vec4d(m.Col0*v, m.Col1*v, m.Col2*v, m.Col3*v);
+
+function operator*(m: Mtr3x4d; v: Vec4d); extensionmethod :=
+  new Vec3d(m.Row0*v, m.Row1*v, m.Row2*v);
+
+function operator implicit(m: Mtr3x4d): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(0.0, 0.0, 1.0), default(Vec3d));
+
+function operator implicit(m: Mtr3x4d): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(0.0, 0.0, 1.0), default(Vec3d));
+
+function operator implicit(m: Mtr3x4d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0), default(Vec3d));
+
+function operator*(m1: Mtr2x3d; m2: Mtr3x4d); extensionmethod :=
+  Mtr2x4d.FromCols(
+    new Vec2d(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2d(m1.Row0*m2.Col1, m1.Row1*m2.Col1),
+    new Vec2d(m1.Row0*m2.Col2, m1.Row1*m2.Col2),
+    new Vec2d(m1.Row0*m2.Col3, m1.Row1*m2.Col3)
+  );
+
+function operator implicit(m: Mtr3x4d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0), default(Vec3d));
+
+function operator implicit(m: Mtr3x4d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
+function operator explicit(m: Mtr2x4d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0), default(Vec3d));
+
+function operator implicit(m: Mtr3x4d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
+function operator explicit(m: Mtr2x4f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0), default(Vec3d));
+
+function operator implicit(m: Mtr3x4d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3d));
+
+function operator implicit(m: Mtr3x4d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3d));
+
+function operator implicit(m: Mtr3x4d): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3d));
+
+function operator*(m1: Mtr3d; m2: Mtr3x4d); extensionmethod :=
+  Mtr3x4d.FromCols(
+    new Vec3d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1),
+    new Vec3d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2),
+    new Vec3d(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3)
+  );
+
+function operator implicit(m: Mtr3x4d): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3d));
+
+function Transpose(self: Mtr3x4d); extensionmethod :=
+  Mtr4x3d.FromCols(self.Row0, self.Row1, self.Row2);
+
+function operator*(v: Vec3f; m: Mtr3x4f); extensionmethod :=
+  new Vec4f(m.Col0*v, m.Col1*v, m.Col2*v, m.Col3*v);
+
+function operator*(m: Mtr3x4f; v: Vec4f); extensionmethod :=
+  new Vec3f(m.Row0*v, m.Row1*v, m.Row2*v);
+
+function operator implicit(m: Mtr3x4f): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(0.0, 0.0, 1.0), default(Vec3f));
+
+function operator implicit(m: Mtr3x4f): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(0.0, 0.0, 1.0), default(Vec3f));
+
+function operator implicit(m: Mtr3x4f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0), default(Vec3f));
+
+function operator implicit(m: Mtr3x4f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0), default(Vec3f));
+
+function operator*(m1: Mtr2x3f; m2: Mtr3x4f); extensionmethod :=
+  Mtr2x4f.FromCols(
+    new Vec2f(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2f(m1.Row0*m2.Col1, m1.Row1*m2.Col1),
+    new Vec2f(m1.Row0*m2.Col2, m1.Row1*m2.Col2),
+    new Vec2f(m1.Row0*m2.Col3, m1.Row1*m2.Col3)
+  );
+
+function operator implicit(m: Mtr3x4f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
+function operator explicit(m: Mtr2x4d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0), default(Vec3f));
+
+function operator implicit(m: Mtr3x4f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
+function operator explicit(m: Mtr2x4f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0), default(Vec3f));
+
+function operator implicit(m: Mtr3x4f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3f));
+
+function operator implicit(m: Mtr3x4f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3f));
+
+function operator implicit(m: Mtr3x4f): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3f));
+
+function operator implicit(m: Mtr3x4f): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3f));
+
+function operator*(m1: Mtr3f; m2: Mtr3x4f); extensionmethod :=
+  Mtr3x4f.FromCols(
+    new Vec3f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1),
+    new Vec3f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2),
+    new Vec3f(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3)
+  );
+
+function operator implicit(m: Mtr3x4f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3d));
+function operator implicit(m: Mtr3x4d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3f));
+
+function Transpose(self: Mtr3x4f); extensionmethod :=
+  Mtr4x3f.FromCols(self.Row0, self.Row1, self.Row2);
+
+function operator*(m: Mtr4x2d; v: Vec2d); extensionmethod :=
+  new Vec4d(m.Row0*v, m.Row1*v, m.Row2*v, m.Row3*v);
+
+function operator*(v: Vec4d; m: Mtr4x2d); extensionmethod :=
+  new Vec2d(m.Col0*v, m.Col1*v);
+
+function operator implicit(m: Mtr4x2d): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
+
+function operator*(m1: Mtr4x2d; m2: Mtr2d); extensionmethod :=
+  Mtr4x2d.FromCols(
+    new Vec4d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1)
+  );
+
+function operator implicit(m: Mtr4x2d): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
+
+function operator explicit(m: Mtr4x2d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
+
+function operator*(m1: Mtr4x2d; m2: Mtr2x3d); extensionmethod :=
+  Mtr4x3d.FromCols(
+    new Vec4d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1),
+    new Vec4d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2)
+  );
+
+function operator explicit(m: Mtr4x2d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
+
+function operator explicit(m: Mtr4x2d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec2d(0.0, 0.0));
+function operator explicit(m: Mtr2x4d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
+
+function operator*(m1: Mtr4x2d; m2: Mtr2x4d); extensionmethod :=
+  Mtr4d.FromCols(
+    new Vec4d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1),
+    new Vec4d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2),
+    new Vec4d(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3, m1.Row3*m2.Col3)
+  );
+
+function operator*(m1: Mtr2x4d; m2: Mtr4x2d); extensionmethod :=
+  Mtr2d.FromCols(
+    new Vec2d(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2d(m1.Row0*m2.Col1, m1.Row1*m2.Col1)
+  );
+
+function operator explicit(m: Mtr4x2d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec2f(0.0, 0.0));
+function operator explicit(m: Mtr2x4f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
+
+function operator implicit(m: Mtr4x2d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
+
+function operator implicit(m: Mtr4x2d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
+
+function operator explicit(m: Mtr4x2d): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
+
+function operator explicit(m: Mtr4x2d): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
+
+function operator explicit(m: Mtr4x2d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec3d(0.0, 0.0, 0.0));
+function operator explicit(m: Mtr3x4d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
+
+function operator*(m1: Mtr3x4d; m2: Mtr4x2d); extensionmethod :=
+  Mtr3x2d.FromCols(
+    new Vec3d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1)
+  );
+
+function operator explicit(m: Mtr4x2d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec3f(0.0, 0.0, 0.0));
+function operator explicit(m: Mtr3x4f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
+
+function Transpose(self: Mtr4x2d); extensionmethod :=
+  Mtr2x4d.FromCols(self.Row0, self.Row1, self.Row2, self.Row3);
+
+function operator*(m: Mtr4x2f; v: Vec2f); extensionmethod :=
+  new Vec4f(m.Row0*v, m.Row1*v, m.Row2*v, m.Row3*v);
+
+function operator*(v: Vec4f; m: Mtr4x2f); extensionmethod :=
+  new Vec2f(m.Col0*v, m.Col1*v);
+
+function operator implicit(m: Mtr4x2f): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
+
+function operator implicit(m: Mtr4x2f): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
+
+function operator*(m1: Mtr4x2f; m2: Mtr2f); extensionmethod :=
+  Mtr4x2f.FromCols(
+    new Vec4f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1)
+  );
+
+function operator explicit(m: Mtr4x2f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
+
+function operator explicit(m: Mtr4x2f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
+
+function operator*(m1: Mtr4x2f; m2: Mtr2x3f); extensionmethod :=
+  Mtr4x3f.FromCols(
+    new Vec4f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1),
+    new Vec4f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2)
+  );
+
+function operator explicit(m: Mtr4x2f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec2d(0.0, 0.0));
+function operator explicit(m: Mtr2x4d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
+
+function operator explicit(m: Mtr4x2f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec2f(0.0, 0.0));
+function operator explicit(m: Mtr2x4f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
+
+function operator*(m1: Mtr4x2f; m2: Mtr2x4f); extensionmethod :=
+  Mtr4f.FromCols(
+    new Vec4f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1),
+    new Vec4f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2),
+    new Vec4f(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3, m1.Row3*m2.Col3)
+  );
+
+function operator*(m1: Mtr2x4f; m2: Mtr4x2f); extensionmethod :=
+  Mtr2f.FromCols(
+    new Vec2f(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2f(m1.Row0*m2.Col1, m1.Row1*m2.Col1)
+  );
+
+function operator implicit(m: Mtr4x2f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
+
+function operator implicit(m: Mtr4x2f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
+
+function operator explicit(m: Mtr4x2f): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
+
+function operator explicit(m: Mtr4x2f): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
+
+function operator explicit(m: Mtr4x2f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec3d(0.0, 0.0, 0.0));
+function operator explicit(m: Mtr3x4d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
+
+function operator explicit(m: Mtr4x2f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec3f(0.0, 0.0, 0.0));
+function operator explicit(m: Mtr3x4f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
+
+function operator*(m1: Mtr3x4f; m2: Mtr4x2f); extensionmethod :=
+  Mtr3x2f.FromCols(
+    new Vec3f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1)
+  );
+
+function operator implicit(m: Mtr4x2f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(m.Col0, m.Col1);
+function operator implicit(m: Mtr4x2d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(m.Col0, m.Col1);
+
+function Transpose(self: Mtr4x2f); extensionmethod :=
+  Mtr2x4f.FromCols(self.Row0, self.Row1, self.Row2, self.Row3);
+
+function operator*(m: Mtr4x3d; v: Vec3d); extensionmethod :=
+  new Vec4d(m.Row0*v, m.Row1*v, m.Row2*v, m.Row3*v);
+
+function operator*(v: Vec4d; m: Mtr4x3d); extensionmethod :=
+  new Vec3d(m.Col0*v, m.Col1*v, m.Col2*v);
+
+function operator implicit(m: Mtr4x3d): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(0.0, 0.0, 1.0, 0.0));
+
+function operator implicit(m: Mtr4x3d): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(0.0, 0.0, 1.0, 0.0));
+
+function operator implicit(m: Mtr4x3d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0));
+
+function operator implicit(m: Mtr4x3d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0));
+
+function operator explicit(m: Mtr4x3d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr2x4d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0));
+
+function operator*(m1: Mtr2x4d; m2: Mtr4x3d); extensionmethod :=
+  Mtr2x3d.FromCols(
+    new Vec2d(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2d(m1.Row0*m2.Col1, m1.Row1*m2.Col1),
+    new Vec2d(m1.Row0*m2.Col2, m1.Row1*m2.Col2)
+  );
+
+function operator explicit(m: Mtr4x3d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr2x4f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0));
+
+function operator implicit(m: Mtr4x3d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
+
+function operator*(m1: Mtr4x3d; m2: Mtr3x2d); extensionmethod :=
+  Mtr4x2d.FromCols(
+    new Vec4d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1)
+  );
+
+function operator implicit(m: Mtr4x3d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
+
+function operator implicit(m: Mtr4x3d): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
+
+function operator*(m1: Mtr4x3d; m2: Mtr3d); extensionmethod :=
+  Mtr4x3d.FromCols(
+    new Vec4d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1),
+    new Vec4d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2)
+  );
+
+function operator implicit(m: Mtr4x3d): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
+
+function operator explicit(m: Mtr4x3d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr3x4d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
+
+function operator*(m1: Mtr4x3d; m2: Mtr3x4d); extensionmethod :=
+  Mtr4d.FromCols(
+    new Vec4d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1),
+    new Vec4d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2),
+    new Vec4d(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3, m1.Row3*m2.Col3)
+  );
+
+function operator*(m1: Mtr3x4d; m2: Mtr4x3d); extensionmethod :=
+  Mtr3d.FromCols(
+    new Vec3d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1),
+    new Vec3d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2)
+  );
+
+function operator explicit(m: Mtr4x3d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr3x4f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
+
+function operator implicit(m: Mtr4x3d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr4x2d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(m.Col0, m.Col1, m.Col2);
+
+function operator implicit(m: Mtr4x3d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr4x2f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(m.Col0, m.Col1, m.Col2);
+
+function Transpose(self: Mtr4x3d); extensionmethod :=
+  Mtr3x4d.FromCols(self.Row0, self.Row1, self.Row2, self.Row3);
+
+function operator*(m: Mtr4x3f; v: Vec3f); extensionmethod :=
+  new Vec4f(m.Row0*v, m.Row1*v, m.Row2*v, m.Row3*v);
+
+function operator*(v: Vec4f; m: Mtr4x3f); extensionmethod :=
+  new Vec3f(m.Col0*v, m.Col1*v, m.Col2*v);
+
+function operator implicit(m: Mtr4x3f): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(0.0, 0.0, 1.0, 0.0));
+
+function operator implicit(m: Mtr4x3f): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(0.0, 0.0, 1.0, 0.0));
+
+function operator implicit(m: Mtr4x3f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0));
+
+function operator implicit(m: Mtr4x3f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0));
+
+function operator explicit(m: Mtr4x3f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr2x4d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0));
+
+function operator explicit(m: Mtr4x3f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr2x4f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0));
+
+function operator*(m1: Mtr2x4f; m2: Mtr4x3f); extensionmethod :=
+  Mtr2x3f.FromCols(
+    new Vec2f(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2f(m1.Row0*m2.Col1, m1.Row1*m2.Col1),
+    new Vec2f(m1.Row0*m2.Col2, m1.Row1*m2.Col2)
+  );
+
+function operator implicit(m: Mtr4x3f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
+
+function operator implicit(m: Mtr4x3f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
+
+function operator*(m1: Mtr4x3f; m2: Mtr3x2f); extensionmethod :=
+  Mtr4x2f.FromCols(
+    new Vec4f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1)
+  );
+
+function operator implicit(m: Mtr4x3f): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
+
+function operator implicit(m: Mtr4x3f): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
+
+function operator*(m1: Mtr4x3f; m2: Mtr3f); extensionmethod :=
+  Mtr4x3f.FromCols(
+    new Vec4f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1),
+    new Vec4f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2)
+  );
+
+function operator explicit(m: Mtr4x3f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr3x4d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
+
+function operator explicit(m: Mtr4x3f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr3x4f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
+
+function operator*(m1: Mtr4x3f; m2: Mtr3x4f); extensionmethod :=
+  Mtr4f.FromCols(
+    new Vec4f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1),
+    new Vec4f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2),
+    new Vec4f(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3, m1.Row3*m2.Col3)
+  );
+
+function operator*(m1: Mtr3x4f; m2: Mtr4x3f); extensionmethod :=
+  Mtr3f.FromCols(
+    new Vec3f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1),
+    new Vec3f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2)
+  );
+
+function operator implicit(m: Mtr4x3f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr4x2d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(m.Col0, m.Col1, m.Col2);
+
+function operator implicit(m: Mtr4x3f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr4x2f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(m.Col0, m.Col1, m.Col2);
+
+function operator implicit(m: Mtr4x3f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator implicit(m: Mtr4x3d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(m.Col0, m.Col1, m.Col2);
+
+function Transpose(self: Mtr4x3f); extensionmethod :=
+  Mtr3x4f.FromCols(self.Row0, self.Row1, self.Row2, self.Row3);
+
+function operator*(m: Mtr4d; v: Vec4d); extensionmethod :=
+  new Vec4d(m.Row0*v, m.Row1*v, m.Row2*v, m.Row3*v);
+
+function operator*(v: Vec4d; m: Mtr4d); extensionmethod :=
+  new Vec4d(m.Col0*v, m.Col1*v, m.Col2*v, m.Col3*v);
+
+function operator implicit(m: Mtr4d): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(0.0, 0.0, 1.0, 0.0), new Vec4d(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4d): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(0.0, 0.0, 1.0, 0.0), new Vec4d(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0), new Vec4d(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0), new Vec4d(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr2x4d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0), new Vec4d(m.val03, m.val13, 0.0, 1.0));
+
+function operator*(m1: Mtr2x4d; m2: Mtr4d); extensionmethod :=
+  Mtr2x4d.FromCols(
+    new Vec2d(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2d(m1.Row0*m2.Col1, m1.Row1*m2.Col1),
+    new Vec2d(m1.Row0*m2.Col2, m1.Row1*m2.Col2),
+    new Vec2d(m1.Row0*m2.Col3, m1.Row1*m2.Col3)
+  );
+
+function operator implicit(m: Mtr4d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr2x4f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0), new Vec4d(m.val03, m.val13, 0.0, 1.0));
+
+function operator implicit(m: Mtr4d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4d): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4d): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr3x4d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(m.val03, m.val13, m.val23, 1.0));
+
+function operator*(m1: Mtr3x4d; m2: Mtr4d); extensionmethod :=
+  Mtr3x4d.FromCols(
+    new Vec3d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1),
+    new Vec3d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2),
+    new Vec3d(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3)
+  );
+
+function operator implicit(m: Mtr4d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr3x4f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(m.val03, m.val13, m.val23, 1.0));
+
+function operator implicit(m: Mtr4d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr4x2d): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec4d(0.0, 0.0, 0.0, 1.0));
+
+function operator*(m1: Mtr4d; m2: Mtr4x2d); extensionmethod :=
+  Mtr4x2d.FromCols(
+    new Vec4d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1)
+  );
+
+function operator implicit(m: Mtr4d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr4x2f): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec4d(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x3d): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+
+function operator*(m1: Mtr4d; m2: Mtr4x3d); extensionmethod :=
+  Mtr4x3d.FromCols(
+    new Vec4d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1),
+    new Vec4d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2)
+  );
+
+function operator implicit(m: Mtr4d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x3f): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+
+function operator*(m1: Mtr4d; m2: Mtr4d); extensionmethod :=
+  Mtr4d.FromCols(
+    new Vec4d(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1),
+    new Vec4d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2),
+    new Vec4d(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3, m1.Row3*m2.Col3)
+  );
+
+function Transpose(self: Mtr4d); extensionmethod :=
+  Mtr4d.FromCols(self.Row0, self.Row1, self.Row2, self.Row3);
+
+function operator*(m: Mtr4f; v: Vec4f); extensionmethod :=
+  new Vec4f(m.Row0*v, m.Row1*v, m.Row2*v, m.Row3*v);
+
+function operator*(v: Vec4f; m: Mtr4f); extensionmethod :=
+  new Vec4f(m.Col0*v, m.Col1*v, m.Col2*v, m.Col3*v);
+
+function operator implicit(m: Mtr4f): Mtr2d; extensionmethod := Mtr2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(0.0, 0.0, 1.0, 0.0), new Vec4f(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4f): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr2f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(0.0, 0.0, 1.0, 0.0), new Vec4f(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0), new Vec4f(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0), new Vec4f(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr2x4d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0), new Vec4f(m.val03, m.val13, 0.0, 1.0));
+
+function operator implicit(m: Mtr4f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr2x4f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0), new Vec4f(m.val03, m.val13, 0.0, 1.0));
+
+function operator*(m1: Mtr2x4f; m2: Mtr4f); extensionmethod :=
+  Mtr2x4f.FromCols(
+    new Vec2f(m1.Row0*m2.Col0, m1.Row1*m2.Col0),
+    new Vec2f(m1.Row0*m2.Col1, m1.Row1*m2.Col1),
+    new Vec2f(m1.Row0*m2.Col2, m1.Row1*m2.Col2),
+    new Vec2f(m1.Row0*m2.Col3, m1.Row1*m2.Col3)
+  );
+
+function operator implicit(m: Mtr4f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr3x2f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4f): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4f): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr3x4d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(m.val03, m.val13, m.val23, 1.0));
+
+function operator implicit(m: Mtr4f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr3x4f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(m.val03, m.val13, m.val23, 1.0));
+
+function operator*(m1: Mtr3x4f; m2: Mtr4f); extensionmethod :=
+  Mtr3x4f.FromCols(
+    new Vec3f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0),
+    new Vec3f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1),
+    new Vec3f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2),
+    new Vec3f(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3)
+  );
+
+function operator implicit(m: Mtr4f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr4x2d): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec4f(0.0, 0.0, 0.0, 1.0));
+
+function operator implicit(m: Mtr4f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(m.Col0, m.Col1);
+function operator explicit(m: Mtr4x2f): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec4f(0.0, 0.0, 0.0, 1.0));
+
+function operator*(m1: Mtr4f; m2: Mtr4x2f); extensionmethod :=
+  Mtr4x2f.FromCols(
+    new Vec4f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1)
+  );
+
+function operator implicit(m: Mtr4f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x3d): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+
+function operator implicit(m: Mtr4f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x3f): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+
+function operator*(m1: Mtr4f; m2: Mtr4x3f); extensionmethod :=
+  Mtr4x3f.FromCols(
+    new Vec4f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1),
+    new Vec4f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2)
+  );
+
+function operator implicit(m: Mtr4f): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator implicit(m: Mtr4d): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+
+function operator*(m1: Mtr4f; m2: Mtr4f); extensionmethod :=
+  Mtr4f.FromCols(
+    new Vec4f(m1.Row0*m2.Col0, m1.Row1*m2.Col0, m1.Row2*m2.Col0, m1.Row3*m2.Col0),
+    new Vec4f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1),
+    new Vec4f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2),
+    new Vec4f(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3, m1.Row3*m2.Col3)
+  );
+
+function Transpose(self: Mtr4f); extensionmethod :=
+  Mtr4f.FromCols(self.Row0, self.Row1, self.Row2, self.Row3);
+
+

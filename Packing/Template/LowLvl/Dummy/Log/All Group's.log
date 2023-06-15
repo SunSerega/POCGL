@@ -1,0 +1,11 @@
+﻿
+
+
+# Multichoise1 (::Multichoise1) : EnumBase
+	Choise1_1_InpFlat[$0001]
+	Choise1_2_InpArr[$0002]
+	Choise1_3_OtpFlat[$0003]
+	Choise1_4_OtpArr[$0004]
+	Choise1_5_OtpStaticArr[$0005]
+
+

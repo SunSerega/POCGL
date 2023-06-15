@@ -1,0 +1,8 @@
+﻿
+
+
+# gl::PixelStorei
+!possible_par_types
+ *	| +gl::PixelStoreResampleMode	|
+
+

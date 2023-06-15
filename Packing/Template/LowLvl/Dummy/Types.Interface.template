@@ -1,0 +1,32 @@
+﻿  
+  
+  
+  Multichoise1 = record
+    public val: EnumBase;
+    public constructor(val: EnumBase) := self.val := val;
+    
+    public static property Choise1_1_InpFlat:      Multichoise1 read new Multichoise1($0001);
+    public static property Choise1_2_InpArr:       Multichoise1 read new Multichoise1($0002);
+    public static property Choise1_3_OtpFlat:      Multichoise1 read new Multichoise1($0003);
+    public static property Choise1_4_OtpArr:       Multichoise1 read new Multichoise1($0004);
+    public static property Choise1_5_OtpStaticArr: Multichoise1 read new Multichoise1($0005);
+    
+    public function ToString: string; override;
+    begin
+      if Choise1_1_InpFlat = self then
+        Result := 'Choise1_1_InpFlat' else
+      if Choise1_2_InpArr = self then
+        Result := 'Choise1_2_InpArr' else
+      if Choise1_3_OtpFlat = self then
+        Result := 'Choise1_3_OtpFlat' else
+      if Choise1_4_OtpArr = self then
+        Result := 'Choise1_4_OtpArr' else
+      if Choise1_5_OtpStaticArr = self then
+        Result := 'Choise1_5_OtpStaticArr' else
+        Result := $'Multichoise1[{self.val}]';
+    end;
+    
+  end;
+  
+  
+  

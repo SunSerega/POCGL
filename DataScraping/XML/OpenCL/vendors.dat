@@ -1,0 +1,25 @@
+
+
+
+Khronos			= KHR
+EXT				= EXT
+Intel			= INTEL
+Arm				= ARM
+Qualcomm		= QCOM
+AMD				= AMD
+IMG				= IMG
+NVIDIA			= NV
+IBM				=
+Apple			= APPLE
+VeriSilicon		=
+Altera			=
+Khronos SPIR WG	=
+Codeplay		=
+Google			=
+
+Multiple		=
+
+= OCLICD
+= PoCL
+
+

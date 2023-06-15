@@ -1,0 +1,187 @@
+﻿
+
+
+//--------------------------------------------------
+//                  Basic type's
+//--------------------------------------------------
+
+void					= void
+VOID					= void
+
+GLboolean				= gl::Bool8
+Bool					= gl::Bool8
+BOOL					= gl::Bool32
+
+GLchar					= ntv_char
+GLcharARB				= ntv_char
+char					= ntv_char
+LPCSTR					= const ntv_char *
+
+GLbyte					= SByte
+GLubyte					= Byte
+
+GLshort					= Int16
+GLushort				= UInt16
+USHORT					= UInt16
+
+GLint					= Int32
+GLsizei					= Int32
+int32_t					= Int32
+int						= Int32
+INT						= Int32
+INT32					= Int32
+GLuint					= UInt32
+unsigned int			= UInt32
+UINT					= UInt32
+DWORD					= UInt32
+// Only true for windows, on linux this is UIntPtr
+// But also this is only used from wgl
+unsigned long			= UInt32
+
+GLintptr				= IntPtr
+GLintptrARB				= IntPtr
+LPVOID					= IntPtr
+// These 2 are defined as signed, but probably meant unsigned
+GLsizeiptr				= UIntPtr
+GLsizeiptrARB			= UIntPtr
+
+GLint64					= Int64
+GLint64EXT				= Int64
+int64_t					= Int64
+INT64					= Int64
+GLuint64				= UInt64
+GLuint64EXT				= UInt64
+
+GLfloat					= single
+GLclampf				= single
+float					= single
+FLOAT					= single
+GLdouble				= double
+GLclampd				= double
+
+GLenum					= DummyEnum
+GLbitfield				= DummyFlags
+HANDLE					= IntPtr
+GLsync					= IntPtr
+struct _cl_context		= IntPtr
+struct _cl_event		= IntPtr
+
+GLhalfNV				= gl::half
+GLfixed					= gl::fixed
+GLhandleARB				= gl::handle+ARB
+
+// GL_NV_vdpau_interop
+GLvdpauSurfaceNV		= gl::vdpau_surface
+
+//--------------------------------------------------
+//                    Func Ptr's
+//--------------------------------------------------
+
+PROC					= IntPtr			=// Result of wglGetProcAddress
+__GLXextFuncPtr			= IntPtr			=// Result of glXGetProcAddress
+
+//--------------------------------------------------
+//                       gdi
+//--------------------------------------------------
+
+HDC						= gdi::device_context
+HENHMETAFILE			= gdi::enhanced_metafile_handle
+PIXELFORMATDESCRIPTOR	= gdi::pixel_format_descriptor
+LAYERPLANEDESCRIPTOR	= gdi::layer_plane_descriptor
+LPGLYPHMETRICSFLOAT		= gdi::glyphmetrics_float *
+HGLRC					= gdi::rendering_context
+COLORREF				= gdi::color_ref
+
+HPBUFFERARB				= wgl::pixel_buffer
+HPBUFFEREXT				= wgl::pixel_buffer
+
+// WGL_NV_video_output
+HPVIDEODEV				= wgl::video_device+NV
+
+// WGL_NV_gpu_affinity
+PGPU_DEVICE				= wgl::gpu_device+NV *
+HGPUNV					= wgl::gpu+NV
+
+// GL_NV_present_video
+// WGL_NV_present_video
+HVIDEOOUTPUTDEVICENV	= wgl::video_output_device_handle+NV
+
+// GL_NV_video_capture
+// WGL_NV_video_capture
+HVIDEOINPUTDEVICENV		= wgl::video_input_device_handle+NV
+
+//--------------------------------------------------
+//                       glx
+//--------------------------------------------------
+
+// Structs
+GLXPbufferClobberEvent		= IntPtr-
+GLXBufferSwapComplete		= IntPtr-
+GLXEvent					= IntPtr-
+GLXStereoNotifyEventEXT		= IntPtr-
+GLXBufferClobberEventSGIX	= IntPtr-
+GLXHyperpipeNetworkSGIX		= IntPtr-
+GLXHyperpipeConfigSGIX		= IntPtr-
+GLXPipeRect					= IntPtr-
+GLXPipeRectLimits			= IntPtr-
+
+Status					= gl::Bool32
+
+XVisualInfo				= x::visual_info_ptr -
+Display					= x::display_ptr -
+Window					= x::window
+Pixmap					= x::pixel_map
+Colormap				= x::color_map
+Font					= x::font
+DMparams				= x::direct_memory_params
+DMbuffer				= x::direct_memory_buffer
+
+GLXContext				= glx::context
+GLXContextID			= glx::context_id
+GLXDrawable				= glx::drawable
+GLXFBConfig				= glx::frame_buffer_config
+GLXFBConfigSGIX			= glx::frame_buffer_config
+GLXWindow				= glx::window
+GLXPixmap				= glx::pixel_map
+GLXPbuffer				= glx::pixel_buffer
+GLXPbufferSGIX			= glx::pixel_buffer
+
+// VideoLAN
+VLServer				= glx::vl_server
+VLPath					= glx::vl_path
+VLNode					= glx::vl_node
+
+// GLX_NV_video_out
+GLXVideoDeviceNV		= glx::video_device+NV
+
+// GL_NV_video_capture
+// GLX_NV_video_capture
+GLXVideoCaptureDeviceNV	= glx::video_capture_device+NV
+
+// GLX_SGIX_video_source
+GLXVideoSourceSGIX		= glx::video_source+SGIX
+
+//--------------------------------------------------
+//                    disabled
+//--------------------------------------------------
+
+// gles
+GLclampx				= DISABLED_TYPE
+GLeglImageOES			= DISABLED_TYPE
+GLeglClientBufferEXT	= DISABLED_TYPE
+
+// unused
+_GPU_DEVICE				= DISABLED_TYPE
+GPU_DEVICE				= DISABLED_TYPE
+CHAR					= DISABLED_TYPE
+GLhalf					= DISABLED_TYPE
+GLhalfARB				= DISABLED_TYPE
+GLvoid					= DISABLED_TYPE
+GLXFBConfigID			= DISABLED_TYPE
+GLXFBConfigIDSGIX		= DISABLED_TYPE
+HPGPUNV					= DISABLED_TYPE
+RECT					= DISABLED_TYPE
+Screen					= DISABLED_TYPE
+XID						= DISABLED_TYPE
+
+

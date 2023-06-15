@@ -1,0 +1,50 @@
+﻿
+
+
+# cl::ErrorCode
+!cust_memb
+public function IS_ERROR := val<>0;
+!cust_memb
+public procedure RaiseIfError;
+!cust_memb
+public static function operator explicit(st: clCommandExecutionStatus): clErrorCode := new clErrorCode(st.val);
+public static function operator explicit(ec: clErrorCode): clCommandExecutionStatus := new clCommandExecutionStatus(ec.val);
+
+
+
+# cl::Bool
+!cust_memb
+public static function operator implicit(b: clBool): boolean := b<>FALSE;
+public static function operator implicit(b: boolean): clBool := new clBool(UInt32(b));
+!cust_memb
+public static function operator not(b: clBool): clBool := if b then TRUE else FALSE;
+
+
+
+# cl::CommandExecutionStatus
+!cust_memb
+public function IS_ERROR := val < 0;
+
+
+
+# cl::DeviceFpConfig
+!rename
+cl::DeviceFPConfig
+
+# cl::DeviceSvmCapabilities
+!rename
+cl::DeviceSVMCapabilities
+
+# cl::DeviceDeviceEnqueueCapabilities
+!rename
+cl::DeviceOnDeviceEnqueueCapabilities
+
+# cl::NdrangeKernelCommandProperties
+!rename
+cl::NDRangeKernelCommandProperties
+
+# cl::D3d[%v:10,11%]Device[%end:Set,Source%]
+!rename
+cl::D3D{%v%}Device{%end%}
+
+

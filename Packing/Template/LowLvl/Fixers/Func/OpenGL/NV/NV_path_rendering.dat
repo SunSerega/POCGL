@@ -1,0 +1,14 @@
+﻿
+
+
+# gl::PointAlongPath+NV
+!possible_par_types
+ *	| *	| *	| *	| *	| -array of single	| -array of single	| -array of single	| -array of single	|
+!limit_ovrs
+ *	| *	| *	| *	| *	| *					| *					| var single		| var single		|
+ *	| *	| *	| *	| *	| *					| *					| IntPtr			| IntPtr			|
+!limit_ovrs
+ *	| *	| *	| *	| *	| var single		| var single		| *					| *					|
+ *	| *	| *	| *	| *	| IntPtr			| IntPtr			| *					| *					|
+
+

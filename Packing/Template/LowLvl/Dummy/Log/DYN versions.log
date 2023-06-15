@@ -1,0 +1,21 @@
+﻿
+
+
+# 1.0
+	Enum [::Choise1_1_InpFlat]
+	Enum [::Choise1_2_InpArr]
+	Enum [::Choise1_3_OtpFlat]
+	Enum [::Choise1_4_OtpArr]
+	Enum [::Choise1_5_OtpStaticArr]
+	Func [::1NoParam]
+	Func [::2ParamString]
+	Func [::2ParamStringRO]
+	Func [::3ResultString]
+	Func [::3ResultStringRO]
+	Func [::4Generic]
+	Func [::4GenericWOVarArg]
+	Func [::5Arrrrrray]
+	Func [::6Mix]
+	Func [::7EnumToType]
+
+

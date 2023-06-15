@@ -1,0 +1,72 @@
+﻿
+
+
+# ::1NoParam[1]:
+
+# ::2ParamString[1]:
+	IntPtr |
+	------ |
+	s      |
+
+# ::2ParamStringRO[2]:
+	string |
+	IntPtr |
+	------ |
+	s      |
+
+# ::3ResultString[1]:
+	string |
+
+# ::3ResultStringRO[1]:
+	string |
+
+# ::4Generic[3]:
+	array of T |
+	var T      |
+	IntPtr     |
+	---------- |
+	data       |
+
+# ::4GenericWOVarArg[2]:
+	array of T |
+	IntPtr     |
+	---------- |
+	data       |
+
+# ::5Arrrrrray[6]:
+	array of array of array of array of array of T |
+	array of array of array of array of IntPtr     |
+	array of array of array of IntPtr              |
+	array of array of IntPtr                       |
+	var IntPtr                                     |
+	pointer                                        |
+	---------------------------------------------- |
+	a                                              |
+
+# ::6Mix[10]:
+	string | IntPtr | string | array of T | array of T2 |
+	string | IntPtr | IntPtr | array of T | array of T2 |
+	string | IntPtr | string | var T      | var T2      |
+	string | IntPtr | string | var T      | IntPtr      |
+	string | IntPtr | string | IntPtr     | var T2      |
+	string | IntPtr | string | IntPtr     | IntPtr      |
+	string | IntPtr | IntPtr | var T      | var T2      |
+	string | IntPtr | IntPtr | var T      | IntPtr      |
+	string | IntPtr | IntPtr | IntPtr     | var T2      |
+	string | IntPtr | IntPtr | IntPtr     | IntPtr      |
+	------ | ------ | ------ | ---------- | ----------- |
+	       | s1     | s2     | gen        | a           |
+
+# ::7EnumToType[8]:
+	Multichoise1                        | UIntPtr        | var TInp              | UIntPtr        | var T                   | var UIntPtr        |
+	Multichoise1.Choise1_1_InpFlat      | %inp_size%     | UIntPtr               | %inp_size%     | var string              | %ret_size%         |
+	Multichoise1.Choise1_2_InpArr       | %inp_size%     | ArraySegment<UIntPtr> | %inp_size%     | var string              | %ret_size%         |
+	Multichoise1.Choise1_3_OtpFlat      | *              | *                     | %inp_size%     | var UIntPtr             | %ret_size%         |
+	Multichoise1.Choise1_4_OtpArr       | *              | *                     | %inp_size%     | var array of UIntPtr    | %ret_size%         |
+	Multichoise1.Choise1_5_OtpStaticArr | *              | *                     | %inp_size%     | var array[3] of UIntPtr | %ret_size%         |
+	Multichoise1                        | UIntPtr        | IntPtr                | UIntPtr        | IntPtr                  | var UIntPtr        |
+	Multichoise1                        | UIntPtr        | IntPtr                | UIntPtr        | IntPtr                  | IntPtr             |
+	----------------------------------- | -------------- | --------------------- | -------------- | ----------------------- | ------------------ |
+	choise                              | inp_value_size | inp_value             | otp_value_size | otp_value               | otp_value_size_ret |
+
+

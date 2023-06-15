@@ -1,0 +1,63 @@
+﻿
+
+
+//--------------------------------------------------
+//                  Basic type's
+//--------------------------------------------------
+
+void						= void
+
+char						= ntv_char
+
+uint8_t						= Byte
+unsigned char				= Byte
+
+int32_t						= Int32
+int							= Int32
+uint32_t					= UInt32
+unsigned int				= UInt32
+UINT						= UInt32
+
+intptr_t					= IntPtr
+HANDLE						= IntPtr
+size_t						= UIntPtr
+
+uint64_t					= UInt64
+
+float						= single
+
+//--------------------------------------------------
+//                     Direct3D
+//--------------------------------------------------
+
+IDirect3DSurface9			= d3d::surface9-
+ID3D10Buffer				= d3d10::buffer-
+ID3D11Buffer				= d3d11::buffer-
+ID3D10Texture2D				= d3d10::texture_2d-
+ID3D11Texture2D				= d3d11::texture_2d-
+ID3D10Texture3D				= d3d10::texture_3d-
+ID3D11Texture3D				= d3d11::texture_3d-
+
+DXGI_FORMAT					= d3d::pixel_format
+// Different enums, but same meaning
+// Doesn't matter, while this is turned into IdClass
+D3DFORMAT					= d3d::pixel_format
+
+//--------------------------------------------------
+//                        VA
+//--------------------------------------------------
+
+VASurfaceID					= va::surface_id-
+VAImageFormat				= va::image_format
+
+//--------------------------------------------------
+//                     disabled
+//--------------------------------------------------
+
+double						=DISABLED_TYPE
+int16_t						=DISABLED_TYPE
+int64_t						=DISABLED_TYPE
+int8_t						=DISABLED_TYPE
+uint16_t					=DISABLED_TYPE
+
+

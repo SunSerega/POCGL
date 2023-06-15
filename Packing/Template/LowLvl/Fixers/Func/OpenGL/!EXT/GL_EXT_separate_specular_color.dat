@@ -1,0 +1,16 @@
+﻿
+
+
+# gl::Materiali
+!possible_par_types
+ *	| *	| +gl::LightModelColorControl	|
+
+# gl::Lighti
+!possible_par_types
+ *	| *	| +gl::LightModelColorControl	|
+
+# gl::LightModeli
+!possible_par_types
+ *	| +gl::LightModelColorControl	|
+
+

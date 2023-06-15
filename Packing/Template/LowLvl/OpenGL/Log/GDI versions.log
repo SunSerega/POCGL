@@ -1,0 +1,12 @@
+﻿
+
+
+# 1.0
+	Func [gdi::ChoosePixelFormat]
+	Func [gdi::DescribePixelFormat]
+	Func [gdi::GetEnhMetaFilePixelFormat]
+	Func [gdi::GetPixelFormat]
+	Func [gdi::SetPixelFormat]
+	Func [gdi::SwapBuffers]
+
+

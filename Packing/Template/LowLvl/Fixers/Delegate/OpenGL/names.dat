@@ -1,0 +1,12 @@
+
+
+
+# gl::DEBUGPROC[%vendor:,+AMD,+ARB,+KHR%]
+!rename
+gl::DebugProc{%vendor%}
+
+# gl::VULKANPROC+NV
+!rename
+gl::VulkanProc+NV
+
+

@@ -1,0 +1,53 @@
+﻿
+
+
+# gl::Boolean
+!base
+UInt32
+!rename
+gl::Bool32
+!cust_memb
+public static function operator implicit(b: glBool32): boolean := b<>FALSE;
+public static function operator implicit(b: boolean): glBool32 := new glBool32(UInt32(b));
+!cust_memb
+public static function operator not(b: glBool32): glBool32 := if b then TRUE else FALSE;
+
+# gl::Bool8
+!add
+Byte
+false
+gl::FALSE	= 0
+gl::TRUE	= 1
+!cust_memb
+public static function operator implicit(b: glBool8): boolean := b<>FALSE;
+public static function operator implicit(b: boolean): glBool8 := new glBool8(Byte(b));
+!cust_memb
+public static function operator not(b: glBool8): glBool8 := if b then TRUE else FALSE;
+
+# gl::ConvolutionBorderMode
+# gl::DepthStencilTextureMode
+# gl::FeedBackToken
+# gl::FogCoordSrc
+# gl::FogMode
+# gl::LightModelColorControl
+# gl::MapTextureFormat
+# gl::PixelStoreResampleMode
+# gl::PixelStoreSubsampleRate
+# gl::TextureCompareMode
+# gl::TextureEnvMode
+# gl::TextureGenMode
+# gl::TextureMagFilter
+# gl::TextureMinFilter
+# gl::TextureSwizzle
+# gl::TextureWrapMode
+!base
+DummyEnum
+
+# gl::ContextFlagMask
+# gl::ContextProfileMask
+# gl::FoveationConfigBit
+# gl::SubgroupSupportedFeatures
+!base
+DummyFlags
+
+

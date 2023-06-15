@@ -1,0 +1,83 @@
+﻿
+
+
+# gdi_color_ref (gdi::color_ref)
+	private a: Byte := 0
+	r: Byte
+	g: Byte
+	b: Byte
+
+# gdi_glyphmetrics_float (gdi::glyphmetrics_float)
+	gmfBlackBoxX: single
+	gmfBlackBoxY: single
+	gmfptGlyphOriginX: single
+	gmfptGlyphOriginY: single
+	gmfCellIncX: single
+	gmfCellIncY: single
+
+# gdi_layer_plane_descriptor (gdi::layer_plane_descriptor)
+	nSize: UInt16 := sizeof(gdi_layer_plane_descriptor)
+	nVersion: UInt16 := 1
+	
+	dwFlags: gdiLayerPlaneFlags
+	iPixelType: gdiPixelDataType
+	
+	cColorBits: Byte
+	cRedBits: Byte
+	cRedShift: Byte
+	cGreenBits: Byte
+	cGreenShift: Byte
+	cBlueBits: Byte
+	cBlueShift: Byte
+	cAlphaBits: Byte
+	cAlphaShift: Byte
+	
+	cAccumBits: Byte
+	cAccumRedBits: Byte
+	cAccumGreenBits: Byte
+	cAccumBlueBits: Byte
+	cAccumAlphaBits: Byte
+	cDepthBits: Byte
+	cStencilBits: Byte
+	
+	cAuxBuffers: Byte
+	iLayerPlane: Byte
+	bReserved: Byte
+	
+	crTransparent: gdi_color_ref
+
+# gdi_pixel_format_descriptor (gdi::pixel_format_descriptor)
+	nSize: UInt16 := sizeof(gdi_pixel_format_descriptor)
+	nVersion: UInt16 := 1
+	
+	dwFlags: gdiPixelFormatFlags
+	iPixelType: gdiPixelDataType
+	
+	cColorBits: Byte
+	cRedBits: Byte
+	cRedShift: Byte
+	cGreenBits: Byte
+	cGreenShift: Byte
+	cBlueBits: Byte
+	cBlueShift: Byte
+	cAlphaBits: Byte
+	cAlphaShift: Byte
+	
+	cAccumBits: Byte
+	cAccumRedBits: Byte
+	cAccumGreenBits: Byte
+	cAccumBlueBits: Byte
+	cAccumAlphaBits: Byte
+	
+	cDepthBits: Byte
+	cStencilBits: Byte
+	
+	cAuxBuffers: Byte
+	iLayerType: Byte
+	bLayersSize: Byte
+	
+	dwLayerMask: UInt32
+	dwVisibleMask: UInt32
+	dwDamageMask: UInt32
+
+

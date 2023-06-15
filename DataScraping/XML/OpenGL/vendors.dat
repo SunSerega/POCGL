@@ -1,0 +1,51 @@
+
+
+
+KHR	= KHR
+EXT	= EXT
+ARB	= ARB
+NV	= NV/NVX
+AMD	= AMD
+SGI	= SGI/SGIS/SGIX
+OES	= OES
+APPLE	= APPLE
+SUN	= SUN/SUNX
+ZiiLabs	=
+QCOM	= QCOM
+ARM	= ARM
+ANGLE	= ANGLE
+IMG	= IMG
+INTEL	= INTEL
+HP	= HP
+Matrox	=
+MS	=
+3DFX	= 3DFX
+IBM	= IBM
+MESA	= MESA/MESAX
+S3	= S3/S3TC
+REND	= REND
+Pixelfusion	=
+OML	= OML
+Chromium	=
+Seaweed	=
+QNX	=
+Vincent	=
+HI	=
+Zebra	=
+WEBGL	=
+DMP	=
+FJ	=
+Broadcom	=
+Oculus	= OVR
+Mediatek	=
+I3D	= I3D
+VIV	=
+NEC	=
+Compaq	=
+KPC	=
+PGI	= PGI
+ES	=
+
+= ATI/3DL/INGR/WIN/GREMEDY
+
+

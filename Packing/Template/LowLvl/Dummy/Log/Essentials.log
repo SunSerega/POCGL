@@ -1,0 +1,40 @@
+﻿Loading VendorSuffix items
+Loading VendorSuffix fixers canceled: No folder
+Loading Enum items
+Loading Enum fixers canceled: No folder
+Loading LoadedBasicType items
+Loading LoadedBasicType fixers canceled: No folder
+Loading Group items
+Loading Group fixers canceled: No folder
+Loading IdClass items
+Loading IdClass fixers canceled: No folder
+Loading Struct items
+Loading Struct fixers canceled: No folder
+Loading Delegate items
+Loading Delegate fixers canceled: No folder
+Loading Func items
+Loading Func fixers
+Loading Feature items
+Loading Feature fixers canceled: No folder
+Loading Extension items
+Loading Extension fixers canceled: No folder
+Fixing Func items
+Dumping Feature items
+Dumping Extension items
+Logging PascalBasicType items
+Logging TypeCombo items
+Logging Group items
+Logging IdClass items
+Logging Struct items
+Logging Delegate items
+Dumping PascalBasicType items
+Dumping TypeCombo items
+Dumping Group items
+Dumping IdClass items
+Dumping Struct items
+Dumping Delegate items
+PascalBasicType: Packed 7 items
+Group: Packed 1 items
+Func: Packed 10 items
+Feature: Packed 2 items
+Cleanup

@@ -1,0 +1,9 @@
+﻿
+
+
+# gl::GetDebugMessageLog+AMD
+!limit_ovrs
+ *	| *	| *	| var gl::DebugCategory	| var gl::DebugSeverity	| var UInt32	| var Int32	| *	|
+ *	| *	| *	| IntPtr				| IntPtr				| IntPtr		| IntPtr	| *	|
+
+

@@ -1,0 +1,93 @@
+﻿
+
+
+# gdi::color_ref
+!add
+private	a:	Byte := 0
+public	r:	Byte
+public	g:	Byte
+public	b:	Byte
+
+
+
+# gdi::glyphmetrics_float
+!add
+gmfBlackBoxX:		single
+gmfBlackBoxY:		single
+gmfptGlyphOriginX:	single
+gmfptGlyphOriginY:	single
+gmfCellIncX:		single
+gmfCellIncY:		single
+
+
+
+# gdi::pixel_format_descriptor
+!add
+nSize:				UInt16 := sizeof(gdi_pixel_format_descriptor)
+nVersion:			UInt16 := 1
+*
+dwFlags:			gdi::PixelFormatFlags
+iPixelType:			gdi::PixelDataType
+*
+cColorBits:			Byte	// Кол-во бит для R+G+B
+cRedBits:			Byte	// Если оставить следующие 6 нулями - их заполнит автоматически
+cRedShift:			Byte
+cGreenBits:			Byte
+cGreenShift:		Byte
+cBlueBits:			Byte
+cBlueShift:			Byte
+cAlphaBits:			Byte	// Последние 2 не работают на Windows
+cAlphaShift:		Byte
+*
+cAccumBits:			Byte
+cAccumRedBits:		Byte
+cAccumGreenBits:	Byte
+cAccumBlueBits:		Byte
+cAccumAlphaBits:	Byte
+*
+cDepthBits:			Byte
+cStencilBits:		Byte
+*
+cAuxBuffers:		Byte	// Устарело
+iLayerType:			Byte	// Устарело
+bLayersSize:		Byte	// Устарело
+*
+dwLayerMask:		UInt32 // Не могу найти нормальное описание последних 3, но все оставляют их нулями
+dwVisibleMask:		UInt32
+dwDamageMask:		UInt32
+
+
+
+# gdi::layer_plane_descriptor
+!add
+nSize:				UInt16 := sizeof(gdi_layer_plane_descriptor)
+nVersion:			UInt16 := 1
+*
+dwFlags:			gdi::LayerPlaneFlags
+iPixelType:			gdi::PixelDataType
+*
+cColorBits:			Byte			// Кол-во бит для R+G+B
+cRedBits:			Byte			// Если оставить следующие 6 нулями - их заполнит автоматически
+cRedShift:			Byte
+cGreenBits:			Byte
+cGreenShift:		Byte
+cBlueBits:			Byte
+cBlueShift:			Byte
+cAlphaBits:			Byte			// Последние 2 не работают на Windows
+cAlphaShift:		Byte
+*
+cAccumBits:			Byte
+cAccumRedBits:		Byte
+cAccumGreenBits:	Byte
+cAccumBlueBits:		Byte
+cAccumAlphaBits:	Byte
+cDepthBits:			Byte
+cStencilBits:		Byte
+*
+cAuxBuffers:		Byte			// Устарело
+iLayerPlane:		Byte
+bReserved:			Byte
+*
+crTransparent:		gdi::color_ref	// Прозрачный цвет работает только если в dwFlags добавить gdiLayerPlaneFlags.TRANSPARENT
+
+

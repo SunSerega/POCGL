@@ -1,0 +1,96 @@
+﻿Loading VendorSuffix items
+Loading VendorSuffix fixers canceled: No folder
+Loading Enum items
+Loading Enum fixers canceled: No folder
+Loading LoadedBasicType items
+Loading LoadedBasicType fixers canceled: No folder
+Loading Group items
+Loading Group fixers
+Loading IdClass items
+Loading IdClass fixers
+Loading Struct items
+Loading Struct fixers
+Loading Delegate items
+Loading Delegate fixers
+Loading Func items
+Loading Func fixers
+WARNING: Func [glx::QueryHyperpipeBestAttrib+SGIX] fixer comments
+WARNING: Func [glx::HyperpipeAttrib+SGIX] fixer comments
+WARNING: Func [glx::QueryHyperpipeAttrib+SGIX] fixer comments
+Loading Feature items
+Loading Feature fixers canceled: No folder
+Loading Extension items
+Loading Extension fixers canceled: No folder
+Fixing Group items
+Fixing IdClass items
+Fixing Struct items
+Fixing Delegate items
+Fixing Func items
+Dumping Feature items
+Func [gl::BindBufferRange] was added in versions [3.0] and [3.1]
+Func [gl::BindBufferBase] was added in versions [3.0] and [3.1]
+Func [gl::GetIntegeri_v] was added in versions [3.0] and [3.1]
+Enum [gl::MAP_READ_BIT] was added in versions [3.0] and [4.4]
+Enum [gl::MAP_WRITE_BIT] was added in versions [3.0] and [4.4]
+Enum [gl::STENCIL_INDEX] was added in versions [1.0] and [4.4]
+Enum [gl::UNSIGNED_INT_10F_11F_11F_REV] was added in versions [3.0] and [4.4]
+Enum [gl::TRANSFORM_FEEDBACK_BUFFER] was added in versions [3.0] and [4.4]
+Enum [gl::STENCIL_INDEX8] was added in versions [3.0] and [4.4]
+Enum [gl::NO_ERROR] was added in versions [1.0] and [4.5]
+Enum [gl::NONE] was added in versions [1.0] and [4.5]
+Enum [gl::BACK] was added in versions [1.0] and [4.5]
+Enum [gl::TEXTURE_BINDING_1D] was added in versions [1.1] and [4.5]
+Enum [gl::TEXTURE_BINDING_2D] was added in versions [1.1] and [4.5]
+Enum [gl::TEXTURE_BINDING_3D] was added in versions [1.2] and [4.5]
+Enum [gl::TEXTURE_BINDING_RECTANGLE] was added in versions [3.1] and [4.5]
+Enum [gl::TEXTURE_BINDING_CUBE_MAP] was added in versions [1.3] and [4.5]
+Enum [gl::TEXTURE_BINDING_1D_ARRAY] was added in versions [3.0] and [4.5]
+Enum [gl::TEXTURE_BINDING_2D_ARRAY] was added in versions [3.0] and [4.5]
+Enum [gl::TEXTURE_BINDING_BUFFER] was added in versions [3.1] and [4.5]
+Enum [gl::LOWER_LEFT] was added in versions [2.0] and [4.5]
+Enum [gl::UPPER_LEFT] was added in versions [2.0] and [4.5]
+Enum [gl::TEXTURE_BINDING_CUBE_MAP_ARRAY] was added in versions [4.0] and [4.5]
+Enum [gl::TEXTURE_BINDING_2D_MULTISAMPLE] was added in versions [3.2] and [4.5]
+Enum [gl::TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY] was added in versions [3.2] and [4.5]
+Enum [gl::NONE] was added in versions [1.0] and [4.6]
+Enum [gl::CONTEXT_RELEASE_BEHAVIOR] was added in versions [4.5] and [4.6]
+Enum [gl::CONTEXT_RELEASE_BEHAVIOR_FLUSH] was added in versions [4.5] and [4.6]
+Enum [gl::GEOMETRY_SHADER_INVOCATIONS] was added in versions [4.0] and [4.6]
+Enum [gl::NO_ERROR] was added in versions [2.0] and [3.2]
+Enum [gl::TRIANGLES] was added in versions [2.0] and [3.2]
+Enum [gl::EQUAL] was added in versions [2.0] and [3.2]
+Enum [gl::CW] was added in versions [2.0] and [3.2]
+Enum [gl::CCW] was added in versions [2.0] and [3.2]
+Enum [gl::STENCIL_INDEX] was added in versions [3.1] and [3.2]
+Enum [gl::STENCIL_INDEX8] was added in versions [2.0] and [3.2]
+Dumping Extension items
+WARNING: 17>12 overloads of non-fixed Func [gl::DrawCommandsStates + NV]
+WARNING: 17>12 overloads of non-fixed Func [gl::DrawCommandsStatesAddress + NV]
+WARNING: 17>12 overloads of non-fixed Func [gl::ListDrawCommandsStatesClient + NV]
+WARNING: 17>12 overloads of non-fixed Func [gl::AsyncCopyBufferSubData + NVX]
+WARNING: 17>12 overloads of non-fixed Func [gl::AsyncCopyImageSubData + NVX]
+WARNING: 17>12 overloads of non-fixed Func [glx::QueryChannelRect + SGIX]
+WARNING: 17>12 overloads of non-fixed Func [glx::QueryChannelDeltas + SGIX]
+WARNING: 17>12 overloads of non-fixed Func [wgl::ChoosePixelFormat + ARB]
+WARNING: 17>12 overloads of non-fixed Func [wgl::ChoosePixelFormat + EXT]
+Logging PascalBasicType items
+Logging TypeCombo items
+Logging Group items
+Logging IdClass items
+Logging Struct items
+Logging Delegate items
+Dumping PascalBasicType items
+Dumping TypeCombo items
+Dumping Group items
+Dumping IdClass items
+Dumping Struct items
+Dumping Delegate items
+PascalBasicType: Packed 18 items
+Group: Packed 312 items
+IdClass: Packed 49 items
+Struct: Packed 4 items
+Delegate: Packed 4 items
+Func: Packed 3253 items
+Feature: Packed 4 items
+Extension: Packed 642 items
+Cleanup

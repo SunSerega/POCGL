@@ -1,0 +1,32 @@
+
+
+
+# cl::callback_1
+!rename
+cl::EnqueueSVMFreeCallback
+
+# cl::callback_2
+!rename
+cl::CreateContextCallback
+
+# cl::callback_3
+!rename
+cl::ContextDestructorCallback
+
+# cl::callback_4
+!rename
+cl::MemObjectDestructorCallback
+
+# cl::callback_5
+!rename
+cl::ProgramCallback
+
+# cl::callback_6
+!rename
+cl::EventCallback
+
+# cl::callback_7
+!rename
+cl::EnqueueNativeKernelCallback
+
+
