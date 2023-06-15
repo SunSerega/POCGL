@@ -344,7 +344,8 @@ begin
   
   if Logger.main is ConsoleLogger then
   begin
-    Readln;
+    if '[REDIRECTIOMODE]' not in System.Environment.GetCommandLineArgs.Skip(1).Take(1) then
+      ReadString(#10'Press Enter to exit:');
     Halt;
   end else
     Halt(e.HResult);
