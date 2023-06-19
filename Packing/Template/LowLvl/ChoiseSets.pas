@@ -9,7 +9,7 @@ type
     private state := cardinal(0);
     
     public property IsFirst: boolean read state=0;
-    public property IsLast: boolean read state=flags.Last*2;
+    public property IsLast: boolean read state=flags.Last(f->f<>0)*2-1;
     
     public property Flag[i: integer]: boolean read (state and flags[i]) <> 0;
     
@@ -105,7 +105,7 @@ type
     public constructor(state_counts: IList<integer>) := Init(state_counts.Count, state_counts);
     public constructor := raise new System.InvalidOperationException;
     
-    public property StatesCount: cardinal read self.size;
+    public property StateCount: cardinal read self.size;
     
     public function Enmr: sequence of MultiChoise;
     begin

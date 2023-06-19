@@ -69,12 +69,14 @@ type
     public static NtvChar :=  TypeLookup.FromName('ntv_char');
     
     public static Byte :=     TypeLookup.FromName('Byte');
+    public static UInt32 :=   TypeLookup.FromName('UInt32');
     public static Pointer :=  TypeLookup.FromName('pointer');
     public static IntPtr :=   TypeLookup.FromName('IntPtr');
     public static UIntPtr :=  TypeLookup.FromName('UIntPtr');
     public static String :=   TypeLookup.FromName('string');
     
     public static StubForGenericT := KnownDirectTypes.Byte;
+    public static EnumToTypeDataCountT := KnownDirectTypes.UInt32;
     
     static constructor :=
       foreach var field in typeof(KnownDirectTypes).GetFields do
@@ -186,6 +188,27 @@ type
   end;
   
   {$endregion TypeRefOrIndex}
+  
+  {$region EnumToTypeBindingInfo}
+  
+  EnumToTypeBindingInfo = sealed class
+    public passed_size_par_ind: integer;
+    public data_par_ind: integer;
+    public returned_size_par_ind: integer?; // nil if input data
+    
+    public constructor(passed_size_par_ind: integer; data_par_ind: integer; returned_size_par_ind: integer?);
+    begin
+      self.passed_size_par_ind := passed_size_par_ind;
+      self.data_par_ind := data_par_ind;
+      self.returned_size_par_ind := returned_size_par_ind;
+    end;
+    private constructor := raise new InvalidOperationException;
+    
+    public property IsInputData: boolean read returned_size_par_ind=nil;
+    
+  end;
+  
+  {$endregion EnumToTypeBindingInfo}
   
 implementation
 

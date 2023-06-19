@@ -2583,6 +2583,46 @@ type
           r.OutputT.MarkReferenced;
       end;
     
+    public function EnmrBindings(pars: array of LoadedParData): sequence of EnumToTypeBindingInfo;
+    begin
+      
+      if Enums.Any(r->r.HasInput) then
+      begin
+        var data_par_i := pars.FindIndex(par->
+          (par.Name<>nil) and par.Name.EndsWith('_value')
+          and (par.CalculatedDirectType = KnownDirectTypes.IntPtr)
+          and (par.CalculatedPtr=0)
+          and par.CalculatedReadonlyLvls.SequenceEqual(|1|)
+        );
+        if data_par_i=-1 then
+          raise new InvalidOperationException;
+        var size_par_i := data_par_i-1;
+        if not pars[size_par_i].Name.EndsWith('_value_size') then
+          raise new NotImplementedException;
+        yield new EnumToTypeBindingInfo(size_par_i, data_par_i, nil); 
+      end;
+      
+      if Enums.Any(r->r.HasOutput) then
+      begin
+        var data_par_i := pars.FindIndex(par->
+          (par.Name<>nil) and par.Name.EndsWith('_value')
+          and (par.CalculatedDirectType = KnownDirectTypes.IntPtr)
+          and (par.CalculatedPtr=0)
+          and not par.CalculatedReadonlyLvls.Any
+        );
+        if data_par_i=-1 then
+          raise new InvalidOperationException;
+        var size_par_i := data_par_i-1;
+        if not pars[size_par_i].Name.EndsWith('_value_size') then
+          raise new NotImplementedException;
+        var ret_size_par_i := data_par_i+1;
+        if not pars[ret_size_par_i].Name.EndsWith('_value_size_ret') then
+          raise new NotImplementedException;
+        yield new EnumToTypeBindingInfo(size_par_i, data_par_i, ret_size_par_i); 
+      end;
+      
+    end;
+    
   end;
   
   EnumWithPropList = record

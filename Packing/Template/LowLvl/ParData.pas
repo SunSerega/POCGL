@@ -215,7 +215,7 @@ type
       Result := true;
     end;
     
-    public function MakePPT(context_descr: ()->string; is_res_par: boolean): List<FuncParamT>;
+    public function MakePPT(context_descr: ()->string; is_res_par, is_enum_to_type_data: boolean): List<FuncParamT>;
     
     public procedure MarkReferenced := CalculatedDirectType.Use(false);
     
@@ -289,9 +289,10 @@ uses ItemNames;
 
 type KDT = KnownDirectTypes;
 
-function LoadedParData.MakePPT(context_descr: ()->string; is_res_par: boolean): List<FuncParamT>;
+function LoadedParData.MakePPT(context_descr: ()->string; is_res_par, is_enum_to_type_data: boolean): List<FuncParamT>;
 begin
   var ptr := self.CalculatedPtr;
+  var ro_lvls := self.CalculatedReadonlyLvls;
   var raw_t := self.CalculatedDirectType;
   if raw_t.IsInternalOnly then
     raise new InvalidOperationException($'{context_descr}: {raw_t.GetRawName}');
@@ -299,9 +300,22 @@ begin
   
   var is_string := raw_t=KDT.String;
   
+  var is_const :=
+    if raw_t=KDT.IntPtr then
+      ((ptr in ro_lvls) or (ptr+1 in ro_lvls)) else
+    if is_string then
+      (ptr+1 in ro_lvls) else
+      (ptr in ro_lvls);
+  
+  // Both cases exist... First in OpenGL (glGetUniformIndices), second in OpenCL (clCompileProgram)
+//  if ro_lvls.Length <> Ord(is_const) then
+//    raise new NotImplementedException;
+//  if is_const and (1..ro_lvls.Max).Any(lvl->lvl not in ro_lvls) then
+//    raise new InvalidOperationException;
+  
   if (ptr=0) and not is_string then
   begin
-    Result := Lst(new FuncParamT(false, 0, tname, raw_t));
+    Result := Lst(new FuncParamT(is_const, false, 0, tname, raw_t));
     exit;
   end;
   
@@ -309,7 +323,7 @@ begin
   begin
     if (ptr<>0) and is_string then
       raise new MessageException($'ERROR: {context_descr()} returns pointer to string');
-    Result := Lst(new FuncParamT(false, 0, '^'*ptr + tname, raw_t));
+    Result := Lst(new FuncParamT(is_const, false, 0, '^'*ptr + tname, raw_t));
     exit;
   end;
   
@@ -317,7 +331,7 @@ begin
   
   var need_var := ptr<>0;
   var need_arr := need_var and (tname<>'boolean');
-  var need_plain := if is_string then ((ptr+1) in self.CalculatedReadonlyLvls) or (ptr<>0) else true;
+  var need_plain := if is_string then ((ptr+1) in ro_lvls) or (ptr<>0) else true;
   var need_str_ptr := not is_res_par and is_string;
   var skip_last_arr := need_arr and ( (ptr>1) or is_string );
   var cap := ord(need_str_ptr) + ptr*ord(need_arr) + ord(self.val_combo<>nil) + ord(need_var) + Ord(need_plain) - ord(skip_last_arr);
@@ -325,7 +339,7 @@ begin
   
   if need_str_ptr and (ptr<>0) then
   begin
-    Result += new FuncParamT(false, ptr, KDT.String);
+    Result += new FuncParamT(is_const, false, ptr, KDT.String);
     raw_t := KDT.IntPtr;
     tname := raw_t.MakeWriteableName;
   end;
@@ -333,7 +347,7 @@ begin
   if need_arr then for var i := ptr downto 1 do
   begin
     if (i=1) and (tname<>org_tname) then break;
-    Result += new FuncParamT(false, i, tname, raw_t);
+    Result += new FuncParamT(is_const, false, i, tname, raw_t);
     if i>1 then
     begin
       raw_t := KDT.IntPtr;
@@ -357,21 +371,22 @@ begin
       else raise new NotSupportedException(TypeName(self.val_combo));
     end;
     
-    Result += new FuncParamT(true, 0, TypeLookup.FromName(tcn));
+    Result += new FuncParamT(is_const, true, 0, TypeLookup.FromName(tcn));
   end;
   
   if ptr>0 then
   begin
-    Result += new FuncParamT(true, 0, tname, raw_t);
-    raw_t := if tname='IntPtr' then KDT.Pointer else KDT.IntPtr;
+    var par := new FuncParamT(is_const, true, 0, tname, raw_t);
+    Result += par;
+    raw_t := if is_enum_to_type_data or par.IsGeneric or (raw_t=KnownDirectTypes.IntPtr) then KDT.Pointer else KDT.IntPtr;
     tname := raw_t.MakeWriteableName;
   end;
   
   if need_plain then
-    Result += new FuncParamT(false, 0, tname, raw_t);
+    Result += new FuncParamT(is_const, false, 0, tname, raw_t);
   
   if need_str_ptr and (ptr=0) then
-    Result += new FuncParamT(false, 0, KDT.IntPtr);
+    Result += new FuncParamT(is_const, false, 0, KDT.IntPtr);
   
   if Result.Count<>cap then
     raise new System.InvalidOperationException($'{context_descr()}');

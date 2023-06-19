@@ -8,4 +8,8 @@
 	Choise1_4_OtpArr[$0004]
 	Choise1_5_OtpStaticArr[$0005]
 
+# Multichoise2 (::Multichoise2) : EnumBase
+	Choise2_1_InpFlat[$0001]
+	Choise2_2_InpArr[$0002]
+
 

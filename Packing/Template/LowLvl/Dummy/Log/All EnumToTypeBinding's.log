@@ -17,7 +17,7 @@ UIntPtr
 string
 --- Choise1_2_InpArr
 !input
-ArraySegment<UIntPtr>
+array of UIntPtr
 !output
 string
 --- Choise1_3_OtpFlat
@@ -29,5 +29,17 @@ array of UIntPtr
 --- Choise1_5_OtpStaticArr
 !output
 array[3] of UIntPtr
+
+# ::7EnumToTypeInputOnly
+1
+!input
+2
+3
+--- Choise2_1_InpFlat
+!input
+UIntPtr
+--- Choise2_2_InpArr
+!input
+array of UIntPtr
 
 

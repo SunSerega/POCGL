@@ -3,36 +3,35 @@
 
 # gl::Color4ubVertex[%c2:2,3%]fv+SUN
 !limit_ovrs
- array of Byte		| array of single	|
- var Vec4ub			| var Vec{%c2%}f	|
- var Byte			| var single		|
- IntPtr				| IntPtr			|
+ array of Byte		const	| array of single	const	|
+ var Vec4ub			const	| var Vec{%c2%}f	const	|
+ var Byte			const	| var single		const	|
+ IntPtr				const	| IntPtr			const	|
 
 # gl::Color3fVertex3fv+SUN
 # gl::Normal3fVertex3fv+SUN
 !limit_ovrs
- array of single	| array of single	|
- var Vec3f			| var Vec3f			|
- var single			| var single		|
- IntPtr				| IntPtr			|
-
+ array of single	const	| array of single	const	|
+ var Vec3f			const	| var Vec3f			const	|
+ var single			const	| var single		const	|
+ IntPtr				const	| IntPtr			const	|
 
 # gl::TexCoord[%c1:2%]fVertex[%c2:3%]fv+SUN
 # gl::TexCoord[%c1:4%]fVertex[%c2:4%]fv+SUN
 !limit_ovrs
- array of single	| array of single	|
- var Vec{%c1%}f		| var Vec{%c2%}f	|
- var single			| var single		|
- IntPtr				| IntPtr			|
+ array of single	const	| array of single	const	|
+ var Vec{%c1%}f		const	| var Vec{%c2%}f	const	|
+ var single			const	| var single		const	|
+ IntPtr				const	| IntPtr			const	|
 
 # gl::ReplacementCodeuiVertex3fv+SUN
 !possible_par_types
- -array of gl::TriangleList	| *					|
+ -array of gl::TriangleList	const	| *							|
 !limit_ovrs
- var gl::TriangleList		| array of single	|
- var gl::TriangleList		| var Vec3f			|
- var gl::TriangleList		| var single		|
- IntPtr						| IntPtr			|
+ var gl::TriangleList		const	| array of single	const	|
+ var gl::TriangleList		const	| var Vec3f			const	|
+ var gl::TriangleList		const	| var single		const	|
+ IntPtr						const	| IntPtr			const	|
 
 
 
@@ -40,67 +39,67 @@
 # gl::TexCoord[%c1:2%]fColor3fVertex3fv+SUN
 # gl::TexCoord[%c1:2%]fNormal3fVertex3fv+SUN
 !limit_ovrs
- array of single	| array of single	| array of single	|
- var Vec{%c1%}f		| var Vec3f			| var Vec3f			|
- var single			| var single		| var single		|
- IntPtr				| IntPtr			| IntPtr			|
+ array of single	const	| array of single	const	| array of single	const	|
+ var Vec{%c1%}f		const	| var Vec3f			const	| var Vec3f			const	|
+ var single			const	| var single		const	| var single		const	|
+ IntPtr				const	| IntPtr			const	| IntPtr			const	|
 
 # gl::TexCoord2fColor4ubVertex3fv+SUN
 !limit_ovrs
- array of single	| array of Byte	| array of single	|
- var Vec2f			| var Vec4ub	| var Vec3f			|
- var single			| var Byte		| var single		|
- IntPtr				| IntPtr		| IntPtr			|
+ array of single	const	| array of Byte	const	| array of single	const	|
+ var Vec2f			const	| var Vec4ub	const	| var Vec3f			const	|
+ var single			const	| var Byte		const	| var single		const	|
+ IntPtr				const	| IntPtr		const	| IntPtr			const	|
 
 # gl::ReplacementCodeuiColor4ubVertex3fv+SUN
 !possible_par_types
- -array of gl::TriangleList	| *					| *					|
+ -array of gl::TriangleList	const	| *							| *							|
 !limit_ovrs
- var gl::TriangleList		| array of Byte		| array of single	|
- var gl::TriangleList		| var Vec4ub		| var Vec3f			|
- var gl::TriangleList		| var Byte			| var single		|
- IntPtr						| IntPtr			| IntPtr			|
+ var gl::TriangleList		const	| array of Byte		const	| array of single	const	|
+ var gl::TriangleList		const	| var Vec4ub		const	| var Vec3f			const	|
+ var gl::TriangleList		const	| var Byte			const	| var single		const	|
+ IntPtr						const	| IntPtr			const	| IntPtr			const	|
 
 # gl::ReplacementCodeuiColor[%c2:3%]fVertex3fv+SUN
 # gl::ReplacementCodeuiNormal[%c2:3%]fVertex3fv+SUN
 # gl::ReplacementCodeuiTexCoord[%c2:2%]fVertex3fv+SUN
 !possible_par_types
- -array of gl::TriangleList	| *					| *					|
+ -array of gl::TriangleList	const	| *							| *							|
 !limit_ovrs
- var gl::TriangleList		| array of single	| array of single	|
- var gl::TriangleList		| var Vec{%c2%}f	| var Vec3f			|
- var gl::TriangleList		| var single		| var single		|
- IntPtr						| IntPtr			| IntPtr			|
+ var gl::TriangleList		const	| array of single	const	| array of single	const	|
+ var gl::TriangleList		const	| var Vec{%c2%}f	const	| var Vec3f			const	|
+ var gl::TriangleList		const	| var single		const	| var single		const	|
+ IntPtr						const	| IntPtr			const	| IntPtr			const	|
 
 
 
 # gl::TexCoord[%c1:2%]fColor4fNormal3fVertex[%c4:3%]fv+SUN
 # gl::TexCoord[%c1:4%]fColor4fNormal3fVertex[%c4:4%]fv+SUN
 !limit_ovrs
- array of single	| array of single	| array of single	| array of single	|
- var Vec{%c1%}f		| var Vec4f			| var Vec3f			| var Vec{%c4%}f	|
- var single			| var single		| var single		| var single		|
- IntPtr				| IntPtr			| IntPtr			| IntPtr			|
+ array of single	const	| array of single	const	| array of single	const	| array of single	const	|
+ var Vec{%c1%}f		const	| var Vec4f			const	| var Vec3f			const	| var Vec{%c4%}f	const	|
+ var single			const	| var single		const	| var single		const	| var single		const	|
+ IntPtr				const	| IntPtr			const	| IntPtr			const	| IntPtr			const	|
 
 # gl::ReplacementCodeuiColor[%c2:4%]fNormal3fVertex3fv+SUN
 # gl::ReplacementCodeuiTexCoord[%c2:2%]fNormal3fVertex3fv+SUN
 !possible_par_types
- -array of gl::TriangleList	| *					| *					| *					|
+ -array of gl::TriangleList	const	| *							| *							| *							|
 !limit_ovrs
- var gl::TriangleList		| array of single	| array of single	| array of single	|
- var gl::TriangleList		| var Vec{%c2%}f	| var Vec3f			| var Vec3f			|
- var gl::TriangleList		| var single		| var single		| var single		|
- IntPtr						| IntPtr			| IntPtr			| IntPtr			|
+ var gl::TriangleList		const	| array of single	const	| array of single	const	| array of single	const	|
+ var gl::TriangleList		const	| var Vec{%c2%}f	const	| var Vec3f			const	| var Vec3f			const	|
+ var gl::TriangleList		const	| var single		const	| var single		const	| var single		const	|
+ IntPtr						const	| IntPtr			const	| IntPtr			const	| IntPtr			const	|
 
 
 
 # gl::ReplacementCodeuiTexCoord2fColor4fNormal3fVertex3fv+SUN
 !possible_par_types
- -array of gl::TriangleList	| *					| *					| *					| *					|
+ -array of gl::TriangleList	const	| *							| *							| *							| *							|
 !limit_ovrs
- var gl::TriangleList		| array of single	| array of single	| array of single	| array of single	|
- var gl::TriangleList		| var Vec2f			| var Vec4f			| var Vec3f			| var Vec3f			|
- var gl::TriangleList		| var single		| var single		| var single		| var single		|
- IntPtr						| IntPtr			| IntPtr			| IntPtr			| IntPtr			|
+ var gl::TriangleList		const	| array of single	const	| array of single	const	| array of single	const	| array of single	const	|
+ var gl::TriangleList		const	| var Vec2f			const	| var Vec4f			const	| var Vec3f			const	| var Vec3f			const	|
+ var gl::TriangleList		const	| var single		const	| var single		const	| var single		const	| var single		const	|
+ IntPtr						const	| IntPtr			const	| IntPtr			const	| IntPtr			const	| IntPtr			const	|
 
 

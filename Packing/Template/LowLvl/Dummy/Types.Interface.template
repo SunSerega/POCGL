@@ -28,5 +28,23 @@
     
   end;
   
+  Multichoise2 = record
+    public val: EnumBase;
+    public constructor(val: EnumBase) := self.val := val;
+    
+    public static property Choise2_1_InpFlat: Multichoise2 read new Multichoise2($0001);
+    public static property Choise2_2_InpArr:  Multichoise2 read new Multichoise2($0002);
+    
+    public function ToString: string; override;
+    begin
+      if Choise2_1_InpFlat = self then
+        Result := 'Choise2_1_InpFlat' else
+      if Choise2_2_InpArr = self then
+        Result := 'Choise2_2_InpArr' else
+        Result := $'Multichoise2[{self.val}]';
+    end;
+    
+  end;
+  
   
   

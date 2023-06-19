@@ -3,7 +3,7 @@
 
 # gl::GetPerfQueryIdByName+INTEL
 !possible_par_types
- +string	| *	|
+ -IntPtr +string const +IntPtr const	| *	|
 
 # gl::GetPerfQueryInfo+INTEL
 !limit_ovrs

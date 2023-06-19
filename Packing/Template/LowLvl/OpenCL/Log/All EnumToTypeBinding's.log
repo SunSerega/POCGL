@@ -794,12 +794,12 @@ UIntPtr
 UIntPtr
 --- KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE
 !input
-ArraySegment<UIntPtr>
+array of UIntPtr
 !output
 UIntPtr
 --- KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE
 !input
-ArraySegment<UIntPtr>
+array of UIntPtr
 !output
 UIntPtr
 --- KERNEL_COMPILE_SUB_GROUP_SIZE
@@ -1103,7 +1103,7 @@ array of clSamplerProperties
 4
 --- KERNEL_EXEC_INFO_SVM_PTRS
 !input
-ArraySegment<IntPtr>
+array of IntPtr
 --- KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM
 !input
 clBool
@@ -1130,7 +1130,7 @@ clBool
 clBool
 --- KERNEL_EXEC_INFO_USM_PTRS
 !input
-ArraySegment<IntPtr>
+array of IntPtr
 
 # cl::SetKernelExecInfo + ARM
 2
@@ -1139,7 +1139,7 @@ ArraySegment<IntPtr>
 4
 --- KERNEL_EXEC_INFO_SVM_PTRS_ARM
 !input
-ArraySegment<IntPtr>
+array of IntPtr
 --- KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM_ARM
 !input
 clBool
@@ -1261,12 +1261,12 @@ UIntPtr
 UIntPtr
 --- KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE
 !input
-ArraySegment<UIntPtr>
+array of UIntPtr
 !output
 UIntPtr
 --- KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE
 !input
-ArraySegment<UIntPtr>
+array of UIntPtr
 !output
 UIntPtr
 --- KERNEL_COMPILE_SUB_GROUP_SIZE

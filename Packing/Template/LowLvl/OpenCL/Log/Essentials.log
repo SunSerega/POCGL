@@ -59,15 +59,10 @@ WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMFree]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMemFill]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMigrateMem]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueWriteBuffer]
-WARNING: 180>12 overloads of non-fixed Func [cl::GetDeviceInfo]
-WARNING: 20>12 overloads of non-fixed Func [cl::GetImageInfo]
-WARNING: 27>12 overloads of non-fixed Func [cl::GetMemObjectInfo]
-WARNING: 17>12 overloads of non-fixed Func [cl::GetPlatformInfo]
-WARNING: 17>12 overloads of non-fixed Func [cl::GetProgramInfo]
 Dumping Extension items
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMFree + ARM]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMemFill + ARM]
-WARNING: 27>12 overloads of non-fixed Func [cl::GetImageRequirementsInfo + EXT]
+WARNING: 19>12 overloads of non-fixed Func [cl::GetImageRequirementsInfo + EXT]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMigrateMemObject + EXT]
 WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueGenerateMipmap + IMG]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGrallocObjects + IMG]
@@ -104,7 +99,7 @@ Dumping Group items
 Dumping IdClass items
 Dumping Struct items
 Dumping Delegate items
-PascalBasicType: Packed 11 items
+PascalBasicType: Packed 12 items
 Group: Packed 111 items
 IdClass: Packed 28 items
 Struct: Packed 17 items

@@ -26,17 +26,17 @@
 # glx::GetProcAddress
 # glx::GetProcAddress+ARB
 !possible_par_types
- *	| -array of Byte -var Byte +string	|
+ *	| -array of Byte const -var Byte const +string const	|
 
 
 
 # gl::GetActiveUniformsiv
 !possible_par_types
- *	| *	| *					| *	| +array of Int32	|
+ *	| *	| *						| *	| +array of Int32	|
 !limit_ovrs
- *	| *	| array of UInt32	| *	| array of Int32	|
- *	| *	| var UInt32		| *	| var Int32			|
- *	| *	| IntPtr			| *	| IntPtr			|
+ *	| *	| array of UInt32 const	| *	| array of Int32	|
+ *	| *	| var UInt32 const		| *	| var Int32			|
+ *	| *	| IntPtr const			| *	| IntPtr			|
 
 # gl::Tex[%,ture%]Parameteri
 !possible_par_types

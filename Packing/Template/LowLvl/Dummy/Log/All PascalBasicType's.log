@@ -1,6 +1,8 @@
 ﻿
 
 
+# boolean
+
 # Byte
 
 # EnumBase
@@ -16,6 +18,8 @@
 # T2
 
 # TInp
+
+# UInt32
 
 # UIntPtr
 

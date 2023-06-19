@@ -9,345 +9,896 @@
     private static procedure ntv_1NoParam_1;
     external 'dummy.dll' name '1NoParam';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 1NoParam :=
-    ntv_1NoParam_1();
+      ntv_1NoParam_1();
+    
+    // added in dum1.0
+    private static function ntv_1NoParamResult_1: UIntPtr;
+    external 'dummy.dll' name '1NoParamResult';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 1NoParamResult: UIntPtr :=
+      ntv_1NoParamResult_1();
     
     // added in dum1.0
     private static procedure ntv_2ParamString_1(s: IntPtr);
     external 'dummy.dll' name '2ParamString';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 2ParamString(s: IntPtr) :=
-    ntv_2ParamString_1(s);
+      ntv_2ParamString_1(s);
     
     // added in dum1.0
     private static procedure ntv_2ParamStringRO_1(s: IntPtr);
     external 'dummy.dll' name '2ParamStringRO';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 2ParamStringRO(s: string);
     begin
-      var s_str_ptr: IntPtr;
+      var s_str_ptr := Marshal.StringToHGlobalAnsi(s);
       try
-        s_str_ptr := Marshal.StringToHGlobalAnsi(s);
         ntv_2ParamStringRO_1(s_str_ptr);
       finally
         Marshal.FreeHGlobal(s_str_ptr);
       end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 2ParamStringRO(s: IntPtr) :=
-    ntv_2ParamStringRO_1(s);
+      ntv_2ParamStringRO_1(s);
     
     // added in dum1.0
-    private static function ntv_3ResultString_1: Byte;
+    private static function ntv_3ResultString_1: IntPtr;
     external 'dummy.dll' name '3ResultString';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 3ResultString: string;
     begin
-      var Result_str_ptr: IntPtr;
-      Result_str_ptr := ntv_3ResultString_1();
-      Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-      Marshal.FreeHGlobal(Result_str_ptr);
+      var Result_str_ptr := ntv_3ResultString_1();
+      try
+        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
+      finally
+        Marshal.FreeHGlobal(Result_str_ptr);
+      end;
     end;
     
     // added in dum1.0
-    private static function ntv_3ResultStringRO_1: Byte;
+    private static function ntv_3ResultStringRO_1: IntPtr;
     external 'dummy.dll' name '3ResultStringRO';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 3ResultStringRO: string;
-    begin
-      var Result_str_ptr: IntPtr;
-      Result_str_ptr := ntv_3ResultStringRO_1();
-      Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 3ResultStringRO: string :=
+      Marshal.PtrToStringAnsi(ntv_3ResultStringRO_1());
     
     // added in dum1.0
-    private static procedure ntv_4Generic_1(data: IntPtr);
+    private static procedure ntv_4Generic_1(var data: Byte);
     external 'dummy.dll' name '4Generic';
-    private static procedure ntv_4Generic_2(var data: Byte);
+    private static procedure ntv_4Generic_2(data: pointer);
     external 'dummy.dll' name '4Generic';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 4Generic<T>(data: array of T); where T: record;
-    type PT=^T;
+    type PT = ^T;
     begin
       if (data<>nil) and (data.Length<>0) then
         4Generic(data[0]) else
-        4Generic(PT(nil)^) else
+        4Generic(PT(nil)^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 4Generic<T>(var data: T); where T: record;
     begin
-      ntv_4Generic_2(PByte(pointer(@data))^);
+      ntv_4Generic_1(PByte(pointer(@data))^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 4Generic(data: IntPtr) :=
-    ntv_4Generic_1(data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 4Generic(data: pointer) :=
+      ntv_4Generic_2(data);
     
     // added in dum1.0
-    private static procedure ntv_4GenericWOVarArg_1(data: IntPtr);
+    private static procedure ntv_4GenericRO_1(var data: Byte);
+    external 'dummy.dll' name '4GenericRO';
+    private static procedure ntv_4GenericRO_2(data: pointer);
+    external 'dummy.dll' name '4GenericRO';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 4GenericRO<T>(data: array of T); where T: record;
+    type PT = ^T;
+    begin
+      if (data<>nil) and (data.Length<>0) then
+        4GenericRO(data[0]) else
+        4GenericRO(PT(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 4GenericRO<T>(var data: T); where T: record;
+    begin
+      ntv_4GenericRO_1(PByte(pointer(@data))^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 4GenericRO(data: pointer) :=
+      ntv_4GenericRO_2(data);
+    
+    // added in dum1.0
+    private static procedure ntv_4GenericWOVarArg_1(var data: Byte);
     external 'dummy.dll' name '4GenericWOVarArg';
-    private static procedure ntv_4GenericWOVarArg_2(var data: Byte);
+    private static procedure ntv_4GenericWOVarArg_2(data: pointer);
     external 'dummy.dll' name '4GenericWOVarArg';
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure temp_4GenericWOVarArg_1<T>(var data: T); where T: record;
     begin
-      ntv_4GenericWOVarArg_2(PByte(pointer(@data))^);
+      ntv_4GenericWOVarArg_1(PByte(pointer(@data))^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 4GenericWOVarArg<T>(data: array of T); where T: record;
-    type PT=^T;
+    type PT = ^T;
     begin
       if (data<>nil) and (data.Length<>0) then
         temp_4GenericWOVarArg_1(data[0]) else
-        temp_4GenericWOVarArg_1(PT(nil)^) else
+        temp_4GenericWOVarArg_1(PT(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 4GenericWOVarArg(data: IntPtr) :=
-    ntv_4GenericWOVarArg_1(data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 4GenericWOVarArg(data: pointer) :=
+      ntv_4GenericWOVarArg_2(data);
+    
+    // added in dum1.0
+    private static procedure ntv_4GenericWOVarArgRO_1(var data: Byte);
+    external 'dummy.dll' name '4GenericWOVarArgRO';
+    private static procedure ntv_4GenericWOVarArgRO_2(data: pointer);
+    external 'dummy.dll' name '4GenericWOVarArgRO';
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure temp_4GenericWOVarArgRO_1<T>(var data: T); where T: record;
+    begin
+      ntv_4GenericWOVarArgRO_1(PByte(pointer(@data))^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 4GenericWOVarArgRO<T>(data: array of T); where T: record;
+    type PT = ^T;
+    begin
+      if (data<>nil) and (data.Length<>0) then
+        temp_4GenericWOVarArgRO_1(data[0]) else
+        temp_4GenericWOVarArgRO_1(PT(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 4GenericWOVarArgRO(data: pointer) :=
+      ntv_4GenericWOVarArgRO_2(data);
     
     // added in dum1.0
     private static procedure ntv_5Arrrrrray_1(a: pointer);
     external 'dummy.dll' name '5Arrrrrray';
     private static procedure ntv_5Arrrrrray_2(var a: IntPtr);
     external 'dummy.dll' name '5Arrrrrray';
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure temp_5Arrrrrray_1(a: array of IntPtr);
-    type PIntPtr=^IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5Arrrrrray(a: array of array of array of array of array of UIntPtr);
     begin
-      if (a<>nil) and (a.Length<>0) then
-        ntv_5Arrrrrray_2(a[0]) else
-        ntv_5Arrrrrray_2(PIntPtr(nil)^) else
-    end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5Arrrrrray<T>(a: array of array of array of array of array of T); where T: record;
-    begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5Arrrrrray_1(pointer(nil));
+        exit;
+      end;
       var a_temp_arr: array of array of array of array of IntPtr;
       try
-        a_temp_arr := a?.ConvertAll(arr_el1->
-          arr_el1?.ConvertAll(arr_el2->
-            arr_el2?.ConvertAll(arr_el3->
-              arr_el3?.ConvertAll(managed_a->
-                if (managed_a=nil) or (managed_a.Length=0) then
-                  Result := IntPtr.Zero else
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_len_2 := a_org_el_2.Length;
+            SetLength(a_tmp_el_1[a_ind_1], a_len_2);
+            var a_tmp_el_2 := a_tmp_el_1[a_ind_1];
+            for var a_ind_2 := 0 to a_len_2-1 do
+            begin
+              var a_org_el_3 := a_org_el_2[a_ind_2];
+              if (a_org_el_3=nil) or (a_org_el_3.Length=0) then continue;
+              var a_len_3 := a_org_el_3.Length;
+              SetLength(a_tmp_el_2[a_ind_2], a_len_3);
+              var a_tmp_el_3 := a_tmp_el_2[a_ind_2];
+              for var a_ind_3 := 0 to a_len_3-1 do
+              begin
+                var a_org_el_4 := a_org_el_3[a_ind_3];
+                if (a_org_el_4=nil) or (a_org_el_4.Length=0) then continue;
+                var a_len_4 := a_org_el_4.Length;
+                SetLength(a_tmp_el_3[a_ind_3], a_len_4);
+                var a_tmp_el_4 := a_tmp_el_3[a_ind_3];
+                for var a_ind_4 := 0 to a_len_4-1 do
                 begin
-                  var l := managed_a.Length*Marshal.SizeOf&<T>;
-                  Result := Marshal.AllocHGlobal(l);
-                  Marshal.Copy(managed_a,0,Result,l);
-                end
-              )
-            )
-          )
-        );
+                  var a_org_el_5 := a_org_el_4[a_ind_4];
+                  if (a_org_el_5=nil) or (a_org_el_5.Length=0) then continue;
+                  var a_org_el_5_sz := a_org_el_5.Length*Marshal.SizeOf&<UIntPtr>;
+                  var a_org_el_5_ptr := Marshal.AllocHGlobal(a_org_el_5_sz);
+                  a_tmp_el_4[a_ind_4] := a_org_el_5_ptr;
+                  Marshal.Copy(a_org_el_5,0,a_org_el_5_ptr,a_org_el_5_sz);
+                end;
+              end;
+            end;
+          end;
+        end;
         5Arrrrrray(a_temp_arr);
       finally
-        if a_temp_arr<>nil then foreach var arr_el1 in a_temp_arr do
-          if arr_el1<>nil then foreach var arr_el2 in arr_el1 do
-            if arr_el2<>nil then foreach var arr_el3 in arr_el2 do
-              if arr_el3<>nil then foreach var arr_el4 in arr_el3 do
-                Marshal.FreeHGlobal(arr_el4);
+         foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
+             foreach var arr_el3 in arr_el2 do if arr_el3<>nil then
+               foreach var arr_el4 in arr_el3 do Marshal.FreeHGlobal(arr_el4);
       end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5Arrrrrray(a: array of array of array of array of IntPtr);
     begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5Arrrrrray_1(pointer(nil));
+        exit;
+      end;
       var a_temp_arr: array of array of array of IntPtr;
       try
-        a_temp_arr := a?.ConvertAll(arr_el1->
-          arr_el1?.ConvertAll(arr_el2->
-            arr_el2?.ConvertAll(managed_a->
-              if (managed_a=nil) or (managed_a.Length=0) then
-                Result := IntPtr.Zero else
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_len_2 := a_org_el_2.Length;
+            SetLength(a_tmp_el_1[a_ind_1], a_len_2);
+            var a_tmp_el_2 := a_tmp_el_1[a_ind_1];
+            for var a_ind_2 := 0 to a_len_2-1 do
+            begin
+              var a_org_el_3 := a_org_el_2[a_ind_2];
+              if (a_org_el_3=nil) or (a_org_el_3.Length=0) then continue;
+              var a_len_3 := a_org_el_3.Length;
+              SetLength(a_tmp_el_2[a_ind_2], a_len_3);
+              var a_tmp_el_3 := a_tmp_el_2[a_ind_2];
+              for var a_ind_3 := 0 to a_len_3-1 do
               begin
-                var l := managed_a.Length*Marshal.SizeOf&<IntPtr>;
-                Result := Marshal.AllocHGlobal(l);
-                Marshal.Copy(managed_a,0,Result,l);
-              end
-            )
-          )
-        );
+                var a_org_el_4 := a_org_el_3[a_ind_3];
+                if (a_org_el_4=nil) or (a_org_el_4.Length=0) then continue;
+                var a_org_el_4_sz := a_org_el_4.Length*Marshal.SizeOf&<IntPtr>;
+                var a_org_el_4_ptr := Marshal.AllocHGlobal(a_org_el_4_sz);
+                a_tmp_el_3[a_ind_3] := a_org_el_4_ptr;
+                Marshal.Copy(a_org_el_4,0,a_org_el_4_ptr,a_org_el_4_sz);
+              end;
+            end;
+          end;
+        end;
         5Arrrrrray(a_temp_arr);
       finally
-        if a_temp_arr<>nil then foreach var arr_el1 in a_temp_arr do
-          if arr_el1<>nil then foreach var arr_el2 in arr_el1 do
-            if arr_el2<>nil then foreach var arr_el3 in arr_el2 do
-              Marshal.FreeHGlobal(arr_el3);
+         foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
+             foreach var arr_el3 in arr_el2 do Marshal.FreeHGlobal(arr_el3);
       end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5Arrrrrray(a: array of array of array of IntPtr);
     begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5Arrrrrray_1(pointer(nil));
+        exit;
+      end;
       var a_temp_arr: array of array of IntPtr;
       try
-        a_temp_arr := a?.ConvertAll(arr_el1->
-          arr_el1?.ConvertAll(managed_a->
-            if (managed_a=nil) or (managed_a.Length=0) then
-              Result := IntPtr.Zero else
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_len_2 := a_org_el_2.Length;
+            SetLength(a_tmp_el_1[a_ind_1], a_len_2);
+            var a_tmp_el_2 := a_tmp_el_1[a_ind_1];
+            for var a_ind_2 := 0 to a_len_2-1 do
             begin
-              var l := managed_a.Length*Marshal.SizeOf&<IntPtr>;
-              Result := Marshal.AllocHGlobal(l);
-              Marshal.Copy(managed_a,0,Result,l);
-            end
-          )
-        );
+              var a_org_el_3 := a_org_el_2[a_ind_2];
+              if (a_org_el_3=nil) or (a_org_el_3.Length=0) then continue;
+              var a_org_el_3_sz := a_org_el_3.Length*Marshal.SizeOf&<IntPtr>;
+              var a_org_el_3_ptr := Marshal.AllocHGlobal(a_org_el_3_sz);
+              a_tmp_el_2[a_ind_2] := a_org_el_3_ptr;
+              Marshal.Copy(a_org_el_3,0,a_org_el_3_ptr,a_org_el_3_sz);
+            end;
+          end;
+        end;
         5Arrrrrray(a_temp_arr);
       finally
-        if a_temp_arr<>nil then foreach var arr_el1 in a_temp_arr do
-          if arr_el1<>nil then foreach var arr_el2 in arr_el1 do
-            Marshal.FreeHGlobal(arr_el2);
+         foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do Marshal.FreeHGlobal(arr_el2);
       end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5Arrrrrray(a: array of array of IntPtr);
     begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5Arrrrrray_1(pointer(nil));
+        exit;
+      end;
       var a_temp_arr: array of IntPtr;
       try
-        a_temp_arr := a?.ConvertAll(managed_a->
-          if (managed_a=nil) or (managed_a.Length=0) then
-            Result := IntPtr.Zero else
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
           begin
-            var l := managed_a.Length*Marshal.SizeOf&<IntPtr>;
-            Result := Marshal.AllocHGlobal(l);
-            Marshal.Copy(managed_a,0,Result,l);
-          end
-        );
-        temp_5Arrrrrray_1(a_temp_arr);
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_org_el_2_sz := a_org_el_2.Length*Marshal.SizeOf&<IntPtr>;
+            var a_org_el_2_ptr := Marshal.AllocHGlobal(a_org_el_2_sz);
+            a_tmp_el_1[a_ind_1] := a_org_el_2_ptr;
+            Marshal.Copy(a_org_el_2,0,a_org_el_2_ptr,a_org_el_2_sz);
+          end;
+        end;
+        ntv_5Arrrrrray_2(a_temp_arr[0]);
       finally
-        if a_temp_arr<>nil then foreach var arr_el1 in a_temp_arr do
-          Marshal.FreeHGlobal(arr_el1);
+         foreach var arr_el1 in a_temp_arr do Marshal.FreeHGlobal(arr_el1);
       end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5Arrrrrray(var a: IntPtr) :=
-    ntv_5Arrrrrray_2(a);
+      ntv_5Arrrrrray_2(a);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5Arrrrrray(a: pointer) :=
-    ntv_5Arrrrrray_1(a);
+      ntv_5Arrrrrray_1(a);
     
     // added in dum1.0
-    private static function ntv_6Mix_1(s1: IntPtr; s2: IntPtr; gen: IntPtr; a: IntPtr): Byte;
-    external 'dummy.dll' name '6Mix';
-    private static function ntv_6Mix_2(s1: IntPtr; s2: IntPtr; gen: IntPtr; var a: Byte): Byte;
-    external 'dummy.dll' name '6Mix';
-    private static function ntv_6Mix_3(s1: IntPtr; s2: IntPtr; var gen: Byte; a: IntPtr): Byte;
-    external 'dummy.dll' name '6Mix';
-    private static function ntv_6Mix_4(s1: IntPtr; s2: IntPtr; var gen: Byte; var a: Byte): Byte;
-    external 'dummy.dll' name '6Mix';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T,T2>(s1: IntPtr; s2: string; gen: array of T; a: array of T2): string; where T, T2: record;
-    type PT=^T;
-    type PT2=^T2;
+    private static procedure ntv_5ArrrrrrayOfGeneric_1(a: pointer);
+    external 'dummy.dll' name '5ArrrrrrayOfGeneric';
+    private static procedure ntv_5ArrrrrrayOfGeneric_2(var a: IntPtr);
+    external 'dummy.dll' name '5ArrrrrrayOfGeneric';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5ArrrrrrayOfGeneric<T>(a: array of array of array of array of array of T); where T: record;
     begin
-      Result := if (a<>nil) and (a.Length<>0) then
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        exit;
+      end;
+      var a_temp_arr: array of array of array of array of IntPtr;
+      try
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_len_2 := a_org_el_2.Length;
+            SetLength(a_tmp_el_1[a_ind_1], a_len_2);
+            var a_tmp_el_2 := a_tmp_el_1[a_ind_1];
+            for var a_ind_2 := 0 to a_len_2-1 do
+            begin
+              var a_org_el_3 := a_org_el_2[a_ind_2];
+              if (a_org_el_3=nil) or (a_org_el_3.Length=0) then continue;
+              var a_len_3 := a_org_el_3.Length;
+              SetLength(a_tmp_el_2[a_ind_2], a_len_3);
+              var a_tmp_el_3 := a_tmp_el_2[a_ind_2];
+              for var a_ind_3 := 0 to a_len_3-1 do
+              begin
+                var a_org_el_4 := a_org_el_3[a_ind_3];
+                if (a_org_el_4=nil) or (a_org_el_4.Length=0) then continue;
+                var a_len_4 := a_org_el_4.Length;
+                SetLength(a_tmp_el_3[a_ind_3], a_len_4);
+                var a_tmp_el_4 := a_tmp_el_3[a_ind_3];
+                for var a_ind_4 := 0 to a_len_4-1 do
+                begin
+                  var a_org_el_5 := a_org_el_4[a_ind_4];
+                  if (a_org_el_5=nil) or (a_org_el_5.Length=0) then continue;
+                  var a_org_el_5_sz := a_org_el_5.Length*Marshal.SizeOf&<T>;
+                  var a_org_el_5_ptr := Marshal.AllocHGlobal(a_org_el_5_sz);
+                  a_tmp_el_4[a_ind_4] := a_org_el_5_ptr;
+                  Marshal.Copy(a_org_el_5,0,a_org_el_5_ptr,a_org_el_5_sz);
+                end;
+              end;
+            end;
+          end;
+        end;
+        5ArrrrrrayOfGeneric(a_temp_arr);
+      finally
+         foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
+             foreach var arr_el3 in arr_el2 do if arr_el3<>nil then
+               foreach var arr_el4 in arr_el3 do Marshal.FreeHGlobal(arr_el4);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5ArrrrrrayOfGeneric(a: array of array of array of array of IntPtr);
+    begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        exit;
+      end;
+      var a_temp_arr: array of array of array of IntPtr;
+      try
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_len_2 := a_org_el_2.Length;
+            SetLength(a_tmp_el_1[a_ind_1], a_len_2);
+            var a_tmp_el_2 := a_tmp_el_1[a_ind_1];
+            for var a_ind_2 := 0 to a_len_2-1 do
+            begin
+              var a_org_el_3 := a_org_el_2[a_ind_2];
+              if (a_org_el_3=nil) or (a_org_el_3.Length=0) then continue;
+              var a_len_3 := a_org_el_3.Length;
+              SetLength(a_tmp_el_2[a_ind_2], a_len_3);
+              var a_tmp_el_3 := a_tmp_el_2[a_ind_2];
+              for var a_ind_3 := 0 to a_len_3-1 do
+              begin
+                var a_org_el_4 := a_org_el_3[a_ind_3];
+                if (a_org_el_4=nil) or (a_org_el_4.Length=0) then continue;
+                var a_org_el_4_sz := a_org_el_4.Length*Marshal.SizeOf&<IntPtr>;
+                var a_org_el_4_ptr := Marshal.AllocHGlobal(a_org_el_4_sz);
+                a_tmp_el_3[a_ind_3] := a_org_el_4_ptr;
+                Marshal.Copy(a_org_el_4,0,a_org_el_4_ptr,a_org_el_4_sz);
+              end;
+            end;
+          end;
+        end;
+        5ArrrrrrayOfGeneric(a_temp_arr);
+      finally
+         foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
+             foreach var arr_el3 in arr_el2 do Marshal.FreeHGlobal(arr_el3);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5ArrrrrrayOfGeneric(a: array of array of array of IntPtr);
+    begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        exit;
+      end;
+      var a_temp_arr: array of array of IntPtr;
+      try
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_len_2 := a_org_el_2.Length;
+            SetLength(a_tmp_el_1[a_ind_1], a_len_2);
+            var a_tmp_el_2 := a_tmp_el_1[a_ind_1];
+            for var a_ind_2 := 0 to a_len_2-1 do
+            begin
+              var a_org_el_3 := a_org_el_2[a_ind_2];
+              if (a_org_el_3=nil) or (a_org_el_3.Length=0) then continue;
+              var a_org_el_3_sz := a_org_el_3.Length*Marshal.SizeOf&<IntPtr>;
+              var a_org_el_3_ptr := Marshal.AllocHGlobal(a_org_el_3_sz);
+              a_tmp_el_2[a_ind_2] := a_org_el_3_ptr;
+              Marshal.Copy(a_org_el_3,0,a_org_el_3_ptr,a_org_el_3_sz);
+            end;
+          end;
+        end;
+        5ArrrrrrayOfGeneric(a_temp_arr);
+      finally
+         foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do Marshal.FreeHGlobal(arr_el2);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5ArrrrrrayOfGeneric(a: array of array of IntPtr);
+    begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        exit;
+      end;
+      var a_temp_arr: array of IntPtr;
+      try
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_org_el_2_sz := a_org_el_2.Length*Marshal.SizeOf&<IntPtr>;
+            var a_org_el_2_ptr := Marshal.AllocHGlobal(a_org_el_2_sz);
+            a_tmp_el_1[a_ind_1] := a_org_el_2_ptr;
+            Marshal.Copy(a_org_el_2,0,a_org_el_2_ptr,a_org_el_2_sz);
+          end;
+        end;
+        ntv_5ArrrrrrayOfGeneric_2(a_temp_arr[0]);
+      finally
+         foreach var arr_el1 in a_temp_arr do Marshal.FreeHGlobal(arr_el1);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5ArrrrrrayOfGeneric(var a: IntPtr) :=
+      ntv_5ArrrrrrayOfGeneric_2(a);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5ArrrrrrayOfGeneric(a: pointer) :=
+      ntv_5ArrrrrrayOfGeneric_1(a);
+    
+    // added in dum1.0
+    private static procedure ntv_5ArrrrrrayOfString_1(s: pointer);
+    external 'dummy.dll' name '5ArrrrrrayOfString';
+    private static procedure ntv_5ArrrrrrayOfString_2(var s: IntPtr);
+    external 'dummy.dll' name '5ArrrrrrayOfString';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5ArrrrrrayOfString(s: array of array of array of array of string);
+    begin
+      if (s=nil) or (s.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        exit;
+      end;
+      var s_temp_arr: array of array of array of array of IntPtr;
+      try
+        begin
+          var s_org_el_1 := s;
+          var s_len_1 := s_org_el_1.Length;
+          SetLength(s_temp_arr, s_len_1);
+          var s_tmp_el_1 := s_temp_arr;
+          for var s_ind_1 := 0 to s_len_1-1 do
+          begin
+            var s_org_el_2 := s_org_el_1[s_ind_1];
+            if (s_org_el_2=nil) or (s_org_el_2.Length=0) then continue;
+            var s_len_2 := s_org_el_2.Length;
+            SetLength(s_tmp_el_1[s_ind_1], s_len_2);
+            var s_tmp_el_2 := s_tmp_el_1[s_ind_1];
+            for var s_ind_2 := 0 to s_len_2-1 do
+            begin
+              var s_org_el_3 := s_org_el_2[s_ind_2];
+              if (s_org_el_3=nil) or (s_org_el_3.Length=0) then continue;
+              var s_len_3 := s_org_el_3.Length;
+              SetLength(s_tmp_el_2[s_ind_2], s_len_3);
+              var s_tmp_el_3 := s_tmp_el_2[s_ind_2];
+              for var s_ind_3 := 0 to s_len_3-1 do
+              begin
+                var s_org_el_4 := s_org_el_3[s_ind_3];
+                if (s_org_el_4=nil) or (s_org_el_4.Length=0) then continue;
+                var s_len_4 := s_org_el_4.Length;
+                SetLength(s_tmp_el_3[s_ind_3], s_len_4);
+                var s_tmp_el_4 := s_tmp_el_3[s_ind_3];
+                for var s_ind_4 := 0 to s_len_4-1 do
+                begin
+                  var s_org_el_5 := s_org_el_4[s_ind_4];
+                  if (s_org_el_5=nil) or (s_org_el_5.Length=0) then continue;
+                  s_tmp_el_4[s_ind_4] := Marshal.StringToHGlobalAnsi(s_org_el_5);
+                end;
+              end;
+            end;
+          end;
+        end;
+        5ArrrrrrayOfString(s_temp_arr);
+      finally
+         foreach var arr_el1 in s_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
+             foreach var arr_el3 in arr_el2 do if arr_el3<>nil then
+               foreach var arr_el4 in arr_el3 do Marshal.FreeHGlobal(arr_el4);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5ArrrrrrayOfString(s: array of array of array of array of IntPtr);
+    begin
+      if (s=nil) or (s.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        exit;
+      end;
+      var s_temp_arr: array of array of array of IntPtr;
+      try
+        begin
+          var s_org_el_1 := s;
+          var s_len_1 := s_org_el_1.Length;
+          SetLength(s_temp_arr, s_len_1);
+          var s_tmp_el_1 := s_temp_arr;
+          for var s_ind_1 := 0 to s_len_1-1 do
+          begin
+            var s_org_el_2 := s_org_el_1[s_ind_1];
+            if (s_org_el_2=nil) or (s_org_el_2.Length=0) then continue;
+            var s_len_2 := s_org_el_2.Length;
+            SetLength(s_tmp_el_1[s_ind_1], s_len_2);
+            var s_tmp_el_2 := s_tmp_el_1[s_ind_1];
+            for var s_ind_2 := 0 to s_len_2-1 do
+            begin
+              var s_org_el_3 := s_org_el_2[s_ind_2];
+              if (s_org_el_3=nil) or (s_org_el_3.Length=0) then continue;
+              var s_len_3 := s_org_el_3.Length;
+              SetLength(s_tmp_el_2[s_ind_2], s_len_3);
+              var s_tmp_el_3 := s_tmp_el_2[s_ind_2];
+              for var s_ind_3 := 0 to s_len_3-1 do
+              begin
+                var s_org_el_4 := s_org_el_3[s_ind_3];
+                if (s_org_el_4=nil) or (s_org_el_4.Length=0) then continue;
+                var s_org_el_4_sz := s_org_el_4.Length*Marshal.SizeOf&<IntPtr>;
+                var s_org_el_4_ptr := Marshal.AllocHGlobal(s_org_el_4_sz);
+                s_tmp_el_3[s_ind_3] := s_org_el_4_ptr;
+                Marshal.Copy(s_org_el_4,0,s_org_el_4_ptr,s_org_el_4_sz);
+              end;
+            end;
+          end;
+        end;
+        5ArrrrrrayOfString(s_temp_arr);
+      finally
+         foreach var arr_el1 in s_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
+             foreach var arr_el3 in arr_el2 do Marshal.FreeHGlobal(arr_el3);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5ArrrrrrayOfString(s: array of array of array of IntPtr);
+    begin
+      if (s=nil) or (s.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        exit;
+      end;
+      var s_temp_arr: array of array of IntPtr;
+      try
+        begin
+          var s_org_el_1 := s;
+          var s_len_1 := s_org_el_1.Length;
+          SetLength(s_temp_arr, s_len_1);
+          var s_tmp_el_1 := s_temp_arr;
+          for var s_ind_1 := 0 to s_len_1-1 do
+          begin
+            var s_org_el_2 := s_org_el_1[s_ind_1];
+            if (s_org_el_2=nil) or (s_org_el_2.Length=0) then continue;
+            var s_len_2 := s_org_el_2.Length;
+            SetLength(s_tmp_el_1[s_ind_1], s_len_2);
+            var s_tmp_el_2 := s_tmp_el_1[s_ind_1];
+            for var s_ind_2 := 0 to s_len_2-1 do
+            begin
+              var s_org_el_3 := s_org_el_2[s_ind_2];
+              if (s_org_el_3=nil) or (s_org_el_3.Length=0) then continue;
+              var s_org_el_3_sz := s_org_el_3.Length*Marshal.SizeOf&<IntPtr>;
+              var s_org_el_3_ptr := Marshal.AllocHGlobal(s_org_el_3_sz);
+              s_tmp_el_2[s_ind_2] := s_org_el_3_ptr;
+              Marshal.Copy(s_org_el_3,0,s_org_el_3_ptr,s_org_el_3_sz);
+            end;
+          end;
+        end;
+        5ArrrrrrayOfString(s_temp_arr);
+      finally
+         foreach var arr_el1 in s_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do Marshal.FreeHGlobal(arr_el2);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5ArrrrrrayOfString(s: array of array of IntPtr);
+    begin
+      if (s=nil) or (s.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        exit;
+      end;
+      var s_temp_arr: array of IntPtr;
+      try
+        begin
+          var s_org_el_1 := s;
+          var s_len_1 := s_org_el_1.Length;
+          SetLength(s_temp_arr, s_len_1);
+          var s_tmp_el_1 := s_temp_arr;
+          for var s_ind_1 := 0 to s_len_1-1 do
+          begin
+            var s_org_el_2 := s_org_el_1[s_ind_1];
+            if (s_org_el_2=nil) or (s_org_el_2.Length=0) then continue;
+            var s_org_el_2_sz := s_org_el_2.Length*Marshal.SizeOf&<IntPtr>;
+            var s_org_el_2_ptr := Marshal.AllocHGlobal(s_org_el_2_sz);
+            s_tmp_el_1[s_ind_1] := s_org_el_2_ptr;
+            Marshal.Copy(s_org_el_2,0,s_org_el_2_ptr,s_org_el_2_sz);
+          end;
+        end;
+        ntv_5ArrrrrrayOfString_2(s_temp_arr[0]);
+      finally
+         foreach var arr_el1 in s_temp_arr do Marshal.FreeHGlobal(arr_el1);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5ArrrrrrayOfString(var s: IntPtr) :=
+      ntv_5ArrrrrrayOfString_2(s);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 5ArrrrrrayOfString(s: pointer) :=
+      ntv_5ArrrrrrayOfString_1(s);
+    
+    // added in dum1.0
+    private static function ntv_6Mix_1(s1: IntPtr; s2: IntPtr; var gen: Byte; var gen_ro: Byte): IntPtr;
+    external 'dummy.dll' name '6Mix';
+    private static function ntv_6Mix_2(s1: IntPtr; s2: IntPtr; var gen: Byte; gen_ro: pointer): IntPtr;
+    external 'dummy.dll' name '6Mix';
+    private static function ntv_6Mix_3(s1: IntPtr; s2: IntPtr; gen: pointer; var gen_ro: Byte): IntPtr;
+    external 'dummy.dll' name '6Mix';
+    private static function ntv_6Mix_4(s1: IntPtr; s2: IntPtr; gen: pointer; gen_ro: pointer): IntPtr;
+    external 'dummy.dll' name '6Mix';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T,T2>(s1: IntPtr; s2: string; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
+    begin
+      var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
+      try
+        Result := 6Mix(s1, s2_str_ptr, gen, gen_ro);
+      finally
+        Marshal.FreeHGlobal(s2_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T,T2>(s1: IntPtr; s2: IntPtr; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
+    type PT = ^T;
+    type PT2 = ^T2;
+    begin
+      Result := if (gen_ro<>nil) and (gen_ro.Length<>0) then
         if (gen<>nil) and (gen.Length<>0) then
-          6Mix(s1, s2, gen[0], a[0]) else
-          6Mix(s1, s2, PT(nil)^, a[0]) else
+          6Mix(s1, s2, gen[0], gen_ro[0]) else
+          6Mix(s1, s2, PT(nil)^, gen_ro[0]) else
         if (gen<>nil) and (gen.Length<>0) then
           6Mix(s1, s2, gen[0], PT2(nil)^) else
-          6Mix(s1, s2, PT(nil)^, PT2(nil)^) else
+          6Mix(s1, s2, PT(nil)^, PT2(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T,T2>(s1: IntPtr; s2: IntPtr; gen: array of T; a: array of T2): string; where T, T2: record;
-    type PT=^T;
-    type PT2=^T2;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T,T2>(s1: IntPtr; s2: string; var gen: T; var gen_ro: T2): string; where T, T2: record;
     begin
-      Result := if (a<>nil) and (a.Length<>0) then
-        if (gen<>nil) and (gen.Length<>0) then
-          6Mix(s1, s2, gen[0], a[0]) else
-          6Mix(s1, s2, PT(nil)^, a[0]) else
-        if (gen<>nil) and (gen.Length<>0) then
-          6Mix(s1, s2, gen[0], PT2(nil)^) else
-          6Mix(s1, s2, PT(nil)^, PT2(nil)^) else
-    end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T,T2>(s1: IntPtr; s2: string; var gen: T; var a: T2): string; where T, T2: record;
-    begin
-      var Result_str_ptr, s2_str_ptr: IntPtr;
+      var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
-        s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
-        Result_str_ptr := ntv_6Mix_4(s1, s2_str_ptr, PByte(pointer(@gen))^, PByte(pointer(@a))^);
+        Result := 6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
-        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-        Marshal.FreeHGlobal(Result_str_ptr);
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T>(s1: IntPtr; s2: string; var gen: T; a: IntPtr): string; where T: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T>(s1: IntPtr; s2: string; var gen: T; gen_ro: pointer): string; where T: record;
     begin
-      var Result_str_ptr, s2_str_ptr: IntPtr;
+      var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
-        s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
-        Result_str_ptr := ntv_6Mix_3(s1, s2_str_ptr, PByte(pointer(@gen))^, a);
+        Result := 6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
-        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-        Marshal.FreeHGlobal(Result_str_ptr);
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T2>(s1: IntPtr; s2: string; gen: IntPtr; var a: T2): string; where T2: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T2>(s1: IntPtr; s2: string; gen: pointer; var gen_ro: T2): string; where T2: record;
     begin
-      var Result_str_ptr, s2_str_ptr: IntPtr;
+      var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
-        s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
-        Result_str_ptr := ntv_6Mix_2(s1, s2_str_ptr, gen, PByte(pointer(@a))^);
+        Result := 6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
-        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-        Marshal.FreeHGlobal(Result_str_ptr);
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix(s1: IntPtr; s2: string; gen: IntPtr; a: IntPtr): string;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix(s1: IntPtr; s2: string; gen: pointer; gen_ro: pointer): string;
     begin
-      var Result_str_ptr, s2_str_ptr: IntPtr;
+      var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
-        s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
-        Result_str_ptr := ntv_6Mix_1(s1, s2_str_ptr, gen, a);
+        Result := 6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
-        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-        Marshal.FreeHGlobal(Result_str_ptr);
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T,T2>(s1: IntPtr; s2: IntPtr; var gen: T; var a: T2): string; where T, T2: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T,T2>(s1: IntPtr; s2: IntPtr; var gen: T; var gen_ro: T2): string; where T, T2: record;
     begin
-      var Result_str_ptr: IntPtr;
-      Result_str_ptr := ntv_6Mix_4(s1, s2, PByte(pointer(@gen))^, PByte(pointer(@a))^);
-      Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-      Marshal.FreeHGlobal(Result_str_ptr);
+      var Result_str_ptr := ntv_6Mix_1(s1, s2, PByte(pointer(@gen))^, PByte(pointer(@gen_ro))^);
+      try
+        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
+      finally
+        Marshal.FreeHGlobal(Result_str_ptr);
+      end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T>(s1: IntPtr; s2: IntPtr; var gen: T; a: IntPtr): string; where T: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T>(s1: IntPtr; s2: IntPtr; var gen: T; gen_ro: pointer): string; where T: record;
     begin
-      var Result_str_ptr: IntPtr;
-      Result_str_ptr := ntv_6Mix_3(s1, s2, PByte(pointer(@gen))^, a);
-      Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-      Marshal.FreeHGlobal(Result_str_ptr);
+      var Result_str_ptr := ntv_6Mix_2(s1, s2, PByte(pointer(@gen))^, gen_ro);
+      try
+        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
+      finally
+        Marshal.FreeHGlobal(Result_str_ptr);
+      end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T2>(s1: IntPtr; s2: IntPtr; gen: IntPtr; var a: T2): string; where T2: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T2>(s1: IntPtr; s2: IntPtr; gen: pointer; var gen_ro: T2): string; where T2: record;
     begin
-      var Result_str_ptr: IntPtr;
-      Result_str_ptr := ntv_6Mix_2(s1, s2, gen, PByte(pointer(@a))^);
-      Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-      Marshal.FreeHGlobal(Result_str_ptr);
+      var Result_str_ptr := ntv_6Mix_3(s1, s2, gen, PByte(pointer(@gen_ro))^);
+      try
+        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
+      finally
+        Marshal.FreeHGlobal(Result_str_ptr);
+      end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix(s1: IntPtr; s2: IntPtr; gen: IntPtr; a: IntPtr): string;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix(s1: IntPtr; s2: IntPtr; gen: pointer; gen_ro: pointer): string;
     begin
-      var Result_str_ptr: IntPtr;
-      Result_str_ptr := ntv_6Mix_1(s1, s2, gen, a);
-      Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-      Marshal.FreeHGlobal(Result_str_ptr);
+      var Result_str_ptr := ntv_6Mix_4(s1, s2, gen, gen_ro);
+      try
+        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
+      finally
+        Marshal.FreeHGlobal(Result_str_ptr);
+      end;
     end;
     
     // added in dum1.0
-    private static procedure ntv_7EnumToType_1(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; otp_value_size_ret: IntPtr);
+    private static procedure ntv_7EnumToType_1(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr);
     external 'dummy.dll' name '7EnumToType';
-    private static procedure ntv_7EnumToType_2(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; var otp_value_size_ret: UIntPtr);
+    private static procedure ntv_7EnumToType_2(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr);
     external 'dummy.dll' name '7EnumToType';
-    private static procedure ntv_7EnumToType_3(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr);
+    private static procedure ntv_7EnumToType_3(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; var otp_value_size_ret: UIntPtr);
     external 'dummy.dll' name '7EnumToType';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType<T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where T: record;
+    private static procedure ntv_7EnumToType_4(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; otp_value_size_ret: IntPtr);
+    external 'dummy.dll' name '7EnumToType';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType<TInp,T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where TInp, T: record;
     begin
-      ntv_7EnumToType_3(choise, inp_value_size, inp_value, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+      ntv_7EnumToType_1(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_1_InpFlat(inp_value: UIntPtr; var otp_value: string) :=
-    7EnumToType(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_2_InpArr(inp_value: ArraySegment<UIntPtr>; var otp_value: string) :=
-    7EnumToType(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_3_OtpFlat(var otp_value: UIntPtr) :=
-    7EnumToType(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType<TInp>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr); where TInp: record;
+    begin
+      ntv_7EnumToType_2(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, otp_value, otp_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_1_InpFlat(inp_value: UIntPtr; var otp_value: string);
+    begin
+      var inp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
+      var otp_value_sz: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_1_InpFlat, inp_value_sz,inp_value, UIntPtr.Zero,nil,otp_value_sz);
+      var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
+      try
+        7EnumToType(Multichoise1.Choise1_1_InpFlat, inp_value_sz,inp_value, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
+        otp_value := Marshal.PtrToStringAnsi(otp_value_temp_res);
+      finally
+        Marshal.FreeHGlobal(otp_value_temp_res);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_2_InpArr(inp_value: array of UIntPtr; var otp_value: string);
+    begin
+      var inp_value_sz := new UIntPtr(inp_value.Length*Marshal.SizeOf&<UIntPtr>);
+      var otp_value_sz: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value[0], UIntPtr.Zero,nil,otp_value_sz);
+      var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
+      try
+        7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value[0], otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
+        otp_value := Marshal.PtrToStringAnsi(otp_value_temp_res);
+      finally
+        Marshal.FreeHGlobal(otp_value_temp_res);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_2_InpArr(inp_value_count: UInt32; var inp_value: UIntPtr; var otp_value: string);
+    begin
+      var inp_value_sz := new UIntPtr(inp_value_count*Marshal.SizeOf&<UIntPtr>);
+      var otp_value_sz: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value, UIntPtr.Zero,nil,otp_value_sz);
+      var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
+      try
+        7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
+        otp_value := Marshal.PtrToStringAnsi(otp_value_temp_res);
+      finally
+        Marshal.FreeHGlobal(otp_value_temp_res);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_3_OtpFlat(var otp_value: UIntPtr; otp_value_validate_size: boolean := false);
+    begin
+      var otp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
+      var otp_value_ret_size: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_3_OtpFlat, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
+      if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_4_OtpArr(var otp_value: array of UIntPtr);
-    type PUIntPtr=^UIntPtr;
     begin
-      if (otp_value<>nil) and (otp_value.Length<>0) then
-        7EnumToType(choise, inp_value_size, inp_value, otp_value_size, otp_value[0], otp_value_size_ret);
-        7EnumToType(choise, inp_value_size, inp_value, otp_value_size, PUIntPtr(nil)^, otp_value_size_ret) else
+      var otp_value_sz: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
+      var otp_value_temp_res := new UIntPtr[otp_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
+      7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],IntPtr.Zero);
+      otp_value := otp_value_temp_res;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_5_OtpStaticArr(var otp_value: array of UIntPtr);
-    type PUIntPtr=^UIntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_4_OtpArr(otp_value_count: UInt32; var otp_value: UIntPtr);
     begin
-      if (otp_value<>nil) and (otp_value.Length<>0) then
-        7EnumToType(choise, inp_value_size, inp_value, otp_value_size, otp_value[0], otp_value_size_ret);
-        7EnumToType(choise, inp_value_size, inp_value, otp_value_size, PUIntPtr(nil)^, otp_value_size_ret) else
+      var otp_value_sz := new UIntPtr(otp_value_count*Marshal.SizeOf&<UIntPtr>);
+      7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,IntPtr.Zero);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_5_OtpStaticArr(var otp_value: array of UIntPtr; otp_value_validate_size: boolean := false);
+    begin
+      var otp_value_sz := new UIntPtr(3*Marshal.SizeOf&<UIntPtr>);
+      var otp_value_temp_res := new UIntPtr[3];
+      var otp_value_ret_size: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],otp_value_ret_size);
+      otp_value := otp_value_temp_res;
+      if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_5_OtpStaticArr(otp_value_count: UInt32; var otp_value: UIntPtr; otp_value_validate_size: boolean := false);
+    begin
+      var otp_value_sz := new UIntPtr(otp_value_count*Marshal.SizeOf&<UIntPtr>);
+      var otp_value_ret_size: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
+      if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; var otp_value_size_ret: UIntPtr) :=
-    ntv_7EnumToType_2(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
+      ntv_7EnumToType_3(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; otp_value_size_ret: IntPtr) :=
-    ntv_7EnumToType_1(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
+      ntv_7EnumToType_4(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
+    
+    // added in dum1.0
+    private static procedure ntv_7EnumToTypeInputOnly_1(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: Byte);
+    external 'dummy.dll' name '7EnumToTypeInputOnly';
+    private static procedure ntv_7EnumToTypeInputOnly_2(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: IntPtr);
+    external 'dummy.dll' name '7EnumToTypeInputOnly';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToTypeInputOnly<TInp>(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: TInp); where TInp: record;
+    begin
+      ntv_7EnumToTypeInputOnly_1(choise, inp_value_size, PByte(pointer(@inp_value))^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToTypeInputOnly_Choise2_1_InpFlat(inp_value: UIntPtr);
+    begin
+      var inp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
+      7EnumToTypeInputOnly(Multichoise2.Choise2_1_InpFlat, inp_value_sz,inp_value);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToTypeInputOnly_Choise2_2_InpArr(inp_value: array of UIntPtr);
+    begin
+      var inp_value_sz := new UIntPtr(inp_value.Length*Marshal.SizeOf&<UIntPtr>);
+      7EnumToTypeInputOnly(Multichoise2.Choise2_2_InpArr, inp_value_sz,inp_value[0]);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToTypeInputOnly_Choise2_2_InpArr(inp_value_count: UInt32; var inp_value: UIntPtr);
+    begin
+      var inp_value_sz := new UIntPtr(inp_value_count*Marshal.SizeOf&<UIntPtr>);
+      7EnumToTypeInputOnly(Multichoise2.Choise2_2_InpArr, inp_value_sz,inp_value);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToTypeInputOnly(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: IntPtr) :=
+      ntv_7EnumToTypeInputOnly_2(choise, inp_value_size, inp_value);
     
   end;
   
@@ -365,337 +916,882 @@
     private 1NoParam_adr := GetProcAddress('1NoParam');
     private ntv_1NoParam_1 := GetProcOrNil&<procedure>(1NoParam_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 1NoParam :=
-    ntv_1NoParam_1();
+      ntv_1NoParam_1();
+    
+    // added in dyn1.0
+    private 1NoParamResult_adr := GetProcAddress('1NoParamResult');
+    private ntv_1NoParamResult_1 := GetProcOrNil&<function: UIntPtr>(1NoParamResult_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 1NoParamResult: UIntPtr :=
+      ntv_1NoParamResult_1();
     
     // added in dyn1.0
     private 2ParamString_adr := GetProcAddress('2ParamString');
     private ntv_2ParamString_1 := GetProcOrNil&<procedure(s: IntPtr)>(2ParamString_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 2ParamString(s: IntPtr) :=
-    ntv_2ParamString_1(s);
+      ntv_2ParamString_1(s);
     
     // added in dyn1.0
     private 2ParamStringRO_adr := GetProcAddress('2ParamStringRO');
     private ntv_2ParamStringRO_1 := GetProcOrNil&<procedure(s: IntPtr)>(2ParamStringRO_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 2ParamStringRO(s: string);
     begin
-      var s_str_ptr: IntPtr;
+      var s_str_ptr := Marshal.StringToHGlobalAnsi(s);
       try
-        s_str_ptr := Marshal.StringToHGlobalAnsi(s);
         ntv_2ParamStringRO_1(s_str_ptr);
       finally
         Marshal.FreeHGlobal(s_str_ptr);
       end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 2ParamStringRO(s: IntPtr) :=
-    ntv_2ParamStringRO_1(s);
+      ntv_2ParamStringRO_1(s);
     
     // added in dyn1.0
     private 3ResultString_adr := GetProcAddress('3ResultString');
-    private ntv_3ResultString_1 := GetProcOrNil&<function: Byte>(3ResultString_adr);
+    private ntv_3ResultString_1 := GetProcOrNil&<function: IntPtr>(3ResultString_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 3ResultString: string;
     begin
-      var Result_str_ptr: IntPtr;
-      Result_str_ptr := ntv_3ResultString_1();
-      Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-      Marshal.FreeHGlobal(Result_str_ptr);
+      var Result_str_ptr := ntv_3ResultString_1();
+      try
+        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
+      finally
+        Marshal.FreeHGlobal(Result_str_ptr);
+      end;
     end;
     
     // added in dyn1.0
     private 3ResultStringRO_adr := GetProcAddress('3ResultStringRO');
-    private ntv_3ResultStringRO_1 := GetProcOrNil&<function: Byte>(3ResultStringRO_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 3ResultStringRO: string;
-    begin
-      var Result_str_ptr: IntPtr;
-      Result_str_ptr := ntv_3ResultStringRO_1();
-      Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-    end;
+    private ntv_3ResultStringRO_1 := GetProcOrNil&<function: IntPtr>(3ResultStringRO_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 3ResultStringRO: string :=
+      Marshal.PtrToStringAnsi(ntv_3ResultStringRO_1());
     
     // added in dyn1.0
     private 4Generic_adr := GetProcAddress('4Generic');
-    private ntv_4Generic_1 := GetProcOrNil&<procedure(data: IntPtr)>(4Generic_adr);
-    private ntv_4Generic_2 := GetProcOrNil&<procedure(var data: Byte)>(4Generic_adr);
+    private ntv_4Generic_1 := GetProcOrNil&<procedure(var data: Byte)>(4Generic_adr);
+    private ntv_4Generic_2 := GetProcOrNil&<procedure(data: pointer)>(4Generic_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 4Generic<T>(data: array of T); where T: record;
-    type PT=^T;
+    type PT = ^T;
     begin
       if (data<>nil) and (data.Length<>0) then
         4Generic(data[0]) else
-        4Generic(PT(nil)^) else
+        4Generic(PT(nil)^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 4Generic<T>(var data: T); where T: record;
     begin
-      ntv_4Generic_2(PByte(pointer(@data))^);
+      ntv_4Generic_1(PByte(pointer(@data))^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 4Generic(data: IntPtr) :=
-    ntv_4Generic_1(data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 4Generic(data: pointer) :=
+      ntv_4Generic_2(data);
+    
+    // added in dyn1.0
+    private 4GenericRO_adr := GetProcAddress('4GenericRO');
+    private ntv_4GenericRO_1 := GetProcOrNil&<procedure(var data: Byte)>(4GenericRO_adr);
+    private ntv_4GenericRO_2 := GetProcOrNil&<procedure(data: pointer)>(4GenericRO_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 4GenericRO<T>(data: array of T); where T: record;
+    type PT = ^T;
+    begin
+      if (data<>nil) and (data.Length<>0) then
+        4GenericRO(data[0]) else
+        4GenericRO(PT(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 4GenericRO<T>(var data: T); where T: record;
+    begin
+      ntv_4GenericRO_1(PByte(pointer(@data))^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 4GenericRO(data: pointer) :=
+      ntv_4GenericRO_2(data);
     
     // added in dyn1.0
     private 4GenericWOVarArg_adr := GetProcAddress('4GenericWOVarArg');
-    private ntv_4GenericWOVarArg_1 := GetProcOrNil&<procedure(data: IntPtr)>(4GenericWOVarArg_adr);
-    private ntv_4GenericWOVarArg_2 := GetProcOrNil&<procedure(var data: Byte)>(4GenericWOVarArg_adr);
+    private ntv_4GenericWOVarArg_1 := GetProcOrNil&<procedure(var data: Byte)>(4GenericWOVarArg_adr);
+    private ntv_4GenericWOVarArg_2 := GetProcOrNil&<procedure(data: pointer)>(4GenericWOVarArg_adr);
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure temp_4GenericWOVarArg_1<T>(var data: T); where T: record;
     begin
-      ntv_4GenericWOVarArg_2(PByte(pointer(@data))^);
+      ntv_4GenericWOVarArg_1(PByte(pointer(@data))^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 4GenericWOVarArg<T>(data: array of T); where T: record;
-    type PT=^T;
+    type PT = ^T;
     begin
       if (data<>nil) and (data.Length<>0) then
         temp_4GenericWOVarArg_1(data[0]) else
-        temp_4GenericWOVarArg_1(PT(nil)^) else
+        temp_4GenericWOVarArg_1(PT(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 4GenericWOVarArg(data: IntPtr) :=
-    ntv_4GenericWOVarArg_1(data);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 4GenericWOVarArg(data: pointer) :=
+      ntv_4GenericWOVarArg_2(data);
+    
+    // added in dyn1.0
+    private 4GenericWOVarArgRO_adr := GetProcAddress('4GenericWOVarArgRO');
+    private ntv_4GenericWOVarArgRO_1 := GetProcOrNil&<procedure(var data: Byte)>(4GenericWOVarArgRO_adr);
+    private ntv_4GenericWOVarArgRO_2 := GetProcOrNil&<procedure(data: pointer)>(4GenericWOVarArgRO_adr);
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure temp_4GenericWOVarArgRO_1<T>(var data: T); where T: record;
+    begin
+      ntv_4GenericWOVarArgRO_1(PByte(pointer(@data))^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 4GenericWOVarArgRO<T>(data: array of T); where T: record;
+    type PT = ^T;
+    begin
+      if (data<>nil) and (data.Length<>0) then
+        temp_4GenericWOVarArgRO_1(data[0]) else
+        temp_4GenericWOVarArgRO_1(PT(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 4GenericWOVarArgRO(data: pointer) :=
+      ntv_4GenericWOVarArgRO_2(data);
     
     // added in dyn1.0
     private 5Arrrrrray_adr := GetProcAddress('5Arrrrrray');
     private ntv_5Arrrrrray_1 := GetProcOrNil&<procedure(a: pointer)>(5Arrrrrray_adr);
     private ntv_5Arrrrrray_2 := GetProcOrNil&<procedure(var a: IntPtr)>(5Arrrrrray_adr);
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure temp_5Arrrrrray_1(a: array of IntPtr);
-    type PIntPtr=^IntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5Arrrrrray(a: array of array of array of array of array of UIntPtr);
     begin
-      if (a<>nil) and (a.Length<>0) then
-        ntv_5Arrrrrray_2(a[0]) else
-        ntv_5Arrrrrray_2(PIntPtr(nil)^) else
-    end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5Arrrrrray<T>(a: array of array of array of array of array of T); where T: record;
-    begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5Arrrrrray_1(pointer(nil));
+        exit;
+      end;
       var a_temp_arr: array of array of array of array of IntPtr;
       try
-        a_temp_arr := a?.ConvertAll(arr_el1->
-          arr_el1?.ConvertAll(arr_el2->
-            arr_el2?.ConvertAll(arr_el3->
-              arr_el3?.ConvertAll(managed_a->
-                if (managed_a=nil) or (managed_a.Length=0) then
-                  Result := IntPtr.Zero else
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_len_2 := a_org_el_2.Length;
+            SetLength(a_tmp_el_1[a_ind_1], a_len_2);
+            var a_tmp_el_2 := a_tmp_el_1[a_ind_1];
+            for var a_ind_2 := 0 to a_len_2-1 do
+            begin
+              var a_org_el_3 := a_org_el_2[a_ind_2];
+              if (a_org_el_3=nil) or (a_org_el_3.Length=0) then continue;
+              var a_len_3 := a_org_el_3.Length;
+              SetLength(a_tmp_el_2[a_ind_2], a_len_3);
+              var a_tmp_el_3 := a_tmp_el_2[a_ind_2];
+              for var a_ind_3 := 0 to a_len_3-1 do
+              begin
+                var a_org_el_4 := a_org_el_3[a_ind_3];
+                if (a_org_el_4=nil) or (a_org_el_4.Length=0) then continue;
+                var a_len_4 := a_org_el_4.Length;
+                SetLength(a_tmp_el_3[a_ind_3], a_len_4);
+                var a_tmp_el_4 := a_tmp_el_3[a_ind_3];
+                for var a_ind_4 := 0 to a_len_4-1 do
                 begin
-                  var l := managed_a.Length*Marshal.SizeOf&<T>;
-                  Result := Marshal.AllocHGlobal(l);
-                  Marshal.Copy(managed_a,0,Result,l);
-                end
-              )
-            )
-          )
-        );
+                  var a_org_el_5 := a_org_el_4[a_ind_4];
+                  if (a_org_el_5=nil) or (a_org_el_5.Length=0) then continue;
+                  var a_org_el_5_sz := a_org_el_5.Length*Marshal.SizeOf&<UIntPtr>;
+                  var a_org_el_5_ptr := Marshal.AllocHGlobal(a_org_el_5_sz);
+                  a_tmp_el_4[a_ind_4] := a_org_el_5_ptr;
+                  Marshal.Copy(a_org_el_5,0,a_org_el_5_ptr,a_org_el_5_sz);
+                end;
+              end;
+            end;
+          end;
+        end;
         5Arrrrrray(a_temp_arr);
       finally
-        if a_temp_arr<>nil then foreach var arr_el1 in a_temp_arr do
-          if arr_el1<>nil then foreach var arr_el2 in arr_el1 do
-            if arr_el2<>nil then foreach var arr_el3 in arr_el2 do
-              if arr_el3<>nil then foreach var arr_el4 in arr_el3 do
-                Marshal.FreeHGlobal(arr_el4);
+         foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
+             foreach var arr_el3 in arr_el2 do if arr_el3<>nil then
+               foreach var arr_el4 in arr_el3 do Marshal.FreeHGlobal(arr_el4);
       end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5Arrrrrray(a: array of array of array of array of IntPtr);
     begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5Arrrrrray_1(pointer(nil));
+        exit;
+      end;
       var a_temp_arr: array of array of array of IntPtr;
       try
-        a_temp_arr := a?.ConvertAll(arr_el1->
-          arr_el1?.ConvertAll(arr_el2->
-            arr_el2?.ConvertAll(managed_a->
-              if (managed_a=nil) or (managed_a.Length=0) then
-                Result := IntPtr.Zero else
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_len_2 := a_org_el_2.Length;
+            SetLength(a_tmp_el_1[a_ind_1], a_len_2);
+            var a_tmp_el_2 := a_tmp_el_1[a_ind_1];
+            for var a_ind_2 := 0 to a_len_2-1 do
+            begin
+              var a_org_el_3 := a_org_el_2[a_ind_2];
+              if (a_org_el_3=nil) or (a_org_el_3.Length=0) then continue;
+              var a_len_3 := a_org_el_3.Length;
+              SetLength(a_tmp_el_2[a_ind_2], a_len_3);
+              var a_tmp_el_3 := a_tmp_el_2[a_ind_2];
+              for var a_ind_3 := 0 to a_len_3-1 do
               begin
-                var l := managed_a.Length*Marshal.SizeOf&<IntPtr>;
-                Result := Marshal.AllocHGlobal(l);
-                Marshal.Copy(managed_a,0,Result,l);
-              end
-            )
-          )
-        );
+                var a_org_el_4 := a_org_el_3[a_ind_3];
+                if (a_org_el_4=nil) or (a_org_el_4.Length=0) then continue;
+                var a_org_el_4_sz := a_org_el_4.Length*Marshal.SizeOf&<IntPtr>;
+                var a_org_el_4_ptr := Marshal.AllocHGlobal(a_org_el_4_sz);
+                a_tmp_el_3[a_ind_3] := a_org_el_4_ptr;
+                Marshal.Copy(a_org_el_4,0,a_org_el_4_ptr,a_org_el_4_sz);
+              end;
+            end;
+          end;
+        end;
         5Arrrrrray(a_temp_arr);
       finally
-        if a_temp_arr<>nil then foreach var arr_el1 in a_temp_arr do
-          if arr_el1<>nil then foreach var arr_el2 in arr_el1 do
-            if arr_el2<>nil then foreach var arr_el3 in arr_el2 do
-              Marshal.FreeHGlobal(arr_el3);
+         foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
+             foreach var arr_el3 in arr_el2 do Marshal.FreeHGlobal(arr_el3);
       end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5Arrrrrray(a: array of array of array of IntPtr);
     begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5Arrrrrray_1(pointer(nil));
+        exit;
+      end;
       var a_temp_arr: array of array of IntPtr;
       try
-        a_temp_arr := a?.ConvertAll(arr_el1->
-          arr_el1?.ConvertAll(managed_a->
-            if (managed_a=nil) or (managed_a.Length=0) then
-              Result := IntPtr.Zero else
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_len_2 := a_org_el_2.Length;
+            SetLength(a_tmp_el_1[a_ind_1], a_len_2);
+            var a_tmp_el_2 := a_tmp_el_1[a_ind_1];
+            for var a_ind_2 := 0 to a_len_2-1 do
             begin
-              var l := managed_a.Length*Marshal.SizeOf&<IntPtr>;
-              Result := Marshal.AllocHGlobal(l);
-              Marshal.Copy(managed_a,0,Result,l);
-            end
-          )
-        );
+              var a_org_el_3 := a_org_el_2[a_ind_2];
+              if (a_org_el_3=nil) or (a_org_el_3.Length=0) then continue;
+              var a_org_el_3_sz := a_org_el_3.Length*Marshal.SizeOf&<IntPtr>;
+              var a_org_el_3_ptr := Marshal.AllocHGlobal(a_org_el_3_sz);
+              a_tmp_el_2[a_ind_2] := a_org_el_3_ptr;
+              Marshal.Copy(a_org_el_3,0,a_org_el_3_ptr,a_org_el_3_sz);
+            end;
+          end;
+        end;
         5Arrrrrray(a_temp_arr);
       finally
-        if a_temp_arr<>nil then foreach var arr_el1 in a_temp_arr do
-          if arr_el1<>nil then foreach var arr_el2 in arr_el1 do
-            Marshal.FreeHGlobal(arr_el2);
+         foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do Marshal.FreeHGlobal(arr_el2);
       end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5Arrrrrray(a: array of array of IntPtr);
     begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5Arrrrrray_1(pointer(nil));
+        exit;
+      end;
       var a_temp_arr: array of IntPtr;
       try
-        a_temp_arr := a?.ConvertAll(managed_a->
-          if (managed_a=nil) or (managed_a.Length=0) then
-            Result := IntPtr.Zero else
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
           begin
-            var l := managed_a.Length*Marshal.SizeOf&<IntPtr>;
-            Result := Marshal.AllocHGlobal(l);
-            Marshal.Copy(managed_a,0,Result,l);
-          end
-        );
-        temp_5Arrrrrray_1(a_temp_arr);
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_org_el_2_sz := a_org_el_2.Length*Marshal.SizeOf&<IntPtr>;
+            var a_org_el_2_ptr := Marshal.AllocHGlobal(a_org_el_2_sz);
+            a_tmp_el_1[a_ind_1] := a_org_el_2_ptr;
+            Marshal.Copy(a_org_el_2,0,a_org_el_2_ptr,a_org_el_2_sz);
+          end;
+        end;
+        ntv_5Arrrrrray_2(a_temp_arr[0]);
       finally
-        if a_temp_arr<>nil then foreach var arr_el1 in a_temp_arr do
-          Marshal.FreeHGlobal(arr_el1);
+         foreach var arr_el1 in a_temp_arr do Marshal.FreeHGlobal(arr_el1);
       end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5Arrrrrray(var a: IntPtr) :=
-    ntv_5Arrrrrray_2(a);
+      ntv_5Arrrrrray_2(a);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5Arrrrrray(a: pointer) :=
-    ntv_5Arrrrrray_1(a);
+      ntv_5Arrrrrray_1(a);
+    
+    // added in dyn1.0
+    private 5ArrrrrrayOfGeneric_adr := GetProcAddress('5ArrrrrrayOfGeneric');
+    private ntv_5ArrrrrrayOfGeneric_1 := GetProcOrNil&<procedure(a: pointer)>(5ArrrrrrayOfGeneric_adr);
+    private ntv_5ArrrrrrayOfGeneric_2 := GetProcOrNil&<procedure(var a: IntPtr)>(5ArrrrrrayOfGeneric_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5ArrrrrrayOfGeneric<T>(a: array of array of array of array of array of T); where T: record;
+    begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        exit;
+      end;
+      var a_temp_arr: array of array of array of array of IntPtr;
+      try
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_len_2 := a_org_el_2.Length;
+            SetLength(a_tmp_el_1[a_ind_1], a_len_2);
+            var a_tmp_el_2 := a_tmp_el_1[a_ind_1];
+            for var a_ind_2 := 0 to a_len_2-1 do
+            begin
+              var a_org_el_3 := a_org_el_2[a_ind_2];
+              if (a_org_el_3=nil) or (a_org_el_3.Length=0) then continue;
+              var a_len_3 := a_org_el_3.Length;
+              SetLength(a_tmp_el_2[a_ind_2], a_len_3);
+              var a_tmp_el_3 := a_tmp_el_2[a_ind_2];
+              for var a_ind_3 := 0 to a_len_3-1 do
+              begin
+                var a_org_el_4 := a_org_el_3[a_ind_3];
+                if (a_org_el_4=nil) or (a_org_el_4.Length=0) then continue;
+                var a_len_4 := a_org_el_4.Length;
+                SetLength(a_tmp_el_3[a_ind_3], a_len_4);
+                var a_tmp_el_4 := a_tmp_el_3[a_ind_3];
+                for var a_ind_4 := 0 to a_len_4-1 do
+                begin
+                  var a_org_el_5 := a_org_el_4[a_ind_4];
+                  if (a_org_el_5=nil) or (a_org_el_5.Length=0) then continue;
+                  var a_org_el_5_sz := a_org_el_5.Length*Marshal.SizeOf&<T>;
+                  var a_org_el_5_ptr := Marshal.AllocHGlobal(a_org_el_5_sz);
+                  a_tmp_el_4[a_ind_4] := a_org_el_5_ptr;
+                  Marshal.Copy(a_org_el_5,0,a_org_el_5_ptr,a_org_el_5_sz);
+                end;
+              end;
+            end;
+          end;
+        end;
+        5ArrrrrrayOfGeneric(a_temp_arr);
+      finally
+         foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
+             foreach var arr_el3 in arr_el2 do if arr_el3<>nil then
+               foreach var arr_el4 in arr_el3 do Marshal.FreeHGlobal(arr_el4);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5ArrrrrrayOfGeneric(a: array of array of array of array of IntPtr);
+    begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        exit;
+      end;
+      var a_temp_arr: array of array of array of IntPtr;
+      try
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_len_2 := a_org_el_2.Length;
+            SetLength(a_tmp_el_1[a_ind_1], a_len_2);
+            var a_tmp_el_2 := a_tmp_el_1[a_ind_1];
+            for var a_ind_2 := 0 to a_len_2-1 do
+            begin
+              var a_org_el_3 := a_org_el_2[a_ind_2];
+              if (a_org_el_3=nil) or (a_org_el_3.Length=0) then continue;
+              var a_len_3 := a_org_el_3.Length;
+              SetLength(a_tmp_el_2[a_ind_2], a_len_3);
+              var a_tmp_el_3 := a_tmp_el_2[a_ind_2];
+              for var a_ind_3 := 0 to a_len_3-1 do
+              begin
+                var a_org_el_4 := a_org_el_3[a_ind_3];
+                if (a_org_el_4=nil) or (a_org_el_4.Length=0) then continue;
+                var a_org_el_4_sz := a_org_el_4.Length*Marshal.SizeOf&<IntPtr>;
+                var a_org_el_4_ptr := Marshal.AllocHGlobal(a_org_el_4_sz);
+                a_tmp_el_3[a_ind_3] := a_org_el_4_ptr;
+                Marshal.Copy(a_org_el_4,0,a_org_el_4_ptr,a_org_el_4_sz);
+              end;
+            end;
+          end;
+        end;
+        5ArrrrrrayOfGeneric(a_temp_arr);
+      finally
+         foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
+             foreach var arr_el3 in arr_el2 do Marshal.FreeHGlobal(arr_el3);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5ArrrrrrayOfGeneric(a: array of array of array of IntPtr);
+    begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        exit;
+      end;
+      var a_temp_arr: array of array of IntPtr;
+      try
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_len_2 := a_org_el_2.Length;
+            SetLength(a_tmp_el_1[a_ind_1], a_len_2);
+            var a_tmp_el_2 := a_tmp_el_1[a_ind_1];
+            for var a_ind_2 := 0 to a_len_2-1 do
+            begin
+              var a_org_el_3 := a_org_el_2[a_ind_2];
+              if (a_org_el_3=nil) or (a_org_el_3.Length=0) then continue;
+              var a_org_el_3_sz := a_org_el_3.Length*Marshal.SizeOf&<IntPtr>;
+              var a_org_el_3_ptr := Marshal.AllocHGlobal(a_org_el_3_sz);
+              a_tmp_el_2[a_ind_2] := a_org_el_3_ptr;
+              Marshal.Copy(a_org_el_3,0,a_org_el_3_ptr,a_org_el_3_sz);
+            end;
+          end;
+        end;
+        5ArrrrrrayOfGeneric(a_temp_arr);
+      finally
+         foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do Marshal.FreeHGlobal(arr_el2);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5ArrrrrrayOfGeneric(a: array of array of IntPtr);
+    begin
+      if (a=nil) or (a.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        exit;
+      end;
+      var a_temp_arr: array of IntPtr;
+      try
+        begin
+          var a_org_el_1 := a;
+          var a_len_1 := a_org_el_1.Length;
+          SetLength(a_temp_arr, a_len_1);
+          var a_tmp_el_1 := a_temp_arr;
+          for var a_ind_1 := 0 to a_len_1-1 do
+          begin
+            var a_org_el_2 := a_org_el_1[a_ind_1];
+            if (a_org_el_2=nil) or (a_org_el_2.Length=0) then continue;
+            var a_org_el_2_sz := a_org_el_2.Length*Marshal.SizeOf&<IntPtr>;
+            var a_org_el_2_ptr := Marshal.AllocHGlobal(a_org_el_2_sz);
+            a_tmp_el_1[a_ind_1] := a_org_el_2_ptr;
+            Marshal.Copy(a_org_el_2,0,a_org_el_2_ptr,a_org_el_2_sz);
+          end;
+        end;
+        ntv_5ArrrrrrayOfGeneric_2(a_temp_arr[0]);
+      finally
+         foreach var arr_el1 in a_temp_arr do Marshal.FreeHGlobal(arr_el1);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5ArrrrrrayOfGeneric(var a: IntPtr) :=
+      ntv_5ArrrrrrayOfGeneric_2(a);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5ArrrrrrayOfGeneric(a: pointer) :=
+      ntv_5ArrrrrrayOfGeneric_1(a);
+    
+    // added in dyn1.0
+    private 5ArrrrrrayOfString_adr := GetProcAddress('5ArrrrrrayOfString');
+    private ntv_5ArrrrrrayOfString_1 := GetProcOrNil&<procedure(s: pointer)>(5ArrrrrrayOfString_adr);
+    private ntv_5ArrrrrrayOfString_2 := GetProcOrNil&<procedure(var s: IntPtr)>(5ArrrrrrayOfString_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5ArrrrrrayOfString(s: array of array of array of array of string);
+    begin
+      if (s=nil) or (s.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        exit;
+      end;
+      var s_temp_arr: array of array of array of array of IntPtr;
+      try
+        begin
+          var s_org_el_1 := s;
+          var s_len_1 := s_org_el_1.Length;
+          SetLength(s_temp_arr, s_len_1);
+          var s_tmp_el_1 := s_temp_arr;
+          for var s_ind_1 := 0 to s_len_1-1 do
+          begin
+            var s_org_el_2 := s_org_el_1[s_ind_1];
+            if (s_org_el_2=nil) or (s_org_el_2.Length=0) then continue;
+            var s_len_2 := s_org_el_2.Length;
+            SetLength(s_tmp_el_1[s_ind_1], s_len_2);
+            var s_tmp_el_2 := s_tmp_el_1[s_ind_1];
+            for var s_ind_2 := 0 to s_len_2-1 do
+            begin
+              var s_org_el_3 := s_org_el_2[s_ind_2];
+              if (s_org_el_3=nil) or (s_org_el_3.Length=0) then continue;
+              var s_len_3 := s_org_el_3.Length;
+              SetLength(s_tmp_el_2[s_ind_2], s_len_3);
+              var s_tmp_el_3 := s_tmp_el_2[s_ind_2];
+              for var s_ind_3 := 0 to s_len_3-1 do
+              begin
+                var s_org_el_4 := s_org_el_3[s_ind_3];
+                if (s_org_el_4=nil) or (s_org_el_4.Length=0) then continue;
+                var s_len_4 := s_org_el_4.Length;
+                SetLength(s_tmp_el_3[s_ind_3], s_len_4);
+                var s_tmp_el_4 := s_tmp_el_3[s_ind_3];
+                for var s_ind_4 := 0 to s_len_4-1 do
+                begin
+                  var s_org_el_5 := s_org_el_4[s_ind_4];
+                  if (s_org_el_5=nil) or (s_org_el_5.Length=0) then continue;
+                  s_tmp_el_4[s_ind_4] := Marshal.StringToHGlobalAnsi(s_org_el_5);
+                end;
+              end;
+            end;
+          end;
+        end;
+        5ArrrrrrayOfString(s_temp_arr);
+      finally
+         foreach var arr_el1 in s_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
+             foreach var arr_el3 in arr_el2 do if arr_el3<>nil then
+               foreach var arr_el4 in arr_el3 do Marshal.FreeHGlobal(arr_el4);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5ArrrrrrayOfString(s: array of array of array of array of IntPtr);
+    begin
+      if (s=nil) or (s.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        exit;
+      end;
+      var s_temp_arr: array of array of array of IntPtr;
+      try
+        begin
+          var s_org_el_1 := s;
+          var s_len_1 := s_org_el_1.Length;
+          SetLength(s_temp_arr, s_len_1);
+          var s_tmp_el_1 := s_temp_arr;
+          for var s_ind_1 := 0 to s_len_1-1 do
+          begin
+            var s_org_el_2 := s_org_el_1[s_ind_1];
+            if (s_org_el_2=nil) or (s_org_el_2.Length=0) then continue;
+            var s_len_2 := s_org_el_2.Length;
+            SetLength(s_tmp_el_1[s_ind_1], s_len_2);
+            var s_tmp_el_2 := s_tmp_el_1[s_ind_1];
+            for var s_ind_2 := 0 to s_len_2-1 do
+            begin
+              var s_org_el_3 := s_org_el_2[s_ind_2];
+              if (s_org_el_3=nil) or (s_org_el_3.Length=0) then continue;
+              var s_len_3 := s_org_el_3.Length;
+              SetLength(s_tmp_el_2[s_ind_2], s_len_3);
+              var s_tmp_el_3 := s_tmp_el_2[s_ind_2];
+              for var s_ind_3 := 0 to s_len_3-1 do
+              begin
+                var s_org_el_4 := s_org_el_3[s_ind_3];
+                if (s_org_el_4=nil) or (s_org_el_4.Length=0) then continue;
+                var s_org_el_4_sz := s_org_el_4.Length*Marshal.SizeOf&<IntPtr>;
+                var s_org_el_4_ptr := Marshal.AllocHGlobal(s_org_el_4_sz);
+                s_tmp_el_3[s_ind_3] := s_org_el_4_ptr;
+                Marshal.Copy(s_org_el_4,0,s_org_el_4_ptr,s_org_el_4_sz);
+              end;
+            end;
+          end;
+        end;
+        5ArrrrrrayOfString(s_temp_arr);
+      finally
+         foreach var arr_el1 in s_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
+             foreach var arr_el3 in arr_el2 do Marshal.FreeHGlobal(arr_el3);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5ArrrrrrayOfString(s: array of array of array of IntPtr);
+    begin
+      if (s=nil) or (s.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        exit;
+      end;
+      var s_temp_arr: array of array of IntPtr;
+      try
+        begin
+          var s_org_el_1 := s;
+          var s_len_1 := s_org_el_1.Length;
+          SetLength(s_temp_arr, s_len_1);
+          var s_tmp_el_1 := s_temp_arr;
+          for var s_ind_1 := 0 to s_len_1-1 do
+          begin
+            var s_org_el_2 := s_org_el_1[s_ind_1];
+            if (s_org_el_2=nil) or (s_org_el_2.Length=0) then continue;
+            var s_len_2 := s_org_el_2.Length;
+            SetLength(s_tmp_el_1[s_ind_1], s_len_2);
+            var s_tmp_el_2 := s_tmp_el_1[s_ind_1];
+            for var s_ind_2 := 0 to s_len_2-1 do
+            begin
+              var s_org_el_3 := s_org_el_2[s_ind_2];
+              if (s_org_el_3=nil) or (s_org_el_3.Length=0) then continue;
+              var s_org_el_3_sz := s_org_el_3.Length*Marshal.SizeOf&<IntPtr>;
+              var s_org_el_3_ptr := Marshal.AllocHGlobal(s_org_el_3_sz);
+              s_tmp_el_2[s_ind_2] := s_org_el_3_ptr;
+              Marshal.Copy(s_org_el_3,0,s_org_el_3_ptr,s_org_el_3_sz);
+            end;
+          end;
+        end;
+        5ArrrrrrayOfString(s_temp_arr);
+      finally
+         foreach var arr_el1 in s_temp_arr do if arr_el1<>nil then
+           foreach var arr_el2 in arr_el1 do Marshal.FreeHGlobal(arr_el2);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5ArrrrrrayOfString(s: array of array of IntPtr);
+    begin
+      if (s=nil) or (s.Length=0) then
+      begin
+        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        exit;
+      end;
+      var s_temp_arr: array of IntPtr;
+      try
+        begin
+          var s_org_el_1 := s;
+          var s_len_1 := s_org_el_1.Length;
+          SetLength(s_temp_arr, s_len_1);
+          var s_tmp_el_1 := s_temp_arr;
+          for var s_ind_1 := 0 to s_len_1-1 do
+          begin
+            var s_org_el_2 := s_org_el_1[s_ind_1];
+            if (s_org_el_2=nil) or (s_org_el_2.Length=0) then continue;
+            var s_org_el_2_sz := s_org_el_2.Length*Marshal.SizeOf&<IntPtr>;
+            var s_org_el_2_ptr := Marshal.AllocHGlobal(s_org_el_2_sz);
+            s_tmp_el_1[s_ind_1] := s_org_el_2_ptr;
+            Marshal.Copy(s_org_el_2,0,s_org_el_2_ptr,s_org_el_2_sz);
+          end;
+        end;
+        ntv_5ArrrrrrayOfString_2(s_temp_arr[0]);
+      finally
+         foreach var arr_el1 in s_temp_arr do Marshal.FreeHGlobal(arr_el1);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5ArrrrrrayOfString(var s: IntPtr) :=
+      ntv_5ArrrrrrayOfString_2(s);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 5ArrrrrrayOfString(s: pointer) :=
+      ntv_5ArrrrrrayOfString_1(s);
     
     // added in dyn1.0
     private 6Mix_adr := GetProcAddress('6Mix');
-    private ntv_6Mix_1 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; gen: IntPtr; a: IntPtr): Byte>(6Mix_adr);
-    private ntv_6Mix_2 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; gen: IntPtr; var a: Byte): Byte>(6Mix_adr);
-    private ntv_6Mix_3 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; var gen: Byte; a: IntPtr): Byte>(6Mix_adr);
-    private ntv_6Mix_4 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; var gen: Byte; var a: Byte): Byte>(6Mix_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T,T2>(s1: IntPtr; s2: string; gen: array of T; a: array of T2): string; where T, T2: record;
-    type PT=^T;
-    type PT2=^T2;
+    private ntv_6Mix_1 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; var gen: Byte; var gen_ro: Byte): IntPtr>(6Mix_adr);
+    private ntv_6Mix_2 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; var gen: Byte; gen_ro: pointer): IntPtr>(6Mix_adr);
+    private ntv_6Mix_3 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; gen: pointer; var gen_ro: Byte): IntPtr>(6Mix_adr);
+    private ntv_6Mix_4 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; gen: pointer; gen_ro: pointer): IntPtr>(6Mix_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T,T2>(s1: IntPtr; s2: string; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
     begin
-      Result := if (a<>nil) and (a.Length<>0) then
-        if (gen<>nil) and (gen.Length<>0) then
-          6Mix(s1, s2, gen[0], a[0]) else
-          6Mix(s1, s2, PT(nil)^, a[0]) else
-        if (gen<>nil) and (gen.Length<>0) then
-          6Mix(s1, s2, gen[0], PT2(nil)^) else
-          6Mix(s1, s2, PT(nil)^, PT2(nil)^) else
+      var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
+      try
+        Result := 6Mix(s1, s2_str_ptr, gen, gen_ro);
+      finally
+        Marshal.FreeHGlobal(s2_str_ptr);
+      end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T,T2>(s1: IntPtr; s2: IntPtr; gen: array of T; a: array of T2): string; where T, T2: record;
-    type PT=^T;
-    type PT2=^T2;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T,T2>(s1: IntPtr; s2: IntPtr; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
+    type PT = ^T;
+    type PT2 = ^T2;
     begin
-      Result := if (a<>nil) and (a.Length<>0) then
+      Result := if (gen_ro<>nil) and (gen_ro.Length<>0) then
         if (gen<>nil) and (gen.Length<>0) then
-          6Mix(s1, s2, gen[0], a[0]) else
-          6Mix(s1, s2, PT(nil)^, a[0]) else
+          6Mix(s1, s2, gen[0], gen_ro[0]) else
+          6Mix(s1, s2, PT(nil)^, gen_ro[0]) else
         if (gen<>nil) and (gen.Length<>0) then
           6Mix(s1, s2, gen[0], PT2(nil)^) else
-          6Mix(s1, s2, PT(nil)^, PT2(nil)^) else
+          6Mix(s1, s2, PT(nil)^, PT2(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T,T2>(s1: IntPtr; s2: string; var gen: T; var a: T2): string; where T, T2: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T,T2>(s1: IntPtr; s2: string; var gen: T; var gen_ro: T2): string; where T, T2: record;
     begin
-      var Result_str_ptr, s2_str_ptr: IntPtr;
+      var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
-        s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
-        Result_str_ptr := ntv_6Mix_4(s1, s2_str_ptr, PByte(pointer(@gen))^, PByte(pointer(@a))^);
+        Result := 6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
-        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-        Marshal.FreeHGlobal(Result_str_ptr);
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T>(s1: IntPtr; s2: string; var gen: T; a: IntPtr): string; where T: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T>(s1: IntPtr; s2: string; var gen: T; gen_ro: pointer): string; where T: record;
     begin
-      var Result_str_ptr, s2_str_ptr: IntPtr;
+      var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
-        s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
-        Result_str_ptr := ntv_6Mix_3(s1, s2_str_ptr, PByte(pointer(@gen))^, a);
+        Result := 6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
-        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-        Marshal.FreeHGlobal(Result_str_ptr);
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T2>(s1: IntPtr; s2: string; gen: IntPtr; var a: T2): string; where T2: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T2>(s1: IntPtr; s2: string; gen: pointer; var gen_ro: T2): string; where T2: record;
     begin
-      var Result_str_ptr, s2_str_ptr: IntPtr;
+      var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
-        s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
-        Result_str_ptr := ntv_6Mix_2(s1, s2_str_ptr, gen, PByte(pointer(@a))^);
+        Result := 6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
-        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-        Marshal.FreeHGlobal(Result_str_ptr);
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix(s1: IntPtr; s2: string; gen: IntPtr; a: IntPtr): string;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix(s1: IntPtr; s2: string; gen: pointer; gen_ro: pointer): string;
     begin
-      var Result_str_ptr, s2_str_ptr: IntPtr;
+      var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
-        s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
-        Result_str_ptr := ntv_6Mix_1(s1, s2_str_ptr, gen, a);
+        Result := 6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
-        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-        Marshal.FreeHGlobal(Result_str_ptr);
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T,T2>(s1: IntPtr; s2: IntPtr; var gen: T; var a: T2): string; where T, T2: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T,T2>(s1: IntPtr; s2: IntPtr; var gen: T; var gen_ro: T2): string; where T, T2: record;
     begin
-      var Result_str_ptr: IntPtr;
-      Result_str_ptr := ntv_6Mix_4(s1, s2, PByte(pointer(@gen))^, PByte(pointer(@a))^);
-      Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-      Marshal.FreeHGlobal(Result_str_ptr);
+      var Result_str_ptr := ntv_6Mix_1(s1, s2, PByte(pointer(@gen))^, PByte(pointer(@gen_ro))^);
+      try
+        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
+      finally
+        Marshal.FreeHGlobal(Result_str_ptr);
+      end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T>(s1: IntPtr; s2: IntPtr; var gen: T; a: IntPtr): string; where T: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T>(s1: IntPtr; s2: IntPtr; var gen: T; gen_ro: pointer): string; where T: record;
     begin
-      var Result_str_ptr: IntPtr;
-      Result_str_ptr := ntv_6Mix_3(s1, s2, PByte(pointer(@gen))^, a);
-      Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-      Marshal.FreeHGlobal(Result_str_ptr);
+      var Result_str_ptr := ntv_6Mix_2(s1, s2, PByte(pointer(@gen))^, gen_ro);
+      try
+        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
+      finally
+        Marshal.FreeHGlobal(Result_str_ptr);
+      end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T2>(s1: IntPtr; s2: IntPtr; gen: IntPtr; var a: T2): string; where T2: record;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T2>(s1: IntPtr; s2: IntPtr; gen: pointer; var gen_ro: T2): string; where T2: record;
     begin
-      var Result_str_ptr: IntPtr;
-      Result_str_ptr := ntv_6Mix_2(s1, s2, gen, PByte(pointer(@a))^);
-      Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-      Marshal.FreeHGlobal(Result_str_ptr);
+      var Result_str_ptr := ntv_6Mix_3(s1, s2, gen, PByte(pointer(@gen_ro))^);
+      try
+        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
+      finally
+        Marshal.FreeHGlobal(Result_str_ptr);
+      end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix(s1: IntPtr; s2: IntPtr; gen: IntPtr; a: IntPtr): string;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix(s1: IntPtr; s2: IntPtr; gen: pointer; gen_ro: pointer): string;
     begin
-      var Result_str_ptr: IntPtr;
-      Result_str_ptr := ntv_6Mix_1(s1, s2, gen, a);
-      Result := Marshal.PtrToStringAnsi(Result_str_ptr);
-      Marshal.FreeHGlobal(Result_str_ptr);
+      var Result_str_ptr := ntv_6Mix_4(s1, s2, gen, gen_ro);
+      try
+        Result := Marshal.PtrToStringAnsi(Result_str_ptr);
+      finally
+        Marshal.FreeHGlobal(Result_str_ptr);
+      end;
     end;
     
     // added in dyn1.0
     private 7EnumToType_adr := GetProcAddress('7EnumToType');
-    private ntv_7EnumToType_1 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; otp_value_size_ret: IntPtr)>(7EnumToType_adr);
-    private ntv_7EnumToType_2 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
-    private ntv_7EnumToType_3 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType<T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where T: record;
+    private ntv_7EnumToType_1 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
+    private ntv_7EnumToType_2 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
+    private ntv_7EnumToType_3 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
+    private ntv_7EnumToType_4 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; otp_value_size_ret: IntPtr)>(7EnumToType_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType<TInp,T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where TInp, T: record;
     begin
-      ntv_7EnumToType_3(choise, inp_value_size, inp_value, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+      ntv_7EnumToType_1(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_1_InpFlat(inp_value: UIntPtr; var otp_value: string) :=
-    7EnumToType(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_2_InpArr(inp_value: ArraySegment<UIntPtr>; var otp_value: string) :=
-    7EnumToType(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_3_OtpFlat(var otp_value: UIntPtr) :=
-    7EnumToType(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType<TInp>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr); where TInp: record;
+    begin
+      ntv_7EnumToType_2(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, otp_value, otp_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_1_InpFlat(inp_value: UIntPtr; var otp_value: string);
+    begin
+      var inp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
+      var otp_value_sz: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_1_InpFlat, inp_value_sz,inp_value, UIntPtr.Zero,nil,otp_value_sz);
+      var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
+      try
+        7EnumToType(Multichoise1.Choise1_1_InpFlat, inp_value_sz,inp_value, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
+        otp_value := Marshal.PtrToStringAnsi(otp_value_temp_res);
+      finally
+        Marshal.FreeHGlobal(otp_value_temp_res);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_2_InpArr(inp_value: array of UIntPtr; var otp_value: string);
+    begin
+      var inp_value_sz := new UIntPtr(inp_value.Length*Marshal.SizeOf&<UIntPtr>);
+      var otp_value_sz: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value[0], UIntPtr.Zero,nil,otp_value_sz);
+      var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
+      try
+        7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value[0], otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
+        otp_value := Marshal.PtrToStringAnsi(otp_value_temp_res);
+      finally
+        Marshal.FreeHGlobal(otp_value_temp_res);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_2_InpArr(inp_value_count: UInt32; var inp_value: UIntPtr; var otp_value: string);
+    begin
+      var inp_value_sz := new UIntPtr(inp_value_count*Marshal.SizeOf&<UIntPtr>);
+      var otp_value_sz: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value, UIntPtr.Zero,nil,otp_value_sz);
+      var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
+      try
+        7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
+        otp_value := Marshal.PtrToStringAnsi(otp_value_temp_res);
+      finally
+        Marshal.FreeHGlobal(otp_value_temp_res);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_3_OtpFlat(var otp_value: UIntPtr; otp_value_validate_size: boolean := false);
+    begin
+      var otp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
+      var otp_value_ret_size: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_3_OtpFlat, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
+      if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_4_OtpArr(var otp_value: array of UIntPtr);
-    type PUIntPtr=^UIntPtr;
     begin
-      if (otp_value<>nil) and (otp_value.Length<>0) then
-        7EnumToType(choise, inp_value_size, inp_value, otp_value_size, otp_value[0], otp_value_size_ret);
-        7EnumToType(choise, inp_value_size, inp_value, otp_value_size, PUIntPtr(nil)^, otp_value_size_ret) else
+      var otp_value_sz: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
+      var otp_value_temp_res := new UIntPtr[otp_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
+      7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],IntPtr.Zero);
+      otp_value := otp_value_temp_res;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_5_OtpStaticArr(var otp_value: array of UIntPtr);
-    type PUIntPtr=^UIntPtr;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_4_OtpArr(otp_value_count: UInt32; var otp_value: UIntPtr);
     begin
-      if (otp_value<>nil) and (otp_value.Length<>0) then
-        7EnumToType(choise, inp_value_size, inp_value, otp_value_size, otp_value[0], otp_value_size_ret);
-        7EnumToType(choise, inp_value_size, inp_value, otp_value_size, PUIntPtr(nil)^, otp_value_size_ret) else
+      var otp_value_sz := new UIntPtr(otp_value_count*Marshal.SizeOf&<UIntPtr>);
+      7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,IntPtr.Zero);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_5_OtpStaticArr(var otp_value: array of UIntPtr; otp_value_validate_size: boolean := false);
+    begin
+      var otp_value_sz := new UIntPtr(3*Marshal.SizeOf&<UIntPtr>);
+      var otp_value_temp_res := new UIntPtr[3];
+      var otp_value_ret_size: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],otp_value_ret_size);
+      otp_value := otp_value_temp_res;
+      if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_5_OtpStaticArr(otp_value_count: UInt32; var otp_value: UIntPtr; otp_value_validate_size: boolean := false);
+    begin
+      var otp_value_sz := new UIntPtr(otp_value_count*Marshal.SizeOf&<UIntPtr>);
+      var otp_value_ret_size: UIntPtr;
+      7EnumToType(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
+      if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; var otp_value_size_ret: UIntPtr) :=
-    ntv_7EnumToType_2(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
+      ntv_7EnumToType_3(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; otp_value_size_ret: IntPtr) :=
-    ntv_7EnumToType_1(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
+      ntv_7EnumToType_4(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
+    
+    // added in dyn1.0
+    private 7EnumToTypeInputOnly_adr := GetProcAddress('7EnumToTypeInputOnly');
+    private ntv_7EnumToTypeInputOnly_1 := GetProcOrNil&<procedure(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: Byte)>(7EnumToTypeInputOnly_adr);
+    private ntv_7EnumToTypeInputOnly_2 := GetProcOrNil&<procedure(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: IntPtr)>(7EnumToTypeInputOnly_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToTypeInputOnly<TInp>(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: TInp); where TInp: record;
+    begin
+      ntv_7EnumToTypeInputOnly_1(choise, inp_value_size, PByte(pointer(@inp_value))^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToTypeInputOnly_Choise2_1_InpFlat(inp_value: UIntPtr);
+    begin
+      var inp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
+      7EnumToTypeInputOnly(Multichoise2.Choise2_1_InpFlat, inp_value_sz,inp_value);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToTypeInputOnly_Choise2_2_InpArr(inp_value: array of UIntPtr);
+    begin
+      var inp_value_sz := new UIntPtr(inp_value.Length*Marshal.SizeOf&<UIntPtr>);
+      7EnumToTypeInputOnly(Multichoise2.Choise2_2_InpArr, inp_value_sz,inp_value[0]);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToTypeInputOnly_Choise2_2_InpArr(inp_value_count: UInt32; var inp_value: UIntPtr);
+    begin
+      var inp_value_sz := new UIntPtr(inp_value_count*Marshal.SizeOf&<UIntPtr>);
+      7EnumToTypeInputOnly(Multichoise2.Choise2_2_InpArr, inp_value_sz,inp_value);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToTypeInputOnly(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: IntPtr) :=
+      ntv_7EnumToTypeInputOnly_2(choise, inp_value_size, inp_value);
     
   end;
   

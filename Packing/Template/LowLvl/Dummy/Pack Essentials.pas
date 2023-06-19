@@ -5,6 +5,8 @@ uses '..\Essentials';
 begin
   try
     
+    SetMaxUnfixedOverloads(integer.MaxValue);
+    
     ApiManager.MarkKeep('dum', true);
     ApiManager.MarkKeep('dyn', true);
     

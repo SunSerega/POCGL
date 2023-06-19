@@ -22,11 +22,13 @@ uses CodeContainerItems;
 type
   ApiManager = LLPackingUtils.ApiManager;
   
-procedure PackAllItems;
+procedure SetMaxUnfixedOverloads(c: integer);
 
 procedure AddFuncAutoFixersForAllOutParams;
 procedure AddFuncAutoFixersForCL;
 procedure ApplyFixers;
+
+procedure PackAllItems;
 
 implementation
 
@@ -39,6 +41,9 @@ uses FuncHelpers;
 
 uses EnumItems;
 uses NamedTypeItems;
+
+procedure SetMaxUnfixedOverloads(c: integer) :=
+  Func.SetMaxUnfixedOverloads(c);
 
 {$region ForEachDefaultNamedItem}
 

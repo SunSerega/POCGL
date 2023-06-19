@@ -1,0 +1,8 @@
+
+
+
+# glx::GetContextID+EXT
+!possible_par_types
+ *	| -glx::context const +glx::context	|
+
+

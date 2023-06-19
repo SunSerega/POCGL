@@ -33,8 +33,8 @@ Dumping Group items
 Dumping IdClass items
 Dumping Struct items
 Dumping Delegate items
-PascalBasicType: Packed 7 items
-Group: Packed 1 items
-Func: Packed 10 items
+PascalBasicType: Packed 9 items
+Group: Packed 2 items
+Func: Packed 16 items
 Feature: Packed 2 items
 Cleanup

@@ -5,6 +5,8 @@ uses '..\Essentials';
 begin
   try
     
+    SetMaxUnfixedOverloads(12);
+    
     ApiManager.MarkKeep('gl', true);
     ApiManager.MarkKeep('wgl', true);
     ApiManager.MarkKeep('gdi', true);

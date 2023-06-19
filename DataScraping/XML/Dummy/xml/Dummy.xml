@@ -1,4 +1,4 @@
-
+﻿
 
 
 <root>
@@ -14,67 +14,96 @@
 	
 	<groups>
 		<group name="Multichoise1" etype="obj info" >
-			<enum name="Choise1_1_InpFlat"		val="1" inp_t="size_t" otp_t="ntv_char[]" />
-			<enum name="Choise1_2_InpArr"		val="2" inp_t="size_t[]" otp_t="ntv_char[]" />
-			<enum name="Choise1_3_OtpFlat"		val="3" otp_t="size_t" />
-			<enum name="Choise1_4_OtpArr"		val="4" otp_t="size_t[]" />
-			<enum name="Choise1_5_OtpStaticArr"	val="5" otp_t="size_t[3]" />
+			<enum name="Choise1_1_InpFlat"		val="1"	inp_t="size_t"		otp_t="ntv_char[]" />
+			<enum name="Choise1_2_InpArr"		val="2"	inp_t="size_t[]"	otp_t="ntv_char[]" />
+			<enum name="Choise1_3_OtpFlat"		val="3"						otp_t="size_t" />
+			<enum name="Choise1_4_OtpArr"		val="4"						otp_t="size_t[]" />
+			<enum name="Choise1_5_OtpStaticArr"	val="5"						otp_t="size_t[3]" />
+		</group>
+		<group name="Multichoise2" etype="obj info" >
+			<enum name="Choise2_1_InpFlat"		val="1"	inp_t="size_t" />
+			<enum name="Choise2_2_InpArr"		val="2"	inp_t="size_t[]" />
 		</group>
 	</groups>
 	
 	<commands>
 		
 		<command>
-			<proto><type>void</type>				<name>1NoParam</name></proto>
+			<proto><type>void</type>					<name>1NoParam</name></proto>
+		</command>
+		<command>
+			<proto><type>size_t</type>					<name>1NoParamResult</name></proto>
 		</command>
 		
 		<command>
-			<proto><type>void</type>				<name>2ParamString</name></proto>
-			<param><type>ntv_char</type> *			<name>s</name></param>
+			<proto><type>void</type>					<name>2ParamString</name></proto>
+			<param><type>ntv_char</type> *				<name>s</name></param>
 		</command>
 		<command>
-			<proto><type>void</type>				<name>2ParamStringRO</name></proto>
-			<param><type>ntv_char</type> const*		<name>s</name></param>
-		</command>
-		
-		<command>
-			<proto><type>ntv_char</type> *			<name>3ResultString</name></proto>
-		</command>
-		<command>
-			<proto><type>ntv_char</type> const*		<name>3ResultStringRO</name></proto>
+			<proto><type>void</type>					<name>2ParamStringRO</name></proto>
+			<param><type>ntv_char</type> const*			<name>s</name></param>
 		</command>
 		
 		<command>
-			<proto><type>void</type>				<name>4Generic</name></proto>
-			<param><type>ntv_generic</type> *		<name>data</name></param>
+			<proto><type>ntv_char</type> *				<name>3ResultString</name></proto>
 		</command>
 		<command>
-			<proto><type>void</type>				<name>4GenericWOVarArg</name></proto>
-			<!-- var-arg removed in fixers -->
-			<param><type>ntv_generic</type> *		<name>data</name></param>
+			<proto><type>ntv_char</type> const*			<name>3ResultStringRO</name></proto>
 		</command>
 		
 		<command>
-			<proto><type>void</type>				<name>5Arrrrrray</name></proto>
-			<param><type>ntv_generic</type> *****	<name>a</name></param>
+			<proto><type>void</type>					<name>4Generic</name></proto>
+			<param><type>ntv_generic</type> *			<name>data</name></param>
+		</command>
+		<command>
+			<proto><type>void</type>					<name>4GenericRO</name></proto>
+			<param><type>ntv_generic</type> const*		<name>data</name></param>
+		</command>
+		<!-- var-arg removed in fixers -->
+		<command>
+			<proto><type>void</type>					<name>4GenericWOVarArg</name></proto>
+			<param><type>ntv_generic</type> *			<name>data</name></param>
+		</command>
+		<command>
+			<proto><type>void</type>					<name>4GenericWOVarArgRO</name></proto>
+			<param><type>ntv_generic</type> const*		<name>data</name></param>
 		</command>
 		
 		<command>
-			<proto><type>ntv_char</type> *			<name>6Mix</name></proto>
-			<param><type>ntv_char</type> *			<name>s1</name></param>
-			<param><type>ntv_char</type> const*		<name>s2</name></param>
-			<param><type>ntv_generic</type> *		<name>gen</name></param>
-			<param><type>ntv_generic2</type> *		<name>a</name></param>
+			<proto><type>void</type>					<name>5Arrrrrray</name></proto>
+			<param><type>size_t</type> const*****		<name>a</name></param>
+		</command>
+		<command>
+			<proto><type>void</type>					<name>5ArrrrrrayOfGeneric</name></proto>
+			<param><type>ntv_generic</type> const*****	<name>a</name></param>
+		</command>
+		<command>
+			<proto><type>void</type>					<name>5ArrrrrrayOfString</name></proto>
+			<param><type>ntv_char</type> const*****		<name>s</name></param>
 		</command>
 		
 		<command>
-			<proto><type>void</type>				<name>7EnumToType</name></proto>
-			<param><type>Multichoise1</type>		<name>choise</name></param>
-			<param><type>size_t</type>				<name>inp_value_size</name></param>
-			<param><type>void</type> const*			<name>inp_value</name></param>
-			<param><type>size_t</type>				<name>otp_value_size</name></param>
-			<param><type>void</type> *				<name>otp_value</name></param>
-			<param><type>size_t</type> *			<name>otp_value_size_ret</name></param>
+			<proto><type>ntv_char</type> *				<name>6Mix</name></proto>
+			<param><type>ntv_char</type> *				<name>s1</name></param>
+			<param><type>ntv_char</type> const*			<name>s2</name></param>
+			<param><type>ntv_generic</type> *			<name>gen</name></param>
+			<param><type>ntv_generic2</type> const*		<name>gen_ro</name></param>
+		</command>
+		
+		<command>
+			<proto><type>void</type>					<name>7EnumToType</name></proto>
+			<param><type>Multichoise1</type>			<name>choise</name></param>
+			<param><type>size_t</type>					<name>inp_value_size</name></param>
+			<param><type>void</type> const*				<name>inp_value</name></param>
+			<param><type>size_t</type>					<name>otp_value_size</name></param>
+			<param><type>void</type> *					<name>otp_value</name></param>
+			<param><type>size_t</type> *				<name>otp_value_size_ret</name></param>
+		</command>
+		<command>
+			<proto><type>void</type>					<name>7EnumToTypeInputOnly</name></proto>
+			<param><type>Multichoise2</type>			<name>choise</name></param>
+			<param><type>size_t</type>					<name>inp_value_size</name></param>
+			<param><type>void</type> const*				<name>inp_value</name></param>
 		</command>
 		
 	</commands>

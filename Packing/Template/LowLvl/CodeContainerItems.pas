@@ -29,7 +29,6 @@ uses ParData;
 uses NamedTypeItems; //TODO Только для костыля obj_info
 
 type
-  FuncParamT = FuncHelpers.FuncParamT;
   
   {$region Func}
   
@@ -43,6 +42,10 @@ type
     public property TotalParamCount: integer read ntv_pars.Length;
     public property ExistingParCount: integer read TotalParamCount - Ord(is_proc);
     public property NativePar[par_i: integer]: LoadedParData read ntv_pars[par_i];
+    
+    private static max_unfixed_overload_count := 0;
+    public static procedure SetMaxUnfixedOverloads(c: integer) :=
+      max_unfixed_overload_count := c;
     
     {$region Load}
     
@@ -117,13 +120,13 @@ type
         if rev_pars.Length < 1 then exit;
         var last_err_code := rev_pars[0].CalculatedDirectType = err_code_t;
         if last_err_code then
-          calculated_changes[^1] := |ValueTuple.Create(false, new FuncParamT(false,0,KnownDirectTypes.IntPtr))|;
+          calculated_changes[^1] := |ValueTuple.Create(false, new FuncParamT(false,false,0,KnownDirectTypes.IntPtr))|;
         
         var ind_sh := Ord(last_err_code);
         if rev_pars.Length < 2+ind_sh then exit;
         if rev_pars.Skip(ind_sh).Take(2).All(par->(par.CalculatedDirectType=event_t) and (par.CalculatedPtr=1)) then
         begin
-          calculated_changes[^(1+ind_sh)] := |ValueTuple.Create(false, new FuncParamT(false,1,event_t))|;
+          calculated_changes[^(1+ind_sh)] := |ValueTuple.Create(false, new FuncParamT(false,false,1,event_t))|;
           f.unopt_arr[^(2+ind_sh)] := true;
         end;
         
@@ -158,7 +161,12 @@ type
       begin
         Result := nil;
         if is_proc and (par_i=0) then exit;
-        Result := par.MakePPT(self.ToString, par_i=0);
+        
+        var is_enum_to_type_data := false;
+        if ntv_pars.Select(par->par.CalculatedDirectType as Group).Select(gr->gr?.Body as ObjInfoEnumsInGroup).SingleOrDefault(gr_body->gr_body<>nil) is ObjInfoEnumsInGroup(var gr_body) then
+          is_enum_to_type_data := gr_body.EnmrBindings(self.ntv_pars).Any(b->b.data_par_ind=par_i);
+        
+        Result := par.MakePPT(self.ToString, par_i=0, is_enum_to_type_data);
       end);
     end;
     
@@ -251,8 +259,8 @@ type
       
       var expected_ovr_count := 0;
       if enum_to_type_binding_gr<>nil then
-        expected_ovr_count += 1 + enum_to_type_binding_gr_body.Enums.Length;
-      expected_ovr_count += ppt_choises.StatesCount;
+        expected_ovr_count += 1 + 2*enum_to_type_binding_gr_body.Enums.Length;
+      expected_ovr_count += ppt_choises.StateCount;
       
       all_overloads := new List<FuncOverload>(expected_ovr_count);
       
@@ -263,47 +271,9 @@ type
         
         {$region Find}
         
-        var enum_to_type_bindings: array of EnumToTypeBindingInfo;
-        begin
-          var enum_to_type_bindings_l := new List<EnumToTypeBindingInfo>(2);
-          
-          if enum_to_type_binding_gr_body.Enums.Any(r->r.HasInput) then
-          begin
-            var data_par_i := ntv_pars.FindIndex(par->
-              (par.Name<>nil) and par.Name.EndsWith('_value')
-              and (par.CalculatedDirectType = KnownDirectTypes.IntPtr)
-              and (par.CalculatedPtr=0)
-              and par.CalculatedReadonlyLvls.SequenceEqual(|1|)
-            );
-            if data_par_i=-1 then
-              raise new InvalidOperationException;
-            var size_par_i := data_par_i-1;
-            if not ntv_pars[size_par_i].Name.EndsWith('_value_size') then
-              raise new NotImplementedException;
-            enum_to_type_bindings_l += new EnumToTypeBindingInfo(size_par_i, data_par_i, nil); 
-          end;
-          
-          if enum_to_type_binding_gr_body.Enums.Any(r->r.HasOutput) then
-          begin
-            var data_par_i := ntv_pars.FindIndex(par->
-              (par.Name<>nil) and par.Name.EndsWith('_value')
-              and (par.CalculatedDirectType = KnownDirectTypes.IntPtr)
-              and (par.CalculatedPtr=0)
-              and not par.CalculatedReadonlyLvls.Any
-            );
-            if data_par_i=-1 then
-              raise new InvalidOperationException;
-            var size_par_i := data_par_i-1;
-            if not ntv_pars[size_par_i].Name.EndsWith('_value_size') then
-              raise new NotImplementedException;
-            var ret_size_par_i := data_par_i+1;
-            if not ntv_pars[ret_size_par_i].Name.EndsWith('_value_size_ret') then
-              raise new NotImplementedException;
-            enum_to_type_bindings_l += new EnumToTypeBindingInfo(size_par_i, data_par_i, ret_size_par_i); 
-          end;
-          
-          enum_to_type_bindings := enum_to_type_bindings_l.ToArray;
-        end;
+        var enum_to_type_bindings := enum_to_type_binding_gr_body.EnmrBindings(self.ntv_pars).ToArray;
+        if enum_to_type_bindings.Length=0 then
+          raise new InvalidOperationException;
         
         {$endregion Find}
         
@@ -336,11 +306,11 @@ type
               var t := $'T';
               if b.IsInputData then
                 t += 'Inp';
-              pars[par_i] := new FuncParamT(true, 0, TypeLookup.FromName(t));
+              pars[par_i] := new FuncParamT(b.IsInputData, true, 0, TypeLookup.FromName(t));
               continue;
             end;
             
-            if enum_to_type_bindings.Find(b->par_i=b.returned_size_par_ind) <> nil then
+            if enum_to_type_bindings.Any(b->par_i=b.returned_size_par_ind) then
             begin
               var ntv_par := ntv_pars[par_i];
               if ntv_par.CalculatedDirectType <> KnownDirectTypes.UIntPtr then
@@ -353,7 +323,7 @@ type
                 raise new InvalidOperationException;
               if ntv_par.ValCombo <> nil then
                 raise new InvalidOperationException;
-              pars[par_i] := new FuncParamT(true, 0, KnownDirectTypes.UIntPtr);
+              pars[par_i] := new FuncParamT(false,true, 0, KnownDirectTypes.UIntPtr);
               continue;
             end;
             
@@ -374,6 +344,16 @@ type
           
           self.enum_to_type_binding_helper_ovr := new FuncOverload(pars);
           all_overloads += enum_to_type_binding_helper_ovr;
+          
+          if enum_to_type_binding_gr_body.Enums.Any(r->r.HasOutput and (r.OutputT.ArrSize = ParArrSizeArbitrary.Instance)) then
+          begin
+            pars := pars.ToArray;
+            foreach var b in enum_to_type_bindings do
+              if not b.IsInputData then
+                pars[b.data_par_ind] := new FuncParamT(false, false, 0, KnownDirectTypes.Pointer);
+            all_overloads += new FuncOverload(pars);
+          end;
+          
         end;
         
         {$endregion enum_to_type_binding_helper_ovr}
@@ -397,85 +377,103 @@ type
           if ename.vendor_suffix<>nil then
             enum_name += '_'+ename.vendor_suffix;
           
-          var pars := enum_to_type_binding_helper_ovr.pars.ToArray;
-          pars[ntv_pars.FindIndex(par->par.CalculatedDirectType=enum_to_type_binding_gr)] := nil;
-          
-          foreach var b in enum_to_type_bindings do
+          // If inp and otp are not dynamic arrays
+          // only "explicit_count_par=true" will be added
+          for var explicit_count_par := false to true do
           begin
-            pars[b.passed_size_par_ind] := nil;
-            if b.returned_size_par_ind<>nil then
-              pars[b.returned_size_par_ind.Value] := nil;
+            var pars := enum_to_type_binding_helper_ovr.pars.ToArray;
+            pars[ntv_pars.FindIndex(par->par.CalculatedDirectType=enum_to_type_binding_gr)] := nil;
             
-            if b.IsInputData ? not r.HasInput : not r.HasOutput then
-            begin
-              pars[b.data_par_ind] := nil;
-              continue;
-            end;
+            var any_binding_dynamic := false;
             
-            if b.IsInputData then
+            foreach var b in enum_to_type_bindings do
             begin
-              var inp_par := r.InputT;
-              var inp_t := inp_par.CalculatedDirectType;
+              pars[b.passed_size_par_ind] := nil;
+              if b.returned_size_par_ind<>nil then
+                pars[b.returned_size_par_ind.Value] := nil;
+              
+              if b.IsInputData ? not r.HasInput : not r.HasOutput then
+              begin
+                pars[b.data_par_ind] := nil;
+                continue;
+              end;
               
               var data_size_is_dynamic: boolean;
-              match inp_par.ArrSize with
-                ParArrSizeNotArray(var pasna): data_size_is_dynamic := false;
-                ParArrSizeArbitrary(var pasa): data_size_is_dynamic := true;
-                else raise new NotImplementedException;
-              end;
-              
-              if inp_par.CalculatedPtr <> Ord(data_size_is_dynamic) then
-                raise new NotImplementedException;
-              if inp_par.ValCombo <> nil then
-                raise new InvalidOperationException;
-              
-              var t := inp_t.MakeWriteableName;
+              if b.IsInputData then
+              begin
+                var inp_par := r.InputT;
+                var inp_t := inp_par.CalculatedDirectType;
+                
+                match inp_par.ArrSize with
+                  ParArrSizeNotArray(var pasna): data_size_is_dynamic := false;
+                  ParArrSizeArbitrary(var pasa): data_size_is_dynamic := true;
+                  else raise new NotImplementedException;
+                end;
+                
+                if inp_par.CalculatedPtr <> Ord(data_size_is_dynamic) then
+                  raise new NotImplementedException;
+                if inp_par.ValCombo <> nil then
+                  raise new InvalidOperationException;
+                
                 if data_size_is_dynamic then
-                  t := $'ArraySegment<{t}>';
-                pars[b.data_par_ind] := new FuncParamT(false, 0, t, inp_t);
-            end else
-            // not b.IsInputData
-            begin
-              var otp_par := r.OutputT;
-              var otp_t := otp_par.CalculatedDirectType;
-              
-              var data_size_mlt := 1;
-              var data_size_is_dynamic := false;
-              
-              var need_arr: boolean;
-              
-              match otp_par.ArrSize with
-                
-                ParArrSizeNotArray(var pasna): need_arr := false;
-                
-                ParArrSizeConst(var pasc):
                 begin
-                  data_size_mlt := pasc.Value;
-                  need_arr := true;
-                end;
+                  var par := new FuncParamT(true, explicit_count_par, Ord(not explicit_count_par), inp_t);
+                  par.enum_to_type_data_rep_c := nil;
+                  pars[b.data_par_ind] := par;
+                  any_binding_dynamic := true;
+                end else
+                  pars[b.data_par_ind] := new FuncParamT(true, false, 0, inp_t);
                 
-                ParArrSizeArbitrary(var pasa):
-                begin
-                  need_arr := otp_t <> KnownDirectTypes.String;
-                  data_size_is_dynamic := need_arr;
-                end;
+              end else
+              // not b.IsInputData
+              begin
+                var otp_par := r.OutputT;
+                var otp_t := otp_par.CalculatedDirectType;
                 
-                else raise new NotImplementedException;
+                var data_rep_c: integer? := 1;
+                var need_arr: boolean;
+                match otp_par.ArrSize with
+                  
+                  ParArrSizeNotArray(var pasna): need_arr := false;
+                  
+                  ParArrSizeConst(var pasc):
+                  begin
+                    data_rep_c := pasc.Value;
+                    need_arr := true;
+                  end;
+                  
+                  ParArrSizeArbitrary(var pasa):
+                  begin
+                    data_rep_c := nil;
+                    need_arr := otp_t <> KnownDirectTypes.String;
+                  end;
+                  
+                  else raise new NotImplementedException;
+                end;
+                if otp_par.CalculatedPtr<>0 <> need_arr then
+                  raise new NotImplementedException;
+                if otp_par.ValCombo <> nil then
+                  raise new InvalidOperationException;
+                
+                var par := new FuncParamT(false, true, if explicit_count_par then 0 else otp_par.CalculatedPtr, otp_t);
+                par.enum_to_type_data_rep_c := data_rep_c;
+                pars[b.data_par_ind] := par;
+                
+                data_size_is_dynamic := (data_rep_c<>1) and (otp_t<>KnownDirectTypes.String);
               end;
-              if otp_par.CalculatedPtr<>0 <> need_arr then
-                raise new NotImplementedException;
-              if otp_par.ValCombo <> nil then
-                raise new InvalidOperationException;
               
-              var par := new FuncParamT(true, otp_par.CalculatedPtr, otp_t);
-              if data_size_mlt<>1 then
-                par.otp_data_const_sz := data_size_mlt;
-              pars[b.data_par_ind] := par;
+              if data_size_is_dynamic then
+              begin
+                if explicit_count_par then
+                  pars[b.passed_size_par_ind] := new FuncParamT(false, false, 0, KnownDirectTypes.EnumToTypeDataCountT);
+                any_binding_dynamic := true;
+              end;
             end;
             
+            if any_binding_dynamic or explicit_count_par then
+              all_overloads += new FuncOverload(pars, enum_to_type_bindings, enum_to_type_binding_gr, enum_name);
           end;
           
-          all_overloads += new FuncOverload(pars, enum_to_type_bindings, enum_to_type_binding_gr, enum_name);
         end;
         
         {$endregion other ovr's}
@@ -547,8 +545,10 @@ type
           l.Otp(b.returned_size_par_ind.ToString);
         end;
         
+        var visited_enum_names := new HashSet<string>;
         foreach var ovr in bound_ovrs do
         begin
+          if not visited_enum_names.Add(ovr.enum_to_type_enum_name) then continue;
           l.Otp('--- '+ovr.enum_to_type_enum_name);
           foreach var b in bindings do
           begin
@@ -559,7 +559,7 @@ type
               l.Otp('!output');
             if not b.IsInputData and not par.var_arg then
               raise new InvalidOperationException;
-            l.Otp(par.ToString(true,false));
+            l.Otp(par.ToString(true,false, write_const := false));
           end;
         end;
         
@@ -592,8 +592,6 @@ type
     
     private was_written := false;
     private ffo_logged := false;
-    //TODO #2623: Move inside Save
-    /// Name of type-substitute for generic type
     public procedure Save(wr: Writer);
     begin
       if not in_wr_block then
@@ -739,8 +737,9 @@ type
       
       if not self.changed_by_fixer then
       begin
-        if all_overloads.Count>12 then
-          Otp($'WARNING: {all_overloads.Count}>12 overloads of non-fixed {self}');
+        var overload_count := all_overloads.Count(ovr->ovr.enum_to_type_bindings=nil);
+        if overload_count>max_unfixed_overload_count then
+          Otp($'WARNING: {overload_count}>{max_unfixed_overload_count} overloads of non-fixed {self}');
         Func.ForEachDefined(other_func->
         begin
           if ReferenceEquals(other_func, self) then exit;
@@ -754,15 +753,6 @@ type
       {$endregion Log and Warn}
       
       {$region MiscInit}
-      
-      var par_names := ntv_pars.ConvertAll((par,par_i)->
-      begin
-        Result := 'Result';
-        if par_i=0 then exit;
-        Result := par.Name;
-        if all_overloads.Any(ovr->par.Name.ToLower in ovr.pars.Select(ovr_par->ovr_par?.tname.ToLower).Where(tname->tname<>nil).Append('pointer')) then
-          Result := '_'+Result;
-      end);
       
       var display_name := self.Name.l_name;
       if self.Name.vendor_suffix<>nil then
@@ -779,7 +769,7 @@ type
       
       {$region WriteOvrT}
       
-      var WriteOvrT := procedure(wr: Writer; pars: array of FuncParamT; generic_names: HashSet<string>; name: string)->
+      var WriteOvrT := procedure(wr: Writer; pars: array of FuncParamT; par_names: array of string; generic_names: ICollection<string>; name: string)->
       begin
         
         if not is_dynamic and (name<>nil) then wr += 'static ';
@@ -809,12 +799,17 @@ type
               first_par := false else
               wr += '; ';
             if par.var_arg then wr += 'var ';
-            wr += ntv_pars[par_i].name;
+            wr += par_names[par_i];
             wr += ': ';
             loop par.arr_lvl do wr += 'array of ';
             var tname := par.tname;
             if tname.ToLower in Func.last_wr_block_func_lnames then wr += 'OpenGL.';
             wr += tname;
+            if par.default_val<>nil then
+            begin
+              wr += ' := ';
+              wr += par.default_val;
+            end;
           end;
           wr += ')';
         end;
@@ -822,507 +817,309 @@ type
         if not is_proc then
         begin
           wr += ': ';
-          wr += pars[0].ToString(true);
+          wr += pars[0].ToString(true, write_const := false);
         end;
         
       end;
       
       {$endregion WriteOvrT}
       
-      //TODO FuncParamMarshaler не нужен
-      // - Вся информация хранится в FuncParamT
-      // - И получать init,fnls и т.п. лучше на стадии кодогенерации
-      // - Только объявления всех var и т.п. станут сложнее
-      // - Но их тоже надо переделать на самом деле, потому что сейчас finally криво работает
-      //TODO Перенести алгоритм в ParData
-      // - Так же как MakePPT?
-      {$region MakeMarshlers}
-      
-      var all_ovr_marshalers := all_overloads.ConvertAll(ovr->
+      {$region MakeParMarshlers}
+      var all_par_marshalers_per_ovr := new List<array of FuncParamMarshalStep>(all_overloads.Count);
       begin
-        Result := new FuncOvrMarshalers(ntv_pars.Length);
-        for var par_i := 0 to ovr.pars.Length-1 do
+        var ett_bind_info_by_ind: Dictionary<integer, EnumToTypeBindingInfo>;
+        var ett_skip_inds: HashSet<integer>;
+        var ett_gr: IDirectNamedType;
+        if enum_to_type_binding_helper_ovr<>nil then
         begin
-          if is_proc and (par_i=0) then continue;
-          var par := ovr.pars[par_i];
+          var ett_bindings := all_overloads.Select(ovr->ovr.enum_to_type_bindings).Distinct.Single(b->b<>nil);
+          ett_gr := all_overloads.Select(ovr->ovr.enum_to_type_gr).Distinct.Single(gr->gr<>nil);
           
-          var initial_par_str := par_names[par_i];
-          var relevant_m := new FuncParamMarshaler(par, initial_par_str);
+          ett_bind_info_by_ind := new Dictionary<integer, EnumToTypeBindingInfo>(ett_bindings.Count);
+          ett_skip_inds := new HashSet<integer>(ett_bindings.Count * 2);
+          foreach var b in ett_bindings do
+          begin
+            ett_bind_info_by_ind.Add(b.data_par_ind, b);
+            ett_skip_inds += b.passed_size_par_ind;
+            if not b.IsInputData then
+              ett_skip_inds += b.returned_size_par_ind.Value;
+          end;
           
-          if par_i=0 then
-          {$region Result}
+        end;
+        
+        foreach var ovr in all_overloads do
+        begin
+          var res := new List<FuncParamMarshalStep>(ntv_pars.Length);
+          
+          foreach var par in ovr.pars index par_i do
           begin
-            // Cannot determine array size if it is returned
-            if par.var_arg or (par.arr_lvl<>0) then raise new System.NotSupportedException;
+            var is_ett_bound := ovr.enum_to_type_bindings<>nil;
             
-            {$region boolean}
-            
-            if par.tname='boolean' then
-              raise new NotSupportedException('Use api::Bool8');
-//            begin
-//              relevant_m.res_par_conv := '0<>'#0'';
-//              Result.AddMarshaler(par_i, relevant_m);
-//              
-//              par := new FuncParamT(false, 0, KnownDirectTypes.StubForGenericT);
-//              relevant_m := new FuncParamMarshaler(par, initial_par_str);
-//            end;
-            
-            {$endregion boolean}
-            
-            {$region string}
-            
-            if par.tname='string' then
+            if is_proc and (par_i=0) then
             begin
-              var str_ptr_name := $'{relevant_m.par_str}_str_ptr';
-              relevant_m.vars += (str_ptr_name, 'IntPtr');
-              
+              if par<>nil then raise new InvalidOperationException;
+              res += FuncParamMarshalStep.ProcResult;
+              continue;
+            end;
+            if is_ett_bound then
+            begin
+              if ntv_pars[par_i].CalculatedDirectType = ett_gr then
               begin
-                var fnls := relevant_m.fnls;
-                fnls += relevant_m.par_str;
-                fnls += ' := Marshal.PtrToStringAnsi(';
-                fnls += str_ptr_name;
-                fnls += ');';
-                if ntv_pars[par_i].CalculatedPtr+1 not in ntv_pars[par_i].CalculatedReadonlyLvls then
-                begin
-                  fnls += #10;
-                  fnls += 'Marshal.FreeHGlobal(';
-                  fnls += str_ptr_name;
-                  fnls += ');';
-                end;
+                if par<>nil then raise new InvalidOperationException;
+                res += FuncParamMarshalStep.FromEnumToTypeGroup(self.enum_to_type_binding_helper_ovr.pars[par_i]);
+                continue;
               end;
-              
-              relevant_m.par_str := str_ptr_name;
-              Result.AddMarshaler(par_i, relevant_m);
-              
-              par := new FuncParamT(false, 0, KnownDirectTypes.StubForGenericT);
-              relevant_m := new FuncParamMarshaler(par, initial_par_str);
+              if par_i in ett_skip_inds then continue;
             end;
             
-            {$endregion string}
-            
-          end
-          {$endregion Result}
-          else
-          {$region Param}
-          begin
-            
-            //TODO Для этого наверное придётся всё же переделать систему маршлеров
-            // - В первую очередь, есть случаи, где надо несколько вызовов разных более простых перегрузок
-            // - Но уже давно надо перенести всё это на стадию кодогенерации
-            // - Тогда сам факт добавления переменной с инициализацией будет создавать блок begin-end
-            // - Но с финализацией не так просто...
-            // - Наверное нужно start_extra_block('try', ()->begin end)
-            // - И отдельное indicate_need_block(), чтобы более явно создавать основной begin-end; перегрузки
-            {$region enum_to_type_bindings}
-            
-            if ovr.enum_to_type_bindings<>nil then
+            if is_ett_bound and (par_i in ett_bind_info_by_ind) then
             begin
+              if par_i=0 then
+                raise new InvalidOperationException;
+              var b_info := ett_bind_info_by_ind[par_i];
               
-              if ntv_pars[par_i].CalculatedDirectType=ovr.enum_to_type_gr then
-              begin
-                relevant_m.par_str := $'{ovr.enum_to_type_gr.MakeWriteableName}.{ovr.enum_to_type_enum_name}';
-                Result.AddMarshaler(par_i, relevant_m);
-                
-                par := new FuncParamT(false, 0, ovr.enum_to_type_gr);
-                relevant_m := new FuncParamMarshaler(par, initial_par_str);
-              end else
-              foreach var b in ovr.enum_to_type_bindings do
-              begin
-                //TODO Очень временно, чисто чтобы ошибки упаковки не давало...
-                if par_i=b.data_par_ind then
-                begin
-                  Result.AddMarshaler(par_i, relevant_m);
-                  var t := $'T';
-                  if b.IsInputData then
-                    t += 'Inp';
-                  par := new FuncParamT(true, 0, TypeLookup.FromName(t));
-                  relevant_m := new FuncParamMarshaler(par, initial_par_str);
-                end else
-                if par_i=b.passed_size_par_ind then
-                begin
-                  relevant_m.par_str := '%inp_size%';
-                  Result.AddMarshaler(par_i, relevant_m);
-                  par := new FuncParamT(false, 0, KnownDirectTypes.UIntPtr);
-                  relevant_m := new FuncParamMarshaler(par, initial_par_str);
-                end else
-                if par_i=b.returned_size_par_ind then
-                begin
-                  relevant_m.par_str := '%otp_size%';
-                  Result.AddMarshaler(par_i, relevant_m);
-                  par := new FuncParamT(true, 0, KnownDirectTypes.UIntPtr);
-                  relevant_m := new FuncParamMarshaler(par, initial_par_str);
-                end else
-                  continue;
-                break;
-              end;
+              var data_size_t := ntv_pars[b_info.passed_size_par_ind].CalculatedDirectType;
+              if not b_info.IsInputData then
+                if data_size_t <> ntv_pars[b_info.returned_size_par_ind.Value].CalculatedDirectType then
+                  raise new InvalidOperationException;
+              if data_size_t <> KnownDirectTypes.UIntPtr then
+                raise new NotImplementedException;
               
-            end;
-            
-            {$endregion enum_to_type_bindings}
-            
-            // enum_to_type_bindings can return var-array
-            if (par.var_arg) and (par.arr_lvl<>0) then
-              raise new System.NotSupportedException;
-            
-            {$region boolean}
-            
-            if (par.tname='boolean'){ and not par.var_arg} then
-              raise new NotSupportedException('Use {api}::Bool8');
-//            begin
-//              if par.arr_lvl<>0 then raise new System.NotImplementedException(
-//                $'Func [{name}] par#{par_i} [{par}]: Standard boolean marshaling will gen in the way of copying'
-//              );
-//              
-//              relevant_m.par_str := $'{KnownDirectTypes.StubForGenericT.MakeWriteableName}({relevant_m.par_str})';
-//              Result.AddMarshaler(par_i, relevant_m);
-//              
-//              par := new FuncParamT(false, 0, KnownDirectTypes.StubForGenericT);
-//              relevant_m := new FuncParamMarshaler(par, initial_par_str);
-//            end;
-            
-            {$endregion boolean}
-            
-            {$region string}
-            
-            // Note: This is before "array of array of string", because string=>IntPtr conversion is not just a copy
-            if par.tname='string' then
-            begin
-              var str_ptr_name := $'{relevant_m.par_str}_str_ptr';
-              if par.arr_lvl<>0 then str_ptr_name += 's';
-              relevant_m.vars += (str_ptr_name, 'array of '*par.arr_lvl + 'IntPtr');
-              
-              begin
-                var init := relevant_m.init;
-                init += str_ptr_name;
-                init += ' := ';
-                var el_str := relevant_m.par_str;
-                for var i := 1 to par.arr_lvl do
-                begin
-                  var new_el_str := 'arr_el'+i;
-                  init += el_str;
-                  init += '?.ConvertAll(';
-                  init += new_el_str;
-                  init += '->'#10;
-                  //TODO #2664
-                  for var temp2664 := 1 to i do init += '  ';
-                  el_str := new_el_str;
-                end;
-                init += 'Marshal.StringToHGlobalAnsi(';
-                init += el_str;
-                for var i := par.arr_lvl downto 0 do
-                begin
-                  init += ')';
-                  init += if i=0 then
-                    ';' else #10;
-                  for var temp2664 := 1 to i-1 do init += '  ';
-                end;
-              end;
-              
-              begin
-                var fnls := relevant_m.fnls;
-                var el_str := str_ptr_name;
-                for var i := 1 to par.arr_lvl do
-                begin
-                  var new_el_str := 'arr_el'+i;
-                  fnls += 'if ';
-                  fnls += el_str;
-                  fnls += '<>nil then foreach var ';
-                  fnls += new_el_str;
-                  fnls += ' in ';
-                  fnls += el_str;
-                  fnls += ' do'#10;
-                  //TODO #2664
-                  for var temp2664 := 1 to i do fnls += '  ';
-                  el_str := new_el_str;
-                end;
-                fnls += 'Marshal.FreeHGlobal(';
-                fnls += el_str;
-                fnls += ');';
-              end;
-              
-              relevant_m.par_str := str_ptr_name;
-              Result.AddMarshaler(par_i, relevant_m);
-              
-              par := new FuncParamT(false, par.arr_lvl, KnownDirectTypes.IntPtr);
-              relevant_m := new FuncParamMarshaler(par, initial_par_str);
-            end;
-            
-            {$endregion string}
-            
-            {$region array of array}
-            
-            // Handle "array of array" separately, because they can't be passed without copy
-            // Note: This is before generic, because "array of array of T" also needs copy
-            //TODO This generates only [In] version... Without even specifying [In]
-            while par.arr_lvl>1 do
-            begin
-              var temp_arr_name := $'{relevant_m.par_str}_temp_arr';
-              relevant_m.vars += (temp_arr_name, 'array of '*(par.arr_lvl-1) + 'IntPtr');
-              
-              begin
-                var init := relevant_m.init;
-                init += temp_arr_name;
-                init += ' := ';
-                init += relevant_m.par_str;
-                for var i := 1 to par.arr_lvl-2 do
-                begin
-                  init += '?.ConvertAll(arr_el';
-                  init += i.ToString;
-                  init += '->'#10;
-                  //TODO #2664
-                  for var temp2664 := 1 to i do init += '  ';
-                  init += 'arr_el';
-                  init += i.ToString;
-                end;
-                init += '?.ConvertAll(managed_a->'#10;
-                
-                for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += 'if (managed_a=nil) or (managed_a.Length=0) then'#10;
-                for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += '  Result := IntPtr.Zero else'#10;
-                for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += 'begin'#10;
-                for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += '  var l := managed_a.Length*Marshal.SizeOf&<'; init += par.tname; init += '>;'#10;
-                for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += '  Result := Marshal.AllocHGlobal(l);'#10;
-                for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += '  Marshal.Copy(managed_a,0,Result,l);'#10;
-                for var temp2664 := 1 to par.arr_lvl-1 do init += '  '; init += 'end';
-                
-                for var i := par.arr_lvl-1 downto 1 do
-                begin
-                  init += #10;
-                  for var temp2664 := 1 to i-1 do init += '  ';
-                  init += ')';
-                end;
-                init += ';';
-              end;
-              
-              begin
-                var fnls := relevant_m.fnls;
-                var el_str := temp_arr_name;
-                for var i := 1 to par.arr_lvl-1 do
-                begin
-                  var new_el_str := 'arr_el'+i;
-                  fnls += 'if ';
-                  fnls += el_str;
-                  fnls += '<>nil then foreach var ';
-                  fnls += new_el_str;
-                  fnls += ' in ';
-                  fnls += el_str;
-                  fnls += ' do'#10;
-                  //TODO #2664
-                  for var temp2664 := 1 to i do fnls += '  ';
-                  el_str := new_el_str;
-                end;
-                fnls += 'Marshal.FreeHGlobal(';
-                fnls += el_str;
-                fnls += ');';
-              end;
-              
-              relevant_m.par_str := temp_arr_name;
-              Result.AddMarshaler(par_i, relevant_m);
-              
-              par := new FuncParamT(false, par.arr_lvl-1, KnownDirectTypes.IntPtr);
-              relevant_m := new FuncParamMarshaler(par, initial_par_str);
-            end;
-            
-            if par.arr_lvl=1 then
-            begin
-              relevant_m.par_str := relevant_m.par_str; // +'[0]'; - but it will be added in codegen stage
-              Result.AddMarshaler(par_i, relevant_m);
-              
-              par := par.WithPtr(true, 0);
-              relevant_m := new FuncParamMarshaler(par, initial_par_str);
-            end;
-            
-            {$endregion array of array}
-            
-            {$region genetic}
-            
-            if par.IsGeneric then
-            begin
-              // Ovr's like "p<T>(o: T)" don't make sense
-              if not par.var_arg then
-                raise new System.NotSupportedException;
-              
-              relevant_m.par_str := $'P{KnownDirectTypes.StubForGenericT.MakeWriteableName}(pointer(@{relevant_m.par_str}))^';
-              Result.AddMarshaler(par_i, relevant_m);
-              
-              par := new FuncParamT(par.var_arg, par.arr_lvl, KnownDirectTypes.StubForGenericT);
-              relevant_m := new FuncParamMarshaler(par, initial_par_str);
-            end;
-            
-            {$endregion genetic}
+              res += FuncParamMarshalStep.FromEnumToTypeInfo(b_info, data_size_t, par);
+            end else
+              res += FuncParamMarshalStep.FromParam(par_i=0, par);
             
           end;
-          {$endregion Param}
           
-          Result.AddMarshaler(par_i, relevant_m);
+          {$ifdef DEBUG}
+          var res_ovr := new FuncOverload(res.SelectMany(s->s.EnmrPars).ToArray);
+          if ovr.pars.Length<>res_ovr.pars.Length then
+            raise new InvalidOperationException($'{ovr.pars.Length} <> {res_ovr.pars.Length}');
+          if not ovr.pars.SequenceEqual(res_ovr.pars) then
+            raise new InvalidOperationException(
+              ovr.pars.Zip(res_ovr.pars, (p1,p2)->p1=p2).JoinToString
+            );
+          {$endif DEBUG}
+          
+          all_par_marshalers_per_ovr += res.ToArray;
         end;
-        Result.Seal; // Reverses marshalers order
-      end);
+        
+      end;
+//      begin
+//        log.Otp(display_name);
+//        var m_inds := new Dictionary<FuncParamMarshalStep, integer>;
+//        var otp_par_m: (FuncParamMarshalStep,integer)->();
+//        otp_par_m := (par_m,tab)->
+//        begin
+//          var m_ind: integer;
+//          if not m_inds.TryGetValue(par_m, m_ind) then
+//          begin
+//            m_ind := m_inds.Count+1;
+//            m_inds.Add(par_m, m_ind);
+//          end;
+//          log.Otp( #9*tab + $'({m_ind}) ' + par_m.ToString );
+//          log.Otp('~'*30);
+//          tab += 1;
+//          foreach var k in par_m.NextStepKeys do
+//          begin
+//            log.Otp(#9*tab + k.ToString + ' =>');
+//            otp_par_m(par_m.NextStep[k], tab);
+//          end;
+//        end;
+//        foreach var par_m in all_par_marshalers_per_ovr.SelectMany(ovr_m->ovr_m).Distinct do
+//          otp_par_m(par_m, 0);
+//        log.Otp('='*50);
+//  //      Halt;
+//      end;
       
-      {$endregion MakeMarshlers}
+      {$endregion MakeParMarshlers}
       
       {$region MakeMethodList}
-      var MethodList := new List<MethodImplData>;
+      var all_methods := new List<MethodImplData>;
       begin
-        var MethodByPars := new Dictionary<FuncOverload, MethodImplData>;
-        var pending_md := new MethodImplData[all_overloads.Count];
+        var method_by_ovr := new Dictionary<FuncOverload, MethodImplData>;
+        var pending_methods := new Stack<ValueTuple<MethodImplData, FuncOvrMarshalStepKind>>;
         
-        // First add all public methods to MethodList
-        // This also checks for duplicates in overloads
-        foreach var ovr_m: FuncOvrMarshalers in all_ovr_marshalers index ovr_i do
+        // First add all public methods
+        foreach var (ovr,ovr_m) in all_overloads.ZipTuple(all_par_marshalers_per_ovr) do
         begin
-          var ovr := all_overloads[ovr_i];
-          
-          var curr_marshalers := ArrGen(ovr.pars.Length, par_i->
-          begin
-            if is_proc and (par_i=0) then exit;
-            // max_ind=0 to force choose next marshler
-            var (is_fast_forward, m) := ovr_m.GetPossible(par_i, 0);
-            if is_fast_forward then
-              raise new System.InvalidOperationException;
-            // Why check this?
-            if (m.par<>nil) and (m.par.tname=nil) then
-              raise new InvalidOperationException;
-            Result := m;
-          end);
-          
-          var md := new MethodImplData(curr_marshalers);
-          md.name := display_name;
+          var ovr_name := display_name;
+          var ett_enum_name := default(string);
           if ovr.enum_to_type_enum_name<>nil then
-            md.name += '_'+ovr.enum_to_type_enum_name;
-          md.is_public := true;
-          pending_md[ovr_i] := md;
+          begin
+            ovr_name += '_'+ovr.enum_to_type_enum_name;
+            ett_enum_name := $'{ovr.enum_to_type_gr.MakeWriteableName}.{ovr.enum_to_type_enum_name}';
+          end;
+          var md := new MethodImplData(ovr_name, ett_enum_name, ovr_m);
+          var md_ovr := md.MakeOverload;
+          all_methods += md;
           
-          if not curr_marshalers.Select(m->m?.par).SequenceEqual(ovr.pars) then
-            raise new InvalidOperationException(curr_marshalers.Select(m->m?.par).Zip(ovr.pars, (p1,p2)->p1=p2).JoinToString);
-          
+          if md_ovr.pars.Length <> ovr.pars.Length then
+            raise new InvalidOperationException;
+          {$ifdef DEBUG}
+          if not md_ovr.pars.SequenceEqual(ovr.pars) then
+            raise new InvalidOperationException(md_ovr.pars.Zip(ovr.pars, (p1,p2)->p1=p2).JoinToString);
+          if not md.HasEnumToTypeEnumName then
           begin
             var old_md: MethodImplData;
-            if MethodByPars.TryGetValue(ovr, old_md) then
+            if method_by_ovr.TryGetValue(md_ovr, old_md) then
               raise new InvalidOperationException;
           end;
-          MethodByPars.Add(ovr, md);
-          MethodList.Add(md);
+          {$endif DEBUG}
+          
+          var ovr_steps := md.MakeOvrSteps;
+          // If md should be kept native
+          if ovr_steps.Length=0 then
+          begin
+            // Dupe md, to separate public and native methods
+            var ovr_step: FuncOvrMarshalStepKind := ArrFill(ovr_m.Length, MSK_FlatForward);
+            var ntv_md := new MethodImplData(display_name, md, ovr_step);
+            all_methods.Insert(0, ntv_md);
+            md.AddCallTo(ovr_step, ntv_md);
+            md := ntv_md;
+          end else
+          foreach var ovr_step in ovr_steps do
+            pending_methods += ValueTuple.Create(md, ovr_step);
+          
+          if not md.HasEnumToTypeEnumName then
+            method_by_ovr.Add(md_ovr, md);
         end;
         
-        MethodList.Reverse;
-        // Then another reverse at the end, to have better method order
-        foreach var ovr_m: FuncOvrMarshalers in all_ovr_marshalers index ovr_i do
+        var method_insert_ind := 0; //TODO Пересортировать в более адекватный порядок
+        
+        var expected_existing_ovrs := new HashSet<FuncOverload>;
+        while pending_methods.Count<>0 do
         begin
-          var prev_md := pending_md[ovr_i];
-          
-          for var max_marshaler_ind := (all_ovr_marshalers[ovr_i].MaxMarshalInd-1).ClampBottom(0) downto 0 do
+          var (old_md, ovr_step) := pending_methods.Pop;
+          if ovr_step.ExpectExistingOvr then
           begin
-            var can_be_fast_forward := new boolean[ntv_pars.Length];
-            var possible_m := new FuncParamMarshaler[ntv_pars.Length];
-            for var par_i := 0 to ntv_pars.Length-1 do
-            begin
-              if is_proc and (par_i=0) then continue;
-              (can_be_fast_forward[par_i], possible_m[par_i]) := ovr_m.GetPossible(par_i, max_marshaler_ind);
-            end;
-            
-            var new_pars := default(FuncOverload);
-            var new_md := default(MethodImplData);
-            var found_md := default(MethodImplData);
-            foreach var fast_forward in MultiBooleanChoiseSet.Create(can_be_fast_forward).Enmr do
-            begin
-              var curr_marshalers := ArrGen(ntv_pars.Length, par_i->
-                is_proc and (par_i=0) ?
-                  nil :
-                fast_forward.Flag[par_i] ?
-                  possible_m[par_i] :
-                  ovr_m.GetCurrent(par_i)
-              );
-              var pars: FuncOverload := curr_marshalers.ConvertAll(m->m?.par);
-              
-              if fast_forward.IsFirst then
-              begin
-                new_pars := pars;
-                new_md := new MethodImplData(curr_marshalers);
-              end;
-              
-              if not MethodByPars.TryGetValue(pars, found_md) then continue;
-              
-              if max_marshaler_ind<>0 then break;
-              // Native method. It should be called instead of another method with same parameters
-              
-              if not fast_forward.IsFirst then raise new InvalidOperationException;
-              
-              foreach var calling_md in found_md.call_by do
-              begin
-                new_md.call_by += calling_md;
-                calling_md.call_to := new_md;
-              end;
-              found_md.call_by := nil;
-              
-              MethodByPars.Remove(pars);
-              // Can't remove public methods, even if they have same pars
-              if not found_md.is_public then
-                MethodList.Remove(found_md);
-              
-              found_md := nil;
-            end;
-            
-            var md := found_md ?? new_md;
-            if found_md=nil then
-            begin
-              md.name := (if max_marshaler_ind=0 then 'ntv_' else 'temp_') + display_name;
-              MethodList.Add(md);
-              MethodByPars.Add(new_pars, md);
-            end;
-            
-            md.call_by += prev_md;
-            prev_md.call_to := md;
-            if found_md<>nil then break;
-            prev_md := md;
+            var old_md_ovr := old_md.MakeOverload;
+            if old_md_ovr not in method_by_ovr then
+              raise new InvalidOperationException;
+            if not expected_existing_ovrs.Add(old_md_ovr) then
+              raise new InvalidOperationException;
+            continue;
           end;
           
+          if (display_name='6Mix') and not pending_methods.Any then
+            display_name := display_name;
+          
+          if old_md.MakeOverload in all_overloads then
+            method_insert_ind := 0;
+//            method_insert_ind := all_methods.Count-all_overloads.Count;
+          
+          var md := default(MethodImplData);
+          var md_ovr := default(FuncOverload);
+          var step_kind := default(FuncOvrMarshalStepKind);
+          var found_existing_ovr := false;
+          
+          if display_name='6Mix' then
+            display_name := display_name;
+          
+          foreach var ovr_sub_step in ovr_step.PartialSteps do
+          begin
+            {$ifdef DEBUG}
+            if ovr_sub_step.AllFlatForward then
+              raise new InvalidOperationException;
+            {$endif DEBUG}
+            
+            var new_md := new MethodImplData(display_name, old_md, ovr_sub_step);
+            var new_md_ovr := new_md.MakeOverload;
+            
+            var new_md_is_native := new_md.IsFinalStep;
+            
+//            if md=nil then
+            begin
+              md := new_md;
+              md_ovr := new_md_ovr;
+              step_kind := ovr_sub_step;
+            end;
+            
+            var found_md: MethodImplData;
+            if method_by_ovr.TryGetValue(new_md_ovr, found_md) then
+            begin
+              found_existing_ovr := true;
+              if not found_md.IsPublic then
+              begin
+                //TODO Убрать костыльную сортировку
+//                Otp($'{display_name} Move to {method_insert_ind}: ({new_md_ovr})');
+                all_methods.Remove(found_md);
+                all_methods.Insert(method_insert_ind, found_md);
+              end;
+              if new_md_is_native then
+              begin
+                if not found_md.IsPublic then
+                  if not all_methods.Remove(found_md) then
+                    raise new InvalidOperationException;
+                if not method_by_ovr.Remove(new_md_ovr) then
+                  raise new InvalidOperationException;
+                expected_existing_ovrs.Remove(new_md_ovr);
+                found_md.ReplaceCallsWith(new_md);
+                found_md := new_md;
+                found_existing_ovr := false;
+              end;
+              md := found_md;
+              md_ovr := new_md_ovr;
+              step_kind := ovr_sub_step;
+              break;
+            end;
+            
+          end;
+          
+          old_md.AddCallTo(step_kind, md);
+          
+          if found_existing_ovr then continue;
+          
+          all_methods.Insert(method_insert_ind, md);
+          method_by_ovr.Add(md_ovr, md);
+          
+          var next_ovr_steps := md.MakeOvrSteps;
+          if next_ovr_steps.Length>1 then
+            // Only public methods are expected to have branching
+            raise new NotImplementedException;
+          
+          foreach var next_ovr_step in next_ovr_steps do
+            pending_methods += ValueTuple.Create(md, next_ovr_step);
+          
         end;
-        MethodList.Reverse;
+        
+        if expected_existing_ovrs.Any then
+        begin
+          Otp($'ERROR: {self} did not have expected existing ovrs:');
+          foreach var ovr in expected_existing_ovrs do
+            Otp(ovr.ToString);
+          Otp($'Found ovrs:');
+          foreach var ovr in method_by_ovr.Keys do
+            Otp(ovr.ToString);
+          raise new MessageException('halting...');
+        end;
         
       end;
       {$endregion MakeMethodList}
       
-      {$region CodeGen}
+      {$region Code generation}
       
       begin
-        var method_names := new HashSet<string>;
-        foreach var md in MethodList do
-        begin
-          
-          if not md.is_public then
-            md.name := (1).Step(1)
-            .Select(i->$'{md.name}_{i}')
-            .First(method_names.Add);
-          
-          if md.name in pas_keywords then
-            md.name := '&'+md.name;
-          
-        end;
+        var all_method_names := new HashSet<string>;
+        foreach var md in all_methods do
+          md.FinalName(all_method_names);
       end;
       
-//      foreach var md in MethodList do
 //      begin
-//        PABCSystem.Write(md.name);
-//        PABCSystem.Write('(');
-//        PABCSystem.Write(md.pars.Select(m->m?.par.ToString(true,true,true)).Where(s->s<>nil).JoinToString('; '));
-//        PABCSystem.Write(')');
-//        if md.call_to<>nil then
-//        begin
-//          PABCSystem.Write(' => ');
-//          PABCSystem.Write(md.call_to.name);
-//        end;
-//        Writeln;
+//        foreach var md in all_methods do
+//          log.Otp(md.ToString);
+//        log.Otp('='*50);
+////        Halt
 //      end;
-//      Writeln;
-//      Halt;
       
-      foreach var md in MethodList do
+      foreach var md in all_methods do
       begin
-        if md.call_to not in MethodList.Prepend(nil) then
-          raise new System.InvalidOperationException(self.ToString);
-        var pars := md.pars.ConvertAll(m->m?.par);
+        var ovr := md.MakeOverload;
         
-        if md.call_to=nil then
+        var par_names := ntv_pars.ConvertAll(par->par.Name);
+        md.FixETTCountParNames(par_names);
+        
+        if md.IsFinalCall then
         {$region Native}
         begin
           
@@ -1330,9 +1127,9 @@ type
           begin
             
             wr += '    private ';
-            wr += md.name;
+            wr += md.FinalName(nil);
             wr += ' := GetProcOrNil&<';
-            WriteOvrT(wr, pars,nil, nil);
+            WriteOvrT(wr, ovr.pars,par_names,nil, nil);
             wr += '>(';
             wr += display_name;
             wr += '_adr);'+#10;
@@ -1341,7 +1138,7 @@ type
           begin
             
             wr += '    private ';
-            WriteOvrT(wr, pars,nil, md.name);
+            WriteOvrT(wr, ovr.pars,par_names,nil, md.FinalName(nil));
             wr += ';'#10;
             wr += '    external ''';
             wr += Func.last_lib_name;
@@ -1351,206 +1148,753 @@ type
             
           end;
           
-        end else
-        {$endregion Native}
-        {$region Other}
+        end
+        {$endregion Native} else
+        {$region Managed}
         begin
-          var need_conv := new boolean[pars.Length];
+          var generic_names := ovr.pars
+            .Where(par->par<>nil)
+            .Where(par->par.IsGeneric)
+            .Select(par->par.tname)
+            .Distinct.ToArray;
           
-          var generic_names := new HashSet<string>;
+          var mw := new ManagedMethodWriter(md, ovr, generic_names);
           
-          var arr_nil_pars := new boolean[pars.Length];
-          var ptr_need_names := new HashSet<string>;
-          
-          foreach var par in pars index par_i do
-          begin
-//            if is_proc and (par_i=0) then continue;
-            if par=nil then continue;
+          var validate_size_par_names := new List<string>;
+          mw.InitWriters(
+            par_i->par_names[par_i],
             
-            need_conv[par_i] := par <> md.call_to.pars[par_i].par;
+            {$region Res}
+            (par_kind, par, par_name)->
+            begin
+              
+              case par_kind of
+                
+                MPK_Invalid:
+                {$region ProcRes}
+                begin
+                  if not is_proc then
+                    raise new InvalidOperationException;
+                  if par<>nil then
+                    raise new InvalidOperationException;
+                  
+                  Result := new FuncParWriter(FPWO_FlatResult,
+                    wr->wr.WriteResAssign(
+                      wr->wr.MakeCall(MSK_FlatForward)
+                    )
+                  );
+                  
+                end;
+                {$endregion ProcRes}
+                
+                MPK_Basic:
+                {$region Basic}
+                begin
+                  Result := new FuncParWriter(FPWO_FlatResult,
+                    wr->wr.WriteResAssign(
+                      wr->wr.MakeCall(MSK_FlatForward)
+                    )
+                  );
+                end
+                {$endregion Basic};
+                
+                MPK_String:
+                {$region String}
+                if par.is_const then
+                begin
+                  
+                  Result := new FuncParWriter(FPWO_ResultConvert,
+                    wr->wr.WriteResAssign(wr->
+                    begin
+                      wr += 'Marshal.PtrToStringAnsi(';
+                      wr.MakeCall(MSK_PtrToString);
+                      wr += ')';
+                    end)
+                  );
+                  
+                end else
+                begin
+                  mw.MarkRequireBlock;
+                  
+                  Result := new FuncParWriter(FPWO_Multiline,
+                    wr->
+                    begin
+                      var res_str_ptr_name := 'Result_str_ptr';
+                      
+                      wr.WriteTabs;
+                      wr += 'var ';
+                      wr += res_str_ptr_name;
+                      wr += ' := ';
+                      wr.MakeCall(MSK_FreeablePtrToString);
+                      wr += ';'#10;
+                      
+                      wr.MakeBlock('try', wr->
+                      begin
+                        
+                        wr.WriteResAssign(wr->
+                        begin
+                          wr += 'Marshal.PtrToStringAnsi(';
+                          wr += res_str_ptr_name;
+                          wr += ')';
+                        end);
+                        
+                        wr.WriteTabs(-1);
+                        wr += 'finally'#10;
+                        
+                        wr.WriteTabs;
+                        wr += 'Marshal.FreeHGlobal(';
+                        wr += res_str_ptr_name;
+                        wr += ');'#10;
+                        
+                      end);
+                      
+                    end
+                  );
+                  
+                end;
+                {$endregion String}
+                
+                else raise new NotImplementedException($'{md.FinalName(nil)} result: {par_kind}');
+              end;
+              
+            end
+            {$endregion Res},
             
-            if par.IsGeneric then
-              generic_names += par.tname;
+            {$region Par}
+            (par_kind, par, par_name)->
+            begin
+              
+              case par_kind of
+                
+                MPK_Basic:
+                {$region Basic}
+                begin
+                  Result := new FuncParWriter(FPWO_InPlace,
+                    wr->wr.MakeCall(MSK_FlatForward, par_name)
+                  );
+                end
+                {$endregion Basic};
+                
+                MPK_Generic:
+                {$region Generic}
+                begin
+                  Result := new FuncParWriter(FPWO_InPlace,
+                    wr->wr.MakeCall(MSK_GenericSubstitute, wr->
+                    begin
+                      wr += 'P';
+                      wr += KnownDirectTypes.StubForGenericT.MakeWriteableName;
+                      wr += '(pointer(@';
+                      wr += par_name;
+                      wr += '))^';
+                    end)
+                  );
+                end;
+                {$endregion Generic}
+                
+                MPK_Array:
+                {$region Array}
+                begin
+                  mw.AddPointerType(par.tname);
+                  
+                  Result := new FuncParWriter(FPWO_ArrNil,
+                    wr->
+                    begin
+                      
+                      wr += 'if (';
+                      wr += par_name;
+                      wr += '<>nil) and (';
+                      wr += par_name;
+                      wr += '.Length<>0) then'#10;
+                      
+                      wr.MakeBlock(nil, wr->
+                      begin
+                        
+                        wr.WriteTabs;
+                        wr.MakeCall(MSK_ArrayFirstItem, wr->
+                        begin
+                          wr += par_name;
+                          wr += '[0]';
+                        end);
+                        wr += ' else'#10;
+                        
+                        wr.WriteTabs;
+                        wr.MakeCall(MSK_ArrayFirstItem, wr->
+                        begin
+                          wr += 'P';
+                          wr += par.tname.First.ToUpper;
+                          wr += par.tname.Substring(1);
+                          wr += '(nil)^';
+                        end);
+                        
+                      end);
+                      
+                    end
+                  );
+                  
+                end;
+                {$endregion Array}
+                
+                MPK_String:
+                {$region String}
+                begin
+                  var is_const := par.is_const;
+                  if not is_const then
+                    //TODO Сделать "var string" параметр
+                    raise new NotImplementedException(self.ToString);
+                  
+                  mw.MarkRequireBlock;
+                  
+                  Result := new FuncParWriter(FPWO_Multiline,
+                    wr->
+                    begin
+                      var str_ptr_name := $'{par_name}_str_ptr';
+                      
+                      wr.WriteTabs;
+                      wr += 'var ';
+                      wr += str_ptr_name;
+                      wr += ' := Marshal.StringToHGlobalAnsi(';
+                      wr += par_name;
+                      wr += ');'#10;
+                      
+                      wr.MakeBlock('try', wr->
+                      begin
+                        
+                        wr.MakeCall(MSK_StringParam, str_ptr_name);
+                        
+                        wr.WriteTabs(-1);
+                        wr += 'finally'#10;
+                        
+                        wr.WriteTabs;
+                        wr += 'Marshal.FreeHGlobal(';
+                        wr += str_ptr_name;
+                        wr += ');'#10;
+                        
+                      end);
+                      
+                    end
+                  );
+                  
+                end;
+                {$endregion String}
+                
+                MPK_ArrayNeedCopy:
+                {$region ArrayNeedCopy}
+                begin
+                  mw.MarkRequireBlock;
+                  if not par.is_const then
+                    // How to calculate size?
+                    raise new NotImplementedException(self.ToString);
+                  
+                  Result := new FuncParWriter(FPWO_Multiline,
+                    wr->
+                    begin
+                      
+                      wr.WriteTabs;
+                      wr += 'if (';
+                      wr += par_name;
+                      wr += '=nil) or (';
+                      wr += par_name;
+                      wr += '.Length=0) then'#10;
+                      wr.MakeBlock('begin', wr->
+                      begin
+                        
+                        wr.MakeCall(MSK_ArrayFallThrought, 'pointer(nil)');
+                        
+                        wr.WriteTabs;
+                        wr += 'exit;'#10;
+                        
+                      end);
+                      
+                      var temp_arr_name := par_name+'_temp_arr';
+                      var temp_arr_lvl := par.arr_lvl-1 + Ord(par.IsString);
+                      
+                      wr.WriteTabs;
+                      wr += 'var ';
+                      wr += temp_arr_name;
+                      wr += ': ';
+                      loop temp_arr_lvl do
+                        wr += 'array of ';
+                      wr += 'IntPtr;'#10;
+                      
+                      wr.MakeBlock('try', wr->
+                      begin
+                        
+                        wr.MakeBlock('begin', wr->
+                        begin
+                          var lvl_item_at := procedure(item_name: string; lvl: integer) ->
+                          begin
+                            wr += par_name;
+                            wr += '_';
+                            wr += item_name;
+                            wr += '_';
+                            wr += lvl;
+                          end;
+                          var org_el_at := procedure(lvl: integer) ->
+                            lvl_item_at('org_el', lvl);
+                          var tmp_el_at := procedure(lvl: integer) ->
+                            lvl_item_at('tmp_el', lvl);
+                          var len_at := procedure(lvl: integer)->
+                            lvl_item_at('len', lvl);
+                          var ind_at := procedure(lvl: integer)->
+                            lvl_item_at('ind', lvl);
+                          var prev_tmp_el_at := procedure(lvl: integer)->
+                            if lvl=1 then
+                              wr += temp_arr_name else
+                            begin
+                              tmp_el_at(lvl-1);
+                              wr += '[';
+                              ind_at(lvl-1);
+                              wr += ']';
+                            end;
+                          
+                          wr.WriteTabs;
+                          wr += 'var ';
+                          org_el_at(1);
+                          wr += ' := ';
+                          wr += par_name;
+                          wr += ';'#10;
+                          
+                          for var lvl := 1 to temp_arr_lvl do
+                          begin
+                            
+                            wr.WriteTabs;
+                            wr += 'var ';
+                            len_at(lvl);
+                            wr += ' := ';
+                            org_el_at(lvl);
+                            wr += '.Length;'#10;
+                            
+                            wr.WriteTabs;
+                            wr += 'SetLength(';
+                            prev_tmp_el_at(lvl);
+                            wr += ', ';
+                            len_at(lvl);
+                            wr += ');'#10;
+                            
+                            wr.WriteTabs;
+                            wr += 'var ';
+                            tmp_el_at(lvl);
+                            wr += ' := ';
+                            prev_tmp_el_at(lvl);
+                            wr += ';'#10;
+                            
+                            wr.WriteTabs;
+                            wr += 'for var ';
+                            ind_at(lvl);
+                            wr += ' := 0 to ';
+                            len_at(lvl);
+                            wr += '-1 do'#10;
+                            
+                            wr.BeginBlock('begin');
+                            
+                            wr.WriteTabs;
+                            wr += 'var ';
+                            org_el_at(lvl+1);
+                            wr += ' := ';
+                            org_el_at(lvl);
+                            wr += '[';
+                            ind_at(lvl);
+                            wr += '];'#10;
+                            
+                            wr.WriteTabs;
+                            wr += 'if (';
+                            org_el_at(lvl+1);
+                            wr += '=nil) or (';
+                            org_el_at(lvl+1);
+                            wr += '.Length=0) then continue;'#10;
+                            
+                          end;
+                          
+                          if par.IsString then
+                          begin
+                            
+                            wr.WriteTabs;
+                            prev_tmp_el_at(temp_arr_lvl+1);
+                            wr += ' := Marshal.StringToHGlobalAnsi(';
+                            org_el_at(temp_arr_lvl+1);
+                            wr += ');'#10;
+                            
+                          end else
+                          begin
+                            
+                            wr.WriteTabs;
+                            wr += 'var ';
+                            org_el_at(temp_arr_lvl+1);
+                            wr += '_sz := ';
+                            org_el_at(temp_arr_lvl+1);
+                            wr += '.Length*Marshal.SizeOf&<';
+                            wr += par.tname;
+                            wr += '>;'#10;
+                            
+                            wr.WriteTabs;
+                            wr += 'var ';
+                            org_el_at(temp_arr_lvl+1);
+                            wr += '_ptr := Marshal.AllocHGlobal(';
+                            org_el_at(temp_arr_lvl+1);
+                            wr += '_sz';
+                            wr += ');'#10;
+                            
+                            wr.WriteTabs;
+                            tmp_el_at(temp_arr_lvl);
+                            wr += '[';
+                            ind_at(temp_arr_lvl);
+                            wr += '] := ';
+                            org_el_at(temp_arr_lvl+1);
+                            wr += '_ptr;'#10;
+                            
+                            wr.WriteTabs;
+                            wr += 'Marshal.Copy(';
+                            org_el_at(temp_arr_lvl+1);
+                            wr += ',0,';
+                            org_el_at(temp_arr_lvl+1);
+                            wr += '_ptr,';
+                            org_el_at(temp_arr_lvl+1);
+                            wr += '_sz);'#10;
+                            
+                          end;
+                          
+                          loop temp_arr_lvl do
+                            wr.EndBlock(true);
+                          
+                        end);
+                        
+                        wr.MakeCall(MSK_ArrayCopy, wr->
+                        begin
+                          wr += temp_arr_name;
+                          if temp_arr_lvl=1 then
+                            wr += '[0]';
+                        end);
+                        
+                        wr.WriteTabs(-1);
+                        wr += 'finally'#10;
+                        
+                        for var lvl := 1 to temp_arr_lvl do
+                        begin
+                          var el_name := 'arr_el'+lvl;
+                          wr.WriteTabs(lvl-1);
+                          wr += ' foreach var ';
+                          wr += el_name;
+                          wr += ' in ';
+                          wr += temp_arr_name;
+                          wr += ' do ';
+                          if lvl<>temp_arr_lvl then
+                          begin
+                            wr += 'if ';
+                            wr += el_name;
+                            wr += '<>nil then'#10;
+                          end else
+                          begin
+                            wr += 'Marshal.FreeHGlobal(';
+                            wr += el_name;
+                            wr += ');'#10;
+                          end;
+                          temp_arr_name := el_name;
+                        end;
+                        
+                      end);
+                      
+                    end
+                  );
+                  
+                end;
+                {$endregion ArrayNeedCopy}
+                
+                MPK_EnumToTypeGroupHole:
+                {$region EnumToTypeGroupHole}
+                begin
+                  Result := new FuncParWriter(FPWO_InPlace,
+                    wr->wr.MakeCall(MSK_EnumToTypeGroup, md.EnumToTypeEnumName)
+                  );
+                end;
+                {$endregion EnumToTypeGroupHole}
+                
+                else raise new NotImplementedException($'{md.FinalName(nil)} parameter: {par_kind}');
+              end;
+              
+            end
+            {$endregion Par},
             
-            arr_nil_pars[par_i] := need_conv[par_i] and (par.arr_lvl=1) and (par.tname<>'string');
-            if arr_nil_pars[par_i] then
-              ptr_need_names += par.tname;
+            {$region EnumToType}
+            pars->
+            begin
+              
+              {$region Find data and count params}
+              
+              var count_par := default(FuncParamT);
+              var count_par_name := default(string);
+              
+              var data_par := default(FuncParamT);
+              var data_par_name := default(string);
+              
+              foreach var (par_kind, par, par_name) in pars do
+                case par_kind of
+                  
+                  MPK_Invalid:
+                    if par<>nil then
+                      raise new InvalidOperationException;
+                  
+                  MPK_EnumToTypeCount:
+                  begin
+                    if count_par<>nil then raise new InvalidOperationException;
+                    count_par := par;
+                    count_par_name := par_name;
+                  end;
+                  
+                  MPK_EnumToTypeBody:
+                  begin
+                    if data_par<>nil then raise new InvalidOperationException;
+                    data_par := par;
+                    data_par_name := par_name;
+                  end;
+                  
+                  else raise new NotImplementedException($'{md.FinalName(nil)} ett: {par_kind}');
+                end;
+              
+              {$endregion Find data and count params}
+              
+              {$region No input ovr}
+              
+              if data_par=nil then
+              begin
+                if pars.Length<>2 then
+                  raise new NotImplementedException;
+                Result := new FuncParWriter(FPWO_InPlace,
+                  wr->wr.MakeCall(MSK_EnumToTypeBody, 'UIntPtr.Zero,nil')
+                );
+                exit;
+              end;
+              
+              {$endregion No input ovr}
+              
+              var is_output_data := not data_par.is_const;
+              
+              var validate_size_par_name := default(string);
+              var returned_sz_name := default(string);
+              if is_output_data and (data_par.enum_to_type_data_rep_c<>nil) then
+              begin
+                validate_size_par_name := data_par_name+'_validate_size';
+                validate_size_par_names += validate_size_par_name;
+                returned_sz_name := data_par_name+'_ret_size';
+              end;
+              
+              mw.MarkRequireBlock;
+              Result := new FuncParWriter(FPWO_Multiline,
+                wr->
+                begin
+                  var expected_sz_name := data_par_name+'_sz';
+                  
+                  var temp_res_name := default(string);
+                  if is_output_data and (count_par=nil) and (data_par.enum_to_type_data_rep_c<>1) then
+                    temp_res_name := data_par_name+'_temp_res';
+                  
+                  if is_output_data and (count_par=nil) and (data_par.enum_to_type_data_rep_c=nil) then
+                  begin
+                    wr.WriteTabs;
+                    wr += 'var ';
+                    wr += expected_sz_name;
+                    wr += ': UIntPtr;'#10;
+                    
+                    wr.MakeCall(MSK_EnumToTypeGetSize, wr->
+                    begin
+                      wr += 'UIntPtr.Zero,nil,';
+                      wr += expected_sz_name;
+                    end);
+                    
+                    wr.WriteTabs;
+                    wr += 'var ';
+                    wr += temp_res_name;
+                    wr += ' := ';
+                    if data_par.IsString then
+                    begin
+                      wr += 'Marshal.AllocHGlobal(IntPtr(';
+                      wr += expected_sz_name;
+                      wr += '.ToPointer));'#10;
+                      wr.BeginBlock('try');
+                    end else
+                    begin
+                      wr += 'new ';
+                      wr += data_par.tname;
+                      wr += '[';
+                      wr += expected_sz_name;
+                      wr += '.ToUInt64 div ';
+                      wr += 'Marshal.SizeOf&<';
+                      wr += data_par.tname;
+                      wr += '>';
+                      wr += '];'#10;
+                    end;
+                    
+                  end else
+                  begin
+                    
+                    wr.WriteTabs;
+                    wr += 'var ';
+                    wr += expected_sz_name;
+                    wr += ' := new UIntPtr(';
+                    if count_par<>nil then
+                    begin
+                      wr += count_par_name;
+                      wr += '*';
+                    end else
+                    if data_par.enum_to_type_data_rep_c=nil then
+                    begin
+                      if is_output_data then
+                        raise new InvalidOperationException;
+                      wr += data_par_name;
+                      wr += '.Length';
+                      wr += '*';
+                    end else
+                    if data_par.enum_to_type_data_rep_c<>1 then
+                    begin
+                      wr += data_par.enum_to_type_data_rep_c.Value;
+                      wr += '*';
+                    end;
+                    wr += 'Marshal.SizeOf&<';
+                    wr += data_par.tname;
+                    wr += '>';
+                    wr += ');'#10;
+                    
+                    if temp_res_name<>nil then
+                    begin
+                      wr.WriteTabs;
+                      wr += 'var ';
+                      wr += temp_res_name;
+                      wr += ' := ';
+                      if data_par.IsString then
+                      begin
+                        wr += 'Marshal.AllocHGlobal(IntPtr(';
+                        wr += expected_sz_name;
+                        wr += '.ToPointer));'#10;
+                        wr.BeginBlock('try');
+                      end else
+                      begin
+                        wr += 'new ';
+                        wr += data_par.tname;
+                        wr += '[';
+                        wr += data_par.enum_to_type_data_rep_c.Value;
+                        wr += '];'#10;
+                      end;
+                    end;
+                    
+                  end;
+                  
+                  if returned_sz_name<>nil then
+                  begin
+                    wr.WriteTabs;
+                    wr += 'var ';
+                    wr += returned_sz_name;
+                    wr += ': UIntPtr;'#10;
+                  end;
+                  
+                  wr.MakeCall(MSK_EnumToTypeBody, wr->
+                  begin
+                    
+                    wr += expected_sz_name;
+                    
+                    wr += ',';
+                    if temp_res_name=nil then
+                    begin
+                      wr += data_par_name;
+                      if (count_par=nil) and (data_par.enum_to_type_data_rep_c<>1) then
+                        wr += '[0]';
+                    end else
+                    begin
+                      wr += temp_res_name;
+                      if data_par.IsString then
+                        wr += '.ToPointer' else
+                        wr += '[0]';
+                    end;
+                    
+                    if is_output_data then
+                      if validate_size_par_name<>nil then
+                      begin
+                        wr += ',';
+                        wr += returned_sz_name;
+                      end else
+                        wr += ',IntPtr.Zero';
+                    
+                  end);
+                  
+                  if temp_res_name<>nil then
+                    if data_par.IsString then
+                    begin
+                      
+                      wr.WriteTabs;
+                      wr += data_par_name;
+                      wr += ' := Marshal.PtrToStringAnsi(';
+                      wr += temp_res_name;
+                      wr += ');'#10;
+                      
+                      wr.WriteTabs(-1);
+                      wr += 'finally'#10;
+                      
+                      wr.WriteTabs;
+                      wr += 'Marshal.FreeHGlobal(';
+                      wr += temp_res_name;
+                      wr += ');'#10;
+                      
+                      wr.EndBlock(true);
+                    end else
+                    begin
+                      wr.WriteTabs;
+                      wr += data_par_name;
+                      wr += ' := ';
+                      wr += temp_res_name;
+                      wr += ';'#10;
+                    end;
+                  
+                  if validate_size_par_name<>nil then
+                  begin
+                    
+                    wr.WriteTabs;
+                    wr += 'if ';
+                    wr += validate_size_par_name;
+                    wr += ' and (';
+                    wr += returned_sz_name;
+                    wr += '<>';
+                    wr += expected_sz_name;
+                    wr += ') then'#10;
+                    
+                    wr.WriteTabs(+1);
+                    wr += 'raise new InvalidOperationException($''Implementation returned a size of {';
+                    wr += returned_sz_name;
+                    wr += '} instead of {';
+                    wr += expected_sz_name;
+                    wr += '}'');'#10;
+                    
+                  end;
+                  
+                end
+              );
+            end
+            {$endregion EnumToType}
             
-          end;
-          
-          var need_init := md.pars.Where((m,i)->need_conv[i]).Any(m->m.init.Length<>0);
-          var need_fnls := md.pars.Where((m,i)->need_conv[i]).Any(m->m.fnls.Length<>0);
-          
-          var need_block :=
-            generic_names.Any or
-            ptr_need_names.Any or
-            need_init or need_fnls
-          ;
+          );
           
           wr += '    ';
-          wr += if md.is_public then 'public' else 'private';
+          wr += if md.IsPublic then 'public' else 'private';
           wr += ' [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-          WriteOvrT(wr, pars, generic_names, md.name);
-          
-          if need_block then
+          var pars := ovr.pars;
+          if validate_size_par_names.Any then
           begin
-            wr += ';';
-            if generic_names.Count<>0 then
-            begin
-              wr += ' where ';
-              wr += generic_names.JoinToString(', ');
-              wr += ': record;';
-            end;
-            wr += #10;
-            foreach var t in ptr_need_names do
-            begin
-              wr += '    type P';
-              wr += t;
-              wr += '=^';
-              wr += t;
-              wr += ';'#10;
-            end;
-            wr += '    begin'#10;
-          end else
-            wr += ' :='#10;
-          
-          foreach var g in md.pars.Where((m,i)->need_conv[i]).SelectMany(m->m.vars).GroupBy(t->t[1], t->t[0]).OrderBy(g->g.Key) do
-          begin
-            wr += '  '*3;
-            wr += 'var ';
-            wr += g.JoinToString(', ');
-            wr += ': ';
-            wr += g.Key;
-            wr += ';'#10;
+            var boolean_t := TypeLookup.FromName('boolean');
+            boolean_t.Use(true);
+            var vs_par := new FuncParamT(true, false, 0, boolean_t);
+            vs_par.default_val := 'false';
+            pars := pars + ArrFill(validate_size_par_names.Count, vs_par);
           end;
+          WriteOvrT(wr, pars, par_names+validate_size_par_names.ToArray, generic_names, md.FinalName(nil));
           
-          var need_try_finally := need_init and need_fnls;
-          if need_try_finally then wr += '      try'#10;
-          
-          var tabs := 2 + Ord(need_block) + Ord(need_try_finally);
-          
-          if need_init then
-          begin
-            
-            var padding := '  '*tabs;
-            foreach var m in md.pars index par_i do
-            begin
-              if not need_conv[par_i] then continue;
-              if m.init.Length=0 then continue;
-              wr += padding;
-              wr += m.init.Replace(#10, #10+padding).ToString;
-              wr += #10;
-            end;
-            
-          end;
-          
-          loop tabs do wr += '  ';
-          if need_block and not is_proc then
-          begin
-            wr += if need_conv[0] then md.pars[0].par_str else 'Result';
-            wr += ' := ';
-          end;
-          
-          // md.pars[0] is nil if is_proc
-          // md.pars[0].res_par_conv is nil by default
-          var res_par_conv := md.pars[0]?.res_par_conv?.Split(|#0|,2);
-          if res_par_conv<>nil then
-            wr += res_par_conv[0];
-          
-          var need_call_tabs := false;
-          var arr_nil_set := new MultiBooleanChoiseSet(arr_nil_pars);
-          var if_used := new boolean[arr_nil_pars.Length];
-          foreach var arr_nil in arr_nil_set.Enmr do
-          begin
-            var call_tabs := tabs;
-            
-            for var par_i := pars.Length-1 downto 1 do
-            begin
-              if not arr_nil_pars[par_i] then continue;
-              
-              var iu := not arr_nil.Flag[par_i];
-              if not if_used[par_i] and iu then
-              begin
-                if not need_call_tabs then
-                  need_call_tabs := true else
-                  loop call_tabs do wr += '  ';
-                wr += 'if (';
-                wr += md.pars[par_i].par_str;
-                wr += '<>nil) and (';
-                wr += md.pars[par_i].par_str;
-                wr += '.Length<>0) then'#10;
-              end;
-              if_used[par_i] := iu;
-              
-              call_tabs += 1;
-            end;
-            
-            if not need_call_tabs then
-              need_call_tabs := true else
-              loop call_tabs do wr += '  ';
-            wr += md.call_to.name;
-            wr += '(';
-            for var par_i := 1 to md.pars.Length-1 do
-            begin
-              var par := md.pars[par_i];
-              if par_i<>1 then wr += ', ';
-              if arr_nil.Flag[par_i] then
-              begin
-                wr += 'P';
-                wr += par.par.tname;
-                wr += '(nil)^';
-              end else
-              if need_conv[par_i] then
-              begin
-                wr += par.par_str;
-                if arr_nil_pars[par_i] then
-                  wr += '[0]';
-              end else
-                wr += ntv_pars[par_i].name;
-            end;
-            wr += ')';
-            
-            if arr_nil.IsLast then
-            begin
-              if res_par_conv<>nil then
-                wr += res_par_conv[1];
-              wr += ';';
-            end else
-              wr += ' else';
-            wr += #10;
-            
-          end;
-          
-          if need_try_finally then wr += '      finally'#10;
-          if need_fnls then
-          begin
-            
-            var padding := '  '*tabs;
-            foreach var m in md.pars index par_i do
-            begin
-              if not need_conv[par_i] then continue;
-              if m.fnls.Length=0 then continue;
-              wr += padding;
-              wr += m.fnls.Replace(#10, #10+padding).ToString;
-              wr += #10;
-            end;
-            
-          end;
-          if need_try_finally then wr += '      end;'#10;
-          
-          if need_block then
-            wr += '    end;'#10;
-          
-        end;
-        {$endregion Other}
+          mw.Write(wr);
+        end
+        {$endregion Managed};
         
       end;
       
-      {$endregion CodeGen}
+      {$endregion Code generation}
       
     end;
     
-    public static procedure DefineWriteBlock(lib_name: string; write_funcs: ()->());
+    public static procedure DefineWriteBlock(lib_name: string; write_funcs: Action);
     begin
       if in_wr_block then
         raise new InvalidOperationException;
@@ -2089,8 +2433,8 @@ implementation
               var ppt := f.possible_par_types[i+ind_nudge];
               ppt += t;
               if t.var_arg and ((t.tname='IntPtr') or t.IsGeneric) then
-                if ppt.Remove(new FuncParamT(false, 0, KnownDirectTypes.IntPtr)) then
-                  ppt.Add(new FuncParamT(false, 0, KnownDirectTypes.Pointer));
+                if ppt.Remove(new FuncParamT(t.is_const, false, 0, KnownDirectTypes.IntPtr)) then
+                  ppt.Add(new FuncParamT(t.is_const, false, 0, KnownDirectTypes.Pointer));
             end;
           end else
           begin

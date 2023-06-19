@@ -1,8 +1,8 @@
 ﻿
 
 
-# ::4GenericWOVarArg
+# ::4GenericWOVarArg[%const:,RO%]
 !possible_par_types
- -var T	|
+ -var T {%const?:const%}	|
 
 
