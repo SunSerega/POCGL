@@ -1,0 +1,8 @@
+
+
+
+# cl::GetImageRequirementsInfo+EXT
+!possible_par_types
+ *	| *	| *	| *	| -array of cl::image_format const -IntPtr const	| -array of cl::image_desc const -IntPtr const	| *	| *	| *	| *	|
+
+

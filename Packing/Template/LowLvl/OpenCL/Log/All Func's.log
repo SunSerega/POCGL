@@ -2969,44 +2969,32 @@ Result:               clErrorCode
 context:              cl_context
 properties:           array of clMemProperties const / var clMemProperties const / IntPtr const
 flags:                clMemFlags
-image_format:         array of cl_image_format const / var cl_image_format const / IntPtr const
-image_desc:           array of cl_image_desc const / var cl_image_desc const / IntPtr const
+image_format:         var cl_image_format const
+image_desc:           var cl_image_desc const
 param_name:           clImageRequirementsInfo
 param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-28
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | var T       | var UIntPtr          |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | var T       | IntPtr               |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_ROW_PITCH_ALIGNMENT    | *                | var UIntPtr | *                    |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_SLICE_PITCH_ALIGNMENT  | *                | var UIntPtr | *                    |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_BASE_ADDRESS_ALIGNMENT | *                | var UIntPtr | *                    |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_SIZE                   | *                | var UIntPtr | *                    |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_MAX_WIDTH              | *                | var UInt32  | *                    |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_MAX_HEIGHT             | *                | var UInt32  | *                    |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_MAX_DEPTH              | *                | var UInt32  | *                    |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_MAX_ARRAY_SIZE         | *                | var UInt32  | *                    |
-	clErrorCode | cl_context | array of clMemProperties const | clMemFlags | array of cl_image_format const | array of cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
-	clErrorCode | cl_context | array of clMemProperties const | clMemFlags | array of cl_image_format const | array of cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | IntPtr const                   | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | IntPtr const                   | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | IntPtr const                   | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | IntPtr const                   | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const      | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const      | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | IntPtr const                   | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | IntPtr const                   | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | IntPtr const                   | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | IntPtr const                   | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
-	----------- | ---------- | ------------------------------ | ---------- | ------------------------------ | ---------------------------- | ----------------------------------------------------------------- | ---------------- | ----------- | -------------------- |
-	            | context    | properties                     | flags      | image_format                   | image_desc                   | param_name                                                        | param_value_size | param_value | param_value_size_ret |
+16
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | var T       | var UIntPtr          |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | var T       | IntPtr               |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo.IMAGE_REQUIREMENTS_ROW_PITCH_ALIGNMENT    | *                | var UIntPtr | *                    |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo.IMAGE_REQUIREMENTS_SLICE_PITCH_ALIGNMENT  | *                | var UIntPtr | *                    |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo.IMAGE_REQUIREMENTS_BASE_ADDRESS_ALIGNMENT | *                | var UIntPtr | *                    |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo.IMAGE_REQUIREMENTS_SIZE                   | *                | var UIntPtr | *                    |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo.IMAGE_REQUIREMENTS_MAX_WIDTH              | *                | var UInt32  | *                    |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo.IMAGE_REQUIREMENTS_MAX_HEIGHT             | *                | var UInt32  | *                    |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo.IMAGE_REQUIREMENTS_MAX_DEPTH              | *                | var UInt32  | *                    |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo.IMAGE_REQUIREMENTS_MAX_ARRAY_SIZE         | *                | var UInt32  | *                    |
+	clErrorCode | cl_context | array of clMemProperties const | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | array of clMemProperties const | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
+	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const | var cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
+	----------- | ---------- | ------------------------------ | ---------- | ------------------------- | ----------------------- | ----------------------------------------------------------------- | ---------------- | ----------- | -------------------- |
+	            | context    | properties                     | flags      | image_format              | image_desc              | param_name                                                        | param_value_size | param_value | param_value_size_ret |
 
 # cl::ReleaseDevice + EXT
 !ppt

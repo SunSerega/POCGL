@@ -708,33 +708,9 @@
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
     private static function ntv_GetImageRequirementsInfoEXT_4(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_5(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_5(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_6(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
-    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_7(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
-    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_8(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
-    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_9(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
-    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_10(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
-    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_11(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
-    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_12(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
-    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_13(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
-    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_14(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
-    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_15(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
-    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_16(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
-    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_17(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
-    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_18(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_6(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT<T>(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
     begin
@@ -808,80 +784,28 @@
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: array of clMemProperties; flags: clMemFlags; image_format: array of cl_image_format; image_desc: array of cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: array of clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     type PClMemProperties = ^clMemProperties;
-    type PCl_image_format = ^cl_image_format;
-    type PCl_image_desc = ^cl_image_desc;
     begin
-      Result := if (image_desc<>nil) and (image_desc.Length<>0) then
-        if (image_format<>nil) and (image_format.Length<>0) then
-          if (properties<>nil) and (properties.Length<>0) then
-            ntv_GetImageRequirementsInfoEXT_3(context, properties[0], flags, image_format[0], image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
-            ntv_GetImageRequirementsInfoEXT_3(context, PClMemProperties(nil)^, flags, image_format[0], image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
-          if (properties<>nil) and (properties.Length<>0) then
-            ntv_GetImageRequirementsInfoEXT_3(context, properties[0], flags, PCl_image_format(nil)^, image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
-            ntv_GetImageRequirementsInfoEXT_3(context, PClMemProperties(nil)^, flags, PCl_image_format(nil)^, image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
-        if (image_format<>nil) and (image_format.Length<>0) then
-          if (properties<>nil) and (properties.Length<>0) then
-            ntv_GetImageRequirementsInfoEXT_3(context, properties[0], flags, image_format[0], PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
-            ntv_GetImageRequirementsInfoEXT_3(context, PClMemProperties(nil)^, flags, image_format[0], PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
-          if (properties<>nil) and (properties.Length<>0) then
-            ntv_GetImageRequirementsInfoEXT_3(context, properties[0], flags, PCl_image_format(nil)^, PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
-            ntv_GetImageRequirementsInfoEXT_3(context, PClMemProperties(nil)^, flags, PCl_image_format(nil)^, PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret);
+      Result := if (properties<>nil) and (properties.Length<>0) then
+        ntv_GetImageRequirementsInfoEXT_3(context, properties[0], flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret) else
+        ntv_GetImageRequirementsInfoEXT_3(context, PClMemProperties(nil)^, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: array of clMemProperties; flags: clMemFlags; image_format: array of cl_image_format; image_desc: array of cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: array of clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     type PClMemProperties = ^clMemProperties;
-    type PCl_image_format = ^cl_image_format;
-    type PCl_image_desc = ^cl_image_desc;
     begin
-      Result := if (image_desc<>nil) and (image_desc.Length<>0) then
-        if (image_format<>nil) and (image_format.Length<>0) then
-          if (properties<>nil) and (properties.Length<>0) then
-            ntv_GetImageRequirementsInfoEXT_4(context, properties[0], flags, image_format[0], image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
-            ntv_GetImageRequirementsInfoEXT_4(context, PClMemProperties(nil)^, flags, image_format[0], image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
-          if (properties<>nil) and (properties.Length<>0) then
-            ntv_GetImageRequirementsInfoEXT_4(context, properties[0], flags, PCl_image_format(nil)^, image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
-            ntv_GetImageRequirementsInfoEXT_4(context, PClMemProperties(nil)^, flags, PCl_image_format(nil)^, image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
-        if (image_format<>nil) and (image_format.Length<>0) then
-          if (properties<>nil) and (properties.Length<>0) then
-            ntv_GetImageRequirementsInfoEXT_4(context, properties[0], flags, image_format[0], PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
-            ntv_GetImageRequirementsInfoEXT_4(context, PClMemProperties(nil)^, flags, image_format[0], PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
-          if (properties<>nil) and (properties.Length<>0) then
-            ntv_GetImageRequirementsInfoEXT_4(context, properties[0], flags, PCl_image_format(nil)^, PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
-            ntv_GetImageRequirementsInfoEXT_4(context, PClMemProperties(nil)^, flags, PCl_image_format(nil)^, PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret);
+      Result := if (properties<>nil) and (properties.Length<>0) then
+        ntv_GetImageRequirementsInfoEXT_4(context, properties[0], flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret) else
+        ntv_GetImageRequirementsInfoEXT_4(context, PClMemProperties(nil)^, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_3(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_4(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_5(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_6(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_7(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_8(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_9(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_10(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_11(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+      ntv_GetImageRequirementsInfoEXT_5(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_12(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_13(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_14(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_15(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_16(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_17(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_18(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+      ntv_GetImageRequirementsInfoEXT_6(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
     
   end;
   
