@@ -707,7 +707,9 @@
 
 # cl::GetCommandQueueInfo[14]:
 	clErrorCode | cl_command_queue | clCommandQueueInfo                        | UIntPtr          | var T                          | var UIntPtr          |
+	clErrorCode | cl_command_queue | clCommandQueueInfo                        | UIntPtr          | var T                          | IntPtr               |
 	clErrorCode | cl_command_queue | clCommandQueueInfo                        | UIntPtr          | pointer                        | var UIntPtr          |
+	clErrorCode | cl_command_queue | clCommandQueueInfo                        | UIntPtr          | pointer                        | IntPtr               |
 	clErrorCode | cl_command_queue | clCommandQueueInfo.QUEUE_CONTEXT          | *                | var cl_context                 | *                    |
 	clErrorCode | cl_command_queue | clCommandQueueInfo.QUEUE_DEVICE           | *                | var cl_device_id               | *                    |
 	clErrorCode | cl_command_queue | clCommandQueueInfo.QUEUE_REFERENCE_COUNT  | *                | var UInt32                     | *                    |
@@ -718,14 +720,14 @@
 	clErrorCode | cl_command_queue | clCommandQueueInfo.QUEUE_PROPERTIES_ARRAY | UInt32           | var clQueueProperties          | *                    |
 	clErrorCode | cl_command_queue | clCommandQueueInfo.QUEUE_FAMILY           | *                | var UInt32                     | *                    |
 	clErrorCode | cl_command_queue | clCommandQueueInfo.QUEUE_INDEX            | *                | var UInt32                     | *                    |
-	clErrorCode | cl_command_queue | clCommandQueueInfo                        | UIntPtr          | IntPtr                         | var UIntPtr          |
-	clErrorCode | cl_command_queue | clCommandQueueInfo                        | UIntPtr          | IntPtr                         | IntPtr               |
 	----------- | ---------------- | ----------------------------------------- | ---------------- | ------------------------------ | -------------------- |
 	            | command_queue    | param_name                                | param_value_size | param_value                    | param_value_size_ret |
 
 # cl::GetContextInfo[12]:
 	clErrorCode | cl_context | clContextInfo                                       | UIntPtr          | var T                     | var UIntPtr          |
+	clErrorCode | cl_context | clContextInfo                                       | UIntPtr          | var T                     | IntPtr               |
 	clErrorCode | cl_context | clContextInfo                                       | UIntPtr          | pointer                   | var UIntPtr          |
+	clErrorCode | cl_context | clContextInfo                                       | UIntPtr          | pointer                   | IntPtr               |
 	clErrorCode | cl_context | clContextInfo.CONTEXT_REFERENCE_COUNT               | *                | var UInt32                | *                    |
 	clErrorCode | cl_context | clContextInfo.CONTEXT_DEVICES                       | *                | var array of cl_device_id | *                    |
 	clErrorCode | cl_context | clContextInfo.CONTEXT_DEVICES                       | UInt32           | var cl_device_id          | *                    |
@@ -734,8 +736,6 @@
 	clErrorCode | cl_context | clContextInfo.CONTEXT_D3D10_PREFER_SHARED_RESOURCES | *                | var clBool                | *                    |
 	clErrorCode | cl_context | clContextInfo.CONTEXT_D3D11_PREFER_SHARED_RESOURCES | *                | var clBool                | *                    |
 	clErrorCode | cl_context | clContextInfo.CONTEXT_VA_API_DISPLAY                | *                | var IntPtr                | *                    |
-	clErrorCode | cl_context | clContextInfo                                       | UIntPtr          | IntPtr                    | var UIntPtr          |
-	clErrorCode | cl_context | clContextInfo                                       | UIntPtr          | IntPtr                    | IntPtr               |
 	----------- | ---------- | --------------------------------------------------- | ---------------- | ------------------------- | -------------------- |
 	            | context    | param_name                                          | param_value_size | param_value               | param_value_size_ret |
 
@@ -757,7 +757,9 @@
 
 # cl::GetDeviceInfo[202]:
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | var T                                                     | var UIntPtr          |
+	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | var T                                                     | IntPtr               |
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | pointer                                                   | var UIntPtr          |
+	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | pointer                                                   | IntPtr               |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_TYPE                                                      | *                | var clDeviceType                                          | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_VENDOR_ID                                                 | *                | var clKhronosVendorId                                     | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_MAX_COMPUTE_UNITS                                         | *                | var UInt32                                                | *                    |
@@ -956,33 +958,33 @@
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_NUM_EUS_PER_SUB_SLICE                                     | *                | var UInt32                                                | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_NUM_THREADS_PER_EU                                        | *                | var UInt32                                                | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_FEATURE_CAPABILITIES                                      | *                | var clDeviceFeatureCapabilities                           | *                    |
-	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | IntPtr                                                    | var UIntPtr          |
-	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | IntPtr                                                    | IntPtr               |
 	----------- | ------------ | ----------------------------------------------------------------------------- | ---------------- | --------------------------------------------------------- | -------------------- |
 	            | device       | param_name                                                                    | param_value_size | param_value                                               | param_value_size_ret |
 
-# cl::GetEventInfo[9]:
+# cl::GetEventInfo[10]:
 	clErrorCode | cl_event | clEventInfo                                  | UIntPtr          | var T                          | var UIntPtr          |
+	clErrorCode | cl_event | clEventInfo                                  | UIntPtr          | var T                          | IntPtr               |
 	clErrorCode | cl_event | clEventInfo.EVENT_COMMAND_QUEUE              | *                | var cl_command_queue           | *                    |
 	clErrorCode | cl_event | clEventInfo.EVENT_COMMAND_TYPE               | *                | var clCommandType              | *                    |
 	clErrorCode | cl_event | clEventInfo.EVENT_REFERENCE_COUNT            | *                | var UInt32                     | *                    |
 	clErrorCode | cl_event | clEventInfo.EVENT_COMMAND_EXECUTION_STATUS   | *                | var clCommandExecutionStatus   | *                    |
 	clErrorCode | cl_event | clEventInfo.EVENT_CONTEXT                    | *                | var cl_context                 | *                    |
 	clErrorCode | cl_event | clEventInfo.EVENT_COMMAND_TERMINATION_REASON | *                | var clCommandTerminationReason | *                    |
-	clErrorCode | cl_event | clEventInfo                                  | UIntPtr          | IntPtr                         | var UIntPtr          |
-	clErrorCode | cl_event | clEventInfo                                  | UIntPtr          | IntPtr                         | IntPtr               |
+	clErrorCode | cl_event | clEventInfo                                  | UIntPtr          | pointer                        | var UIntPtr          |
+	clErrorCode | cl_event | clEventInfo                                  | UIntPtr          | pointer                        | IntPtr               |
 	----------- | -------- | -------------------------------------------- | ---------------- | ------------------------------ | -------------------- |
 	            | event    | param_name                                   | param_value_size | param_value                    | param_value_size_ret |
 
-# cl::GetEventProfilingInfo[8]:
+# cl::GetEventProfilingInfo[9]:
 	clErrorCode | cl_event | clProfilingInfo                            | UIntPtr          | var T       | var UIntPtr          |
+	clErrorCode | cl_event | clProfilingInfo                            | UIntPtr          | var T       | IntPtr               |
 	clErrorCode | cl_event | clProfilingInfo.PROFILING_COMMAND_QUEUED   | *                | var UInt64  | *                    |
 	clErrorCode | cl_event | clProfilingInfo.PROFILING_COMMAND_SUBMIT   | *                | var UInt64  | *                    |
 	clErrorCode | cl_event | clProfilingInfo.PROFILING_COMMAND_START    | *                | var UInt64  | *                    |
 	clErrorCode | cl_event | clProfilingInfo.PROFILING_COMMAND_END      | *                | var UInt64  | *                    |
 	clErrorCode | cl_event | clProfilingInfo.PROFILING_COMMAND_COMPLETE | *                | var UInt64  | *                    |
-	clErrorCode | cl_event | clProfilingInfo                            | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_event | clProfilingInfo                            | UIntPtr          | IntPtr      | IntPtr               |
+	clErrorCode | cl_event | clProfilingInfo                            | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_event | clProfilingInfo                            | UIntPtr          | pointer     | IntPtr               |
 	----------- | -------- | ------------------------------------------ | ---------------- | ----------- | -------------------- |
 	            | event    | param_name                                 | param_value_size | param_value | param_value_size_ret |
 
@@ -1004,8 +1006,9 @@
 	----------- | ------------ | -------------- |
 	            | device       | host_timestamp |
 
-# cl::GetImageInfo[20]:
+# cl::GetImageInfo[21]:
 	clErrorCode | cl_mem | clImageInfo                         | UIntPtr          | var T               | var UIntPtr          |
+	clErrorCode | cl_mem | clImageInfo                         | UIntPtr          | var T               | IntPtr               |
 	clErrorCode | cl_mem | clImageInfo.IMAGE_FORMAT            | *                | var cl_image_format | *                    |
 	clErrorCode | cl_mem | clImageInfo.IMAGE_ELEMENT_SIZE      | *                | var UIntPtr         | *                    |
 	clErrorCode | cl_mem | clImageInfo.IMAGE_ROW_PITCH         | *                | var UIntPtr         | *                    |
@@ -1023,27 +1026,29 @@
 	clErrorCode | cl_mem | clImageInfo.IMAGE_DX9_PLANE         | *                | var UInt32          | *                    |
 	clErrorCode | cl_mem | clImageInfo.IMAGE_VA_API_PLANE      | *                | var UInt32          | *                    |
 	clErrorCode | cl_mem | clImageInfo.EGL_YUV_PLANE           | *                | var Int32           | *                    |
-	clErrorCode | cl_mem | clImageInfo                         | UIntPtr          | IntPtr              | var UIntPtr          |
-	clErrorCode | cl_mem | clImageInfo                         | UIntPtr          | IntPtr              | IntPtr               |
+	clErrorCode | cl_mem | clImageInfo                         | UIntPtr          | pointer             | var UIntPtr          |
+	clErrorCode | cl_mem | clImageInfo                         | UIntPtr          | pointer             | IntPtr               |
 	----------- | ------ | ----------------------------------- | ---------------- | ------------------- | -------------------- |
 	            | image  | param_name                          | param_value_size | param_value         | param_value_size_ret |
 
 # cl::GetKernelArgInfo[9]:
 	clErrorCode | cl_kernel | UInt32    | clKernelArgInfo                              | UIntPtr          | var T                           | var UIntPtr          |
+	clErrorCode | cl_kernel | UInt32    | clKernelArgInfo                              | UIntPtr          | var T                           | IntPtr               |
 	clErrorCode | cl_kernel | UInt32    | clKernelArgInfo                              | UIntPtr          | pointer                         | var UIntPtr          |
+	clErrorCode | cl_kernel | UInt32    | clKernelArgInfo                              | UIntPtr          | pointer                         | IntPtr               |
 	clErrorCode | cl_kernel | UInt32    | clKernelArgInfo.KERNEL_ARG_ADDRESS_QUALIFIER | *                | var clKernelArgAddressQualifier | *                    |
 	clErrorCode | cl_kernel | UInt32    | clKernelArgInfo.KERNEL_ARG_ACCESS_QUALIFIER  | *                | var clKernelArgAccessQualifier  | *                    |
 	clErrorCode | cl_kernel | UInt32    | clKernelArgInfo.KERNEL_ARG_TYPE_NAME         | *                | var string                      | *                    |
 	clErrorCode | cl_kernel | UInt32    | clKernelArgInfo.KERNEL_ARG_TYPE_QUALIFIER    | *                | var clKernelArgTypeQualifier    | *                    |
 	clErrorCode | cl_kernel | UInt32    | clKernelArgInfo.KERNEL_ARG_NAME              | *                | var string                      | *                    |
-	clErrorCode | cl_kernel | UInt32    | clKernelArgInfo                              | UIntPtr          | IntPtr                          | var UIntPtr          |
-	clErrorCode | cl_kernel | UInt32    | clKernelArgInfo                              | UIntPtr          | IntPtr                          | IntPtr               |
 	----------- | --------- | --------- | -------------------------------------------- | ---------------- | ------------------------------- | -------------------- |
 	            | kernel    | arg_index | param_name                                   | param_value_size | param_value                     | param_value_size_ret |
 
 # cl::GetKernelInfo[11]:
 	clErrorCode | cl_kernel | clKernelInfo                        | UIntPtr          | var T          | var UIntPtr          |
+	clErrorCode | cl_kernel | clKernelInfo                        | UIntPtr          | var T          | IntPtr               |
 	clErrorCode | cl_kernel | clKernelInfo                        | UIntPtr          | pointer        | var UIntPtr          |
+	clErrorCode | cl_kernel | clKernelInfo                        | UIntPtr          | pointer        | IntPtr               |
 	clErrorCode | cl_kernel | clKernelInfo.KERNEL_FUNCTION_NAME   | *                | var string     | *                    |
 	clErrorCode | cl_kernel | clKernelInfo.KERNEL_NUM_ARGS        | *                | var UInt32     | *                    |
 	clErrorCode | cl_kernel | clKernelInfo.KERNEL_REFERENCE_COUNT | *                | var UInt32     | *                    |
@@ -1051,14 +1056,18 @@
 	clErrorCode | cl_kernel | clKernelInfo.KERNEL_PROGRAM         | *                | var cl_program | *                    |
 	clErrorCode | cl_kernel | clKernelInfo.KERNEL_ATTRIBUTES      | *                | var string     | *                    |
 	clErrorCode | cl_kernel | clKernelInfo.KERNEL_MAX_WARP_COUNT  | *                | var UInt32     | *                    |
-	clErrorCode | cl_kernel | clKernelInfo                        | UIntPtr          | IntPtr         | var UIntPtr          |
-	clErrorCode | cl_kernel | clKernelInfo                        | UIntPtr          | IntPtr         | IntPtr               |
 	----------- | --------- | ----------------------------------- | ---------------- | -------------- | -------------------- |
 	            | kernel    | param_name                          | param_value_size | param_value    | param_value_size_ret |
 
-# cl::GetKernelSubGroupInfo[13]:
+# cl::GetKernelSubGroupInfo[17]:
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | var TInp const         | UIntPtr          | var T                | var UIntPtr          |
+	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | var TInp const         | UIntPtr          | var T                | IntPtr               |
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | var TInp const         | UIntPtr          | pointer              | var UIntPtr          |
+	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | var TInp const         | UIntPtr          | pointer              | IntPtr               |
+	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | pointer const          | UIntPtr          | var T                | var UIntPtr          |
+	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | pointer const          | UIntPtr          | var T                | IntPtr               |
+	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | pointer const          | UIntPtr          | pointer              | var UIntPtr          |
+	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | pointer const          | UIntPtr          | pointer              | IntPtr               |
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo.KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT | *                | UIntPtr const          | *                | var array of UIntPtr | *                    |
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo.KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT | *                | UIntPtr const          | UInt32           | var UIntPtr          | *                    |
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo.KERNEL_MAX_NUM_SUB_GROUPS             | *                | *                      | *                | var UIntPtr          | *                    |
@@ -1068,13 +1077,12 @@
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo.KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE    | *                | array of UIntPtr const | *                | var UIntPtr          | *                    |
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo.KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE    | UInt32           | var UIntPtr const      | *                | var UIntPtr          | *                    |
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo.KERNEL_COMPILE_SUB_GROUP_SIZE         | *                | *                      | *                | var UIntPtr          | *                    |
-	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | IntPtr const           | UIntPtr          | IntPtr               | var UIntPtr          |
-	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | IntPtr const           | UIntPtr          | IntPtr               | IntPtr               |
 	----------- | --------- | ------------ | ---------------------------------------------------------- | ---------------- | ---------------------- | ---------------- | -------------------- | -------------------- |
 	            | kernel    | device       | param_name                                                 | input_value_size | input_value            | param_value_size | param_value          | param_value_size_ret |
 
-# cl::GetKernelWorkGroupInfo[12]:
+# cl::GetKernelWorkGroupInfo[13]:
 	clErrorCode | cl_kernel | cl_device_id | clKernelWorkGroupInfo                                           | UIntPtr          | var T                   | var UIntPtr          |
+	clErrorCode | cl_kernel | cl_device_id | clKernelWorkGroupInfo                                           | UIntPtr          | var T                   | IntPtr               |
 	clErrorCode | cl_kernel | cl_device_id | clKernelWorkGroupInfo.KERNEL_WORK_GROUP_SIZE                    | *                | var UIntPtr             | *                    |
 	clErrorCode | cl_kernel | cl_device_id | clKernelWorkGroupInfo.KERNEL_COMPILE_WORK_GROUP_SIZE            | *                | var array[3] of UIntPtr | *                    |
 	clErrorCode | cl_kernel | cl_device_id | clKernelWorkGroupInfo.KERNEL_COMPILE_WORK_GROUP_SIZE            | UInt32           | var UIntPtr[3]          | *                    |
@@ -1084,14 +1092,16 @@
 	clErrorCode | cl_kernel | cl_device_id | clKernelWorkGroupInfo.KERNEL_GLOBAL_WORK_SIZE                   | *                | var array[3] of UIntPtr | *                    |
 	clErrorCode | cl_kernel | cl_device_id | clKernelWorkGroupInfo.KERNEL_GLOBAL_WORK_SIZE                   | UInt32           | var UIntPtr[3]          | *                    |
 	clErrorCode | cl_kernel | cl_device_id | clKernelWorkGroupInfo.KERNEL_SPILL_MEM_SIZE                     | *                | var UInt64              | *                    |
-	clErrorCode | cl_kernel | cl_device_id | clKernelWorkGroupInfo                                           | UIntPtr          | IntPtr                  | var UIntPtr          |
-	clErrorCode | cl_kernel | cl_device_id | clKernelWorkGroupInfo                                           | UIntPtr          | IntPtr                  | IntPtr               |
+	clErrorCode | cl_kernel | cl_device_id | clKernelWorkGroupInfo                                           | UIntPtr          | pointer                 | var UIntPtr          |
+	clErrorCode | cl_kernel | cl_device_id | clKernelWorkGroupInfo                                           | UIntPtr          | pointer                 | IntPtr               |
 	----------- | --------- | ------------ | --------------------------------------------------------------- | ---------------- | ----------------------- | -------------------- |
 	            | kernel    | device       | param_name                                                      | param_value_size | param_value             | param_value_size_ret |
 
 # cl::GetMemObjectInfo[29]:
 	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | var T                         | var UIntPtr          |
+	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | var T                         | IntPtr               |
 	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | pointer                       | var UIntPtr          |
+	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | pointer                       | IntPtr               |
 	clErrorCode | cl_mem | clMemInfo.MEM_TYPE                   | *                | var clMemObjectType           | *                    |
 	clErrorCode | cl_mem | clMemInfo.MEM_FLAGS                  | *                | var clMemFlags                | *                    |
 	clErrorCode | cl_mem | clMemInfo.MEM_SIZE                   | *                | var UIntPtr                   | *                    |
@@ -1117,18 +1127,17 @@
 	clErrorCode | cl_mem | clMemInfo.MEM_ALLOC_BASE_PTR         | *                | var IntPtr                    | *                    |
 	clErrorCode | cl_mem | clMemInfo.MEM_ALLOC_SIZE             | *                | var UIntPtr                   | *                    |
 	clErrorCode | cl_mem | clMemInfo.MEM_ALLOC_DEVICE           | *                | var cl_device_id              | *                    |
-	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | IntPtr                        | var UIntPtr          |
-	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | IntPtr                        | IntPtr               |
 	----------- | ------ | ------------------------------------ | ---------------- | ----------------------------- | -------------------- |
 	            | memobj | param_name                           | param_value_size | param_value                   | param_value_size_ret |
 
-# cl::GetPipeInfo[6]:
+# cl::GetPipeInfo[7]:
 	clErrorCode | cl_mem | clPipeInfo                  | UIntPtr          | var T       | var UIntPtr          |
+	clErrorCode | cl_mem | clPipeInfo                  | UIntPtr          | var T       | IntPtr               |
 	clErrorCode | cl_mem | clPipeInfo.PIPE_PACKET_SIZE | *                | var UInt32  | *                    |
 	clErrorCode | cl_mem | clPipeInfo.PIPE_MAX_PACKETS | *                | var UInt32  | *                    |
 	clErrorCode | cl_mem | clPipeInfo.PIPE_PROPERTIES  | *                | var IntPtr  | *                    |
-	clErrorCode | cl_mem | clPipeInfo                  | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_mem | clPipeInfo                  | UIntPtr          | IntPtr      | IntPtr               |
+	clErrorCode | cl_mem | clPipeInfo                  | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_mem | clPipeInfo                  | UIntPtr          | pointer     | IntPtr               |
 	----------- | ------ | --------------------------- | ---------------- | ----------- | -------------------- |
 	            | pipe   | param_name                  | param_value_size | param_value | param_value_size_ret |
 
@@ -1142,7 +1151,9 @@
 
 # cl::GetPlatformInfo[23]:
 	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | var T                                      | var UIntPtr          |
+	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | var T                                      | IntPtr               |
 	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | pointer                                    | var UIntPtr          |
+	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | pointer                                    | IntPtr               |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_PROFILE                             | *                | var string                                 | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_VERSION                             | *                | var string                                 | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_NAME                                | *                | var string                                 | *                    |
@@ -1162,27 +1173,27 @@
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_SEMAPHORE_EXPORT_HANDLE_TYPES       | UInt32           | var clExternalSemaphoreHandleType          | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES | *                | var array of clExternalMemoryHandleType    | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES | UInt32           | var clExternalMemoryHandleType             | *                    |
-	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | IntPtr                                     | var UIntPtr          |
-	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | IntPtr                                     | IntPtr               |
 	----------- | -------------- | ----------------------------------------------------------- | ---------------- | ------------------------------------------ | -------------------- |
 	            | platform       | param_name                                                  | param_value_size | param_value                                | param_value_size_ret |
 
 # cl::GetProgramBuildInfo[9]:
 	clErrorCode | cl_program | cl_device_id | clProgramBuildInfo                                          | UIntPtr          | var T                   | var UIntPtr          |
+	clErrorCode | cl_program | cl_device_id | clProgramBuildInfo                                          | UIntPtr          | var T                   | IntPtr               |
 	clErrorCode | cl_program | cl_device_id | clProgramBuildInfo                                          | UIntPtr          | pointer                 | var UIntPtr          |
+	clErrorCode | cl_program | cl_device_id | clProgramBuildInfo                                          | UIntPtr          | pointer                 | IntPtr               |
 	clErrorCode | cl_program | cl_device_id | clProgramBuildInfo.PROGRAM_BUILD_STATUS                     | *                | var clBuildStatus       | *                    |
 	clErrorCode | cl_program | cl_device_id | clProgramBuildInfo.PROGRAM_BUILD_OPTIONS                    | *                | var string              | *                    |
 	clErrorCode | cl_program | cl_device_id | clProgramBuildInfo.PROGRAM_BUILD_LOG                        | *                | var string              | *                    |
 	clErrorCode | cl_program | cl_device_id | clProgramBuildInfo.PROGRAM_BINARY_TYPE                      | *                | var clProgramBinaryType | *                    |
 	clErrorCode | cl_program | cl_device_id | clProgramBuildInfo.PROGRAM_BUILD_GLOBAL_VARIABLE_TOTAL_SIZE | *                | var UIntPtr             | *                    |
-	clErrorCode | cl_program | cl_device_id | clProgramBuildInfo                                          | UIntPtr          | IntPtr                  | var UIntPtr          |
-	clErrorCode | cl_program | cl_device_id | clProgramBuildInfo                                          | UIntPtr          | IntPtr                  | IntPtr               |
 	----------- | ---------- | ------------ | ----------------------------------------------------------- | ---------------- | ----------------------- | -------------------- |
 	            | program    | device       | param_name                                                  | param_value_size | param_value             | param_value_size_ret |
 
 # cl::GetProgramInfo[21]:
 	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | var T                      | var UIntPtr          |
+	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | var T                      | IntPtr               |
 	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | pointer                    | var UIntPtr          |
+	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | pointer                    | IntPtr               |
 	clErrorCode | cl_program | clProgramInfo.PROGRAM_REFERENCE_COUNT            | *                | var UInt32                 | *                    |
 	clErrorCode | cl_program | clProgramInfo.PROGRAM_CONTEXT                    | *                | var cl_context             | *                    |
 	clErrorCode | cl_program | clProgramInfo.PROGRAM_NUM_DEVICES                | *                | var UInt32                 | *                    |
@@ -1200,14 +1211,14 @@
 	clErrorCode | cl_program | clProgramInfo.PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT | *                | var clBool                 | *                    |
 	clErrorCode | cl_program | clProgramInfo.PROGRAM_NUM_HOST_PIPES             | *                | var UIntPtr                | *                    |
 	clErrorCode | cl_program | clProgramInfo.PROGRAM_HOST_PIPE_NAMES            | *                | var string                 | *                    |
-	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | IntPtr                     | var UIntPtr          |
-	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | IntPtr                     | IntPtr               |
 	----------- | ---------- | ------------------------------------------------ | ---------------- | -------------------------- | -------------------- |
 	            | program    | param_name                                       | param_value_size | param_value                | param_value_size_ret |
 
 # cl::GetSamplerInfo[14]:
 	clErrorCode | cl_sampler | clSamplerInfo                           | UIntPtr          | var T                            | var UIntPtr          |
+	clErrorCode | cl_sampler | clSamplerInfo                           | UIntPtr          | var T                            | IntPtr               |
 	clErrorCode | cl_sampler | clSamplerInfo                           | UIntPtr          | pointer                          | var UIntPtr          |
+	clErrorCode | cl_sampler | clSamplerInfo                           | UIntPtr          | pointer                          | IntPtr               |
 	clErrorCode | cl_sampler | clSamplerInfo.SAMPLER_REFERENCE_COUNT   | *                | var UInt32                       | *                    |
 	clErrorCode | cl_sampler | clSamplerInfo.SAMPLER_CONTEXT           | *                | var cl_context                   | *                    |
 	clErrorCode | cl_sampler | clSamplerInfo.SAMPLER_NORMALIZED_COORDS | *                | var clBool                       | *                    |
@@ -1218,8 +1229,6 @@
 	clErrorCode | cl_sampler | clSamplerInfo.SAMPLER_LOD_MAX           | *                | var single                       | *                    |
 	clErrorCode | cl_sampler | clSamplerInfo.SAMPLER_PROPERTIES        | *                | var array of clSamplerProperties | *                    |
 	clErrorCode | cl_sampler | clSamplerInfo.SAMPLER_PROPERTIES        | UInt32           | var clSamplerProperties          | *                    |
-	clErrorCode | cl_sampler | clSamplerInfo                           | UIntPtr          | IntPtr                           | var UIntPtr          |
-	clErrorCode | cl_sampler | clSamplerInfo                           | UIntPtr          | IntPtr                           | IntPtr               |
 	----------- | ---------- | --------------------------------------- | ---------------- | -------------------------------- | -------------------- |
 	            | sampler    | param_name                              | param_value_size | param_value                      | param_value_size_ret |
 
@@ -1372,7 +1381,7 @@
 	clErrorCode | cl_kernel | clKernelExecInfo.KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS          | *                | clBool const          |
 	clErrorCode | cl_kernel | clKernelExecInfo.KERNEL_EXEC_INFO_USM_PTRS                        | *                | array of IntPtr const |
 	clErrorCode | cl_kernel | clKernelExecInfo.KERNEL_EXEC_INFO_USM_PTRS                        | UInt32           | var IntPtr const      |
-	clErrorCode | cl_kernel | clKernelExecInfo                                                  | UIntPtr          | IntPtr const          |
+	clErrorCode | cl_kernel | clKernelExecInfo                                                  | UIntPtr          | pointer const         |
 	----------- | --------- | ----------------------------------------------------------------- | ---------------- | --------------------- |
 	            | kernel    | param_name                                                        | param_value_size | param_value           |
 
@@ -1425,23 +1434,23 @@
 
 # cl::GetICDLoaderInfo + OCLICD[8]:
 	clErrorCode | clIcdlInfo                  | UIntPtr          | var T       | var UIntPtr          |
+	clErrorCode | clIcdlInfo                  | UIntPtr          | var T       | IntPtr               |
 	clErrorCode | clIcdlInfo                  | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | clIcdlInfo                  | UIntPtr          | pointer     | IntPtr               |
 	clErrorCode | clIcdlInfo.ICDL_OCL_VERSION | *                | var string  | *                    |
 	clErrorCode | clIcdlInfo.ICDL_VERSION     | *                | var string  | *                    |
 	clErrorCode | clIcdlInfo.ICDL_NAME        | *                | var string  | *                    |
 	clErrorCode | clIcdlInfo.ICDL_VENDOR      | *                | var string  | *                    |
-	clErrorCode | clIcdlInfo                  | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | clIcdlInfo                  | UIntPtr          | IntPtr      | IntPtr               |
 	----------- | --------------------------- | ---------------- | ----------- | -------------------- |
 	            | param_name                  | param_value_size | param_value | param_value_size_ret |
 
 # cl::GetLayerInfo[6]:
 	clErrorCode | clLayerInfo                   | UIntPtr          | var T       | var UIntPtr          |
+	clErrorCode | clLayerInfo                   | UIntPtr          | var T       | IntPtr               |
 	clErrorCode | clLayerInfo                   | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | clLayerInfo                   | UIntPtr          | pointer     | IntPtr               |
 	clErrorCode | clLayerInfo.LAYER_API_VERSION | *                | var UInt32  | *                    |
 	clErrorCode | clLayerInfo.LAYER_NAME        | *                | var string  | *                    |
-	clErrorCode | clLayerInfo                   | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | clLayerInfo                   | UIntPtr          | IntPtr      | IntPtr               |
 	----------- | ----------------------------- | ---------------- | ----------- | -------------------- |
 	            | param_name                    | param_value_size | param_value | param_value_size_ret |
 
@@ -1577,7 +1586,7 @@
 	clErrorCode | cl_kernel | clKernelExecInfoARM.KERNEL_EXEC_INFO_SVM_PTRS_ARM              | *                | array of IntPtr const |
 	clErrorCode | cl_kernel | clKernelExecInfoARM.KERNEL_EXEC_INFO_SVM_PTRS_ARM              | UInt32           | var IntPtr const      |
 	clErrorCode | cl_kernel | clKernelExecInfoARM.KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM_ARM | *                | clBool const          |
-	clErrorCode | cl_kernel | clKernelExecInfoARM                                            | UIntPtr          | IntPtr const          |
+	clErrorCode | cl_kernel | clKernelExecInfoARM                                            | UIntPtr          | pointer const         |
 	----------- | --------- | -------------------------------------------------------------- | ---------------- | --------------------- |
 	            | kernel    | param_name                                                     | param_value_size | param_value           |
 
@@ -1605,8 +1614,9 @@
 	----------- | ------------ | ------------------------------------------- | ----------- | ---------------- | --------------- |
 	            | in_device    | properties                                  | num_entries | out_devices      | num_devices     |
 
-# cl::GetImageRequirementsInfo + EXT[27]:
+# cl::GetImageRequirementsInfo + EXT[28]:
 	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | var T       | var UIntPtr          |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | var T       | IntPtr               |
 	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_ROW_PITCH_ALIGNMENT    | *                | var UIntPtr | *                    |
 	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_SLICE_PITCH_ALIGNMENT  | *                | var UIntPtr | *                    |
 	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_BASE_ADDRESS_ALIGNMENT | *                | var UIntPtr | *                    |
@@ -1615,24 +1625,24 @@
 	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_MAX_HEIGHT             | *                | var UInt32  | *                    |
 	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_MAX_DEPTH              | *                | var UInt32  | *                    |
 	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo.IMAGE_REQUIREMENTS_MAX_ARRAY_SIZE         | *                | var UInt32  | *                    |
-	clErrorCode | cl_context | array of clMemProperties const | clMemFlags | array of cl_image_format const | array of cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_context | array of clMemProperties const | clMemFlags | array of cl_image_format const | array of cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | IntPtr               |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | IntPtr               |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | IntPtr               |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | IntPtr const                   | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | IntPtr const                   | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | IntPtr               |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | IntPtr const                   | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | IntPtr const                   | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | IntPtr               |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | IntPtr               |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const      | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const      | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | IntPtr               |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | IntPtr const                   | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | IntPtr const                   | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | IntPtr               |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | IntPtr const                   | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_context | IntPtr const                   | clMemFlags | IntPtr const                   | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | IntPtr      | IntPtr               |
+	clErrorCode | cl_context | array of clMemProperties const | clMemFlags | array of cl_image_format const | array of cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | array of clMemProperties const | clMemFlags | array of cl_image_format const | array of cl_image_desc const | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | var cl_image_format const      | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | IntPtr const                   | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | IntPtr const                   | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | IntPtr const                   | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | var clMemProperties const      | clMemFlags | IntPtr const                   | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
+	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const      | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
+	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const      | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | IntPtr const                   | clMemFlags | var cl_image_format const      | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
+	clErrorCode | cl_context | IntPtr const                   | clMemFlags | IntPtr const                   | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | IntPtr const                   | clMemFlags | IntPtr const                   | var cl_image_desc const      | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
+	clErrorCode | cl_context | IntPtr const                   | clMemFlags | IntPtr const                   | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | IntPtr const                   | clMemFlags | IntPtr const                   | IntPtr const                 | clImageRequirementsInfo                                           | UIntPtr          | pointer     | IntPtr               |
 	----------- | ---------- | ------------------------------ | ---------- | ------------------------------ | ---------------------------- | ----------------------------------------------------------------- | ---------------- | ----------- | -------------------- |
 	            | context    | properties                     | flags      | image_format                   | image_desc                   | param_name                                                        | param_value_size | param_value | param_value_size_ret |
 
@@ -1742,13 +1752,14 @@
 	-------------- | ---------- | ----------------- | --------------- | ----------------------------- | --------------- |
 	               | context    | accelerator_type  | descriptor_size | descriptor                    | errcode_ret     |
 
-# cl::GetAcceleratorInfo + INTEL[6]:
+# cl::GetAcceleratorInfo + INTEL[7]:
 	clErrorCode | cl_accelerator | clAcceleratorInfo                             | UIntPtr          | var T          | var UIntPtr          |
+	clErrorCode | cl_accelerator | clAcceleratorInfo                             | UIntPtr          | var T          | IntPtr               |
 	clErrorCode | cl_accelerator | clAcceleratorInfo.ACCELERATOR_REFERENCE_COUNT | *                | var UInt32     | *                    |
 	clErrorCode | cl_accelerator | clAcceleratorInfo.ACCELERATOR_CONTEXT         | *                | var cl_context | *                    |
 	clErrorCode | cl_accelerator | clAcceleratorInfo.ACCELERATOR_TYPE            | *                | var UInt32     | *                    |
-	clErrorCode | cl_accelerator | clAcceleratorInfo                             | UIntPtr          | IntPtr         | var UIntPtr          |
-	clErrorCode | cl_accelerator | clAcceleratorInfo                             | UIntPtr          | IntPtr         | IntPtr               |
+	clErrorCode | cl_accelerator | clAcceleratorInfo                             | UIntPtr          | pointer        | var UIntPtr          |
+	clErrorCode | cl_accelerator | clAcceleratorInfo                             | UIntPtr          | pointer        | IntPtr               |
 	----------- | -------------- | --------------------------------------------- | ---------------- | -------------- | -------------------- |
 	            | accelerator    | param_name                                    | param_value_size | param_value    | param_value_size_ret |
 
@@ -1929,11 +1940,12 @@
 	----------- | ---------- | ------ |
 	            | context    | ptr    |
 
-# cl::GetMemAllocInfo + INTEL[4]:
+# cl::GetMemAllocInfo + INTEL[5]:
 	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | var T       | var UIntPtr          |
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | var T       | IntPtr               |
 	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL.MEM_ALLOC_BUFFER_LOCATION | *                | var UInt32  | *                    |
-	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | IntPtr      | IntPtr               |
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | pointer     | IntPtr               |
 	----------- | ---------- | ------------ | ---------------------------------------- | ---------------- | ----------- | -------------------- |
 	            | context    | ptr          | param_name                               | param_value_size | param_value | param_value_size_ret |
 
@@ -2208,7 +2220,9 @@
 
 # cl::GetCommandBufferInfo + KHR[12]:
 	clErrorCode | cl_command_buffer | clCommandBufferInfo                                 | UIntPtr          | var T                                  | var UIntPtr          |
+	clErrorCode | cl_command_buffer | clCommandBufferInfo                                 | UIntPtr          | var T                                  | IntPtr               |
 	clErrorCode | cl_command_buffer | clCommandBufferInfo                                 | UIntPtr          | pointer                                | var UIntPtr          |
+	clErrorCode | cl_command_buffer | clCommandBufferInfo                                 | UIntPtr          | pointer                                | IntPtr               |
 	clErrorCode | cl_command_buffer | clCommandBufferInfo.COMMAND_BUFFER_QUEUES           | *                | var array of cl_command_queue          | *                    |
 	clErrorCode | cl_command_buffer | clCommandBufferInfo.COMMAND_BUFFER_QUEUES           | UInt32           | var cl_command_queue                   | *                    |
 	clErrorCode | cl_command_buffer | clCommandBufferInfo.COMMAND_BUFFER_NUM_QUEUES       | *                | var UInt32                             | *                    |
@@ -2217,8 +2231,6 @@
 	clErrorCode | cl_command_buffer | clCommandBufferInfo.COMMAND_BUFFER_PROPERTIES_ARRAY | *                | var array of clCommandBufferProperties | *                    |
 	clErrorCode | cl_command_buffer | clCommandBufferInfo.COMMAND_BUFFER_PROPERTIES_ARRAY | UInt32           | var clCommandBufferProperties          | *                    |
 	clErrorCode | cl_command_buffer | clCommandBufferInfo.COMMAND_BUFFER_CONTEXT          | *                | var cl_context                         | *                    |
-	clErrorCode | cl_command_buffer | clCommandBufferInfo                                 | UIntPtr          | IntPtr                                 | var UIntPtr          |
-	clErrorCode | cl_command_buffer | clCommandBufferInfo                                 | UIntPtr          | IntPtr                                 | IntPtr               |
 	----------- | ----------------- | --------------------------------------------------- | ---------------- | -------------------------------------- | -------------------- |
 	            | command_buffer    | param_name                                          | param_value_size | param_value                            | param_value_size_ret |
 
@@ -2245,7 +2257,9 @@
 
 # cl::GetMutableCommandInfo + KHR[17]:
 	clErrorCode | cl_mutable_command | clMutableCommandInfo                                     | UIntPtr          | var T                                         | var UIntPtr          |
+	clErrorCode | cl_mutable_command | clMutableCommandInfo                                     | UIntPtr          | var T                                         | IntPtr               |
 	clErrorCode | cl_mutable_command | clMutableCommandInfo                                     | UIntPtr          | pointer                                       | var UIntPtr          |
+	clErrorCode | cl_mutable_command | clMutableCommandInfo                                     | UIntPtr          | pointer                                       | IntPtr               |
 	clErrorCode | cl_mutable_command | clMutableCommandInfo.MUTABLE_COMMAND_COMMAND_QUEUE       | *                | var cl_command_queue                          | *                    |
 	clErrorCode | cl_mutable_command | clMutableCommandInfo.MUTABLE_COMMAND_COMMAND_BUFFER      | *                | var cl_command_buffer                         | *                    |
 	clErrorCode | cl_mutable_command | clMutableCommandInfo.MUTABLE_DISPATCH_PROPERTIES_ARRAY   | *                | var array of clNDRangeKernelCommandProperties | *                    |
@@ -2259,8 +2273,6 @@
 	clErrorCode | cl_mutable_command | clMutableCommandInfo.MUTABLE_DISPATCH_LOCAL_WORK_SIZE    | *                | var array of UIntPtr                          | *                    |
 	clErrorCode | cl_mutable_command | clMutableCommandInfo.MUTABLE_DISPATCH_LOCAL_WORK_SIZE    | UInt32           | var UIntPtr                                   | *                    |
 	clErrorCode | cl_mutable_command | clMutableCommandInfo.MUTABLE_COMMAND_COMMAND_TYPE        | *                | var clCommandType                             | *                    |
-	clErrorCode | cl_mutable_command | clMutableCommandInfo                                     | UIntPtr          | IntPtr                                        | var UIntPtr          |
-	clErrorCode | cl_mutable_command | clMutableCommandInfo                                     | UIntPtr          | IntPtr                                        | IntPtr               |
 	----------- | ------------------ | -------------------------------------------------------- | ---------------- | --------------------------------------------- | -------------------- |
 	            | command            | param_name                                               | param_value_size | param_value                                   | param_value_size_ret |
 
@@ -2574,16 +2586,16 @@
 
 # cl::GetGLContextInfo + KHR[11]:
 	clErrorCode | var clContextProperties const      | clGlContextInfo                               | UIntPtr          | var T                     | var UIntPtr          |
+	clErrorCode | var clContextProperties const      | clGlContextInfo                               | UIntPtr          | var T                     | IntPtr               |
 	clErrorCode | var clContextProperties const      | clGlContextInfo                               | UIntPtr          | pointer                   | var UIntPtr          |
+	clErrorCode | var clContextProperties const      | clGlContextInfo                               | UIntPtr          | pointer                   | IntPtr               |
 	clErrorCode | var clContextProperties const      | clGlContextInfo.CURRENT_DEVICE_FOR_GL_CONTEXT | *                | var cl_device_id          | *                    |
 	clErrorCode | var clContextProperties const      | clGlContextInfo.DEVICES_FOR_GL_CONTEXT        | *                | var array of cl_device_id | *                    |
 	clErrorCode | var clContextProperties const      | clGlContextInfo.DEVICES_FOR_GL_CONTEXT        | UInt32           | var cl_device_id          | *                    |
-	clErrorCode | array of clContextProperties const | clGlContextInfo                               | UIntPtr          | IntPtr                    | var UIntPtr          |
-	clErrorCode | array of clContextProperties const | clGlContextInfo                               | UIntPtr          | IntPtr                    | IntPtr               |
-	clErrorCode | var clContextProperties const      | clGlContextInfo                               | UIntPtr          | IntPtr                    | var UIntPtr          |
-	clErrorCode | var clContextProperties const      | clGlContextInfo                               | UIntPtr          | IntPtr                    | IntPtr               |
-	clErrorCode | IntPtr const                       | clGlContextInfo                               | UIntPtr          | IntPtr                    | var UIntPtr          |
-	clErrorCode | IntPtr const                       | clGlContextInfo                               | UIntPtr          | IntPtr                    | IntPtr               |
+	clErrorCode | array of clContextProperties const | clGlContextInfo                               | UIntPtr          | pointer                   | var UIntPtr          |
+	clErrorCode | array of clContextProperties const | clGlContextInfo                               | UIntPtr          | pointer                   | IntPtr               |
+	clErrorCode | IntPtr const                       | clGlContextInfo                               | UIntPtr          | pointer                   | var UIntPtr          |
+	clErrorCode | IntPtr const                       | clGlContextInfo                               | UIntPtr          | pointer                   | IntPtr               |
 	----------- | ---------------------------------- | --------------------------------------------- | ---------------- | ------------------------- | -------------------- |
 	            | properties                         | param_name                                    | param_value_size | param_value               | param_value_size_ret |
 
@@ -2610,13 +2622,14 @@
 	----------- | ------ | ------------------ | -------------- |
 	            | memobj | gl_object_type     | gl_object_name |
 
-# cl::GetGLTextureInfo[6]:
+# cl::GetGLTextureInfo[7]:
 	clErrorCode | cl_mem | clGlTextureInfo                   | UIntPtr          | var T       | var UIntPtr          |
+	clErrorCode | cl_mem | clGlTextureInfo                   | UIntPtr          | var T       | IntPtr               |
 	clErrorCode | cl_mem | clGlTextureInfo.GL_TEXTURE_TARGET | *                | var UInt32  | *                    |
 	clErrorCode | cl_mem | clGlTextureInfo.GL_MIPMAP_LEVEL   | *                | var Int32   | *                    |
 	clErrorCode | cl_mem | clGlTextureInfo.GL_NUM_SAMPLES    | *                | var UIntPtr | *                    |
-	clErrorCode | cl_mem | clGlTextureInfo                   | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_mem | clGlTextureInfo                   | UIntPtr          | IntPtr      | IntPtr               |
+	clErrorCode | cl_mem | clGlTextureInfo                   | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_mem | clGlTextureInfo                   | UIntPtr          | pointer     | IntPtr               |
 	----------- | ------ | --------------------------------- | ---------------- | ----------- | -------------------- |
 	            | memobj | param_name                        | param_value_size | param_value | param_value_size_ret |
 
@@ -2772,7 +2785,9 @@
 
 # cl::GetSemaphoreInfo + KHR[13]:
 	clErrorCode | cl_semaphore | clSemaphoreInfo                               | UIntPtr          | var T                                      | var UIntPtr          |
+	clErrorCode | cl_semaphore | clSemaphoreInfo                               | UIntPtr          | var T                                      | IntPtr               |
 	clErrorCode | cl_semaphore | clSemaphoreInfo                               | UIntPtr          | pointer                                    | var UIntPtr          |
+	clErrorCode | cl_semaphore | clSemaphoreInfo                               | UIntPtr          | pointer                                    | IntPtr               |
 	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_CONTEXT             | *                | var cl_context                             | *                    |
 	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_REFERENCE_COUNT     | *                | var UInt32                                 | *                    |
 	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_PROPERTIES          | *                | var clSemaphoreProperties                  | *                    |
@@ -2782,8 +2797,6 @@
 	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_EXPORT_HANDLE_TYPES | UInt32           | var clExternalSemaphoreHandleType          | *                    |
 	clErrorCode | cl_semaphore | clSemaphoreInfo.DEVICE_HANDLE_LIST            | *                | var array of cl_device_id                  | *                    |
 	clErrorCode | cl_semaphore | clSemaphoreInfo.DEVICE_HANDLE_LIST            | UInt32           | var cl_device_id                           | *                    |
-	clErrorCode | cl_semaphore | clSemaphoreInfo                               | UIntPtr          | IntPtr                                     | var UIntPtr          |
-	clErrorCode | cl_semaphore | clSemaphoreInfo                               | UIntPtr          | IntPtr                                     | IntPtr               |
 	----------- | ------------ | --------------------------------------------- | ---------------- | ------------------------------------------ | -------------------- |
 	            | sema_object  | param_name                                    | param_value_size | param_value                                | param_value_size_ret |
 
@@ -2797,9 +2810,15 @@
 	----------- | ------------ |
 	            | sema_object  |
 
-# cl::GetKernelSubGroupInfo + KHR[13]:
+# cl::GetKernelSubGroupInfo + KHR[17]:
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | var TInp const         | UIntPtr          | var T                | var UIntPtr          |
+	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | var TInp const         | UIntPtr          | var T                | IntPtr               |
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | var TInp const         | UIntPtr          | pointer              | var UIntPtr          |
+	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | var TInp const         | UIntPtr          | pointer              | IntPtr               |
+	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | pointer const          | UIntPtr          | var T                | var UIntPtr          |
+	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | pointer const          | UIntPtr          | var T                | IntPtr               |
+	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | pointer const          | UIntPtr          | pointer              | var UIntPtr          |
+	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | pointer const          | UIntPtr          | pointer              | IntPtr               |
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo.KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT | *                | UIntPtr const          | *                | var array of UIntPtr | *                    |
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo.KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT | *                | UIntPtr const          | UInt32           | var UIntPtr          | *                    |
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo.KERNEL_MAX_NUM_SUB_GROUPS             | *                | *                      | *                | var UIntPtr          | *                    |
@@ -2809,8 +2828,6 @@
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo.KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE    | *                | array of UIntPtr const | *                | var UIntPtr          | *                    |
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo.KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE    | UInt32           | var UIntPtr const      | *                | var UIntPtr          | *                    |
 	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo.KERNEL_COMPILE_SUB_GROUP_SIZE         | *                | *                      | *                | var UIntPtr          | *                    |
-	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | IntPtr const           | UIntPtr          | IntPtr               | var UIntPtr          |
-	clErrorCode | cl_kernel | cl_device_id | clKernelSubGroupInfo                                       | UIntPtr          | IntPtr const           | UIntPtr          | IntPtr               | IntPtr               |
 	----------- | --------- | ------------ | ---------------------------------------------------------- | ---------------- | ---------------------- | ---------------- | -------------------- | -------------------- |
 	            | in_kernel | in_device    | param_name                                                 | input_value_size | input_value            | param_value_size | param_value          | param_value_size_ret |
 
@@ -2838,18 +2855,19 @@
 	----------- | ------ | ------------------- |
 	            | buffer | content_size_buffer |
 
-# cl::GetDeviceImageInfo + QCOM[11]:
+# cl::GetDeviceImageInfo + QCOM[12]:
 	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | var cl_image_format const      | clImagePitchInfo                       | UIntPtr          | var T       | var UIntPtr          |
+	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | var cl_image_format const      | clImagePitchInfo                       | UIntPtr          | var T       | IntPtr               |
 	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | var cl_image_format const      | clImagePitchInfo.IMAGE_ROW_PITCH       | *                | var UInt32  | *                    |
 	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | var cl_image_format const      | clImagePitchInfo.IMAGE_SLICE_PITCH     | *                | var UInt32  | *                    |
 	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | var cl_image_format const      | clImagePitchInfo.IMAGE_ROW_ALIGNMENT   | *                | var UInt32  | *                    |
 	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | var cl_image_format const      | clImagePitchInfo.IMAGE_SLICE_ALIGNMENT | *                | var UInt32  | *                    |
-	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | array of cl_image_format const | clImagePitchInfo                       | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | array of cl_image_format const | clImagePitchInfo                       | UIntPtr          | IntPtr      | IntPtr               |
-	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | var cl_image_format const      | clImagePitchInfo                       | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | var cl_image_format const      | clImagePitchInfo                       | UIntPtr          | IntPtr      | IntPtr               |
-	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | IntPtr const                   | clImagePitchInfo                       | UIntPtr          | IntPtr      | var UIntPtr          |
-	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | IntPtr const                   | clImagePitchInfo                       | UIntPtr          | IntPtr      | IntPtr               |
+	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | array of cl_image_format const | clImagePitchInfo                       | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | array of cl_image_format const | clImagePitchInfo                       | UIntPtr          | pointer     | IntPtr               |
+	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | var cl_image_format const      | clImagePitchInfo                       | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | var cl_image_format const      | clImagePitchInfo                       | UIntPtr          | pointer     | IntPtr               |
+	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | IntPtr const                   | clImagePitchInfo                       | UIntPtr          | pointer     | var UIntPtr          |
+	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | IntPtr const                   | clImagePitchInfo                       | UIntPtr          | pointer     | IntPtr               |
 	----------- | ------------ | ----------- | ------------ | ------------------------------ | -------------------------------------- | ---------------- | ----------- | -------------------- |
 	            | device       | image_width | image_height | image_format                   | param_name                             | param_value_size | param_value | param_value_size_ret |
 

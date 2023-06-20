@@ -3576,13 +3576,15 @@
     private ntv_SpecializeShaderARB_3 := GetProcOrNil&<procedure(shader: gl_shader; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; pConstantIndex: IntPtr; var pConstantValue: UInt32)>(SpecializeShaderARB_adr);
     private ntv_SpecializeShaderARB_4 := GetProcOrNil&<procedure(shader: gl_shader; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; pConstantIndex: IntPtr; pConstantValue: IntPtr)>(SpecializeShaderARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpecializeShaderARB(shader: gl_shader; pEntryPoint: string; numSpecializationConstants: UInt32; pConstantIndex: array of UInt32; pConstantValue: array of UInt32);
+    type PUInt32 = ^UInt32;
     begin
-      var pEntryPoint_str_ptr := Marshal.StringToHGlobalAnsi(pEntryPoint);
-      try
-        SpecializeShaderARB(shader, pEntryPoint_str_ptr, numSpecializationConstants, pConstantIndex, pConstantValue);
-      finally
-        Marshal.FreeHGlobal(pEntryPoint_str_ptr);
-      end;
+      if (pConstantValue<>nil) and (pConstantValue.Length<>0) then
+        if (pConstantIndex<>nil) and (pConstantIndex.Length<>0) then
+          SpecializeShaderARB(shader, pEntryPoint, numSpecializationConstants, pConstantIndex[0], pConstantValue[0]) else
+          SpecializeShaderARB(shader, pEntryPoint, numSpecializationConstants, PUInt32(nil)^, pConstantValue[0]) else
+        if (pConstantIndex<>nil) and (pConstantIndex.Length<>0) then
+          SpecializeShaderARB(shader, pEntryPoint, numSpecializationConstants, pConstantIndex[0], PUInt32(nil)^) else
+          SpecializeShaderARB(shader, pEntryPoint, numSpecializationConstants, PUInt32(nil)^, PUInt32(nil)^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SpecializeShaderARB(shader: gl_shader; pEntryPoint: IntPtr; numSpecializationConstants: UInt32; pConstantIndex: array of UInt32; pConstantValue: array of UInt32);
     type PUInt32 = ^UInt32;
@@ -7519,11 +7521,11 @@
     private ntv_NamedStringARB_1 := GetProcOrNil&<procedure(type: DummyEnum; namelen: Int32; name: IntPtr; stringlen: Int32; string: IntPtr)>(NamedStringARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedStringARB(type: DummyEnum; namelen: Int32; name: string; stringlen: Int32; string: string);
     begin
-      var name_str_ptr := Marshal.StringToHGlobalAnsi(name);
+      var string_str_ptr := Marshal.StringToHGlobalAnsi(string);
       try
-        NamedStringARB(type, namelen, name_str_ptr, stringlen, string);
+        NamedStringARB(type, namelen, name, stringlen, string_str_ptr);
       finally
-        Marshal.FreeHGlobal(name_str_ptr);
+        Marshal.FreeHGlobal(string_str_ptr);
       end;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedStringARB(type: DummyEnum; namelen: Int32; name: string; stringlen: Int32; string: IntPtr);

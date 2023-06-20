@@ -700,6 +700,15 @@ type
     
     public procedure AddCallTo(ovr_step_kind: MarshalCallKind; md: MethodImplData; step_marshal_choice: MultiBooleanChoice);
     begin
+      {$ifdef DEBUG}
+      if ovr_step_kind in self.call_to then
+      begin
+        Otp(self.name);
+        foreach var k in self.call_to.Keys do
+          Otp(k.ToString);
+        raise new InvalidOperationException(ovr_step_kind.ToString);
+      end;
+      {$endif DEBUG}
       self.call_to.Add(ovr_step_kind, md);
       md.call_by += self;
       {$ifdef DEBUG}

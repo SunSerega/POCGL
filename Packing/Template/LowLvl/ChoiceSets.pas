@@ -23,7 +23,7 @@ type
     private procedure Init(c: integer; can: array of boolean);
     begin
       flags := new cardinal[c];
-      for var i := 0 to c-1 do
+      for var i := c-1 downto 0 do
       begin
         if (can<>nil) and not can[i] then continue;
         flags[i] := size;

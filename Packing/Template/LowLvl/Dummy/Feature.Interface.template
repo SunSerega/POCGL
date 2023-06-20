@@ -680,13 +680,16 @@
     private static function ntv_6Mix_4(s1: IntPtr; s2: IntPtr; gen: pointer; gen_ro: pointer): IntPtr;
     external 'dummy.dll' name '6Mix';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T,T2>(s1: IntPtr; s2: string; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
+    type PT = ^T;
+    type PT2 = ^T2;
     begin
-      var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
-      try
-        Result := 6Mix(s1, s2_str_ptr, gen, gen_ro);
-      finally
-        Marshal.FreeHGlobal(s2_str_ptr);
-      end;
+      Result := if (gen_ro<>nil) and (gen_ro.Length<>0) then
+        if (gen<>nil) and (gen.Length<>0) then
+          6Mix(s1, s2, gen[0], gen_ro[0]) else
+          6Mix(s1, s2, PT(nil)^, gen_ro[0]) else
+        if (gen<>nil) and (gen.Length<>0) then
+          6Mix(s1, s2, gen[0], PT2(nil)^) else
+          6Mix(s1, s2, PT(nil)^, PT2(nil)^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 6Mix<T,T2>(s1: IntPtr; s2: IntPtr; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
     type PT = ^T;
@@ -776,24 +779,48 @@
     // added in dum1.0
     private static procedure ntv_7EnumToType_1(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr);
     external 'dummy.dll' name '7EnumToType';
-    private static procedure ntv_7EnumToType_2(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr);
+    private static procedure ntv_7EnumToType_2(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; var otp_value: Byte; otp_value_size_ret: IntPtr);
     external 'dummy.dll' name '7EnumToType';
-    private static procedure ntv_7EnumToType_3(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr);
+    private static procedure ntv_7EnumToType_3(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr);
     external 'dummy.dll' name '7EnumToType';
-    private static procedure ntv_7EnumToType_4(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr);
+    private static procedure ntv_7EnumToType_4(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr);
     external 'dummy.dll' name '7EnumToType';
-    private static procedure ntv_7EnumToType_5(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; var otp_value_size_ret: UIntPtr);
+    private static procedure ntv_7EnumToType_5(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr);
     external 'dummy.dll' name '7EnumToType';
-    private static procedure ntv_7EnumToType_6(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; otp_value_size_ret: IntPtr);
+    private static procedure ntv_7EnumToType_6(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: Byte; otp_value_size_ret: IntPtr);
+    external 'dummy.dll' name '7EnumToType';
+    private static procedure ntv_7EnumToType_7(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr);
+    external 'dummy.dll' name '7EnumToType';
+    private static procedure ntv_7EnumToType_8(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr);
     external 'dummy.dll' name '7EnumToType';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType<TInp,T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where TInp, T: record;
     begin
       ntv_7EnumToType_1(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType<TInp,T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; otp_value_size_ret: IntPtr); where TInp, T: record;
+    begin
+      ntv_7EnumToType_2(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType<TInp>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr); where TInp: record;
     begin
-      ntv_7EnumToType_2(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, otp_value, otp_value_size_ret);
+      ntv_7EnumToType_3(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, otp_value, otp_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType<TInp>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr); where TInp: record;
+    begin
+      ntv_7EnumToType_4(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, otp_value, otp_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType<T>(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where T: record;
+    begin
+      ntv_7EnumToType_5(choise, inp_value_size, inp_value, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType<T>(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: T; otp_value_size_ret: IntPtr); where T: record;
+    begin
+      ntv_7EnumToType_6(choise, inp_value_size, inp_value, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr) :=
+      ntv_7EnumToType_7(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr) :=
+      ntv_7EnumToType_8(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_1_InpFlat(inp_value: UIntPtr; var otp_value: string);
     begin
       var inp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
@@ -833,37 +860,33 @@
         Marshal.FreeHGlobal(otp_value_temp_res);
       end;
     end;
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure temp_7EnumToType_1<T>(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where T: record;
-    begin
-      ntv_7EnumToType_3(choise, inp_value_size, inp_value, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
-    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_3_OtpFlat(var otp_value: UIntPtr; otp_value_validate_size: boolean := false);
     begin
       var otp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       var otp_value_ret_size: UIntPtr;
-      temp_7EnumToType_1(Multichoise1.Choise1_3_OtpFlat, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
+      7EnumToType(Multichoise1.Choise1_3_OtpFlat, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
       if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_4_OtpArr(var otp_value: array of UIntPtr);
     begin
       var otp_value_sz: UIntPtr;
-      ntv_7EnumToType_4(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
+      ntv_7EnumToType_7(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
       var otp_value_temp_res := new UIntPtr[otp_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
-      temp_7EnumToType_1(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],IntPtr.Zero);
+      7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],IntPtr.Zero);
       otp_value := otp_value_temp_res;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_4_OtpArr(otp_value_count: UInt32; var otp_value: UIntPtr);
     begin
       var otp_value_sz := new UIntPtr(otp_value_count*Marshal.SizeOf&<UIntPtr>);
-      temp_7EnumToType_1(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,IntPtr.Zero);
+      7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,IntPtr.Zero);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_5_OtpStaticArr(var otp_value: array of UIntPtr; otp_value_validate_size: boolean := false);
     begin
       var otp_value_sz := new UIntPtr(3*Marshal.SizeOf&<UIntPtr>);
       var otp_value_temp_res := new UIntPtr[3];
       var otp_value_ret_size: UIntPtr;
-      temp_7EnumToType_1(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],otp_value_ret_size);
+      7EnumToType(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],otp_value_ret_size);
       otp_value := otp_value_temp_res;
       if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
@@ -872,31 +895,27 @@
     begin
       var otp_value_sz := new UIntPtr(otp_value_count*Marshal.SizeOf&<UIntPtr>);
       var otp_value_ret_size: UIntPtr;
-      temp_7EnumToType_1(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
+      7EnumToType(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
       if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType_Choise1_6_OtpString(var otp_value: string);
     begin
       var otp_value_sz: UIntPtr;
-      ntv_7EnumToType_4(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
+      ntv_7EnumToType_7(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
       try
-        ntv_7EnumToType_4(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
+        ntv_7EnumToType_7(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
         otp_value := Marshal.PtrToStringAnsi(otp_value_temp_res);
       finally
         Marshal.FreeHGlobal(otp_value_temp_res);
       end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; var otp_value_size_ret: UIntPtr) :=
-      ntv_7EnumToType_5(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; otp_value_size_ret: IntPtr) :=
-      ntv_7EnumToType_6(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
     
     // added in dum1.0
     private static procedure ntv_7EnumToTypeInputOnly_1(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: Byte);
     external 'dummy.dll' name '7EnumToTypeInputOnly';
-    private static procedure ntv_7EnumToTypeInputOnly_2(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: IntPtr);
+    private static procedure ntv_7EnumToTypeInputOnly_2(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: pointer);
     external 'dummy.dll' name '7EnumToTypeInputOnly';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToTypeInputOnly<TInp>(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: TInp); where TInp: record;
     begin
@@ -917,7 +936,7 @@
       var inp_value_sz := new UIntPtr(inp_value_count*Marshal.SizeOf&<UIntPtr>);
       7EnumToTypeInputOnly(Multichoise2.Choise2_2_InpArr, inp_value_sz,inp_value);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToTypeInputOnly(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 7EnumToTypeInputOnly(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: pointer) :=
       ntv_7EnumToTypeInputOnly_2(choise, inp_value_size, inp_value);
     
   end;
@@ -1597,13 +1616,16 @@
     private ntv_6Mix_3 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; gen: pointer; var gen_ro: Byte): IntPtr>(6Mix_adr);
     private ntv_6Mix_4 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; gen: pointer; gen_ro: pointer): IntPtr>(6Mix_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T,T2>(s1: IntPtr; s2: string; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
+    type PT = ^T;
+    type PT2 = ^T2;
     begin
-      var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
-      try
-        Result := 6Mix(s1, s2_str_ptr, gen, gen_ro);
-      finally
-        Marshal.FreeHGlobal(s2_str_ptr);
-      end;
+      Result := if (gen_ro<>nil) and (gen_ro.Length<>0) then
+        if (gen<>nil) and (gen.Length<>0) then
+          6Mix(s1, s2, gen[0], gen_ro[0]) else
+          6Mix(s1, s2, PT(nil)^, gen_ro[0]) else
+        if (gen<>nil) and (gen.Length<>0) then
+          6Mix(s1, s2, gen[0], PT2(nil)^) else
+          6Mix(s1, s2, PT(nil)^, PT2(nil)^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 6Mix<T,T2>(s1: IntPtr; s2: IntPtr; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
     type PT = ^T;
@@ -1693,19 +1715,41 @@
     // added in dyn1.0
     private 7EnumToType_adr := GetProcAddress('7EnumToType');
     private ntv_7EnumToType_1 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
-    private ntv_7EnumToType_2 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
-    private ntv_7EnumToType_3 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
-    private ntv_7EnumToType_4 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
-    private ntv_7EnumToType_5 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
-    private ntv_7EnumToType_6 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; otp_value_size_ret: IntPtr)>(7EnumToType_adr);
+    private ntv_7EnumToType_2 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; var otp_value: Byte; otp_value_size_ret: IntPtr)>(7EnumToType_adr);
+    private ntv_7EnumToType_3 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
+    private ntv_7EnumToType_4 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr)>(7EnumToType_adr);
+    private ntv_7EnumToType_5 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
+    private ntv_7EnumToType_6 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: Byte; otp_value_size_ret: IntPtr)>(7EnumToType_adr);
+    private ntv_7EnumToType_7 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr)>(7EnumToType_adr);
+    private ntv_7EnumToType_8 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr)>(7EnumToType_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType<TInp,T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where TInp, T: record;
     begin
       ntv_7EnumToType_1(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType<TInp,T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; otp_value_size_ret: IntPtr); where TInp, T: record;
+    begin
+      ntv_7EnumToType_2(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType<TInp>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr); where TInp: record;
     begin
-      ntv_7EnumToType_2(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, otp_value, otp_value_size_ret);
+      ntv_7EnumToType_3(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, otp_value, otp_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType<TInp>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr); where TInp: record;
+    begin
+      ntv_7EnumToType_4(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, otp_value, otp_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType<T>(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where T: record;
+    begin
+      ntv_7EnumToType_5(choise, inp_value_size, inp_value, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType<T>(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: T; otp_value_size_ret: IntPtr); where T: record;
+    begin
+      ntv_7EnumToType_6(choise, inp_value_size, inp_value, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr) :=
+      ntv_7EnumToType_7(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr) :=
+      ntv_7EnumToType_8(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_1_InpFlat(inp_value: UIntPtr; var otp_value: string);
     begin
       var inp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
@@ -1745,37 +1789,33 @@
         Marshal.FreeHGlobal(otp_value_temp_res);
       end;
     end;
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure temp_7EnumToType_1<T>(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where T: record;
-    begin
-      ntv_7EnumToType_3(choise, inp_value_size, inp_value, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
-    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_3_OtpFlat(var otp_value: UIntPtr; otp_value_validate_size: boolean := false);
     begin
       var otp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       var otp_value_ret_size: UIntPtr;
-      temp_7EnumToType_1(Multichoise1.Choise1_3_OtpFlat, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
+      7EnumToType(Multichoise1.Choise1_3_OtpFlat, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
       if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_4_OtpArr(var otp_value: array of UIntPtr);
     begin
       var otp_value_sz: UIntPtr;
-      ntv_7EnumToType_4(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
+      ntv_7EnumToType_7(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
       var otp_value_temp_res := new UIntPtr[otp_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
-      temp_7EnumToType_1(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],IntPtr.Zero);
+      7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],IntPtr.Zero);
       otp_value := otp_value_temp_res;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_4_OtpArr(otp_value_count: UInt32; var otp_value: UIntPtr);
     begin
       var otp_value_sz := new UIntPtr(otp_value_count*Marshal.SizeOf&<UIntPtr>);
-      temp_7EnumToType_1(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,IntPtr.Zero);
+      7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,IntPtr.Zero);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_5_OtpStaticArr(var otp_value: array of UIntPtr; otp_value_validate_size: boolean := false);
     begin
       var otp_value_sz := new UIntPtr(3*Marshal.SizeOf&<UIntPtr>);
       var otp_value_temp_res := new UIntPtr[3];
       var otp_value_ret_size: UIntPtr;
-      temp_7EnumToType_1(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],otp_value_ret_size);
+      7EnumToType(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],otp_value_ret_size);
       otp_value := otp_value_temp_res;
       if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
@@ -1784,31 +1824,27 @@
     begin
       var otp_value_sz := new UIntPtr(otp_value_count*Marshal.SizeOf&<UIntPtr>);
       var otp_value_ret_size: UIntPtr;
-      temp_7EnumToType_1(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
+      7EnumToType(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
       if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType_Choise1_6_OtpString(var otp_value: string);
     begin
       var otp_value_sz: UIntPtr;
-      ntv_7EnumToType_4(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
+      ntv_7EnumToType_7(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
       try
-        ntv_7EnumToType_4(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
+        ntv_7EnumToType_7(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
         otp_value := Marshal.PtrToStringAnsi(otp_value_temp_res);
       finally
         Marshal.FreeHGlobal(otp_value_temp_res);
       end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; var otp_value_size_ret: UIntPtr) :=
-      ntv_7EnumToType_5(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: IntPtr; otp_value_size: UIntPtr; otp_value: IntPtr; otp_value_size_ret: IntPtr) :=
-      ntv_7EnumToType_6(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
     
     // added in dyn1.0
     private 7EnumToTypeInputOnly_adr := GetProcAddress('7EnumToTypeInputOnly');
     private ntv_7EnumToTypeInputOnly_1 := GetProcOrNil&<procedure(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: Byte)>(7EnumToTypeInputOnly_adr);
-    private ntv_7EnumToTypeInputOnly_2 := GetProcOrNil&<procedure(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: IntPtr)>(7EnumToTypeInputOnly_adr);
+    private ntv_7EnumToTypeInputOnly_2 := GetProcOrNil&<procedure(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: pointer)>(7EnumToTypeInputOnly_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToTypeInputOnly<TInp>(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: TInp); where TInp: record;
     begin
       ntv_7EnumToTypeInputOnly_1(choise, inp_value_size, PByte(pointer(@inp_value))^);
@@ -1828,7 +1864,7 @@
       var inp_value_sz := new UIntPtr(inp_value_count*Marshal.SizeOf&<UIntPtr>);
       7EnumToTypeInputOnly(Multichoise2.Choise2_2_InpArr, inp_value_sz,inp_value);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToTypeInputOnly(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 7EnumToTypeInputOnly(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: pointer) :=
       ntv_7EnumToTypeInputOnly_2(choise, inp_value_size, inp_value);
     
   end;

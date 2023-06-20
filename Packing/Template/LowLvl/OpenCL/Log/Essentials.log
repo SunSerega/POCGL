@@ -62,7 +62,7 @@ WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueWriteBuffer]
 Dumping Extension items
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMFree + ARM]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMemFill + ARM]
-WARNING: 19>12 overloads of non-fixed Func [cl::GetImageRequirementsInfo + EXT]
+WARNING: 20>12 overloads of non-fixed Func [cl::GetImageRequirementsInfo + EXT]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMigrateMemObject + EXT]
 WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueGenerateMipmap + IMG]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGrallocObjects + IMG]

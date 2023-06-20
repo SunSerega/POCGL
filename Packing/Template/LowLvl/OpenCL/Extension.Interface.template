@@ -8,25 +8,31 @@
     
     private static function ntv_GetICDLoaderInfoOCLICD_1(param_name: clIcdlInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetICDLoaderInfoOCLICD';
-    private static function ntv_GetICDLoaderInfoOCLICD_2(param_name: clIcdlInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetICDLoaderInfoOCLICD_2(param_name: clIcdlInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetICDLoaderInfoOCLICD';
-    private static function ntv_GetICDLoaderInfoOCLICD_3(param_name: clIcdlInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetICDLoaderInfoOCLICD_3(param_name: clIcdlInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetICDLoaderInfoOCLICD';
-    private static function ntv_GetICDLoaderInfoOCLICD_4(param_name: clIcdlInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetICDLoaderInfoOCLICD_4(param_name: clIcdlInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetICDLoaderInfoOCLICD';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetICDLoaderInfoOCLICD<T>(param_name: clIcdlInfo; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
     begin
       Result := ntv_GetICDLoaderInfoOCLICD_1(param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetICDLoaderInfoOCLICD<T>(param_name: clIcdlInfo; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetICDLoaderInfoOCLICD_2(param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetICDLoaderInfoOCLICD(param_name: clIcdlInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetICDLoaderInfoOCLICD_2(param_name, param_value_size, param_value, param_value_size_ret);
+      ntv_GetICDLoaderInfoOCLICD_3(param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetICDLoaderInfoOCLICD(param_name: clIcdlInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
+      ntv_GetICDLoaderInfoOCLICD_4(param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetICDLoaderInfoOCLICD_ICDL_OCL_VERSION(var param_value: string): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetICDLoaderInfoOCLICD_2(clIcdlInfo.ICDL_OCL_VERSION, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_OCL_VERSION, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetICDLoaderInfoOCLICD_2(clIcdlInfo.ICDL_OCL_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_OCL_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -35,10 +41,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetICDLoaderInfoOCLICD_ICDL_VERSION(var param_value: string): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetICDLoaderInfoOCLICD_2(clIcdlInfo.ICDL_VERSION, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_VERSION, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetICDLoaderInfoOCLICD_2(clIcdlInfo.ICDL_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -47,10 +53,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetICDLoaderInfoOCLICD_ICDL_NAME(var param_value: string): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetICDLoaderInfoOCLICD_2(clIcdlInfo.ICDL_NAME, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_NAME, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetICDLoaderInfoOCLICD_2(clIcdlInfo.ICDL_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -59,19 +65,15 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetICDLoaderInfoOCLICD_ICDL_VENDOR(var param_value: string): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetICDLoaderInfoOCLICD_2(clIcdlInfo.ICDL_VENDOR, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_VENDOR, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetICDLoaderInfoOCLICD_2(clIcdlInfo.ICDL_VENDOR, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_VENDOR, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
       end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetICDLoaderInfoOCLICD(param_name: clIcdlInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetICDLoaderInfoOCLICD_3(param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetICDLoaderInfoOCLICD(param_name: clIcdlInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetICDLoaderInfoOCLICD_4(param_name, param_value_size, param_value, param_value_size_ret);
     
   end;
   
@@ -82,18 +84,24 @@
     
     private static function ntv_GetLayerInfo_1(param_name: clLayerInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetLayerInfo';
-    private static function ntv_GetLayerInfo_2(param_name: clLayerInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetLayerInfo_2(param_name: clLayerInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetLayerInfo';
-    private static function ntv_GetLayerInfo_3(param_name: clLayerInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetLayerInfo_3(param_name: clLayerInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetLayerInfo';
-    private static function ntv_GetLayerInfo_4(param_name: clLayerInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetLayerInfo_4(param_name: clLayerInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetLayerInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerInfo<T>(param_name: clLayerInfo; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
     begin
       Result := ntv_GetLayerInfo_1(param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerInfo<T>(param_name: clLayerInfo; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetLayerInfo_2(param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerInfo(param_name: clLayerInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetLayerInfo_2(param_name, param_value_size, param_value, param_value_size_ret);
+      ntv_GetLayerInfo_3(param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerInfo(param_name: clLayerInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
+      ntv_GetLayerInfo_4(param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerInfo_LAYER_API_VERSION(var param_value: UInt32; param_value_validate_size: boolean := false): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<UInt32>);
@@ -105,19 +113,15 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerInfo_LAYER_NAME(var param_value: string): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetLayerInfo_2(clLayerInfo.LAYER_NAME, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetLayerInfo_3(clLayerInfo.LAYER_NAME, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetLayerInfo_2(clLayerInfo.LAYER_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetLayerInfo_3(clLayerInfo.LAYER_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
       end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerInfo(param_name: clLayerInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetLayerInfo_3(param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetLayerInfo(param_name: clLayerInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetLayerInfo_4(param_name, param_value_size, param_value, param_value_size_ret);
     
     private static function ntv_InitLayer_1(num_entries: UInt32; target_dispatch: cl_icd_dispatch; var num_entries_ret: UInt32; var layer_dispatch_ret: cl_icd_dispatch): clErrorCode;
     external 'OpenCL' name 'clInitLayer';
@@ -282,18 +286,18 @@
     private static function ntv_EnqueueSVMFreeARM_8(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: pointer; pfn_free_func: clEnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueSVMFreeARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: clEnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PIntPtr = ^IntPtr;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
-        EnqueueSVMFreeARM(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, event) else
-        EnqueueSVMFreeARM(command_queue, num_svm_pointers, PIntPtr(nil)^, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueSVMFreeARM(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueSVMFreeARM(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: clEnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PIntPtr = ^IntPtr;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (svm_pointers<>nil) and (svm_pointers.Length<>0) then
-        EnqueueSVMFreeARM(command_queue, num_svm_pointers, svm_pointers[0], pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, event) else
-        EnqueueSVMFreeARM(command_queue, num_svm_pointers, PIntPtr(nil)^, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueSVMFreeARM(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueSVMFreeARM(command_queue, num_svm_pointers, svm_pointers, pfn_free_func, user_data, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMFreeARM(command_queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; pfn_free_func: clEnqueueSVMFreeCallback; user_data: IntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PIntPtr = ^IntPtr;
@@ -416,18 +420,18 @@
     private static function ntv_EnqueueSVMMemFillARM_8(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: pointer; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueSVMMemFillARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: array of T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode; where T: record;
-    type PT = ^T;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (pattern<>nil) and (pattern.Length<>0) then
-        EnqueueSVMMemFillARM(command_queue, svm_ptr, pattern[0], pattern_size, size, num_events_in_wait_list, event_wait_list, event) else
-        EnqueueSVMMemFillARM(command_queue, svm_ptr, PT(nil)^, pattern_size, size, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueSVMMemFillARM(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueSVMMemFillARM(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: array of T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode; where T: record;
-    type PT = ^T;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (pattern<>nil) and (pattern.Length<>0) then
-        EnqueueSVMMemFillARM(command_queue, svm_ptr, pattern[0], pattern_size, size, num_events_in_wait_list, event_wait_list, event) else
-        EnqueueSVMMemFillARM(command_queue, svm_ptr, PT(nil)^, pattern_size, size, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueSVMMemFillARM(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueSVMMemFillARM(command_queue, svm_ptr, pattern, pattern_size, size, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSVMMemFillARM<T>(command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: array of T; pattern_size: UIntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode; where T: record;
     type PT = ^T;
@@ -579,7 +583,7 @@
     
     private static function ntv_SetKernelExecInfoARM_1(kernel: cl_kernel; param_name: clKernelExecInfoARM; param_value_size: UIntPtr; var param_value: Byte): clErrorCode;
     external 'OpenCL' name 'clSetKernelExecInfoARM';
-    private static function ntv_SetKernelExecInfoARM_2(kernel: cl_kernel; param_name: clKernelExecInfoARM; param_value_size: UIntPtr; param_value: IntPtr): clErrorCode;
+    private static function ntv_SetKernelExecInfoARM_2(kernel: cl_kernel; param_name: clKernelExecInfoARM; param_value_size: UIntPtr; param_value: pointer): clErrorCode;
     external 'OpenCL' name 'clSetKernelExecInfoARM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfoARM<TInp>(kernel: cl_kernel; param_name: clKernelExecInfoARM; param_value_size: UIntPtr; var param_value: TInp): clErrorCode; where TInp: record;
     begin
@@ -600,7 +604,7 @@
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<clBool>);
       Result := SetKernelExecInfoARM(kernel, clKernelExecInfoARM.KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM_ARM, param_value_sz,param_value);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfoARM(kernel: cl_kernel; param_name: clKernelExecInfoARM; param_value_size: UIntPtr; param_value: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfoARM(kernel: cl_kernel; param_name: clKernelExecInfoARM; param_value_size: UIntPtr; param_value: pointer): clErrorCode :=
       ntv_SetKernelExecInfoARM_2(kernel, param_name, param_value_size, param_value);
     
   end;
@@ -698,41 +702,47 @@
     
     private static function ntv_GetImageRequirementsInfoEXT_1(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_2(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_2(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_3(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_3(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_4(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_4(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_5(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_5(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_6(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_6(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_7(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_7(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_8(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_8(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_9(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_9(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_10(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_10(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_11(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_11(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_12(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_12(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_13(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_13(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_14(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_14(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_15(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_15(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_16(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_16(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
-    private static function ntv_GetImageRequirementsInfoEXT_17(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetImageRequirementsInfoEXT_17(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
+    private static function ntv_GetImageRequirementsInfoEXT_18(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetImageRequirementsInfoEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT<T>(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
     begin
       Result := ntv_GetImageRequirementsInfoEXT_1(context, properties, flags, image_format, image_desc, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT<T>(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetImageRequirementsInfoEXT_2(context, properties, flags, image_format, image_desc, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT_IMAGE_REQUIREMENTS_ROW_PITCH_ALIGNMENT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; var param_value: UIntPtr; param_value_validate_size: boolean := false): clErrorCode;
     begin
@@ -798,28 +808,7 @@
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: array of clMemProperties; flags: clMemFlags; image_format: array of cl_image_format; image_desc: array of cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
-    type PClMemProperties = ^clMemProperties;
-    type PCl_image_format = ^cl_image_format;
-    type PCl_image_desc = ^cl_image_desc;
-    begin
-      Result := if (image_desc<>nil) and (image_desc.Length<>0) then
-        if (image_format<>nil) and (image_format.Length<>0) then
-          if (properties<>nil) and (properties.Length<>0) then
-            ntv_GetImageRequirementsInfoEXT_2(context, properties[0], flags, image_format[0], image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
-            ntv_GetImageRequirementsInfoEXT_2(context, PClMemProperties(nil)^, flags, image_format[0], image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
-          if (properties<>nil) and (properties.Length<>0) then
-            ntv_GetImageRequirementsInfoEXT_2(context, properties[0], flags, PCl_image_format(nil)^, image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
-            ntv_GetImageRequirementsInfoEXT_2(context, PClMemProperties(nil)^, flags, PCl_image_format(nil)^, image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
-        if (image_format<>nil) and (image_format.Length<>0) then
-          if (properties<>nil) and (properties.Length<>0) then
-            ntv_GetImageRequirementsInfoEXT_2(context, properties[0], flags, image_format[0], PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
-            ntv_GetImageRequirementsInfoEXT_2(context, PClMemProperties(nil)^, flags, image_format[0], PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
-          if (properties<>nil) and (properties.Length<>0) then
-            ntv_GetImageRequirementsInfoEXT_2(context, properties[0], flags, PCl_image_format(nil)^, PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
-            ntv_GetImageRequirementsInfoEXT_2(context, PClMemProperties(nil)^, flags, PCl_image_format(nil)^, PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret);
-    end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: array of clMemProperties; flags: clMemFlags; image_format: array of cl_image_format; image_desc: array of cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: array of clMemProperties; flags: clMemFlags; image_format: array of cl_image_format; image_desc: array of cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     type PClMemProperties = ^clMemProperties;
     type PCl_image_format = ^cl_image_format;
     type PCl_image_desc = ^cl_image_desc;
@@ -840,38 +829,59 @@
             ntv_GetImageRequirementsInfoEXT_3(context, properties[0], flags, PCl_image_format(nil)^, PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
             ntv_GetImageRequirementsInfoEXT_3(context, PClMemProperties(nil)^, flags, PCl_image_format(nil)^, PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetImageRequirementsInfoEXT_2(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: array of clMemProperties; flags: clMemFlags; image_format: array of cl_image_format; image_desc: array of cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
+    type PClMemProperties = ^clMemProperties;
+    type PCl_image_format = ^cl_image_format;
+    type PCl_image_desc = ^cl_image_desc;
+    begin
+      Result := if (image_desc<>nil) and (image_desc.Length<>0) then
+        if (image_format<>nil) and (image_format.Length<>0) then
+          if (properties<>nil) and (properties.Length<>0) then
+            ntv_GetImageRequirementsInfoEXT_4(context, properties[0], flags, image_format[0], image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
+            ntv_GetImageRequirementsInfoEXT_4(context, PClMemProperties(nil)^, flags, image_format[0], image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
+          if (properties<>nil) and (properties.Length<>0) then
+            ntv_GetImageRequirementsInfoEXT_4(context, properties[0], flags, PCl_image_format(nil)^, image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
+            ntv_GetImageRequirementsInfoEXT_4(context, PClMemProperties(nil)^, flags, PCl_image_format(nil)^, image_desc[0], param_name, param_value_size, param_value, param_value_size_ret) else
+        if (image_format<>nil) and (image_format.Length<>0) then
+          if (properties<>nil) and (properties.Length<>0) then
+            ntv_GetImageRequirementsInfoEXT_4(context, properties[0], flags, image_format[0], PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
+            ntv_GetImageRequirementsInfoEXT_4(context, PClMemProperties(nil)^, flags, image_format[0], PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
+          if (properties<>nil) and (properties.Length<>0) then
+            ntv_GetImageRequirementsInfoEXT_4(context, properties[0], flags, PCl_image_format(nil)^, PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret) else
+            ntv_GetImageRequirementsInfoEXT_4(context, PClMemProperties(nil)^, flags, PCl_image_format(nil)^, PCl_image_desc(nil)^, param_name, param_value_size, param_value, param_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_3(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_4(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_5(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_6(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_7(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_8(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_9(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; var properties: clMemProperties; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_10(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_11(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_12(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_13(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; var image_format: cl_image_format; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_14(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_15(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; var image_desc: cl_image_desc; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_16(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetImageRequirementsInfoEXT_17(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageRequirementsInfoEXT(context: cl_context; properties: IntPtr; flags: clMemFlags; image_format: IntPtr; image_desc: IntPtr; param_name: clImageRequirementsInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
+      ntv_GetImageRequirementsInfoEXT_18(context, properties, flags, image_format, image_desc, param_name, param_value_size, param_value, param_value_size_ret);
     
   end;
   
@@ -897,18 +907,18 @@
     private static function ntv_EnqueueMigrateMemObjectEXT_8(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; flags: clMemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueMigrateMemObjectEXT';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: clMemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueMigrateMemObjectEXT(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, event) else
-        EnqueueMigrateMemObjectEXT(command_queue, num_mem_objects, PCl_mem(nil)^, flags, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueMigrateMemObjectEXT(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueMigrateMemObjectEXT(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: clMemMigrationFlags; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueMigrateMemObjectEXT(command_queue, num_mem_objects, mem_objects[0], flags, num_events_in_wait_list, event_wait_list, event) else
-        EnqueueMigrateMemObjectEXT(command_queue, num_mem_objects, PCl_mem(nil)^, flags, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueMigrateMemObjectEXT(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueMigrateMemObjectEXT(command_queue, num_mem_objects, mem_objects, flags, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueMigrateMemObjectEXT(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; flags: clMemMigrationFlags; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -1027,26 +1037,18 @@
     private static function ntv_EnqueueGenerateMipmapIMG_16(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; mipmap_filter_mode: clMipmapFilterMode; array_region: IntPtr; mip_region: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueGenerateMipmapIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueGenerateMipmapIMG(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; mipmap_filter_mode: clMipmapFilterMode; array_region: array of UIntPtr; mip_region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PUIntPtr = ^UIntPtr;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mip_region<>nil) and (mip_region.Length<>0) then
-        if (array_region<>nil) and (array_region.Length<>0) then
-          EnqueueGenerateMipmapIMG(command_queue, src_image, dst_image, mipmap_filter_mode, array_region[0], mip_region[0], num_events_in_wait_list, event_wait_list, event) else
-          EnqueueGenerateMipmapIMG(command_queue, src_image, dst_image, mipmap_filter_mode, PUIntPtr(nil)^, mip_region[0], num_events_in_wait_list, event_wait_list, event) else
-        if (array_region<>nil) and (array_region.Length<>0) then
-          EnqueueGenerateMipmapIMG(command_queue, src_image, dst_image, mipmap_filter_mode, array_region[0], PUIntPtr(nil)^, num_events_in_wait_list, event_wait_list, event) else
-          EnqueueGenerateMipmapIMG(command_queue, src_image, dst_image, mipmap_filter_mode, PUIntPtr(nil)^, PUIntPtr(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueGenerateMipmapIMG(command_queue, src_image, dst_image, mipmap_filter_mode, array_region, mip_region, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueGenerateMipmapIMG(command_queue, src_image, dst_image, mipmap_filter_mode, array_region, mip_region, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueGenerateMipmapIMG(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; mipmap_filter_mode: clMipmapFilterMode; array_region: array of UIntPtr; mip_region: array of UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PUIntPtr = ^UIntPtr;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mip_region<>nil) and (mip_region.Length<>0) then
-        if (array_region<>nil) and (array_region.Length<>0) then
-          EnqueueGenerateMipmapIMG(command_queue, src_image, dst_image, mipmap_filter_mode, array_region[0], mip_region[0], num_events_in_wait_list, event_wait_list, event) else
-          EnqueueGenerateMipmapIMG(command_queue, src_image, dst_image, mipmap_filter_mode, PUIntPtr(nil)^, mip_region[0], num_events_in_wait_list, event_wait_list, event) else
-        if (array_region<>nil) and (array_region.Length<>0) then
-          EnqueueGenerateMipmapIMG(command_queue, src_image, dst_image, mipmap_filter_mode, array_region[0], PUIntPtr(nil)^, num_events_in_wait_list, event_wait_list, event) else
-          EnqueueGenerateMipmapIMG(command_queue, src_image, dst_image, mipmap_filter_mode, PUIntPtr(nil)^, PUIntPtr(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueGenerateMipmapIMG(command_queue, src_image, dst_image, mipmap_filter_mode, array_region, mip_region, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueGenerateMipmapIMG(command_queue, src_image, dst_image, mipmap_filter_mode, array_region, mip_region, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueGenerateMipmapIMG(command_queue: cl_command_queue; src_image: cl_mem; dst_image: cl_mem; mipmap_filter_mode: clMipmapFilterMode; array_region: array of UIntPtr; mip_region: array of UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PUIntPtr = ^UIntPtr;
@@ -1209,18 +1211,18 @@
     private static function ntv_EnqueueAcquireGrallocObjectsIMG_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueAcquireGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireGrallocObjectsIMG(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireGrallocObjectsIMG(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireGrallocObjectsIMG(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireGrallocObjectsIMG(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireGrallocObjectsIMG(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireGrallocObjectsIMG(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireGrallocObjectsIMG(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireGrallocObjectsIMG(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -1312,18 +1314,18 @@
     private static function ntv_EnqueueReleaseGrallocObjectsIMG_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueReleaseGrallocObjectsIMG';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseGrallocObjectsIMG(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseGrallocObjectsIMG(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseGrallocObjectsIMG(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseGrallocObjectsIMG(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseGrallocObjectsIMG(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseGrallocObjectsIMG(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseGrallocObjectsIMG(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseGrallocObjectsIMG(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGrallocObjectsIMG(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -1420,13 +1422,19 @@
     
     private static function ntv_GetAcceleratorInfoINTEL_1(accelerator: cl_accelerator; param_name: clAcceleratorInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetAcceleratorInfoINTEL';
-    private static function ntv_GetAcceleratorInfoINTEL_2(accelerator: cl_accelerator; param_name: clAcceleratorInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetAcceleratorInfoINTEL_2(accelerator: cl_accelerator; param_name: clAcceleratorInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetAcceleratorInfoINTEL';
-    private static function ntv_GetAcceleratorInfoINTEL_3(accelerator: cl_accelerator; param_name: clAcceleratorInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetAcceleratorInfoINTEL_3(accelerator: cl_accelerator; param_name: clAcceleratorInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    external 'OpenCL' name 'clGetAcceleratorInfoINTEL';
+    private static function ntv_GetAcceleratorInfoINTEL_4(accelerator: cl_accelerator; param_name: clAcceleratorInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetAcceleratorInfoINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetAcceleratorInfoINTEL<T>(accelerator: cl_accelerator; param_name: clAcceleratorInfo; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
     begin
       Result := ntv_GetAcceleratorInfoINTEL_1(accelerator, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetAcceleratorInfoINTEL<T>(accelerator: cl_accelerator; param_name: clAcceleratorInfo; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetAcceleratorInfoINTEL_2(accelerator, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetAcceleratorInfoINTEL_ACCELERATOR_REFERENCE_COUNT(accelerator: cl_accelerator; var param_value: UInt32; param_value_validate_size: boolean := false): clErrorCode;
     begin
@@ -1452,10 +1460,10 @@
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetAcceleratorInfoINTEL(accelerator: cl_accelerator; param_name: clAcceleratorInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetAcceleratorInfoINTEL_2(accelerator, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetAcceleratorInfoINTEL(accelerator: cl_accelerator; param_name: clAcceleratorInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetAcceleratorInfoINTEL(accelerator: cl_accelerator; param_name: clAcceleratorInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetAcceleratorInfoINTEL_3(accelerator, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetAcceleratorInfoINTEL(accelerator: cl_accelerator; param_name: clAcceleratorInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
+      ntv_GetAcceleratorInfoINTEL_4(accelerator, param_name, param_value_size, param_value, param_value_size_ret);
     
     private static function ntv_RetainAcceleratorINTEL_1(accelerator: cl_accelerator): clErrorCode;
     external 'OpenCL' name 'clRetainAcceleratorINTEL';
@@ -1564,18 +1572,18 @@
     private static function ntv_EnqueueAcquireDX9ObjectsINTEL_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueAcquireDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireDX9ObjectsINTEL(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireDX9ObjectsINTEL(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireDX9ObjectsINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireDX9ObjectsINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireDX9ObjectsINTEL(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireDX9ObjectsINTEL(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireDX9ObjectsINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireDX9ObjectsINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -1667,18 +1675,18 @@
     private static function ntv_EnqueueReleaseDX9ObjectsINTEL_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueReleaseDX9ObjectsINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseDX9ObjectsINTEL(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseDX9ObjectsINTEL(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseDX9ObjectsINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseDX9ObjectsINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseDX9ObjectsINTEL(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseDX9ObjectsINTEL(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseDX9ObjectsINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseDX9ObjectsINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9ObjectsINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -1801,22 +1809,18 @@
     private static function ntv_EnqueueReadHostPipeINTEL_4(command_queue: cl_command_queue; program: cl_program; pipe_symbol: IntPtr; blocking_read: clBool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueReadHostPipeINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; program: cl_program; pipe_symbol: string; blocking_read: clBool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
+    type PCl_event = ^cl_event;
     begin
-      var pipe_symbol_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
-      try
-        Result := EnqueueReadHostPipeINTEL(command_queue, program, pipe_symbol_str_ptr, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list, event);
-      finally
-        Marshal.FreeHGlobal(pipe_symbol_str_ptr);
-      end;
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReadHostPipeINTEL(command_queue, program, pipe_symbol, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReadHostPipeINTEL(command_queue, program, pipe_symbol, blocking_read, ptr, size, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; program: cl_program; pipe_symbol: string; blocking_read: clBool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
+    type PCl_event = ^cl_event;
     begin
-      var pipe_symbol_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
-      try
-        Result := EnqueueReadHostPipeINTEL(command_queue, program, pipe_symbol_str_ptr, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list, event);
-      finally
-        Marshal.FreeHGlobal(pipe_symbol_str_ptr);
-      end;
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReadHostPipeINTEL(command_queue, program, pipe_symbol, blocking_read, ptr, size, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReadHostPipeINTEL(command_queue, program, pipe_symbol, blocking_read, ptr, size, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReadHostPipeINTEL(command_queue: cl_command_queue; program: cl_program; pipe_symbol: string; blocking_read: clBool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     begin
@@ -1886,22 +1890,18 @@
     private static function ntv_EnqueueWriteHostPipeINTEL_4(command_queue: cl_command_queue; program: cl_program; pipe_symbol: IntPtr; blocking_write: clBool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueWriteHostPipeINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; program: cl_program; pipe_symbol: string; blocking_write: clBool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
+    type PCl_event = ^cl_event;
     begin
-      var pipe_symbol_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
-      try
-        Result := EnqueueWriteHostPipeINTEL(command_queue, program, pipe_symbol_str_ptr, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list, event);
-      finally
-        Marshal.FreeHGlobal(pipe_symbol_str_ptr);
-      end;
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueWriteHostPipeINTEL(command_queue, program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueWriteHostPipeINTEL(command_queue, program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; program: cl_program; pipe_symbol: string; blocking_write: clBool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
+    type PCl_event = ^cl_event;
     begin
-      var pipe_symbol_str_ptr := Marshal.StringToHGlobalAnsi(pipe_symbol);
-      try
-        Result := EnqueueWriteHostPipeINTEL(command_queue, program, pipe_symbol_str_ptr, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list, event);
-      finally
-        Marshal.FreeHGlobal(pipe_symbol_str_ptr);
-      end;
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueWriteHostPipeINTEL(command_queue, program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueWriteHostPipeINTEL(command_queue, program, pipe_symbol, blocking_write, ptr, size, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWriteHostPipeINTEL(command_queue: cl_command_queue; program: cl_program; pipe_symbol: string; blocking_write: clBool; ptr: IntPtr; size: UIntPtr; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     begin
@@ -2161,13 +2161,19 @@
     
     private static function ntv_GetMemAllocInfoINTEL_1(context: cl_context; ptr: IntPtr; param_name: clMemInfoINTEL; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetMemAllocInfoINTEL';
-    private static function ntv_GetMemAllocInfoINTEL_2(context: cl_context; ptr: IntPtr; param_name: clMemInfoINTEL; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetMemAllocInfoINTEL_2(context: cl_context; ptr: IntPtr; param_name: clMemInfoINTEL; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetMemAllocInfoINTEL';
-    private static function ntv_GetMemAllocInfoINTEL_3(context: cl_context; ptr: IntPtr; param_name: clMemInfoINTEL; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetMemAllocInfoINTEL_3(context: cl_context; ptr: IntPtr; param_name: clMemInfoINTEL; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    external 'OpenCL' name 'clGetMemAllocInfoINTEL';
+    private static function ntv_GetMemAllocInfoINTEL_4(context: cl_context; ptr: IntPtr; param_name: clMemInfoINTEL; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetMemAllocInfoINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemAllocInfoINTEL<T>(context: cl_context; ptr: IntPtr; param_name: clMemInfoINTEL; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
     begin
       Result := ntv_GetMemAllocInfoINTEL_1(context, ptr, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemAllocInfoINTEL<T>(context: cl_context; ptr: IntPtr; param_name: clMemInfoINTEL; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetMemAllocInfoINTEL_2(context, ptr, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemAllocInfoINTEL_MEM_ALLOC_BUFFER_LOCATION(context: cl_context; ptr: IntPtr; var param_value: UInt32; param_value_validate_size: boolean := false): clErrorCode;
     begin
@@ -2177,10 +2183,10 @@
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemAllocInfoINTEL(context: cl_context; ptr: IntPtr; param_name: clMemInfoINTEL; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetMemAllocInfoINTEL_2(context, ptr, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemAllocInfoINTEL(context: cl_context; ptr: IntPtr; param_name: clMemInfoINTEL; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemAllocInfoINTEL(context: cl_context; ptr: IntPtr; param_name: clMemInfoINTEL; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetMemAllocInfoINTEL_3(context, ptr, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemAllocInfoINTEL(context: cl_context; ptr: IntPtr; param_name: clMemInfoINTEL; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
+      ntv_GetMemAllocInfoINTEL_4(context, ptr, param_name, param_value_size, param_value, param_value_size_ret);
     
     private static function ntv_SetKernelArgMemPointerINTEL_1(kernel: cl_kernel; arg_index: UInt32; arg_value: IntPtr): clErrorCode;
     external 'OpenCL' name 'clSetKernelArgMemPointerINTEL';
@@ -2388,18 +2394,18 @@
     private static function ntv_EnqueueAcquireVA_APIMediaSurfacesINTEL_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueAcquireVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -2491,18 +2497,18 @@
     private static function ntv_EnqueueReleaseVA_APIMediaSurfacesINTEL_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueReleaseVA_APIMediaSurfacesINTEL';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseVA_APIMediaSurfacesINTEL(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -2645,18 +2651,18 @@
     private static function ntv_EnqueueCommandBufferKHR_8(num_queues: UInt32; queues: IntPtr; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueCommandBufferKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: array of cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_command_queue = ^cl_command_queue;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (queues<>nil) and (queues.Length<>0) then
-        EnqueueCommandBufferKHR(num_queues, queues[0], command_buffer, num_events_in_wait_list, event_wait_list, event) else
-        EnqueueCommandBufferKHR(num_queues, PCl_command_queue(nil)^, command_buffer, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueCommandBufferKHR(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueCommandBufferKHR(num_queues, queues, command_buffer, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: array of cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_command_queue = ^cl_command_queue;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (queues<>nil) and (queues.Length<>0) then
-        EnqueueCommandBufferKHR(num_queues, queues[0], command_buffer, num_events_in_wait_list, event_wait_list, event) else
-        EnqueueCommandBufferKHR(num_queues, PCl_command_queue(nil)^, command_buffer, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueCommandBufferKHR(num_queues, queues, command_buffer, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueCommandBufferKHR(num_queues, queues, command_buffer, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueCommandBufferKHR(num_queues: UInt32; queues: array of cl_command_queue; command_buffer: cl_command_buffer; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_command_queue = ^cl_command_queue;
@@ -3098,22 +3104,28 @@
     
     private static function ntv_GetCommandBufferInfoKHR_1(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetCommandBufferInfoKHR';
-    private static function ntv_GetCommandBufferInfoKHR_2(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetCommandBufferInfoKHR_2(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetCommandBufferInfoKHR';
-    private static function ntv_GetCommandBufferInfoKHR_3(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetCommandBufferInfoKHR_3(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetCommandBufferInfoKHR';
-    private static function ntv_GetCommandBufferInfoKHR_4(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetCommandBufferInfoKHR_4(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetCommandBufferInfoKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandBufferInfoKHR<T>(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
     begin
       Result := ntv_GetCommandBufferInfoKHR_1(command_buffer, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandBufferInfoKHR<T>(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetCommandBufferInfoKHR_2(command_buffer, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandBufferInfoKHR(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetCommandBufferInfoKHR_2(command_buffer, param_name, param_value_size, param_value, param_value_size_ret);
+      ntv_GetCommandBufferInfoKHR_3(command_buffer, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandBufferInfoKHR(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
+      ntv_GetCommandBufferInfoKHR_4(command_buffer, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandBufferInfoKHR_COMMAND_BUFFER_QUEUES(command_buffer: cl_command_buffer; var param_value: array of cl_command_queue): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetCommandBufferInfoKHR_2(command_buffer, clCommandBufferInfo.COMMAND_BUFFER_QUEUES, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetCommandBufferInfoKHR_3(command_buffer, clCommandBufferInfo.COMMAND_BUFFER_QUEUES, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := new cl_command_queue[param_value_sz.ToUInt64 div Marshal.SizeOf&<cl_command_queue>];
       Result := GetCommandBufferInfoKHR(command_buffer, clCommandBufferInfo.COMMAND_BUFFER_QUEUES, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -3150,7 +3162,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandBufferInfoKHR_COMMAND_BUFFER_PROPERTIES_ARRAY(command_buffer: cl_command_buffer; var param_value: array of clCommandBufferProperties): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetCommandBufferInfoKHR_2(command_buffer, clCommandBufferInfo.COMMAND_BUFFER_PROPERTIES_ARRAY, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetCommandBufferInfoKHR_3(command_buffer, clCommandBufferInfo.COMMAND_BUFFER_PROPERTIES_ARRAY, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := new clCommandBufferProperties[param_value_sz.ToUInt64 div Marshal.SizeOf&<clCommandBufferProperties>];
       Result := GetCommandBufferInfoKHR(command_buffer, clCommandBufferInfo.COMMAND_BUFFER_PROPERTIES_ARRAY, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -3168,10 +3180,6 @@
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandBufferInfoKHR(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetCommandBufferInfoKHR_3(command_buffer, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetCommandBufferInfoKHR(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetCommandBufferInfoKHR_4(command_buffer, param_name, param_value_size, param_value, param_value_size_ret);
     
   end;
   
@@ -3262,18 +3270,24 @@
     
     private static function ntv_GetMutableCommandInfoKHR_1(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetMutableCommandInfoKHR';
-    private static function ntv_GetMutableCommandInfoKHR_2(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetMutableCommandInfoKHR_2(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetMutableCommandInfoKHR';
-    private static function ntv_GetMutableCommandInfoKHR_3(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetMutableCommandInfoKHR_3(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetMutableCommandInfoKHR';
-    private static function ntv_GetMutableCommandInfoKHR_4(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetMutableCommandInfoKHR_4(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetMutableCommandInfoKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR<T>(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
     begin
       Result := ntv_GetMutableCommandInfoKHR_1(command, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR<T>(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetMutableCommandInfoKHR_2(command, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetMutableCommandInfoKHR_2(command, param_name, param_value_size, param_value, param_value_size_ret);
+      ntv_GetMutableCommandInfoKHR_3(command, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
+      ntv_GetMutableCommandInfoKHR_4(command, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR_MUTABLE_COMMAND_COMMAND_QUEUE(command: cl_mutable_command; var param_value: cl_command_queue; param_value_validate_size: boolean := false): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<cl_command_queue>);
@@ -3293,7 +3307,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR_MUTABLE_DISPATCH_PROPERTIES_ARRAY(command: cl_mutable_command; var param_value: array of clNDRangeKernelCommandProperties): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetMutableCommandInfoKHR_2(command, clMutableCommandInfo.MUTABLE_DISPATCH_PROPERTIES_ARRAY, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetMutableCommandInfoKHR_3(command, clMutableCommandInfo.MUTABLE_DISPATCH_PROPERTIES_ARRAY, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := new clNDRangeKernelCommandProperties[param_value_sz.ToUInt64 div Marshal.SizeOf&<clNDRangeKernelCommandProperties>];
       Result := GetMutableCommandInfoKHR(command, clMutableCommandInfo.MUTABLE_DISPATCH_PROPERTIES_ARRAY, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -3322,7 +3336,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR_MUTABLE_DISPATCH_GLOBAL_WORK_OFFSET(command: cl_mutable_command; var param_value: array of UIntPtr): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetMutableCommandInfoKHR_2(command, clMutableCommandInfo.MUTABLE_DISPATCH_GLOBAL_WORK_OFFSET, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetMutableCommandInfoKHR_3(command, clMutableCommandInfo.MUTABLE_DISPATCH_GLOBAL_WORK_OFFSET, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := new UIntPtr[param_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
       Result := GetMutableCommandInfoKHR(command, clMutableCommandInfo.MUTABLE_DISPATCH_GLOBAL_WORK_OFFSET, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -3335,7 +3349,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR_MUTABLE_DISPATCH_GLOBAL_WORK_SIZE(command: cl_mutable_command; var param_value: array of UIntPtr): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetMutableCommandInfoKHR_2(command, clMutableCommandInfo.MUTABLE_DISPATCH_GLOBAL_WORK_SIZE, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetMutableCommandInfoKHR_3(command, clMutableCommandInfo.MUTABLE_DISPATCH_GLOBAL_WORK_SIZE, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := new UIntPtr[param_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
       Result := GetMutableCommandInfoKHR(command, clMutableCommandInfo.MUTABLE_DISPATCH_GLOBAL_WORK_SIZE, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -3348,7 +3362,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR_MUTABLE_DISPATCH_LOCAL_WORK_SIZE(command: cl_mutable_command; var param_value: array of UIntPtr): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetMutableCommandInfoKHR_2(command, clMutableCommandInfo.MUTABLE_DISPATCH_LOCAL_WORK_SIZE, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetMutableCommandInfoKHR_3(command, clMutableCommandInfo.MUTABLE_DISPATCH_LOCAL_WORK_SIZE, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := new UIntPtr[param_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
       Result := GetMutableCommandInfoKHR(command, clMutableCommandInfo.MUTABLE_DISPATCH_LOCAL_WORK_SIZE, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -3366,10 +3380,6 @@
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetMutableCommandInfoKHR_3(command, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMutableCommandInfoKHR(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetMutableCommandInfoKHR_4(command, param_name, param_value_size, param_value, param_value_size_ret);
     
   end;
   
@@ -3450,18 +3460,18 @@
     private static function ntv_EnqueueAcquireD3D10ObjectsKHR_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueAcquireD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireD3D10ObjectsKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireD3D10ObjectsKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireD3D10ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireD3D10ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireD3D10ObjectsKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireD3D10ObjectsKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireD3D10ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireD3D10ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -3553,18 +3563,18 @@
     private static function ntv_EnqueueReleaseD3D10ObjectsKHR_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueReleaseD3D10ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseD3D10ObjectsKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseD3D10ObjectsKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseD3D10ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseD3D10ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseD3D10ObjectsKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseD3D10ObjectsKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseD3D10ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseD3D10ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D10ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -3695,18 +3705,18 @@
     private static function ntv_EnqueueAcquireD3D11ObjectsKHR_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueAcquireD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireD3D11ObjectsKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireD3D11ObjectsKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireD3D11ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireD3D11ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireD3D11ObjectsKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireD3D11ObjectsKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireD3D11ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireD3D11ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -3798,18 +3808,18 @@
     private static function ntv_EnqueueReleaseD3D11ObjectsKHR_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueReleaseD3D11ObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseD3D11ObjectsKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseD3D11ObjectsKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseD3D11ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseD3D11ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseD3D11ObjectsKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseD3D11ObjectsKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseD3D11ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseD3D11ObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseD3D11ObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -3954,18 +3964,18 @@
     private static function ntv_EnqueueAcquireDX9MediaSurfacesKHR_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueAcquireDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireDX9MediaSurfacesKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireDX9MediaSurfacesKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireDX9MediaSurfacesKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireDX9MediaSurfacesKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireDX9MediaSurfacesKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireDX9MediaSurfacesKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireDX9MediaSurfacesKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireDX9MediaSurfacesKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -4057,18 +4067,18 @@
     private static function ntv_EnqueueReleaseDX9MediaSurfacesKHR_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueReleaseDX9MediaSurfacesKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseDX9MediaSurfacesKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseDX9MediaSurfacesKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseDX9MediaSurfacesKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseDX9MediaSurfacesKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseDX9MediaSurfacesKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseDX9MediaSurfacesKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseDX9MediaSurfacesKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseDX9MediaSurfacesKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseDX9MediaSurfacesKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -4195,18 +4205,18 @@
     private static function ntv_EnqueueAcquireEGLObjectsKHR_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueAcquireEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireEGLObjectsKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireEGLObjectsKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireEGLObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireEGLObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireEGLObjectsKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireEGLObjectsKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireEGLObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireEGLObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -4298,18 +4308,18 @@
     private static function ntv_EnqueueReleaseEGLObjectsKHR_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueReleaseEGLObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseEGLObjectsKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseEGLObjectsKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseEGLObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseEGLObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseEGLObjectsKHR(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseEGLObjectsKHR(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseEGLObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseEGLObjectsKHR(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseEGLObjectsKHR(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -4412,18 +4422,18 @@
     private static function ntv_EnqueueAcquireExternalMemObjectsKHR_8(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueAcquireExternalMemObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireExternalMemObjectsKHR(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireExternalMemObjectsKHR(command_queue, num_mem_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireExternalMemObjectsKHR(command_queue, num_mem_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireExternalMemObjectsKHR(command_queue, num_mem_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireExternalMemObjectsKHR(command_queue, num_mem_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireExternalMemObjectsKHR(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireExternalMemObjectsKHR(command_queue, num_mem_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireExternalMemObjectsKHR(command_queue, num_mem_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireExternalMemObjectsKHR(command_queue, num_mem_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireExternalMemObjectsKHR(command_queue, num_mem_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireExternalMemObjectsKHR(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -4515,18 +4525,18 @@
     private static function ntv_EnqueueReleaseExternalMemObjectsKHR_8(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueReleaseExternalMemObjectsKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseExternalMemObjectsKHR(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseExternalMemObjectsKHR(command_queue, num_mem_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseExternalMemObjectsKHR(command_queue, num_mem_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseExternalMemObjectsKHR(command_queue, num_mem_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseExternalMemObjectsKHR(command_queue, num_mem_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseExternalMemObjectsKHR(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseExternalMemObjectsKHR(command_queue, num_mem_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseExternalMemObjectsKHR(command_queue, num_mem_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseExternalMemObjectsKHR(command_queue, num_mem_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseExternalMemObjectsKHR(command_queue, num_mem_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseExternalMemObjectsKHR(command_queue: cl_command_queue; num_mem_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -4666,22 +4676,28 @@
     
     private static function ntv_GetGLContextInfoKHR_1(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetGLContextInfoKHR';
-    private static function ntv_GetGLContextInfoKHR_2(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetGLContextInfoKHR_2(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetGLContextInfoKHR';
-    private static function ntv_GetGLContextInfoKHR_3(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetGLContextInfoKHR_3(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetGLContextInfoKHR';
-    private static function ntv_GetGLContextInfoKHR_4(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetGLContextInfoKHR_4(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetGLContextInfoKHR';
-    private static function ntv_GetGLContextInfoKHR_5(properties: IntPtr; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetGLContextInfoKHR_5(properties: IntPtr; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetGLContextInfoKHR';
-    private static function ntv_GetGLContextInfoKHR_6(properties: IntPtr; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetGLContextInfoKHR_6(properties: IntPtr; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetGLContextInfoKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR<T>(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
     begin
       Result := ntv_GetGLContextInfoKHR_1(properties, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR<T>(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetGLContextInfoKHR_2(properties, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetGLContextInfoKHR_2(properties, param_name, param_value_size, param_value, param_value_size_ret);
+      ntv_GetGLContextInfoKHR_3(properties, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
+      ntv_GetGLContextInfoKHR_4(properties, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR_CURRENT_DEVICE_FOR_GL_CONTEXT(var properties: clContextProperties; var param_value: cl_device_id; param_value_validate_size: boolean := false): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<cl_device_id>);
@@ -4693,7 +4709,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR_DEVICES_FOR_GL_CONTEXT(var properties: clContextProperties; var param_value: array of cl_device_id): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetGLContextInfoKHR_2(properties, clGlContextInfo.DEVICES_FOR_GL_CONTEXT, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetGLContextInfoKHR_3(properties, clGlContextInfo.DEVICES_FOR_GL_CONTEXT, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := new cl_device_id[param_value_sz.ToUInt64 div Marshal.SizeOf&<cl_device_id>];
       Result := GetGLContextInfoKHR(properties, clGlContextInfo.DEVICES_FOR_GL_CONTEXT, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -4703,27 +4719,23 @@
       var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<cl_device_id>);
       Result := GetGLContextInfoKHR(properties, clGlContextInfo.DEVICES_FOR_GL_CONTEXT, param_value_sz,param_value,IntPtr.Zero);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: array of clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: array of clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     type PClContextProperties = ^clContextProperties;
     begin
       Result := if (properties<>nil) and (properties.Length<>0) then
         ntv_GetGLContextInfoKHR_3(properties[0], param_name, param_value_size, param_value, param_value_size_ret) else
         ntv_GetGLContextInfoKHR_3(PClContextProperties(nil)^, param_name, param_value_size, param_value, param_value_size_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: array of clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: array of clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     type PClContextProperties = ^clContextProperties;
     begin
       Result := if (properties<>nil) and (properties.Length<>0) then
         ntv_GetGLContextInfoKHR_4(properties[0], param_name, param_value_size, param_value, param_value_size_ret) else
         ntv_GetGLContextInfoKHR_4(PClContextProperties(nil)^, param_name, param_value_size, param_value, param_value_size_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetGLContextInfoKHR_3(properties, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(var properties: clContextProperties; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetGLContextInfoKHR_4(properties, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: IntPtr; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: IntPtr; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetGLContextInfoKHR_5(properties, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: IntPtr; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLContextInfoKHR(properties: IntPtr; param_name: clGlContextInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
       ntv_GetGLContextInfoKHR_6(properties, param_name, param_value_size, param_value, param_value_size_ret);
     
     private static function ntv_CreateFromGLBuffer_1(context: cl_context; flags: clMemFlags; bufobj: UInt32; var errcode_ret: clErrorCode): cl_mem;
@@ -4760,13 +4772,19 @@
     
     private static function ntv_GetGLTextureInfo_1(memobj: cl_mem; param_name: clGlTextureInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetGLTextureInfo';
-    private static function ntv_GetGLTextureInfo_2(memobj: cl_mem; param_name: clGlTextureInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetGLTextureInfo_2(memobj: cl_mem; param_name: clGlTextureInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetGLTextureInfo';
-    private static function ntv_GetGLTextureInfo_3(memobj: cl_mem; param_name: clGlTextureInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetGLTextureInfo_3(memobj: cl_mem; param_name: clGlTextureInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    external 'OpenCL' name 'clGetGLTextureInfo';
+    private static function ntv_GetGLTextureInfo_4(memobj: cl_mem; param_name: clGlTextureInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetGLTextureInfo';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLTextureInfo<T>(memobj: cl_mem; param_name: clGlTextureInfo; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
     begin
       Result := ntv_GetGLTextureInfo_1(memobj, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLTextureInfo<T>(memobj: cl_mem; param_name: clGlTextureInfo; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetGLTextureInfo_2(memobj, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLTextureInfo_GL_TEXTURE_TARGET(memobj: cl_mem; var param_value: UInt32; param_value_validate_size: boolean := false): clErrorCode;
     begin
@@ -4792,10 +4810,10 @@
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLTextureInfo(memobj: cl_mem; param_name: clGlTextureInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetGLTextureInfo_2(memobj, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLTextureInfo(memobj: cl_mem; param_name: clGlTextureInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLTextureInfo(memobj: cl_mem; param_name: clGlTextureInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetGLTextureInfo_3(memobj, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetGLTextureInfo(memobj: cl_mem; param_name: clGlTextureInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
+      ntv_GetGLTextureInfo_4(memobj, param_name, param_value_size, param_value, param_value_size_ret);
     
     private static function ntv_EnqueueAcquireGLObjects_1(command_queue: cl_command_queue; num_objects: UInt32; var mem_objects: cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     external 'OpenCL' name 'clEnqueueAcquireGLObjects';
@@ -4814,18 +4832,18 @@
     private static function ntv_EnqueueAcquireGLObjects_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueAcquireGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireGLObjects(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireGLObjects(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireGLObjects(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireGLObjects(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueAcquireGLObjects(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueAcquireGLObjects(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueAcquireGLObjects(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueAcquireGLObjects(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueAcquireGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -4917,18 +4935,18 @@
     private static function ntv_EnqueueReleaseGLObjects_8(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueReleaseGLObjects';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseGLObjects(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseGLObjects(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseGLObjects(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseGLObjects(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_mem = ^cl_mem;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (mem_objects<>nil) and (mem_objects.Length<>0) then
-        EnqueueReleaseGLObjects(command_queue, num_objects, mem_objects[0], num_events_in_wait_list, event_wait_list, event) else
-        EnqueueReleaseGLObjects(command_queue, num_objects, PCl_mem(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueReleaseGLObjects(command_queue, num_objects, mem_objects, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueReleaseGLObjects(command_queue, num_objects, mem_objects, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueReleaseGLObjects(command_queue: cl_command_queue; num_objects: UInt32; mem_objects: array of cl_mem; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_mem = ^cl_mem;
@@ -5172,28 +5190,18 @@
     private static function ntv_EnqueueWaitSemaphoresKHR_16(command_queue: cl_command_queue; num_sema_objects: UInt32; sema_objects: IntPtr; sema_payload_list: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueWaitSemaphoresKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWaitSemaphoresKHR(command_queue: cl_command_queue; num_sema_objects: UInt32; sema_objects: array of cl_semaphore; sema_payload_list: array of UInt64; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_semaphore = ^cl_semaphore;
-    type PUInt64 = ^UInt64;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (sema_payload_list<>nil) and (sema_payload_list.Length<>0) then
-        if (sema_objects<>nil) and (sema_objects.Length<>0) then
-          EnqueueWaitSemaphoresKHR(command_queue, num_sema_objects, sema_objects[0], sema_payload_list[0], num_events_in_wait_list, event_wait_list, event) else
-          EnqueueWaitSemaphoresKHR(command_queue, num_sema_objects, PCl_semaphore(nil)^, sema_payload_list[0], num_events_in_wait_list, event_wait_list, event) else
-        if (sema_objects<>nil) and (sema_objects.Length<>0) then
-          EnqueueWaitSemaphoresKHR(command_queue, num_sema_objects, sema_objects[0], PUInt64(nil)^, num_events_in_wait_list, event_wait_list, event) else
-          EnqueueWaitSemaphoresKHR(command_queue, num_sema_objects, PCl_semaphore(nil)^, PUInt64(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueWaitSemaphoresKHR(command_queue, num_sema_objects, sema_objects, sema_payload_list, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueWaitSemaphoresKHR(command_queue, num_sema_objects, sema_objects, sema_payload_list, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWaitSemaphoresKHR(command_queue: cl_command_queue; num_sema_objects: UInt32; sema_objects: array of cl_semaphore; sema_payload_list: array of UInt64; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_semaphore = ^cl_semaphore;
-    type PUInt64 = ^UInt64;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (sema_payload_list<>nil) and (sema_payload_list.Length<>0) then
-        if (sema_objects<>nil) and (sema_objects.Length<>0) then
-          EnqueueWaitSemaphoresKHR(command_queue, num_sema_objects, sema_objects[0], sema_payload_list[0], num_events_in_wait_list, event_wait_list, event) else
-          EnqueueWaitSemaphoresKHR(command_queue, num_sema_objects, PCl_semaphore(nil)^, sema_payload_list[0], num_events_in_wait_list, event_wait_list, event) else
-        if (sema_objects<>nil) and (sema_objects.Length<>0) then
-          EnqueueWaitSemaphoresKHR(command_queue, num_sema_objects, sema_objects[0], PUInt64(nil)^, num_events_in_wait_list, event_wait_list, event) else
-          EnqueueWaitSemaphoresKHR(command_queue, num_sema_objects, PCl_semaphore(nil)^, PUInt64(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueWaitSemaphoresKHR(command_queue, num_sema_objects, sema_objects, sema_payload_list, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueWaitSemaphoresKHR(command_queue, num_sema_objects, sema_objects, sema_payload_list, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueWaitSemaphoresKHR(command_queue: cl_command_queue; num_sema_objects: UInt32; sema_objects: array of cl_semaphore; sema_payload_list: array of UInt64; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_semaphore = ^cl_semaphore;
@@ -5365,28 +5373,18 @@
     private static function ntv_EnqueueSignalSemaphoresKHR_16(command_queue: cl_command_queue; num_sema_objects: UInt32; sema_objects: IntPtr; sema_payload_list: IntPtr; num_events_in_wait_list: UInt32; event_wait_list: IntPtr; event: IntPtr): clErrorCode;
     external 'OpenCL' name 'clEnqueueSignalSemaphoresKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSignalSemaphoresKHR(command_queue: cl_command_queue; num_sema_objects: UInt32; sema_objects: array of cl_semaphore; sema_payload_list: array of UInt64; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; var event: cl_event): clErrorCode;
-    type PCl_semaphore = ^cl_semaphore;
-    type PUInt64 = ^UInt64;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (sema_payload_list<>nil) and (sema_payload_list.Length<>0) then
-        if (sema_objects<>nil) and (sema_objects.Length<>0) then
-          EnqueueSignalSemaphoresKHR(command_queue, num_sema_objects, sema_objects[0], sema_payload_list[0], num_events_in_wait_list, event_wait_list, event) else
-          EnqueueSignalSemaphoresKHR(command_queue, num_sema_objects, PCl_semaphore(nil)^, sema_payload_list[0], num_events_in_wait_list, event_wait_list, event) else
-        if (sema_objects<>nil) and (sema_objects.Length<>0) then
-          EnqueueSignalSemaphoresKHR(command_queue, num_sema_objects, sema_objects[0], PUInt64(nil)^, num_events_in_wait_list, event_wait_list, event) else
-          EnqueueSignalSemaphoresKHR(command_queue, num_sema_objects, PCl_semaphore(nil)^, PUInt64(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueSignalSemaphoresKHR(command_queue, num_sema_objects, sema_objects, sema_payload_list, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueSignalSemaphoresKHR(command_queue, num_sema_objects, sema_objects, sema_payload_list, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSignalSemaphoresKHR(command_queue: cl_command_queue; num_sema_objects: UInt32; sema_objects: array of cl_semaphore; sema_payload_list: array of UInt64; num_events_in_wait_list: UInt32; event_wait_list: array of cl_event; event: IntPtr): clErrorCode;
-    type PCl_semaphore = ^cl_semaphore;
-    type PUInt64 = ^UInt64;
+    type PCl_event = ^cl_event;
     begin
-      Result := if (sema_payload_list<>nil) and (sema_payload_list.Length<>0) then
-        if (sema_objects<>nil) and (sema_objects.Length<>0) then
-          EnqueueSignalSemaphoresKHR(command_queue, num_sema_objects, sema_objects[0], sema_payload_list[0], num_events_in_wait_list, event_wait_list, event) else
-          EnqueueSignalSemaphoresKHR(command_queue, num_sema_objects, PCl_semaphore(nil)^, sema_payload_list[0], num_events_in_wait_list, event_wait_list, event) else
-        if (sema_objects<>nil) and (sema_objects.Length<>0) then
-          EnqueueSignalSemaphoresKHR(command_queue, num_sema_objects, sema_objects[0], PUInt64(nil)^, num_events_in_wait_list, event_wait_list, event) else
-          EnqueueSignalSemaphoresKHR(command_queue, num_sema_objects, PCl_semaphore(nil)^, PUInt64(nil)^, num_events_in_wait_list, event_wait_list, event);
+      Result := if (event_wait_list<>nil) and (event_wait_list.Length<>0) then
+        EnqueueSignalSemaphoresKHR(command_queue, num_sema_objects, sema_objects, sema_payload_list, num_events_in_wait_list, event_wait_list[0], event) else
+        EnqueueSignalSemaphoresKHR(command_queue, num_sema_objects, sema_objects, sema_payload_list, num_events_in_wait_list, PCl_event(nil)^, event);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function EnqueueSignalSemaphoresKHR(command_queue: cl_command_queue; num_sema_objects: UInt32; sema_objects: array of cl_semaphore; sema_payload_list: array of UInt64; num_events_in_wait_list: UInt32; var event_wait_list: cl_event; var event: cl_event): clErrorCode;
     type PCl_semaphore = ^cl_semaphore;
@@ -5527,18 +5525,24 @@
     
     private static function ntv_GetSemaphoreInfoKHR_1(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetSemaphoreInfoKHR';
-    private static function ntv_GetSemaphoreInfoKHR_2(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetSemaphoreInfoKHR_2(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetSemaphoreInfoKHR';
-    private static function ntv_GetSemaphoreInfoKHR_3(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetSemaphoreInfoKHR_3(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetSemaphoreInfoKHR';
-    private static function ntv_GetSemaphoreInfoKHR_4(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetSemaphoreInfoKHR_4(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetSemaphoreInfoKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR<T>(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
     begin
       Result := ntv_GetSemaphoreInfoKHR_1(sema_object, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR<T>(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetSemaphoreInfoKHR_2(sema_object, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetSemaphoreInfoKHR_2(sema_object, param_name, param_value_size, param_value, param_value_size_ret);
+      ntv_GetSemaphoreInfoKHR_3(sema_object, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
+      ntv_GetSemaphoreInfoKHR_4(sema_object, param_name, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR_SEMAPHORE_CONTEXT(sema_object: cl_semaphore; var param_value: cl_context; param_value_validate_size: boolean := false): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<cl_context>);
@@ -5582,7 +5586,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR_SEMAPHORE_EXPORT_HANDLE_TYPES(sema_object: cl_semaphore; var param_value: array of clExternalSemaphoreHandleType): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetSemaphoreInfoKHR_2(sema_object, clSemaphoreInfo.SEMAPHORE_EXPORT_HANDLE_TYPES, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetSemaphoreInfoKHR_3(sema_object, clSemaphoreInfo.SEMAPHORE_EXPORT_HANDLE_TYPES, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := new clExternalSemaphoreHandleType[param_value_sz.ToUInt64 div Marshal.SizeOf&<clExternalSemaphoreHandleType>];
       Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.SEMAPHORE_EXPORT_HANDLE_TYPES, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -5595,7 +5599,7 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR_DEVICE_HANDLE_LIST(sema_object: cl_semaphore; var param_value: array of cl_device_id): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetSemaphoreInfoKHR_2(sema_object, clSemaphoreInfo.DEVICE_HANDLE_LIST, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetSemaphoreInfoKHR_3(sema_object, clSemaphoreInfo.DEVICE_HANDLE_LIST, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := new cl_device_id[param_value_sz.ToUInt64 div Marshal.SizeOf&<cl_device_id>];
       Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.DEVICE_HANDLE_LIST, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -5605,10 +5609,6 @@
       var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<cl_device_id>);
       Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.DEVICE_HANDLE_LIST, param_value_sz,param_value,IntPtr.Zero);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetSemaphoreInfoKHR_3(sema_object, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR(sema_object: cl_semaphore; param_name: clSemaphoreInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetSemaphoreInfoKHR_4(sema_object, param_name, param_value_size, param_value, param_value_size_ret);
     
     private static function ntv_ReleaseSemaphoreKHR_1(sema_object: cl_semaphore): clErrorCode;
     external 'OpenCL' name 'clReleaseSemaphoreKHR';
@@ -5637,22 +5637,48 @@
     
     private static function ntv_GetKernelSubGroupInfoKHR_1(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; var input_value: Byte; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetKernelSubGroupInfoKHR';
-    private static function ntv_GetKernelSubGroupInfoKHR_2(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; var input_value: Byte; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetKernelSubGroupInfoKHR_2(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; var input_value: Byte; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetKernelSubGroupInfoKHR';
-    private static function ntv_GetKernelSubGroupInfoKHR_3(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetKernelSubGroupInfoKHR_3(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; var input_value: Byte; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetKernelSubGroupInfoKHR';
-    private static function ntv_GetKernelSubGroupInfoKHR_4(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetKernelSubGroupInfoKHR_4(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; var input_value: Byte; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetKernelSubGroupInfoKHR';
-    private static function ntv_GetKernelSubGroupInfoKHR_5(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetKernelSubGroupInfoKHR_5(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
+    external 'OpenCL' name 'clGetKernelSubGroupInfoKHR';
+    private static function ntv_GetKernelSubGroupInfoKHR_6(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
+    external 'OpenCL' name 'clGetKernelSubGroupInfoKHR';
+    private static function ntv_GetKernelSubGroupInfoKHR_7(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    external 'OpenCL' name 'clGetKernelSubGroupInfoKHR';
+    private static function ntv_GetKernelSubGroupInfoKHR_8(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetKernelSubGroupInfoKHR';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR<TInp,T>(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; var input_value: TInp; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where TInp, T: record;
     begin
       Result := ntv_GetKernelSubGroupInfoKHR_1(in_kernel, in_device, param_name, input_value_size, PByte(pointer(@input_value))^, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR<TInp,T>(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; var input_value: TInp; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where TInp, T: record;
+    begin
+      Result := ntv_GetKernelSubGroupInfoKHR_2(in_kernel, in_device, param_name, input_value_size, PByte(pointer(@input_value))^, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR<TInp>(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; var input_value: TInp; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode; where TInp: record;
     begin
-      Result := ntv_GetKernelSubGroupInfoKHR_2(in_kernel, in_device, param_name, input_value_size, PByte(pointer(@input_value))^, param_value_size, param_value, param_value_size_ret);
+      Result := ntv_GetKernelSubGroupInfoKHR_3(in_kernel, in_device, param_name, input_value_size, PByte(pointer(@input_value))^, param_value_size, param_value, param_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR<TInp>(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; var input_value: TInp; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode; where TInp: record;
+    begin
+      Result := ntv_GetKernelSubGroupInfoKHR_4(in_kernel, in_device, param_name, input_value_size, PByte(pointer(@input_value))^, param_value_size, param_value, param_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR<T>(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetKernelSubGroupInfoKHR_5(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR<T>(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetKernelSubGroupInfoKHR_6(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
+      ntv_GetKernelSubGroupInfoKHR_7(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
+      ntv_GetKernelSubGroupInfoKHR_8(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR_KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT(in_kernel: cl_kernel; in_device: cl_device_id; input_value: UIntPtr; var param_value: array of UIntPtr): clErrorCode;
     begin
       var input_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
@@ -5668,15 +5694,11 @@
       var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<UIntPtr>);
       Result := GetKernelSubGroupInfoKHR(in_kernel, in_device, clKernelSubGroupInfo.KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT, input_value_sz,input_value, param_value_sz,param_value,IntPtr.Zero);
     end;
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)] static function temp_GetKernelSubGroupInfoKHR_1<T>(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: pointer; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
-    begin
-      Result := ntv_GetKernelSubGroupInfoKHR_3(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
-    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR_KERNEL_MAX_NUM_SUB_GROUPS(in_kernel: cl_kernel; in_device: cl_device_id; var param_value: UIntPtr; param_value_validate_size: boolean := false): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       var param_value_ret_size: UIntPtr;
-      Result := temp_GetKernelSubGroupInfoKHR_1(in_kernel, in_device, clKernelSubGroupInfo.KERNEL_MAX_NUM_SUB_GROUPS, UIntPtr.Zero,nil, param_value_sz,param_value,param_value_ret_size);
+      Result := GetKernelSubGroupInfoKHR(in_kernel, in_device, clKernelSubGroupInfo.KERNEL_MAX_NUM_SUB_GROUPS, UIntPtr.Zero,nil, param_value_sz,param_value,param_value_ret_size);
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
@@ -5684,7 +5706,7 @@
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       var param_value_ret_size: UIntPtr;
-      Result := temp_GetKernelSubGroupInfoKHR_1(in_kernel, in_device, clKernelSubGroupInfo.KERNEL_COMPILE_NUM_SUB_GROUPS, UIntPtr.Zero,nil, param_value_sz,param_value,param_value_ret_size);
+      Result := GetKernelSubGroupInfoKHR(in_kernel, in_device, clKernelSubGroupInfo.KERNEL_COMPILE_NUM_SUB_GROUPS, UIntPtr.Zero,nil, param_value_sz,param_value,param_value_ret_size);
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
@@ -5728,14 +5750,10 @@
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       var param_value_ret_size: UIntPtr;
-      Result := temp_GetKernelSubGroupInfoKHR_1(in_kernel, in_device, clKernelSubGroupInfo.KERNEL_COMPILE_SUB_GROUP_SIZE, UIntPtr.Zero,nil, param_value_sz,param_value,param_value_ret_size);
+      Result := GetKernelSubGroupInfoKHR(in_kernel, in_device, clKernelSubGroupInfo.KERNEL_COMPILE_SUB_GROUP_SIZE, UIntPtr.Zero,nil, param_value_sz,param_value,param_value_ret_size);
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetKernelSubGroupInfoKHR_4(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetKernelSubGroupInfoKHR(in_kernel: cl_kernel; in_device: cl_device_id; param_name: clKernelSubGroupInfo; input_value_size: UIntPtr; input_value: IntPtr; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
-      ntv_GetKernelSubGroupInfoKHR_5(in_kernel, in_device, param_name, input_value_size, input_value, param_value_size, param_value, param_value_size_ret);
     
   end;
   
@@ -5844,17 +5862,23 @@
     
     private static function ntv_GetDeviceImageInfoQCOM_1(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetDeviceImageInfoQCOM';
-    private static function ntv_GetDeviceImageInfoQCOM_2(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetDeviceImageInfoQCOM_2(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetDeviceImageInfoQCOM';
-    private static function ntv_GetDeviceImageInfoQCOM_3(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetDeviceImageInfoQCOM_3(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetDeviceImageInfoQCOM';
-    private static function ntv_GetDeviceImageInfoQCOM_4(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
+    private static function ntv_GetDeviceImageInfoQCOM_4(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetDeviceImageInfoQCOM';
-    private static function ntv_GetDeviceImageInfoQCOM_5(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    private static function ntv_GetDeviceImageInfoQCOM_5(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    external 'OpenCL' name 'clGetDeviceImageInfoQCOM';
+    private static function ntv_GetDeviceImageInfoQCOM_6(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
     external 'OpenCL' name 'clGetDeviceImageInfoQCOM';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM<T>(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
     begin
       Result := ntv_GetDeviceImageInfoQCOM_1(device, image_width, image_height, image_format, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM<T>(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      Result := ntv_GetDeviceImageInfoQCOM_2(device, image_width, image_height, image_format, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM_IMAGE_ROW_PITCH(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; var param_value: UInt32; param_value_validate_size: boolean := false): clErrorCode;
     begin
@@ -5888,28 +5912,28 @@
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode;
-    type PCl_image_format = ^cl_image_format;
-    begin
-      Result := if (image_format<>nil) and (image_format.Length<>0) then
-        ntv_GetDeviceImageInfoQCOM_2(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, param_value_size_ret) else
-        ntv_GetDeviceImageInfoQCOM_2(device, image_width, image_height, PCl_image_format(nil)^, param_name, param_value_size, param_value, param_value_size_ret);
-    end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
     type PCl_image_format = ^cl_image_format;
     begin
       Result := if (image_format<>nil) and (image_format.Length<>0) then
         ntv_GetDeviceImageInfoQCOM_3(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, param_value_size_ret) else
         ntv_GetDeviceImageInfoQCOM_3(device, image_width, image_height, PCl_image_format(nil)^, param_name, param_value_size, param_value, param_value_size_ret);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
-      ntv_GetDeviceImageInfoQCOM_2(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: array of cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
+    type PCl_image_format = ^cl_image_format;
+    begin
+      Result := if (image_format<>nil) and (image_format.Length<>0) then
+        ntv_GetDeviceImageInfoQCOM_4(device, image_width, image_height, image_format[0], param_name, param_value_size, param_value, param_value_size_ret) else
+        ntv_GetDeviceImageInfoQCOM_4(device, image_width, image_height, PCl_image_format(nil)^, param_name, param_value_size, param_value, param_value_size_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetDeviceImageInfoQCOM_3(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; var image_format: cl_image_format; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
       ntv_GetDeviceImageInfoQCOM_4(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: IntPtr; param_value_size_ret: IntPtr): clErrorCode :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode :=
       ntv_GetDeviceImageInfoQCOM_5(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceImageInfoQCOM(device: cl_device_id; image_width: UIntPtr; image_height: UIntPtr; image_format: IntPtr; param_name: clImagePitchInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode :=
+      ntv_GetDeviceImageInfoQCOM_6(device, image_width, image_height, image_format, param_name, param_value_size, param_value, param_value_size_ret);
     
   end;
   

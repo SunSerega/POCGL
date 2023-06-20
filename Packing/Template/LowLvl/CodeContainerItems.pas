@@ -174,7 +174,7 @@ type
     
     {$region Overloads}
     
-    private enum_to_type_binding_helper_ovr := default(FuncOverload);
+    private has_enum_to_type := false;
     public all_overloads: List<FuncOverload>;
     public procedure InitOverloads;
     begin
@@ -264,10 +264,12 @@ type
       
       all_overloads := new List<FuncOverload>(expected_ovr_count);
       
+      var helper_ovrs := new HashSet<FuncOverload>;
       {$region EnumToType}
       
       if enum_to_type_binding_gr<>nil then
       begin
+        self.has_enum_to_type := true;
         
         {$region Find}
         
@@ -275,13 +277,22 @@ type
         if enum_to_type_bindings.Length=0 then
           raise new InvalidOperationException;
         
+        foreach var b in enum_to_type_bindings do
+        begin
+          var p1 := new FuncParamT(b.IsInputData, false, 0, KnownDirectTypes.IntPtr);
+          var p2 := new FuncParamT(b.IsInputData, false, 0, KnownDirectTypes.Pointer);
+          if not possible_par_types[b.data_par_ind].Remove(p1) then
+            raise new InvalidOperationException(FuncOverload.Create(possible_par_types[b.data_par_ind].ToArray).ToString);
+          possible_par_types[b.data_par_ind].Add(p2);
+        end;
+        
         {$endregion Find}
         
-        {$region enum_to_type_binding_helper_ovr}
+        {$region Helper ovr's}
         
+        var main_helper_pars := new FuncParamT[ntv_pars.Length];
         begin
-          var pars := new FuncParamT[ntv_pars.Length];
-          for var par_i := 0 to pars.Length-1 do
+          for var par_i := 0 to ntv_pars.Length-1 do
           begin
             if is_proc and (par_i=0) then continue;
             
@@ -306,7 +317,7 @@ type
               var t := $'T';
               if b.IsInputData then
                 t += 'Inp';
-              pars[par_i] := new FuncParamT(b.IsInputData, true, 0, TypeLookup.FromName(t));
+              main_helper_pars[par_i] := new FuncParamT(b.IsInputData, true, 0, TypeLookup.FromName(t));
               continue;
             end;
             
@@ -323,42 +334,58 @@ type
                 raise new InvalidOperationException;
               if ntv_par.ValCombo <> nil then
                 raise new InvalidOperationException;
-              pars[par_i] := new FuncParamT(false,true, 0, KnownDirectTypes.UIntPtr);
+              main_helper_pars[par_i] := new FuncParamT(false,true, 0, KnownDirectTypes.UIntPtr);
               continue;
             end;
             
             if possible_par_types[par_i].Count=1 then
             begin
-              pars[par_i] := possible_par_types[par_i].Single;
+              main_helper_pars[par_i] := possible_par_types[par_i].Single;
               continue;
             end;
             
             if (possible_par_types[par_i].Count=3) and (ntv_pars[par_i].CalculatedPtr=1) then
             begin
-              pars[par_i] := possible_par_types[par_i].Single(p->p.var_arg);
+              main_helper_pars[par_i] := possible_par_types[par_i].Single(p->p.var_arg);
               continue;
             end;
             
             raise new NotImplementedException;
           end;
           
-          self.enum_to_type_binding_helper_ovr := new FuncOverload(pars);
-          all_overloads += enum_to_type_binding_helper_ovr;
-          
-          if enum_to_type_binding_gr_body.Enums.Any(r->r.HasOutput and (r.OutputT.ArrSize = ParArrSizeArbitrary.Instance)) then
+          var repl_pars := new FuncParamT[ntv_pars.Length];
+          foreach var r in enum_to_type_binding_gr_body.Enums do
           begin
-            pars := pars.ToArray;
+            var set_inp := not r.HasInput;
+            // In case of ParArrSizeArbitrary, an additional call to get size could be needed
+            // But if "not r.HasOutput" - overload cannot be generated (warning below)
+            var set_otp := r.HasOutput and (r.OutputT.ArrSize = ParArrSizeArbitrary.Instance);
+            
             foreach var b in enum_to_type_bindings do
-              if not b.IsInputData then
-                pars[b.data_par_ind] := new FuncParamT(false, false, 0, KnownDirectTypes.Pointer);
-            all_overloads += new FuncOverload(pars);
+              if b.IsInputData ? set_inp : set_otp then
+                repl_pars[b.data_par_ind] := new FuncParamT(b.IsInputData, false, 0, KnownDirectTypes.Pointer);
+            
+          end;
+          foreach var b in enum_to_type_bindings do
+            if not b.IsInputData then
+              repl_pars[b.returned_size_par_ind.Value] := new FuncParamT(false, false, 0, KnownDirectTypes.IntPtr);
+          
+          foreach var allow_ptrs_choise in MultiBooleanChoiceSet.Create(repl_pars.ConvertAll(par->par<>nil)).Enmr do
+          begin
+            var pars := new FuncParamT[ntv_pars.Length];
+            for var par_i := 0 to pars.Length-1 do
+              pars[par_i] := if allow_ptrs_choise.Flag[par_i] then
+                repl_pars[par_i] else main_helper_pars[par_i];
+            var ovr: FuncOverload := pars;
+            all_overloads += ovr;
+            helper_ovrs += ovr;
           end;
           
         end;
         
-        {$endregion enum_to_type_binding_helper_ovr}
+        {$endregion Helper ovr's}
         
-        {$region other ovr's}
+        {$region Per enum ovr's}
         
         foreach var r in enum_to_type_binding_gr_body.Enums do
         begin
@@ -381,7 +408,7 @@ type
           // only "explicit_count_par=true" will be added
           for var explicit_count_par := false to true do
           begin
-            var pars := enum_to_type_binding_helper_ovr.ItemsSeq.ToArray;
+            var pars := main_helper_pars.ToArray;
             pars[ntv_pars.FindIndex(par->par.CalculatedDirectType=enum_to_type_binding_gr)] := nil;
             
             var any_binding_dynamic := false;
@@ -476,7 +503,7 @@ type
           
         end;
         
-        {$endregion other ovr's}
+        {$endregion Per enum ovr's}
         
       end;
       
@@ -485,20 +512,22 @@ type
       for var only_arr_ovrs := opt_arr.Any(b->b) downto false do
         foreach var ppt_choices_state in ppt_choices.Enmr do
         begin
-          var ovr := new FuncParamT[ntv_pars.Length];
+          var pars := new FuncParamT[ntv_pars.Length];
           for var par_i := 0 to ntv_pars.Length-1 do
           begin
             if is_proc and (par_i=0) then continue;
             var ppt_ind := ppt_choices_state.Choice[par_i];
             if opt_arr[par_i] and (ppt_ind=0 <> only_arr_ovrs) then
             begin
-              ovr := nil;
+              pars := nil;
               break;
             end;
-            ovr[par_i] := possible_par_types[par_i][ppt_ind];
+            pars[par_i] := possible_par_types[par_i][ppt_ind];
           end;
-          if ovr=nil then continue;
-          all_overloads += FuncOverload(ovr);
+          if pars=nil then continue;
+          var ovr: FuncOverload := pars;
+          if ovr in helper_ovrs then continue;
+          all_overloads += ovr;
         end;
       
       {$ifdef DEBUG}
@@ -526,7 +555,7 @@ type
       ForEachDefined(f->
       begin
         f.InitOverloads;
-        if ReferenceEquals(f.enum_to_type_binding_helper_ovr, nil) then exit;
+        if not f.has_enum_to_type then exit;
         
         var bound_ovrs := f.all_overloads.Where(ovr->ovr.enum_to_type_bindings<>nil);
         
@@ -846,7 +875,7 @@ type
         var ett_bind_info_by_ind: Dictionary<integer, EnumToTypeBindingInfo>;
         var ett_skip_inds: HashSet<integer>;
         var ett_gr: IDirectNamedType;
-        if not ReferenceEquals(enum_to_type_binding_helper_ovr, nil) then
+        if self.has_enum_to_type then
         begin
           var ett_bindings := all_overloads.Select(ovr->ovr.enum_to_type_bindings).Distinct.Single(b->b<>nil);
           ett_gr := all_overloads.Select(ovr->ovr.enum_to_type_gr).Distinct.Single(gr->gr<>nil);
@@ -882,7 +911,7 @@ type
               if ntv_pars[par_i].CalculatedDirectType = ett_gr then
               begin
                 if par<>nil then raise new InvalidOperationException;
-                res += FuncParamMarshalStep.FromEnumToTypeGroup(self.enum_to_type_binding_helper_ovr[par_i]);
+                res += FuncParamMarshalStep.FromEnumToTypeGroup(self.possible_par_types[par_i].Single);
                 continue;
               end;
               if par_i in ett_skip_inds then continue;
@@ -1005,8 +1034,8 @@ type
           var method_insert_ind := all_methods.Count;
           all_methods += public_md;
           
-//          if display_name='4GenericWOVarArg' then
-//            display_name := display_name;
+          if display_name='7EnumToType' then
+            display_name := display_name;
           
           var pending_methods := new Stack<ValueTuple<MethodImplData, array of MarshalCallKind>>;
           begin
@@ -1151,19 +1180,21 @@ type
                   if new_md.IsFinalStep then
                     all_ntv_methods += new_md else
                     all_methods.Insert(method_insert_ind, new_md);
+                  if not new_md.IsFinalStep then
+                  begin
+                    var next_ovr_steps := new_md.MakeOvrSteps;
+                    {$ifdef DEBUG}
+                    if next_ovr_steps.Length>1 then
+                      // Only public methods are expected to have branching
+                      // Tho technically I don't see any problem handling this
+                      raise new NotImplementedException;
+                    {$endif DEBUG}
+                    pending_methods += ValueTuple.Create(new_md, next_ovr_steps);
+                  end;
                 end;
               end;
               
               old_md.AddCallTo(ovr_call_kind, new_md, step_marshal_choices.Enmr.Last);
-              
-              if new_md.IsFinalStep then continue;
-              var next_ovr_steps := new_md.MakeOvrSteps;
-              if next_ovr_steps.Length>1 then
-                // Only public methods are expected to have branching
-                // Tho technically I don't see any problem handling this
-                raise new NotImplementedException;
-              
-              pending_methods += ValueTuple.Create(new_md, next_ovr_steps);
             end;
             
           end;
