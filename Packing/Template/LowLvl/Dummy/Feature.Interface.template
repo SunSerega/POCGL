@@ -142,7 +142,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5Arrrrrray_1(pointer(nil));
+        ntv_5Arrrrrray_1(nil);
         exit;
       end;
       var a_temp_arr: array of array of array of array of IntPtr;
@@ -198,7 +198,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5Arrrrrray_1(pointer(nil));
+        ntv_5Arrrrrray_1(nil);
         exit;
       end;
       var a_temp_arr: array of array of array of IntPtr;
@@ -245,7 +245,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5Arrrrrray_1(pointer(nil));
+        ntv_5Arrrrrray_1(nil);
         exit;
       end;
       var a_temp_arr: array of array of IntPtr;
@@ -283,7 +283,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5Arrrrrray_1(pointer(nil));
+        ntv_5Arrrrrray_1(nil);
         exit;
       end;
       var a_temp_arr: array of IntPtr;
@@ -322,7 +322,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        ntv_5ArrrrrrayOfGeneric_1(nil);
         exit;
       end;
       var a_temp_arr: array of array of array of array of IntPtr;
@@ -378,7 +378,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        ntv_5ArrrrrrayOfGeneric_1(nil);
         exit;
       end;
       var a_temp_arr: array of array of array of IntPtr;
@@ -425,7 +425,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        ntv_5ArrrrrrayOfGeneric_1(nil);
         exit;
       end;
       var a_temp_arr: array of array of IntPtr;
@@ -463,7 +463,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        ntv_5ArrrrrrayOfGeneric_1(nil);
         exit;
       end;
       var a_temp_arr: array of IntPtr;
@@ -502,7 +502,7 @@
     begin
       if (s=nil) or (s.Length=0) then
       begin
-        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        ntv_5ArrrrrrayOfString_1(nil);
         exit;
       end;
       var s_temp_arr: array of array of array of array of IntPtr;
@@ -555,7 +555,7 @@
     begin
       if (s=nil) or (s.Length=0) then
       begin
-        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        ntv_5ArrrrrrayOfString_1(nil);
         exit;
       end;
       var s_temp_arr: array of array of array of IntPtr;
@@ -602,7 +602,7 @@
     begin
       if (s=nil) or (s.Length=0) then
       begin
-        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        ntv_5ArrrrrrayOfString_1(nil);
         exit;
       end;
       var s_temp_arr: array of array of IntPtr;
@@ -640,7 +640,7 @@
     begin
       if (s=nil) or (s.Length=0) then
       begin
-        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        ntv_5ArrrrrrayOfString_1(nil);
         exit;
       end;
       var s_temp_arr: array of IntPtr;
@@ -905,7 +905,7 @@
       ntv_7EnumToType_7(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
       try
-        ntv_7EnumToType_7(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
+        ntv_7EnumToType_8(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
         otp_value := Marshal.PtrToStringAnsi(otp_value_temp_res);
       finally
         Marshal.FreeHGlobal(otp_value_temp_res);
@@ -1083,7 +1083,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5Arrrrrray_1(pointer(nil));
+        ntv_5Arrrrrray_1(nil);
         exit;
       end;
       var a_temp_arr: array of array of array of array of IntPtr;
@@ -1139,7 +1139,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5Arrrrrray_1(pointer(nil));
+        ntv_5Arrrrrray_1(nil);
         exit;
       end;
       var a_temp_arr: array of array of array of IntPtr;
@@ -1186,7 +1186,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5Arrrrrray_1(pointer(nil));
+        ntv_5Arrrrrray_1(nil);
         exit;
       end;
       var a_temp_arr: array of array of IntPtr;
@@ -1224,7 +1224,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5Arrrrrray_1(pointer(nil));
+        ntv_5Arrrrrray_1(nil);
         exit;
       end;
       var a_temp_arr: array of IntPtr;
@@ -1262,7 +1262,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        ntv_5ArrrrrrayOfGeneric_1(nil);
         exit;
       end;
       var a_temp_arr: array of array of array of array of IntPtr;
@@ -1318,7 +1318,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        ntv_5ArrrrrrayOfGeneric_1(nil);
         exit;
       end;
       var a_temp_arr: array of array of array of IntPtr;
@@ -1365,7 +1365,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        ntv_5ArrrrrrayOfGeneric_1(nil);
         exit;
       end;
       var a_temp_arr: array of array of IntPtr;
@@ -1403,7 +1403,7 @@
     begin
       if (a=nil) or (a.Length=0) then
       begin
-        ntv_5ArrrrrrayOfGeneric_1(pointer(nil));
+        ntv_5ArrrrrrayOfGeneric_1(nil);
         exit;
       end;
       var a_temp_arr: array of IntPtr;
@@ -1441,7 +1441,7 @@
     begin
       if (s=nil) or (s.Length=0) then
       begin
-        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        ntv_5ArrrrrrayOfString_1(nil);
         exit;
       end;
       var s_temp_arr: array of array of array of array of IntPtr;
@@ -1494,7 +1494,7 @@
     begin
       if (s=nil) or (s.Length=0) then
       begin
-        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        ntv_5ArrrrrrayOfString_1(nil);
         exit;
       end;
       var s_temp_arr: array of array of array of IntPtr;
@@ -1541,7 +1541,7 @@
     begin
       if (s=nil) or (s.Length=0) then
       begin
-        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        ntv_5ArrrrrrayOfString_1(nil);
         exit;
       end;
       var s_temp_arr: array of array of IntPtr;
@@ -1579,7 +1579,7 @@
     begin
       if (s=nil) or (s.Length=0) then
       begin
-        ntv_5ArrrrrrayOfString_1(pointer(nil));
+        ntv_5ArrrrrrayOfString_1(nil);
         exit;
       end;
       var s_temp_arr: array of IntPtr;
@@ -1834,7 +1834,7 @@
       ntv_7EnumToType_7(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
       try
-        ntv_7EnumToType_7(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
+        ntv_7EnumToType_8(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
         otp_value := Marshal.PtrToStringAnsi(otp_value_temp_res);
       finally
         Marshal.FreeHGlobal(otp_value_temp_res);

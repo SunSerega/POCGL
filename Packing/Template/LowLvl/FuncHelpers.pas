@@ -513,16 +513,13 @@ type
         ett_step.AddNext(step_kinds, steps);
       end;
       
-      var par_data_size_ret :=
-        if info.IsInputData then System.Array.Empty&<FuncParamT> else
-          |new FuncParamT(false, true, 0, data_size_t)|;
-      
       if not need_count_par and (data_par<>nil) and (data_par.enum_to_type_data_rep_c=nil) and not info.IsInputData then
         add_step(MSK_EnumToTypeGetSize,
           |
             new FuncParamT(false, false, 0, data_size_t),
-            new FuncParamT(info.IsInputData, false, 0, KnownDirectTypes.Pointer)
-          |+par_data_size_ret
+            new FuncParamT(info.IsInputData, false, 0, KnownDirectTypes.Pointer),
+            new FuncParamT(false, true, 0, data_size_t)
+          |
         );
       
       var prev_data_par := new FuncParamT(info.IsInputData, true, 0, TypeLookup.FromName('T'+if info.IsInputData then 'Inp' else ''));
@@ -535,7 +532,12 @@ type
         |
           new FuncParamT(false, false, 0, data_size_t),
           prev_data_par
-        |+par_data_size_ret
+        | +
+        if info.IsInputData then
+          System.Array.Empty&<FuncParamT> else
+        if data_par.enum_to_type_data_rep_c<>nil then
+          |new FuncParamT(false, true, 0, data_size_t)| else
+          |new FuncParamT(false, false, 0, KnownDirectTypes.IntPtr)|
       );
       
       from_ett_steps.Add(from_ett_key, Result);
@@ -850,13 +852,11 @@ type
     public procedure WriteResAssign(assigned_value_str: string) :=
       WriteResAssign(wr->(wr += assigned_value_str));
     
-    private event on_call: procedure(step_kind: MarshalStepKind; write_par: Writer->());
-    public procedure MakeCall(step_kind: MarshalStepKind; write_par: Writer->() := nil);
-    begin
-      on_call(step_kind, write_par);
-    end;
-    public procedure MakeCall(step_kind: MarshalStepKind; par_str: string) :=
-      MakeCall(step_kind, wr->(wr += par_str));
+    private event on_call: procedure(step_kind: MarshalStepKind; call_pars: array of FuncParamT; write_par: Writer->());
+    public procedure MakeCall(step_kind: MarshalStepKind; call_pars: array of FuncParamT; write_par: Writer->() := nil) :=
+      on_call(step_kind, call_pars, write_par);
+    public procedure MakeCall(step_kind: MarshalStepKind; call_pars: array of FuncParamT; par_str: string) :=
+      on_call(step_kind, call_pars, wr->(wr += par_str));
     
   end;
   
@@ -913,15 +913,16 @@ type
       foreach var step in md.par_groups index step_i do
         if not md.step_marshal_choice.Flag[step_i] then
         begin
+          var pars := step.pars.ConvertAll(\(par_kind,par)->par);
           if par_done_c=0 then
           begin
             step_write_orders += FPWO_FlatResult;
-            step_write_procs += wr->wr.WriteResAssign(wr->wr.MakeCall(MSK_FlatForward))
+            step_write_procs += wr->wr.WriteResAssign(wr->wr.MakeCall(MSK_FlatForward, pars))
           end else
           begin
             step_write_orders += FPWO_InPlace;
             var par_names := ArrGen(step.pars.Length, par_i->par_name_at(par_done_c+par_i));
-            step_write_procs += wr->wr.MakeCall(MSK_FlatForward, wr->
+            step_write_procs += wr->wr.MakeCall(MSK_FlatForward, pars, wr->
               wr.WriteSeparated(par_names, (wr,par_name)->(wr += par_name), ', ')
             );
           end;
@@ -960,6 +961,7 @@ type
     
     private write_step_procs: array of Action<Writer> := nil;
     private step_kinds: array of MarshalStepKind := nil;
+    private call_pars: array of array of FuncParamT;
     private procedure ExecuteMarshalCore(wr: Writer; tab, left_c: integer);
     begin
       
@@ -969,10 +971,11 @@ type
       
       var wr_cont := new FuncParWriteContainer(wr, is_proc, need_block, tab);
       
-      wr_cont.on_call += (step_kind, write_step_proc)->
+      wr_cont.on_call += (step_kind, call_par_arr, write_step_proc)->
       begin
         write_step_procs[step_i] := write_step_proc;
         step_kinds[step_i] := step_kind;
+        call_pars[step_i] := call_par_arr;
         if (step_i=0) and (write_step_proc<>nil) then
           raise new InvalidOperationException;
         
@@ -988,6 +991,13 @@ type
             );
           uncalled.Remove(ovr_step_kind);
           
+          if not called_md.MakeOverload.ItemsSeq.SequenceEqual(call_pars.SelectMany(a->a)) then
+          begin
+            Otp($'ERORR: {md.FinalName(nil)} ({md.MakeOverload}) + ({ovr_step_kind}) reported wrong param types:');
+            Otp($'Got: {new FuncOverload(call_pars.SelectMany(a->a).ToArray)}');
+            Otp($'Exp: {called_md.MakeOverload}');
+          end;
+          
           wr += called_md.FinalName(nil);
           if write_step_procs.Any(wsp->wsp<>nil) then
           begin
@@ -1002,6 +1012,7 @@ type
         
         write_step_procs[step_i] := nil;
         step_kinds[step_i] := MSK_Invalid;
+        call_pars[step_i] := nil;
       end;
       
       write_proc(wr_cont);
@@ -1013,11 +1024,13 @@ type
     begin
       self.write_step_procs := new Action<Writer>[step_write_procs.Length];
       self.step_kinds := new MarshalStepKind[step_write_procs.Length];
+      SetLength(self.call_pars, step_write_procs.Length);
       
       ExecuteMarshalCore(wr, 3, step_kinds.Length);
       
       self.write_step_procs := nil;
       self.step_kinds := nil;
+      self.call_pars := nil;
     end;
     
     public procedure Write(wr: Writer);

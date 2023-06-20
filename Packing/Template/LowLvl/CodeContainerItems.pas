@@ -175,6 +175,8 @@ type
     {$region Overloads}
     
     private has_enum_to_type := false;
+    private enum_to_type_gr := default(IDirectNamedType);
+    
     public all_overloads: List<FuncOverload>;
     public procedure InitOverloads;
     begin
@@ -244,13 +246,14 @@ type
       end;
       {$endregion Sort}
       
-      var enum_to_type_binding_gr := ntv_pars.Select(par->par.CalculatedDirectType as Group).SingleOrDefault(gr->gr?.Body is ObjInfoEnumsInGroup);
-      var enum_to_type_binding_gr_body := ObjInfoEnumsInGroup(enum_to_type_binding_gr?.Body);
-      var enum_to_type_binding_gr_par_ind := -1;
-      if enum_to_type_binding_gr_body<>nil then
+      var enum_to_type_gr := ntv_pars.Select(par->par.CalculatedDirectType as Group).SingleOrDefault(gr->gr?.Body is ObjInfoEnumsInGroup);
+      self.enum_to_type_gr := enum_to_type_gr;
+      var enum_to_type_gr_body := ObjInfoEnumsInGroup(enum_to_type_gr?.Body);
+      var enum_to_type_gr_par_ind := -1;
+      if enum_to_type_gr_body<>nil then
       begin
-        enum_to_type_binding_gr_par_ind := ntv_pars.FindIndex(par->par.CalculatedDirectType=enum_to_type_binding_gr);
-        if enum_to_type_binding_gr_par_ind=-1 then raise new InvalidOperationException;
+        enum_to_type_gr_par_ind := ntv_pars.FindIndex(par->par.CalculatedDirectType=enum_to_type_gr);
+        if enum_to_type_gr_par_ind=-1 then raise new InvalidOperationException;
       end;
       
       var ppt_choices := new MultiChoiceSet(possible_par_types.ConvertAll((ppt,par_i)->
@@ -258,8 +261,8 @@ type
       ));
       
       var expected_ovr_count := 0;
-      if enum_to_type_binding_gr<>nil then
-        expected_ovr_count += 1 + 2*enum_to_type_binding_gr_body.Enums.Length;
+      if enum_to_type_gr<>nil then
+        expected_ovr_count += 1 + 2*enum_to_type_gr_body.Enums.Length;
       expected_ovr_count += ppt_choices.StateCount;
       
       all_overloads := new List<FuncOverload>(expected_ovr_count);
@@ -267,13 +270,13 @@ type
       var helper_ovrs := new HashSet<FuncOverload>;
       {$region EnumToType}
       
-      if enum_to_type_binding_gr<>nil then
+      if enum_to_type_gr<>nil then
       begin
         self.has_enum_to_type := true;
         
         {$region Find}
         
-        var enum_to_type_bindings := enum_to_type_binding_gr_body.EnmrBindings(self.ntv_pars).ToArray;
+        var enum_to_type_bindings := enum_to_type_gr_body.EnmrBindings(self.ntv_pars).ToArray;
         if enum_to_type_bindings.Length=0 then
           raise new InvalidOperationException;
         
@@ -354,7 +357,7 @@ type
           end;
           
           var repl_pars := new FuncParamT[ntv_pars.Length];
-          foreach var r in enum_to_type_binding_gr_body.Enums do
+          foreach var r in enum_to_type_gr_body.Enums do
           begin
             var set_inp := not r.HasInput;
             // In case of ParArrSizeArbitrary, an additional call to get size could be needed
@@ -387,17 +390,17 @@ type
         
         {$region Per enum ovr's}
         
-        foreach var r in enum_to_type_binding_gr_body.Enums do
+        foreach var r in enum_to_type_gr_body.Enums do
         begin
           if enum_to_type_bindings.Any(b->not b.IsInputData) and not r.HasOutput then
           begin
-            Otp($'WARNING: {self} could not generate overload: no output type info for {enum_to_type_binding_gr} {r.Enum}');
+            Otp($'WARNING: {self} could not generate overload: no output type info for {enum_to_type_gr} {r.Enum}');
             continue;
           end;
           
           var ename := r.Enum.Name;
           
-          if ename.api<>enum_to_type_binding_gr.Name.api then
+          if ename.api<>enum_to_type_gr.Name.api then
             raise new InvalidOperationException;
           
           var enum_name := ename.l_name;
@@ -409,7 +412,7 @@ type
           for var explicit_count_par := false to true do
           begin
             var pars := main_helper_pars.ToArray;
-            pars[ntv_pars.FindIndex(par->par.CalculatedDirectType=enum_to_type_binding_gr)] := nil;
+            pars[ntv_pars.FindIndex(par->par.CalculatedDirectType=enum_to_type_gr)] := nil;
             
             var any_binding_dynamic := false;
             
@@ -498,7 +501,7 @@ type
             end;
             
             if any_binding_dynamic or explicit_count_par then
-              all_overloads += new FuncOverload(pars, enum_to_type_bindings, enum_to_type_binding_gr, enum_name);
+              all_overloads += new FuncOverload(pars, enum_to_type_bindings, enum_to_type_gr, enum_name);
           end;
           
         end;
@@ -1192,7 +1195,7 @@ type
                   
                   Result := new FuncParWriter(FPWO_FlatResult,
                     wr->wr.WriteResAssign(
-                      wr->wr.MakeCall(MSK_FlatForward)
+                      wr->wr.MakeCall(MSK_FlatForward, |nil as FuncParamT|)
                     )
                   );
                   
@@ -1204,7 +1207,7 @@ type
                 begin
                   Result := new FuncParWriter(FPWO_FlatResult,
                     wr->wr.WriteResAssign(
-                      wr->wr.MakeCall(MSK_FlatForward)
+                      wr->wr.MakeCall(MSK_FlatForward, |par|)
                     )
                   );
                 end
@@ -1219,7 +1222,7 @@ type
                     wr->wr.WriteResAssign(wr->
                     begin
                       wr += 'Marshal.PtrToStringAnsi(';
-                      wr.MakeCall(MSK_StringResult);
+                      wr.MakeCall(MSK_StringResult, |new FuncParamT(par.is_const, false, 0, KnownDirectTypes.IntPtr)|);
                       wr += ')';
                     end)
                   );
@@ -1237,7 +1240,7 @@ type
                       wr += 'var ';
                       wr += res_str_ptr_name;
                       wr += ' := ';
-                      wr.MakeCall(MSK_StringResult);
+                      wr.MakeCall(MSK_StringResult, |new FuncParamT(par.is_const, false, 0, KnownDirectTypes.IntPtr)|);
                       wr += ';'#10;
                       
                       wr.MakeBlock('try', wr->
@@ -1282,7 +1285,7 @@ type
                 {$region Basic}
                 begin
                   Result := new FuncParWriter(FPWO_InPlace,
-                    wr->wr.MakeCall(MSK_FlatForward, par_name)
+                    wr->wr.MakeCall(MSK_FlatForward, |par|, par_name)
                   );
                 end
                 {$endregion Basic};
@@ -1291,7 +1294,7 @@ type
                 {$region Generic}
                 begin
                   Result := new FuncParWriter(FPWO_InPlace,
-                    wr->wr.MakeCall(MSK_GenericSubstitute, wr->
+                    wr->wr.MakeCall(MSK_GenericSubstitute, |new FuncParamT(par.is_const, true, 0, KnownDirectTypes.StubForGenericT)|, wr->
                     begin
                       wr += 'P';
                       wr += KnownDirectTypes.StubForGenericT.MakeWriteableName;
@@ -1320,9 +1323,10 @@ type
                       
                       wr.MakeBlock(nil, wr->
                       begin
+                        var call_par := par.WithPtr(true, 0);
                         
                         wr.WriteTabs;
-                        wr.MakeCall(MSK_ArrayFirstItem, wr->
+                        wr.MakeCall(MSK_ArrayFirstItem, |call_par|, wr->
                         begin
                           wr += par_name;
                           wr += '[0]';
@@ -1330,7 +1334,7 @@ type
                         wr += ' else'#10;
                         
                         wr.WriteTabs;
-                        wr.MakeCall(MSK_ArrayFirstItem, wr->
+                        wr.MakeCall(MSK_ArrayFirstItem, |call_par|, wr->
                         begin
                           wr += 'P';
                           wr += par.tname.First.ToUpper;
@@ -1349,9 +1353,8 @@ type
                 MPK_String:
                 {$region String}
                 begin
-                  var is_const := par.is_const;
-                  if not is_const then
-                    //TODO Сделать "var string" параметр
+                  if not par.is_const then
+                    // Cannot determine string size
                     raise new NotImplementedException(self.ToString);
                   
                   mw.MarkRequireBlock;
@@ -1371,7 +1374,7 @@ type
                       wr.MakeBlock('try', wr->
                       begin
                         
-                        wr.MakeCall(MSK_StringParam, str_ptr_name);
+                        wr.MakeCall(MSK_StringParam, |new FuncParamT(par.is_const, false, 0, KnownDirectTypes.IntPtr)|, str_ptr_name);
                         
                         wr.WriteTabs(-1);
                         wr += 'finally'#10;
@@ -1412,7 +1415,9 @@ type
                       wr.MakeBlock('begin', wr->
                       begin
                         
-                        wr.MakeCall(MSK_ArrayFallThrought, 'pointer(nil)');
+                        wr.MakeCall(MSK_ArrayFallThrought, |new FuncParamT(par.is_const, false, 0, KnownDirectTypes.Pointer)|, 'nil');
+                        // Change back if array overload would be accidentally called
+//                        wr.MakeCall(MSK_ArrayFallThrought, |new FuncParamT(par.is_const, false, 0, KnownDirectTypes.Pointer)|, 'pointer(nil)');
                         
                         wr.WriteTabs;
                         wr += 'exit;'#10;
@@ -1579,12 +1584,12 @@ type
                         {$endregion Do marshaling}
                         
                         if temp_arr_lvl=1 then
-                          wr.MakeCall(MSK_ArrayFirstItem, wr->
+                          wr.MakeCall(MSK_ArrayFirstItem, |new FuncParamT(par.is_const, true, 0, KnownDirectTypes.IntPtr)|, wr->
                           begin
                             wr += temp_arr_name;
                             wr += '[0]';
                           end) else
-                          wr.MakeCall(MSK_ArrayCopy, temp_arr_name);
+                          wr.MakeCall(MSK_ArrayCopy, |new FuncParamT(par.is_const, false, temp_arr_lvl, KnownDirectTypes.IntPtr)|, temp_arr_name);
                         
                         wr.WriteTabs(-1);
                         wr += 'finally'#10;
@@ -1627,9 +1632,13 @@ type
                 MPK_EnumToTypeGroupHole:
                 {$region EnumToTypeGroupHole}
                 begin
+                  if par<>nil then
+                    raise new InvalidOperationException;
+                  
                   Result := new FuncParWriter(FPWO_InPlace,
-                    wr->wr.MakeCall(MSK_EnumToTypeGroup, md.EnumToTypeEnumName)
+                    wr->wr.MakeCall(MSK_EnumToTypeGroup, |new FuncParamT(false, false, 0, self.enum_to_type_gr)|, md.EnumToTypeEnumName)
                   );
+                  
                 end;
                 {$endregion EnumToTypeGroupHole}
                 
@@ -1684,7 +1693,14 @@ type
                 if pars.Length<>2 then
                   raise new NotImplementedException;
                 Result := new FuncParWriter(FPWO_InPlace,
-                  wr->wr.MakeCall(MSK_EnumToTypeBody, 'UIntPtr.Zero,nil')
+                  wr->wr.MakeCall(
+                    MSK_EnumToTypeBody,
+                    |
+                      new FuncParamT(false, false, 0, KnownDirectTypes.UIntPtr),
+                      new FuncParamT(true, false, 0, KnownDirectTypes.Pointer)
+                    |,
+                    'UIntPtr.Zero,nil'
+                  )
                 );
                 exit;
               end;
@@ -1719,11 +1735,18 @@ type
                     wr += expected_sz_name;
                     wr += ': UIntPtr;'#10;
                     
-                    wr.MakeCall(MSK_EnumToTypeGetSize, wr->
-                    begin
-                      wr += 'UIntPtr.Zero,nil,';
-                      wr += expected_sz_name;
-                    end);
+                    wr.MakeCall(MSK_EnumToTypeGetSize,
+                      |
+                        new FuncParamT(false, false, 0, KnownDirectTypes.UIntPtr),
+                        new FuncParamT(data_par.is_const, false, 0, KnownDirectTypes.Pointer),
+                        new FuncParamT(false, true, 0, KnownDirectTypes.UIntPtr)
+                      |,
+                      wr->
+                      begin
+                        wr += 'UIntPtr.Zero,nil,';
+                        wr += expected_sz_name;
+                      end
+                    );
                     
                     wr.WriteTabs;
                     wr += 'var ';
@@ -1810,34 +1833,48 @@ type
                     wr += ': UIntPtr;'#10;
                   end;
                   
-                  wr.MakeCall(MSK_EnumToTypeBody, wr->
-                  begin
-                    
-                    wr += expected_sz_name;
-                    
-                    wr += ',';
-                    if temp_res_name=nil then
+                  var body_call_pars := new List<FuncParamT>(pars.Length);
+                  body_call_pars += new FuncParamT(false, false, 0, KnownDirectTypes.UIntPtr);
+                  body_call_pars += if data_par.IsString then
+                    new FuncParamT(data_par.is_const, false, 0, KnownDirectTypes.Pointer) else
+                    new FuncParamT(data_par.is_const, true, 0, TypeLookup.FromName(if is_output_data then 'T' else 'TInp'));
+                  if is_output_data then
+                    body_call_pars += if validate_size_par_name<>nil then
+                      new FuncParamT(false, true, 0, KnownDirectTypes.UIntPtr) else
+                      new FuncParamT(false, false, 0, KnownDirectTypes.IntPtr);
+                  if body_call_pars.Count<>pars.Length then
+                    raise new InvalidOperationException($'{body_call_pars.Count}<>{pars.Length}');
+                  
+                  wr.MakeCall(MSK_EnumToTypeBody, body_call_pars.ToArray,
+                    wr->
                     begin
-                      wr += data_par_name;
-                      if (count_par=nil) and (data_par.enum_to_type_data_rep_c<>1) then
-                        wr += '[0]';
-                    end else
-                    begin
-                      wr += temp_res_name;
-                      if data_par.IsString then
-                        wr += '.ToPointer' else
-                        wr += '[0]';
-                    end;
-                    
-                    if is_output_data then
-                      if validate_size_par_name<>nil then
+                      
+                      wr += expected_sz_name;
+                      
+                      wr += ',';
+                      if temp_res_name=nil then
                       begin
-                        wr += ',';
-                        wr += returned_sz_name;
+                        wr += data_par_name;
+                        if (count_par=nil) and (data_par.enum_to_type_data_rep_c<>1) then
+                          wr += '[0]';
                       end else
-                        wr += ',IntPtr.Zero';
-                    
-                  end);
+                      begin
+                        wr += temp_res_name;
+                        if data_par.IsString then
+                          wr += '.ToPointer' else
+                          wr += '[0]';
+                      end;
+                      
+                      if is_output_data then
+                        if validate_size_par_name<>nil then
+                        begin
+                          wr += ',';
+                          wr += returned_sz_name;
+                        end else
+                          wr += ',IntPtr.Zero';
+                      
+                    end
+                  );
                   
                   if temp_res_name<>nil then
                     if data_par.IsString then

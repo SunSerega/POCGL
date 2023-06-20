@@ -89,11 +89,11 @@
       begin
         Result := if (device_list<>nil) and (device_list.Length<>0) then
           if (input_headers<>nil) and (input_headers.Length<>0) then
-            ntv_CompileProgram_2(program, num_devices, device_list[0], options, num_input_headers, input_headers[0], pointer(nil), pfn_notify, user_data) else
-            ntv_CompileProgram_2(program, num_devices, device_list[0], options, num_input_headers, PCl_program(nil)^, pointer(nil), pfn_notify, user_data) else
+            ntv_CompileProgram_2(program, num_devices, device_list[0], options, num_input_headers, input_headers[0], nil, pfn_notify, user_data) else
+            ntv_CompileProgram_2(program, num_devices, device_list[0], options, num_input_headers, PCl_program(nil)^, nil, pfn_notify, user_data) else
           if (input_headers<>nil) and (input_headers.Length<>0) then
-            ntv_CompileProgram_2(program, num_devices, PCl_device_id(nil)^, options, num_input_headers, input_headers[0], pointer(nil), pfn_notify, user_data) else
-            ntv_CompileProgram_2(program, num_devices, PCl_device_id(nil)^, options, num_input_headers, PCl_program(nil)^, pointer(nil), pfn_notify, user_data);
+            ntv_CompileProgram_2(program, num_devices, PCl_device_id(nil)^, options, num_input_headers, input_headers[0], nil, pfn_notify, user_data) else
+            ntv_CompileProgram_2(program, num_devices, PCl_device_id(nil)^, options, num_input_headers, PCl_program(nil)^, nil, pfn_notify, user_data);
         exit;
       end;
       var header_include_names_temp_arr: array of IntPtr;
@@ -491,18 +491,18 @@
         Result := if (device_list<>nil) and (device_list.Length<>0) then
           if (lengths<>nil) and (lengths.Length<>0) then
             if (binary_status<>nil) and (binary_status.Length<>0) then
-              ntv_CreateProgramWithBinary_2(context, num_devices, device_list[0], lengths[0], pointer(nil), binary_status[0], errcode_ret) else
-              ntv_CreateProgramWithBinary_2(context, num_devices, device_list[0], lengths[0], pointer(nil), PClErrorCode(nil)^, errcode_ret) else
+              ntv_CreateProgramWithBinary_2(context, num_devices, device_list[0], lengths[0], nil, binary_status[0], errcode_ret) else
+              ntv_CreateProgramWithBinary_2(context, num_devices, device_list[0], lengths[0], nil, PClErrorCode(nil)^, errcode_ret) else
             if (binary_status<>nil) and (binary_status.Length<>0) then
-              ntv_CreateProgramWithBinary_2(context, num_devices, device_list[0], PUIntPtr(nil)^, pointer(nil), binary_status[0], errcode_ret) else
-              ntv_CreateProgramWithBinary_2(context, num_devices, device_list[0], PUIntPtr(nil)^, pointer(nil), PClErrorCode(nil)^, errcode_ret) else
+              ntv_CreateProgramWithBinary_2(context, num_devices, device_list[0], PUIntPtr(nil)^, nil, binary_status[0], errcode_ret) else
+              ntv_CreateProgramWithBinary_2(context, num_devices, device_list[0], PUIntPtr(nil)^, nil, PClErrorCode(nil)^, errcode_ret) else
           if (lengths<>nil) and (lengths.Length<>0) then
             if (binary_status<>nil) and (binary_status.Length<>0) then
-              ntv_CreateProgramWithBinary_2(context, num_devices, PCl_device_id(nil)^, lengths[0], pointer(nil), binary_status[0], errcode_ret) else
-              ntv_CreateProgramWithBinary_2(context, num_devices, PCl_device_id(nil)^, lengths[0], pointer(nil), PClErrorCode(nil)^, errcode_ret) else
+              ntv_CreateProgramWithBinary_2(context, num_devices, PCl_device_id(nil)^, lengths[0], nil, binary_status[0], errcode_ret) else
+              ntv_CreateProgramWithBinary_2(context, num_devices, PCl_device_id(nil)^, lengths[0], nil, PClErrorCode(nil)^, errcode_ret) else
             if (binary_status<>nil) and (binary_status.Length<>0) then
-              ntv_CreateProgramWithBinary_2(context, num_devices, PCl_device_id(nil)^, PUIntPtr(nil)^, pointer(nil), binary_status[0], errcode_ret) else
-              ntv_CreateProgramWithBinary_2(context, num_devices, PCl_device_id(nil)^, PUIntPtr(nil)^, pointer(nil), PClErrorCode(nil)^, errcode_ret);
+              ntv_CreateProgramWithBinary_2(context, num_devices, PCl_device_id(nil)^, PUIntPtr(nil)^, nil, binary_status[0], errcode_ret) else
+              ntv_CreateProgramWithBinary_2(context, num_devices, PCl_device_id(nil)^, PUIntPtr(nil)^, nil, PClErrorCode(nil)^, errcode_ret);
         exit;
       end;
       var binaries_temp_arr: array of IntPtr;
@@ -551,18 +551,18 @@
         Result := if (device_list<>nil) and (device_list.Length<>0) then
           if (lengths<>nil) and (lengths.Length<>0) then
             if (binary_status<>nil) and (binary_status.Length<>0) then
-              ntv_CreateProgramWithBinary_4(context, num_devices, device_list[0], lengths[0], pointer(nil), binary_status[0], errcode_ret) else
-              ntv_CreateProgramWithBinary_4(context, num_devices, device_list[0], lengths[0], pointer(nil), PClErrorCode(nil)^, errcode_ret) else
+              ntv_CreateProgramWithBinary_4(context, num_devices, device_list[0], lengths[0], nil, binary_status[0], errcode_ret) else
+              ntv_CreateProgramWithBinary_4(context, num_devices, device_list[0], lengths[0], nil, PClErrorCode(nil)^, errcode_ret) else
             if (binary_status<>nil) and (binary_status.Length<>0) then
-              ntv_CreateProgramWithBinary_4(context, num_devices, device_list[0], PUIntPtr(nil)^, pointer(nil), binary_status[0], errcode_ret) else
-              ntv_CreateProgramWithBinary_4(context, num_devices, device_list[0], PUIntPtr(nil)^, pointer(nil), PClErrorCode(nil)^, errcode_ret) else
+              ntv_CreateProgramWithBinary_4(context, num_devices, device_list[0], PUIntPtr(nil)^, nil, binary_status[0], errcode_ret) else
+              ntv_CreateProgramWithBinary_4(context, num_devices, device_list[0], PUIntPtr(nil)^, nil, PClErrorCode(nil)^, errcode_ret) else
           if (lengths<>nil) and (lengths.Length<>0) then
             if (binary_status<>nil) and (binary_status.Length<>0) then
-              ntv_CreateProgramWithBinary_4(context, num_devices, PCl_device_id(nil)^, lengths[0], pointer(nil), binary_status[0], errcode_ret) else
-              ntv_CreateProgramWithBinary_4(context, num_devices, PCl_device_id(nil)^, lengths[0], pointer(nil), PClErrorCode(nil)^, errcode_ret) else
+              ntv_CreateProgramWithBinary_4(context, num_devices, PCl_device_id(nil)^, lengths[0], nil, binary_status[0], errcode_ret) else
+              ntv_CreateProgramWithBinary_4(context, num_devices, PCl_device_id(nil)^, lengths[0], nil, PClErrorCode(nil)^, errcode_ret) else
             if (binary_status<>nil) and (binary_status.Length<>0) then
-              ntv_CreateProgramWithBinary_4(context, num_devices, PCl_device_id(nil)^, PUIntPtr(nil)^, pointer(nil), binary_status[0], errcode_ret) else
-              ntv_CreateProgramWithBinary_4(context, num_devices, PCl_device_id(nil)^, PUIntPtr(nil)^, pointer(nil), PClErrorCode(nil)^, errcode_ret);
+              ntv_CreateProgramWithBinary_4(context, num_devices, PCl_device_id(nil)^, PUIntPtr(nil)^, nil, binary_status[0], errcode_ret) else
+              ntv_CreateProgramWithBinary_4(context, num_devices, PCl_device_id(nil)^, PUIntPtr(nil)^, nil, PClErrorCode(nil)^, errcode_ret);
         exit;
       end;
       var binaries_temp_arr: array of IntPtr;
@@ -690,8 +690,8 @@
       if (strings=nil) or (strings.Length=0) then
       begin
         Result := if (lengths<>nil) and (lengths.Length<>0) then
-          ntv_CreateProgramWithSource_2(context, count, pointer(nil), lengths[0], errcode_ret) else
-          ntv_CreateProgramWithSource_2(context, count, pointer(nil), PUIntPtr(nil)^, errcode_ret);
+          ntv_CreateProgramWithSource_2(context, count, nil, lengths[0], errcode_ret) else
+          ntv_CreateProgramWithSource_2(context, count, nil, PUIntPtr(nil)^, errcode_ret);
         exit;
       end;
       var strings_temp_arr: array of IntPtr;
@@ -3786,7 +3786,7 @@
       Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_NAME, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetDeviceInfo_4(device, clDeviceInfo.DEVICE_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -3798,7 +3798,7 @@
       Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_VENDOR, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_VENDOR, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetDeviceInfo_4(device, clDeviceInfo.DEVICE_VENDOR, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -3810,7 +3810,7 @@
       Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DRIVER_VERSION, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DRIVER_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetDeviceInfo_4(device, clDeviceInfo.DRIVER_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -3822,7 +3822,7 @@
       Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_PROFILE, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_PROFILE, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetDeviceInfo_4(device, clDeviceInfo.DEVICE_PROFILE, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -3834,7 +3834,7 @@
       Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_VERSION, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetDeviceInfo_4(device, clDeviceInfo.DEVICE_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -3846,7 +3846,7 @@
       Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_EXTENSIONS, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_EXTENSIONS, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetDeviceInfo_4(device, clDeviceInfo.DEVICE_EXTENSIONS, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -3954,7 +3954,7 @@
       Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_OPENCL_C_VERSION, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_OPENCL_C_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetDeviceInfo_4(device, clDeviceInfo.DEVICE_OPENCL_C_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -3974,7 +3974,7 @@
       Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_BUILT_IN_KERNELS, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_BUILT_IN_KERNELS, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetDeviceInfo_4(device, clDeviceInfo.DEVICE_BUILT_IN_KERNELS, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -4212,7 +4212,7 @@
       Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_IL_VERSION, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_IL_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetDeviceInfo_4(device, clDeviceInfo.DEVICE_IL_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -4455,7 +4455,7 @@
       Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_LATEST_CONFORMANCE_VERSION_PASSED, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_LATEST_CONFORMANCE_VERSION_PASSED, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetDeviceInfo_4(device, clDeviceInfo.DEVICE_LATEST_CONFORMANCE_VERSION_PASSED, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -4729,7 +4729,7 @@
       Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_SPIR_VERSIONS, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_SPIR_VERSIONS, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetDeviceInfo_4(device, clDeviceInfo.DEVICE_SPIR_VERSIONS, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -5377,7 +5377,7 @@
       Result := ntv_GetKernelArgInfo_3(kernel, arg_index, clKernelArgInfo.KERNEL_ARG_TYPE_NAME, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetKernelArgInfo_3(kernel, arg_index, clKernelArgInfo.KERNEL_ARG_TYPE_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetKernelArgInfo_4(kernel, arg_index, clKernelArgInfo.KERNEL_ARG_TYPE_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -5397,7 +5397,7 @@
       Result := ntv_GetKernelArgInfo_3(kernel, arg_index, clKernelArgInfo.KERNEL_ARG_NAME, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetKernelArgInfo_3(kernel, arg_index, clKernelArgInfo.KERNEL_ARG_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetKernelArgInfo_4(kernel, arg_index, clKernelArgInfo.KERNEL_ARG_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -5431,7 +5431,7 @@
       Result := ntv_GetKernelInfo_3(kernel, clKernelInfo.KERNEL_FUNCTION_NAME, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetKernelInfo_3(kernel, clKernelInfo.KERNEL_FUNCTION_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetKernelInfo_4(kernel, clKernelInfo.KERNEL_FUNCTION_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -5475,7 +5475,7 @@
       Result := ntv_GetKernelInfo_3(kernel, clKernelInfo.KERNEL_ATTRIBUTES, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetKernelInfo_3(kernel, clKernelInfo.KERNEL_ATTRIBUTES, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetKernelInfo_4(kernel, clKernelInfo.KERNEL_ATTRIBUTES, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -6019,7 +6019,7 @@
       Result := ntv_GetPlatformInfo_3(platform, clPlatformInfo.PLATFORM_PROFILE, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetPlatformInfo_3(platform, clPlatformInfo.PLATFORM_PROFILE, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetPlatformInfo_4(platform, clPlatformInfo.PLATFORM_PROFILE, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -6031,7 +6031,7 @@
       Result := ntv_GetPlatformInfo_3(platform, clPlatformInfo.PLATFORM_VERSION, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetPlatformInfo_3(platform, clPlatformInfo.PLATFORM_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetPlatformInfo_4(platform, clPlatformInfo.PLATFORM_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -6043,7 +6043,7 @@
       Result := ntv_GetPlatformInfo_3(platform, clPlatformInfo.PLATFORM_NAME, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetPlatformInfo_3(platform, clPlatformInfo.PLATFORM_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetPlatformInfo_4(platform, clPlatformInfo.PLATFORM_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -6055,7 +6055,7 @@
       Result := ntv_GetPlatformInfo_3(platform, clPlatformInfo.PLATFORM_VENDOR, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetPlatformInfo_3(platform, clPlatformInfo.PLATFORM_VENDOR, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetPlatformInfo_4(platform, clPlatformInfo.PLATFORM_VENDOR, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -6067,7 +6067,7 @@
       Result := ntv_GetPlatformInfo_3(platform, clPlatformInfo.PLATFORM_EXTENSIONS, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetPlatformInfo_3(platform, clPlatformInfo.PLATFORM_EXTENSIONS, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetPlatformInfo_4(platform, clPlatformInfo.PLATFORM_EXTENSIONS, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -6116,7 +6116,7 @@
       Result := ntv_GetPlatformInfo_3(platform, clPlatformInfo.PLATFORM_ICD_SUFFIX, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetPlatformInfo_3(platform, clPlatformInfo.PLATFORM_ICD_SUFFIX, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetPlatformInfo_4(platform, clPlatformInfo.PLATFORM_ICD_SUFFIX, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -6210,7 +6210,7 @@
       Result := ntv_GetProgramBuildInfo_3(program, device, clProgramBuildInfo.PROGRAM_BUILD_OPTIONS, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetProgramBuildInfo_3(program, device, clProgramBuildInfo.PROGRAM_BUILD_OPTIONS, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetProgramBuildInfo_4(program, device, clProgramBuildInfo.PROGRAM_BUILD_OPTIONS, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -6222,7 +6222,7 @@
       Result := ntv_GetProgramBuildInfo_3(program, device, clProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetProgramBuildInfo_3(program, device, clProgramBuildInfo.PROGRAM_BUILD_LOG, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetProgramBuildInfo_4(program, device, clProgramBuildInfo.PROGRAM_BUILD_LOG, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -6309,7 +6309,7 @@
       Result := ntv_GetProgramInfo_3(program, clProgramInfo.PROGRAM_SOURCE, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetProgramInfo_3(program, clProgramInfo.PROGRAM_SOURCE, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetProgramInfo_4(program, clProgramInfo.PROGRAM_SOURCE, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -6355,7 +6355,7 @@
       Result := ntv_GetProgramInfo_3(program, clProgramInfo.PROGRAM_KERNEL_NAMES, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetProgramInfo_3(program, clProgramInfo.PROGRAM_KERNEL_NAMES, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetProgramInfo_4(program, clProgramInfo.PROGRAM_KERNEL_NAMES, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -6367,7 +6367,7 @@
       Result := ntv_GetProgramInfo_3(program, clProgramInfo.PROGRAM_IL, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetProgramInfo_3(program, clProgramInfo.PROGRAM_IL, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetProgramInfo_4(program, clProgramInfo.PROGRAM_IL, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -6403,7 +6403,7 @@
       Result := ntv_GetProgramInfo_3(program, clProgramInfo.PROGRAM_HOST_PIPE_NAMES, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetProgramInfo_3(program, clProgramInfo.PROGRAM_HOST_PIPE_NAMES, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetProgramInfo_4(program, clProgramInfo.PROGRAM_HOST_PIPE_NAMES, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);

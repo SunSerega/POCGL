@@ -1006,7 +1006,7 @@
     begin
       if (strings=nil) or (strings.Length=0) then
       begin
-        Result := ntv_CreateShaderProgramv_2(type, count, pointer(nil));
+        Result := ntv_CreateShaderProgramv_2(type, count, nil);
         exit;
       end;
       var strings_temp_arr: array of IntPtr;
@@ -3069,7 +3069,7 @@
     begin
       if (uniformNames=nil) or (uniformNames.Length=0) then
       begin
-        ntv_GetUniformIndices_2(program, uniformCount, pointer(nil), uniformIndices);
+        ntv_GetUniformIndices_2(program, uniformCount, nil, uniformIndices);
         exit;
       end;
       var uniformNames_temp_arr: array of IntPtr;
@@ -3095,7 +3095,7 @@
     begin
       if (uniformNames=nil) or (uniformNames.Length=0) then
       begin
-        ntv_GetUniformIndices_4(program, uniformCount, pointer(nil), uniformIndices);
+        ntv_GetUniformIndices_4(program, uniformCount, nil, uniformIndices);
         exit;
       end;
       var uniformNames_temp_arr: array of IntPtr;
@@ -4997,8 +4997,8 @@
       if (string=nil) or (string.Length=0) then
       begin
         if (length<>nil) and (length.Length<>0) then
-          ntv_ShaderSource_2(shader, count, pointer(nil), length[0]) else
-          ntv_ShaderSource_2(shader, count, pointer(nil), PInt32(nil)^);
+          ntv_ShaderSource_2(shader, count, nil, length[0]) else
+          ntv_ShaderSource_2(shader, count, nil, PInt32(nil)^);
         exit;
       end;
       var string_temp_arr: array of IntPtr;
@@ -5622,7 +5622,7 @@
     begin
       if (varyings=nil) or (varyings.Length=0) then
       begin
-        ntv_TransformFeedbackVaryings_2(program, count, pointer(nil), bufferMode);
+        ntv_TransformFeedbackVaryings_2(program, count, nil, bufferMode);
         exit;
       end;
       var varyings_temp_arr: array of IntPtr;

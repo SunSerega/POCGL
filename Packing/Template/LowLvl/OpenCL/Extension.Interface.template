@@ -32,7 +32,7 @@
       Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_OCL_VERSION, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_OCL_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetICDLoaderInfoOCLICD_4(clIcdlInfo.ICDL_OCL_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -44,7 +44,7 @@
       Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_VERSION, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetICDLoaderInfoOCLICD_4(clIcdlInfo.ICDL_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -56,7 +56,7 @@
       Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_NAME, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetICDLoaderInfoOCLICD_4(clIcdlInfo.ICDL_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -68,7 +68,7 @@
       Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_VENDOR, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_VENDOR, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetICDLoaderInfoOCLICD_4(clIcdlInfo.ICDL_VENDOR, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
@@ -116,7 +116,7 @@
       Result := ntv_GetLayerInfo_3(clLayerInfo.LAYER_NAME, UIntPtr.Zero,nil,param_value_sz);
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
-        Result := ntv_GetLayerInfo_3(clLayerInfo.LAYER_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
+        Result := ntv_GetLayerInfo_4(clLayerInfo.LAYER_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
         param_value := Marshal.PtrToStringAnsi(param_value_temp_res);
       finally
         Marshal.FreeHGlobal(param_value_temp_res);
