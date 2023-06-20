@@ -10,6 +10,7 @@
     public static property Choise1_3_OtpFlat:      Multichoise1 read new Multichoise1($0003);
     public static property Choise1_4_OtpArr:       Multichoise1 read new Multichoise1($0004);
     public static property Choise1_5_OtpStaticArr: Multichoise1 read new Multichoise1($0005);
+    public static property Choise1_6_OtpString:    Multichoise1 read new Multichoise1($0006);
     
     public function ToString: string; override;
     begin
@@ -23,6 +24,8 @@
         Result := 'Choise1_4_OtpArr' else
       if Choise1_5_OtpStaticArr = self then
         Result := 'Choise1_5_OtpStaticArr' else
+      if Choise1_6_OtpString = self then
+        Result := 'Choise1_6_OtpString' else
         Result := $'Multichoise1[{self.val}]';
     end;
     

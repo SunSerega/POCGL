@@ -8,7 +8,7 @@ uses '..\..\..\Utils\AOtp';
 uses '..\..\..\Utils\CodeGen';
 
 uses BinUtils;
-uses ChoiseSets;
+uses ChoiceSets;
 
 uses TypeRefering;
 
@@ -247,6 +247,87 @@ type
   
   {$endregion FuncOverload}
   
+  {$region MarshalStepKindCombo}
+  
+  MarshalStepKind = (MSK_Invalid
+    , MSK_EnumToTypeGroup, MSK_EnumToTypeGetSize, MSK_EnumToTypeBody
+    , MSK_StringResult, MSK_StringParam
+    , MSK_ArrayFallThrought, MSK_ArrayCopy
+    , MSK_ArrayFirstItem
+    , MSK_GenericSubstitute
+    , MSK_FlatForward
+  );
+  
+  MarshalStepKindCombo = sealed class(IEquatable<MarshalStepKindCombo>)
+    // Each can be multiple pars, if they are processed together, as in EnumToType
+    private par_group_kinds: array of MarshalStepKind;
+    
+    public constructor(par_group_kinds: array of MarshalStepKind) :=
+      self.par_group_kinds := par_group_kinds;
+    public constructor(par_group_kinds: array of MarshalStepKindCombo);
+    begin
+      self.par_group_kinds := new MarshalStepKind[par_group_kinds.Sum(k_gr->k_gr.par_group_kinds.Length)];
+      var step_i := 0;
+      foreach var k_gr in par_group_kinds do
+        foreach var k in k_gr.par_group_kinds do
+        begin
+          self.par_group_kinds[step_i] := k;
+          step_i += 1;
+        end;
+      {$ifdef DEBUG}
+      if step_i<>self.par_group_kinds.Length then
+        raise new InvalidOperationException;
+      {$endif DEBUG}
+    end;
+    private constructor := raise new InvalidOperationException;
+    
+    public static function operator implicit(par_group_kinds: array of MarshalStepKind): MarshalStepKindCombo :=
+      new MarshalStepKindCombo(par_group_kinds);
+    
+    private static flat_forward := new MarshalStepKindCombo(|MSK_FlatForward|);
+    public static property FlatForward: MarshalStepKindCombo read flat_forward;
+    public function IsSingleFlatForward: boolean;
+    begin
+      Result := (par_group_kinds.Length=1) and (par_group_kinds.Single=MSK_FlatForward);
+      {$ifdef DEBUG}
+      if Result and not ReferenceEquals(self, FlatForward) then
+        raise new InvalidOperationException($'Use MarshalStepKindCombo.FlatForward');
+      {$endif DEBUG}
+    end;
+    
+    public function AllFlatForward := par_group_kinds.All(k->k=MSK_FlatForward);
+    
+    public static function operator=(s1, s2: MarshalStepKindCombo): boolean;
+    begin
+      Result := ReferenceEquals(s1, s2);
+      if Result then exit;
+      if s1.par_group_kinds.Length<>s2.par_group_kinds.Length then
+        raise new InvalidOperationException;
+      for var i := 0 to s1.par_group_kinds.Length-1 do
+        if s1.par_group_kinds[i] <> s2.par_group_kinds[i] then
+          exit;
+      Result := true;
+    end;
+    public static function operator<>(s1, s2: MarshalStepKindCombo) := not(s1=s2);
+    
+    public function Equals(other: MarshalStepKindCombo) := self=other;
+    public function Equals(o: object): boolean; override :=
+      (o is MarshalStepKindCombo(var other)) and self.Equals(other);
+    
+    public function GetHashCode: integer; override;
+    begin
+      Result := 0;
+      foreach var kind in par_group_kinds do
+        Result := (Result shl 4) xor (Result shr (32-4)) xor kind.GetHashCode;
+    end;
+    
+    public function ToString: string; override :=
+      par_group_kinds.JoinToString;
+    
+  end;
+  
+  {$endregion MarshalStepKindCombo}
+  
   {$region FuncParamMarshalStep}
   
   MarshalParamKind = (MPK_Invalid
@@ -257,22 +338,16 @@ type
     , MPK_ArrayNeedCopy
     , MPK_EnumToTypeGroupHole, MPK_EnumToTypeCount, MPK_EnumToTypeBody
   );
-  MarshalStepKind = (MSK_Invalid
-    , MSK_EnumToTypeGroup, MSK_EnumToTypeGetSize, MSK_EnumToTypeBody, MSK_EnumToTypeExpectExistingOvr
-    , MSK_StringParam, MSK_PtrToString, MSK_FreeablePtrToString
-    , MSK_ArrayFallThrought, MSK_ArrayCopy
-    , MSK_ArrayFirstItem
-    , MSK_GenericSubstitute
-    , MSK_FlatForward // Only for FuncOvrMarshalStep
-  );
   
   FuncParamMarshalStep = sealed class
     // Usually only 1 par, but EnumToType also has in/out sizes
-    private pars: array of ValueTuple<FuncParamT, MarshalParamKind>;
-    // 0 for final (ntv_) steps
-    private next_steps := new Dictionary<MarshalStepKind, FuncParamMarshalStep>;
+    private pars: array of ValueTuple<MarshalParamKind, FuncParamT>;
+    // 0 items for final (ntv_) steps
+    // MarshalStepKindCombo here is not full ovr,
+    // but instead kind of each item in value array
+    private next_steps := new Dictionary<MarshalStepKindCombo, array of FuncParamMarshalStep>;
     
-    private constructor(pars: array of ValueTuple<FuncParamT, MarshalParamKind>);
+    private constructor(pars: array of ValueTuple<MarshalParamKind, FuncParamT>);
     begin
       self.pars := pars;
     end;
@@ -295,8 +370,25 @@ type
       next_step_generators_pending := nil;
     end;
     
-    private static nil_par := ValueTuple.Create(nil as FuncParamT, MPK_Invalid);
-    private static zero_par_arr := System.Array.Empty&<ValueTuple<FuncParamT, MarshalParamKind>>;
+    private next_step_size := default(integer?);
+    private procedure AddNext(kinds: MarshalStepKindCombo; steps: array of FuncParamMarshalStep);
+    begin
+      {$ifdef DEBUG}
+      if steps.Length=0 then
+        raise new InvalidOperationException;
+      if kinds.par_group_kinds.Length <> steps.Length then
+        raise new InvalidOperationException;
+      if next_step_size=nil then
+        next_step_size := steps.Length else
+      if next_step_size <> steps.Length then
+        raise new InvalidOperationException;
+      {$endif DEBUG}
+      next_steps.Add(kinds, steps);
+    end;
+    private procedure AddNext(kind: MarshalStepKind; step: FuncParamMarshalStep) := AddNext(|kind|, |step|);
+    
+    private static nil_par := ValueTuple.Create(MPK_Invalid, nil as FuncParamT);
+    private static zero_par_arr := System.Array.Empty&<ValueTuple<MarshalParamKind, FuncParamT>>;
     
     private static proc_result := new FuncParamMarshalStep(|nil_par|);
     public static function ProcResult := FuncParamMarshalStep.proc_result;
@@ -305,8 +397,8 @@ type
     public static function FromEnumToTypeGroup(gr_par: FuncParamT): FuncParamMarshalStep;
     begin
       if from_ett_group.TryGetValue(gr_par, Result) then exit;
-      Result := new FuncParamMarshalStep(|ValueTuple.Create(nil as FuncParamT, MPK_EnumToTypeGroupHole)|);
-      Result.next_steps.Add(MSK_EnumToTypeGroup, FromParam(false, gr_par));
+      Result := new FuncParamMarshalStep(|ValueTuple.Create(MPK_EnumToTypeGroupHole, nil as FuncParamT)|);
+      Result.AddNext(MSK_EnumToTypeGroup, FromParam(false, gr_par));
       from_ett_group.Add(gr_par, Result);
     end;
     
@@ -342,8 +434,12 @@ type
         
         generate_next_steps := res->
         begin
-          res.next_steps.Add(MSK_ArrayFallThrought, FromParam(is_res, new FuncParamT(par.is_const, false, 0, KnownDirectTypes.Pointer)));
-          res.next_steps.Add(MSK_ArrayCopy, FromParam(is_res, new FuncParamT(par.is_const, false, par.arr_lvl-1+Ord(par.IsString), KnownDirectTypes.IntPtr)));
+          res.AddNext(MSK_ArrayFallThrought, FromParam(is_res, new FuncParamT(par.is_const, false, 0, KnownDirectTypes.Pointer)));
+          
+          if par.arr_lvl+Ord(par.IsString) = 2 then
+            res.AddNext(MSK_ArrayFirstItem, FromParam(is_res, new FuncParamT(par.is_const, true, 0, KnownDirectTypes.IntPtr))) else
+            res.AddNext(MSK_ArrayCopy, FromParam(is_res, new FuncParamT(par.is_const, false, par.arr_lvl-1+Ord(par.IsString), KnownDirectTypes.IntPtr)));
+          
         end;
         
       end else
@@ -359,14 +455,8 @@ type
         if par.var_arg then
           raise new InvalidOperationException;
         
-        var step_kind := MSK_StringParam;
-        if is_res then
-          step_kind := if par.is_const then
-            MSK_PtrToString else
-            MSK_FreeablePtrToString;
-        
         generate_next_steps := res->
-          res.next_steps.Add(step_kind, FromParam(is_res, new FuncParamT(par.is_const, false, 0, KnownDirectTypes.IntPtr)));
+          res.AddNext(if is_res then MSK_StringResult else MSK_StringParam, FromParam(is_res, new FuncParamT(par.is_const, false, 0, KnownDirectTypes.IntPtr)));
         
       end
       {$endregion String} else
@@ -377,7 +467,7 @@ type
         par_kind := MPK_Array;
         
         generate_next_steps := res->
-          res.next_steps.Add(MSK_ArrayFirstItem, FromParam(is_res, par.WithPtr(true,0)));
+          res.AddNext(MSK_ArrayFirstItem, FromParam(is_res, par.WithPtr(true,0)));
         
       end
       {$endregion Array} else
@@ -393,7 +483,7 @@ type
           raise new InvalidOperationException;
         
         generate_next_steps := res->
-          res.next_steps.Add(MSK_GenericSubstitute, FromParam(is_res, new FuncParamT(par.is_const, true, 0, KnownDirectTypes.StubForGenericT)));
+          res.AddNext(MSK_GenericSubstitute, FromParam(is_res, new FuncParamT(par.is_const, true, 0, KnownDirectTypes.StubForGenericT)));
         
       end
       {$endregion Generic} else
@@ -412,7 +502,7 @@ type
       end;
       {$endregion Basic}
       
-      Result := new FuncParamMarshalStep(|ValueTuple.Create(par, par_kind)|);
+      Result := new FuncParamMarshalStep(|ValueTuple.Create(par_kind, par)|);
       from_param_steps.Add(from_param_key, Result);
       
       var res := Result;
@@ -438,41 +528,63 @@ type
         if not need_count_par then
           nil_par else
           ValueTuple.Create(
-            new FuncParamT(false, false, 0, KnownDirectTypes.EnumToTypeDataCountT),
-            MPK_EnumToTypeCount
+            MPK_EnumToTypeCount,
+            new FuncParamT(false, false, 0, KnownDirectTypes.EnumToTypeDataCountT)
           ),
-        ValueTuple.Create(data_par, MPK_EnumToTypeBody)
+        ValueTuple.Create(MPK_EnumToTypeBody, data_par)
       |+if info.IsInputData then zero_par_arr else |nil_par|);
       var res := Result;
       
-      var par_data_size_ret :=
-        if info.IsInputData then zero_par_arr else
-          |ValueTuple.Create(new FuncParamT(false, true, 0, data_size_t), MPK_Basic)|;
-      
-      var add_step := procedure(step_kind: MarshalStepKind; pars: array of ValueTuple<FuncParamT, MarshalParamKind>) ->
+      var add_step := procedure(step_kind: MarshalStepKind; pars: array of FuncParamT) ->
       begin
-        var step := new FuncParamMarshalStep(pars);
-        res.next_steps.Add(step_kind, step);
-        // Чтобы перегрузку не считало ntv_
-        //TODO Но вообще это костыль
-        // - Хотелось бы чтобы если соответствующей перегрузки нет,
-        //   её создавало в форме private temp_
-        // - MSK_EnumToTypeBreakUpParams?
-        step.next_steps.Add(MSK_EnumToTypeExpectExistingOvr, nil);
+        var simple_par_steps := pars.ConvertAll(par->FromParam(false, par));
+        
+        var ett_step := new FuncParamMarshalStep(simple_par_steps.ConvertAll(simple_par_step->simple_par_step.pars.Single));
+        res.AddNext(step_kind, ett_step);
+        
+        if simple_par_steps.All(simple_par_step->simple_par_step.next_steps.Count=0) then
+          exit;
+        var step_kinds := new MarshalStepKind[pars.Length];
+        var steps := new FuncParamMarshalStep[pars.Length];
+        for var par_i := 0 to pars.Length-1 do
+        begin
+          if simple_par_steps[par_i].next_steps.Count=0 then
+          begin
+            step_kinds[par_i] := MSK_FlatForward;
+            // Kinda hacky, but otherwise ett_step.next would have less "FuncParamT"s then ett_step itself
+            steps[par_i] := simple_par_steps[par_i];
+            continue;
+          end;
+          var simple_step_kvp := simple_par_steps[par_i].next_steps.Single;
+          step_kinds[par_i] := simple_step_kvp.Key.par_group_kinds.Single;
+          steps[par_i] := simple_step_kvp.Value.Single;
+        end;
+        
+        ett_step.AddNext(step_kinds, steps);
       end;
+      
+      var par_data_size_ret :=
+        if info.IsInputData then System.Array.Empty&<FuncParamT> else
+          |new FuncParamT(false, true, 0, data_size_t)|;
       
       if not need_count_par and (data_par<>nil) and (data_par.enum_to_type_data_rep_c=nil) and not info.IsInputData then
         add_step(MSK_EnumToTypeGetSize,
           |
-            ValueTuple.Create(new FuncParamT(false, false, 0, data_size_t), MPK_Basic),
-            ValueTuple.Create(new FuncParamT(info.IsInputData, false, 0, KnownDirectTypes.Pointer), MPK_Basic)
+            new FuncParamT(false, false, 0, data_size_t),
+            new FuncParamT(info.IsInputData, false, 0, KnownDirectTypes.Pointer)
           |+par_data_size_ret
         );
       
+      var prev_data_par := new FuncParamT(info.IsInputData, true, 0, TypeLookup.FromName('T'+if info.IsInputData then 'Inp' else ''));
+      if (data_par=nil) or data_par.IsString then
+      begin
+        prev_data_par := new FuncParamT(info.IsInputData, false, 0, KnownDirectTypes.Pointer);
+      end;
+      
       add_step(MSK_EnumToTypeBody,
         |
-          ValueTuple.Create(new FuncParamT(false, false, 0, data_size_t), MPK_Basic),
-          ValueTuple.Create(new FuncParamT(info.IsInputData, true, 0, TypeLookup.FromName('T'+if info.IsInputData then 'Inp' else '')), MPK_Basic)
+          new FuncParamT(false, false, 0, data_size_t),
+          prev_data_par
         |+par_data_size_ret
       );
       
@@ -480,86 +592,15 @@ type
     end;
     
     {$ifdef DEBUG}
-    public function EnmrPars := pars.Select(\(par,kind)->par);
+    public function EnmrPars := pars.Select(\(par_kind,par)->par);
     {$endif DEBUG}
     
-    public function NextStepKeys := next_steps.Keys;
-    public property NextStep[kind: MarshalStepKind]: FuncParamMarshalStep read next_steps[kind];
-    
     public function ToString: string; override :=
-      self.pars.Select(\(par,kind)->$'{kind}: {_ObjectToString(par?.ToString(true,true))}').JoinToString('; ');
+      self.pars.Select(\(par_kind,par)->$'{par_kind}: {_ObjectToString(par?.ToString(true,true))}').JoinToString('; ');
     
   end;
   
   {$endregion FuncParamMarshalStep}
-  
-  {$region FuncOvrMarshalStepKind}
-  
-  FuncOvrMarshalStepKind = sealed class(IEquatable<FuncOvrMarshalStepKind>)
-    private par_group_kinds: array of MarshalStepKind;
-    
-    public constructor(par_group_kinds: array of MarshalStepKind) :=
-      self.par_group_kinds := par_group_kinds;
-    private constructor := raise new InvalidOperationException;
-    
-    public static function operator implicit(par_group_kinds: array of MarshalStepKind): FuncOvrMarshalStepKind :=
-      new FuncOvrMarshalStepKind(par_group_kinds);
-    
-    public function AllFlatForward := par_group_kinds.All(k->k=MSK_FlatForward);
-    
-    public function ExpectExistingOvr := par_group_kinds.All(k->k in |MSK_FlatForward,MSK_EnumToTypeExpectExistingOvr|);
-    
-    public function PartialSteps: sequence of FuncOvrMarshalStepKind;
-    begin
-      var groups_can_turn_flat := par_group_kinds.ConvertAll(kind->kind<>MSK_FlatForward);
-      groups_can_turn_flat := groups_can_turn_flat.Reverse.ToArray; //TODO Убрать - только для совместимости маршлинга
-      var all_choises := new MultiBooleanChoiseSet(groups_can_turn_flat);
-      
-      Result := all_choises.Enmr
-        // First is all flat
-        .Skip(1)
-//        .Where(choise->not choise.IsLast)
-        .Select(choise->
-        begin
-          var res := new MarshalStepKind[self.par_group_kinds.Length];
-          for var i := 0 to res.Length-1 do
-            res[i] := if not choise.Flag[{}par_group_kinds.Length-1-{}i] then
-              MSK_FlatForward else
-              par_group_kinds[i];
-          Result := new FuncOvrMarshalStepKind(res);
-        end);
-    end;
-    
-    public static function operator=(s1, s2: FuncOvrMarshalStepKind): boolean;
-    begin
-      Result := ReferenceEquals(s1, s2);
-      if Result then exit;
-      if s1.par_group_kinds.Length<>s2.par_group_kinds.Length then
-        raise new InvalidOperationException;
-      for var i := 0 to s1.par_group_kinds.Length-1 do
-        if s1.par_group_kinds[i] <> s2.par_group_kinds[i] then
-          exit;
-      Result := true;
-    end;
-    public static function operator<>(s1, s2: FuncOvrMarshalStepKind) := not(s1=s2);
-    
-    public function Equals(other: FuncOvrMarshalStepKind) := self=other;
-    public function Equals(o: object): boolean; override :=
-      (o is FuncOvrMarshalStepKind(var other)) and self.Equals(other);
-    
-    public function GetHashCode: integer; override;
-    begin
-      Result := 0;
-      foreach var kind in par_group_kinds do
-        Result := (Result shl 4) xor (Result shr (32-4)) xor kind.GetHashCode;
-    end;
-    
-    public function ToString: string; override :=
-      par_group_kinds.JoinToString;
-    
-  end;
-  
-  {$endregion FuncOvrMarshalStepKind}
   
   {$region MethodImplData}
   
@@ -573,10 +614,12 @@ type
     // Used for:
     // - Replace call_to with newly discovered native MethodImplData
     private call_by := new List<MethodImplData>;
+    
+    private step_marshal_choice := default(MultiBooleanChoice);
     // Used for:
     // - Check: if step is the same, pass pars as is
     // - Get callable name for a given step
-    private call_to := new Dictionary<FuncOvrMarshalStepKind, MethodImplData>;
+    private call_to := new Dictionary<MarshalStepKindCombo, MethodImplData>;
     
     public constructor(public_name, ett_enum_name: string; par_groups: array of FuncParamMarshalStep);
     begin
@@ -587,37 +630,57 @@ type
       self.par_groups := par_groups;
       
     end;
-    public constructor(private_name: string; prev_md: MethodImplData; ovr_step_kind: FuncOvrMarshalStepKind);
+    public constructor(private_name: string; prev_md: MethodImplData; ovr_step_kinds: array of MarshalStepKindCombo);
     begin
       self.name := private_name;
       self.is_public := false;
       
-      if ovr_step_kind.par_group_kinds.Length <> prev_md.par_groups.Length then
+      if ovr_step_kinds.Length <> prev_md.par_groups.Length then
         raise new InvalidOperationException;
-      
-      self.par_groups := new FuncParamMarshalStep[prev_md.par_groups.Length];
-      for var i := 0 to par_groups.Length-1 do
+      var par_groups := new List<FuncParamMarshalStep>;
+      for var i := 0 to ovr_step_kinds.Length-1 do
       begin
-        var par_step := ovr_step_kind.par_group_kinds[i];
-        self.par_groups[i] :=
-          if par_step = MSK_FlatForward then
-            prev_md.par_groups[i] else
-            prev_md.par_groups[i].next_steps[par_step];
+        var k := ovr_step_kinds[i];
+        if k.IsSingleFlatForward then
+          par_groups += prev_md.par_groups[i] else
+          par_groups.AddRange( prev_md.par_groups[i].next_steps[k] );
       end;
+      self.par_groups := par_groups.ToArray;
       
+    end;
+    public constructor(ntv_dup_name: string; prev_md: MethodImplData);
+    begin
+      self.name := ntv_dup_name;
+      self.is_public := false;
+      self.par_groups := prev_md.par_groups;
     end;
     private constructor := raise new InvalidOperationException;
     
-    public function MakeOverload: FuncOverload;
+    public function NativeDup: ValueTuple<MarshalStepKindCombo, MethodImplData, MultiBooleanChoice>;
     begin
-      var pars := new List<FuncParamT>;
-      foreach var s in par_groups do
-        foreach var (par, par_kind) in s.pars do
-          pars += par;
-      Result := pars.ToArray;
+      if not self.IsPublic then
+        // .NativeDup only used to separate ntv and public ovr's
+        raise new InvalidOperationException;
+      Result.Item1 := ArrFill(self.par_groups.Length, MSK_FlatForward);
+      Result.Item2 := new MethodImplData(self.name, self);
+      Result.Item3 := MultiBooleanChoiceSet.Create(self.par_groups.Length).Enmr.First;
     end;
     
-    public function MakeOvrSteps: array of FuncOvrMarshalStepKind;
+    private created_ovr := default(FuncOverload);
+    public function MakeOverload: FuncOverload;
+    begin
+      Result := created_ovr;
+      if Result<>nil then exit;
+      var pars := new List<FuncParamT>;
+      foreach var s in par_groups do
+        foreach var (par_kind, par) in s.pars do
+          pars += par;
+      Result := pars.ToArray;
+      created_ovr := Result;
+    end;
+    
+    /// Returns array of call info
+    public function MakeOvrSteps: array of array of MarshalStepKindCombo;
     begin
       var branching_counts := par_groups.Select(s->s.next_steps.Count);
       var max_branching := branching_counts.Max;
@@ -627,14 +690,16 @@ type
       if (max_branching=2) and (branching_counts.CountOf(max_branching)<>1) then
         raise new NotImplementedException;
       
-      Result := ArrGen&<FuncOvrMarshalStepKind>(max_branching, i->
-        par_groups.ConvertAll(s->
-          s.next_steps.Keys.Take(i+1).DefaultIfEmpty(MSK_FlatForward).Last
+      Result := ArrGen(max_branching, i->
+        self.par_groups.ConvertAll(s->
+          // Reverse order because of how these are inserted into all_methods
+          s.next_steps.Keys.Take(max_branching-i).DefaultIfEmpty(MarshalStepKindCombo.FlatForward).Last
+//          s.next_steps.Keys.Take(i+1).DefaultIfEmpty(MSK_FlatForward).Last
         )
       );
       
       {$ifdef DEBUG}
-      if Result.Any(ovr_step_kind->ovr_step_kind.AllFlatForward) then
+      if Result.Any(call->call.All(ovr_step_kind->ovr_step_kind.AllFlatForward)) then
         raise new InvalidOperationException;
       {$endif DEBUG}
     end;
@@ -683,23 +748,23 @@ type
       
     end;
     
-    public procedure AddCallTo(ovr_step_kind: FuncOvrMarshalStepKind; md: MethodImplData);
+    public procedure AddCallTo(ovr_step_kind: MarshalStepKindCombo; md: MethodImplData; step_marshal_choice: MultiBooleanChoice);
     begin
-      if ovr_step_kind in self.call_to then
-      begin
-        //TODO Довольно не эффективно...
-        // - Но в первую очередь, это случается в кривой ситуации
-        // - Когда у self было несколько вариантов следующего шага,
-        //   но они все привели к той же перегруке
-        // - (потому что проще сначала другой параметр промаршлить)
-        var ovr1 := md.MakeOverload;
-        var ovr2 := self.call_to[ovr_step_kind].MakeOverload;
-        if ovr1<>ovr2 then
-          raise new InvalidOperationException($'{ovr_step_kind}{#10}{ovr1}{#10}{ovr2}');
-        exit;
-      end;
       self.call_to.Add(ovr_step_kind, md);
       md.call_by += self;
+      {$ifdef DEBUG}
+      if step_marshal_choice.FlagCount <> self.par_groups.Length then
+        raise new InvalidOperationException;
+      {$endif DEBUG}
+      if self.step_marshal_choice=default(MultiBooleanChoice) then
+        self.step_marshal_choice := step_marshal_choice else
+      begin
+        {$ifdef DEBUG}
+        for var i := 0 to step_marshal_choice.FlagCount-1 do
+          if self.step_marshal_choice.Flag[i]<>step_marshal_choice.Flag[i] then
+            raise new InvalidOperationException;
+        {$endif DEBUG}
+      end;
     end;
     
     public procedure ReplaceCallsWith(md: MethodImplData);
@@ -716,7 +781,7 @@ type
     begin
       var par_i := 0;
       foreach var step in par_groups do
-        foreach var (par, par_kind) in step.pars do
+        foreach var (par_kind, par) in step.pars do
         begin
           if par_kind=MPK_EnumToTypeCount then
           begin
@@ -844,7 +909,7 @@ type
     private md: MethodImplData;
     private ovr: FuncOverload;
     private generic_names: array of string;
-    private uncalled := new HashSet<FuncOvrMarshalStepKind>;
+    private uncalled := new HashSet<MarshalStepKindCombo>;
     
     private is_proc: boolean;
     private need_block := false;
@@ -883,51 +948,56 @@ type
       ; make_ett_writer: function(pars: array of ValueTuple<MarshalParamKind, FuncParamT, string>): FuncParWriter
     );
     begin
-      self.step_write_procs := new FuncParWriterProc[md.par_groups.Length];
-      self.ordered_step_inds := ArrGen(md.par_groups.Length, par_i->par_i);
-      var step_write_orders := new FuncParamWriteOrder[md.par_groups.Length];
+      var step_write_procs := new List<FuncParWriterProc>;
+      var step_write_orders := new List<FuncParamWriteOrder>;
       
       var par_done_c := 0;
       foreach var step in md.par_groups index step_i do
-      begin
-        var temp_step_i := step_i; //TODO #2882
-        var need_marshal := md.call_to.Values.Select(called_md->called_md.par_groups[temp_step_i]<>step).Distinct.ToArray;
-        if need_marshal.Length=0 then
-          raise new InvalidOperationException('native method in managed processing');
-        if need_marshal.Length=2 then
-          //TODO Implement this properly
-          raise new InvalidOperationException('cannot choose if should marshal now');
-        
-        if not need_marshal.Single then
+        if not md.step_marshal_choice.Flag[step_i] then
         begin
-          if step_i=0 then
+          if par_done_c=0 then
           begin
-            step_write_orders[step_i] := FPWO_FlatResult;
-            step_write_procs[step_i] := wr->wr.WriteResAssign(wr->wr.MakeCall(MSK_FlatForward))
+            step_write_orders += FPWO_FlatResult;
+            step_write_procs += wr->wr.WriteResAssign(wr->wr.MakeCall(MSK_FlatForward))
           end else
           begin
-            step_write_orders[step_i] := FPWO_InPlace;
+            step_write_orders += FPWO_InPlace;
             var par_names := ArrGen(step.pars.Length, par_i->par_name_at(par_done_c+par_i));
-            step_write_procs[step_i] := wr->wr.MakeCall(MSK_FlatForward, wr->
+            step_write_procs += wr->wr.MakeCall(MSK_FlatForward, wr->
               wr.WriteSeparated(par_names, (wr,par_name)->(wr += par_name), ', ')
             );
           end;
+          par_done_c += step.pars.Length;
         end else
-        if step.pars.Length=1 then
+        if step.pars.Any(\(par_kind,par)->par_kind=MPK_EnumToTypeBody) then
         begin
-          var (par, par_kind) := step.pars.Single;
-          (step_write_orders[step_i], step_write_procs[step_i]) :=
-            (par_done_c=0?make_res_writer:make_par_writer)(par_kind, par, par_name_at(par_done_c));
-        end else
-          (step_write_orders[step_i], step_write_procs[step_i]) :=
-            make_ett_writer(step.pars.ConvertAll((\(par,par_kind), par_i)->
+          var (order, proc) :=
+            make_ett_writer(step.pars.ConvertAll((\(par_kind,par), par_i)->
               ValueTuple.Create(par_kind, par, par_name_at(par_done_c+par_i))
             ));
-        
-        par_done_c += step.pars.Length;
-      end;
+          step_write_orders += order;
+          step_write_procs += proc;
+          par_done_c += step.pars.Length;
+        end else
+          foreach var (par_kind, par) in step.pars do
+          begin
+            var (order, proc) :=
+              (par_done_c=0?make_res_writer:make_par_writer)(par_kind, par, par_name_at(par_done_c));
+            step_write_orders += order;
+            step_write_procs += proc;
+            par_done_c += 1;
+          end;
       
-      System.Array.Sort(step_write_orders, ordered_step_inds);
+      {$ifdef DEBUG}
+      if par_done_c <> md.par_groups.Sum(step->step.pars.Length) then
+        raise new InvalidOperationException;
+      {$endif DEBUG}
+      
+      self.step_write_procs := step_write_procs.ToArray;
+      
+      self.ordered_step_inds := ArrGen(step_write_orders.Count, par_i->par_i);
+      System.Array.Sort(step_write_orders.ToArray, self.ordered_step_inds);
+      
     end;
     
     private write_step_procs: array of Action<Writer> := nil;
@@ -951,7 +1021,7 @@ type
         if left_c <> 0 then
           ExecuteMarshalCore(wr, wr_cont.tab, left_c) else
         begin
-          var ovr_step_kind := new FuncOvrMarshalStepKind(step_kinds);
+          var ovr_step_kind := new MarshalStepKindCombo(step_kinds);
           
           var called_md: MethodImplData;
           if not md.call_to.TryGetValue(ovr_step_kind, called_md) then
@@ -984,10 +1054,10 @@ type
     end;
     private procedure ExecuteMarshalCore(wr: Writer);
     begin
-      self.write_step_procs := new Action<Writer>[md.par_groups.Length];
-      self.step_kinds := new MarshalStepKind[md.par_groups.Length];
+      self.write_step_procs := new Action<Writer>[step_write_procs.Length];
+      self.step_kinds := new MarshalStepKind[step_write_procs.Length];
       
-      ExecuteMarshalCore(wr, 3, md.par_groups.Length);
+      ExecuteMarshalCore(wr, 3, step_kinds.Length);
       
       self.write_step_procs := nil;
       self.step_kinds := nil;

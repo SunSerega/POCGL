@@ -9,6 +9,7 @@
 	Enum [::Choise1_3_OtpFlat]
 	Enum [::Choise1_4_OtpArr]
 	Enum [::Choise1_5_OtpStaticArr]
+	Enum [::Choise1_6_OtpString]
 	Func [::1NoParam]
 	Func [::1NoParamResult]
 	Func [::2ParamString]

@@ -1,21 +1,22 @@
-﻿unit ChoiseSets;
+﻿unit ChoiceSets;
 
 type
   
-  {$region MultiBooleanChoiseSet}
+  {$region MultiBooleanChoiceSet}
   
-  MultiBooleanChoise = record
+  MultiBooleanChoice = record
     private flags: array of cardinal;
     private state := cardinal(0);
     
     public property IsFirst: boolean read state=0;
     public property IsLast: boolean read state=flags.Last(f->f<>0)*2-1;
     
+    public property FlagCount: integer read flags.Length;
     public property Flag[i: integer]: boolean read (state and flags[i]) <> 0;
     
   end;
   
-  MultiBooleanChoiseSet = record
+  MultiBooleanChoiceSet = record
     private size := cardinal(1);
     private flags: array of cardinal;
     
@@ -37,25 +38,27 @@ type
     
     public property StatesCount: cardinal read self.size;
     
-    public function Enmr: sequence of MultiBooleanChoise;
+    public function Enmr(skip_first, skip_last: cardinal): sequence of MultiBooleanChoice;
     begin
-      var res: MultiBooleanChoise;
+      var res: MultiBooleanChoice;
       res.flags := self.flags;
-      while res.state<self.size do
+      res.state := skip_first;
+      while res.state<self.size-skip_last do
       begin
         yield res;
         res.state += 1;
       end;
     end;
+    public function Enmr := Enmr(0,0);
     
   end;
   
-  {$endregion MultiBooleanChoiseSet}
+  {$endregion MultiBooleanChoiceSet}
   
-  {$region MultiIntegerChoiseSet}
+  {$region MultiIntegerChoiceSet}
   //TODO Actually use (in InitOverloads)
   
-  _MultiChoiseSep = record
+  _MultiChoiceSep = record
     private s_div, s_mod: cardinal;
     
     private function Next: cardinal;
@@ -69,25 +72,25 @@ type
     
   end;
   
-  MultiChoise = record
-    private state_seps: array of _MultiChoiseSep;
+  MultiChoice = record
+    private state_seps: array of _MultiChoiceSep;
     private state := cardinal(0);
     
     public property IsFirst: boolean read state=0;
     public property IsLast: boolean read state=state_seps[0].Next;
     
-    public property Choise[i: integer]: integer read
+    public property Choice[i: integer]: integer read
       state div state_seps[i].s_div mod state_seps[i].s_mod;
     
   end;
   
-  MultiChoiseSet = record
+  MultiChoiceSet = record
     private size := cardinal(1);
-    private state_seps: array of _MultiChoiseSep;
+    private state_seps: array of _MultiChoiceSep;
     
     private procedure Init(c: integer; state_counts: sequence of integer);
     begin
-      state_seps := new _MultiChoiseSep[c];
+      state_seps := new _MultiChoiceSep[c];
       foreach var state_c in state_counts.Reverse index i do
       begin
         var si := c-1-i;
@@ -107,9 +110,9 @@ type
     
     public property StateCount: cardinal read self.size;
     
-    public function Enmr: sequence of MultiChoise;
+    public function Enmr: sequence of MultiChoice;
     begin
-      var res: MultiChoise;
+      var res: MultiChoice;
       res.state_seps := self.state_seps;
       while res.state<self.size do
       begin
@@ -120,6 +123,6 @@ type
     
   end;
   
-  {$endregion MultiIntegerChoiseSet}
+  {$endregion MultiIntegerChoiceSet}
   
 end.

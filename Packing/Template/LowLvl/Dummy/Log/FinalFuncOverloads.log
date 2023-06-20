@@ -93,17 +93,18 @@
 	------ | ------ | ------------ | ---------- | ----------------- |
 	       | s1     | s2           | gen        | gen_ro            |
 
-# ::7EnumToType[12]:
+# ::7EnumToType[13]:
 	Multichoise1                        | UIntPtr        | var TInp const         | UIntPtr        | var T                   | var UIntPtr        |
 	Multichoise1                        | UIntPtr        | var TInp const         | UIntPtr        | pointer                 | var UIntPtr        |
-	Multichoise1.Choise1_1_InpFlat      | %inp_size%     | UIntPtr const          | %inp_size%     | var string              | %ret_size%         |
-	Multichoise1.Choise1_2_InpArr       | %inp_size%     | array of UIntPtr const | %inp_size%     | var string              | %ret_size%         |
-	Multichoise1.Choise1_2_InpArr       | UInt32         | var UIntPtr const      | %inp_size%     | var string              | %ret_size%         |
-	Multichoise1.Choise1_3_OtpFlat      | *              | *                      | %inp_size%     | var UIntPtr             | %ret_size%         |
-	Multichoise1.Choise1_4_OtpArr       | *              | *                      | %inp_size%     | var array of UIntPtr    | %ret_size%         |
-	Multichoise1.Choise1_4_OtpArr       | *              | *                      | UInt32         | var UIntPtr             | %ret_size%         |
-	Multichoise1.Choise1_5_OtpStaticArr | *              | *                      | %inp_size%     | var array[3] of UIntPtr | %ret_size%         |
-	Multichoise1.Choise1_5_OtpStaticArr | *              | *                      | UInt32         | var UIntPtr[3]          | %ret_size%         |
+	Multichoise1.Choise1_1_InpFlat      | *              | UIntPtr const          | *              | var string              | *                  |
+	Multichoise1.Choise1_2_InpArr       | *              | array of UIntPtr const | *              | var string              | *                  |
+	Multichoise1.Choise1_2_InpArr       | UInt32         | var UIntPtr const      | *              | var string              | *                  |
+	Multichoise1.Choise1_3_OtpFlat      | *              | *                      | *              | var UIntPtr             | *                  |
+	Multichoise1.Choise1_4_OtpArr       | *              | *                      | *              | var array of UIntPtr    | *                  |
+	Multichoise1.Choise1_4_OtpArr       | *              | *                      | UInt32         | var UIntPtr             | *                  |
+	Multichoise1.Choise1_5_OtpStaticArr | *              | *                      | *              | var array[3] of UIntPtr | *                  |
+	Multichoise1.Choise1_5_OtpStaticArr | *              | *                      | UInt32         | var UIntPtr[3]          | *                  |
+	Multichoise1.Choise1_6_OtpString    | *              | *                      | *              | var string              | *                  |
 	Multichoise1                        | UIntPtr        | IntPtr const           | UIntPtr        | IntPtr                  | var UIntPtr        |
 	Multichoise1                        | UIntPtr        | IntPtr const           | UIntPtr        | IntPtr                  | IntPtr             |
 	----------------------------------- | -------------- | ---------------------- | -------------- | ----------------------- | ------------------ |
@@ -111,8 +112,8 @@
 
 # ::7EnumToTypeInputOnly[5]:
 	Multichoise2                   | UIntPtr        | var TInp const         |
-	Multichoise2.Choise2_1_InpFlat | %inp_size%     | UIntPtr const          |
-	Multichoise2.Choise2_2_InpArr  | %inp_size%     | array of UIntPtr const |
+	Multichoise2.Choise2_1_InpFlat | *              | UIntPtr const          |
+	Multichoise2.Choise2_2_InpArr  | *              | array of UIntPtr const |
 	Multichoise2.Choise2_2_InpArr  | UInt32         | var UIntPtr const      |
 	Multichoise2                   | UIntPtr        | IntPtr const           |
 	------------------------------ | -------------- | ---------------------- |

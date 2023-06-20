@@ -15,7 +15,7 @@ uses '..\Common\PackingUtils';
 uses BinUtils;
 uses LLPackingUtils;
 uses ItemNames;
-uses ChoiseSets;
+uses ChoiceSets;
 uses FuncHelpers;
 
 uses NamedItemBase;
@@ -253,14 +253,14 @@ type
         if enum_to_type_binding_gr_par_ind=-1 then raise new InvalidOperationException;
       end;
       
-      var ppt_choises := new MultiChoiseSet(possible_par_types.ConvertAll((ppt,par_i)->
+      var ppt_choices := new MultiChoiceSet(possible_par_types.ConvertAll((ppt,par_i)->
         is_proc and (par_i=0) ? 1 : ppt.Count
       ));
       
       var expected_ovr_count := 0;
       if enum_to_type_binding_gr<>nil then
         expected_ovr_count += 1 + 2*enum_to_type_binding_gr_body.Enums.Length;
-      expected_ovr_count += ppt_choises.StateCount;
+      expected_ovr_count += ppt_choices.StateCount;
       
       all_overloads := new List<FuncOverload>(expected_ovr_count);
       
@@ -483,13 +483,13 @@ type
       {$endregion EnumToType}
       
       for var only_arr_ovrs := opt_arr.Any(b->b) downto false do
-        foreach var ppt_choises_state in ppt_choises.Enmr do
+        foreach var ppt_choices_state in ppt_choices.Enmr do
         begin
           var ovr := new FuncParamT[ntv_pars.Length];
           for var par_i := 0 to ntv_pars.Length-1 do
           begin
             if is_proc and (par_i=0) then continue;
-            var ppt_ind := ppt_choises_state.Choise[par_i];
+            var ppt_ind := ppt_choices_state.Choice[par_i];
             if opt_arr[par_i] and (ppt_ind=0 <> only_arr_ovrs) then
             begin
               ovr := nil;
@@ -515,6 +515,8 @@ type
     {$endregion Overloads}
     
     {$region Write}
+    
+    {$region Helpers}
     
     public static procedure LogAllEnumToType;
     begin
@@ -589,6 +591,20 @@ type
     private static in_wr_block := false;
     private static last_lib_name := default(string);
     private static last_wr_block_func_lnames := new Dictionary<string, Func>;
+    public static procedure DefineWriteBlock(lib_name: string; write_funcs: Action);
+    begin
+      if in_wr_block then
+        raise new InvalidOperationException;
+      in_wr_block := true;
+      last_lib_name := lib_name;
+      
+      write_funcs();
+      
+      last_wr_block_func_lnames.Clear;
+      in_wr_block := false;
+    end;
+    
+    {$endregion Helpers}
     
     private was_written := false;
     private ffo_logged := false;
@@ -643,9 +659,9 @@ type
                 foreach var b in ovr.enum_to_type_bindings do
                 begin
                   if i=b.passed_size_par_ind then
-                    s := '%inp_size%' else
+                    s := '*' else
                   if i=b.returned_size_par_ind then
-                    s := '%ret_size%' else
+                    s := '*' else
                   if i=b.data_par_ind then
                     s := nil else
                     continue;
@@ -938,9 +954,10 @@ type
       var all_methods := new List<MethodImplData>;
       begin
         var method_by_ovr := new Dictionary<FuncOverload, MethodImplData>;
-        var pending_methods := new Stack<ValueTuple<MethodImplData, FuncOvrMarshalStepKind>>;
         
-        // First add all public methods
+        var all_public_methods := new List<MethodImplData>;
+        {$region Make public}
+        
         foreach var (ovr,ovr_m) in all_overloads.ZipTuple(all_par_marshalers_per_ovr) do
         begin
           var ovr_name := display_name;
@@ -952,148 +969,214 @@ type
           end;
           var md := new MethodImplData(ovr_name, ett_enum_name, ovr_m);
           var md_ovr := md.MakeOverload;
-          all_methods += md;
+          all_public_methods += md;
           
           if md_ovr.pars.Length <> ovr.pars.Length then
             raise new InvalidOperationException;
           {$ifdef DEBUG}
           if not md_ovr.pars.SequenceEqual(ovr.pars) then
             raise new InvalidOperationException(md_ovr.pars.Zip(ovr.pars, (p1,p2)->p1=p2).JoinToString);
+          {$endif DEBUG}
+          
           if not md.HasEnumToTypeEnumName then
           begin
+            {$ifdef DEBUG}
             var old_md: MethodImplData;
             if method_by_ovr.TryGetValue(md_ovr, old_md) then
               raise new InvalidOperationException;
-          end;
-          {$endif DEBUG}
-          
-          var ovr_steps := md.MakeOvrSteps;
-          // If md should be kept native
-          if ovr_steps.Length=0 then
-          begin
-            // Dupe md, to separate public and native methods
-            var ovr_step: FuncOvrMarshalStepKind := ArrFill(ovr_m.Length, MSK_FlatForward);
-            var ntv_md := new MethodImplData(display_name, md, ovr_step);
-            all_methods.Insert(0, ntv_md);
-            md.AddCallTo(ovr_step, ntv_md);
-            md := ntv_md;
-          end else
-          foreach var ovr_step in ovr_steps do
-            pending_methods += ValueTuple.Create(md, ovr_step);
-          
-          if not md.HasEnumToTypeEnumName then
+            {$endif DEBUG}
             method_by_ovr.Add(md_ovr, md);
+          end;
+          
         end;
         
-        var method_insert_ind := 0; //TODO Пересортировать в более адекватный порядок
+        {$endregion Make public}
         
-        var expected_existing_ovrs := new HashSet<FuncOverload>;
-        while pending_methods.Count<>0 do
+        //TODO Куча дублей логики в этой части...
+        // - Если ещё раз пробовать - надо, наверное, сначала вычислить графы всех возможных зависимостей
+        // - И вместо "array of MarshalStepKindCombo" - ещё 1 отдельный класс
+        var all_ntv_methods := new List<MethodImplData>;
+        {$region Make temp and ntv, add public and temp}
+        
+        foreach var public_md in all_public_methods do
         begin
-          var (old_md, ovr_step) := pending_methods.Pop;
-          if ovr_step.ExpectExistingOvr then
+          var method_insert_ind := all_methods.Count;
+          all_methods += public_md;
+          
+//          if display_name='4GenericWOVarArg' then
+//            display_name := display_name;
+          
+          // Each inner array is one call from marshalers to simpler ovr
+          var pending_methods := new Stack<ValueTuple<MethodImplData, array of array of MarshalStepKindCombo>>;
           begin
-            var old_md_ovr := old_md.MakeOverload;
-            if old_md_ovr not in method_by_ovr then
-              raise new InvalidOperationException;
-            if not expected_existing_ovrs.Add(old_md_ovr) then
-              raise new InvalidOperationException;
-            continue;
+            var ovr_steps := public_md.MakeOvrSteps;
+            // If md should be kept native
+            if ovr_steps.Length=0 then
+            begin
+              {$ifdef DEBUG}
+              if public_md.HasEnumToTypeEnumName then
+                raise new InvalidOperationException;
+              {$endif DEBUG}
+              // Dupe md, to separate public and native methods
+              var (ff_step, ntv_md, no_marshal_choise) := public_md.NativeDup;
+              begin
+                {$ifdef DEBUG}
+                if public_md.MakeOverload not in method_by_ovr then
+                begin
+                  foreach var ovr in method_by_ovr.Keys do
+                    Otp($'({ovr})');
+                  raise new InvalidOperationException($'Public func ovr was not in method_by_ovr: ({public_md.MakeOverload})');
+                end;
+                {$endif DEBUG}
+                var old_md := method_by_ovr[public_md.MakeOverload];
+                if old_md=public_md then
+                begin
+                  method_by_ovr[public_md.MakeOverload] := ntv_md;
+                  all_ntv_methods += ntv_md;
+                end else
+                  ntv_md := old_md;
+              end;
+              public_md.AddCallTo(ff_step, ntv_md, no_marshal_choise);
+              continue;
+            end;
+            pending_methods += ValueTuple.Create(public_md, ovr_steps);
           end;
           
-          if (display_name='6Mix') and not pending_methods.Any then
-            display_name := display_name;
-          
-          if old_md.MakeOverload in all_overloads then
-            method_insert_ind := 0;
-//            method_insert_ind := all_methods.Count-all_overloads.Count;
-          
-          var md := default(MethodImplData);
-          var md_ovr := default(FuncOverload);
-          var step_kind := default(FuncOvrMarshalStepKind);
-          var found_existing_ovr := false;
-          
-          if display_name='6Mix' then
-            display_name := display_name;
-          
-          foreach var ovr_sub_step in ovr_step.PartialSteps do
+          while pending_methods.Count<>0 do
           begin
-            {$ifdef DEBUG}
-            if ovr_sub_step.AllFlatForward then
+            var (old_md, ovr_call_kinds) := pending_methods.Pop;
+            if ovr_call_kinds.Length=0 then
+              // ntv md should not have been added here
               raise new InvalidOperationException;
+            
+            var can_flat_forward := ovr_call_kinds[0].ConvertAll(ovr_step_kinds->not ovr_step_kinds.IsSingleFlatForward);
+            {$ifdef DEBUG}
+            foreach var ovr_call_kind in ovr_call_kinds.Skip(1) do
+            begin
+              var n_can_flat_forward := ovr_call_kind.ConvertAll(ovr_step_kinds->not ovr_step_kinds.IsSingleFlatForward);
+              if not can_flat_forward.SequenceEqual(n_can_flat_forward) then
+                raise new InvalidOperationException;
+            end;
             {$endif DEBUG}
             
-            var new_md := new MethodImplData(display_name, old_md, ovr_sub_step);
-            var new_md_ovr := new_md.MakeOverload;
-            
-            var new_md_is_native := new_md.IsFinalStep;
-            
-//            if md=nil then
+            var found_existing_ovr := false;
+            var step_marshal_choices := new MultiBooleanChoiceSet(can_flat_forward);
+            // From most pars managed, to most pars marshaled
+            foreach var step_marshal_choice in step_marshal_choices.Enmr(1,0) do
             begin
-              md := new_md;
-              md_ovr := new_md_ovr;
-              step_kind := ovr_sub_step;
-            end;
-            
-            var found_md: MethodImplData;
-            if method_by_ovr.TryGetValue(new_md_ovr, found_md) then
-            begin
-              found_existing_ovr := true;
-              if not found_md.IsPublic then
+              var ovr_partial_call_kinds := new List<array of MarshalStepKindCombo>;
+              foreach var ovr_call_kind in ovr_call_kinds do
               begin
-                //TODO Убрать костыльную сортировку
-//                Otp($'{display_name} Move to {method_insert_ind}: ({new_md_ovr})');
-                all_methods.Remove(found_md);
-                all_methods.Insert(method_insert_ind, found_md);
-              end;
-              if new_md_is_native then
-              begin
-                if not found_md.IsPublic then
-                  if not all_methods.Remove(found_md) then
+                var ovr_partial_call_kind := new MarshalStepKindCombo[ovr_call_kind.Length];
+                for var step_i := 0 to ovr_call_kind.Length-1 do
+                begin
+                  var flag := step_marshal_choice.Flag[step_i];
+                  {$ifdef DEBUG}
+                  if flag and ovr_call_kind[step_i].IsSingleFlatForward then
                     raise new InvalidOperationException;
-                if not method_by_ovr.Remove(new_md_ovr) then
-                  raise new InvalidOperationException;
-                expected_existing_ovrs.Remove(new_md_ovr);
-                found_md.ReplaceCallsWith(new_md);
-                found_md := new_md;
-                found_existing_ovr := false;
+                  {$endif DEBUG}
+                  ovr_partial_call_kind[step_i] :=
+                    if not flag then
+                      MarshalStepKindCombo.FlatForward else
+                      ovr_call_kind[step_i];
+                end;
+                if ovr_partial_call_kinds.Any(pck->ovr_partial_call_kind.SequenceEqual(pck)) then
+                  continue;
+                ovr_partial_call_kinds += ovr_partial_call_kind;
               end;
-              md := found_md;
-              md_ovr := new_md_ovr;
-              step_kind := ovr_sub_step;
+              var new_mds := ovr_partial_call_kinds.ConvertAll(ovr_partial_step->new MethodImplData(display_name, old_md, ovr_partial_step));
+              
+              var existing_mds := new MethodImplData[new_mds.Count];
+              var any_need_create := false;
+              for var ovr_i := 0 to new_mds.Count-1 do
+              begin
+                var new_md := new_mds[ovr_i];
+                if method_by_ovr.TryGetValue(new_md.MakeOverload, existing_mds[ovr_i]) then
+                  continue;
+                if new_md.IsFinalStep then
+                  continue;
+                any_need_create := true;
+                break;
+              end;
+              if any_need_create then continue;
+              
+              found_existing_ovr := true;
+              for var ovr_i := 0 to new_mds.Count-1 do
+              begin
+                var new_md := new_mds[ovr_i];
+                var found_md := existing_mds[ovr_i];
+                var ovr_partial_call_kind := ovr_partial_call_kinds[ovr_i];
+                
+                if found_md=nil then
+                begin
+                  method_by_ovr.Add(new_md.MakeOverload, new_md);
+                  if not new_md.IsFinalStep then
+                    raise new InvalidOperationException;
+                  all_ntv_methods += new_md;
+                end else
+                begin
+                  if found_md.IsFinalStep or not new_md.IsFinalStep then
+                    new_md := found_md else
+                  if new_md.IsFinalStep then
+                  begin
+                    if not found_md.IsPublic then
+                      if not all_methods.Remove(found_md) then
+                        raise new InvalidOperationException;
+                    if not method_by_ovr.Remove(found_md.MakeOverload) then
+                      raise new InvalidOperationException;
+                    found_md.ReplaceCallsWith(new_md);
+                    method_by_ovr.Add(new_md.MakeOverload, new_md);
+                    all_ntv_methods += new_md;
+                  end;
+                end;
+                
+                old_md.AddCallTo(new MarshalStepKindCombo(ovr_partial_call_kind), new_md, step_marshal_choice);
+              end;
+              
               break;
             end;
             
+            if found_existing_ovr then continue;
+            // Create new full ovrs
+            
+            foreach var ovr_call_kind in ovr_call_kinds do
+            begin
+              var new_md := new MethodImplData(display_name, old_md, ovr_call_kind);
+              
+              begin
+                var found_md: MethodImplData;
+                if method_by_ovr.TryGetValue(new_md.MakeOverload, found_md) then
+                  new_md := found_md else
+                begin
+                  method_by_ovr.Add(new_md.MakeOverload, new_md);
+                  if new_md.IsFinalStep then
+                    all_ntv_methods += new_md else
+                    all_methods.Insert(method_insert_ind, new_md);
+                end;
+              end;
+              
+              old_md.AddCallTo(new MarshalStepKindCombo(ovr_call_kind), new_md, step_marshal_choices.Enmr.Last);
+              
+              if new_md.IsFinalStep then continue;
+              var next_ovr_steps := new_md.MakeOvrSteps;
+              if next_ovr_steps.Length>1 then
+                // Only public methods are expected to have branching
+                // Tho technically I don't see any problem handling this
+                raise new NotImplementedException;
+              
+              pending_methods += ValueTuple.Create(new_md, next_ovr_steps);
+            end;
+            
           end;
           
-          old_md.AddCallTo(step_kind, md);
-          
-          if found_existing_ovr then continue;
-          
-          all_methods.Insert(method_insert_ind, md);
-          method_by_ovr.Add(md_ovr, md);
-          
-          var next_ovr_steps := md.MakeOvrSteps;
-          if next_ovr_steps.Length>1 then
-            // Only public methods are expected to have branching
-            raise new NotImplementedException;
-          
-          foreach var next_ovr_step in next_ovr_steps do
-            pending_methods += ValueTuple.Create(md, next_ovr_step);
-          
         end;
         
-        if expected_existing_ovrs.Any then
-        begin
-          Otp($'ERROR: {self} did not have expected existing ovrs:');
-          foreach var ovr in expected_existing_ovrs do
-            Otp(ovr.ToString);
-          Otp($'Found ovrs:');
-          foreach var ovr in method_by_ovr.Keys do
-            Otp(ovr.ToString);
-          raise new MessageException('halting...');
-        end;
+        {$endregion Make temp and ntv, add public and temp}
         
+//        if display_name='GetICDLoaderInfoOCLICD' then
+//          display_name := display_name;
+        
+        all_methods.InsertRange(0, all_ntv_methods);
       end;
       {$endregion MakeMethodList}
       
@@ -1207,7 +1290,7 @@ type
                     wr->wr.WriteResAssign(wr->
                     begin
                       wr += 'Marshal.PtrToStringAnsi(';
-                      wr.MakeCall(MSK_PtrToString);
+                      wr.MakeCall(MSK_StringResult);
                       wr += ')';
                     end)
                   );
@@ -1225,7 +1308,7 @@ type
                       wr += 'var ';
                       wr += res_str_ptr_name;
                       wr += ' := ';
-                      wr.MakeCall(MSK_FreeablePtrToString);
+                      wr.MakeCall(MSK_StringResult);
                       wr += ';'#10;
                       
                       wr.MakeBlock('try', wr->
@@ -1389,6 +1472,8 @@ type
                     wr->
                     begin
                       
+                      {$region If empty}
+                      
                       wr.WriteTabs;
                       wr += 'if (';
                       wr += par_name;
@@ -1405,6 +1490,8 @@ type
                         
                       end);
                       
+                      {$endregion If empty}
+                      
                       var temp_arr_name := par_name+'_temp_arr';
                       var temp_arr_lvl := par.arr_lvl-1 + Ord(par.IsString);
                       
@@ -1418,6 +1505,8 @@ type
                       
                       wr.MakeBlock('try', wr->
                       begin
+                        
+                        {$region Do marshaling}
                         
                         wr.MakeBlock('begin', wr->
                         begin
@@ -1558,15 +1647,20 @@ type
                           
                         end);
                         
-                        wr.MakeCall(MSK_ArrayCopy, wr->
-                        begin
-                          wr += temp_arr_name;
-                          if temp_arr_lvl=1 then
+                        {$endregion Do marshaling}
+                        
+                        if temp_arr_lvl=1 then
+                          wr.MakeCall(MSK_ArrayFirstItem, wr->
+                          begin
+                            wr += temp_arr_name;
                             wr += '[0]';
-                        end);
+                          end) else
+                          wr.MakeCall(MSK_ArrayCopy, temp_arr_name);
                         
                         wr.WriteTabs(-1);
                         wr += 'finally'#10;
+                        
+                        {$region Cleanup}
                         
                         for var lvl := 1 to temp_arr_lvl do
                         begin
@@ -1590,6 +1684,8 @@ type
                           end;
                           temp_arr_name := el_name;
                         end;
+                        
+                        {$endregion Cleanup}
                         
                       end);
                       
@@ -1892,19 +1988,6 @@ type
       
       {$endregion Code generation}
       
-    end;
-    
-    public static procedure DefineWriteBlock(lib_name: string; write_funcs: Action);
-    begin
-      if in_wr_block then
-        raise new InvalidOperationException;
-      in_wr_block := true;
-      last_lib_name := lib_name;
-      
-      write_funcs();
-      
-      last_wr_block_func_lnames.Clear;
-      in_wr_block := false;
     end;
     
     {$endregion Write}

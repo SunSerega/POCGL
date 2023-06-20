@@ -19,6 +19,7 @@
 			<enum name="Choise1_3_OtpFlat"		val="3"						otp_t="size_t" />
 			<enum name="Choise1_4_OtpArr"		val="4"						otp_t="size_t[]" />
 			<enum name="Choise1_5_OtpStaticArr"	val="5"						otp_t="size_t[3]" />
+			<enum name="Choise1_6_OtpString"	val="6"						otp_t="ntv_char[]" />
 		</group>
 		<group name="Multichoise2" etype="obj info" >
 			<enum name="Choise2_1_InpFlat"		val="1"	inp_t="size_t" />

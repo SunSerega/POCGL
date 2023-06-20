@@ -7,6 +7,7 @@
 	Choise1_3_OtpFlat[$0003]
 	Choise1_4_OtpArr[$0004]
 	Choise1_5_OtpStaticArr[$0005]
+	Choise1_6_OtpString[$0006]
 
 # Multichoise2 (::Multichoise2) : EnumBase
 	Choise2_1_InpFlat[$0001]

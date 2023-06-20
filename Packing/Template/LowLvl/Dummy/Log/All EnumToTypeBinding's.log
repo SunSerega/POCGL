@@ -29,6 +29,9 @@ array of UIntPtr
 --- Choise1_5_OtpStaticArr
 !output
 array[3] of UIntPtr
+--- Choise1_6_OtpString
+!output
+string
 
 # ::7EnumToTypeInputOnly
 1
