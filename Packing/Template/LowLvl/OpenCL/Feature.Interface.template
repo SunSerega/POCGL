@@ -6876,7 +6876,7 @@
     private static function ntv_UnloadCompiler_1: clErrorCode;
     external 'OpenCL' name 'clUnloadCompiler';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function UnloadCompiler: clErrorCode :=
-      ntv_UnloadCompiler_1();
+      ntv_UnloadCompiler_1;
     
     // added in cl1.2
     private static function ntv_UnloadPlatformCompiler_1(platform: cl_platform_id): clErrorCode;

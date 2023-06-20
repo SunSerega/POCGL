@@ -629,7 +629,6 @@ type
       created_ovr := Result;
     end;
     
-    /// Returns array of call info
     public function MakeOvrSteps: array of MarshalCallKind;
     begin
       var branching_counts := par_groups.Select(s->s.next_steps.Count);
@@ -990,15 +989,14 @@ type
           uncalled.Remove(ovr_step_kind);
           
           wr += called_md.FinalName(nil);
-          //TODO Не писать скобки, если параметров 0
-          wr += '(';
           if write_step_procs.Any(wsp->wsp<>nil) then
           begin
+            wr += '(';
             wr.WriteSeparated((1..write_step_procs.Length-1).Where(step_i->write_step_procs[step_i]<>nil),
               (wr,step_i)->write_step_procs[step_i](wr), ', '
             );
+            wr += ')';
           end;
-          wr += ')';
           
         end;
         

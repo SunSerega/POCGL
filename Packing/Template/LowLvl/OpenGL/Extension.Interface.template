@@ -3067,7 +3067,7 @@
     private ReleaseShaderCompiler_adr := GetProcAddress('glReleaseShaderCompiler');
     private ntv_ReleaseShaderCompiler_1 := GetProcOrNil&<procedure>(ReleaseShaderCompiler_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ReleaseShaderCompiler :=
-      ntv_ReleaseShaderCompiler_1();
+      ntv_ReleaseShaderCompiler_1;
     
     private ShaderBinary_adr := GetProcAddress('glShaderBinary');
     private ntv_ShaderBinary_1 := GetProcOrNil&<procedure(count: Int32; var shaders: gl_shader; binaryFormat: glShaderBinaryFormat; binary: IntPtr; length: Int32)>(ShaderBinary_adr);
@@ -5851,7 +5851,7 @@
     private GetGraphicsResetStatusARB_adr := GetProcAddress('glGetGraphicsResetStatusARB');
     private ntv_GetGraphicsResetStatusARB_1 := GetProcOrNil&<function: glGraphicsResetStatus>(GetGraphicsResetStatusARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetGraphicsResetStatusARB: glGraphicsResetStatus :=
-      ntv_GetGraphicsResetStatusARB_1();
+      ntv_GetGraphicsResetStatusARB_1;
     
     private GetnTexImageARB_adr := GetProcAddress('glGetnTexImageARB');
     private ntv_GetnTexImageARB_1 := GetProcOrNil&<procedure(target: glTextureTarget; level: Int32; format: glPixelFormat; type: glPixelType; bufSize: Int32; img: IntPtr)>(GetnTexImageARB_adr);
@@ -6031,7 +6031,7 @@
     private EvaluateDepthValuesARB_adr := GetProcAddress('glEvaluateDepthValuesARB');
     private ntv_EvaluateDepthValuesARB_1 := GetProcOrNil&<procedure>(EvaluateDepthValuesARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EvaluateDepthValuesARB :=
-      ntv_EvaluateDepthValuesARB_1();
+      ntv_EvaluateDepthValuesARB_1;
     
   end;
   
@@ -7175,7 +7175,7 @@
     private CreateProgramObjectARB_adr := GetProcAddress('glCreateProgramObjectARB');
     private ntv_CreateProgramObjectARB_1 := GetProcOrNil&<function: gl_handle_ARB>(CreateProgramObjectARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateProgramObjectARB: gl_handle_ARB :=
-      ntv_CreateProgramObjectARB_1();
+      ntv_CreateProgramObjectARB_1;
     
     private AttachObjectARB_adr := GetProcAddress('glAttachObjectARB');
     private ntv_AttachObjectARB_1 := GetProcOrNil&<procedure(containerObj: gl_handle_ARB; obj: gl_handle_ARB)>(AttachObjectARB_adr);
@@ -8026,7 +8026,7 @@
     private TextureBarrier_adr := GetProcAddress('glTextureBarrier');
     private ntv_TextureBarrier_1 := GetProcOrNil&<procedure>(TextureBarrier_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureBarrier :=
-      ntv_TextureBarrier_1();
+      ntv_TextureBarrier_1;
     
   end;
   
@@ -8430,12 +8430,12 @@
     private PauseTransformFeedback_adr := GetProcAddress('glPauseTransformFeedback');
     private ntv_PauseTransformFeedback_1 := GetProcOrNil&<procedure>(PauseTransformFeedback_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PauseTransformFeedback :=
-      ntv_PauseTransformFeedback_1();
+      ntv_PauseTransformFeedback_1;
     
     private ResumeTransformFeedback_adr := GetProcAddress('glResumeTransformFeedback');
     private ntv_ResumeTransformFeedback_1 := GetProcOrNil&<procedure>(ResumeTransformFeedback_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResumeTransformFeedback :=
-      ntv_ResumeTransformFeedback_1();
+      ntv_ResumeTransformFeedback_1;
     
     private DrawTransformFeedback_adr := GetProcAddress('glDrawTransformFeedback');
     private ntv_DrawTransformFeedback_1 := GetProcOrNil&<procedure(mode: glPrimitiveType; id: gl_transform_feedback)>(DrawTransformFeedback_adr);
@@ -11383,12 +11383,12 @@
     private BeginFragmentShaderATI_adr := GetProcAddress('glBeginFragmentShaderATI');
     private ntv_BeginFragmentShaderATI_1 := GetProcOrNil&<procedure>(BeginFragmentShaderATI_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BeginFragmentShaderATI :=
-      ntv_BeginFragmentShaderATI_1();
+      ntv_BeginFragmentShaderATI_1;
     
     private EndFragmentShaderATI_adr := GetProcAddress('glEndFragmentShaderATI');
     private ntv_EndFragmentShaderATI_1 := GetProcOrNil&<procedure>(EndFragmentShaderATI_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EndFragmentShaderATI :=
-      ntv_EndFragmentShaderATI_1();
+      ntv_EndFragmentShaderATI_1;
     
     private PassTexCoordATI_adr := GetProcAddress('glPassTexCoordATI');
     private ntv_PassTexCoordATI_1 := GetProcOrNil&<procedure(dst: glFragmentShaderReg; coord: glFragmentShaderTextureSource; swizzle: glSwizzleOp)>(PassTexCoordATI_adr);
@@ -12334,7 +12334,7 @@
     private UnlockArraysEXT_adr := GetProcAddress('glUnlockArraysEXT');
     private ntv_UnlockArraysEXT_1 := GetProcOrNil&<procedure>(UnlockArraysEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure UnlockArraysEXT :=
-      ntv_UnlockArraysEXT_1();
+      ntv_UnlockArraysEXT_1;
     
   end;
   
@@ -12853,7 +12853,7 @@
     private PopGroupMarkerEXT_adr := GetProcAddress('glPopGroupMarkerEXT');
     private ntv_PopGroupMarkerEXT_1 := GetProcOrNil&<procedure>(PopGroupMarkerEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PopGroupMarkerEXT :=
-      ntv_PopGroupMarkerEXT_1();
+      ntv_PopGroupMarkerEXT_1;
     
   end;
   
@@ -17190,7 +17190,7 @@
     private FramebufferFetchBarrierEXT_adr := GetProcAddress('glFramebufferFetchBarrierEXT');
     private ntv_FramebufferFetchBarrierEXT_1 := GetProcOrNil&<procedure>(FramebufferFetchBarrierEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FramebufferFetchBarrierEXT :=
-      ntv_FramebufferFetchBarrierEXT_1();
+      ntv_FramebufferFetchBarrierEXT_1;
     
   end;
   
@@ -17726,7 +17726,7 @@
     private EndTransformFeedbackEXT_adr := GetProcAddress('glEndTransformFeedbackEXT');
     private ntv_EndTransformFeedbackEXT_1 := GetProcOrNil&<procedure>(EndTransformFeedbackEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EndTransformFeedbackEXT :=
-      ntv_EndTransformFeedbackEXT_1();
+      ntv_EndTransformFeedbackEXT_1;
     
     private BindBufferRangeEXT_adr := GetProcAddress('glBindBufferRangeEXT');
     private ntv_BindBufferRangeEXT_1 := GetProcOrNil&<procedure(target: glBufferTarget; index: UInt32; buffer: gl_buffer; offset: IntPtr; size: UIntPtr)>(BindBufferRangeEXT_adr);
@@ -18009,12 +18009,12 @@
     private BeginVertexShaderEXT_adr := GetProcAddress('glBeginVertexShaderEXT');
     private ntv_BeginVertexShaderEXT_1 := GetProcOrNil&<procedure>(BeginVertexShaderEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BeginVertexShaderEXT :=
-      ntv_BeginVertexShaderEXT_1();
+      ntv_BeginVertexShaderEXT_1;
     
     private EndVertexShaderEXT_adr := GetProcAddress('glEndVertexShaderEXT');
     private ntv_EndVertexShaderEXT_1 := GetProcOrNil&<procedure>(EndVertexShaderEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EndVertexShaderEXT :=
-      ntv_EndVertexShaderEXT_1();
+      ntv_EndVertexShaderEXT_1;
     
     private BindVertexShaderEXT_adr := GetProcAddress('glBindVertexShaderEXT');
     private ntv_BindVertexShaderEXT_1 := GetProcOrNil&<procedure(id: UInt32)>(BindVertexShaderEXT_adr);
@@ -18449,7 +18449,7 @@
     private FrameTerminatorGREMEDY_adr := GetProcAddress('glFrameTerminatorGREMEDY');
     private ntv_FrameTerminatorGREMEDY_1 := GetProcOrNil&<procedure>(FrameTerminatorGREMEDY_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FrameTerminatorGREMEDY :=
-      ntv_FrameTerminatorGREMEDY_1();
+      ntv_FrameTerminatorGREMEDY_1;
     
   end;
   
@@ -18895,7 +18895,7 @@
     private ApplyFramebufferAttachmentCMAAINTEL_adr := GetProcAddress('glApplyFramebufferAttachmentCMAAINTEL');
     private ntv_ApplyFramebufferAttachmentCMAAINTEL_1 := GetProcOrNil&<procedure>(ApplyFramebufferAttachmentCMAAINTEL_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ApplyFramebufferAttachmentCMAAINTEL :=
-      ntv_ApplyFramebufferAttachmentCMAAINTEL_1();
+      ntv_ApplyFramebufferAttachmentCMAAINTEL_1;
     
   end;
   
@@ -19144,7 +19144,7 @@
     private BlendBarrierKHR_adr := GetProcAddress('glBlendBarrierKHR');
     private ntv_BlendBarrierKHR_1 := GetProcOrNil&<procedure>(BlendBarrierKHR_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlendBarrierKHR :=
-      ntv_BlendBarrierKHR_1();
+      ntv_BlendBarrierKHR_1;
     
   end;
   
@@ -19226,7 +19226,7 @@
     private PopDebugGroup_adr := GetProcAddress('glPopDebugGroup');
     private ntv_PopDebugGroup_1 := GetProcOrNil&<procedure>(PopDebugGroup_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PopDebugGroup :=
-      ntv_PopDebugGroup_1();
+      ntv_PopDebugGroup_1;
     
     private ObjectLabel_adr := GetProcAddress('glObjectLabel');
     private ntv_ObjectLabel_1 := GetProcOrNil&<procedure(identifier: glObjectIdentifier; name: UInt32; length: Int32; label: IntPtr)>(ObjectLabel_adr);
@@ -19322,7 +19322,7 @@
     private GetGraphicsResetStatus_adr := GetProcAddress('glGetGraphicsResetStatus');
     private ntv_GetGraphicsResetStatus_1 := GetProcOrNil&<function: glGraphicsResetStatus>(GetGraphicsResetStatus_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetGraphicsResetStatus: glGraphicsResetStatus :=
-      ntv_GetGraphicsResetStatus_1();
+      ntv_GetGraphicsResetStatus_1;
     
     private ReadnPixels_adr := GetProcAddress('glReadnPixels');
     private ntv_ReadnPixels_1 := GetProcOrNil&<procedure(x: Int32; y: Int32; width: Int32; height: Int32; format: glPixelFormat; type: glPixelType; bufSize: Int32; data: IntPtr)>(ReadnPixels_adr);
@@ -19427,7 +19427,7 @@
     private ResizeBuffersMESA_adr := GetProcAddress('glResizeBuffersMESA');
     private ntv_ResizeBuffersMESA_1 := GetProcOrNil&<procedure>(ResizeBuffersMESA_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResizeBuffersMESA :=
-      ntv_ResizeBuffersMESA_1();
+      ntv_ResizeBuffersMESA_1;
     
   end;
   
@@ -19917,7 +19917,7 @@
     private BlendBarrierNV_adr := GetProcAddress('glBlendBarrierNV');
     private ntv_BlendBarrierNV_1 := GetProcOrNil&<procedure>(BlendBarrierNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlendBarrierNV :=
-      ntv_BlendBarrierNV_1();
+      ntv_BlendBarrierNV_1;
     
   end;
   
@@ -20404,7 +20404,7 @@
     private EndConditionalRenderNV_adr := GetProcAddress('glEndConditionalRenderNV');
     private ntv_EndConditionalRenderNV_1 := GetProcOrNil&<procedure>(EndConditionalRenderNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EndConditionalRenderNV :=
-      ntv_EndConditionalRenderNV_1();
+      ntv_EndConditionalRenderNV_1;
     
   end;
   
@@ -21195,7 +21195,7 @@
     private MulticastBarrierNV_adr := GetProcAddress('glMulticastBarrierNV');
     private ntv_MulticastBarrierNV_1 := GetProcOrNil&<procedure>(MulticastBarrierNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MulticastBarrierNV :=
-      ntv_MulticastBarrierNV_1();
+      ntv_MulticastBarrierNV_1;
     
     private MulticastWaitSyncNV_adr := GetProcAddress('glMulticastWaitSyncNV');
     private ntv_MulticastWaitSyncNV_1 := GetProcOrNil&<procedure(signalGpu: UInt32; waitGpuMask: DummyFlags)>(MulticastWaitSyncNV_adr);
@@ -22582,7 +22582,7 @@
     private EndOcclusionQueryNV_adr := GetProcAddress('glEndOcclusionQueryNV');
     private ntv_EndOcclusionQueryNV_1 := GetProcOrNil&<procedure>(EndOcclusionQueryNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EndOcclusionQueryNV :=
-      ntv_EndOcclusionQueryNV_1();
+      ntv_EndOcclusionQueryNV_1;
     
     private GetOcclusionQueryivNV_adr := GetProcAddress('glGetOcclusionQueryivNV');
     private ntv_GetOcclusionQueryivNV_1 := GetProcOrNil&<procedure(id: UInt32; pname: glOcclusionQueryParameterName; var params: Int32)>(GetOcclusionQueryivNV_adr);
@@ -23640,7 +23640,7 @@
     private PrimitiveRestartNV_adr := GetProcAddress('glPrimitiveRestartNV');
     private ntv_PrimitiveRestartNV_1 := GetProcOrNil&<procedure>(PrimitiveRestartNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PrimitiveRestartNV :=
-      ntv_PrimitiveRestartNV_1();
+      ntv_PrimitiveRestartNV_1;
     
     private PrimitiveRestartIndexNV_adr := GetProcAddress('glPrimitiveRestartIndexNV');
     private ntv_PrimitiveRestartIndexNV_1 := GetProcOrNil&<procedure(index: UInt32)>(PrimitiveRestartIndexNV_adr);
@@ -23942,7 +23942,7 @@
     private ResolveDepthValuesNV_adr := GetProcAddress('glResolveDepthValuesNV');
     private ntv_ResolveDepthValuesNV_1 := GetProcOrNil&<procedure>(ResolveDepthValuesNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResolveDepthValuesNV :=
-      ntv_ResolveDepthValuesNV_1();
+      ntv_ResolveDepthValuesNV_1;
     
   end;
   
@@ -24246,7 +24246,7 @@
     private TextureBarrierNV_adr := GetProcAddress('glTextureBarrierNV');
     private ntv_TextureBarrierNV_1 := GetProcOrNil&<procedure>(TextureBarrierNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureBarrierNV :=
-      ntv_TextureBarrierNV_1();
+      ntv_TextureBarrierNV_1;
     
   end;
   
@@ -24395,7 +24395,7 @@
     private EndTransformFeedbackNV_adr := GetProcAddress('glEndTransformFeedbackNV');
     private ntv_EndTransformFeedbackNV_1 := GetProcOrNil&<procedure>(EndTransformFeedbackNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EndTransformFeedbackNV :=
-      ntv_EndTransformFeedbackNV_1();
+      ntv_EndTransformFeedbackNV_1;
     
     private TransformFeedbackAttribsNV_adr := GetProcAddress('glTransformFeedbackAttribsNV');
     private ntv_TransformFeedbackAttribsNV_1 := GetProcOrNil&<procedure(count: Int32; var attribs: Int32; bufferMode: DummyEnum)>(TransformFeedbackAttribsNV_adr);
@@ -24585,12 +24585,12 @@
     private PauseTransformFeedbackNV_adr := GetProcAddress('glPauseTransformFeedbackNV');
     private ntv_PauseTransformFeedbackNV_1 := GetProcOrNil&<procedure>(PauseTransformFeedbackNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PauseTransformFeedbackNV :=
-      ntv_PauseTransformFeedbackNV_1();
+      ntv_PauseTransformFeedbackNV_1;
     
     private ResumeTransformFeedbackNV_adr := GetProcAddress('glResumeTransformFeedbackNV');
     private ntv_ResumeTransformFeedbackNV_1 := GetProcOrNil&<procedure>(ResumeTransformFeedbackNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResumeTransformFeedbackNV :=
-      ntv_ResumeTransformFeedbackNV_1();
+      ntv_ResumeTransformFeedbackNV_1;
     
     private DrawTransformFeedbackNV_adr := GetProcAddress('glDrawTransformFeedbackNV');
     private ntv_DrawTransformFeedbackNV_1 := GetProcOrNil&<procedure(mode: glPrimitiveType; id: gl_transform_feedback)>(DrawTransformFeedbackNV_adr);
@@ -24622,7 +24622,7 @@
     private VDPAUFiniNV_adr := GetProcAddress('glVDPAUFiniNV');
     private ntv_VDPAUFiniNV_1 := GetProcOrNil&<procedure>(VDPAUFiniNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure VDPAUFiniNV :=
-      ntv_VDPAUFiniNV_1();
+      ntv_VDPAUFiniNV_1;
     
     private VDPAURegisterVideoSurfaceNV_adr := GetProcAddress('glVDPAURegisterVideoSurfaceNV');
     private ntv_VDPAURegisterVideoSurfaceNV_1 := GetProcOrNil&<function(vdpSurface: IntPtr; target: DummyEnum; numTextureNames: Int32; var textureNames: UInt32): gl_vdpau_surface>(VDPAURegisterVideoSurfaceNV_adr);
@@ -24768,7 +24768,7 @@
     private FlushVertexArrayRangeNV_adr := GetProcAddress('glFlushVertexArrayRangeNV');
     private ntv_FlushVertexArrayRangeNV_1 := GetProcOrNil&<procedure>(FlushVertexArrayRangeNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FlushVertexArrayRangeNV :=
-      ntv_FlushVertexArrayRangeNV_1();
+      ntv_FlushVertexArrayRangeNV_1;
     
     private VertexArrayRangeNV_adr := GetProcAddress('glVertexArrayRangeNV');
     private ntv_VertexArrayRangeNV_1 := GetProcOrNil&<procedure(length: Int32; pointer: IntPtr)>(VertexArrayRangeNV_adr);
@@ -26350,7 +26350,7 @@
     private EndConditionalRenderNVX_adr := GetProcAddress('glEndConditionalRenderNVX');
     private ntv_EndConditionalRenderNVX_1 := GetProcOrNil&<procedure>(EndConditionalRenderNVX_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure EndConditionalRenderNVX :=
-      ntv_EndConditionalRenderNVX_1();
+      ntv_EndConditionalRenderNVX_1;
     
   end;
   
@@ -26607,7 +26607,7 @@
     private LGPUInterlockNVX_adr := GetProcAddress('glLGPUInterlockNVX');
     private ntv_LGPUInterlockNVX_1 := GetProcOrNil&<procedure>(LGPUInterlockNVX_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure LGPUInterlockNVX :=
-      ntv_LGPUInterlockNVX_1();
+      ntv_LGPUInterlockNVX_1;
     
   end;
   
@@ -26625,7 +26625,7 @@
     private CreateProgressFenceNVX_adr := GetProcAddress('glCreateProgressFenceNVX');
     private ntv_CreateProgressFenceNVX_1 := GetProcOrNil&<function: UInt32>(CreateProgressFenceNVX_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateProgressFenceNVX: UInt32 :=
-      ntv_CreateProgressFenceNVX_1();
+      ntv_CreateProgressFenceNVX_1;
     
     private SignalSemaphoreui64NVX_adr := GetProcAddress('glSignalSemaphoreui64NVX');
     private ntv_SignalSemaphoreui64NVX_1 := GetProcOrNil&<procedure(signalGpu: UInt32; fenceObjectCount: Int32; var semaphoreArray: UInt32; var fenceValueArray: UInt64)>(SignalSemaphoreui64NVX_adr);
@@ -28637,7 +28637,7 @@
     private FlushRasterSGIX_adr := GetProcAddress('glFlushRasterSGIX');
     private ntv_FlushRasterSGIX_1 := GetProcOrNil&<procedure>(FlushRasterSGIX_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FlushRasterSGIX :=
-      ntv_FlushRasterSGIX_1();
+      ntv_FlushRasterSGIX_1;
     
   end;
   
@@ -28870,7 +28870,7 @@
     private GetInstrumentsSGIX_adr := GetProcAddress('glGetInstrumentsSGIX');
     private ntv_GetInstrumentsSGIX_1 := GetProcOrNil&<function: Int32>(GetInstrumentsSGIX_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetInstrumentsSGIX: Int32 :=
-      ntv_GetInstrumentsSGIX_1();
+      ntv_GetInstrumentsSGIX_1;
     
     private InstrumentsBufferSGIX_adr := GetProcAddress('glInstrumentsBufferSGIX');
     private ntv_InstrumentsBufferSGIX_1 := GetProcOrNil&<procedure(size: Int32; var buffer: Int32)>(InstrumentsBufferSGIX_adr);
@@ -28910,7 +28910,7 @@
     private StartInstrumentsSGIX_adr := GetProcAddress('glStartInstrumentsSGIX');
     private ntv_StartInstrumentsSGIX_1 := GetProcOrNil&<procedure>(StartInstrumentsSGIX_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure StartInstrumentsSGIX :=
-      ntv_StartInstrumentsSGIX_1();
+      ntv_StartInstrumentsSGIX_1;
     
     private StopInstrumentsSGIX_adr := GetProcAddress('glStopInstrumentsSGIX');
     private ntv_StopInstrumentsSGIX_1 := GetProcOrNil&<procedure(marker: Int32)>(StopInstrumentsSGIX_adr);
@@ -29186,7 +29186,7 @@
     private TagSampleBufferSGIX_adr := GetProcAddress('glTagSampleBufferSGIX');
     private ntv_TagSampleBufferSGIX_1 := GetProcOrNil&<procedure>(TagSampleBufferSGIX_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TagSampleBufferSGIX :=
-      ntv_TagSampleBufferSGIX_1();
+      ntv_TagSampleBufferSGIX_1;
     
   end;
   
@@ -30080,7 +30080,7 @@
     private FinishTextureSUNX_adr := GetProcAddress('glFinishTextureSUNX');
     private ntv_FinishTextureSUNX_1 := GetProcOrNil&<procedure>(FinishTextureSUNX_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FinishTextureSUNX :=
-      ntv_FinishTextureSUNX_1();
+      ntv_FinishTextureSUNX_1;
     
   end;
   
@@ -30156,7 +30156,7 @@
     private GetCurrentAssociatedContextAMD_adr := GetProcAddress('glXGetCurrentAssociatedContextAMD');
     private ntv_GetCurrentAssociatedContextAMD_1 := GetProcOrNil&<function: glx_context>(GetCurrentAssociatedContextAMD_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetCurrentAssociatedContextAMD: glx_context :=
-      ntv_GetCurrentAssociatedContextAMD_1();
+      ntv_GetCurrentAssociatedContextAMD_1;
     
     private BlitContextFramebufferAMD_adr := GetProcAddress('glXBlitContextFramebufferAMD');
     private ntv_BlitContextFramebufferAMD_1 := GetProcOrNil&<procedure(dstCtx: glx_context; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: DummyFlags; filter: DummyEnum)>(BlitContextFramebufferAMD_adr);
@@ -30296,7 +30296,7 @@
     private GetCurrentDisplayEXT_adr := GetProcAddress('glXGetCurrentDisplayEXT');
     private ntv_GetCurrentDisplayEXT_1 := GetProcOrNil&<function: x_display_ptr>(GetCurrentDisplayEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetCurrentDisplayEXT: x_display_ptr :=
-      ntv_GetCurrentDisplayEXT_1();
+      ntv_GetCurrentDisplayEXT_1;
     
     private QueryContextInfoEXT_adr := GetProcAddress('glXQueryContextInfoEXT');
     private ntv_QueryContextInfoEXT_1 := GetProcOrNil&<function(dpy: x_display_ptr; context: glx_context; attribute: Int32; var value: Int32): Int32>(QueryContextInfoEXT_adr);
@@ -30548,7 +30548,7 @@
     private GetSwapIntervalMESA_adr := GetProcAddress('glXGetSwapIntervalMESA');
     private ntv_GetSwapIntervalMESA_1 := GetProcOrNil&<function: Int32>(GetSwapIntervalMESA_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSwapIntervalMESA: Int32 :=
-      ntv_GetSwapIntervalMESA_1();
+      ntv_GetSwapIntervalMESA_1;
     
     private SwapIntervalMESA_adr := GetProcAddress('glXSwapIntervalMESA');
     private ntv_SwapIntervalMESA_1 := GetProcOrNil&<function(interval: UInt32): Int32>(SwapIntervalMESA_adr);
@@ -31060,7 +31060,7 @@
     private GetCurrentReadDrawableSGI_adr := GetProcAddress('glXGetCurrentReadDrawableSGI');
     private ntv_GetCurrentReadDrawableSGI_1 := GetProcOrNil&<function: glx_drawable>(GetCurrentReadDrawableSGI_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetCurrentReadDrawableSGI: glx_drawable :=
-      ntv_GetCurrentReadDrawableSGI_1();
+      ntv_GetCurrentReadDrawableSGI_1;
     
   end;
   
@@ -31702,7 +31702,7 @@
     private GetCurrentAssociatedContextAMD_adr := GetProcAddress('wglGetCurrentAssociatedContextAMD');
     private ntv_GetCurrentAssociatedContextAMD_1 := GetProcOrNil&<function: gdi_rendering_context>(GetCurrentAssociatedContextAMD_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetCurrentAssociatedContextAMD: gdi_rendering_context :=
-      ntv_GetCurrentAssociatedContextAMD_1();
+      ntv_GetCurrentAssociatedContextAMD_1;
     
     private BlitContextFramebufferAMD_adr := GetProcAddress('wglBlitContextFramebufferAMD');
     private ntv_BlitContextFramebufferAMD_1 := GetProcOrNil&<procedure(dstCtx: gdi_rendering_context; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: DummyFlags; filter: DummyEnum)>(BlitContextFramebufferAMD_adr);
@@ -31821,7 +31821,7 @@
     private GetCurrentReadDCARB_adr := GetProcAddress('wglGetCurrentReadDCARB');
     private ntv_GetCurrentReadDCARB_1 := GetProcOrNil&<function: gdi_device_context>(GetCurrentReadDCARB_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetCurrentReadDCARB: gdi_device_context :=
-      ntv_GetCurrentReadDCARB_1();
+      ntv_GetCurrentReadDCARB_1;
     
   end;
   
@@ -32164,7 +32164,7 @@
     private GetExtensionsStringEXT_adr := GetProcAddress('wglGetExtensionsStringEXT');
     private ntv_GetExtensionsStringEXT_1 := GetProcOrNil&<function: IntPtr>(GetExtensionsStringEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetExtensionsStringEXT: string :=
-      Marshal.PtrToStringAnsi(ntv_GetExtensionsStringEXT_1());
+      Marshal.PtrToStringAnsi(ntv_GetExtensionsStringEXT_1);
     
   end;
   
@@ -32189,7 +32189,7 @@
     private GetCurrentReadDCEXT_adr := GetProcAddress('wglGetCurrentReadDCEXT');
     private ntv_GetCurrentReadDCEXT_1 := GetProcOrNil&<function: gdi_device_context>(GetCurrentReadDCEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetCurrentReadDCEXT: gdi_device_context :=
-      ntv_GetCurrentReadDCEXT_1();
+      ntv_GetCurrentReadDCEXT_1;
     
   end;
   
@@ -32400,7 +32400,7 @@
     private GetSwapIntervalEXT_adr := GetProcAddress('wglGetSwapIntervalEXT');
     private ntv_GetSwapIntervalEXT_1 := GetProcOrNil&<function: Int32>(GetSwapIntervalEXT_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSwapIntervalEXT: Int32 :=
-      ntv_GetSwapIntervalEXT_1();
+      ntv_GetSwapIntervalEXT_1;
     
   end;
   
@@ -32754,12 +32754,12 @@
     private EnableFrameLockI3D_adr := GetProcAddress('wglEnableFrameLockI3D');
     private ntv_EnableFrameLockI3D_1 := GetProcOrNil&<function: glBool32>(EnableFrameLockI3D_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function EnableFrameLockI3D: glBool32 :=
-      ntv_EnableFrameLockI3D_1();
+      ntv_EnableFrameLockI3D_1;
     
     private DisableFrameLockI3D_adr := GetProcAddress('wglDisableFrameLockI3D');
     private ntv_DisableFrameLockI3D_1 := GetProcOrNil&<function: glBool32>(DisableFrameLockI3D_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DisableFrameLockI3D: glBool32 :=
-      ntv_DisableFrameLockI3D_1();
+      ntv_DisableFrameLockI3D_1;
     
     private IsEnabledFrameLockI3D_adr := GetProcAddress('wglIsEnabledFrameLockI3D');
     private ntv_IsEnabledFrameLockI3D_1 := GetProcOrNil&<function(var pFlag: glBool32): glBool32>(IsEnabledFrameLockI3D_adr);
@@ -32813,12 +32813,12 @@
     private BeginFrameTrackingI3D_adr := GetProcAddress('wglBeginFrameTrackingI3D');
     private ntv_BeginFrameTrackingI3D_1 := GetProcOrNil&<function: glBool32>(BeginFrameTrackingI3D_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function BeginFrameTrackingI3D: glBool32 :=
-      ntv_BeginFrameTrackingI3D_1();
+      ntv_BeginFrameTrackingI3D_1;
     
     private EndFrameTrackingI3D_adr := GetProcAddress('wglEndFrameTrackingI3D');
     private ntv_EndFrameTrackingI3D_1 := GetProcOrNil&<function: glBool32>(EndFrameTrackingI3D_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function EndFrameTrackingI3D: glBool32 :=
-      ntv_EndFrameTrackingI3D_1();
+      ntv_EndFrameTrackingI3D_1;
     
     private QueryFrameTrackingI3D_adr := GetProcAddress('wglQueryFrameTrackingI3D');
     private ntv_QueryFrameTrackingI3D_1 := GetProcOrNil&<function(var pFrameCount: UInt32; var pMissedFrames: UInt32; var pLastMissedUsage: single): glBool32>(QueryFrameTrackingI3D_adr);

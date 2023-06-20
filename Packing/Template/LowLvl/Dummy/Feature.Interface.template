@@ -9,13 +9,13 @@
     private static procedure ntv_1NoParam_1;
     external 'dummy.dll' name '1NoParam';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure 1NoParam :=
-      ntv_1NoParam_1();
+      ntv_1NoParam_1;
     
     // added in dum1.0
     private static function ntv_1NoParamResult_1: UIntPtr;
     external 'dummy.dll' name '1NoParamResult';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 1NoParamResult: UIntPtr :=
-      ntv_1NoParamResult_1();
+      ntv_1NoParamResult_1;
     
     // added in dum1.0
     private static procedure ntv_2ParamString_1(s: IntPtr);
@@ -43,7 +43,7 @@
     external 'dummy.dll' name '3ResultString';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 3ResultString: string;
     begin
-      var Result_str_ptr := ntv_3ResultString_1();
+      var Result_str_ptr := ntv_3ResultString_1;
       try
         Result := Marshal.PtrToStringAnsi(Result_str_ptr);
       finally
@@ -55,7 +55,7 @@
     private static function ntv_3ResultStringRO_1: IntPtr;
     external 'dummy.dll' name '3ResultStringRO';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function 3ResultStringRO: string :=
-      Marshal.PtrToStringAnsi(ntv_3ResultStringRO_1());
+      Marshal.PtrToStringAnsi(ntv_3ResultStringRO_1);
     
     // added in dum1.0
     private static procedure ntv_4Generic_1(var data: Byte);
@@ -955,13 +955,13 @@
     private 1NoParam_adr := GetProcAddress('1NoParam');
     private ntv_1NoParam_1 := GetProcOrNil&<procedure>(1NoParam_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure 1NoParam :=
-      ntv_1NoParam_1();
+      ntv_1NoParam_1;
     
     // added in dyn1.0
     private 1NoParamResult_adr := GetProcAddress('1NoParamResult');
     private ntv_1NoParamResult_1 := GetProcOrNil&<function: UIntPtr>(1NoParamResult_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 1NoParamResult: UIntPtr :=
-      ntv_1NoParamResult_1();
+      ntv_1NoParamResult_1;
     
     // added in dyn1.0
     private 2ParamString_adr := GetProcAddress('2ParamString');
@@ -989,7 +989,7 @@
     private ntv_3ResultString_1 := GetProcOrNil&<function: IntPtr>(3ResultString_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 3ResultString: string;
     begin
-      var Result_str_ptr := ntv_3ResultString_1();
+      var Result_str_ptr := ntv_3ResultString_1;
       try
         Result := Marshal.PtrToStringAnsi(Result_str_ptr);
       finally
@@ -1001,7 +1001,7 @@
     private 3ResultStringRO_adr := GetProcAddress('3ResultStringRO');
     private ntv_3ResultStringRO_1 := GetProcOrNil&<function: IntPtr>(3ResultStringRO_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function 3ResultStringRO: string :=
-      Marshal.PtrToStringAnsi(ntv_3ResultStringRO_1());
+      Marshal.PtrToStringAnsi(ntv_3ResultStringRO_1);
     
     // added in dyn1.0
     private 4Generic_adr := GetProcAddress('4Generic');
