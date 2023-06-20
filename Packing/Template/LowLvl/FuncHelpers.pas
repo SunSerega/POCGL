@@ -9,6 +9,7 @@ uses '..\..\..\Utils\CodeGen';
 
 uses BinUtils;
 uses ChoiceSets;
+uses HashableArrays;
 
 uses TypeRefering;
 
@@ -173,23 +174,16 @@ type
   
   {$region FuncOverload}
   
-  FuncOverload = sealed class(System.IEquatable<FuncOverload>)
-    public pars: array of FuncParamT;
+  FuncOverload = sealed class(HashableReadonlyArray<FuncOverload,FuncParamT>)
     
-    public enum_to_type_bindings: array of EnumToTypeBindingInfo;
+    public enum_to_type_bindings: array of EnumToTypeBindingInfo := nil;
     public enum_to_type_gr := default(IDirectNamedType);
     public enum_to_type_enum_name := default(string);
     
-    public constructor(pars: array of FuncParamT);
-    begin
-      if pars=nil then
-        raise nil;
-      self.pars := pars;
-      self.enum_to_type_bindings := nil;
-    end;
+    public constructor(pars: array of FuncParamT) := inherited Create(pars);
     public constructor(pars: array of FuncParamT; enum_to_type_bindings: array of EnumToTypeBindingInfo; enum_to_type_gr: IDirectNamedType; enum_to_type_enum_name: string);
     begin
-      self.pars := pars;
+      inherited Create(pars);
       self.enum_to_type_bindings := enum_to_type_bindings;
       self.enum_to_type_gr := enum_to_type_gr;
       self.enum_to_type_enum_name := enum_to_type_enum_name;
@@ -198,50 +192,8 @@ type
     
     public static function operator implicit(pars: array of FuncParamT): FuncOverload := new FuncOverload(pars);
     
-    public static function operator=(ovr1, ovr2: FuncOverload): boolean;
-    begin
-      Result := ReferenceEquals(ovr1, ovr2);
-      if Result then exit;
-      
-      begin
-        var nil1 := ReferenceEquals(ovr1,nil);
-        var nil2 := ReferenceEquals(ovr2,nil);
-        if nil1<>nil2 then exit;
-        Result := nil1;
-        if Result then exit;
-      end;
-      
-      if ovr1.enum_to_type_enum_name <> ovr2.enum_to_type_enum_name then
-        exit;
-      if not ReferenceEquals(ovr1.enum_to_type_bindings, ovr2.enum_to_type_bindings) then
-        raise new InvalidOperationException;
-      
-      if ovr1.pars.Length<>ovr2.pars.Length then
-        raise new InvalidOperationException;
-      if not ovr1.pars.SequenceEqual(ovr2.pars) then
-        exit;
-      
-      Result := true;
-    end;
-    public static function operator<>(ovr1, ovr2: FuncOverload) := not(ovr1=ovr2);
-    
-    public function Equals(other: FuncOverload) := self=other;
-    public function GetHashCode: integer; override;
-    begin
-      Result := 0;
-      if enum_to_type_enum_name<>nil then
-        Result := enum_to_type_enum_name.GetHashCode;
-      foreach var par in pars do
-      begin
-        if par=nil then continue;
-        if par.tname=nil then
-          raise nil;
-        Result := Result xor par.GetHashCode;
-      end;
-    end;
-    
     public function ToString: string; override :=
-      pars.Select(par->par?.ToString(true)??'-').JoinToString('; ');
+      ItemsSeq.Select(par->par?.ToString(true)??'-').JoinToString('; ');
     
   end;
   
@@ -258,75 +210,75 @@ type
     , MSK_FlatForward
   );
   
-  MarshalStepKindCombo = sealed class(IEquatable<MarshalStepKindCombo>)
-    // Each can be multiple pars, if they are processed together, as in EnumToType
-    private par_group_kinds: array of MarshalStepKind;
-    
-    public constructor(par_group_kinds: array of MarshalStepKind) :=
-      self.par_group_kinds := par_group_kinds;
-    public constructor(par_group_kinds: array of MarshalStepKindCombo);
-    begin
-      self.par_group_kinds := new MarshalStepKind[par_group_kinds.Sum(k_gr->k_gr.par_group_kinds.Length)];
-      var step_i := 0;
-      foreach var k_gr in par_group_kinds do
-        foreach var k in k_gr.par_group_kinds do
-        begin
-          self.par_group_kinds[step_i] := k;
-          step_i += 1;
-        end;
-      {$ifdef DEBUG}
-      if step_i<>self.par_group_kinds.Length then
-        raise new InvalidOperationException;
-      {$endif DEBUG}
-    end;
-    private constructor := raise new InvalidOperationException;
+  MarshalStepKindCombo = sealed class(HashableReadonlyArray<MarshalStepKindCombo, MarshalStepKind>)
     
     public static function operator implicit(par_group_kinds: array of MarshalStepKind): MarshalStepKindCombo :=
       new MarshalStepKindCombo(par_group_kinds);
     
-    private static flat_forward := new MarshalStepKindCombo(|MSK_FlatForward|);
+    private static flat_forward: MarshalStepKindCombo := |MSK_FlatForward|;
     public static property FlatForward: MarshalStepKindCombo read flat_forward;
     public function IsSingleFlatForward: boolean;
     begin
-      Result := (par_group_kinds.Length=1) and (par_group_kinds.Single=MSK_FlatForward);
+      Result := ReferenceEquals(self, FlatForward);
       {$ifdef DEBUG}
-      if Result and not ReferenceEquals(self, FlatForward) then
+      if not Result and ItemsSeq.All(k->k=MSK_FlatForward) then
         raise new InvalidOperationException($'Use MarshalStepKindCombo.FlatForward');
       {$endif DEBUG}
     end;
     
-    public function AllFlatForward := par_group_kinds.All(k->k=MSK_FlatForward);
-    
-    public static function operator=(s1, s2: MarshalStepKindCombo): boolean;
-    begin
-      Result := ReferenceEquals(s1, s2);
-      if Result then exit;
-      if s1.par_group_kinds.Length<>s2.par_group_kinds.Length then
-        raise new InvalidOperationException;
-      for var i := 0 to s1.par_group_kinds.Length-1 do
-        if s1.par_group_kinds[i] <> s2.par_group_kinds[i] then
-          exit;
-      Result := true;
-    end;
-    public static function operator<>(s1, s2: MarshalStepKindCombo) := not(s1=s2);
-    
-    public function Equals(other: MarshalStepKindCombo) := self=other;
-    public function Equals(o: object): boolean; override :=
-      (o is MarshalStepKindCombo(var other)) and self.Equals(other);
-    
-    public function GetHashCode: integer; override;
-    begin
-      Result := 0;
-      foreach var kind in par_group_kinds do
-        Result := (Result shl 4) xor (Result shr (32-4)) xor kind.GetHashCode;
-    end;
+    protected function HashCodeBitShift: integer; override := 4;
     
     public function ToString: string; override :=
-      par_group_kinds.JoinToString;
+      ItemsSeq.JoinToString;
     
   end;
   
   {$endregion MarshalStepKindCombo}
+  
+  {$region MarshalCallKind}
+  
+  MarshalCallKind = sealed class(HashableReadonlyArray<MarshalCallKind, MarshalStepKind>)
+    public original_step_kinds: array of MarshalStepKindCombo := nil;
+    
+    private static function CombineKindCombos(step_kinds: array of MarshalStepKindCombo): array of MarshalStepKind;
+    begin
+      Result := new MarshalStepKind[step_kinds.Sum(step_kind->step_kind.Size)];
+      var i := 0;
+      foreach var step_kind in step_kinds do
+        foreach var k in step_kind.ItemsSeq do
+        begin
+          Result[i] := k;
+          i += 1;
+        end;
+      {$ifdef DEBUG}
+      if i <> Result.Length then
+        raise new InvalidOperationException;
+      {$endif DEBUG}
+    end;
+    
+    public constructor(par_kinds: array of MarshalStepKind) := inherited Create(par_kinds);
+    public constructor(step_kinds: array of MarshalStepKindCombo);
+    begin
+      inherited Create(CombineKindCombos(step_kinds));
+      original_step_kinds := step_kinds;
+    end;
+    
+    public static function operator implicit(par_kinds: array of MarshalStepKind): MarshalCallKind :=
+      new MarshalCallKind(par_kinds);
+    
+    public function IsAllFlatForward :=
+      original_step_kinds.All(step_kind->step_kind.IsSingleFlatForward);
+    public function CanFlatForwardFlags :=
+      original_step_kinds.ConvertAll(step_kind->not step_kind.IsSingleFlatForward);
+    
+    protected function HashCodeBitShift: integer; override := 16-1;
+    
+    public function ToString: string; override :=
+      ItemsSeq.JoinToString;
+    
+  end;
+  
+  {$endregion MarshalCallKind}
   
   {$region FuncParamMarshalStep}
   
@@ -343,8 +295,6 @@ type
     // Usually only 1 par, but EnumToType also has in/out sizes
     private pars: array of ValueTuple<MarshalParamKind, FuncParamT>;
     // 0 items for final (ntv_) steps
-    // MarshalStepKindCombo here is not full ovr,
-    // but instead kind of each item in value array
     private next_steps := new Dictionary<MarshalStepKindCombo, array of FuncParamMarshalStep>;
     
     private constructor(pars: array of ValueTuple<MarshalParamKind, FuncParamT>);
@@ -376,7 +326,7 @@ type
       {$ifdef DEBUG}
       if steps.Length=0 then
         raise new InvalidOperationException;
-      if kinds.par_group_kinds.Length <> steps.Length then
+      if kinds.Size <> steps.Length then
         raise new InvalidOperationException;
       if next_step_size=nil then
         next_step_size := steps.Length else
@@ -556,7 +506,7 @@ type
             continue;
           end;
           var simple_step_kvp := simple_par_steps[par_i].next_steps.Single;
-          step_kinds[par_i] := simple_step_kvp.Key.par_group_kinds.Single;
+          step_kinds[par_i] := simple_step_kvp.Key.ItemsSeq.Single;
           steps[par_i] := simple_step_kvp.Value.Single;
         end;
         
@@ -619,7 +569,7 @@ type
     // Used for:
     // - Check: if step is the same, pass pars as is
     // - Get callable name for a given step
-    private call_to := new Dictionary<MarshalStepKindCombo, MethodImplData>;
+    private call_to := new Dictionary<MarshalCallKind, MethodImplData>;
     
     public constructor(public_name, ett_enum_name: string; par_groups: array of FuncParamMarshalStep);
     begin
@@ -630,20 +580,20 @@ type
       self.par_groups := par_groups;
       
     end;
-    public constructor(private_name: string; prev_md: MethodImplData; ovr_step_kinds: array of MarshalStepKindCombo);
+    public constructor(private_name: string; prev_md: MethodImplData; ovr_kind: MarshalCallKind);
     begin
       self.name := private_name;
       self.is_public := false;
       
-      if ovr_step_kinds.Length <> prev_md.par_groups.Length then
+      if ovr_kind.original_step_kinds.Length <> prev_md.par_groups.Length then
         raise new InvalidOperationException;
       var par_groups := new List<FuncParamMarshalStep>;
-      for var i := 0 to ovr_step_kinds.Length-1 do
+      for var i := 0 to ovr_kind.original_step_kinds.Length-1 do
       begin
-        var k := ovr_step_kinds[i];
-        if k.IsSingleFlatForward then
+        var step_kind := ovr_kind.original_step_kinds[i];
+        if step_kind.IsSingleFlatForward then
           par_groups += prev_md.par_groups[i] else
-          par_groups.AddRange( prev_md.par_groups[i].next_steps[k] );
+          par_groups.AddRange( prev_md.par_groups[i].next_steps[step_kind] );
       end;
       self.par_groups := par_groups.ToArray;
       
@@ -656,7 +606,7 @@ type
     end;
     private constructor := raise new InvalidOperationException;
     
-    public function NativeDup: ValueTuple<MarshalStepKindCombo, MethodImplData, MultiBooleanChoice>;
+    public function NativeDup: ValueTuple<MarshalCallKind, MethodImplData, MultiBooleanChoice>;
     begin
       if not self.IsPublic then
         // .NativeDup only used to separate ntv and public ovr's
@@ -670,7 +620,7 @@ type
     public function MakeOverload: FuncOverload;
     begin
       Result := created_ovr;
-      if Result<>nil then exit;
+      if not ReferenceEquals(Result, nil) then exit;
       var pars := new List<FuncParamT>;
       foreach var s in par_groups do
         foreach var (par_kind, par) in s.pars do
@@ -680,7 +630,7 @@ type
     end;
     
     /// Returns array of call info
-    public function MakeOvrSteps: array of array of MarshalStepKindCombo;
+    public function MakeOvrSteps: array of MarshalCallKind;
     begin
       var branching_counts := par_groups.Select(s->s.next_steps.Count);
       var max_branching := branching_counts.Max;
@@ -691,15 +641,15 @@ type
         raise new NotImplementedException;
       
       Result := ArrGen(max_branching, i->
-        self.par_groups.ConvertAll(s->
-          // Reverse order because of how these are inserted into all_methods
-          s.next_steps.Keys.Take(max_branching-i).DefaultIfEmpty(MarshalStepKindCombo.FlatForward).Last
-//          s.next_steps.Keys.Take(i+1).DefaultIfEmpty(MSK_FlatForward).Last
+        new MarshalCallKind(
+          self.par_groups.ConvertAll(s->
+            s.next_steps.Keys.Take(max_branching-i).DefaultIfEmpty(MarshalStepKindCombo.FlatForward).Last
+          )
         )
       );
       
       {$ifdef DEBUG}
-      if Result.Any(call->call.All(ovr_step_kind->ovr_step_kind.AllFlatForward)) then
+      if Result.Any(call->call.IsAllFlatForward) then
         raise new InvalidOperationException;
       {$endif DEBUG}
     end;
@@ -748,7 +698,7 @@ type
       
     end;
     
-    public procedure AddCallTo(ovr_step_kind: MarshalStepKindCombo; md: MethodImplData; step_marshal_choice: MultiBooleanChoice);
+    public procedure AddCallTo(ovr_step_kind: MarshalCallKind; md: MethodImplData; step_marshal_choice: MultiBooleanChoice);
     begin
       self.call_to.Add(ovr_step_kind, md);
       md.call_by += self;
@@ -909,7 +859,7 @@ type
     private md: MethodImplData;
     private ovr: FuncOverload;
     private generic_names: array of string;
-    private uncalled := new HashSet<MarshalStepKindCombo>;
+    private uncalled := new HashSet<MarshalCallKind>;
     
     private is_proc: boolean;
     private need_block := false;
@@ -920,7 +870,7 @@ type
       self.ovr := ovr;
       self.generic_names := generic_names;
       
-      self.is_proc := ovr.pars[0]=nil;
+      self.is_proc := ovr[0]=nil;
       uncalled.UnionWith( md.call_to.Keys );
       
       if generic_names.Any then
@@ -1021,7 +971,7 @@ type
         if left_c <> 0 then
           ExecuteMarshalCore(wr, wr_cont.tab, left_c) else
         begin
-          var ovr_step_kind := new MarshalStepKindCombo(step_kinds);
+          var ovr_step_kind := new MarshalCallKind(step_kinds);
           
           var called_md: MethodImplData;
           if not md.call_to.TryGetValue(ovr_step_kind, called_md) then

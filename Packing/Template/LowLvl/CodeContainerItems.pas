@@ -381,7 +381,7 @@ type
           // only "explicit_count_par=true" will be added
           for var explicit_count_par := false to true do
           begin
-            var pars := enum_to_type_binding_helper_ovr.pars.ToArray;
+            var pars := enum_to_type_binding_helper_ovr.ItemsSeq.ToArray;
             pars[ntv_pars.FindIndex(par->par.CalculatedDirectType=enum_to_type_binding_gr)] := nil;
             
             var any_binding_dynamic := false;
@@ -507,7 +507,7 @@ type
 //        raise new InvalidOperationException;
       var ovrs_hs := new HashSet<FuncOverload>(expected_ovr_count);
       foreach var ovr in all_overloads do
-        if not ovrs_hs.Add(ovr) then
+        if (ovr.enum_to_type_bindings=nil) and not ovrs_hs.Add(ovr) then
           Otp($'ERROR: {self} overload {ovr} was dupped');
       {$endif DEBUG}
     end;
@@ -526,7 +526,7 @@ type
       ForEachDefined(f->
       begin
         f.InitOverloads;
-        if f.enum_to_type_binding_helper_ovr=nil then exit;
+        if ReferenceEquals(f.enum_to_type_binding_helper_ovr, nil) then exit;
         
         var bound_ovrs := f.all_overloads.Where(ovr->ovr.enum_to_type_bindings<>nil);
         
@@ -554,7 +554,7 @@ type
           l.Otp('--- '+ovr.enum_to_type_enum_name);
           foreach var b in bindings do
           begin
-            var par := ovr.pars[b.data_par_ind];
+            var par := ovr[b.data_par_ind];
             if par=nil then continue;
             if b.IsInputData then
               l.Otp('!input') else
@@ -574,7 +574,7 @@ type
     
     private procedure UseBody(need_write: boolean) :=
       foreach var ovr in all_overloads do
-        foreach var par in ovr.pars index par_i do
+        foreach var par in ovr.ItemsSeq index par_i do
         begin
 //          if is_proc and (par_i=0) then continue;
           // In case of "is_proc" or "enum_to_type_binding"
@@ -650,8 +650,8 @@ type
               
               if ntv_pars[i].CalculatedDirectType=ovr.enum_to_type_gr then
                 s := $'{ovr.enum_to_type_gr.MakeWriteableName}.{ovr.enum_to_type_enum_name}' else
-              if ovr.pars[i]<>nil then
-                s := ovr.pars[i].ToString(true, true) else
+              if ovr[i]<>nil then
+                s := ovr[i].ToString(true, true) else
               begin
                 if ovr.enum_to_type_bindings=nil then
                   raise new InvalidOperationException;
@@ -665,7 +665,7 @@ type
                   if i=b.data_par_ind then
                     s := nil else
                     continue;
-                  if ovr.pars[b.data_par_ind]=nil then
+                  if ovr[b.data_par_ind]=nil then
                     s := '*';
                   break;
                 end;
@@ -744,7 +744,7 @@ type
         
         foreach var t in possible_par_types[par_i] do
         begin
-          if all_overloads.Any(ovr->ovr.pars[par_i]=t) then continue;
+          if all_overloads.Any(ovr->ovr[par_i]=t) then continue;
           Otp($'WARNING: {self} par#{par_i} ppt [{t.ToString(true,true,true)}] did not appear in final overloads. Use !ppt fixer to remove it, if this is intentional');
         end;
         
@@ -785,7 +785,7 @@ type
       
       {$region WriteOvrT}
       
-      var WriteOvrT := procedure(wr: Writer; pars: array of FuncParamT; par_names: array of string; generic_names: ICollection<string>; name: string)->
+      var WriteOvrT := procedure(wr: Writer; pars: System.Collections.Generic.IReadOnlyList<FuncParamT>; par_names: array of string; generic_names: ICollection<string>; name: string)->
       begin
         
         if not is_dynamic and (name<>nil) then wr += 'static ';
@@ -807,7 +807,7 @@ type
         begin
           wr += '(';
           var first_par := true;
-          for var par_i := 1 to pars.Length-1 do
+          for var par_i := 1 to pars.Count-1 do
           begin
             var par := pars[par_i];
             if par=nil then continue;
@@ -846,7 +846,7 @@ type
         var ett_bind_info_by_ind: Dictionary<integer, EnumToTypeBindingInfo>;
         var ett_skip_inds: HashSet<integer>;
         var ett_gr: IDirectNamedType;
-        if enum_to_type_binding_helper_ovr<>nil then
+        if not ReferenceEquals(enum_to_type_binding_helper_ovr, nil) then
         begin
           var ett_bindings := all_overloads.Select(ovr->ovr.enum_to_type_bindings).Distinct.Single(b->b<>nil);
           ett_gr := all_overloads.Select(ovr->ovr.enum_to_type_gr).Distinct.Single(gr->gr<>nil);
@@ -867,7 +867,7 @@ type
         begin
           var res := new List<FuncParamMarshalStep>(ntv_pars.Length);
           
-          foreach var par in ovr.pars index par_i do
+          foreach var par in ovr.ItemsSeq index par_i do
           begin
             var is_ett_bound := ovr.enum_to_type_bindings<>nil;
             
@@ -882,7 +882,7 @@ type
               if ntv_pars[par_i].CalculatedDirectType = ett_gr then
               begin
                 if par<>nil then raise new InvalidOperationException;
-                res += FuncParamMarshalStep.FromEnumToTypeGroup(self.enum_to_type_binding_helper_ovr.pars[par_i]);
+                res += FuncParamMarshalStep.FromEnumToTypeGroup(self.enum_to_type_binding_helper_ovr[par_i]);
                 continue;
               end;
               if par_i in ett_skip_inds then continue;
@@ -909,12 +909,15 @@ type
           
           {$ifdef DEBUG}
           var res_ovr := new FuncOverload(res.SelectMany(s->s.EnmrPars).ToArray);
-          if ovr.pars.Length<>res_ovr.pars.Length then
-            raise new InvalidOperationException($'{ovr.pars.Length} <> {res_ovr.pars.Length}');
-          if not ovr.pars.SequenceEqual(res_ovr.pars) then
-            raise new InvalidOperationException(
-              ovr.pars.Zip(res_ovr.pars, (p1,p2)->p1=p2).JoinToString
-            );
+          res_ovr.enum_to_type_enum_name := ovr.enum_to_type_enum_name;
+          if ovr <> res_ovr then
+            raise new InvalidOperationException;
+//          if ovr.Size<>res_ovr.Size then
+//            raise new InvalidOperationException($'{ovr.pars.Length} <> {res_ovr.pars.Length}');
+//          if not ovr.pars.SequenceEqual(res_ovr.pars) then
+//            raise new InvalidOperationException(
+//              ovr.pars.Zip(res_ovr.pars, (p1,p2)->p1=p2).JoinToString
+//            );
           {$endif DEBUG}
           
           all_par_marshalers_per_ovr += res.ToArray;
@@ -971,11 +974,11 @@ type
           var md_ovr := md.MakeOverload;
           all_public_methods += md;
           
-          if md_ovr.pars.Length <> ovr.pars.Length then
+          if md_ovr.Size <> ovr.Size then
             raise new InvalidOperationException;
           {$ifdef DEBUG}
-          if not md_ovr.pars.SequenceEqual(ovr.pars) then
-            raise new InvalidOperationException(md_ovr.pars.Zip(ovr.pars, (p1,p2)->p1=p2).JoinToString);
+          if md_ovr <> ovr then
+            raise new InvalidOperationException(md_ovr.ItemsSeq.Zip(ovr.ItemsSeq, (p1,p2)->p1=p2).JoinToString);
           {$endif DEBUG}
           
           if not md.HasEnumToTypeEnumName then
@@ -994,7 +997,6 @@ type
         
         //TODO Куча дублей логики в этой части...
         // - Если ещё раз пробовать - надо, наверное, сначала вычислить графы всех возможных зависимостей
-        // - И вместо "array of MarshalStepKindCombo" - ещё 1 отдельный класс
         var all_ntv_methods := new List<MethodImplData>;
         {$region Make temp and ntv, add public and temp}
         
@@ -1006,8 +1008,7 @@ type
 //          if display_name='4GenericWOVarArg' then
 //            display_name := display_name;
           
-          // Each inner array is one call from marshalers to simpler ovr
-          var pending_methods := new Stack<ValueTuple<MethodImplData, array of array of MarshalStepKindCombo>>;
+          var pending_methods := new Stack<ValueTuple<MethodImplData, array of MarshalCallKind>>;
           begin
             var ovr_steps := public_md.MakeOvrSteps;
             // If md should be kept native
@@ -1039,6 +1040,8 @@ type
               public_md.AddCallTo(ff_step, ntv_md, no_marshal_choise);
               continue;
             end;
+//            if ovr_steps.Any(ovr_step->ovr_step.original_step_kinds=nil) then
+//              raise new InvalidOperationException;
             pending_methods += ValueTuple.Create(public_md, ovr_steps);
           end;
           
@@ -1049,11 +1052,11 @@ type
               // ntv md should not have been added here
               raise new InvalidOperationException;
             
-            var can_flat_forward := ovr_call_kinds[0].ConvertAll(ovr_step_kinds->not ovr_step_kinds.IsSingleFlatForward);
+            var can_flat_forward := ovr_call_kinds[0].CanFlatForwardFlags;
             {$ifdef DEBUG}
             foreach var ovr_call_kind in ovr_call_kinds.Skip(1) do
             begin
-              var n_can_flat_forward := ovr_call_kind.ConvertAll(ovr_step_kinds->not ovr_step_kinds.IsSingleFlatForward);
+              var n_can_flat_forward := ovr_call_kind.CanFlatForwardFlags;
               if not can_flat_forward.SequenceEqual(n_can_flat_forward) then
                 raise new InvalidOperationException;
             end;
@@ -1064,26 +1067,22 @@ type
             // From most pars managed, to most pars marshaled
             foreach var step_marshal_choice in step_marshal_choices.Enmr(1,0) do
             begin
-              var ovr_partial_call_kinds := new List<array of MarshalStepKindCombo>;
-              foreach var ovr_call_kind in ovr_call_kinds do
-              begin
-                var ovr_partial_call_kind := new MarshalStepKindCombo[ovr_call_kind.Length];
-                for var step_i := 0 to ovr_call_kind.Length-1 do
-                begin
-                  var flag := step_marshal_choice.Flag[step_i];
-                  {$ifdef DEBUG}
-                  if flag and ovr_call_kind[step_i].IsSingleFlatForward then
-                    raise new InvalidOperationException;
-                  {$endif DEBUG}
-                  ovr_partial_call_kind[step_i] :=
-                    if not flag then
-                      MarshalStepKindCombo.FlatForward else
-                      ovr_call_kind[step_i];
-                end;
-                if ovr_partial_call_kinds.Any(pck->ovr_partial_call_kind.SequenceEqual(pck)) then
-                  continue;
-                ovr_partial_call_kinds += ovr_partial_call_kind;
-              end;
+              var ovr_partial_call_kinds := ovr_call_kinds.Select(ovr_call_kind->
+                new MarshalCallKind(
+                  ovr_call_kind.original_step_kinds.ConvertAll((step_kind, step_i)->
+                  begin
+                    var flag := step_marshal_choice.Flag[step_i];
+                    {$ifdef DEBUG}
+                    if flag and step_kind.IsSingleFlatForward then
+                      raise new InvalidOperationException;
+                    {$endif DEBUG}
+                    Result :=
+                      if not flag then
+                        MarshalStepKindCombo.FlatForward else
+                        ovr_call_kind.original_step_kinds[step_i];
+                  end)
+                )
+              ).Distinct.ToArray;
               var new_mds := ovr_partial_call_kinds.ConvertAll(ovr_partial_step->new MethodImplData(display_name, old_md, ovr_partial_step));
               
               var existing_mds := new MethodImplData[new_mds.Count];
@@ -1130,7 +1129,7 @@ type
                   end;
                 end;
                 
-                old_md.AddCallTo(new MarshalStepKindCombo(ovr_partial_call_kind), new_md, step_marshal_choice);
+                old_md.AddCallTo(ovr_partial_call_kind, new_md, step_marshal_choice);
               end;
               
               break;
@@ -1155,7 +1154,7 @@ type
                 end;
               end;
               
-              old_md.AddCallTo(new MarshalStepKindCombo(ovr_call_kind), new_md, step_marshal_choices.Enmr.Last);
+              old_md.AddCallTo(ovr_call_kind, new_md, step_marshal_choices.Enmr.Last);
               
               if new_md.IsFinalStep then continue;
               var next_ovr_steps := new_md.MakeOvrSteps;
@@ -1212,7 +1211,7 @@ type
             wr += '    private ';
             wr += md.FinalName(nil);
             wr += ' := GetProcOrNil&<';
-            WriteOvrT(wr, ovr.pars,par_names,nil, nil);
+            WriteOvrT(wr, ovr.ItemsSeq,par_names,nil, nil);
             wr += '>(';
             wr += display_name;
             wr += '_adr);'+#10;
@@ -1221,7 +1220,7 @@ type
           begin
             
             wr += '    private ';
-            WriteOvrT(wr, ovr.pars,par_names,nil, md.FinalName(nil));
+            WriteOvrT(wr, ovr.ItemsSeq,par_names,nil, md.FinalName(nil));
             wr += ';'#10;
             wr += '    external ''';
             wr += Func.last_lib_name;
@@ -1235,7 +1234,7 @@ type
         {$endregion Native} else
         {$region Managed}
         begin
-          var generic_names := ovr.pars
+          var generic_names := ovr.ItemsSeq
             .Where(par->par<>nil)
             .Where(par->par.IsGeneric)
             .Select(par->par.tname)
@@ -1969,7 +1968,7 @@ type
           wr += '    ';
           wr += if md.IsPublic then 'public' else 'private';
           wr += ' [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
-          var pars := ovr.pars;
+          var pars := ovr.ItemsSeq.ToArray;
           if validate_size_par_names.Any then
           begin
             var boolean_t := TypeLookup.FromName('boolean');
@@ -1978,7 +1977,8 @@ type
             vs_par.default_val := 'false';
             pars := pars + ArrFill(validate_size_par_names.Count, vs_par);
           end;
-          WriteOvrT(wr, pars, par_names+validate_size_par_names.ToArray, generic_names, md.FinalName(nil));
+          //TODO #2886
+          WriteOvrT(wr, pars as object as System.Collections.Generic.IReadOnlyList<FuncParamT>, par_names+validate_size_par_names.ToArray, generic_names, md.FinalName(nil));
           
           mw.Write(wr);
         end
@@ -2567,7 +2567,7 @@ implementation
           Result := FuncParamT.Parse(ps)
         end);
         Result := FuncOverload(ovr);
-      end).Where(ovr->ovr<>nil);
+      end).Where(ovr->not ReferenceEquals(ovr,nil));
       
     end;
     
@@ -2581,8 +2581,8 @@ implementation
       
       var expected_ovr_l := f.ExistingParCount;
       foreach var ovr in self.ovrs index ovr_i do
-        if ovr.pars.Length<>expected_ovr_l then
-          raise new MessageException($'ERROR: ovr#{ovr_i} in {FixerInfo(f)} had wrong param count: {expected_ovr_l} org vs {ovr.pars.Length} custom');
+        if ovr.Size<>expected_ovr_l then
+          raise new MessageException($'ERROR: ovr#{ovr_i} in {FixerInfo(f)} had wrong param count: {expected_ovr_l} org vs {ovr.Size} custom');
       
       var unused_t_ovrs := self.ovrs.ToHashSet;
       var limited_pars := new boolean[expected_ovr_l];
@@ -2591,11 +2591,11 @@ implementation
         not self.ovrs.Any(tovr->
         begin
           Result := true;
-          for var i := 0 to tovr.pars.Length-1 do
+          for var i := 0 to tovr.Size-1 do
           begin
-            if tovr.pars[i]=fovr.pars[i+integer(f.is_proc)] then continue;
+            if tovr[i]=fovr[i+integer(f.is_proc)] then continue;
             limited_pars[i] := true;
-            if tovr.pars[i]=nil then continue;
+            if tovr[i]=nil then continue;
             Result := false;
           end;
           if Result then unused_t_ovrs.Remove(tovr);
@@ -2605,10 +2605,10 @@ implementation
       if unused_t_ovrs.Count<>0 then
       begin
         foreach var ovr in unused_t_ovrs do
-          Otp($'WARNING: {FixerInfo(f)} has not used mask {_ObjectToString(ovr.pars.Select(par->par?.ToString(true,true,true)??''*''))}');
+          Otp($'WARNING: {FixerInfo(f)} has not used mask {_ObjectToString(ovr.ItemsSeq.Select(par->par?.ToString(true,true,true)??''*''))}');
         Otp('-'*10+$' Func ovrs were '+'-'*10);
         foreach var ovr in org_ovrs do
-          Otp(_ObjectToString(ovr.pars.Select(par->par?.ToString(true,true,true))));
+          Otp(_ObjectToString(ovr.ItemsSeq.Select(par->par?.ToString(true,true,true))));
       end;
       
       var unlimited_pars := expected_ovr_l.Times
