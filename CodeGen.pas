@@ -88,7 +88,7 @@ uses System.IO;
   
   {$region StringBuilder}
   
-  SBWriter = sealed class(Writer)
+  WriterSB = sealed class(Writer)
     private sb: StringBuilder;
     
     public constructor(sb: StringBuilder) := self.sb := sb;
@@ -98,6 +98,9 @@ uses System.IO;
     
     public procedure Flush; override := exit;
     public procedure Close; override := exit;
+    
+    public function ToString: string; override :=
+      sb.ToString;
     
   end;
   
