@@ -93,6 +93,8 @@ Logging Group items
 Logging IdClass items
 Logging Struct items
 Logging Delegate items
+Logging Func items
+Logging Extension items
 Dumping PascalBasicType items
 Dumping TypeCombo items
 Dumping Group items
@@ -106,5 +108,5 @@ Struct: Packed 17 items
 Delegate: Packed 7 items
 Func: Packed 237 items
 Feature: Packed 1 items
-Extension: Packed 102 items
+Extension: Packed 103 items
 Cleanup

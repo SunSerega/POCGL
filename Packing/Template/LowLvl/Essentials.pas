@@ -234,7 +234,9 @@ begin
   Group.LogAll;
   IdClass.LogAll;
   Struct.LogAll;
-  NamedTypeItems.Delegate.LogAll;
+  Delegate.LogAll;
+  Func.LogAll;
+  Extension.LogAll;
   
   Func.LogAllEnumToType;
   Group.LogAllPropLists;

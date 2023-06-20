@@ -27,6 +27,8 @@ Logging Group items
 Logging IdClass items
 Logging Struct items
 Logging Delegate items
+Logging Func items
+Logging Extension items
 Dumping PascalBasicType items
 Dumping TypeCombo items
 Dumping Group items

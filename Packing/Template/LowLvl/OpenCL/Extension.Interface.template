@@ -1972,6 +1972,10 @@
     public const _ExtStr = 'cl_intel_required_subgroup_size';
   end;
   
+  clSharingFormatQueryINTEL = static class
+    public const _ExtStr = 'cl_intel_sharing_format_query';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   clSharingFormatQueryD3d10INTEL = static class

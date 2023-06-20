@@ -636,7 +636,6 @@ type
     {$endregion Helpers}
     
     private was_written := false;
-    private ffo_logged := false;
     public procedure Save(wr: Writer);
     begin
       if not in_wr_block then
@@ -649,113 +648,13 @@ type
       if all_overloads=nil then
         raise new InvalidOperationException;
       
-      {$region Log and Warn}
-      
       if not self.was_written then
       begin
         self.was_written := true;
-        written_c += 1;
+        inherited written_c += 1;
       end;
       
-      //TODO Переместить запись log_func_ovrs в другое место
-      // - Чтобы их сортировало по имени
-      if not self.ffo_logged then
-      begin
-        self.ffo_logged := true;
-        log_func_ovrs.Otp($'# {self.Name}[{all_overloads.Count}]:');
-        
-        if not is_proc or (ntv_pars.Length>1) then
-        begin
-          var i_off := integer(is_proc);
-          var need_par_names := ntv_pars.Length>1;
-          
-          var max_w := new integer[ntv_pars.Length-i_off];
-          var tt := new string[all_overloads.Count+Ord(need_par_names), max_w.Length];
-          foreach var ovr in all_overloads index ovr_i do
-            for var i := i_off to ntv_pars.Length-1 do
-            begin
-              var tt_i := i-i_off;
-              var s := default(string);
-              
-              if ntv_pars[i].CalculatedDirectType=ovr.enum_to_type_gr then
-                s := $'{ovr.enum_to_type_gr.MakeWriteableName}.{ovr.enum_to_type_enum_name}' else
-              if ovr[i]<>nil then
-                s := ovr[i].ToString(true, true) else
-              begin
-                if ovr.enum_to_type_bindings=nil then
-                  raise new InvalidOperationException;
-                
-                foreach var b in ovr.enum_to_type_bindings do
-                begin
-                  if i=b.passed_size_par_ind then
-                    s := '*' else
-                  if i=b.returned_size_par_ind then
-                    s := '*' else
-                  if i=b.data_par_ind then
-                    s := nil else
-                    continue;
-                  if ovr[b.data_par_ind]=nil then
-                    s := '*';
-                  break;
-                end;
-                
-                if s=nil then
-                  raise new InvalidOperationException;
-              end;
-              
-              max_w[tt_i] := Max(max_w[tt_i], s.Length);
-              tt[ovr_i, tt_i] := s;
-            end;
-          if need_par_names then
-            for var i := 1 to ntv_pars.Length-1 do
-            begin
-              var s := if i=0 then '' else ntv_pars[i].name.TrimStart('&');
-              var tt_i := i-i_off;
-              max_w[tt_i] := Max(max_w[tt_i], s.Length);
-              tt[all_overloads.Count, tt_i] := s;
-            end;
-          
-          var l_cap := 1+max_w.Sum + max_w.Length*3;
-          var l := new StringBuilder(l_cap);
-          for var ovr_i := 0 to tt.GetLength(0)-1 do
-          begin
-            l += #9;
-            
-            if ovr_i=all_overloads.Count then
-            begin
-              
-              foreach var w in max_w index tt_i do
-              begin
-                loop w do l += '-';
-                l += ' | ';
-              end;
-              
-              l.Length -= 1;
-              log_func_ovrs.Otp(l.ToString);
-              l.Clear;
-              l += #9;
-            end;
-            
-            foreach var w in max_w index tt_i do
-            begin
-              var s := tt[ovr_i, tt_i];
-              l += s;
-              loop w-s.Length do l += ' ';
-              l += ' | ';
-            end;
-            
-            {$ifdef DEBUG}
-            if l.Length<>l_cap then raise new System.InvalidOperationException((l,l.Length,l_cap,_ObjectToString(max_w),_ObjectToString(tt)).ToString);
-            {$endif DEBUG}
-            l.Length -= 1;
-            log_func_ovrs.Otp(l.ToString);
-            l.Clear;
-          end;
-          
-        end;
-        
-        log_func_ovrs.Otp('');
-      end;
+      {$region Warnings}
       
       if all_overloads.Count=0 then
       begin
@@ -795,7 +694,7 @@ type
         end);
       end;
       
-      {$endregion Log and Warn}
+      {$endregion Warnings}
       
       {$region MiscInit}
       
@@ -2023,6 +1922,137 @@ type
     
     {$endregion Write}
     
+    public procedure LogContents(l: Logger); override;
+    begin
+      InitOverloads;
+      l.Otp($'# {self.Name}');
+      
+      {$region PPT}
+      if not is_proc or (ntv_pars.Length>1) then
+      begin
+        l.Otp('!ppt');
+        var par_names := ntv_pars.ConvertAll((par,par_i)->(
+          if par_i<>0 then
+            par.Name else
+          if not is_proc then
+            'Result' else ''
+        ));
+        var max_par_name_len := par_names.Max(pn->pn.Length);
+        for var par_i := 0 to ntv_pars.Length-1 do
+        begin
+          if is_proc and (par_i=0) then continue;
+          var par_name := par_names[par_i];
+          var wr := new WriterSB;
+          wr += par_name;
+          wr += ': ';
+          loop max_par_name_len-par_name.Length do
+            wr += ' ';
+          wr.WriteSeparated(possible_par_types[par_i], (wr,par)->
+            (wr += par.ToString(true)), ' / '
+          );
+          l.Otp(wr.ToString);
+        end;
+      end;
+      {$endregion PPT}
+      {$region FFO}
+      if not is_proc or (ntv_pars.Length>1) then
+      begin
+        l.Otp('!ffo');
+        l.Otp($'{all_overloads.Count}');
+        var i_off := integer(is_proc);
+        var need_par_names := ntv_pars.Length>1;
+        
+        var max_w := new integer[ntv_pars.Length-i_off];
+        var tt := new string[all_overloads.Count+Ord(need_par_names), max_w.Length];
+        foreach var ovr in all_overloads index ovr_i do
+          for var i := i_off to ntv_pars.Length-1 do
+          begin
+            var tt_i := i-i_off;
+            var s := default(string);
+            
+            if ntv_pars[i].CalculatedDirectType=ovr.enum_to_type_gr then
+              s := $'{ovr.enum_to_type_gr.MakeWriteableName}.{ovr.enum_to_type_enum_name}' else
+            if ovr[i]<>nil then
+              s := ovr[i].ToString(true, true) else
+            begin
+              if ovr.enum_to_type_bindings=nil then
+                raise new InvalidOperationException;
+              
+              foreach var b in ovr.enum_to_type_bindings do
+              begin
+                if i=b.passed_size_par_ind then
+                  s := '*' else
+                if i=b.returned_size_par_ind then
+                  s := '*' else
+                if i=b.data_par_ind then
+                  s := nil else
+                  continue;
+                if ovr[b.data_par_ind]=nil then
+                  s := '*';
+                break;
+              end;
+              
+              if s=nil then
+                raise new InvalidOperationException;
+            end;
+            
+            max_w[tt_i] := Max(max_w[tt_i], s.Length);
+            tt[ovr_i, tt_i] := s;
+          end;
+        if need_par_names then
+          for var i := 1 to ntv_pars.Length-1 do
+          begin
+            var s := if i=0 then '' else ntv_pars[i].name.TrimStart('&');
+            var tt_i := i-i_off;
+            max_w[tt_i] := Max(max_w[tt_i], s.Length);
+            tt[all_overloads.Count, tt_i] := s;
+          end;
+        
+        var l_cap := 1+max_w.Sum + max_w.Length*3;
+        var l_sb := new StringBuilder(l_cap);
+        for var ovr_i := 0 to tt.GetLength(0)-1 do
+        begin
+          l_sb += #9;
+          
+          if ovr_i=all_overloads.Count then
+          begin
+            
+            foreach var w in max_w index tt_i do
+            begin
+              loop w do
+                l_sb += '-';
+              l_sb += ' | ';
+            end;
+            
+            l_sb.Length -= 1;
+            l.Otp(l_sb.ToString);
+            l_sb.Clear;
+            l_sb += #9;
+          end;
+          
+          foreach var w in max_w index tt_i do
+          begin
+            var s := tt[ovr_i, tt_i];
+            l_sb += s;
+            loop w-s.Length do
+              l_sb += ' ';
+            l_sb += ' | ';
+          end;
+          
+          {$ifdef DEBUG}
+          if l_sb.Length<>l_cap then raise new System.InvalidOperationException((l_sb,l_sb.Length,l_cap,_ObjectToString(max_w),_ObjectToString(tt)).ToString);
+          {$endif DEBUG}
+          l_sb.Length -= 1;
+          l.Otp(l_sb.ToString);
+          l_sb.Clear;
+        end;
+        
+      end;
+      {$endregion FFO}
+      
+      l.Otp('');
+    end;
+    
   end;
   
   FuncFixerApplyOrder = (FFAO_Native, FFAO_Auto_PPT, FFAO_PPT, FFAO_Overload);
@@ -2284,6 +2314,17 @@ type
     begin
       add.MarkReferenced;
     end;
+    
+    public function MakeWriteableName: string;
+    begin
+      Result := self.Name.api + self.Name.l_name.Split('_').Select(w->
+      begin
+        if w.Length<>0 then w[0] := w[0].ToUpper else
+          raise new System.InvalidOperationException(self.ToString);
+        Result := w;
+      end).JoinToString('') + self.Name.vendor_suffix?.ToUpper;
+    end;
+    
     private static intr_wr := new FileWriter(GetFullPathRTA(ItemSmallName+'.Interface.template'));
     private static impl_wr := new FileWriter(GetFullPathRTA(ItemSmallName+'.Implementation.template'));
     private static all_wr := intr_wr*impl_wr;
@@ -2295,7 +2336,6 @@ type
       self.Use(false);
       var api := self.Name.api;
       
-      if not add.Enums.Any and not add.Funcs.Any then exit;
       if not ApiManager.ShouldKeep(api) then exit;
       Extension.written_c += 1;
       
@@ -2319,12 +2359,7 @@ type
       var lib_name := if is_dynamic or not any_funcs then nil else ApiManager.LibForApi(api);
       var class_type := if is_dynamic then 'sealed partial' else 'static';
       
-      var display_name := api + self.Name.l_name.Split('_').Select(w->
-      begin
-        if w.Length<>0 then w[0] := w[0].ToUpper else
-          raise new System.InvalidOperationException(self.ToString);
-        Result := w;
-      end).JoinToString('') + self.Name.vendor_suffix?.ToUpper;
+      var display_name := MakeWriteableName;
       
       if any_funcs then
       begin
@@ -2381,21 +2416,13 @@ type
       if any_funcs then
         intr_wr += '    '+#10;
       
-      log_ext_bodies.Otp($'# {display_name} ({ext_str})');
-      
-      foreach var e in Added.Enums do
-        log_ext_bodies.Otp(#9+e);
-      
       Func.DefineWriteBlock(lib_name, ()->
         foreach var f in Added.Funcs do
         begin
           f.Save(intr_wr);
           intr_wr += '    '+#10;
-          log_ext_bodies.Otp(#9+f);
         end
       );
-      
-      log_ext_bodies.Otp($'');
       
       intr_wr += $'  end;'+#10;
       intr_wr += $'  '+#10;
@@ -2416,6 +2443,19 @@ type
       intr_wr += '  '#10'  ';
       impl_wr += #10;
       all_wr.Close;
+    end;
+    
+    public procedure LogContents(l: Logger); override;
+    begin
+      l.Otp($'# {MakeWriteableName} ({ext_str})');
+      
+      foreach var e in Added.Enums do
+        l.Otp(#9+e);
+      
+      foreach var f in Added.Funcs do
+        l.Otp(#9+f);
+      
+      l.Otp('');
     end;
     
   end;

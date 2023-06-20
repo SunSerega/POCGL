@@ -9,9 +9,7 @@ uses BinUtils;
 
 var log := new FileLogger(GetFullPathRTA('Log\Essentials.log')) +
            new FileLogger(GetFullPathRTA('Log\Essentials (Timed).log'), true);
-var log_unused      := new FileLogger(GetFullPathRTA('Log\Unused.log'));
-var log_func_ovrs   := new FileLogger(GetFullPathRTA('Log\FinalFuncOverloads.log'));
-var log_ext_bodies  := new FileLogger(GetFullPathRTA('Log\Extensions.log'));
+var log_unused := new FileLogger(GetFullPathRTA('Log\Unused.log'));
 
 type
   
@@ -171,13 +169,6 @@ type
 initialization
   try
     Logger.main += log;
-    
-    //TODO Это тоже можно с помощью Func.LogAll и Extension.LogAll
-    // - И тогда сортировать будет по названию
-    // - Неприменяемые api так тоже скипать можно будет
-    foreach var l in |log_func_ovrs,log_ext_bodies| do
-      loop 3 do l.Otp('');
-    
   except
     on e: Exception do
       ErrOtp(e);
@@ -187,13 +178,6 @@ finalization
     Otp('Cleanup');
     log.Close;
     log_unused.Close;
-    
-    foreach var l in |log_func_ovrs,log_ext_bodies| do
-    begin
-      loop 1 do l.Otp('');
-      l.Close;
-    end;
-    
   except
     on e: Exception do
       ErrOtp(e);

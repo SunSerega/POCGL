@@ -1,55 +1,95 @@
 ﻿
 
 
-# ::1NoParam[1]:
+# ::1NoParam
 
-# ::1NoParamResult[1]:
+# ::1NoParamResult
+!ppt
+Result: UIntPtr
+!ffo
+1
 	UIntPtr |
 
-# ::2ParamString[1]:
+# ::2ParamString
+!ppt
+s: IntPtr
+!ffo
+1
 	IntPtr |
 	------ |
 	s      |
 
-# ::2ParamStringRO[2]:
+# ::2ParamStringRO
+!ppt
+s: string const / IntPtr const
+!ffo
+2
 	string const |
 	IntPtr const |
 	------------ |
 	s            |
 
-# ::3ResultString[1]:
+# ::3ResultString
+!ppt
+Result: string
+!ffo
+1
 	string |
 
-# ::3ResultStringRO[1]:
+# ::3ResultStringRO
+!ppt
+Result: string const
+!ffo
+1
 	string const |
 
-# ::4Generic[3]:
+# ::4Generic
+!ppt
+data: array of T / var T / pointer
+!ffo
+3
 	array of T |
 	var T      |
 	pointer    |
 	---------- |
 	data       |
 
-# ::4GenericRO[3]:
+# ::4GenericRO
+!ppt
+data: array of T const / var T const / pointer const
+!ffo
+3
 	array of T const |
 	var T const      |
 	pointer const    |
 	---------------- |
 	data             |
 
-# ::4GenericWOVarArg[2]:
+# ::4GenericWOVarArg
+!ppt
+data: array of T / pointer
+!ffo
+2
 	array of T |
 	pointer    |
 	---------- |
 	data       |
 
-# ::4GenericWOVarArgRO[2]:
+# ::4GenericWOVarArgRO
+!ppt
+data: array of T const / pointer const
+!ffo
+2
 	array of T const |
 	pointer const    |
 	---------------- |
 	data             |
 
-# ::5Arrrrrray[6]:
+# ::5Arrrrrray
+!ppt
+a: array of array of array of array of array of UIntPtr const / array of array of array of array of IntPtr const / array of array of array of IntPtr const / array of array of IntPtr const / var IntPtr const / pointer const
+!ffo
+6
 	array of array of array of array of array of UIntPtr const |
 	array of array of array of array of IntPtr const           |
 	array of array of array of IntPtr const                    |
@@ -59,7 +99,11 @@
 	---------------------------------------------------------- |
 	a                                                          |
 
-# ::5ArrrrrrayOfGeneric[6]:
+# ::5ArrrrrrayOfGeneric
+!ppt
+a: array of array of array of array of array of T const / array of array of array of array of IntPtr const / array of array of array of IntPtr const / array of array of IntPtr const / var IntPtr const / pointer const
+!ffo
+6
 	array of array of array of array of array of T const |
 	array of array of array of array of IntPtr const     |
 	array of array of array of IntPtr const              |
@@ -69,7 +113,11 @@
 	---------------------------------------------------- |
 	a                                                    |
 
-# ::5ArrrrrrayOfString[6]:
+# ::5ArrrrrrayOfString
+!ppt
+s: array of array of array of array of string const / array of array of array of array of IntPtr const / array of array of array of IntPtr const / array of array of IntPtr const / var IntPtr const / pointer const
+!ffo
+6
 	array of array of array of array of string const |
 	array of array of array of array of IntPtr const |
 	array of array of array of IntPtr const          |
@@ -79,7 +127,15 @@
 	------------------------------------------------ |
 	s                                                |
 
-# ::6Mix[10]:
+# ::6Mix
+!ppt
+Result: string
+s1:     IntPtr
+s2:     string const / IntPtr const
+gen:    array of T / var T / pointer
+gen_ro: array of T2 const / var T2 const / pointer const
+!ffo
+10
 	string | IntPtr | string const | array of T | array of T2 const |
 	string | IntPtr | IntPtr const | array of T | array of T2 const |
 	string | IntPtr | string const | var T      | var T2 const      |
@@ -93,7 +149,16 @@
 	------ | ------ | ------------ | ---------- | ----------------- |
 	       | s1     | s2           | gen        | gen_ro            |
 
-# ::7EnumToType[17]:
+# ::7EnumToType
+!ppt
+choise:             Multichoise1
+inp_value_size:     UIntPtr
+inp_value:          pointer const
+otp_value_size:     UIntPtr
+otp_value:          pointer
+otp_value_size_ret: var UIntPtr / IntPtr
+!ffo
+17
 	Multichoise1                        | UIntPtr        | var TInp const         | UIntPtr        | var T                   | var UIntPtr        |
 	Multichoise1                        | UIntPtr        | var TInp const         | UIntPtr        | var T                   | IntPtr             |
 	Multichoise1                        | UIntPtr        | var TInp const         | UIntPtr        | pointer                 | var UIntPtr        |
@@ -114,7 +179,13 @@
 	----------------------------------- | -------------- | ---------------------- | -------------- | ----------------------- | ------------------ |
 	choise                              | inp_value_size | inp_value              | otp_value_size | otp_value               | otp_value_size_ret |
 
-# ::7EnumToTypeInputOnly[5]:
+# ::7EnumToTypeInputOnly
+!ppt
+choise:         Multichoise2
+inp_value_size: UIntPtr
+inp_value:      pointer const
+!ffo
+5
 	Multichoise2                   | UIntPtr        | var TInp const         |
 	Multichoise2.Choise2_1_InpFlat | *              | UIntPtr const          |
 	Multichoise2.Choise2_2_InpArr  | *              | array of UIntPtr const |
