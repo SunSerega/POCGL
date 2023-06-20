@@ -5078,24 +5078,24 @@ source:  IntPtr
 
 # gl::GetString
 !ppt
-Result: ^Byte const
+Result: string const
 name:   glStringName
 !ffo
 1
-	^Byte const | glStringName |
-	----------- | ------------ |
-	            | name         |
+	string const | glStringName |
+	------------ | ------------ |
+	             | name         |
 
 # gl::GetStringi
 !ppt
-Result: ^Byte const
+Result: string const
 name:   glStringName
 index:  UInt32
 !ffo
 1
-	^Byte const | glStringName | UInt32 |
-	----------- | ------------ | ------ |
-	            | name         | index  |
+	string const | glStringName | UInt32 |
+	------------ | ------------ | ------ |
+	             | name         | index  |
 
 # gl::GetSubroutineIndex
 !ppt
@@ -16971,9 +16971,10 @@ value:   Int32
 target: glProgramTarget
 format: glProgramFormat
 len:    Int32
-string: IntPtr const
+string: string const / IntPtr const
 !ffo
-1
+2
+	glProgramTarget | glProgramFormat | Int32 | string const |
 	glProgramTarget | glProgramFormat | Int32 | IntPtr const |
 	--------------- | --------------- | ----- | ------------ |
 	target          | format          | len   | string       |
@@ -31041,13 +31042,12 @@ params:           var single / IntPtr
 !ppt
 id:      gl_program
 pname:   glVertexAttribEnumNV
-program: var Byte / IntPtr
+program: IntPtr
 !ffo
-2
-	gl_program | glVertexAttribEnumNV | var Byte |
-	gl_program | glVertexAttribEnumNV | IntPtr   |
-	---------- | -------------------- | -------- |
-	id         | pname                | program  |
+1
+	gl_program | glVertexAttribEnumNV | IntPtr  |
+	---------- | -------------------- | ------- |
+	id         | pname                | program |
 
 # gl::GetProgramSubroutineParameteruiv + NV
 !ppt
@@ -32798,71 +32798,71 @@ params: array of UInt32 const / var Vec4ui const / var UInt32 const / IntPtr con
 !ppt
 id:   gl_program
 len:  Int32
-name: array of Byte const / var Byte const / IntPtr const
+name: string const / IntPtr const
 x:    double
 y:    double
 z:    double
 w:    double
 !ffo
-3
-	gl_program | Int32 | array of Byte const | double | double | double | double |
-	gl_program | Int32 | var Byte const      | double | double | double | double |
-	gl_program | Int32 | IntPtr const        | double | double | double | double |
-	---------- | ----- | ------------------- | ------ | ------ | ------ | ------ |
-	id         | len   | name                | x      | y      | z      | w      |
+2
+	gl_program | Int32 | string const | double | double | double | double |
+	gl_program | Int32 | IntPtr const | double | double | double | double |
+	---------- | ----- | ------------ | ------ | ------ | ------ | ------ |
+	id         | len   | name         | x      | y      | z      | w      |
 
 # gl::ProgramNamedParameter4dv + NV
 !ppt
 id:   gl_program
 len:  Int32
-name: array of Byte const / var Byte const / IntPtr const
+name: string const / IntPtr const
 v:    array of double const / var Vec4d const / var double const / IntPtr const
 !ffo
-7
-	gl_program | Int32 | array of Byte const | array of double const |
-	gl_program | Int32 | var Byte const      | var Vec4d const       |
-	gl_program | Int32 | var Byte const      | var double const      |
-	gl_program | Int32 | var Byte const      | IntPtr const          |
-	gl_program | Int32 | IntPtr const        | var Vec4d const       |
-	gl_program | Int32 | IntPtr const        | var double const      |
-	gl_program | Int32 | IntPtr const        | IntPtr const          |
-	---------- | ----- | ------------------- | --------------------- |
-	id         | len   | name                | v                     |
+8
+	gl_program | Int32 | string const | array of double const |
+	gl_program | Int32 | IntPtr const | array of double const |
+	gl_program | Int32 | string const | var Vec4d const       |
+	gl_program | Int32 | string const | var double const      |
+	gl_program | Int32 | string const | IntPtr const          |
+	gl_program | Int32 | IntPtr const | var Vec4d const       |
+	gl_program | Int32 | IntPtr const | var double const      |
+	gl_program | Int32 | IntPtr const | IntPtr const          |
+	---------- | ----- | ------------ | --------------------- |
+	id         | len   | name         | v                     |
 
 # gl::ProgramNamedParameter4f + NV
 !ppt
 id:   gl_program
 len:  Int32
-name: array of Byte const / var Byte const / IntPtr const
+name: string const / IntPtr const
 x:    single
 y:    single
 z:    single
 w:    single
 !ffo
-3
-	gl_program | Int32 | array of Byte const | single | single | single | single |
-	gl_program | Int32 | var Byte const      | single | single | single | single |
-	gl_program | Int32 | IntPtr const        | single | single | single | single |
-	---------- | ----- | ------------------- | ------ | ------ | ------ | ------ |
-	id         | len   | name                | x      | y      | z      | w      |
+2
+	gl_program | Int32 | string const | single | single | single | single |
+	gl_program | Int32 | IntPtr const | single | single | single | single |
+	---------- | ----- | ------------ | ------ | ------ | ------ | ------ |
+	id         | len   | name         | x      | y      | z      | w      |
 
 # gl::ProgramNamedParameter4fv + NV
 !ppt
 id:   gl_program
 len:  Int32
-name: array of Byte const / var Byte const / IntPtr const
+name: string const / IntPtr const
 v:    array of single const / var Vec4f const / var single const / IntPtr const
 !ffo
-7
-	gl_program | Int32 | array of Byte const | array of single const |
-	gl_program | Int32 | var Byte const      | var Vec4f const       |
-	gl_program | Int32 | var Byte const      | var single const      |
-	gl_program | Int32 | var Byte const      | IntPtr const          |
-	gl_program | Int32 | IntPtr const        | var Vec4f const       |
-	gl_program | Int32 | IntPtr const        | var single const      |
-	gl_program | Int32 | IntPtr const        | IntPtr const          |
-	---------- | ----- | ------------------- | --------------------- |
-	id         | len   | name                | v                     |
+8
+	gl_program | Int32 | string const | array of single const |
+	gl_program | Int32 | IntPtr const | array of single const |
+	gl_program | Int32 | string const | var Vec4f const       |
+	gl_program | Int32 | string const | var single const      |
+	gl_program | Int32 | string const | IntPtr const          |
+	gl_program | Int32 | IntPtr const | var Vec4f const       |
+	gl_program | Int32 | IntPtr const | var single const      |
+	gl_program | Int32 | IntPtr const | IntPtr const          |
+	---------- | ----- | ------------ | --------------------- |
+	id         | len   | name         | v                     |
 
 # gl::ProgramParameter4d + NV
 !ppt

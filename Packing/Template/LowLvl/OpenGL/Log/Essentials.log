@@ -26,6 +26,7 @@ Fixing IdClass items
 Fixing Struct items
 Fixing Delegate items
 Fixing Func items
+Func [glx::GetFBConfigs] returns pointer
 Dumping Feature items
 Func [gl::BindBufferRange] was added in versions [3.0] and [3.1]
 Func [gl::BindBufferBase] was added in versions [3.0] and [3.1]
@@ -56,6 +57,7 @@ Enum [gl::NONE] was added in versions [1.0] and [4.6]
 Enum [gl::CONTEXT_RELEASE_BEHAVIOR] was added in versions [4.5] and [4.6]
 Enum [gl::CONTEXT_RELEASE_BEHAVIOR_FLUSH] was added in versions [4.5] and [4.6]
 Enum [gl::GEOMETRY_SHADER_INVOCATIONS] was added in versions [4.0] and [4.6]
+Func [glx::ChooseFBConfig] returns pointer
 Enum [gl::NO_ERROR] was added in versions [2.0] and [3.2]
 Enum [gl::TRIANGLES] was added in versions [2.0] and [3.2]
 Enum [gl::EQUAL] was added in versions [2.0] and [3.2]
@@ -69,6 +71,9 @@ WARNING: 17>12 overloads of non-fixed Func [gl::DrawCommandsStatesAddress + NV]
 WARNING: 17>12 overloads of non-fixed Func [gl::ListDrawCommandsStatesClient + NV]
 WARNING: 17>12 overloads of non-fixed Func [gl::AsyncCopyBufferSubData + NVX]
 WARNING: 17>12 overloads of non-fixed Func [gl::AsyncCopyImageSubData + NVX]
+Func [glx::EnumerateVideoDevices + NV] returns pointer
+Func [glx::EnumerateVideoCaptureDevices + NV] returns pointer
+Func [glx::ChooseFBConfig + SGIX] returns pointer
 WARNING: 17>12 overloads of non-fixed Func [glx::QueryChannelRect + SGIX]
 WARNING: 17>12 overloads of non-fixed Func [glx::QueryChannelDeltas + SGIX]
 WARNING: 17>12 overloads of non-fixed Func [wgl::ChoosePixelFormat + ARB]
@@ -94,5 +99,5 @@ Struct: Packed 4 items
 Delegate: Packed 4 items
 Func: Packed 3253 items
 Feature: Packed 4 items
-Extension: Packed 642 items
+Extension: Packed 743 items
 Cleanup

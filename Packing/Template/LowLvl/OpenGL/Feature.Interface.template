@@ -2791,15 +2791,15 @@
     
     // added in gl1.0
     private GetString_adr := GetProcAddress('glGetString');
-    private ntv_GetString_1 := GetProcOrNil&<function(name: glStringName): ^Byte>(GetString_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetString(name: glStringName): ^Byte :=
-      ntv_GetString_1(name);
+    private ntv_GetString_1 := GetProcOrNil&<function(name: glStringName): IntPtr>(GetString_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetString(name: glStringName): string :=
+      Marshal.PtrToStringAnsi(ntv_GetString_1(name));
     
     // added in gl3.0
     private GetStringi_adr := GetProcAddress('glGetStringi');
-    private ntv_GetStringi_1 := GetProcOrNil&<function(name: glStringName; index: UInt32): ^Byte>(GetStringi_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetStringi(name: glStringName; index: UInt32): ^Byte :=
-      ntv_GetStringi_1(name, index);
+    private ntv_GetStringi_1 := GetProcOrNil&<function(name: glStringName; index: UInt32): IntPtr>(GetStringi_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetStringi(name: glStringName; index: UInt32): string :=
+      Marshal.PtrToStringAnsi(ntv_GetStringi_1(name, index));
     
     // added in gl4.0
     private GetSubroutineIndex_adr := GetProcAddress('glGetSubroutineIndex');

@@ -323,7 +323,12 @@ begin
   begin
     if (ptr<>0) and is_string then
       raise new MessageException($'ERROR: {context_descr()} returns pointer to string');
-    Result := Lst(new FuncParamT(is_const, false, 0, '^'*ptr + tname, raw_t));
+    if ptr<>0 then
+    begin
+      log.Otp($'{context_descr()} returns pointer');
+      tname := '^'*ptr + tname;
+    end;
+    Result := Lst(new FuncParamT(is_const, false, 0, tname, raw_t));
     exit;
   end;
   

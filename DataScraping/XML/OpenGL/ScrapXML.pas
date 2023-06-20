@@ -845,22 +845,12 @@ end;
 function FuncParamSource.MakeNewItem(need_name: boolean; par_ind: string->integer): ParData;
 begin
   
-  var type_ref := default(TypeRef);
-  if (self.gr_source<>nil) and (self.cl_source<>nil) then
-    raise new System.InvalidOperationException;
-  if gr_source<>nil then
-    type_ref := new TypeRef(gr_source.GetItem) else
-  if cl_source<>nil then
-    type_ref := new TypeRef(cl_source.GetItem) else
-    type_ref := TypeHelper.MakeTypeRef(self.context_api, self.tname);
-  
   if (gr_source=nil) and (self.tname in |'GLenum','GLbitfield'|) then 
     if LogCache.naked_enums.Add(func_descr) then 
   	  log_naked_enums.Otp(func_descr); 
   
   var arr_size := MakeParArrSize(self.len_s, par_ind);
   
-  var tname := self.tname;
   var val_combo := default(ParValCombo);
   
   {$region Kind}
@@ -922,6 +912,15 @@ begin
     
   end;
   {$endregion Kind}
+  
+  var type_ref := default(TypeRef);
+  if (self.gr_source<>nil) and (self.cl_source<>nil) then
+    raise new System.InvalidOperationException;
+  if gr_source<>nil then
+    type_ref := new TypeRef(gr_source.GetItem) else
+  if cl_source<>nil then
+    type_ref := new TypeRef(cl_source.GetItem) else
+    type_ref := TypeHelper.MakeTypeRef(self.context_api, self.tname);
   
   Result := new ParData(if need_name then self.name else nil, type_ref, self.ptr, self.readonly_lvls, arr_size, val_combo);
 end;

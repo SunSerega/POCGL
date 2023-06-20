@@ -31,6 +31,10 @@
     public const _ExtStr = 'GL_AMD_blend_minmax_factor';
   end;
   
+  glConservativeDepthAMD = static class
+    public const _ExtStr = 'GL_AMD_conservative_depth';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glDebugOutputAMD = sealed partial class
@@ -205,8 +209,16 @@
     
   end;
   
+  glGcnShaderAMD = static class
+    public const _ExtStr = 'GL_AMD_gcn_shader';
+  end;
+  
   glGpuShaderHalfFloatAMD = static class
     public const _ExtStr = 'GL_AMD_gpu_shader_half_float';
+  end;
+  
+  glGpuShaderInt16AMD = static class
+    public const _ExtStr = 'GL_AMD_gpu_shader_int16';
   end;
   
   [PCUNotRestore]
@@ -884,6 +896,34 @@
     public const _ExtStr = 'GL_AMD_seamless_cubemap_per_texture';
   end;
   
+  glShaderAtomicCounterOpsAMD = static class
+    public const _ExtStr = 'GL_AMD_shader_atomic_counter_ops';
+  end;
+  
+  glShaderBallotAMD = static class
+    public const _ExtStr = 'GL_AMD_shader_ballot';
+  end;
+  
+  glShaderExplicitVertexParameterAMD = static class
+    public const _ExtStr = 'GL_AMD_shader_explicit_vertex_parameter';
+  end;
+  
+  glShaderGpuShaderHalfFloatFetchAMD = static class
+    public const _ExtStr = 'GL_AMD_shader_gpu_shader_half_float_fetch';
+  end;
+  
+  glShaderImageLoadStoreLodAMD = static class
+    public const _ExtStr = 'GL_AMD_shader_image_load_store_lod';
+  end;
+  
+  glShaderStencilExportAMD = static class
+    public const _ExtStr = 'GL_AMD_shader_stencil_export';
+  end;
+  
+  glShaderTrinaryMinmaxAMD = static class
+    public const _ExtStr = 'GL_AMD_shader_trinary_minmax';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glSparseTextureAMD = sealed partial class
@@ -925,8 +965,24 @@
     
   end;
   
+  glTextureGatherBiasLodAMD = static class
+    public const _ExtStr = 'GL_AMD_texture_gather_bias_lod';
+  end;
+  
+  glTextureTexture4AMD = static class
+    public const _ExtStr = 'GL_AMD_texture_texture4';
+  end;
+  
+  glTransformFeedback3LinesTrianglesAMD = static class
+    public const _ExtStr = 'GL_AMD_transform_feedback3_lines_triangles';
+  end;
+  
   glTransformFeedback4AMD = static class
     public const _ExtStr = 'GL_AMD_transform_feedback4';
+  end;
+  
+  glVertexShaderLayerAMD = static class
+    public const _ExtStr = 'GL_AMD_vertex_shader_layer';
   end;
   
   [PCUNotRestore]
@@ -950,6 +1006,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TessellationModeAMD(mode: DummyEnum) :=
       ntv_TessellationModeAMD_1(mode);
     
+  end;
+  
+  glVertexShaderViewportIndexAMD = static class
+    public const _ExtStr = 'GL_AMD_vertex_shader_viewport_index';
   end;
   
   glAuxDepthStencilAPPLE = static class
@@ -1384,6 +1444,10 @@
     public const _ExtStr = 'GL_APPLE_ycbcr_422';
   end;
   
+  glArraysOfArraysARB = static class
+    public const _ExtStr = 'GL_ARB_arrays_of_arrays';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glBaseInstanceARB = sealed partial class
@@ -1753,6 +1817,10 @@
     
   end;
   
+  glCompatibilityARB = static class
+    public const _ExtStr = 'GL_ARB_compatibility';
+  end;
+  
   glCompressedTexturePixelStorageARB = static class
     public const _ExtStr = 'GL_ARB_compressed_texture_pixel_storage';
   end;
@@ -1800,6 +1868,10 @@
   
   glConditionalRenderInvertedARB = static class
     public const _ExtStr = 'GL_ARB_conditional_render_inverted';
+  end;
+  
+  glConservativeDepthARB = static class
+    public const _ExtStr = 'GL_ARB_conservative_depth';
   end;
   
   [PCUNotRestore]
@@ -1907,6 +1979,10 @@
   
   glDepthTextureARB = static class
     public const _ExtStr = 'GL_ARB_depth_texture';
+  end;
+  
+  glDerivativeControlARB = static class
+    public const _ExtStr = 'GL_ARB_derivative_control';
   end;
   
   [PCUNotRestore]
@@ -3074,8 +3150,20 @@
     public const _ExtStr = 'GL_ARB_ES3_compatibility';
   end;
   
+  glExplicitAttribLocationARB = static class
+    public const _ExtStr = 'GL_ARB_explicit_attrib_location';
+  end;
+  
   glExplicitUniformLocationARB = static class
     public const _ExtStr = 'GL_ARB_explicit_uniform_location';
+  end;
+  
+  glFragmentCoordConventionsARB = static class
+    public const _ExtStr = 'GL_ARB_fragment_coord_conventions';
+  end;
+  
+  glFragmentLayerViewportARB = static class
+    public const _ExtStr = 'GL_ARB_fragment_layer_viewport';
   end;
   
   [PCUNotRestore]
@@ -3091,6 +3179,15 @@
     
     private ProgramStringARB_adr := GetProcAddress('glProgramStringARB');
     private ntv_ProgramStringARB_1 := GetProcOrNil&<procedure(target: glProgramTarget; format: glProgramFormat; len: Int32; string: IntPtr)>(ProgramStringARB_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramStringARB(target: glProgramTarget; format: glProgramFormat; len: Int32; string: string);
+    begin
+      var string_str_ptr := Marshal.StringToHGlobalAnsi(string);
+      try
+        ntv_ProgramStringARB_1(target, format, len, string_str_ptr);
+      finally
+        Marshal.FreeHGlobal(string_str_ptr);
+      end;
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramStringARB(target: glProgramTarget; format: glProgramFormat; len: Int32; string: IntPtr) :=
       ntv_ProgramStringARB_1(target, format, len, string);
     
@@ -3273,8 +3370,16 @@
     
   end;
   
+  glFragmentProgramShadowARB = static class
+    public const _ExtStr = 'GL_ARB_fragment_program_shadow';
+  end;
+  
   glFragmentShaderARB = static class
     public const _ExtStr = 'GL_ARB_fragment_shader';
+  end;
+  
+  glFragmentShaderInterlockARB = static class
+    public const _ExtStr = 'GL_ARB_fragment_shader_interlock';
   end;
   
   [PCUNotRestore]
@@ -5577,6 +5682,10 @@
     
   end;
   
+  glPostDepthCoverageARB = static class
+    public const _ExtStr = 'GL_ARB_post_depth_coverage';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glProgramInterfaceQueryARB = sealed partial class
@@ -5724,6 +5833,10 @@
     public const _ExtStr = 'GL_ARB_query_buffer_object';
   end;
   
+  glRobustBufferAccessBehaviorARB = static class
+    public const _ExtStr = 'GL_ARB_robust_buffer_access_behavior';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glRobustnessARB = sealed partial class
@@ -5868,6 +5981,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetnMinmaxARB(target: glMinmaxTarget; reset: glBool8; format: glPixelFormat; type: glPixelType; bufSize: Int32; values: IntPtr) :=
       ntv_GetnMinmaxARB_1(target, reset, format, type, bufSize, values);
     
+  end;
+  
+  glRobustnessIsolationARB = static class
+    public const _ExtStr = 'GL_ARB_robustness_isolation';
   end;
   
   [PCUNotRestore]
@@ -6902,6 +7019,10 @@
     
   end;
   
+  glShaderAtomicCounterOpsARB = static class
+    public const _ExtStr = 'GL_ARB_shader_atomic_counter_ops';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glShaderAtomicCountersARB = sealed partial class
@@ -6921,6 +7042,26 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetActiveAtomicCounterBufferiv(program: gl_program; bufferIndex: UInt32; pname: glAtomicCounterBufferPName; params: IntPtr) :=
       ntv_GetActiveAtomicCounterBufferiv_2(program, bufferIndex, pname, params);
     
+  end;
+  
+  glShaderBallotARB = static class
+    public const _ExtStr = 'GL_ARB_shader_ballot';
+  end;
+  
+  glShaderBitEncodingARB = static class
+    public const _ExtStr = 'GL_ARB_shader_bit_encoding';
+  end;
+  
+  glShaderClockARB = static class
+    public const _ExtStr = 'GL_ARB_shader_clock';
+  end;
+  
+  glShaderDrawParametersARB = static class
+    public const _ExtStr = 'GL_ARB_shader_draw_parameters';
+  end;
+  
+  glShaderGroupVoteARB = static class
+    public const _ExtStr = 'GL_ARB_shader_group_vote';
   end;
   
   [PCUNotRestore]
@@ -6944,6 +7085,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure MemoryBarrier(barriers: glMemoryBarrierMask) :=
       ntv_MemoryBarrier_1(barriers);
     
+  end;
+  
+  glShaderImageSizeARB = static class
+    public const _ExtStr = 'GL_ARB_shader_image_size';
   end;
   
   [PCUNotRestore]
@@ -7388,6 +7533,14 @@
     
   end;
   
+  glShaderPrecisionARB = static class
+    public const _ExtStr = 'GL_ARB_shader_precision';
+  end;
+  
+  glShaderStencilExportARB = static class
+    public const _ExtStr = 'GL_ARB_shader_stencil_export';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glShaderStorageBufferObjectARB = sealed partial class
@@ -7502,8 +7655,24 @@
     
   end;
   
+  glShaderTextureImageSamplesARB = static class
+    public const _ExtStr = 'GL_ARB_shader_texture_image_samples';
+  end;
+  
+  glShaderTextureLodARB = static class
+    public const _ExtStr = 'GL_ARB_shader_texture_lod';
+  end;
+  
+  glShaderViewportLayerArrayARB = static class
+    public const _ExtStr = 'GL_ARB_shader_viewport_layer_array';
+  end;
+  
   glShadingLanguage100ARB = static class
     public const _ExtStr = 'GL_ARB_shading_language_100';
+  end;
+  
+  glShadingLanguage420packARB = static class
+    public const _ExtStr = 'GL_ARB_shading_language_420pack';
   end;
   
   [PCUNotRestore]
@@ -7676,6 +7845,10 @@
     
   end;
   
+  glShadingLanguagePackingARB = static class
+    public const _ExtStr = 'GL_ARB_shading_language_packing';
+  end;
+  
   glShadowARB = static class
     public const _ExtStr = 'GL_ARB_shadow';
   end;
@@ -7728,6 +7901,14 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TexPageCommitmentARB(target: glTextureTarget; level: Int32; xoffset: Int32; yoffset: Int32; zoffset: Int32; width: Int32; height: Int32; depth: Int32; commit: glBool8) :=
       ntv_TexPageCommitmentARB_1(target, level, xoffset, yoffset, zoffset, width, height, depth, commit);
     
+  end;
+  
+  glSparseTextureClampARB = static class
+    public const _ExtStr = 'GL_ARB_sparse_texture_clamp';
+  end;
+  
+  glSparseTexture2ARB = static class
+    public const _ExtStr = 'GL_ARB_sparse_texture2';
   end;
   
   glSpirvExtensionsARB = static class
@@ -7957,8 +8138,16 @@
     public const _ExtStr = 'GL_ARB_texture_cube_map_array';
   end;
   
+  glTextureEnvAddARB = static class
+    public const _ExtStr = 'GL_ARB_texture_env_add';
+  end;
+  
   glTextureEnvCombineARB = static class
     public const _ExtStr = 'GL_ARB_texture_env_combine';
+  end;
+  
+  glTextureEnvCrossbarARB = static class
+    public const _ExtStr = 'GL_ARB_texture_env_crossbar';
   end;
   
   glTextureEnvDot3ARB = static class
@@ -8023,6 +8212,18 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SampleMaski(maskNumber: UInt32; mask: DummyFlags) :=
       ntv_SampleMaski_1(maskNumber, mask);
     
+  end;
+  
+  glTextureNonPowerOfTwoARB = static class
+    public const _ExtStr = 'GL_ARB_texture_non_power_of_two';
+  end;
+  
+  glTextureQueryLevelsARB = static class
+    public const _ExtStr = 'GL_ARB_texture_query_levels';
+  end;
+  
+  glTextureQueryLodARB = static class
+    public const _ExtStr = 'GL_ARB_texture_query_lod';
   end;
   
   glTextureRectangleARB = static class
@@ -9498,6 +9699,15 @@
     
     private ProgramStringARB_adr := GetProcAddress('glProgramStringARB');
     private ntv_ProgramStringARB_1 := GetProcOrNil&<procedure(target: glProgramTarget; format: glProgramFormat; len: Int32; string: IntPtr)>(ProgramStringARB_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramStringARB(target: glProgramTarget; format: glProgramFormat; len: Int32; string: string);
+    begin
+      var string_str_ptr := Marshal.StringToHGlobalAnsi(string);
+      try
+        ntv_ProgramStringARB_1(target, format, len, string_str_ptr);
+      finally
+        Marshal.FreeHGlobal(string_str_ptr);
+      end;
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramStringARB(target: glProgramTarget; format: glProgramFormat; len: Int32; string: IntPtr) :=
       ntv_ProgramStringARB_1(target, format, len, string);
     
@@ -12046,6 +12256,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlendFuncSeparateEXT(sfactorRGB: glBlendingFactor; dfactorRGB: glBlendingFactor; sfactorAlpha: glBlendingFactor; dfactorAlpha: glBlendingFactor) :=
       ntv_BlendFuncSeparateEXT_1(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
     
+  end;
+  
+  glBlendLogicOpEXT = static class
+    public const _ExtStr = 'GL_EXT_blend_logic_op';
   end;
   
   [PCUNotRestore]
@@ -15042,6 +15256,10 @@
     
   end;
   
+  glEGLSyncEXT = static class
+    public const _ExtStr = 'GL_EXT_EGL_sync';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glExternalBufferEXT = sealed partial class
@@ -15925,6 +16143,10 @@
     
   end;
   
+  glIndexTextureEXT = static class
+    public const _ExtStr = 'GL_EXT_index_texture';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glLightTextureEXT = sealed partial class
@@ -16141,6 +16363,10 @@
     
   end;
   
+  glMiscAttributeEXT = static class
+    public const _ExtStr = 'GL_EXT_misc_attribute';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glMultiDrawArraysEXT = sealed partial class
@@ -16226,6 +16452,18 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure SamplePatternEXT(pattern: glSamplePattern) :=
       ntv_SamplePatternEXT_1(pattern);
     
+  end;
+  
+  glMultiviewTessellationGeometryShaderEXT = static class
+    public const _ExtStr = 'GL_EXT_multiview_tessellation_geometry_shader';
+  end;
+  
+  glMultiviewTextureMultisampleEXT = static class
+    public const _ExtStr = 'GL_EXT_multiview_texture_multisample';
+  end;
+  
+  glMultiviewTimerQueryEXT = static class
+    public const _ExtStr = 'GL_EXT_multiview_timer_query';
   end;
   
   glPackedDepthStencilEXT = static class
@@ -16352,6 +16590,10 @@
     
   end;
   
+  glPixelTransformColorTableEXT = static class
+    public const _ExtStr = 'GL_EXT_pixel_transform_color_table';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glPointParametersEXT = sealed partial class
@@ -16419,6 +16661,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure PolygonOffsetClampEXT(factor: single; units: single; clamp: single) :=
       ntv_PolygonOffsetClampEXT_1(factor, units, clamp);
     
+  end;
+  
+  glPostDepthCoverageEXT = static class
+    public const _ExtStr = 'GL_EXT_post_depth_coverage';
   end;
   
   [PCUNotRestore]
@@ -16948,6 +17194,10 @@
     
   end;
   
+  glShaderImageLoadFormattedEXT = static class
+    public const _ExtStr = 'GL_EXT_shader_image_load_formatted';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glShaderImageLoadStoreEXT = sealed partial class
@@ -16971,8 +17221,24 @@
     
   end;
   
+  glShaderIntegerMixEXT = static class
+    public const _ExtStr = 'GL_EXT_shader_integer_mix';
+  end;
+  
+  glShaderSamplesIdenticalEXT = static class
+    public const _ExtStr = 'GL_EXT_shader_samples_identical';
+  end;
+  
+  glShadowFuncsEXT = static class
+    public const _ExtStr = 'GL_EXT_shadow_funcs';
+  end;
+  
   glSharedTexturePaletteEXT = static class
     public const _ExtStr = 'GL_EXT_shared_texture_palette';
+  end;
+  
+  glSparseTexture2EXT = static class
+    public const _ExtStr = 'GL_EXT_sparse_texture2';
   end;
   
   [PCUNotRestore]
@@ -17092,6 +17358,10 @@
   
   glTextureCubeMapEXT = static class
     public const _ExtStr = 'GL_EXT_texture_cube_map';
+  end;
+  
+  glTextureEnvAddEXT = static class
+    public const _ExtStr = 'GL_EXT_texture_env_add';
   end;
   
   glTextureEnvCombineEXT = static class
@@ -17308,6 +17578,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureNormalEXT(mode: glTextureNormalMode) :=
       ntv_TextureNormalEXT_1(mode);
     
+  end;
+  
+  glTextureShadowLodEXT = static class
+    public const _ExtStr = 'GL_EXT_texture_shadow_lod';
   end;
   
   glTextureSharedExponentEXT = static class
@@ -18603,6 +18877,10 @@
     public const _ExtStr = 'GL_INTEL_conservative_rasterization';
   end;
   
+  glFragmentShaderOrderingINTEL = static class
+    public const _ExtStr = 'GL_INTEL_fragment_shader_ordering';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glFramebufferCMAAINTEL = sealed partial class
@@ -19026,6 +19304,10 @@
     
   end;
   
+  glRobustBufferAccessBehaviorKHR = static class
+    public const _ExtStr = 'GL_KHR_robust_buffer_access_behavior';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glRobustnessKHR = sealed partial class
@@ -19083,6 +19365,10 @@
   
   glTextureCompressionAstcLdrKHR = static class
     public const _ExtStr = 'GL_KHR_texture_compression_astc_ldr';
+  end;
+  
+  glTextureCompressionAstcSliced3dKHR = static class
+    public const _ExtStr = 'GL_KHR_texture_compression_astc_sliced_3d';
   end;
   
   glFramebufferFlipXMESA = static class
@@ -19143,6 +19429,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ResizeBuffersMESA :=
       ntv_ResizeBuffersMESA_1();
     
+  end;
+  
+  glShaderIntegerFunctionsMESA = static class
+    public const _ExtStr = 'GL_MESA_shader_integer_functions';
   end;
   
   glTileRasterOrderMESA = static class
@@ -19639,6 +19929,10 @@
     public const _ExtStr = 'GL_NV_blend_minmax_factor';
   end;
   
+  glBlendSquareNV = static class
+    public const _ExtStr = 'GL_NV_blend_square';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glClipSpaceWScalingNV = sealed partial class
@@ -20087,6 +20381,10 @@
     public const _ExtStr = 'GL_NV_compute_program5';
   end;
   
+  glComputeShaderDerivativesNV = static class
+    public const _ExtStr = 'GL_NV_compute_shader_derivatives';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glConditionalRenderNV = sealed partial class
@@ -20166,6 +20464,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ConservativeRasterParameteriNV(pname: DummyEnum; param: Int32) :=
       ntv_ConservativeRasterParameteriNV_1(pname, param);
     
+  end;
+  
+  glConservativeRasterUnderestimationNV = static class
+    public const _ExtStr = 'GL_NV_conservative_raster_underestimation';
   end;
   
   glCopyDepthToColorNV = static class
@@ -20525,98 +20827,136 @@
     public const _ExtStr = 'GL_NV_fragment_program';
     
     private ProgramNamedParameter4fNV_adr := GetProcAddress('glProgramNamedParameter4fNV');
-    private ntv_ProgramNamedParameter4fNV_1 := GetProcOrNil&<procedure(id: gl_program; len: Int32; var name: Byte; x: single; y: single; z: single; w: single)>(ProgramNamedParameter4fNV_adr);
-    private ntv_ProgramNamedParameter4fNV_2 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; x: single; y: single; z: single; w: single)>(ProgramNamedParameter4fNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fNV(id: gl_program; len: Int32; name: array of Byte; x: single; y: single; z: single; w: single);
-    type PByte = ^Byte;
+    private ntv_ProgramNamedParameter4fNV_1 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; x: single; y: single; z: single; w: single)>(ProgramNamedParameter4fNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fNV(id: gl_program; len: Int32; name: string; x: single; y: single; z: single; w: single);
     begin
-      if (name<>nil) and (name.Length<>0) then
-        ntv_ProgramNamedParameter4fNV_1(id, len, name[0], x, y, z, w) else
-        ntv_ProgramNamedParameter4fNV_1(id, len, PByte(nil)^, x, y, z, w);
+      var name_str_ptr := Marshal.StringToHGlobalAnsi(name);
+      try
+        ntv_ProgramNamedParameter4fNV_1(id, len, name_str_ptr, x, y, z, w);
+      finally
+        Marshal.FreeHGlobal(name_str_ptr);
+      end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fNV(id: gl_program; len: Int32; var name: Byte; x: single; y: single; z: single; w: single) :=
-      ntv_ProgramNamedParameter4fNV_1(id, len, name, x, y, z, w);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fNV(id: gl_program; len: Int32; name: IntPtr; x: single; y: single; z: single; w: single) :=
-      ntv_ProgramNamedParameter4fNV_2(id, len, name, x, y, z, w);
+      ntv_ProgramNamedParameter4fNV_1(id, len, name, x, y, z, w);
     
     private ProgramNamedParameter4fvNV_adr := GetProcAddress('glProgramNamedParameter4fvNV');
-    private ntv_ProgramNamedParameter4fvNV_1 := GetProcOrNil&<procedure(id: gl_program; len: Int32; var name: Byte; var v: single)>(ProgramNamedParameter4fvNV_adr);
-    private ntv_ProgramNamedParameter4fvNV_2 := GetProcOrNil&<procedure(id: gl_program; len: Int32; var name: Byte; var v: Vec4f)>(ProgramNamedParameter4fvNV_adr);
-    private ntv_ProgramNamedParameter4fvNV_3 := GetProcOrNil&<procedure(id: gl_program; len: Int32; var name: Byte; v: IntPtr)>(ProgramNamedParameter4fvNV_adr);
-    private ntv_ProgramNamedParameter4fvNV_4 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; var v: Vec4f)>(ProgramNamedParameter4fvNV_adr);
-    private ntv_ProgramNamedParameter4fvNV_5 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; var v: single)>(ProgramNamedParameter4fvNV_adr);
-    private ntv_ProgramNamedParameter4fvNV_6 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; v: IntPtr)>(ProgramNamedParameter4fvNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fvNV(id: gl_program; len: Int32; name: array of Byte; v: array of single);
-    type PByte = ^Byte;
+    private ntv_ProgramNamedParameter4fvNV_1 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; var v: single)>(ProgramNamedParameter4fvNV_adr);
+    private ntv_ProgramNamedParameter4fvNV_2 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; var v: Vec4f)>(ProgramNamedParameter4fvNV_adr);
+    private ntv_ProgramNamedParameter4fvNV_3 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; v: IntPtr)>(ProgramNamedParameter4fvNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fvNV(id: gl_program; len: Int32; name: string; v: array of single);
     type PSingle = ^single;
     begin
       if (v<>nil) and (v.Length<>0) then
-        if (name<>nil) and (name.Length<>0) then
-          ntv_ProgramNamedParameter4fvNV_1(id, len, name[0], v[0]) else
-          ntv_ProgramNamedParameter4fvNV_1(id, len, PByte(nil)^, v[0]) else
-        if (name<>nil) and (name.Length<>0) then
-          ntv_ProgramNamedParameter4fvNV_1(id, len, name[0], PSingle(nil)^) else
-          ntv_ProgramNamedParameter4fvNV_1(id, len, PByte(nil)^, PSingle(nil)^);
+        ProgramNamedParameter4fvNV(id, len, name, v[0]) else
+        ProgramNamedParameter4fvNV(id, len, name, PSingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fvNV(id: gl_program; len: Int32; var name: Byte; var v: Vec4f) :=
-      ntv_ProgramNamedParameter4fvNV_2(id, len, name, v);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fvNV(id: gl_program; len: Int32; var name: Byte; var v: single) :=
-      ntv_ProgramNamedParameter4fvNV_1(id, len, name, v);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fvNV(id: gl_program; len: Int32; var name: Byte; v: IntPtr) :=
-      ntv_ProgramNamedParameter4fvNV_3(id, len, name, v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fvNV(id: gl_program; len: Int32; name: IntPtr; v: array of single);
+    type PSingle = ^single;
+    begin
+      if (v<>nil) and (v.Length<>0) then
+        ntv_ProgramNamedParameter4fvNV_1(id, len, name, v[0]) else
+        ntv_ProgramNamedParameter4fvNV_1(id, len, name, PSingle(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fvNV(id: gl_program; len: Int32; name: string; var v: Vec4f);
+    begin
+      var name_str_ptr := Marshal.StringToHGlobalAnsi(name);
+      try
+        ntv_ProgramNamedParameter4fvNV_2(id, len, name_str_ptr, v);
+      finally
+        Marshal.FreeHGlobal(name_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fvNV(id: gl_program; len: Int32; name: string; var v: single);
+    begin
+      var name_str_ptr := Marshal.StringToHGlobalAnsi(name);
+      try
+        ntv_ProgramNamedParameter4fvNV_1(id, len, name_str_ptr, v);
+      finally
+        Marshal.FreeHGlobal(name_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fvNV(id: gl_program; len: Int32; name: string; v: IntPtr);
+    begin
+      var name_str_ptr := Marshal.StringToHGlobalAnsi(name);
+      try
+        ntv_ProgramNamedParameter4fvNV_3(id, len, name_str_ptr, v);
+      finally
+        Marshal.FreeHGlobal(name_str_ptr);
+      end;
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fvNV(id: gl_program; len: Int32; name: IntPtr; var v: Vec4f) :=
-      ntv_ProgramNamedParameter4fvNV_4(id, len, name, v);
+      ntv_ProgramNamedParameter4fvNV_2(id, len, name, v);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fvNV(id: gl_program; len: Int32; name: IntPtr; var v: single) :=
-      ntv_ProgramNamedParameter4fvNV_5(id, len, name, v);
+      ntv_ProgramNamedParameter4fvNV_1(id, len, name, v);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4fvNV(id: gl_program; len: Int32; name: IntPtr; v: IntPtr) :=
-      ntv_ProgramNamedParameter4fvNV_6(id, len, name, v);
+      ntv_ProgramNamedParameter4fvNV_3(id, len, name, v);
     
     private ProgramNamedParameter4dNV_adr := GetProcAddress('glProgramNamedParameter4dNV');
-    private ntv_ProgramNamedParameter4dNV_1 := GetProcOrNil&<procedure(id: gl_program; len: Int32; var name: Byte; x: double; y: double; z: double; w: double)>(ProgramNamedParameter4dNV_adr);
-    private ntv_ProgramNamedParameter4dNV_2 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; x: double; y: double; z: double; w: double)>(ProgramNamedParameter4dNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dNV(id: gl_program; len: Int32; name: array of Byte; x: double; y: double; z: double; w: double);
-    type PByte = ^Byte;
+    private ntv_ProgramNamedParameter4dNV_1 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; x: double; y: double; z: double; w: double)>(ProgramNamedParameter4dNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dNV(id: gl_program; len: Int32; name: string; x: double; y: double; z: double; w: double);
     begin
-      if (name<>nil) and (name.Length<>0) then
-        ntv_ProgramNamedParameter4dNV_1(id, len, name[0], x, y, z, w) else
-        ntv_ProgramNamedParameter4dNV_1(id, len, PByte(nil)^, x, y, z, w);
+      var name_str_ptr := Marshal.StringToHGlobalAnsi(name);
+      try
+        ntv_ProgramNamedParameter4dNV_1(id, len, name_str_ptr, x, y, z, w);
+      finally
+        Marshal.FreeHGlobal(name_str_ptr);
+      end;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dNV(id: gl_program; len: Int32; var name: Byte; x: double; y: double; z: double; w: double) :=
-      ntv_ProgramNamedParameter4dNV_1(id, len, name, x, y, z, w);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dNV(id: gl_program; len: Int32; name: IntPtr; x: double; y: double; z: double; w: double) :=
-      ntv_ProgramNamedParameter4dNV_2(id, len, name, x, y, z, w);
+      ntv_ProgramNamedParameter4dNV_1(id, len, name, x, y, z, w);
     
     private ProgramNamedParameter4dvNV_adr := GetProcAddress('glProgramNamedParameter4dvNV');
-    private ntv_ProgramNamedParameter4dvNV_1 := GetProcOrNil&<procedure(id: gl_program; len: Int32; var name: Byte; var v: double)>(ProgramNamedParameter4dvNV_adr);
-    private ntv_ProgramNamedParameter4dvNV_2 := GetProcOrNil&<procedure(id: gl_program; len: Int32; var name: Byte; var v: Vec4d)>(ProgramNamedParameter4dvNV_adr);
-    private ntv_ProgramNamedParameter4dvNV_3 := GetProcOrNil&<procedure(id: gl_program; len: Int32; var name: Byte; v: IntPtr)>(ProgramNamedParameter4dvNV_adr);
-    private ntv_ProgramNamedParameter4dvNV_4 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; var v: Vec4d)>(ProgramNamedParameter4dvNV_adr);
-    private ntv_ProgramNamedParameter4dvNV_5 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; var v: double)>(ProgramNamedParameter4dvNV_adr);
-    private ntv_ProgramNamedParameter4dvNV_6 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; v: IntPtr)>(ProgramNamedParameter4dvNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dvNV(id: gl_program; len: Int32; name: array of Byte; v: array of double);
-    type PByte = ^Byte;
+    private ntv_ProgramNamedParameter4dvNV_1 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; var v: double)>(ProgramNamedParameter4dvNV_adr);
+    private ntv_ProgramNamedParameter4dvNV_2 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; var v: Vec4d)>(ProgramNamedParameter4dvNV_adr);
+    private ntv_ProgramNamedParameter4dvNV_3 := GetProcOrNil&<procedure(id: gl_program; len: Int32; name: IntPtr; v: IntPtr)>(ProgramNamedParameter4dvNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dvNV(id: gl_program; len: Int32; name: string; v: array of double);
     type PDouble = ^double;
     begin
       if (v<>nil) and (v.Length<>0) then
-        if (name<>nil) and (name.Length<>0) then
-          ntv_ProgramNamedParameter4dvNV_1(id, len, name[0], v[0]) else
-          ntv_ProgramNamedParameter4dvNV_1(id, len, PByte(nil)^, v[0]) else
-        if (name<>nil) and (name.Length<>0) then
-          ntv_ProgramNamedParameter4dvNV_1(id, len, name[0], PDouble(nil)^) else
-          ntv_ProgramNamedParameter4dvNV_1(id, len, PByte(nil)^, PDouble(nil)^);
+        ProgramNamedParameter4dvNV(id, len, name, v[0]) else
+        ProgramNamedParameter4dvNV(id, len, name, PDouble(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dvNV(id: gl_program; len: Int32; var name: Byte; var v: Vec4d) :=
-      ntv_ProgramNamedParameter4dvNV_2(id, len, name, v);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dvNV(id: gl_program; len: Int32; var name: Byte; var v: double) :=
-      ntv_ProgramNamedParameter4dvNV_1(id, len, name, v);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dvNV(id: gl_program; len: Int32; var name: Byte; v: IntPtr) :=
-      ntv_ProgramNamedParameter4dvNV_3(id, len, name, v);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dvNV(id: gl_program; len: Int32; name: IntPtr; v: array of double);
+    type PDouble = ^double;
+    begin
+      if (v<>nil) and (v.Length<>0) then
+        ntv_ProgramNamedParameter4dvNV_1(id, len, name, v[0]) else
+        ntv_ProgramNamedParameter4dvNV_1(id, len, name, PDouble(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dvNV(id: gl_program; len: Int32; name: string; var v: Vec4d);
+    begin
+      var name_str_ptr := Marshal.StringToHGlobalAnsi(name);
+      try
+        ntv_ProgramNamedParameter4dvNV_2(id, len, name_str_ptr, v);
+      finally
+        Marshal.FreeHGlobal(name_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dvNV(id: gl_program; len: Int32; name: string; var v: double);
+    begin
+      var name_str_ptr := Marshal.StringToHGlobalAnsi(name);
+      try
+        ntv_ProgramNamedParameter4dvNV_1(id, len, name_str_ptr, v);
+      finally
+        Marshal.FreeHGlobal(name_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dvNV(id: gl_program; len: Int32; name: string; v: IntPtr);
+    begin
+      var name_str_ptr := Marshal.StringToHGlobalAnsi(name);
+      try
+        ntv_ProgramNamedParameter4dvNV_3(id, len, name_str_ptr, v);
+      finally
+        Marshal.FreeHGlobal(name_str_ptr);
+      end;
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dvNV(id: gl_program; len: Int32; name: IntPtr; var v: Vec4d) :=
-      ntv_ProgramNamedParameter4dvNV_4(id, len, name, v);
+      ntv_ProgramNamedParameter4dvNV_2(id, len, name, v);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dvNV(id: gl_program; len: Int32; name: IntPtr; var v: double) :=
-      ntv_ProgramNamedParameter4dvNV_5(id, len, name, v);
+      ntv_ProgramNamedParameter4dvNV_1(id, len, name, v);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramNamedParameter4dvNV(id: gl_program; len: Int32; name: IntPtr; v: IntPtr) :=
-      ntv_ProgramNamedParameter4dvNV_6(id, len, name, v);
+      ntv_ProgramNamedParameter4dvNV_3(id, len, name, v);
     
     private GetProgramNamedParameterfvNV_adr := GetProcAddress('glGetProgramNamedParameterfvNV');
     private ntv_GetProgramNamedParameterfvNV_1 := GetProcOrNil&<procedure(id: gl_program; len: Int32; var name: Byte; var params: single)>(GetProgramNamedParameterfvNV_adr);
@@ -20676,8 +21016,24 @@
     
   end;
   
+  glFragmentProgramOptionNV = static class
+    public const _ExtStr = 'GL_NV_fragment_program_option';
+  end;
+  
   glFragmentProgram2NV = static class
     public const _ExtStr = 'GL_NV_fragment_program2';
+  end;
+  
+  glFragmentProgram4NV = static class
+    public const _ExtStr = 'GL_NV_fragment_program4';
+  end;
+  
+  glFragmentShaderBarycentricNV = static class
+    public const _ExtStr = 'GL_NV_fragment_shader_barycentric';
+  end;
+  
+  glFragmentShaderInterlockNV = static class
+    public const _ExtStr = 'GL_NV_fragment_shader_interlock';
   end;
   
   [PCUNotRestore]
@@ -20775,6 +21131,14 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FramebufferTextureFaceEXT(target: glFramebufferTarget; attachment: glFramebufferAttachment; texture: gl_texture; level: Int32; face: glTextureTarget) :=
       ntv_FramebufferTextureFaceEXT_1(target, attachment, texture, level, face);
     
+  end;
+  
+  glGeometryShaderPassthroughNV = static class
+    public const _ExtStr = 'GL_NV_geometry_shader_passthrough';
+  end;
+  
+  glGeometryShader4NV = static class
+    public const _ExtStr = 'GL_NV_geometry_shader4';
   end;
   
   [PCUNotRestore]
@@ -21143,6 +21507,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramSubroutineParameteruivNV(target: DummyEnum; index: UInt32; param: IntPtr) :=
       ntv_GetProgramSubroutineParameteruivNV_2(target, index, param);
     
+  end;
+  
+  glGpuProgram5MemExtendedNV = static class
+    public const _ExtStr = 'GL_NV_gpu_program5_mem_extended';
   end;
   
   [PCUNotRestore]
@@ -22294,6 +22662,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ProgramBufferParametersIuivNV(target: glProgramTarget; bindingIndex: UInt32; wordIndex: UInt32; count: Int32; params: IntPtr) :=
       ntv_ProgramBufferParametersIuivNV_2(target, bindingIndex, wordIndex, count, params);
     
+  end;
+  
+  glParameterBufferObject2NV = static class
+    public const _ExtStr = 'GL_NV_parameter_buffer_object2';
   end;
   
   [PCUNotRestore]
@@ -23574,6 +23946,10 @@
     
   end;
   
+  glSampleMaskOverrideCoverageNV = static class
+    public const _ExtStr = 'GL_NV_sample_mask_override_coverage';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glScissorExclusiveNV = sealed partial class
@@ -23605,6 +23981,26 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ScissorExclusiveArrayvNV(first: UInt32; count: Int32; v: IntPtr) :=
       ntv_ScissorExclusiveArrayvNV_2(first, count, v);
     
+  end;
+  
+  glShaderAtomicCountersNV = static class
+    public const _ExtStr = 'GL_NV_shader_atomic_counters';
+  end;
+  
+  glShaderAtomicFloatNV = static class
+    public const _ExtStr = 'GL_NV_shader_atomic_float';
+  end;
+  
+  glShaderAtomicFloat64NV = static class
+    public const _ExtStr = 'GL_NV_shader_atomic_float64';
+  end;
+  
+  glShaderAtomicFp16VectorNV = static class
+    public const _ExtStr = 'GL_NV_shader_atomic_fp16_vector';
+  end;
+  
+  glShaderAtomicInt64NV = static class
+    public const _ExtStr = 'GL_NV_shader_atomic_int64';
   end;
   
   [PCUNotRestore]
@@ -23726,12 +24122,24 @@
     public const _ExtStr = 'GL_NV_shader_buffer_store';
   end;
   
+  glShaderStorageBufferObjectNV = static class
+    public const _ExtStr = 'GL_NV_shader_storage_buffer_object';
+  end;
+  
   glShaderSubgroupPartitionedNV = static class
     public const _ExtStr = 'GL_NV_shader_subgroup_partitioned';
   end;
   
+  glShaderTextureFootprintNV = static class
+    public const _ExtStr = 'GL_NV_shader_texture_footprint';
+  end;
+  
   glShaderThreadGroupNV = static class
     public const _ExtStr = 'GL_NV_shader_thread_group';
+  end;
+  
+  glShaderThreadShuffleNV = static class
+    public const _ExtStr = 'GL_NV_shader_thread_shuffle';
   end;
   
   [PCUNotRestore]
@@ -23808,6 +24216,10 @@
     
   end;
   
+  glStereoViewRenderingNV = static class
+    public const _ExtStr = 'GL_NV_stereo_view_rendering';
+  end;
+  
   glTessellationProgram5NV = static class
     public const _ExtStr = 'GL_NV_tessellation_program5';
   end;
@@ -23836,6 +24248,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure TextureBarrierNV :=
       ntv_TextureBarrierNV_1();
     
+  end;
+  
+  glTextureCompressionVtcNV = static class
+    public const _ExtStr = 'GL_NV_texture_compression_vtc';
   end;
   
   glTextureEnvCombine4NV = static class
@@ -23891,6 +24307,10 @@
   
   glTextureRectangleNV = static class
     public const _ExtStr = 'GL_NV_texture_rectangle';
+  end;
+  
+  glTextureRectangleCompressedNV = static class
+    public const _ExtStr = 'GL_NV_texture_rectangle_compressed';
   end;
   
   glTextureShaderNV = static class
@@ -24761,12 +25181,9 @@
       ntv_GetProgramivNV_2(id, pname, params);
     
     private GetProgramStringNV_adr := GetProcAddress('glGetProgramStringNV');
-    private ntv_GetProgramStringNV_1 := GetProcOrNil&<procedure(id: gl_program; pname: glVertexAttribEnumNV; var program: Byte)>(GetProgramStringNV_adr);
-    private ntv_GetProgramStringNV_2 := GetProcOrNil&<procedure(id: gl_program; pname: glVertexAttribEnumNV; program: IntPtr)>(GetProgramStringNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramStringNV(id: gl_program; pname: glVertexAttribEnumNV; var program: Byte) :=
-      ntv_GetProgramStringNV_1(id, pname, program);
+    private ntv_GetProgramStringNV_1 := GetProcOrNil&<procedure(id: gl_program; pname: glVertexAttribEnumNV; program: IntPtr)>(GetProgramStringNV_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure GetProgramStringNV(id: gl_program; pname: glVertexAttribEnumNV; program: IntPtr) :=
-      ntv_GetProgramStringNV_2(id, pname, program);
+      ntv_GetProgramStringNV_1(id, pname, program);
     
     private GetTrackMatrixivNV_adr := GetProcAddress('glGetTrackMatrixivNV');
     private ntv_GetTrackMatrixivNV_1 := GetProcOrNil&<procedure(target: glVertexAttribEnumNV; address: UInt32; pname: glVertexAttribEnumNV; var params: Int32)>(GetTrackMatrixivNV_adr);
@@ -25452,6 +25869,14 @@
     
   end;
   
+  glVertexProgram11NV = static class
+    public const _ExtStr = 'GL_NV_vertex_program1_1';
+  end;
+  
+  glVertexProgram2NV = static class
+    public const _ExtStr = 'GL_NV_vertex_program2';
+  end;
+  
   glVertexProgram2OptionNV = static class
     public const _ExtStr = 'GL_NV_vertex_program2_option';
   end;
@@ -25880,6 +26305,10 @@
     
   end;
   
+  glViewportArray2NV = static class
+    public const _ExtStr = 'GL_NV_viewport_array2';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glViewportSwizzleNV = sealed partial class
@@ -25896,6 +26325,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ViewportSwizzleNV(index: UInt32; swizzlex: DummyEnum; swizzley: DummyEnum; swizzlez: DummyEnum; swizzlew: DummyEnum) :=
       ntv_ViewportSwizzleNV_1(index, swizzlex, swizzley, swizzlez, swizzlew);
     
+  end;
+  
+  glBlendEquationAdvancedMultiDrawBuffersNVX = static class
+    public const _ExtStr = 'GL_NVX_blend_equation_advanced_multi_draw_buffers';
   end;
   
   [PCUNotRestore]
@@ -27639,6 +28072,10 @@
     
   end;
   
+  glMultiview2OVR = static class
+    public const _ExtStr = 'GL_OVR_multiview2';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   glMiscHintsPGI = sealed partial class
@@ -28176,6 +28613,10 @@
   
   glConvolutionAccuracySGIX = static class
     public const _ExtStr = 'GL_SGIX_convolution_accuracy';
+  end;
+  
+  glDepthPassInstrumentSGIX = static class
+    public const _ExtStr = 'GL_SGIX_depth_pass_instrument';
   end;
   
   glDepthTextureSGIX = static class
@@ -28775,6 +29216,10 @@
   
   glYcrcbSGIX = static class
     public const _ExtStr = 'GL_SGIX_ycrcb';
+  end;
+  
+  glYcrcbSubsampleSGIX = static class
+    public const _ExtStr = 'GL_SGIX_ycrcb_subsample';
   end;
   
   glYcrcbaSGIX = static class
@@ -29887,6 +30332,10 @@
   
   glxLibglvndEXT = static class
     public const _ExtStr = 'GLX_EXT_libglvnd';
+  end;
+  
+  glxNoConfigContextEXT = static class
+    public const _ExtStr = 'GLX_EXT_no_config_context';
   end;
   
   glxStereoTreeEXT = static class
@@ -31955,6 +32404,10 @@
     
   end;
   
+  wglSwapControlTearEXT = static class
+    public const _ExtStr = 'WGL_EXT_swap_control_tear';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   wglDigitalVideoControlI3D = sealed partial class
@@ -32516,6 +32969,10 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DXUnlockObjectsNV(hDevice: IntPtr; count: Int32; hObjects: pointer): glBool32 :=
       ntv_DXUnlockObjectsNV_2(hDevice, count, hObjects);
     
+  end;
+  
+  wglDXInterop2NV = static class
+    public const _ExtStr = 'WGL_NV_DX_interop2';
   end;
   
   wglFloatBufferNV = static class
