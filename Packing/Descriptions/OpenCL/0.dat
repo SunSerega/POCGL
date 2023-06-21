@@ -1,0 +1,13 @@
+
+
+
+# OpenCLException
+Исключение, которое кидает clErrorCode.RaiseIfError
+
+# OpenCLException.Code
+Код ошибки
+
+# OpenCLException.(clErrorCode, string)
+# OpenCLException.(clErrorCode)
+
+

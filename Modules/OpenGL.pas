@@ -49,8 +49,6 @@ type
     
   end;
   
-  /// Базовый класс платформы
-  /// Можно наследовать чтобы описать свой загрузчик динамических функций
   PlatformLoader = abstract class
     
     public function GetProcAddress(name: string): IntPtr; abstract;
@@ -73,7 +71,6 @@ type
   
   {$region Загрузчики известных платформ}
   
-  /// Платформа Windows
   PlWin = sealed class(PlatformLoader)
     
     private static function LoadLibrary(name: string): IntPtr;
@@ -90,7 +87,6 @@ type
     
   end;
   
-  /// Платформа XWindow (используется в UNIX-подобных системах)
   PlX = sealed class(PlatformLoader)
     
     public function GetProcAddress(name: string): IntPtr; override;

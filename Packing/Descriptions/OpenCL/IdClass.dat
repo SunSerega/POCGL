@@ -1,0 +1,60 @@
+
+
+
+# cl_accelerator
+
+# cl_command_buffer
+
+# cl_command_queue
+
+# cl_context
+
+# cl_device_id
+
+# cl_eglDisplay
+
+# cl_eglImage
+
+# cl_eglSync
+
+# cl_event
+
+# cl_GLsync
+
+# cl_icd_dispatch
+
+# cl_kernel
+
+# cl_mem
+
+# cl_mutable_command
+
+# cl_platform_id
+
+# cl_program
+
+# cl_sampler
+
+# cl_semaphore
+
+# va_image_format
+
+# va_surface_id
+
+# d3d_pixel_format
+
+# d3d_surface9
+
+# d3d10_buffer
+
+# d3d10_texture_2d
+
+# d3d10_texture_3d
+
+# d3d11_buffer
+
+# d3d11_texture_2d
+
+# d3d11_texture_3d
+
+

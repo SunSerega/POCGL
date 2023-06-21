@@ -110,3 +110,5 @@ Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Extension:
 Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Cleanup
 Template[OpenCL]: Finished runing TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]
 Finished runing Template[OpenCL]
+Runing Descriptions[OpenCL]
+Finished runing Descriptions[OpenCL]

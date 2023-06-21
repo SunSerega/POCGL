@@ -3,6 +3,7 @@
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   dum = static class
     
     // added in dum1.0
@@ -1009,6 +1010,7 @@
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   dyn = sealed partial class
     public constructor(loader: PlatformLoader);
     private constructor := raise new System.NotSupportedException;

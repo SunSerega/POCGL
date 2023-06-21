@@ -201,30 +201,25 @@ var AllStages := HSet(
     constructor(module_name: string) :=
       inherited Create(module_name);
     
+    function ModuleLvl: string; abstract;
     function MakeCoreTask: AsyncTask; override :=
-      MakeModuleTask +
+      ProcTask(()->Directory.CreateDirectory('Modules.Packed'))
+    +
+      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'dir={ModuleLvl}', $'"inp_fname=Modules\{id}.pas"', $'"otp_fname=Modules.Packed\{id}.pas"')
+    +
+      ExecTask('Packing\Descriptions\PackDescriptions.pas', $'Descriptions[{id}]', $'nick={id}', $'"fname=Modules.Packed\{id}.pas"')
+    +
       SetEvTask(GetModulePackEv(self.id));
-    function MakeModuleTask: AsyncTask; abstract;
     
   end;
   LLModuleStage = sealed class(ModulePackingStage)
     
-    function MakeModuleTask: AsyncTask; override :=
-      ProcTask(()->Directory.CreateDirectory('Modules.Packed'))
-      +
-      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'dir=LowLvl', $'"inp_fname=Modules\{id}.pas"', $'"otp_fname=Modules.Packed\{id}.pas"')
-    ;
+    function ModuleLvl: string; override := 'LowLvl';
     
   end;
   HLModuleStage = sealed class(ModulePackingStage)
     
-    function MakeModuleTask: AsyncTask; override :=
-      ProcTask(()->Directory.CreateDirectory('Modules.Packed'))
-      +
-      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'dir=HighLvl', $'"inp_fname=Modules\{id}.pas"', $'"otp_fname=Modules.Packed\{id}.pas"')
-      +
-      ExecTask('Packing\Descriptions\PackDescriptions.pas', $'Descriptions[{id}]', $'nick={id}', $'"fname=Modules.Packed\{id}.pas"')
-    ;
+    function ModuleLvl: string; override := 'HighLvl';
     
   end;
   

@@ -3,6 +3,7 @@
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   gl = sealed partial class
     public constructor(loader: PlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -7662,6 +7663,7 @@
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   glD = sealed partial class
     public constructor(loader: PlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -11660,6 +11662,7 @@
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   gdi = static class
     
     // added in gdi1.0
@@ -11739,6 +11742,7 @@
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   glx = static class
     
     // added in glx1.3
@@ -12139,6 +12143,7 @@
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   wgl = static class
     
     // added in wgl1.0

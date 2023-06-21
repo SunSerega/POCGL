@@ -11,32 +11,34 @@ uses DescriptionsData;
 
 type
   CommentData = sealed class
-    private used := false;
+    private used := default(boolean?);
     private directly_used := false;
     private source: string;
     private comment: string;
     
-    public constructor(source: string; comment: string);
+    public constructor(source: string; comment: string; require_use: boolean);
     begin
       self.source := source;
       self.comment := comment;
+      if require_use then
+        used := false;
     end;
     
     public static all := new Dictionary<string, CommentData>;
-    public static procedure LoadFile(fname: string) :=
+    public static procedure LoadFile(fname: string; require_use: boolean) :=
     foreach var (bl_name, bl_lns) in FixerUtils.ReadBlocks(fname, true) do
       if bl_name=nil then
         continue else // Комментарий в начале файла
       if all.ContainsKey(bl_name) then
         Otp($'ERROR: key %{bl_name}% found in "{all[bl_name].source}" and "{GetRelativePathRTA(fname)}"') else
-        all[bl_name] := new CommentData(GetRelativePathRTA(fname), bl_lns.JoinToString(#10).Trim);
-    public static procedure LoadAll(nick: string);
+        all[bl_name] := new CommentData(GetRelativePathRTA(fname), bl_lns.JoinToString(#10).Trim, require_use);
+    public static procedure LoadAll(nick: string; require_use: boolean);
     begin
       var path := GetFullPathRTA(nick);
       if not System.IO.Directory.Exists(path) then
         System.IO.Directory.CreateDirectory(path) else
       foreach var fname in System.IO.Directory.EnumerateFiles(path, '*.dat', System.IO.SearchOption.AllDirectories) do
-        LoadFile(fname);
+        LoadFile(fname, require_use);
       
 //      foreach var bl_name in all.Keys do
 //      begin
@@ -66,7 +68,7 @@ type
       if prev=nil then
         cd.directly_used := true;
       
-      if cd.used then
+      if cd.used=true then
       begin
         res += cd.comment;
         exit;
@@ -122,25 +124,29 @@ type
     end;
     
     procedure Write(ignored_types: HashSet<string>; wr_missing: Writer) :=
-    foreach var c in skipped.Where(\(c,need_report)->
-    begin
-      match c with
-        
-        CommentableType(var ct): Result :=
-        ignored_types.Add(ct.FullName);
-        
-        CommentableTypeMember(var cm): Result :=
-        (cm.Type=nil) or not ignored_types.Contains(cm.Type.FullName);
-        
-        else raise new System.NotImplementedException($'{c.GetType}');
+      foreach var c in skipped.Where(\(c,need_report)->
+      begin
+        match c with
+          
+          CommentableType(var ct): Result :=
+          ignored_types.Add(ct.FullName);
+          
+          CommentableTypeMember(var cm): Result :=
+          (cm.Type=nil) or not ignored_types.Contains(cm.Type.FullName);
+          
+          else raise new System.NotImplementedException($'{c.GetType}');
+        end;
+        Result := Result and need_report;
+      end).Select(\(c,need_report)->
+      begin
+        Result := c.FullName;
+//        Result += $' | {TypeName(c)}';
+      end).Concat(missing).Distinct do
+      begin
+        wr_missing += '# ';
+        wr_missing += c;
+        wr_missing += #10#10;
       end;
-      Result := Result and need_report;
-    end).Select(\(c,need_report)->c.FullName).Concat(missing).Distinct do
-    begin
-      wr_missing += '# ';
-      wr_missing += c;
-      wr_missing += #10#10;
-    end;
     
   end;
   
@@ -153,13 +159,22 @@ begin
     if is_separate_execution and string.IsNullOrWhiteSpace(nick) and (fls.Length=0) and not use_pd then
     begin
       
-      nick := 'OpenCLABC';
-      fls := | 'Modules.Packed\OpenCLABC.pas' |;
+//      nick := 'OpenCL';
+//      fls := | 'Modules.Packed\OpenCL.pas' |;
+//      use_pd := true;
+      
+      nick := 'OpenGL';
+      fls := | 'Modules.Packed\OpenGL.pas' |;
       use_pd := true;
+      
+//      nick := 'OpenCLABC';
+//      fls := | 'Modules.Packed\OpenCLABC.pas' |;
+//      use_pd := true;
       
     end;
     
-    CommentData.LoadAll(nick);
+    CommentData.LoadAll('0Common', false);
+    CommentData.LoadAll(nick, true);
     
     var all_log_data := new Dictionary<string, FileLogData>;
     foreach var fname in fls do all_log_data[fname] := new FileLogData;
@@ -177,28 +192,28 @@ begin
           log_data.Write(ignored_types, wr_missing);
         
         foreach var key in CommentData.all.Keys do
-          if not CommentData.all[key].used then
+          if CommentData.all[key].used=false then
           begin
             wr_unused += key;
             wr_unused += #10;
           end;
         
         CommentData.all
-        .Select(kvp->(kvp.Key,kvp.Value))
-        .Where(\(key,cd)->cd.directly_used)
-        .OrderBy(\(key,cd)->key)
-        .GroupBy(\(key,cd)->cd.comment)
-        .Foreach(g->
-        begin
-          foreach var (key,cd) in g do
+          .Select(kvp->(kvp.Key,kvp.Value))
+          .Where(\(key,cd)->cd.directly_used)
+          .OrderBy(\(key,cd)->key)
+          .GroupBy(\(key,cd)->cd.comment)
+          .Foreach(g->
           begin
-            wr_used += '# ';
-            wr_used += key;
-            wr_used += #10;
-          end;
-          wr_used += g.Key;
-          wr_used += #10#10;
-        end);
+            foreach var (key,cd) in g do
+            begin
+              wr_used += '# ';
+              wr_used += key;
+              wr_used += #10;
+            end;
+            wr_used += g.Key;
+            wr_used += #10#10;
+          end);
         
         (wr_missing * wr_unused * wr_used).Close;
       end)

@@ -37,3 +37,5 @@ Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Feature: Pac
 Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Cleanup
 Template[Dummy]: Finished runing TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]
 Finished runing Template[Dummy]
+Runing Descriptions[Dummy]
+Finished runing Descriptions[Dummy]

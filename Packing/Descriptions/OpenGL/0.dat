@@ -1,0 +1,31 @@
+
+
+
+# PlWin
+Платформа Windows
+
+# PlX
+Платформа XWindow (используется в UNIX-подобных системах)
+
+# PlWin.GetProcAddress(string)
+# PlX.GetProcAddress(string)
+Получает адрес динамически загружаемой функции
+
+
+
+# DummyEnum
+# DummyFlags
+Вместо этого типа должно быть конкретное перечисление
+Но информация о его значениях отсутствует в репозитории KhronosGroup/OpenGL-Registry
+
+
+# OpenGLException
+Исключение, которое кидает glErrorCode.RaiseIfError
+
+# OpenGLException.Code
+Код ошибки
+
+# OpenGLException.(glErrorCode, string)
+# OpenGLException.(glErrorCode)
+
+

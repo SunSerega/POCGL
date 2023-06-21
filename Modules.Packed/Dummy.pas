@@ -26,10 +26,14 @@ type
   
   {$region Особые типы}
   
+  ///Базовый тип перечислений этого модуля
   EnumBase = UInt32;
   
+  ///Базовый класс платформы
+  ///Можно наследовать чтобы описать свой загрузчик динамических функций
   PlatformLoader = abstract class
     
+    ///Этот метод вызывается для каждой динамически загружаемой функции
     public function GetProcAddress(name: string): IntPtr; abstract;
     
   end;
@@ -38,6 +42,7 @@ type
   
   {$region Вспомогательные типы}
   
+  ///
   Multichoise1 = record
     public val: EnumBase;
     public constructor(val: EnumBase) := self.val := val;
@@ -68,6 +73,7 @@ type
     
   end;
   
+  ///
   Multichoise2 = record
     public val: EnumBase;
     public constructor(val: EnumBase) := self.val := val;
@@ -92,6 +98,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   dum = static class
     
     // added in dum1.0
@@ -1098,6 +1105,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   dyn = sealed partial class
     public constructor(loader: PlatformLoader);
     private constructor := raise new System.NotSupportedException;

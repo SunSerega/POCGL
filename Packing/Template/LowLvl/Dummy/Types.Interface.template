@@ -1,6 +1,7 @@
 ﻿  
   
   
+  ///
   Multichoise1 = record
     public val: EnumBase;
     public constructor(val: EnumBase) := self.val := val;
@@ -31,6 +32,7 @@
     
   end;
   
+  ///
   Multichoise2 = record
     public val: EnumBase;
     public constructor(val: EnumBase) := self.val := val;

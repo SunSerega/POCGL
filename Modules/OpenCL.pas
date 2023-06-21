@@ -15,6 +15,8 @@ unit OpenCL;
 
 {$zerobasedstrings}
 
+interface
+
 uses System;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
@@ -58,6 +60,8 @@ type
   
   {$endregion Подпрограммы расширений}
   
+implementation
+
 procedure clErrorCode.RaiseIfError :=
   {%>if IS_ERROR then%} raise new OpenCLException(self);
 

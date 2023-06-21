@@ -2345,6 +2345,8 @@ type
         //TODO #????
         var _self := self;
         
+        intr_wr += '  ///'#10;
+        
         intr_wr += '  ';
         intr_wr += main_name;
         intr_wr += ' = record'#10;
@@ -2379,6 +2381,7 @@ type
         
         if simp_name<>main_name then
         begin
+          intr_wr += '  ///'#10;
           intr_wr += '  ';
           intr_wr += simp_name;
           intr_wr += ' = ';
@@ -2391,6 +2394,7 @@ type
         begin
           
           begin
+            intr_wr += '  ///'#10;
             intr_wr += '  P';
             intr_wr += main_name;
             intr_wr += ' = ^';
@@ -2403,6 +2407,7 @@ type
             for var with_ptr := false to true do
               for var with_ret := false to true do 
               begin
+                intr_wr += '  ///'#10;
                 
                 intr_wr += '  ';
                 intr_wr += if with_ret then
@@ -2873,6 +2878,8 @@ type
         
         foreach var base_t in castable_to.ToSeq index base_t_i do
         begin
+          wr += '  ///'#10;
+          
           wr += '  ';
           wr += MakeWriteableName;
           wr += BaseSuffixFor(base_t);
@@ -3097,6 +3104,7 @@ type
         
         if castable_to.ToSeq.Skip(1).Any then
         begin
+          wr += '  ///'#10;
           wr += '  ';
           wr += MakeWriteableName;
           wr += BaseSuffixFor(castable_to.ToSeq.First, false);
@@ -3216,6 +3224,9 @@ type
     begin
       Result := (prev_written, wr, impl_wr)->
       begin
+        wr += '  ///%';
+        wr += MakeWriteableName;
+        wr += '%'#10;
         var base_tname := castable_to.ToSeq.Single.Name;
         
         wr += '  ';
@@ -3429,6 +3440,7 @@ type
             wr += len;
             wr += ')]'#10;
             
+            wr += '  ///'#10;
             wr += '  ';
             wr += MakeWriteableName;
             wr += ' = record'#10;
@@ -3518,6 +3530,8 @@ type
       
       Result := (prev_written, wr, impl_wr)->
       begin
+        wr += '  ///'#10;
+        
         wr += '  ';
         wr += MakeWriteableName;
         wr += ' = record'#10;
@@ -3640,6 +3654,8 @@ type
         wr += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
         
         wr += '  [UnmanagedFunctionPointer(CallingConvention.StdCall)]'#10;
+        
+        wr += '  ///'#10;
         
         wr += '  ';
         wr += MakeWriteableName;

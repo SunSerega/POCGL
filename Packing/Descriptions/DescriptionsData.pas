@@ -142,7 +142,7 @@ implementation
 {$region Utils}
 
 function IsNamePart(self: char): boolean; extensionmethod :=
-self.IsLetter or self.IsDigit or (self = '_');
+  self.IsLetter or self.IsDigit or (self in '&_');
 
 function IndexOfSpaced(self: string; start_ind: integer; kw: string): integer?; extensionmethod;
 begin
@@ -154,10 +154,10 @@ begin
   Result := res;
 end;
 function IndexOfSpaced(self: string; kw: string): integer?; extensionmethod :=
-self.IndexOfSpaced(0, kw);
+  self.IndexOfSpaced(0, kw);
 
 function ContainsSpaced(self: string; kw: string): boolean; extensionmethod :=
-self.IndexOfSpaced(kw) <> nil;
+  self.IndexOfSpaced(kw) <> nil;
 
 function IndexOfAnyG(self: string; start_ind: integer; finder: (string,integer,string)->integer?; params strs: array of string): integer?; extensionmethod;
 begin
@@ -174,18 +174,18 @@ begin
 end;
 
 function IndexOfAny(self: string; start_ind: integer; params strs: array of string): integer?; extensionmethod :=
-self.IndexOfAnyG(start_ind, (self,start_ind,s)->
-begin
-  Result := self.IndexOf(s, start_ind);
-  if Result=-1 then Result := nil;
-end, strs);
+  self.IndexOfAnyG(start_ind, (self,start_ind,s)->
+  begin
+    Result := self.IndexOf(s, start_ind);
+    if Result=-1 then Result := nil;
+  end, strs);
 function IndexOfAny(self: string; params strs: array of string): integer?; extensionmethod :=
-self.IndexOfAny(0, strs);
+  self.IndexOfAny(0, strs);
 
 function IndexOfAnySpaced(self: string; start_ind: integer; params strs: array of string): integer?; extensionmethod :=
-self.IndexOfAnyG(start_ind, (self,start_ind,s)->self.IndexOfSpaced(start_ind, s), strs);
+  self.IndexOfAnyG(start_ind, (self,start_ind,s)->self.IndexOfSpaced(start_ind, s), strs);
 function IndexOfAnySpaced(self: string; params strs: array of string): integer?; extensionmethod :=
-self.IndexOfAnySpaced(0, strs);
+  self.IndexOfAnySpaced(0, strs);
 
 //function IndexOfAny(self: string; params strs: array of string): integer; extensionmethod :=
 //self.IndexOfAny(0, strs);
@@ -260,6 +260,9 @@ static function CommentableType.Parse(l: string): CommentableType;
 const separator = ' = ';
 const type_keywords: array of string = ('record', 'class', 'interface');
 begin
+  if l.StartsWith('[') then exit; // [StructLayout(Size = 1)]
+//  if 'glQueryTarget' in l then
+//    l := l;
   var ind := l.IndexOf(separator);
   if ind=-1 then exit;
   if l.Contains('class;') then exit;
@@ -272,7 +275,7 @@ begin
   Result := new CommentableType(
     l.Remove(ind).Trim,
     def_wds.Last in type_keywords ? nil : def,
-    'sealed' in def_wds,
+    ('sealed' in def_wds) or (def='record'),
     def.StartsWith('interface')
   );
   
@@ -283,6 +286,14 @@ const method_keywords: array of string = ('function', 'procedure');
 begin
   var ind := l.IndexOfAnySpaced(method_keywords);
   if ind=nil then exit;
+  begin
+    var ind2 := ind.Value;
+    while l[ind2].IsNamePart do
+      ind2 += 1;
+    while char.IsWhiteSpace(l[ind2]) do
+      ind2 += 1;
+    if l[ind2] in '(:;' then exit; // x: procedure()
+  end;
   
   ind := l.IndexOf(' ', ind.Value+1) + 1;
   var ind2 := l.IndexOfAny(ind.Value, '(', ':', ':=', ';');
@@ -295,6 +306,9 @@ begin
   Result := new CommentableMethod(t, name,
     GetArgs(l, ind2.Value, '(', ')')
   );
+  
+//  if Result.FullName='BeginQuery(glQueryTarget, gl_query)' then
+//    Result := Result;
   
 end;
 
@@ -442,7 +456,7 @@ begin
       {$endif ParseLevelDebug}
       yield t;
       if t.ReDef<>nil then continue;
-      if l.Contains('end') then continue;
+      if l.ContainsSpaced('end') then continue;
       
       while true do
       begin
@@ -467,7 +481,7 @@ begin
           
         if SkipCodeBlock(l, enmr) then
           else
-        if l.Contains('end') then
+        if l.ContainsSpaced('end') then
           break;
         
       end;
@@ -477,8 +491,8 @@ begin
       
       if CommentableMethod.Parse(l, nil) is CommentableMethod(var m) then
         yield m else
-      if CommentableConstructor.Parse(l, nil) is CommentableConstructor(var c) then
-        yield c else
+//      if CommentableConstructor.Parse(l, nil) is CommentableConstructor(var c) then
+//        yield c else
         
     end;
     

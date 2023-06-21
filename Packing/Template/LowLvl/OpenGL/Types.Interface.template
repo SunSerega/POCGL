@@ -1,6 +1,7 @@
 ﻿  
   
   
+  ///
   Vec2b = record
     public val0: SByte;
     public val1: SByte;
@@ -102,8 +103,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec2b = ^Vec2b;
   
+  ///
   Vec2d = record
     public val0: double;
     public val1: double;
@@ -207,12 +210,18 @@
     public function Normalized := self / Length;
     
   end;
+  ///
   PVec2d = ^Vec2d;
+  ///
   UseVec2dCallback = procedure(v: Vec2d);
+  ///
   ConvVec2dCallback<T> = function(v: Vec2d): T;
+  ///
   UseVec2dSafePtrCallback = procedure(var v: Vec2d);
+  ///
   ConvVec2dSafePtrCallback<T> = function(var v: Vec2d): T;
   
+  ///
   Vec2f = record
     public val0: single;
     public val1: single;
@@ -316,12 +325,18 @@
     public function Normalized := self / single(Length);
     
   end;
+  ///
   PVec2f = ^Vec2f;
+  ///
   UseVec2fCallback = procedure(v: Vec2f);
+  ///
   ConvVec2fCallback<T> = function(v: Vec2f): T;
+  ///
   UseVec2fSafePtrCallback = procedure(var v: Vec2f);
+  ///
   ConvVec2fSafePtrCallback<T> = function(var v: Vec2f): T;
   
+  ///
   Vec2i = record
     public val0: Int32;
     public val1: Int32;
@@ -423,8 +438,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec2i = ^Vec2i;
   
+  ///
   Vec2i64 = record
     public val0: Int64;
     public val1: Int64;
@@ -526,8 +543,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec2i64 = ^Vec2i64;
   
+  ///
   Vec2s = record
     public val0: Int16;
     public val1: Int16;
@@ -629,8 +648,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec2s = ^Vec2s;
   
+  ///
   Vec2ui = record
     public val0: UInt32;
     public val1: UInt32;
@@ -731,8 +752,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec2ui = ^Vec2ui;
   
+  ///
   Vec2ui64 = record
     public val0: UInt64;
     public val1: UInt64;
@@ -833,8 +856,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec2ui64 = ^Vec2ui64;
   
+  ///
   Vec3b = record
     public val0: SByte;
     public val1: SByte;
@@ -946,8 +971,10 @@
     public static function CrossCCW(v1, v2: Vec3b) := CrossCW(v2, v1);
     
   end;
+  ///
   PVec3b = ^Vec3b;
   
+  ///
   Vec3d = record
     public val0: double;
     public val1: double;
@@ -1061,12 +1088,18 @@
     public static function CrossCCW(v1, v2: Vec3d) := CrossCW(v2, v1);
     
   end;
+  ///
   PVec3d = ^Vec3d;
+  ///
   UseVec3dCallback = procedure(v: Vec3d);
+  ///
   ConvVec3dCallback<T> = function(v: Vec3d): T;
+  ///
   UseVec3dSafePtrCallback = procedure(var v: Vec3d);
+  ///
   ConvVec3dSafePtrCallback<T> = function(var v: Vec3d): T;
   
+  ///
   Vec3f = record
     public val0: single;
     public val1: single;
@@ -1180,12 +1213,18 @@
     public static function CrossCCW(v1, v2: Vec3f) := CrossCW(v2, v1);
     
   end;
+  ///
   PVec3f = ^Vec3f;
+  ///
   UseVec3fCallback = procedure(v: Vec3f);
+  ///
   ConvVec3fCallback<T> = function(v: Vec3f): T;
+  ///
   UseVec3fSafePtrCallback = procedure(var v: Vec3f);
+  ///
   ConvVec3fSafePtrCallback<T> = function(var v: Vec3f): T;
   
+  ///
   Vec3i = record
     public val0: Int32;
     public val1: Int32;
@@ -1297,8 +1336,10 @@
     public static function CrossCCW(v1, v2: Vec3i) := CrossCW(v2, v1);
     
   end;
+  ///
   PVec3i = ^Vec3i;
   
+  ///
   Vec3i64 = record
     public val0: Int64;
     public val1: Int64;
@@ -1410,8 +1451,10 @@
     public static function CrossCCW(v1, v2: Vec3i64) := CrossCW(v2, v1);
     
   end;
+  ///
   PVec3i64 = ^Vec3i64;
   
+  ///
   Vec3s = record
     public val0: Int16;
     public val1: Int16;
@@ -1523,8 +1566,10 @@
     public static function CrossCCW(v1, v2: Vec3s) := CrossCW(v2, v1);
     
   end;
+  ///
   PVec3s = ^Vec3s;
   
+  ///
   Vec3ub = record
     public val0: Byte;
     public val1: Byte;
@@ -1631,8 +1676,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec3ub = ^Vec3ub;
   
+  ///
   Vec3ui = record
     public val0: UInt32;
     public val1: UInt32;
@@ -1739,8 +1786,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec3ui = ^Vec3ui;
   
+  ///
   Vec3ui64 = record
     public val0: UInt64;
     public val1: UInt64;
@@ -1847,8 +1896,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec3ui64 = ^Vec3ui64;
   
+  ///
   Vec3us = record
     public val0: UInt16;
     public val1: UInt16;
@@ -1955,8 +2006,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec3us = ^Vec3us;
   
+  ///
   Vec4b = record
     public val0: SByte;
     public val1: SByte;
@@ -2070,8 +2123,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec4b = ^Vec4b;
   
+  ///
   Vec4d = record
     public val0: double;
     public val1: double;
@@ -2187,12 +2242,18 @@
     public function Normalized := self / Length;
     
   end;
+  ///
   PVec4d = ^Vec4d;
+  ///
   UseVec4dCallback = procedure(v: Vec4d);
+  ///
   ConvVec4dCallback<T> = function(v: Vec4d): T;
+  ///
   UseVec4dSafePtrCallback = procedure(var v: Vec4d);
+  ///
   ConvVec4dSafePtrCallback<T> = function(var v: Vec4d): T;
   
+  ///
   Vec4f = record
     public val0: single;
     public val1: single;
@@ -2308,12 +2369,18 @@
     public function Normalized := self / single(Length);
     
   end;
+  ///
   PVec4f = ^Vec4f;
+  ///
   UseVec4fCallback = procedure(v: Vec4f);
+  ///
   ConvVec4fCallback<T> = function(v: Vec4f): T;
+  ///
   UseVec4fSafePtrCallback = procedure(var v: Vec4f);
+  ///
   ConvVec4fSafePtrCallback<T> = function(var v: Vec4f): T;
   
+  ///
   Vec4i = record
     public val0: Int32;
     public val1: Int32;
@@ -2427,8 +2494,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec4i = ^Vec4i;
   
+  ///
   Vec4i64 = record
     public val0: Int64;
     public val1: Int64;
@@ -2542,8 +2611,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec4i64 = ^Vec4i64;
   
+  ///
   Vec4s = record
     public val0: Int16;
     public val1: Int16;
@@ -2657,8 +2728,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec4s = ^Vec4s;
   
+  ///
   Vec4ub = record
     public val0: Byte;
     public val1: Byte;
@@ -2771,8 +2844,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec4ub = ^Vec4ub;
   
+  ///
   Vec4ui = record
     public val0: UInt32;
     public val1: UInt32;
@@ -2885,8 +2960,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec4ui = ^Vec4ui;
   
+  ///
   Vec4ui64 = record
     public val0: UInt64;
     public val1: UInt64;
@@ -2999,8 +3076,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec4ui64 = ^Vec4ui64;
   
+  ///
   Vec4us = record
     public val0: UInt16;
     public val1: UInt16;
@@ -3113,8 +3192,10 @@
     public function Length := Sqrt(SqrLength);
     
   end;
+  ///
   PVec4us = ^Vec4us;
   
+  ///
   Mtr2x2d = record
     public val00, val10: double;
     public val01, val11: double;
@@ -3390,8 +3471,10 @@
     end;
     
   end;
+  ///
   Mtr2d = Mtr2x2d;
   
+  ///
   Mtr2x2f = record
     public val00, val10: single;
     public val01, val11: single;
@@ -3667,8 +3750,10 @@
     end;
     
   end;
+  ///
   Mtr2f = Mtr2x2f;
   
+  ///
   Mtr2x3d = record
     public val00, val10: double;
     public val01, val11: double;
@@ -3943,6 +4028,7 @@
     
   end;
   
+  ///
   Mtr2x3f = record
     public val00, val10: single;
     public val01, val11: single;
@@ -4217,6 +4303,7 @@
     
   end;
   
+  ///
   Mtr2x4d = record
     public val00, val10: double;
     public val01, val11: double;
@@ -4518,6 +4605,7 @@
     
   end;
   
+  ///
   Mtr2x4f = record
     public val00, val10: single;
     public val01, val11: single;
@@ -4819,6 +4907,7 @@
     
   end;
   
+  ///
   Mtr3x2d = record
     public val00, val10, val20: double;
     public val01, val11, val21: double;
@@ -5082,6 +5171,7 @@
     
   end;
   
+  ///
   Mtr3x2f = record
     public val00, val10, val20: single;
     public val01, val11, val21: single;
@@ -5345,6 +5435,7 @@
     
   end;
   
+  ///
   Mtr3x3d = record
     public val00, val10, val20: double;
     public val01, val11, val21: double;
@@ -5749,8 +5840,10 @@
     end;
     
   end;
+  ///
   Mtr3d = Mtr3x3d;
   
+  ///
   Mtr3x3f = record
     public val00, val10, val20: single;
     public val01, val11, val21: single;
@@ -6155,8 +6248,10 @@
     end;
     
   end;
+  ///
   Mtr3f = Mtr3x3f;
   
+  ///
   Mtr3x4d = record
     public val00, val10, val20: double;
     public val01, val11, val21: double;
@@ -6476,6 +6571,7 @@
     
   end;
   
+  ///
   Mtr3x4f = record
     public val00, val10, val20: single;
     public val01, val11, val21: single;
@@ -6795,6 +6891,7 @@
     
   end;
   
+  ///
   Mtr4x2d = record
     public val00, val10, val20, val30: double;
     public val01, val11, val21, val31: double;
@@ -7074,6 +7171,7 @@
     
   end;
   
+  ///
   Mtr4x2f = record
     public val00, val10, val20, val30: single;
     public val01, val11, val21, val31: single;
@@ -7353,6 +7451,7 @@
     
   end;
   
+  ///
   Mtr4x3d = record
     public val00, val10, val20, val30: double;
     public val01, val11, val21, val31: double;
@@ -7661,6 +7760,7 @@
     
   end;
   
+  ///
   Mtr4x3f = record
     public val00, val10, val20, val30: single;
     public val01, val11, val21, val31: single;
@@ -7969,6 +8069,7 @@
     
   end;
   
+  ///
   Mtr4x4d = record
     public val00, val10, val20, val30: double;
     public val01, val11, val21, val31: double;
@@ -8512,8 +8613,10 @@
     end;
     
   end;
+  ///
   Mtr4d = Mtr4x4d;
   
+  ///
   Mtr4x4f = record
     public val00, val10, val20, val30: single;
     public val01, val11, val21, val31: single;
@@ -9057,8 +9160,10 @@
     end;
     
   end;
+  ///
   Mtr4f = Mtr4x4f;
   
+  ///
   glAccumOp = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9086,6 +9191,7 @@
     
   end;
   
+  ///
   glAlphaFunction = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9122,6 +9228,7 @@
     
   end;
   
+  ///
   glArrayObjectPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9140,6 +9247,7 @@
     
   end;
   
+  ///
   glArrayObjectUsage = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9158,6 +9266,7 @@
     
   end;
   
+  ///
   glAtomicCounterBufferPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9200,6 +9309,7 @@
     
   end;
   
+  ///
   glAttribMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9365,6 +9475,7 @@
     
   end;
   
+  ///
   glAttributeType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9729,6 +9840,7 @@
     
   end;
   
+  ///
   glBindTransformFeedbackTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9744,6 +9856,7 @@
     
   end;
   
+  ///
   glBinormalPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9771,6 +9884,7 @@
     
   end;
   
+  ///
   glBlendEquationMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9804,6 +9918,7 @@
     
   end;
   
+  ///
   glBlendingFactor = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9873,6 +9988,7 @@
     
   end;
   
+  ///
   glBlitFramebufferFilter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9891,6 +10007,7 @@
     
   end;
   
+  ///
   glBool32 = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9914,6 +10031,7 @@
     
   end;
   
+  ///
   glBool8 = record
     public val: Byte;
     public constructor(val: Byte) := self.val := val;
@@ -9937,6 +10055,7 @@
     
   end;
   
+  ///
   glBuffer = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9958,6 +10077,7 @@
     
   end;
   
+  ///
   glBufferAccess = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -9979,6 +10099,7 @@
     
   end;
   
+  ///
   glBufferPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10018,6 +10139,7 @@
     
   end;
   
+  ///
   glBufferPointerName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10033,6 +10155,7 @@
     
   end;
   
+  ///
   glBufferStorageMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10126,6 +10249,7 @@
     
   end;
   
+  ///
   glBufferStorageTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10180,6 +10304,7 @@
     
   end;
   
+  ///
   glBufferTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10237,6 +10362,7 @@
     
   end;
   
+  ///
   glBufferUsage = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10276,6 +10402,7 @@
     
   end;
   
+  ///
   glClampColorMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10297,6 +10424,7 @@
     
   end;
   
+  ///
   glClampColorTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10318,6 +10446,7 @@
     
   end;
   
+  ///
   glClearBufferMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10381,6 +10510,7 @@
     
   end;
   
+  ///
   glClientAttribMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10432,6 +10562,7 @@
     
   end;
   
+  ///
   glClipControlDepth = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10450,6 +10581,7 @@
     
   end;
   
+  ///
   glClipControlOrigin = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10468,6 +10600,7 @@
     
   end;
   
+  ///
   glClipPlaneName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10510,6 +10643,7 @@
     
   end;
   
+  ///
   glColorBuffer = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10648,6 +10782,7 @@
     
   end;
   
+  ///
   glColorMaterialParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10675,6 +10810,7 @@
     
   end;
   
+  ///
   glColorPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10699,6 +10835,7 @@
     
   end;
   
+  ///
   glColorTableParameterPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10741,6 +10878,7 @@
     
   end;
   
+  ///
   glColorTableTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10777,6 +10915,7 @@
     
   end;
   
+  ///
   glCombinerBias = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10795,6 +10934,7 @@
     
   end;
   
+  ///
   glCombinerComponentUsage = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10816,6 +10956,7 @@
     
   end;
   
+  ///
   glCombinerMapping = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10852,6 +10993,7 @@
     
   end;
   
+  ///
   glCombinerParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10873,6 +11015,7 @@
     
   end;
   
+  ///
   glCombinerPortion = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10891,6 +11034,7 @@
     
   end;
   
+  ///
   glCombinerRegister = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10924,6 +11068,7 @@
     
   end;
   
+  ///
   glCombinerScale = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10948,6 +11093,7 @@
     
   end;
   
+  ///
   glCombinerStage = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -10984,6 +11130,7 @@
     
   end;
   
+  ///
   glCombinerVariable = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11017,6 +11164,7 @@
     
   end;
   
+  ///
   glCommandOpcodes = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11086,6 +11234,7 @@
     
   end;
   
+  ///
   glConditionalRenderMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11122,6 +11271,7 @@
     
   end;
   
+  ///
   glContainerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11137,6 +11287,7 @@
     
   end;
   
+  ///
   glContextFlagMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11200,6 +11351,7 @@
     
   end;
   
+  ///
   glContextProfileMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11245,6 +11397,7 @@
     
   end;
   
+  ///
   glConvolutionBorderMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11260,6 +11413,7 @@
     
   end;
   
+  ///
   glConvolutionParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11299,6 +11453,7 @@
     
   end;
   
+  ///
   glConvolutionTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11317,6 +11472,7 @@
     
   end;
   
+  ///
   glCopyBufferSubDataTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11371,6 +11527,7 @@
     
   end;
   
+  ///
   glCopyImageSubDataTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11416,6 +11573,7 @@
     
   end;
   
+  ///
   glCullParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11434,6 +11592,7 @@
     
   end;
   
+  ///
   glDataType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11455,6 +11614,7 @@
     
   end;
   
+  ///
   glDebugCategory = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11491,6 +11651,7 @@
     
   end;
   
+  ///
   glDebugSeverity = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11518,6 +11679,7 @@
     
   end;
   
+  ///
   glDebugSource = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11551,6 +11713,7 @@
     
   end;
   
+  ///
   glDebugType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11593,6 +11756,7 @@
     
   end;
   
+  ///
   glDepthFunction = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11629,6 +11793,7 @@
     
   end;
   
+  ///
   glDepthStencilTextureMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11647,6 +11812,7 @@
     
   end;
   
+  ///
   glDrawBufferMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11797,6 +11963,7 @@
     
   end;
   
+  ///
   glDrawElementsType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11818,6 +11985,7 @@
     
   end;
   
+  ///
   glElementPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -11839,6 +12007,7 @@
     
   end;
   
+  ///
   glEnableCap = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12237,6 +12406,7 @@
     
   end;
   
+  ///
   glErrorCode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12283,6 +12453,7 @@
     
   end;
   
+  ///
   glEvalMapsMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12298,6 +12469,7 @@
     
   end;
   
+  ///
   glEvalTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12316,6 +12488,7 @@
     
   end;
   
+  ///
   glExternalHandleType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12352,6 +12525,7 @@
     
   end;
   
+  ///
   glFeedBackToken = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12388,6 +12562,7 @@
     
   end;
   
+  ///
   glFeedbackType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12415,6 +12590,7 @@
     
   end;
   
+  ///
   glFenceCondition = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12430,6 +12606,7 @@
     
   end;
   
+  ///
   glFenceParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12448,6 +12625,7 @@
     
   end;
   
+  ///
   glFfdMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12493,6 +12671,7 @@
     
   end;
   
+  ///
   glFfdTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12511,6 +12690,7 @@
     
   end;
   
+  ///
   glFogCoordinatePointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12529,6 +12709,7 @@
     
   end;
   
+  ///
   glFogCoordSrc = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12548,6 +12729,7 @@
     
   end;
   
+  ///
   glFogMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12572,6 +12754,7 @@
     
   end;
   
+  ///
   glFogParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12605,6 +12788,7 @@
     
   end;
   
+  ///
   glFogPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12635,6 +12819,7 @@
     
   end;
   
+  ///
   glFogPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12653,6 +12838,7 @@
     
   end;
   
+  ///
   glFoveationConfigBit = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12704,6 +12890,7 @@
     
   end;
   
+  ///
   glFragmentLightModelParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12728,6 +12915,7 @@
     
   end;
   
+  ///
   glFragmentLightName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12764,6 +12952,7 @@
     
   end;
   
+  ///
   glFragmentLightParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12806,6 +12995,7 @@
     
   end;
   
+  ///
   glFragmentOp1 = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12821,6 +13011,7 @@
     
   end;
   
+  ///
   glFragmentOp2 = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12848,6 +13039,7 @@
     
   end;
   
+  ///
   glFragmentOp3 = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12875,6 +13067,7 @@
     
   end;
   
+  ///
   glFragmentShaderColorModMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -12932,6 +13125,7 @@
     
   end;
   
+  ///
   glFragmentShaderCon = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13040,6 +13234,7 @@
     
   end;
   
+  ///
   glFragmentShaderDestMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13094,6 +13289,7 @@
     
   end;
   
+  ///
   glFragmentShaderDestModMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13172,6 +13368,7 @@
     
   end;
   
+  ///
   glFragmentShaderGenericSource = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13388,6 +13585,7 @@
     
   end;
   
+  ///
   glFragmentShaderReg = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13496,6 +13694,7 @@
     
   end;
   
+  ///
   glFragmentShaderTextureSource = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13700,6 +13899,7 @@
     
   end;
   
+  ///
   glFragmentShaderValueRep = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13727,6 +13927,7 @@
     
   end;
   
+  ///
   glFramebufferAttachment = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13847,6 +14048,7 @@
     
   end;
   
+  ///
   glFramebufferAttachmentParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13914,6 +14116,7 @@
     
   end;
   
+  ///
   glFramebufferParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13941,6 +14144,7 @@
     
   end;
   
+  ///
   glFramebufferStatus = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -13980,6 +14184,7 @@
     
   end;
   
+  ///
   glFramebufferTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -14001,6 +14206,7 @@
     
   end;
   
+  ///
   glFrontFaceDirection = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -14019,6 +14225,7 @@
     
   end;
   
+  ///
   glGetFramebufferParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -14064,6 +14271,7 @@
     
   end;
   
+  ///
   glGetHistogramParameterPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -14100,6 +14308,7 @@
     
   end;
   
+  ///
   glGetMapQuery = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -14121,6 +14330,7 @@
     
   end;
   
+  ///
   glGetMinmaxParameterPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -14139,6 +14349,7 @@
     
   end;
   
+  ///
   glGetMultisamplePName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -14158,6 +14369,7 @@
     
   end;
   
+  ///
   glGetPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -15837,6 +16049,7 @@
     
   end;
   
+  ///
   glGetPointervPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -15882,6 +16095,7 @@
     
   end;
   
+  ///
   glGetTexBumpParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -15906,6 +16120,7 @@
     
   end;
   
+  ///
   glGetTextureParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16087,6 +16302,7 @@
     
   end;
   
+  ///
   glGetVariantValue = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16111,6 +16327,7 @@
     
   end;
   
+  ///
   glGraphicsResetStatus = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16135,6 +16352,7 @@
     
   end;
   
+  ///
   glHintMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16156,6 +16374,7 @@
     
   end;
   
+  ///
   glHintTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16309,6 +16528,7 @@
     
   end;
   
+  ///
   glHistogramTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16327,6 +16547,7 @@
     
   end;
   
+  ///
   glImageTransformPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16369,6 +16590,7 @@
     
   end;
   
+  ///
   glImageTransformTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16384,6 +16606,7 @@
     
   end;
   
+  ///
   glIndexFunction = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16420,6 +16643,7 @@
     
   end;
   
+  ///
   glIndexMaterialParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16435,6 +16659,7 @@
     
   end;
   
+  ///
   glIndexPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16459,6 +16684,7 @@
     
   end;
   
+  ///
   glInstancedPathCoverMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16483,6 +16709,7 @@
     
   end;
   
+  ///
   glInterleavedArrayFormat = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -16537,6 +16764,7 @@
     
   end;
   
+  ///
   glInternalFormat = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -17250,6 +17478,7 @@
     
   end;
   
+  ///
   glInternalFormatPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17478,6 +17707,7 @@
     
   end;
   
+  ///
   glInvalidateFramebufferAttachment = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17604,6 +17834,7 @@
     
   end;
   
+  ///
   glLightEnvMode = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -17625,6 +17856,7 @@
     
   end;
   
+  ///
   glLightEnvParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17640,6 +17872,7 @@
     
   end;
   
+  ///
   glLightModelColorControl = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17658,6 +17891,7 @@
     
   end;
   
+  ///
   glLightModelParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17682,6 +17916,7 @@
     
   end;
   
+  ///
   glLightName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17742,6 +17977,7 @@
     
   end;
   
+  ///
   glLightParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17775,6 +18011,7 @@
     
   end;
   
+  ///
   glLightTextureMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17799,6 +18036,7 @@
     
   end;
   
+  ///
   glLightTexturePName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17817,6 +18055,7 @@
     
   end;
   
+  ///
   glListMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17835,6 +18074,7 @@
     
   end;
   
+  ///
   glListNameType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17877,6 +18117,7 @@
     
   end;
   
+  ///
   glListParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17892,6 +18133,7 @@
     
   end;
   
+  ///
   glLogicOp = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17952,6 +18194,7 @@
     
   end;
   
+  ///
   glMapAttribParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -17970,6 +18213,7 @@
     
   end;
   
+  ///
   glMapBufferAccessMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18051,6 +18295,7 @@
     
   end;
   
+  ///
   glMapParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18066,6 +18311,7 @@
     
   end;
   
+  ///
   glMapQuery = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18087,6 +18333,7 @@
     
   end;
   
+  ///
   glMapTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18159,6 +18406,7 @@
     
   end;
   
+  ///
   glMapTextureFormat = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18180,6 +18428,7 @@
     
   end;
   
+  ///
   glMapType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18198,6 +18447,7 @@
     
   end;
   
+  ///
   glMaterialParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18231,6 +18481,7 @@
     
   end;
   
+  ///
   glMatrixIndexPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18252,6 +18503,7 @@
     
   end;
   
+  ///
   glMatrixMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18274,6 +18526,7 @@
     
   end;
   
+  ///
   glMemoryBarrierMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18409,6 +18662,7 @@
     
   end;
   
+  ///
   glMemoryObjectParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18427,6 +18681,7 @@
     
   end;
   
+  ///
   glMeshMode1 = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18445,6 +18700,7 @@
     
   end;
   
+  ///
   glMeshMode2 = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18466,6 +18722,7 @@
     
   end;
   
+  ///
   glMinmaxTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18481,6 +18738,7 @@
     
   end;
   
+  ///
   glNormalPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18508,6 +18766,7 @@
     
   end;
   
+  ///
   glObjectIdentifier = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18553,6 +18812,7 @@
     
   end;
   
+  ///
   glObjectType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18571,6 +18831,7 @@
     
   end;
   
+  ///
   glOcclusionQueryEventMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18634,6 +18895,7 @@
     
   end;
   
+  ///
   glOcclusionQueryParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18652,6 +18914,7 @@
     
   end;
   
+  ///
   glParameterRange = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18670,6 +18933,7 @@
     
   end;
   
+  ///
   glPatchParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18691,6 +18955,7 @@
     
   end;
   
+  ///
   glPathColor = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18712,6 +18977,7 @@
     
   end;
   
+  ///
   glPathColorFormat = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -18745,6 +19011,7 @@
     
   end;
   
+  ///
   glPathCoordType = record
     public val: Byte;
     public constructor(val: Byte) := self.val := val;
@@ -18891,6 +19158,7 @@
     end;
     
   end;
+  ///
   glPathCoordTypeUInt32 = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19042,8 +19310,10 @@
     end;
     
   end;
+  ///
   glPathCoordTypeByte = glPathCoordType;
   
+  ///
   glPathCoverMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19065,6 +19335,7 @@
     
   end;
   
+  ///
   glPathElementType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19083,6 +19354,7 @@
     
   end;
   
+  ///
   glPathFillMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19107,6 +19379,7 @@
     
   end;
   
+  ///
   glPathFontStyle = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19155,6 +19428,7 @@
     
   end;
   
+  ///
   glPathFontTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19176,6 +19450,7 @@
     
   end;
   
+  ///
   glPathGenMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19203,6 +19478,7 @@
     
   end;
   
+  ///
   glPathHandleMissingGlyphs = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19221,6 +19497,7 @@
     
   end;
   
+  ///
   glPathListMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19242,6 +19519,7 @@
     
   end;
   
+  ///
   glPathMetricMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19413,6 +19691,7 @@
     
   end;
   
+  ///
   glPathParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19497,6 +19776,7 @@
     
   end;
   
+  ///
   glPathStringFormat = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19515,6 +19795,7 @@
     
   end;
   
+  ///
   glPathTransformType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19554,6 +19835,7 @@
     
   end;
   
+  ///
   glPerformanceQueryCapsMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19596,6 +19878,7 @@
     
   end;
   
+  ///
   glPerfQueryDataFlags = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19617,6 +19900,7 @@
     
   end;
   
+  ///
   glPipelineParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19650,6 +19934,7 @@
     
   end;
   
+  ///
   glPixelCopyType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19671,6 +19956,7 @@
     
   end;
   
+  ///
   glPixelDataRangeTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19689,6 +19975,7 @@
     
   end;
   
+  ///
   glPixelFormat = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19791,6 +20078,7 @@
     
   end;
   
+  ///
   glPixelMap = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19833,6 +20121,7 @@
     
   end;
   
+  ///
   glPixelStoreParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19941,6 +20230,7 @@
     
   end;
   
+  ///
   glPixelStoreResampleMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19962,6 +20252,7 @@
     
   end;
   
+  ///
   glPixelStoreSubsampleRate = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -19983,6 +20274,7 @@
     
   end;
   
+  ///
   glPixelTexGenMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20022,6 +20314,7 @@
     
   end;
   
+  ///
   glPixelTexGenParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20040,6 +20333,7 @@
     
   end;
   
+  ///
   glPixelTransferParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20142,6 +20436,7 @@
     
   end;
   
+  ///
   glPixelTransformPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20163,6 +20458,7 @@
     
   end;
   
+  ///
   glPixelTransformTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20178,6 +20474,7 @@
     
   end;
   
+  ///
   glPixelType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20266,6 +20563,7 @@
     
   end;
   
+  ///
   glPNTrianglesPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20287,6 +20585,7 @@
     
   end;
   
+  ///
   glPointParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20312,6 +20611,7 @@
     
   end;
   
+  ///
   glPolygonMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20333,6 +20633,7 @@
     
   end;
   
+  ///
   glPrecisionType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20363,6 +20664,7 @@
     
   end;
   
+  ///
   glPreserveMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20381,6 +20683,7 @@
     
   end;
   
+  ///
   glPrimitiveType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20438,6 +20741,7 @@
     
   end;
   
+  ///
   glProgramFormat = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20453,6 +20757,7 @@
     
   end;
   
+  ///
   glProgramInterface = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20525,6 +20830,7 @@
     
   end;
   
+  ///
   glProgramInterfacePName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20549,6 +20855,7 @@
     
   end;
   
+  ///
   glProgramParameterPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20567,6 +20874,7 @@
     
   end;
   
+  ///
   glProgramProperty = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20639,6 +20947,7 @@
     
   end;
   
+  ///
   glProgramResourceProperty = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20741,6 +21050,7 @@
     
   end;
   
+  ///
   glProgramStagePName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20768,6 +21078,7 @@
     
   end;
   
+  ///
   glProgramStringProperty = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20783,6 +21094,7 @@
     
   end;
   
+  ///
   glProgramTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20816,6 +21128,7 @@
     
   end;
   
+  ///
   glQueryCounterTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20831,6 +21144,7 @@
     
   end;
   
+  ///
   glQueryObjectParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20855,6 +21169,7 @@
     
   end;
   
+  ///
   glQueryParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20873,6 +21188,7 @@
     
   end;
   
+  ///
   glQueryTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -20915,6 +21231,7 @@
     
   end;
   
+  ///
   glReadBufferMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21014,6 +21331,7 @@
     
   end;
   
+  ///
   glRenderbufferParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21066,6 +21384,7 @@
     
   end;
   
+  ///
   glRenderbufferTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21081,6 +21400,7 @@
     
   end;
   
+  ///
   glRenderingMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21102,6 +21422,7 @@
     
   end;
   
+  ///
   glReplacementCodeType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21123,6 +21444,7 @@
     
   end;
   
+  ///
   glSamplePattern = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21156,6 +21478,7 @@
     
   end;
   
+  ///
   glSamplerParameterF = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21186,6 +21509,7 @@
     
   end;
   
+  ///
   glSamplerParameterI = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21222,6 +21546,7 @@
     
   end;
   
+  ///
   glScalarType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21243,6 +21568,7 @@
     
   end;
   
+  ///
   glSecondaryColorPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21267,6 +21593,7 @@
     
   end;
   
+  ///
   glSemaphoreParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21292,6 +21619,7 @@
     
   end;
   
+  ///
   glSeparableTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21307,6 +21635,7 @@
     
   end;
   
+  ///
   glShaderBinaryFormat = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21337,6 +21666,7 @@
     
   end;
   
+  ///
   glShaderParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21364,6 +21694,7 @@
     
   end;
   
+  ///
   glShaderType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21394,6 +21725,7 @@
     
   end;
   
+  ///
   glShadingModel = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -21412,6 +21744,7 @@
     
   end;
   
+  ///
   glSizedInternalFormat = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22008,6 +22341,7 @@
     
   end;
   
+  ///
   glSpriteMode = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -22029,6 +22363,7 @@
     
   end;
   
+  ///
   glSpriteParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22044,6 +22379,7 @@
     
   end;
   
+  ///
   glStencilFunction = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22080,6 +22416,7 @@
     
   end;
   
+  ///
   glStencilOp = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22116,6 +22453,7 @@
     
   end;
   
+  ///
   glStringName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22143,6 +22481,7 @@
     
   end;
   
+  ///
   glSubgroupSupportedFeatures = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22230,6 +22569,7 @@
     
   end;
   
+  ///
   glSubroutineParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22254,6 +22594,7 @@
     
   end;
   
+  ///
   glSwizzleOp = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22278,6 +22619,7 @@
     
   end;
   
+  ///
   glSyncBehaviorFlags = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22293,6 +22635,7 @@
     
   end;
   
+  ///
   glSyncCondition = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22308,6 +22651,7 @@
     
   end;
   
+  ///
   glSyncObjectMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22347,6 +22691,7 @@
     
   end;
   
+  ///
   glSyncParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22371,6 +22716,7 @@
     
   end;
   
+  ///
   glSyncStatus = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22395,6 +22741,7 @@
     
   end;
   
+  ///
   glTangentPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22422,6 +22769,7 @@
     
   end;
   
+  ///
   glTexBumpParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22437,6 +22785,7 @@
     
   end;
   
+  ///
   glTexCoordPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22461,6 +22810,7 @@
     
   end;
   
+  ///
   glTextureCompareMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22480,6 +22830,7 @@
     
   end;
   
+  ///
   glTextureCoordName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22507,6 +22858,7 @@
     
   end;
   
+  ///
   glTextureEnvMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22543,6 +22895,7 @@
     
   end;
   
+  ///
   glTextureEnvParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22651,6 +23004,7 @@
     
   end;
   
+  ///
   glTextureEnvTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22672,6 +23026,7 @@
     
   end;
   
+  ///
   glTextureFilter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22687,6 +23042,7 @@
     
   end;
   
+  ///
   glTextureGenMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22720,6 +23076,7 @@
     
   end;
   
+  ///
   glTextureGenParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22753,6 +23110,7 @@
     
   end;
   
+  ///
   glTextureLayout = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22792,6 +23150,7 @@
     
   end;
   
+  ///
   glTextureMagFilter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22840,6 +23199,7 @@
     
   end;
   
+  ///
   glTextureMinFilter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22894,6 +23254,7 @@
     
   end;
   
+  ///
   glTextureNormalMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -22909,6 +23270,7 @@
     
   end;
   
+  ///
   glTextureParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23120,6 +23482,7 @@
     
   end;
   
+  ///
   glTextureStorageMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23159,6 +23522,7 @@
     
   end;
   
+  ///
   glTextureSwizzle = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23189,6 +23553,7 @@
     
   end;
   
+  ///
   glTextureTarget = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23294,6 +23659,7 @@
     
   end;
   
+  ///
   glTextureUnit = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23402,6 +23768,7 @@
     
   end;
   
+  ///
   glTextureWrapMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23432,6 +23799,7 @@
     
   end;
   
+  ///
   glTransformFeedbackBufferMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23450,6 +23818,7 @@
     
   end;
   
+  ///
   glTransformFeedbackPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23477,6 +23846,7 @@
     
   end;
   
+  ///
   glTransformFeedbackToken = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -23504,6 +23874,7 @@
     
   end;
   
+  ///
   glTriangleFace = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23525,6 +23896,7 @@
     
   end;
   
+  ///
   glTriangleList = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23546,6 +23918,7 @@
     
   end;
   
+  ///
   glUniformBlockPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23591,6 +23964,7 @@
     
   end;
   
+  ///
   glUniformPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23630,6 +24004,7 @@
     
   end;
   
+  ///
   glUniformType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23876,6 +24251,7 @@
     
   end;
   
+  ///
   glUseProgramStageMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23963,6 +24339,7 @@
     
   end;
   
+  ///
   glVariantCap = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23978,6 +24355,7 @@
     
   end;
   
+  ///
   glVertexArrayParameterName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -23999,6 +24377,7 @@
     
   end;
   
+  ///
   glVertexArrayPName = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24038,6 +24417,7 @@
     
   end;
   
+  ///
   glVertexAttribEnum = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24077,6 +24457,7 @@
     
   end;
   
+  ///
   glVertexAttribIType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24107,6 +24488,7 @@
     
   end;
   
+  ///
   glVertexAttribLType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24122,6 +24504,7 @@
     
   end;
   
+  ///
   glVertexAttribPointerProperty = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24137,6 +24520,7 @@
     
   end;
   
+  ///
   glVertexAttribPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24195,6 +24579,7 @@
     
   end;
   
+  ///
   glVertexAttribProperty = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24243,6 +24628,7 @@
     
   end;
   
+  ///
   glVertexAttribType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24294,6 +24680,7 @@
     
   end;
   
+  ///
   glVertexBufferObjectUsage = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24333,6 +24720,7 @@
     
   end;
   
+  ///
   glVertexHintsMask = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -24474,6 +24862,7 @@
     
   end;
   
+  ///
   glVertexPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24498,6 +24887,7 @@
     
   end;
   
+  ///
   glVertexProvokingMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24516,6 +24906,7 @@
     
   end;
   
+  ///
   glVertexShaderCoordOut = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24561,6 +24952,7 @@
     
   end;
   
+  ///
   glVertexShaderOp = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24645,6 +25037,7 @@
     
   end;
   
+  ///
   glVertexShaderParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24663,6 +25056,7 @@
     
   end;
   
+  ///
   glVertexShaderStorageType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24687,6 +25081,7 @@
     
   end;
   
+  ///
   glVertexShaderTextureUnitParameter = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24705,6 +25100,7 @@
     
   end;
   
+  ///
   glVertexShaderWriteMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24723,6 +25119,7 @@
     
   end;
   
+  ///
   glVertexStream = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24759,6 +25156,7 @@
     
   end;
   
+  ///
   glVertexWeightPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24774,6 +25172,7 @@
     
   end;
   
+  ///
   glWeightPointerType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24810,6 +25209,7 @@
     
   end;
   
+  ///
   glVertexAttribEnumNV = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24825,6 +25225,7 @@
     
   end;
   
+  ///
   gdiLayerPlaneFlags = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -24918,6 +25319,7 @@
     
   end;
   
+  ///
   gdiPixelDataType = record
     public val: Byte;
     public constructor(val: Byte) := self.val := val;
@@ -24936,6 +25338,7 @@
     
   end;
   
+  ///
   gdiPixelFormatFlags = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -25065,6 +25468,7 @@
     
   end;
   
+  ///
   wglBufferRegionType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -25122,6 +25526,7 @@
     
   end;
   
+  ///
   wglColorBuffer = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -25176,6 +25581,7 @@
     
   end;
   
+  ///
   wglContextAttribute = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -25194,6 +25600,7 @@
     
   end;
   
+  ///
   wglDigitalVideoAttribute = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -25218,6 +25625,7 @@
     
   end;
   
+  ///
   wglDXInteropAccessMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -25266,6 +25674,7 @@
     
   end;
   
+  ///
   wglFontFormat = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -25284,6 +25693,7 @@
     
   end;
   
+  ///
   wglGammaTableAttribute = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -25302,6 +25712,7 @@
     
   end;
   
+  ///
   wglGPUProperty = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -25341,6 +25752,7 @@
     
   end;
   
+  ///
   wglImageBufferFlags = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -25386,6 +25798,7 @@
     
   end;
   
+  ///
   wglPBufferAttribute = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -25422,6 +25835,7 @@
     
   end;
   
+  ///
   wglPlane = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -25641,6 +26055,7 @@
     
   end;
   
+  ///
   wglStereoEmitterState = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -25665,6 +26080,7 @@
     
   end;
   
+  ///
   wglVideoCaptureDeviceAttribute = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -25680,6 +26096,7 @@
     
   end;
   
+  ///
   wglVideoOutputBuffer = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -25707,6 +26124,7 @@
     
   end;
   
+  ///
   wglVideoOutputBufferType = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -25734,6 +26152,7 @@
     
   end;
   
+  ///%x_color_map%
   x_color_map = record
     public val: IntPtr;
     
@@ -25751,6 +26170,7 @@
     
   end;
   
+  ///%x_direct_memory_buffer%
   x_direct_memory_buffer = record
     public val: IntPtr;
     
@@ -25768,6 +26188,7 @@
     
   end;
   
+  ///%x_direct_memory_params%
   x_direct_memory_params = record
     public val: IntPtr;
     
@@ -25785,6 +26206,7 @@
     
   end;
   
+  ///%x_display_ptr%
   x_display_ptr = record
     public val: IntPtr;
     
@@ -25802,6 +26224,7 @@
     
   end;
   
+  ///%x_font%
   x_font = record
     public val: IntPtr;
     
@@ -25819,6 +26242,7 @@
     
   end;
   
+  ///%x_pixel_map%
   x_pixel_map = record
     public val: IntPtr;
     
@@ -25836,6 +26260,7 @@
     
   end;
   
+  ///%x_visual_info_ptr%
   x_visual_info_ptr = record
     public val: IntPtr;
     
@@ -25853,6 +26278,7 @@
     
   end;
   
+  ///%x_window%
   x_window = record
     public val: IntPtr;
     
@@ -25870,6 +26296,7 @@
     
   end;
   
+  ///%gl_buffer%
   gl_buffer = record
     public val: UInt32;
     
@@ -25885,6 +26312,7 @@
     
   end;
   
+  ///%gl_display_list%
   gl_display_list = record
     public val: UInt32;
     
@@ -25900,6 +26328,7 @@
     
   end;
   
+  ///%gl_fixed%
   gl_fixed = record
     public val: UInt32;
     
@@ -25915,6 +26344,7 @@
     
   end;
   
+  ///%gl_framebuffer%
   gl_framebuffer = record
     public val: UInt32;
     
@@ -25930,6 +26360,7 @@
     
   end;
   
+  ///%gl_half%
   gl_half = record
     public val: UInt16;
     
@@ -25945,6 +26376,7 @@
     
   end;
   
+  ///%gl_perf_query_handle%
   gl_perf_query_handle = record
     public val: UInt32;
     
@@ -25960,6 +26392,7 @@
     
   end;
   
+  ///%gl_perf_query_id%
   gl_perf_query_id = record
     public val: UInt32;
     
@@ -25975,6 +26408,7 @@
     
   end;
   
+  ///%gl_program%
   gl_program = record
     public val: UInt32;
     
@@ -25990,6 +26424,7 @@
     
   end;
   
+  ///%gl_program_pipeline%
   gl_program_pipeline = record
     public val: UInt32;
     
@@ -26005,6 +26440,7 @@
     
   end;
   
+  ///%gl_query%
   gl_query = record
     public val: UInt32;
     
@@ -26020,6 +26456,7 @@
     
   end;
   
+  ///%gl_renderbuffer%
   gl_renderbuffer = record
     public val: UInt32;
     
@@ -26035,6 +26472,7 @@
     
   end;
   
+  ///%gl_sampler%
   gl_sampler = record
     public val: UInt32;
     
@@ -26050,6 +26488,7 @@
     
   end;
   
+  ///%gl_shader%
   gl_shader = record
     public val: UInt32;
     
@@ -26065,6 +26504,7 @@
     
   end;
   
+  ///%gl_sync%
   gl_sync = record
     public val: IntPtr;
     
@@ -26082,6 +26522,7 @@
     
   end;
   
+  ///%gl_texture%
   gl_texture = record
     public val: UInt32;
     
@@ -26097,6 +26538,7 @@
     
   end;
   
+  ///%gl_transform_feedback%
   gl_transform_feedback = record
     public val: UInt32;
     
@@ -26112,6 +26554,7 @@
     
   end;
   
+  ///%gl_vdpau_surface%
   gl_vdpau_surface = record
     public val: IntPtr;
     
@@ -26129,6 +26572,7 @@
     
   end;
   
+  ///%gl_vertex_array%
   gl_vertex_array = record
     public val: UInt32;
     
@@ -26144,6 +26588,7 @@
     
   end;
   
+  ///%gl_handle_ARB%
   gl_handle_ARB = record
     public val: UInt32;
     
@@ -26159,6 +26604,7 @@
     
   end;
   
+  ///%gdi_device_context%
   gdi_device_context = record
     public val: IntPtr;
     
@@ -26176,6 +26622,7 @@
     
   end;
   
+  ///%gdi_enhanced_metafile_handle%
   gdi_enhanced_metafile_handle = record
     public val: IntPtr;
     
@@ -26193,6 +26640,7 @@
     
   end;
   
+  ///%gdi_rendering_context%
   gdi_rendering_context = record
     public val: IntPtr;
     
@@ -26210,6 +26658,7 @@
     
   end;
   
+  ///%glx_context%
   glx_context = record
     public val: IntPtr;
     
@@ -26227,6 +26676,7 @@
     
   end;
   
+  ///%glx_context_id%
   glx_context_id = record
     public val: IntPtr;
     
@@ -26244,6 +26694,7 @@
     
   end;
   
+  ///%glx_drawable%
   glx_drawable = record
     public val: IntPtr;
     
@@ -26261,6 +26712,7 @@
     
   end;
   
+  ///%glx_frame_buffer_config%
   glx_frame_buffer_config = record
     public val: IntPtr;
     
@@ -26278,6 +26730,7 @@
     
   end;
   
+  ///%glx_pixel_buffer%
   glx_pixel_buffer = record
     public val: IntPtr;
     
@@ -26295,6 +26748,7 @@
     
   end;
   
+  ///%glx_pixel_map%
   glx_pixel_map = record
     public val: IntPtr;
     
@@ -26312,6 +26766,7 @@
     
   end;
   
+  ///%glx_vl_node%
   glx_vl_node = record
     public val: IntPtr;
     
@@ -26329,6 +26784,7 @@
     
   end;
   
+  ///%glx_vl_path%
   glx_vl_path = record
     public val: IntPtr;
     
@@ -26346,6 +26802,7 @@
     
   end;
   
+  ///%glx_vl_server%
   glx_vl_server = record
     public val: IntPtr;
     
@@ -26363,6 +26820,7 @@
     
   end;
   
+  ///%glx_window%
   glx_window = record
     public val: IntPtr;
     
@@ -26380,6 +26838,7 @@
     
   end;
   
+  ///%glx_video_capture_device_NV%
   glx_video_capture_device_NV = record
     public val: IntPtr;
     
@@ -26397,6 +26856,7 @@
     
   end;
   
+  ///%glx_video_device_NV%
   glx_video_device_NV = record
     public val: UInt32;
     
@@ -26412,6 +26872,7 @@
     
   end;
   
+  ///%glx_video_source_SGIX%
   glx_video_source_SGIX = record
     public val: IntPtr;
     
@@ -26429,6 +26890,7 @@
     
   end;
   
+  ///%wgl_pixel_buffer%
   wgl_pixel_buffer = record
     public val: IntPtr;
     
@@ -26446,6 +26908,7 @@
     
   end;
   
+  ///%wgl_gpu_NV%
   wgl_gpu_NV = record
     public val: IntPtr;
     
@@ -26463,6 +26926,7 @@
     
   end;
   
+  ///%wgl_gpu_device_NV%
   wgl_gpu_device_NV = record
     public val: IntPtr;
     
@@ -26480,6 +26944,7 @@
     
   end;
   
+  ///%wgl_video_device_NV%
   wgl_video_device_NV = record
     public val: IntPtr;
     
@@ -26497,6 +26962,7 @@
     
   end;
   
+  ///%wgl_video_input_device_handle_NV%
   wgl_video_input_device_handle_NV = record
     public val: IntPtr;
     
@@ -26514,6 +26980,7 @@
     
   end;
   
+  ///%wgl_video_output_device_handle_NV%
   wgl_video_output_device_handle_NV = record
     public val: IntPtr;
     
@@ -26531,6 +26998,7 @@
     
   end;
   
+  ///%gles_image%
   gles_image = record
     public val: IntPtr;
     
@@ -26548,6 +27016,7 @@
     
   end;
   
+  ///%gles_client_buffer_EXT%
   gles_client_buffer_EXT = record
     public val: IntPtr;
     
@@ -26565,6 +27034,7 @@
     
   end;
   
+  ///
   gdi_color_ref = record
     private a: Byte := 0;
     public r: Byte;
@@ -26580,6 +27050,7 @@
     
   end;
   
+  ///
   gdi_glyphmetrics_float = record
     public gmfBlackBoxX: single;
     public gmfBlackBoxY: single;
@@ -26600,6 +27071,7 @@
     
   end;
   
+  ///
   gdi_layer_plane_descriptor = record
     public nSize: UInt16 := sizeof(gdi_layer_plane_descriptor);
     public nVersion: UInt16 := 1;
@@ -26659,6 +27131,7 @@
     
   end;
   
+  ///
   gdi_pixel_format_descriptor = record
     public nSize: UInt16 := sizeof(gdi_pixel_format_descriptor);
     public nVersion: UInt16 := 1;
@@ -26725,18 +27198,22 @@
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   glDebugProc = procedure(source: DummyEnum; &type: DummyEnum; id: UInt32; severity: DummyEnum; length: Int32; message: string; userParam: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   glDebugProcAMD = procedure(id: UInt32; category: DummyEnum; severity: DummyEnum; length: Int32; message: string; userParam: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   glDebugProcARB = procedure(source: DummyEnum; &type: DummyEnum; id: UInt32; severity: DummyEnum; length: Int32; message: string; userParam: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   glVulkanProcNV = procedure;
   
   

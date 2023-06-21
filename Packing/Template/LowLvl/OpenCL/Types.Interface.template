@@ -1,6 +1,7 @@
 ﻿  
   
   
+  ///
   clAcceleratorInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -25,6 +26,7 @@
     
   end;
   
+  ///
   clAcceleratorType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -40,6 +42,7 @@
     
   end;
   
+  ///
   clAddressingMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -67,6 +70,7 @@
     
   end;
   
+  ///
   clAllocationType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -85,6 +89,7 @@
     
   end;
   
+  ///
   clBool = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -110,6 +115,7 @@
     
   end;
   
+  ///
   clBufferCreateType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -125,6 +131,7 @@
     
   end;
   
+  ///
   clBuildStatus = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -149,6 +156,7 @@
     
   end;
   
+  ///
   clChannelOrder = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -242,6 +250,7 @@
     
   end;
   
+  ///
   clChannelType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -305,6 +314,7 @@
     
   end;
   
+  ///
   clCommandBufferInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -335,6 +345,7 @@
     
   end;
   
+  ///
   clCommandBufferProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -350,6 +361,7 @@
     
   end;
   
+  ///
   clCommandBufferState = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -374,6 +386,7 @@
     
   end;
   
+  ///
   clCommandBufferStructureType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -392,6 +405,7 @@
     
   end;
   
+  ///
   clCommandExecutionStatus = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -418,6 +432,7 @@
     
   end;
   
+  ///
   clCommandQueueCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -550,6 +565,7 @@
     
   end;
   
+  ///
   clCommandQueueInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -589,6 +605,7 @@
     
   end;
   
+  ///
   clCommandQueueProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -661,6 +678,7 @@
     
   end;
   
+  ///
   clCommandTerminationReason = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -685,6 +703,7 @@
     
   end;
   
+  ///
   clCommandType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -892,6 +911,7 @@
     
   end;
   
+  ///
   clContextInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -925,6 +945,7 @@
     
   end;
   
+  ///
   clContextProperties = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
@@ -999,6 +1020,7 @@
     
   end;
   
+  ///
   clD3D10DeviceSet = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1017,6 +1039,7 @@
     
   end;
   
+  ///
   clD3D10DeviceSource = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1035,6 +1058,7 @@
     
   end;
   
+  ///
   clD3D11DeviceSet = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1053,6 +1077,7 @@
     
   end;
   
+  ///
   clD3D11DeviceSource = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1071,6 +1096,7 @@
     
   end;
   
+  ///
   clDeviceAffinityDomain = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1140,6 +1166,7 @@
     
   end;
   
+  ///
   clDeviceAtomicCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1215,6 +1242,7 @@
     
   end;
   
+  ///
   clDeviceAvcMeVersion = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1233,6 +1261,7 @@
     
   end;
   
+  ///
   clDeviceCommandBufferCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1296,6 +1325,7 @@
     
   end;
   
+  ///
   clDeviceControlledTerminationCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1347,6 +1377,7 @@
     
   end;
   
+  ///
   clDeviceExecCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1392,6 +1423,7 @@
     
   end;
   
+  ///
   clDeviceFeatureCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1437,6 +1469,7 @@
     
   end;
   
+  ///
   clDeviceFpAtomicCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1506,6 +1539,7 @@
     
   end;
   
+  ///
   clDeviceFPConfig = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1587,6 +1621,7 @@
     
   end;
   
+  ///
   clDeviceInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2197,6 +2232,7 @@
     
   end;
   
+  ///
   clDeviceIntegerDotProductCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2242,6 +2278,7 @@
     
   end;
   
+  ///
   clDeviceLocalMemType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2260,6 +2297,7 @@
     
   end;
   
+  ///
   clDeviceMemCacheType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2281,6 +2319,7 @@
     
   end;
   
+  ///
   clDeviceMeVersion = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2302,6 +2341,7 @@
     
   end;
   
+  ///
   clDeviceOnDeviceEnqueueCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2347,6 +2387,7 @@
     
   end;
   
+  ///
   clDevicePartitionProperty = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
@@ -2379,6 +2420,7 @@
     
   end;
   
+  ///
   clDeviceSchedulingControlsCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2454,6 +2496,7 @@
     
   end;
   
+  ///
   clDeviceSVMCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2511,6 +2554,7 @@
     
   end;
   
+  ///
   clDeviceTerminateCapability = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2550,6 +2594,7 @@
     
   end;
   
+  ///
   clDeviceType = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2619,6 +2664,7 @@
     
   end;
   
+  ///
   clDeviceUnifiedSharedMemoryCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2676,6 +2722,7 @@
     
   end;
   
+  ///
   clDx9DeviceSet = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2694,6 +2741,7 @@
     
   end;
   
+  ///
   clDx9DeviceSource = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2715,6 +2763,7 @@
     
   end;
   
+  ///
   clDx9MediaAdapterSet = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2733,6 +2782,7 @@
     
   end;
   
+  ///
   clDx9MediaAdapterType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2754,6 +2804,7 @@
     
   end;
   
+  ///
   clEglImageProperties = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
@@ -2771,6 +2822,7 @@
     
   end;
   
+  ///
   clErrorCode = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -3094,6 +3146,7 @@
     
   end;
   
+  ///
   clEventInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3124,6 +3177,7 @@
     
   end;
   
+  ///
   clExternalMemoryHandleType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3160,6 +3214,7 @@
     
   end;
   
+  ///
   clExternalSemaphoreHandleType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3187,6 +3242,7 @@
     
   end;
   
+  ///
   clFilterMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3205,6 +3261,7 @@
     
   end;
   
+  ///
   clGlContextInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3223,6 +3280,7 @@
     
   end;
   
+  ///
   clGlObjectType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3259,6 +3317,7 @@
     
   end;
   
+  ///
   clGlTextureInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3280,6 +3339,7 @@
     
   end;
   
+  ///
   clHostCachePolicy = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3307,6 +3367,7 @@
     
   end;
   
+  ///
   clIcdlInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3331,6 +3392,7 @@
     
   end;
   
+  ///
   clImageInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3394,6 +3456,7 @@
     
   end;
   
+  ///
   clImagePitchInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3418,6 +3481,7 @@
     
   end;
   
+  ///
   clImageRequirementsInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3454,6 +3518,7 @@
     
   end;
   
+  ///
   clImportProperties = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
@@ -3483,6 +3548,7 @@
     
   end;
   
+  ///
   clKernelArgAccessQualifier = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3507,6 +3573,7 @@
     
   end;
   
+  ///
   clKernelArgAddressQualifier = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3531,6 +3598,7 @@
     
   end;
   
+  ///
   clKernelArgInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3558,6 +3626,7 @@
     
   end;
   
+  ///
   clKernelArgTypeQualifier = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -3618,6 +3687,7 @@
     
   end;
   
+  ///
   clKernelExecInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3660,6 +3730,7 @@
     
   end;
   
+  ///
   clKernelInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3693,6 +3764,7 @@
     
   end;
   
+  ///
   clKernelSubGroupInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3723,6 +3795,7 @@
     
   end;
   
+  ///
   clKernelWorkGroupInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3756,6 +3829,7 @@
     
   end;
   
+  ///
   clKhronosVendorId = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3774,6 +3848,7 @@
     
   end;
   
+  ///
   clLayerInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3792,6 +3867,7 @@
     
   end;
   
+  ///
   clMapFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -3843,6 +3919,7 @@
     
   end;
   
+  ///
   clMbBlockType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3864,6 +3941,7 @@
     
   end;
   
+  ///
   clMemFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4017,6 +4095,7 @@
     
   end;
   
+  ///
   clMemInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4101,6 +4180,7 @@
     
   end;
   
+  ///
   clMemMigrationFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4146,6 +4226,7 @@
     
   end;
   
+  ///
   clMemObjectType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4182,6 +4263,7 @@
     
   end;
   
+  ///
   clMemProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4209,6 +4291,7 @@
     
   end;
   
+  ///
   clMipmapFilterMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4227,6 +4310,7 @@
     
   end;
   
+  ///
   clMutableCommandInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4266,6 +4350,7 @@
     
   end;
   
+  ///
   clMutableDispatchFields = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4329,6 +4414,7 @@
     
   end;
   
+  ///
   clNDRangeKernelCommandProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4344,6 +4430,7 @@
     
   end;
   
+  ///
   clPipeInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4365,6 +4452,7 @@
     
   end;
   
+  ///
   clPlatformCommandBufferCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4416,6 +4504,7 @@
     
   end;
   
+  ///
   clPlatformInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4470,6 +4559,7 @@
     
   end;
   
+  ///
   clProfilingInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4497,6 +4587,7 @@
     
   end;
   
+  ///
   clProgramBinaryType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4524,6 +4615,7 @@
     
   end;
   
+  ///
   clProgramBuildInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4551,6 +4643,7 @@
     
   end;
   
+  ///
   clProgramInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4605,6 +4698,7 @@
     
   end;
   
+  ///
   clQueueProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4638,6 +4732,7 @@
     
   end;
   
+  ///
   clSadAdjustMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4656,6 +4751,7 @@
     
   end;
   
+  ///
   clSamplerInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4695,6 +4791,7 @@
     
   end;
   
+  ///
   clSamplerProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4716,6 +4813,7 @@
     
   end;
   
+  ///
   clSearchPathType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4737,6 +4835,7 @@
     
   end;
   
+  ///
   clSemaphoreInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4770,6 +4869,7 @@
     
   end;
   
+  ///
   clSemaphoreProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4795,6 +4895,7 @@
     
   end;
   
+  ///
   clSemaphoreType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4810,6 +4911,7 @@
     
   end;
   
+  ///
   clSubpixelMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4831,6 +4933,7 @@
     
   end;
   
+  ///
   clSvmMemFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4936,6 +5039,7 @@
     
   end;
   
+  ///
   clUnifiedSharedMemoryType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4960,6 +5064,7 @@
     
   end;
   
+  ///
   clVaApiDeviceSet = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4978,6 +5083,7 @@
     
   end;
   
+  ///
   clVaApiDeviceSource = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4993,6 +5099,7 @@
     
   end;
   
+  ///
   clKernelExecInfoARM = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -5011,6 +5118,7 @@
     
   end;
   
+  ///
   clDevicePartitionPropertyEXT = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -5042,6 +5150,7 @@
     
   end;
   
+  ///
   clMemAllocFlagsINTEL = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -5093,6 +5202,7 @@
     
   end;
   
+  ///
   clMemInfoINTEL = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -5108,6 +5218,7 @@
     
   end;
   
+  ///
   clMemPropertiesINTEL = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -5129,6 +5240,7 @@
     
   end;
   
+  ///%cl_accelerator%
   cl_accelerator = record
     public val: IntPtr;
     
@@ -5146,6 +5258,7 @@
     
   end;
   
+  ///%cl_command_buffer%
   cl_command_buffer = record
     public val: IntPtr;
     
@@ -5163,6 +5276,7 @@
     
   end;
   
+  ///%cl_command_queue%
   cl_command_queue = record
     public val: IntPtr;
     
@@ -5180,6 +5294,7 @@
     
   end;
   
+  ///%cl_context%
   cl_context = record
     public val: IntPtr;
     
@@ -5197,6 +5312,7 @@
     
   end;
   
+  ///%cl_device_id%
   cl_device_id = record
     public val: IntPtr;
     
@@ -5214,6 +5330,7 @@
     
   end;
   
+  ///%cl_eglDisplay%
   cl_eglDisplay = record
     public val: IntPtr;
     
@@ -5231,6 +5348,7 @@
     
   end;
   
+  ///%cl_eglImage%
   cl_eglImage = record
     public val: IntPtr;
     
@@ -5248,6 +5366,7 @@
     
   end;
   
+  ///%cl_eglSync%
   cl_eglSync = record
     public val: IntPtr;
     
@@ -5265,6 +5384,7 @@
     
   end;
   
+  ///%cl_event%
   cl_event = record
     public val: IntPtr;
     
@@ -5282,6 +5402,7 @@
     
   end;
   
+  ///%cl_GLsync%
   cl_GLsync = record
     public val: IntPtr;
     
@@ -5299,6 +5420,7 @@
     
   end;
   
+  ///%cl_icd_dispatch%
   cl_icd_dispatch = record
     public val: IntPtr;
     
@@ -5316,6 +5438,7 @@
     
   end;
   
+  ///%cl_kernel%
   cl_kernel = record
     public val: IntPtr;
     
@@ -5333,6 +5456,7 @@
     
   end;
   
+  ///%cl_mem%
   cl_mem = record
     public val: IntPtr;
     
@@ -5350,6 +5474,7 @@
     
   end;
   
+  ///%cl_mutable_command%
   cl_mutable_command = record
     public val: IntPtr;
     
@@ -5367,6 +5492,7 @@
     
   end;
   
+  ///%cl_platform_id%
   cl_platform_id = record
     public val: IntPtr;
     
@@ -5384,6 +5510,7 @@
     
   end;
   
+  ///%cl_program%
   cl_program = record
     public val: IntPtr;
     
@@ -5401,6 +5528,7 @@
     
   end;
   
+  ///%cl_sampler%
   cl_sampler = record
     public val: IntPtr;
     
@@ -5418,6 +5546,7 @@
     
   end;
   
+  ///%cl_semaphore%
   cl_semaphore = record
     public val: IntPtr;
     
@@ -5435,6 +5564,7 @@
     
   end;
   
+  ///%va_image_format%
   va_image_format = record
     public val: UInt32;
     
@@ -5450,6 +5580,7 @@
     
   end;
   
+  ///%va_surface_id%
   va_surface_id = record
     public val: IntPtr;
     
@@ -5467,6 +5598,7 @@
     
   end;
   
+  ///%d3d_pixel_format%
   d3d_pixel_format = record
     public val: UInt32;
     
@@ -5482,6 +5614,7 @@
     
   end;
   
+  ///%d3d_surface9%
   d3d_surface9 = record
     public val: IntPtr;
     
@@ -5499,6 +5632,7 @@
     
   end;
   
+  ///%d3d10_buffer%
   d3d10_buffer = record
     public val: IntPtr;
     
@@ -5516,6 +5650,7 @@
     
   end;
   
+  ///%d3d10_texture_2d%
   d3d10_texture_2d = record
     public val: IntPtr;
     
@@ -5533,6 +5668,7 @@
     
   end;
   
+  ///%d3d10_texture_3d%
   d3d10_texture_3d = record
     public val: IntPtr;
     
@@ -5550,6 +5686,7 @@
     
   end;
   
+  ///%d3d11_buffer%
   d3d11_buffer = record
     public val: IntPtr;
     
@@ -5567,6 +5704,7 @@
     
   end;
   
+  ///%d3d11_texture_2d%
   d3d11_texture_2d = record
     public val: IntPtr;
     
@@ -5584,6 +5722,7 @@
     
   end;
   
+  ///%d3d11_texture_3d%
   d3d11_texture_3d = record
     public val: IntPtr;
     
@@ -5602,6 +5741,7 @@
   end;
   
   [StructLayout(LayoutKind.Explicit, Size = 64)]
+  ///
   value_ansi_string_64 = record
     
     public property AnsiChars[i: integer]: Byte
@@ -5636,6 +5776,7 @@
     
   end;
   
+  ///
   cl_buffer_region = record
     public origin: UIntPtr;
     public size: UIntPtr;
@@ -5648,6 +5789,7 @@
     
   end;
   
+  ///
   cl_device_integer_dot_product_acceleration_properties = record
     public signed_accelerated: clBool;
     public unsigned_accelerated: clBool;
@@ -5668,6 +5810,7 @@
     
   end;
   
+  ///
   cl_device_pci_bus_info = record
     public pci_domain: UInt32;
     public pci_bus: UInt32;
@@ -5684,6 +5827,7 @@
     
   end;
   
+  ///
   cl_dx9_surface_info = record
     public resource: d3d_surface9;
     public shared_handle: IntPtr;
@@ -5696,6 +5840,7 @@
     
   end;
   
+  ///
   cl_image_desc = record
     public image_type: clMemObjectType;
     public image_width: UIntPtr;
@@ -5724,6 +5869,7 @@
     
   end;
   
+  ///
   cl_image_format = record
     public image_channel_order: clChannelOrder;
     public image_channel_data_type: clChannelType;
@@ -5736,6 +5882,7 @@
     
   end;
   
+  ///
   cl_mem_ext_host_ptr = record
     public allocation_type: clAllocationType;
     public host_cache_policy: clHostCachePolicy;
@@ -5748,6 +5895,7 @@
     
   end;
   
+  ///
   cl_mem_android_native_buffer_host_ptr = record
     public ext_host_ptr: cl_mem_ext_host_ptr;
     public anb_ptr: IntPtr;
@@ -5760,6 +5908,7 @@
     
   end;
   
+  ///
   cl_mem_ion_host_ptr = record
     public ext_host_ptr: cl_mem_ext_host_ptr;
     public ion_filedesc: Int32;
@@ -5774,6 +5923,7 @@
     
   end;
   
+  ///
   cl_motion_estimation_desc = record
     public mb_block_type: clMbBlockType;
     public subpixel_mode: clSubpixelMode;
@@ -5790,6 +5940,7 @@
     
   end;
   
+  ///
   cl_mutable_dispatch_arg = record
     public arg_index: UInt32;
     public arg_size: UIntPtr;
@@ -5804,6 +5955,7 @@
     
   end;
   
+  ///
   cl_mutable_dispatch_exec_info = record
     public param_name: UInt32;
     public param_value_size: UIntPtr;
@@ -5818,6 +5970,7 @@
     
   end;
   
+  ///
   cl_mutable_dispatch_config = record
     public &type: clCommandBufferStructureType;
     public next: IntPtr;
@@ -5852,6 +6005,7 @@
     
   end;
   
+  ///
   cl_mutable_base_config = record
     public &type: clCommandBufferStructureType;
     public next: IntPtr;
@@ -5868,6 +6022,7 @@
     
   end;
   
+  ///
   cl_name_version = record
     public version: UInt32;
     public name: value_ansi_string_64;
@@ -5880,6 +6035,7 @@
     
   end;
   
+  ///
   cl_queue_family_properties = record
     public properties: clCommandQueueProperties;
     public capabilities: clCommandQueueCapabilities;
@@ -5898,30 +6054,37 @@
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clContextDestructorCallback = procedure(context: cl_context; user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clCreateContextCallback = procedure(errinfo: string; private_info: IntPtr; cb: UIntPtr; user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clEnqueueNativeKernelCallback = procedure(arg1: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clEnqueueSVMFreeCallback = procedure(queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clEventCallback = procedure(&event: cl_event; event_command_status: clCommandExecutionStatus; user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clMemObjectDestructorCallback = procedure(memobj: cl_mem; user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clProgramCallback = procedure(&program: cl_program; user_data: IntPtr);
   
   

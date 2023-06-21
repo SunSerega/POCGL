@@ -2335,6 +2335,7 @@ type
         begin
           intr_wr += '  [PCUNotRestore]'#10;
           intr_wr += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
+          intr_wr += '  ///'#10;
           intr_wr += '  ';
           intr_wr += api;
           if depr_ver<>nil then intr_wr += 'D';
@@ -2493,6 +2494,8 @@ type
         intr_wr += '  [PCUNotRestore]'#10;
         intr_wr += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
       end;
+      
+      intr_wr += '  ///'#10;
       
       intr_wr += '  ';
       intr_wr += display_name;

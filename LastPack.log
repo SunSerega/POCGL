@@ -1,95 +1,6 @@
-﻿Executing selected stages:
-FirstPack + Reference + Dummy + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
+﻿Executing default stages:
+Reference + Dummy + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
 Start packing
-=================================== First Pack ===================================
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\Reps\PullReps.pas"
-Compiling: OK
-Runing SubReps Update
-SubReps Update: Pulling OpenCL
-SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull] && git pull 0_official main & echo [pull-own]: && git pull SunSerega custom) && (echo [push] && git push SunSerega custom)" 
-SubReps Update: OpenCL[OUT] : [checkout]
-SubReps Update: OpenCL[OUT] : Your branch is up to date with 'SunSerega/custom'.
-SubReps Update: OpenCL[OUT] : Already on 'custom'
-SubReps Update: OpenCL[OUT] : [pull]
-SubReps Update: OpenCL[ERR] : From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch            main       -> FETCH_HEAD
-SubReps Update: OpenCL[OUT] : Already up to date.
-SubReps Update: OpenCL[OUT] : [pull-own]:
-SubReps Update: OpenCL[ERR] : From github.com:SunSerega/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch            custom     -> FETCH_HEAD
-SubReps Update: OpenCL[OUT] : Already up to date.
-SubReps Update: OpenCL[OUT] : [push]
-SubReps Update: OpenCL[ERR] : Everything up-to-date
-SubReps Update: Done pulling OpenCL
-SubReps Update: Pulling OpenGL
-SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull] && git pull 0_official main & echo [pull-own]: && git pull SunSerega custom) && (echo [push] && git push SunSerega custom)" 
-SubReps Update: OpenGL[OUT] : [checkout]
-SubReps Update: OpenGL[OUT] : Your branch is up to date with 'SunSerega/custom'.
-SubReps Update: OpenGL[OUT] : Already on 'custom'
-SubReps Update: OpenGL[OUT] : [pull]
-SubReps Update: OpenGL[ERR] : From github.com:KhronosGroup/OpenGL-Registry
-SubReps Update: OpenGL[ERR] : * branch              main       -> FETCH_HEAD
-SubReps Update: OpenGL[OUT] : Already up to date.
-SubReps Update: OpenGL[OUT] : [pull-own]:
-SubReps Update: OpenGL[ERR] : From github.com:SunSerega/OpenGL-Registry
-SubReps Update: OpenGL[ERR] : * branch              custom     -> FETCH_HEAD
-SubReps Update: OpenGL[OUT] : Already up to date.
-SubReps Update: OpenGL[OUT] : [push]
-SubReps Update: OpenGL[ERR] : Everything up-to-date
-SubReps Update: Done pulling OpenGL
-Finished runing SubReps Update
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\XML\Dummy\ScrapXML.pas"
-Compiling: OK
-Runing ScrapXML[Dummy]
-ScrapXML[Dummy]: Parsing XML
-ScrapXML[Dummy]: Constructing named items
-ScrapXML[Dummy]: Saving as binary
-ScrapXML[Dummy]: Enum: Saved 8 items
-ScrapXML[Dummy]: BasicType: Saved 6 items
-ScrapXML[Dummy]: Group: Saved 2 items
-ScrapXML[Dummy]: Func: Saved 16 items
-ScrapXML[Dummy]: Feature: Saved 2 items
-ScrapXML[Dummy]: Done
-Finished runing ScrapXML[Dummy]
-Compiling "DataScraping\XML\OpenCL\ScrapXML.pas"
-Compiling: OK
-Runing ScrapXML[OpenCL]
-ScrapXML[OpenCL]: Parsing "cl"
-ScrapXML[OpenCL]: Constructing named items
-ScrapXML[OpenCL]: Saving as binary
-ScrapXML[OpenCL]: VendorSuffix: Saved 11 items
-ScrapXML[OpenCL]: Enum: Saved 1110 items
-ScrapXML[OpenCL]: BasicType: Saved 30 items
-ScrapXML[OpenCL]: Group: Saved 118 items
-ScrapXML[OpenCL]: IdClass: Saved 18 items
-ScrapXML[OpenCL]: Struct: Saved 16 items
-ScrapXML[OpenCL]: Delegate: Saved 7 items
-ScrapXML[OpenCL]: Func: Saved 237 items
-ScrapXML[OpenCL]: Feature: Saved 7 items
-ScrapXML[OpenCL]: Extension: Saved 103 items
-ScrapXML[OpenCL]: Done
-Finished runing ScrapXML[OpenCL]
-Compiling "DataScraping\XML\OpenGL\ScrapXML.pas"
-Compiling: OK
-Runing ScrapXML[OpenGL]
-ScrapXML[OpenGL]: Parsing "gl"
-ScrapXML[OpenGL]: Parsing "wgl"
-ScrapXML[OpenGL]: Parsing "glx"
-ScrapXML[OpenGL]: Constructing named items
-ScrapXML[OpenGL]: Saving as binary
-ScrapXML[OpenGL]: VendorSuffix: Saved 35 items
-ScrapXML[OpenGL]: Enum: Saved 4762 items
-ScrapXML[OpenGL]: BasicType: Saved 116 items
-ScrapXML[OpenGL]: Group: Saved 320 items
-ScrapXML[OpenGL]: IdClass: Saved 15 items
-ScrapXML[OpenGL]: Delegate: Saved 5 items
-ScrapXML[OpenGL]: Func: Saved 3573 items
-ScrapXML[OpenGL]: Feature: Saved 32 items
-ScrapXML[OpenGL]: Extension: Saved 1139 items
-ScrapXML[OpenGL]: Done
-Finished runing ScrapXML[OpenGL]
 =================================== References ===================================
 Compiling "Packing\Reference\ReferencePacker.pas"
 Compiling: OK
@@ -143,6 +54,10 @@ Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Feature: Pac
 Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Cleanup
 Template[Dummy]: Finished runing TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]
 Finished runing Template[Dummy]
+Compiling "Packing\Descriptions\PackDescriptions.pas"
+Compiling: OK
+Runing Descriptions[Dummy]
+Finished runing Descriptions[Dummy]
 ===================================== OpenCL =====================================
 Runing Template[OpenCL]
 Template[OpenCL]: Compiling "Packing\Template\LowLvl\OpenCL\Pack Essentials.pas"
@@ -256,6 +171,8 @@ Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Extension:
 Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Cleanup
 Template[OpenCL]: Finished runing TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]
 Finished runing Template[OpenCL]
+Runing Descriptions[OpenCL]
+Finished runing Descriptions[OpenCL]
 ==================================== OpenCLABC ===================================
 Runing Template[OpenCLABC]
 Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\WrapperProperties.pas"
@@ -304,8 +221,6 @@ Template[OpenCLABC]: Compiling: OK
 Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\QueueStaticArrayWithWork.exe]
 Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\QueueStaticArrayWithWork.exe]
 Finished runing Template[OpenCLABC]
-Compiling "Packing\Descriptions\PackDescriptions.pas"
-Compiling: OK
 Runing Descriptions[OpenCLABC]
 Finished runing Descriptions[OpenCLABC]
 ===================================== OpenGL =====================================
@@ -372,6 +287,8 @@ Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Extension:
 Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Cleanup
 Template[OpenGL]: Finished runing TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]
 Finished runing Template[OpenGL]
+Runing Descriptions[OpenGL]
+Finished runing Descriptions[OpenGL]
 ==================================== OpenGLABC ===================================
 Runing Template[OpenGLABC]
 Finished runing Template[OpenGLABC]

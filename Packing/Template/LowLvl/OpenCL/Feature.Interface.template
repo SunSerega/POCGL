@@ -3,6 +3,7 @@
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   cl = static class
     
     // added in cl1.0

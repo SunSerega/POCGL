@@ -25,6 +25,8 @@ unit OpenCL;
 
 {$zerobasedstrings}
 
+interface
+
 uses System;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
@@ -33,6 +35,7 @@ type
   
   {$region Вспомогательные типы}
   
+  ///
   clAcceleratorInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -57,6 +60,7 @@ type
     
   end;
   
+  ///
   clAcceleratorType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -72,6 +76,7 @@ type
     
   end;
   
+  ///
   clAddressingMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -99,6 +104,7 @@ type
     
   end;
   
+  ///
   clAllocationType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -117,6 +123,7 @@ type
     
   end;
   
+  ///
   clBool = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -142,6 +149,7 @@ type
     
   end;
   
+  ///
   clBufferCreateType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -157,6 +165,7 @@ type
     
   end;
   
+  ///
   clBuildStatus = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -181,6 +190,7 @@ type
     
   end;
   
+  ///
   clChannelOrder = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -274,6 +284,7 @@ type
     
   end;
   
+  ///
   clChannelType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -337,6 +348,7 @@ type
     
   end;
   
+  ///
   clCommandBufferInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -367,6 +379,7 @@ type
     
   end;
   
+  ///
   clCommandBufferProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -382,6 +395,7 @@ type
     
   end;
   
+  ///
   clCommandBufferState = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -406,6 +420,7 @@ type
     
   end;
   
+  ///
   clCommandBufferStructureType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -424,6 +439,7 @@ type
     
   end;
   
+  ///
   clCommandExecutionStatus = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -450,6 +466,7 @@ type
     
   end;
   
+  ///
   clCommandQueueCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -582,6 +599,7 @@ type
     
   end;
   
+  ///
   clCommandQueueInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -621,6 +639,7 @@ type
     
   end;
   
+  ///
   clCommandQueueProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -693,6 +712,7 @@ type
     
   end;
   
+  ///
   clCommandTerminationReason = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -717,6 +737,7 @@ type
     
   end;
   
+  ///
   clCommandType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -924,6 +945,7 @@ type
     
   end;
   
+  ///
   clContextInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -957,6 +979,7 @@ type
     
   end;
   
+  ///
   clContextProperties = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
@@ -1031,6 +1054,7 @@ type
     
   end;
   
+  ///
   clD3D10DeviceSet = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1049,6 +1073,7 @@ type
     
   end;
   
+  ///
   clD3D10DeviceSource = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1067,6 +1092,7 @@ type
     
   end;
   
+  ///
   clD3D11DeviceSet = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1085,6 +1111,7 @@ type
     
   end;
   
+  ///
   clD3D11DeviceSource = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1103,6 +1130,7 @@ type
     
   end;
   
+  ///
   clDeviceAffinityDomain = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1172,6 +1200,7 @@ type
     
   end;
   
+  ///
   clDeviceAtomicCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1247,6 +1276,7 @@ type
     
   end;
   
+  ///
   clDeviceAvcMeVersion = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -1265,6 +1295,7 @@ type
     
   end;
   
+  ///
   clDeviceCommandBufferCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1328,6 +1359,7 @@ type
     
   end;
   
+  ///
   clDeviceControlledTerminationCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1379,6 +1411,7 @@ type
     
   end;
   
+  ///
   clDeviceExecCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1424,6 +1457,7 @@ type
     
   end;
   
+  ///
   clDeviceFeatureCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1469,6 +1503,7 @@ type
     
   end;
   
+  ///
   clDeviceFpAtomicCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1538,6 +1573,7 @@ type
     
   end;
   
+  ///
   clDeviceFPConfig = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -1619,6 +1655,7 @@ type
     
   end;
   
+  ///
   clDeviceInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2229,6 +2266,7 @@ type
     
   end;
   
+  ///
   clDeviceIntegerDotProductCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2274,6 +2312,7 @@ type
     
   end;
   
+  ///
   clDeviceLocalMemType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2292,6 +2331,7 @@ type
     
   end;
   
+  ///
   clDeviceMemCacheType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2313,6 +2353,7 @@ type
     
   end;
   
+  ///
   clDeviceMeVersion = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2334,6 +2375,7 @@ type
     
   end;
   
+  ///
   clDeviceOnDeviceEnqueueCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2379,6 +2421,7 @@ type
     
   end;
   
+  ///
   clDevicePartitionProperty = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
@@ -2411,6 +2454,7 @@ type
     
   end;
   
+  ///
   clDeviceSchedulingControlsCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2486,6 +2530,7 @@ type
     
   end;
   
+  ///
   clDeviceSVMCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2543,6 +2588,7 @@ type
     
   end;
   
+  ///
   clDeviceTerminateCapability = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2582,6 +2628,7 @@ type
     
   end;
   
+  ///
   clDeviceType = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2651,6 +2698,7 @@ type
     
   end;
   
+  ///
   clDeviceUnifiedSharedMemoryCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -2708,6 +2756,7 @@ type
     
   end;
   
+  ///
   clDx9DeviceSet = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2726,6 +2775,7 @@ type
     
   end;
   
+  ///
   clDx9DeviceSource = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2747,6 +2797,7 @@ type
     
   end;
   
+  ///
   clDx9MediaAdapterSet = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2765,6 +2816,7 @@ type
     
   end;
   
+  ///
   clDx9MediaAdapterType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2786,6 +2838,7 @@ type
     
   end;
   
+  ///
   clEglImageProperties = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
@@ -2803,6 +2856,7 @@ type
     
   end;
   
+  ///
   clErrorCode = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -3126,6 +3180,7 @@ type
     
   end;
   
+  ///
   clEventInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3156,6 +3211,7 @@ type
     
   end;
   
+  ///
   clExternalMemoryHandleType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3192,6 +3248,7 @@ type
     
   end;
   
+  ///
   clExternalSemaphoreHandleType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3219,6 +3276,7 @@ type
     
   end;
   
+  ///
   clFilterMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3237,6 +3295,7 @@ type
     
   end;
   
+  ///
   clGlContextInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3255,6 +3314,7 @@ type
     
   end;
   
+  ///
   clGlObjectType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3291,6 +3351,7 @@ type
     
   end;
   
+  ///
   clGlTextureInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3312,6 +3373,7 @@ type
     
   end;
   
+  ///
   clHostCachePolicy = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3339,6 +3401,7 @@ type
     
   end;
   
+  ///
   clIcdlInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3363,6 +3426,7 @@ type
     
   end;
   
+  ///
   clImageInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3426,6 +3490,7 @@ type
     
   end;
   
+  ///
   clImagePitchInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3450,6 +3515,7 @@ type
     
   end;
   
+  ///
   clImageRequirementsInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3486,6 +3552,7 @@ type
     
   end;
   
+  ///
   clImportProperties = record
     public val: IntPtr;
     public constructor(val: IntPtr) := self.val := val;
@@ -3515,6 +3582,7 @@ type
     
   end;
   
+  ///
   clKernelArgAccessQualifier = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3539,6 +3607,7 @@ type
     
   end;
   
+  ///
   clKernelArgAddressQualifier = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3563,6 +3632,7 @@ type
     
   end;
   
+  ///
   clKernelArgInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3590,6 +3660,7 @@ type
     
   end;
   
+  ///
   clKernelArgTypeQualifier = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -3650,6 +3721,7 @@ type
     
   end;
   
+  ///
   clKernelExecInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3692,6 +3764,7 @@ type
     
   end;
   
+  ///
   clKernelInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3725,6 +3798,7 @@ type
     
   end;
   
+  ///
   clKernelSubGroupInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3755,6 +3829,7 @@ type
     
   end;
   
+  ///
   clKernelWorkGroupInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3788,6 +3863,7 @@ type
     
   end;
   
+  ///
   clKhronosVendorId = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3806,6 +3882,7 @@ type
     
   end;
   
+  ///
   clLayerInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3824,6 +3901,7 @@ type
     
   end;
   
+  ///
   clMapFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -3875,6 +3953,7 @@ type
     
   end;
   
+  ///
   clMbBlockType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -3896,6 +3975,7 @@ type
     
   end;
   
+  ///
   clMemFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4049,6 +4129,7 @@ type
     
   end;
   
+  ///
   clMemInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4133,6 +4214,7 @@ type
     
   end;
   
+  ///
   clMemMigrationFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4178,6 +4260,7 @@ type
     
   end;
   
+  ///
   clMemObjectType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4214,6 +4297,7 @@ type
     
   end;
   
+  ///
   clMemProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4241,6 +4325,7 @@ type
     
   end;
   
+  ///
   clMipmapFilterMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4259,6 +4344,7 @@ type
     
   end;
   
+  ///
   clMutableCommandInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4298,6 +4384,7 @@ type
     
   end;
   
+  ///
   clMutableDispatchFields = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4361,6 +4448,7 @@ type
     
   end;
   
+  ///
   clNDRangeKernelCommandProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4376,6 +4464,7 @@ type
     
   end;
   
+  ///
   clPipeInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4397,6 +4486,7 @@ type
     
   end;
   
+  ///
   clPlatformCommandBufferCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4448,6 +4538,7 @@ type
     
   end;
   
+  ///
   clPlatformInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4502,6 +4593,7 @@ type
     
   end;
   
+  ///
   clProfilingInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4529,6 +4621,7 @@ type
     
   end;
   
+  ///
   clProgramBinaryType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4556,6 +4649,7 @@ type
     
   end;
   
+  ///
   clProgramBuildInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4583,6 +4677,7 @@ type
     
   end;
   
+  ///
   clProgramInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4637,6 +4732,7 @@ type
     
   end;
   
+  ///
   clQueueProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4670,6 +4766,7 @@ type
     
   end;
   
+  ///
   clSadAdjustMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4688,6 +4785,7 @@ type
     
   end;
   
+  ///
   clSamplerInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4727,6 +4825,7 @@ type
     
   end;
   
+  ///
   clSamplerProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4748,6 +4847,7 @@ type
     
   end;
   
+  ///
   clSearchPathType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4769,6 +4869,7 @@ type
     
   end;
   
+  ///
   clSemaphoreInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4802,6 +4903,7 @@ type
     
   end;
   
+  ///
   clSemaphoreProperties = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4827,6 +4929,7 @@ type
     
   end;
   
+  ///
   clSemaphoreType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4842,6 +4945,7 @@ type
     
   end;
   
+  ///
   clSubpixelMode = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4863,6 +4967,7 @@ type
     
   end;
   
+  ///
   clSvmMemFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4968,6 +5073,7 @@ type
     
   end;
   
+  ///
   clUnifiedSharedMemoryType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -4992,6 +5098,7 @@ type
     
   end;
   
+  ///
   clVaApiDeviceSet = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -5010,6 +5117,7 @@ type
     
   end;
   
+  ///
   clVaApiDeviceSource = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -5025,6 +5133,7 @@ type
     
   end;
   
+  ///
   clKernelExecInfoARM = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -5043,6 +5152,7 @@ type
     
   end;
   
+  ///
   clDevicePartitionPropertyEXT = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -5074,6 +5184,7 @@ type
     
   end;
   
+  ///
   clMemAllocFlagsINTEL = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -5125,6 +5236,7 @@ type
     
   end;
   
+  ///
   clMemInfoINTEL = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -5140,6 +5252,7 @@ type
     
   end;
   
+  ///
   clMemPropertiesINTEL = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -5161,6 +5274,7 @@ type
     
   end;
   
+  ///
   cl_accelerator = record
     public val: IntPtr;
     
@@ -5178,6 +5292,7 @@ type
     
   end;
   
+  ///
   cl_command_buffer = record
     public val: IntPtr;
     
@@ -5195,6 +5310,7 @@ type
     
   end;
   
+  ///
   cl_command_queue = record
     public val: IntPtr;
     
@@ -5212,6 +5328,7 @@ type
     
   end;
   
+  ///
   cl_context = record
     public val: IntPtr;
     
@@ -5229,6 +5346,7 @@ type
     
   end;
   
+  ///
   cl_device_id = record
     public val: IntPtr;
     
@@ -5246,6 +5364,7 @@ type
     
   end;
   
+  ///
   cl_eglDisplay = record
     public val: IntPtr;
     
@@ -5263,6 +5382,7 @@ type
     
   end;
   
+  ///
   cl_eglImage = record
     public val: IntPtr;
     
@@ -5280,6 +5400,7 @@ type
     
   end;
   
+  ///
   cl_eglSync = record
     public val: IntPtr;
     
@@ -5297,6 +5418,7 @@ type
     
   end;
   
+  ///
   cl_event = record
     public val: IntPtr;
     
@@ -5314,6 +5436,7 @@ type
     
   end;
   
+  ///
   cl_GLsync = record
     public val: IntPtr;
     
@@ -5331,6 +5454,7 @@ type
     
   end;
   
+  ///
   cl_icd_dispatch = record
     public val: IntPtr;
     
@@ -5348,6 +5472,7 @@ type
     
   end;
   
+  ///
   cl_kernel = record
     public val: IntPtr;
     
@@ -5365,6 +5490,7 @@ type
     
   end;
   
+  ///
   cl_mem = record
     public val: IntPtr;
     
@@ -5382,6 +5508,7 @@ type
     
   end;
   
+  ///
   cl_mutable_command = record
     public val: IntPtr;
     
@@ -5399,6 +5526,7 @@ type
     
   end;
   
+  ///
   cl_platform_id = record
     public val: IntPtr;
     
@@ -5416,6 +5544,7 @@ type
     
   end;
   
+  ///
   cl_program = record
     public val: IntPtr;
     
@@ -5433,6 +5562,7 @@ type
     
   end;
   
+  ///
   cl_sampler = record
     public val: IntPtr;
     
@@ -5450,6 +5580,7 @@ type
     
   end;
   
+  ///
   cl_semaphore = record
     public val: IntPtr;
     
@@ -5467,6 +5598,7 @@ type
     
   end;
   
+  ///
   va_image_format = record
     public val: UInt32;
     
@@ -5482,6 +5614,7 @@ type
     
   end;
   
+  ///
   va_surface_id = record
     public val: IntPtr;
     
@@ -5499,6 +5632,7 @@ type
     
   end;
   
+  ///
   d3d_pixel_format = record
     public val: UInt32;
     
@@ -5514,6 +5648,7 @@ type
     
   end;
   
+  ///
   d3d_surface9 = record
     public val: IntPtr;
     
@@ -5531,6 +5666,7 @@ type
     
   end;
   
+  ///
   d3d10_buffer = record
     public val: IntPtr;
     
@@ -5548,6 +5684,7 @@ type
     
   end;
   
+  ///
   d3d10_texture_2d = record
     public val: IntPtr;
     
@@ -5565,6 +5702,7 @@ type
     
   end;
   
+  ///
   d3d10_texture_3d = record
     public val: IntPtr;
     
@@ -5582,6 +5720,7 @@ type
     
   end;
   
+  ///
   d3d11_buffer = record
     public val: IntPtr;
     
@@ -5599,6 +5738,7 @@ type
     
   end;
   
+  ///
   d3d11_texture_2d = record
     public val: IntPtr;
     
@@ -5616,6 +5756,7 @@ type
     
   end;
   
+  ///
   d3d11_texture_3d = record
     public val: IntPtr;
     
@@ -5634,6 +5775,7 @@ type
   end;
   
   [StructLayout(LayoutKind.Explicit, Size = 64)]
+  ///
   value_ansi_string_64 = record
     
     public property AnsiChars[i: integer]: Byte
@@ -5668,6 +5810,7 @@ type
     
   end;
   
+  ///
   cl_buffer_region = record
     public origin: UIntPtr;
     public size: UIntPtr;
@@ -5680,6 +5823,7 @@ type
     
   end;
   
+  ///
   cl_device_integer_dot_product_acceleration_properties = record
     public signed_accelerated: clBool;
     public unsigned_accelerated: clBool;
@@ -5700,6 +5844,7 @@ type
     
   end;
   
+  ///
   cl_device_pci_bus_info = record
     public pci_domain: UInt32;
     public pci_bus: UInt32;
@@ -5716,6 +5861,7 @@ type
     
   end;
   
+  ///
   cl_dx9_surface_info = record
     public resource: d3d_surface9;
     public shared_handle: IntPtr;
@@ -5728,6 +5874,7 @@ type
     
   end;
   
+  ///
   cl_image_desc = record
     public image_type: clMemObjectType;
     public image_width: UIntPtr;
@@ -5756,6 +5903,7 @@ type
     
   end;
   
+  ///
   cl_image_format = record
     public image_channel_order: clChannelOrder;
     public image_channel_data_type: clChannelType;
@@ -5768,6 +5916,7 @@ type
     
   end;
   
+  ///
   cl_mem_ext_host_ptr = record
     public allocation_type: clAllocationType;
     public host_cache_policy: clHostCachePolicy;
@@ -5780,6 +5929,7 @@ type
     
   end;
   
+  ///
   cl_mem_android_native_buffer_host_ptr = record
     public ext_host_ptr: cl_mem_ext_host_ptr;
     public anb_ptr: IntPtr;
@@ -5792,6 +5942,7 @@ type
     
   end;
   
+  ///
   cl_mem_ion_host_ptr = record
     public ext_host_ptr: cl_mem_ext_host_ptr;
     public ion_filedesc: Int32;
@@ -5806,6 +5957,7 @@ type
     
   end;
   
+  ///
   cl_motion_estimation_desc = record
     public mb_block_type: clMbBlockType;
     public subpixel_mode: clSubpixelMode;
@@ -5822,6 +5974,7 @@ type
     
   end;
   
+  ///
   cl_mutable_dispatch_arg = record
     public arg_index: UInt32;
     public arg_size: UIntPtr;
@@ -5836,6 +5989,7 @@ type
     
   end;
   
+  ///
   cl_mutable_dispatch_exec_info = record
     public param_name: UInt32;
     public param_value_size: UIntPtr;
@@ -5850,6 +6004,7 @@ type
     
   end;
   
+  ///
   cl_mutable_dispatch_config = record
     public &type: clCommandBufferStructureType;
     public next: IntPtr;
@@ -5884,6 +6039,7 @@ type
     
   end;
   
+  ///
   cl_mutable_base_config = record
     public &type: clCommandBufferStructureType;
     public next: IntPtr;
@@ -5900,6 +6056,7 @@ type
     
   end;
   
+  ///
   cl_name_version = record
     public version: UInt32;
     public name: value_ansi_string_64;
@@ -5912,6 +6069,7 @@ type
     
   end;
   
+  ///
   cl_queue_family_properties = record
     public properties: clCommandQueueProperties;
     public capabilities: clCommandQueueCapabilities;
@@ -5930,46 +6088,57 @@ type
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clContextDestructorCallback = procedure(context: cl_context; user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clCreateContextCallback = procedure(errinfo: string; private_info: IntPtr; cb: UIntPtr; user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clEnqueueNativeKernelCallback = procedure(arg1: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clEnqueueSVMFreeCallback = procedure(queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clEventCallback = procedure(&event: cl_event; event_command_status: clCommandExecutionStatus; user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clMemObjectDestructorCallback = procedure(memobj: cl_mem; user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+  ///
   clProgramCallback = procedure(&program: cl_program; user_data: IntPtr);
   
   {$endregion Вспомогательные типы}
   
   {$region Особые типы}
   
+  ///Исключение, которое кидает clErrorCode.RaiseIfError
   OpenCLException = sealed class(Exception)
     private ec: clErrorCode;
+    ///Код ошибки
     public property Code: clErrorCode read ec;
     
+    ///
     public constructor(ec: clErrorCode; message: string);
     begin
       inherited Create(message);
       self.ec := ec;
     end;
     
+    ///
     public constructor(ec: clErrorCode) :=
       Create(ec, $'Ошибка OpenCL: {ec}');
     
@@ -5981,6 +6150,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   cl = static class
     
     // added in cl1.0
@@ -12949,6 +13119,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clLoaderInfo = static class
     public const _ExtStr = 'cl_loader_info';
     
@@ -13029,6 +13200,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clLoaderLayers = static class
     public const _ExtStr = 'cl_loader_layers';
     
@@ -13093,12 +13265,14 @@ type
     
   end;
   
+  ///
   clDeviceAttributeQueryAMD = static class
     public const _ExtStr = 'cl_amd_device_attribute_query';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clContextLoggingFunctionsAPPLE = static class
     public const _ExtStr = 'cl_APPLE_ContextLoggingFunctions';
     
@@ -13148,6 +13322,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clSetMemObjectDestructorAPPLE = static class
     public const _ExtStr = 'cl_APPLE_SetMemObjectDestructor';
     
@@ -13158,16 +13333,19 @@ type
     
   end;
   
+  ///
   clControlledKernelTerminationARM = static class
     public const _ExtStr = 'cl_arm_controlled_kernel_termination';
   end;
   
+  ///
   clGetCoreIdARM = static class
     public const _ExtStr = 'cl_arm_get_core_id';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clImportMemoryARM = static class
     public const _ExtStr = 'cl_arm_import_memory';
     
@@ -13189,24 +13367,29 @@ type
     
   end;
   
+  ///
   clJobSlotSelectionARM = static class
     public const _ExtStr = 'cl_arm_job_slot_selection';
   end;
   
+  ///
   clPrintfARM = static class
     public const _ExtStr = 'cl_arm_printf';
   end;
   
+  ///
   clProtectedMemoryAllocationARM = static class
     public const _ExtStr = 'cl_arm_protected_memory_allocation';
   end;
   
+  ///
   clSchedulingControlsARM = static class
     public const _ExtStr = 'cl_arm_scheduling_controls';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clSharedVirtualMemoryARM = static class
     public const _ExtStr = 'cl_arm_shared_virtual_memory';
     
@@ -13560,12 +13743,14 @@ type
     
   end;
   
+  ///
   clCxxForOpenclEXT = static class
     public const _ExtStr = 'cl_ext_cxx_for_opencl';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clDeviceFissionEXT = static class
     public const _ExtStr = 'cl_ext_device_fission';
     
@@ -13638,16 +13823,19 @@ type
     
   end;
   
+  ///
   clFloatAtomicsEXT = static class
     public const _ExtStr = 'cl_ext_float_atomics';
   end;
   
+  ///
   clImageFromBufferEXT = static class
     public const _ExtStr = 'cl_ext_image_from_buffer';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clImageRequirementsInfoEXT = static class
     public const _ExtStr = 'cl_ext_image_requirements_info';
     
@@ -13762,6 +13950,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clMigrateMemobjectEXT = static class
     public const _ExtStr = 'cl_ext_migrate_memobject';
     
@@ -13870,12 +14059,14 @@ type
     
   end;
   
+  ///
   clCachedAllocationsIMG = static class
     public const _ExtStr = 'cl_img_cached_allocations';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clGenerateMipmapIMG = static class
     public const _ExtStr = 'cl_img_generate_mipmap';
     
@@ -14060,12 +14251,14 @@ type
     
   end;
   
+  ///
   clMemPropertiesIMG = static class
     public const _ExtStr = 'cl_img_mem_properties';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clUseGrallocPtrIMG = static class
     public const _ExtStr = 'cl_img_use_gralloc_ptr';
     
@@ -14277,12 +14470,14 @@ type
     
   end;
   
+  ///
   clYuvImageIMG = static class
     public const _ExtStr = 'cl_img_yuv_image';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clAcceleratorINTEL = static class
     public const _ExtStr = 'cl_intel_accelerator';
     
@@ -14352,16 +14547,19 @@ type
     
   end;
   
+  ///
   clAdvancedMotionEstimationINTEL = static class
     public const _ExtStr = 'cl_intel_advanced_motion_estimation';
   end;
   
+  ///
   clCommandQueueFamiliesINTEL = static class
     public const _ExtStr = 'cl_intel_command_queue_families';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clCreateBufferWithPropertiesINTEL = static class
     public const _ExtStr = 'cl_intel_create_buffer_with_properties';
     
@@ -14383,28 +14581,34 @@ type
     
   end;
   
+  ///
   clCreateMemObjectPropertiesINTEL = static class
     public const _ExtStr = 'cl_intel_create_mem_object_properties';
   end;
   
+  ///
   clDeviceAttributeQueryINTEL = static class
     public const _ExtStr = 'cl_intel_device_attribute_query';
   end;
   
+  ///
   clDevicePartitionByNamesINTEL = static class
     public const _ExtStr = 'cl_intel_device_partition_by_names';
   end;
   
+  ///
   clDeviceSideAvcMotionEstimationINTEL = static class
     public const _ExtStr = 'cl_intel_device_side_avc_motion_estimation';
   end;
   
+  ///
   clDriverDiagnosticsINTEL = static class
     public const _ExtStr = 'cl_intel_driver_diagnostics';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clDx9MediaSharingINTEL = static class
     public const _ExtStr = 'cl_intel_dx9_media_sharing';
     
@@ -14638,40 +14842,49 @@ type
     
   end;
   
+  ///
   clEglImageYuvINTEL = static class
     public const _ExtStr = 'cl_intel_egl_image_yuv';
   end;
   
+  ///
   clExecByLocalThreadINTEL = static class
     public const _ExtStr = 'cl_intel_exec_by_local_thread';
   end;
   
+  ///
   clMemAllocBufferLocationINTEL = static class
     public const _ExtStr = 'cl_intel_mem_alloc_buffer_location';
   end;
   
+  ///
   clMemChannelPropertyINTEL = static class
     public const _ExtStr = 'cl_intel_mem_channel_property';
   end;
   
+  ///
   clMemForceHostMemoryINTEL = static class
     public const _ExtStr = 'cl_intel_mem_force_host_memory';
   end;
   
+  ///
   clMotionEstimationINTEL = static class
     public const _ExtStr = 'cl_intel_motion_estimation';
   end;
   
+  ///
   clPackedYuvINTEL = static class
     public const _ExtStr = 'cl_intel_packed_yuv';
   end;
   
+  ///
   clPlanarYuvINTEL = static class
     public const _ExtStr = 'cl_intel_planar_yuv';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clProgramScopeHostPipeINTEL = static class
     public const _ExtStr = 'cl_intel_program_scope_host_pipe';
     
@@ -14839,20 +15052,24 @@ type
     
   end;
   
+  ///
   clQueueNoSyncOperationsINTEL = static class
     public const _ExtStr = 'cl_intel_queue_no_sync_operations';
   end;
   
+  ///
   clRequiredSubgroupSizeINTEL = static class
     public const _ExtStr = 'cl_intel_required_subgroup_size';
   end;
   
+  ///
   clSharingFormatQueryINTEL = static class
     public const _ExtStr = 'cl_intel_sharing_format_query';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clSharingFormatQueryD3d10INTEL = static class
     public const _ExtStr = 'cl_intel_sharing_format_query_d3d10';
     
@@ -14877,6 +15094,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clSharingFormatQueryD3d11INTEL = static class
     public const _ExtStr = 'cl_intel_sharing_format_query_d3d11';
     
@@ -14901,6 +15119,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clSharingFormatQueryDx9INTEL = static class
     public const _ExtStr = 'cl_intel_sharing_format_query_dx9';
     
@@ -14925,6 +15144,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clSharingFormatQueryGlINTEL = static class
     public const _ExtStr = 'cl_intel_sharing_format_query_gl';
     
@@ -14949,6 +15169,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clSharingFormatQueryVaApiINTEL = static class
     public const _ExtStr = 'cl_intel_sharing_format_query_va_api';
     
@@ -14971,12 +15192,14 @@ type
     
   end;
   
+  ///
   clSimultaneousSharingINTEL = static class
     public const _ExtStr = 'cl_intel_simultaneous_sharing';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clUnifiedSharedMemoryINTEL = static class
     public const _ExtStr = 'cl_intel_unified_shared_memory';
     
@@ -15231,6 +15454,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clVaApiMediaSharingINTEL = static class
     public const _ExtStr = 'cl_intel_va_api_media_sharing';
     
@@ -15466,6 +15690,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clCommandBufferKHR = static class
     public const _ExtStr = 'cl_khr_command_buffer';
     
@@ -16066,6 +16291,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clCommandBufferMultiDeviceKHR = static class
     public const _ExtStr = 'cl_khr_command_buffer_multi_device';
     
@@ -16130,6 +16356,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clCommandBufferMutableDispatchKHR = static class
     public const _ExtStr = 'cl_khr_command_buffer_mutable_dispatch';
     
@@ -16270,6 +16497,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clCreateCommandQueueKHR = static class
     public const _ExtStr = 'cl_khr_create_command_queue';
     
@@ -16293,6 +16521,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clD3d10SharingKHR = static class
     public const _ExtStr = 'cl_khr_d3d10_sharing';
     
@@ -16538,6 +16767,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clD3d11SharingKHR = static class
     public const _ExtStr = 'cl_khr_d3d11_sharing';
     
@@ -16781,16 +17011,19 @@ type
     
   end;
   
+  ///
   clDepthImagesKHR = static class
     public const _ExtStr = 'cl_khr_depth_images';
   end;
   
+  ///
   clDeviceUuidKHR = static class
     public const _ExtStr = 'cl_khr_device_uuid';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clDx9MediaSharingKHR = static class
     public const _ExtStr = 'cl_khr_dx9_media_sharing';
     
@@ -17042,6 +17275,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clEglEventKHR = static class
     public const _ExtStr = 'cl_khr_egl_event';
     
@@ -17054,6 +17288,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clEglImageKHR = static class
     public const _ExtStr = 'cl_khr_egl_image';
     
@@ -17281,12 +17516,14 @@ type
     
   end;
   
+  ///
   clExtendedVersioningKHR = static class
     public const _ExtStr = 'cl_khr_extended_versioning';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clExternalMemoryKHR = static class
     public const _ExtStr = 'cl_khr_external_memory';
     
@@ -17498,24 +17735,29 @@ type
     
   end;
   
+  ///
   clExternalMemoryDmaBufKHR = static class
     public const _ExtStr = 'cl_khr_external_memory_dma_buf';
   end;
   
+  ///
   clExternalMemoryDxKHR = static class
     public const _ExtStr = 'cl_khr_external_memory_dx';
   end;
   
+  ///
   clExternalMemoryOpaqueFdKHR = static class
     public const _ExtStr = 'cl_khr_external_memory_opaque_fd';
   end;
   
+  ///
   clExternalMemoryWin32KHR = static class
     public const _ExtStr = 'cl_khr_external_memory_win32';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clExternalSemaphoreKHR = static class
     public const _ExtStr = 'cl_khr_external_semaphore';
     
@@ -17530,32 +17772,39 @@ type
     
   end;
   
+  ///
   clExternalSemaphoreDxFenceKHR = static class
     public const _ExtStr = 'cl_khr_external_semaphore_dx_fence';
   end;
   
+  ///
   clExternalSemaphoreOpaqueFdKHR = static class
     public const _ExtStr = 'cl_khr_external_semaphore_opaque_fd';
   end;
   
+  ///
   clExternalSemaphoreSyncFdKHR = static class
     public const _ExtStr = 'cl_khr_external_semaphore_sync_fd';
   end;
   
+  ///
   clExternalSemaphoreWin32KHR = static class
     public const _ExtStr = 'cl_khr_external_semaphore_win32';
   end;
   
+  ///
   clFp16KHR = static class
     public const _ExtStr = 'cl_khr_fp16';
   end;
   
+  ///
   clFp64KHR = static class
     public const _ExtStr = 'cl_khr_fp64';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clGlSharingKHR = static class
     public const _ExtStr = 'cl_khr_gl_sharing';
     
@@ -17919,12 +18168,14 @@ type
     
   end;
   
+  ///
   clGlDepthImagesKHR = static class
     public const _ExtStr = 'cl_khr_gl_depth_images';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clGlEventKHR = static class
     public const _ExtStr = 'cl_khr_gl_event';
     
@@ -17935,12 +18186,14 @@ type
     
   end;
   
+  ///
   clGlMsaaSharingKHR = static class
     public const _ExtStr = 'cl_khr_gl_msaa_sharing';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clIcdKHR = static class
     public const _ExtStr = 'cl_khr_icd';
     
@@ -17977,6 +18230,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clIlProgramKHR = static class
     public const _ExtStr = 'cl_khr_il_program';
     
@@ -17998,32 +18252,39 @@ type
     
   end;
   
+  ///
   clImage2dFromBufferKHR = static class
     public const _ExtStr = 'cl_khr_image2d_from_buffer';
   end;
   
+  ///
   clInitializeMemoryKHR = static class
     public const _ExtStr = 'cl_khr_initialize_memory';
   end;
   
+  ///
   clIntegerDotProductKHR = static class
     public const _ExtStr = 'cl_khr_integer_dot_product';
   end;
   
+  ///
   clMipmapImageKHR = static class
     public const _ExtStr = 'cl_khr_mipmap_image';
   end;
   
+  ///
   clPciBusInfoKHR = static class
     public const _ExtStr = 'cl_khr_pci_bus_info';
   end;
   
+  ///
   clPriorityHintsKHR = static class
     public const _ExtStr = 'cl_khr_priority_hints';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clSemaphoreKHR = static class
     public const _ExtStr = 'cl_khr_semaphore';
     
@@ -18510,16 +18771,19 @@ type
     
   end;
   
+  ///
   clSpirKHR = static class
     public const _ExtStr = 'cl_khr_spir';
   end;
   
+  ///
   clSubgroupNamedBarrierKHR = static class
     public const _ExtStr = 'cl_khr_subgroup_named_barrier';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clSubgroupsKHR = static class
     public const _ExtStr = 'cl_khr_subgroups';
     
@@ -18648,6 +18912,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clSuggestedLocalWorkSizeKHR = static class
     public const _ExtStr = 'cl_khr_suggested_local_work_size';
     
@@ -18710,6 +18975,7 @@ type
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clTerminateContextKHR = static class
     public const _ExtStr = 'cl_khr_terminate_context';
     
@@ -18720,16 +18986,19 @@ type
     
   end;
   
+  ///
   clThrottleHintsKHR = static class
     public const _ExtStr = 'cl_khr_throttle_hints';
   end;
   
+  ///
   clDeviceAttributeQueryNV = static class
     public const _ExtStr = 'cl_nv_device_attribute_query';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clContentSizePOCL = static class
     public const _ExtStr = 'cl_pocl_content_size';
     
@@ -18740,12 +19009,14 @@ type
     
   end;
   
+  ///
   clAndroidNativeBufferHostPtrQCOM = static class
     public const _ExtStr = 'cl_qcom_android_native_buffer_host_ptr';
   end;
   
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
+  ///
   clExtHostPtrQCOM = static class
     public const _ExtStr = 'cl_qcom_ext_host_ptr';
     
@@ -18826,16 +19097,20 @@ type
     
   end;
   
+  ///
   clExtHostPtrIocoherentQCOM = static class
     public const _ExtStr = 'cl_qcom_ext_host_ptr_iocoherent';
   end;
   
+  ///
   clIonHostPtrQCOM = static class
     public const _ExtStr = 'cl_qcom_ion_host_ptr';
   end;
   
   {$endregion Подпрограммы расширений}
   
+implementation
+
 procedure clErrorCode.RaiseIfError :=
   if IS_ERROR then raise new OpenCLException(self);
 

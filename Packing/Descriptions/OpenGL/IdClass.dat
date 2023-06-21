@@ -1,0 +1,114 @@
+
+
+
+# gl_buffer
+
+# gl_display_list
+
+# gl_fixed
+
+# gl_framebuffer
+
+# gl_half
+
+# gl_perf_query_handle
+
+# gl_perf_query_id
+
+# gl_program
+
+# gl_program_pipeline
+
+# gl_query
+
+# gl_renderbuffer
+
+# gl_sampler
+
+# gl_shader
+
+# gl_sync
+
+# gl_texture
+
+# gl_transform_feedback
+
+# gl_vdpau_surface
+
+# gl_vertex_array
+
+# gl_handle_ARB
+
+
+
+# wgl_pixel_buffer
+
+# wgl_gpu_NV
+
+# wgl_gpu_device_NV
+
+# wgl_video_device_NV
+
+# wgl_video_input_device_handle_NV
+
+# wgl_video_output_device_handle_NV
+
+# gles_image
+
+# gles_client_buffer_EXT
+
+
+
+# gdi_device_context
+
+# gdi_enhanced_metafile_handle
+
+# gdi_rendering_context
+
+
+
+# x_color_map
+
+# x_direct_memory_buffer
+
+# x_direct_memory_params
+
+# x_display_ptr
+
+# x_font
+
+# x_pixel_map
+
+# x_visual_info_ptr
+
+# x_window
+
+
+
+# glx_context
+
+# glx_context_id
+
+# glx_drawable
+
+# glx_frame_buffer_config
+
+# glx_pixel_buffer
+
+# glx_pixel_map
+
+# glx_vl_node
+
+# glx_vl_path
+
+# glx_vl_server
+
+# glx_window
+
+# glx_video_capture_device_NV
+
+# glx_video_device_NV
+
+# glx_video_source_SGIX
+
+
