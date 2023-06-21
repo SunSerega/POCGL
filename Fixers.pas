@@ -46,7 +46,7 @@ type
     public static function DeTemplateName(name: StringSection): array of (string, string->string);
     public static function DeTemplateName(name: string) := DeTemplateName(new StringSection(name));
     
-    public static function ReadBlockTemplates(lines: sequence of string; power_sign: string; concat_blocks: boolean): sequence of (array of string, array of string);
+    public static function ReadBlockTemplates(lines: sequence of string; power_sign: string; concat_blocks: boolean?): sequence of (array of string, array of string);
     begin
       var res := new List<string>;
       var names := new List<string>;
@@ -72,7 +72,15 @@ type
         if l.StartsWith(power_sign) then
         begin
           
-          if not (bl_start and concat_blocks) then
+          var need_concat := bl_start;
+          if bl_start and names.Any then
+          begin
+            if concat_blocks=nil then
+              raise new System.InvalidOperationException($'Tried to concat [{power_sign}{names.Single}] and [{l}]');
+            need_concat := concat_blocks.Value;
+          end;
+          
+          if not need_concat then
           begin
             if not (start and (res.Count=0)) then
               yield make_res();
@@ -105,25 +113,25 @@ type
 //        Println;
 //      end;
     end;
-    public static function ReadBlocks(lines: sequence of string; power_sign: string; concat_blocks: boolean): sequence of (string,array of string) :=
-    ReadBlockTemplates(lines, power_sign, concat_blocks)
-    .SelectMany(\(names,lines)->names.SelectMany(name->
-    begin
-      if name=nil then
+    public static function ReadBlocks(lines: sequence of string; power_sign: string; concat_blocks: boolean?): sequence of (string,array of string) :=
+      ReadBlockTemplates(lines, power_sign, concat_blocks)
+      .SelectMany(\(names,lines)->names.SelectMany(name->
       begin
-        Result := |(name,lines)|;
-        exit;
-      end;
-      var name_mirriad := DetemplateName(name);
-      if lines.Length=0 then
-        Result := name_mirriad.Select(\(name,conv)->(name,lines)) else
-      begin
-        var body := if lines.Length=0 then nil else lines.JoinToString(#10);
-        Result := name_mirriad.Select(\(name,conv)->(name,conv(body).Split(#10)));
-      end;
-    end));
+        if name=nil then
+        begin
+          Result := |(name,lines)|;
+          exit;
+        end;
+        var name_mirriad := DetemplateName(name);
+        if lines.Length=0 then
+          Result := name_mirriad.Select(\(name,conv)->(name,lines)) else
+        begin
+          var body := if lines.Length=0 then nil else lines.JoinToString(#10);
+          Result := name_mirriad.Select(\(name,conv)->(name,conv(body).Split(#10)));
+        end;
+      end));
     
-    public static function ReadBlocks(fname: string; concat_blocks: boolean) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
+    public static function ReadBlocks(fname: string; concat_blocks: boolean?) := ReadBlocks(ReadLines(fname), '#', concat_blocks);
     
   end;
   

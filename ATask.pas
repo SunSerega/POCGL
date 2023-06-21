@@ -118,27 +118,27 @@ type
     private prep_otp: AsyncProcOtp;
     
     private procedure Prepare(evs: Dictionary<string, ManualResetEvent>); override :=
-    case System.IO.Path.GetExtension(fname) of
-      
-      '.pas':
-      begin
-        var pas_fname := fname;
-        fname := System.IO.Path.ChangeExtension(pas_fname, '.exe');
-        if evs.TryGetValue(pas_fname, self.ev) then exit;
-        self.ev := new ManualResetEvent(false);
-        evs[pas_fname] := self.ev;
+      case System.IO.Path.GetExtension(fname) of
         
-        var p := new AsyncProc(()->
+        '.pas':
         begin
-          CompilePasFile(pas_fname, true);
-          self.ev.Set;
-        end);
+          var pas_fname := fname;
+          fname := System.IO.Path.ChangeExtension(pas_fname, '.exe');
+          if evs.TryGetValue(pas_fname, self.ev) then exit;
+          self.ev := new ManualResetEvent(false);
+          evs[pas_fname] := self.ev;
+          
+          var p := new AsyncProc(()->
+          begin
+            CompilePasFile(pas_fname, true);
+            self.ev.Set;
+          end);
+          
+          p.StartExecImpl;
+          prep_otp := p.own_otp;
+        end;
         
-        p.StartExecImpl;
-        prep_otp := p.own_otp;
       end;
-      
-    end;
     
     private procedure SyncExecImpl; override;
     begin
@@ -177,19 +177,19 @@ type
   end;
   
 function ProcTask(p: Action0): AsyncTask :=
-new AsyncProc(p);
+  new AsyncProc(p);
 function EmptyTask := ProcTask(()->exit());
 
 function operator+(p1,p2: AsyncTask): AsyncTask; extensionmethod :=
-new AsyncTaskSum(p1??EmptyTask, p2??EmptyTask);
+  new AsyncTaskSum(p1??EmptyTask, p2??EmptyTask);
 procedure operator+=(var p1: AsyncTask; p2: AsyncTask); extensionmethod := p1 := p1+p2;
 
 function operator*(p1,p2: AsyncTask): AsyncTask; extensionmethod :=
-new AsyncTaskMlt(p1??EmptyTask, p2??EmptyTask);
+  new AsyncTaskMlt(p1??EmptyTask, p2??EmptyTask);
 procedure operator*=(var p1: AsyncTask; p2: AsyncTask); extensionmethod := p1 := p1*p2;
 
 function CompTask(fname: string; general_task: boolean := false; args: string := nil) :=
-ProcTask(()->CompilePasFile(fname, general_task, args));
+  ProcTask(()->CompilePasFile(fname, general_task, args));
 
 function ExecTask(fname, nick: string; params pars: array of string): AsyncTask :=
 new AsyncTaskProcessExec(fname, nick, pars);
@@ -221,6 +221,6 @@ begin
 end;
 
 function TaskForEach<T>(self: sequence of T; p: T->(); max_cores: integer := System.Environment.ProcessorCount+1); extensionmethod :=
-self.Select(o->ProcTask(()->p(o))).CombineAsyncTask(max_cores);
+  self.Select(o->ProcTask(()->p(o))).CombineAsyncTask(max_cores);
 
 end.
