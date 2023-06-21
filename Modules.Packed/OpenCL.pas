@@ -130,12 +130,8 @@ type
     begin
       if FALSE = self then
         Result := 'FALSE' else
-      if NON_BLOCKING = self then
-        Result := 'NON_BLOCKING' else
       if TRUE = self then
         Result := 'TRUE' else
-      if BLOCKING = self then
-        Result := 'BLOCKING' else
         Result := $'clBool[{self.val}]';
     end;
     
@@ -1916,8 +1912,6 @@ type
         Result := 'DEVICE_EXECUTION_CAPABILITIES' else
       if DEVICE_QUEUE_PROPERTIES = self then
         Result := 'DEVICE_QUEUE_PROPERTIES' else
-      if DEVICE_QUEUE_ON_HOST_PROPERTIES = self then
-        Result := 'DEVICE_QUEUE_ON_HOST_PROPERTIES' else
       if DEVICE_NAME = self then
         Result := 'DEVICE_NAME' else
       if DEVICE_VENDOR = self then
@@ -3068,20 +3062,12 @@ type
         Result := 'D3D11_RESOURCE_NOT_ACQUIRED' else
       if INVALID_DX9_MEDIA_ADAPTER = self then
         Result := 'INVALID_DX9_MEDIA_ADAPTER' else
-      if INVALID_DX9_DEVICE = self then
-        Result := 'INVALID_DX9_DEVICE' else
       if INVALID_DX9_MEDIA_SURFACE = self then
         Result := 'INVALID_DX9_MEDIA_SURFACE' else
-      if INVALID_DX9_RESOURCE = self then
-        Result := 'INVALID_DX9_RESOURCE' else
       if DX9_MEDIA_SURFACE_ALREADY_ACQUIRED = self then
         Result := 'DX9_MEDIA_SURFACE_ALREADY_ACQUIRED' else
-      if DX9_RESOURCE_ALREADY_ACQUIRED = self then
-        Result := 'DX9_RESOURCE_ALREADY_ACQUIRED' else
       if DX9_MEDIA_SURFACE_NOT_ACQUIRED = self then
         Result := 'DX9_MEDIA_SURFACE_NOT_ACQUIRED' else
-      if DX9_RESOURCE_NOT_ACQUIRED = self then
-        Result := 'DX9_RESOURCE_NOT_ACQUIRED' else
       if DEVICE_PARTITION_FAILED_EXT = self then
         Result := 'DEVICE_PARTITION_FAILED_EXT' else
       if INVALID_PARTITION_COUNT = self then
@@ -4830,8 +4816,6 @@ type
     begin
       if SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END = self then
         Result := 'SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END' else
-      if DEVICE_HANDLE_LIST_END = self then
-        Result := 'DEVICE_HANDLE_LIST_END' else
       if SEMAPHORE_TYPE = self then
         Result := 'SEMAPHORE_TYPE' else
       if SEMAPHORE_EXPORT_HANDLE_TYPES = self then
@@ -5075,8 +5059,6 @@ type
     begin
       if PARTITION_BY_COUNTS_LIST_END = self then
         Result := 'PARTITION_BY_COUNTS_LIST_END' else
-      if PROPERTIES_LIST_END = self then
-        Result := 'PROPERTIES_LIST_END' else
       if PARTITION_BY_NAMES_LIST_END = self then
         Result := 'PARTITION_BY_NAMES_LIST_END' else
       if DEVICE_PARTITION_EQUALLY_EXT = self then

@@ -3021,9 +3021,11 @@ type
             wr += '        exit;'#10;
             wr += '      end;'#10;
           end;
+          var prev_vals := if Body.IsBitfield then nil else new HashSet<int64>;
           foreach var e in SortedEnums do
           begin
             if Body.IsBitfield and (e.Value=0) then continue;
+            if (prev_vals<>nil) and not prev_vals.Add(e.Value) then continue;
             
             wr += '      if ';
             wr += enum_escaped_names[e];

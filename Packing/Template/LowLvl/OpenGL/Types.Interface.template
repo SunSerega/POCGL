@@ -9502,8 +9502,6 @@
         Result := 'INT64' else
       if UNSIGNED_INT64_ARB = self then
         Result := 'UNSIGNED_INT64_ARB' else
-      if UNSIGNED_INT64_NV = self then
-        Result := 'UNSIGNED_INT64_NV' else
       if FLOAT_VEC2 = self then
         Result := 'FLOAT_VEC2' else
       if FLOAT_VEC3 = self then
@@ -10493,28 +10491,16 @@
     begin
       if CLIP_PLANE0 = self then
         Result := 'CLIP_PLANE0' else
-      if CLIP_DISTANCE0 = self then
-        Result := 'CLIP_DISTANCE0' else
       if CLIP_PLANE1 = self then
         Result := 'CLIP_PLANE1' else
-      if CLIP_DISTANCE1 = self then
-        Result := 'CLIP_DISTANCE1' else
       if CLIP_PLANE2 = self then
         Result := 'CLIP_PLANE2' else
-      if CLIP_DISTANCE2 = self then
-        Result := 'CLIP_DISTANCE2' else
       if CLIP_PLANE3 = self then
         Result := 'CLIP_PLANE3' else
-      if CLIP_DISTANCE3 = self then
-        Result := 'CLIP_DISTANCE3' else
       if CLIP_PLANE4 = self then
         Result := 'CLIP_PLANE4' else
-      if CLIP_DISTANCE4 = self then
-        Result := 'CLIP_DISTANCE4' else
       if CLIP_PLANE5 = self then
         Result := 'CLIP_PLANE5' else
-      if CLIP_DISTANCE5 = self then
-        Result := 'CLIP_DISTANCE5' else
       if CLIP_DISTANCE6 = self then
         Result := 'CLIP_DISTANCE6' else
       if CLIP_DISTANCE7 = self then
@@ -12086,28 +12072,16 @@
         Result := 'POLYGON_OFFSET_LINE' else
       if CLIP_PLANE0 = self then
         Result := 'CLIP_PLANE0' else
-      if CLIP_DISTANCE0 = self then
-        Result := 'CLIP_DISTANCE0' else
       if CLIP_PLANE1 = self then
         Result := 'CLIP_PLANE1' else
-      if CLIP_DISTANCE1 = self then
-        Result := 'CLIP_DISTANCE1' else
       if CLIP_PLANE2 = self then
         Result := 'CLIP_PLANE2' else
-      if CLIP_DISTANCE2 = self then
-        Result := 'CLIP_DISTANCE2' else
       if CLIP_PLANE3 = self then
         Result := 'CLIP_PLANE3' else
-      if CLIP_DISTANCE3 = self then
-        Result := 'CLIP_DISTANCE3' else
       if CLIP_PLANE4 = self then
         Result := 'CLIP_PLANE4' else
-      if CLIP_DISTANCE4 = self then
-        Result := 'CLIP_DISTANCE4' else
       if CLIP_PLANE5 = self then
         Result := 'CLIP_PLANE5' else
-      if CLIP_DISTANCE5 = self then
-        Result := 'CLIP_DISTANCE5' else
       if CLIP_DISTANCE6 = self then
         Result := 'CLIP_DISTANCE6' else
       if CLIP_DISTANCE7 = self then
@@ -12162,14 +12136,10 @@
         Result := 'MULTISAMPLE' else
       if SAMPLE_ALPHA_TO_COVERAGE = self then
         Result := 'SAMPLE_ALPHA_TO_COVERAGE' else
-      if SAMPLE_ALPHA_TO_MASK = self then
-        Result := 'SAMPLE_ALPHA_TO_MASK' else
       if SAMPLE_ALPHA_TO_ONE = self then
         Result := 'SAMPLE_ALPHA_TO_ONE' else
       if SAMPLE_COVERAGE = self then
         Result := 'SAMPLE_COVERAGE' else
-      if SAMPLE_MASK_SGIS = self then
-        Result := 'SAMPLE_MASK_SGIS' else
       if TEXTURE_COLOR_TABLE = self then
         Result := 'TEXTURE_COLOR_TABLE' else
       if COLOR_TABLE = self then
@@ -12571,8 +12541,6 @@
     begin
       if FOG_COORDINATE = self then
         Result := 'FOG_COORDINATE' else
-      if FOG_COORD = self then
-        Result := 'FOG_COORD' else
       if FRAGMENT_DEPTH = self then
         Result := 'FRAGMENT_DEPTH' else
         Result := $'glFogCoordSrc[{self.val}]';
@@ -13931,8 +13899,6 @@
         Result := 'FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE' else
       if FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET = self then
         Result := 'FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET' else
-      if FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER = self then
-        Result := 'FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER' else
       if FRAMEBUFFER_ATTACHMENT_TEXTURE_SAMPLES = self then
         Result := 'FRAMEBUFFER_ATTACHMENT_TEXTURE_SAMPLES' else
       if FRAMEBUFFER_ATTACHMENT_LAYERED = self then
@@ -14185,8 +14151,6 @@
     begin
       if SAMPLE_POSITION = self then
         Result := 'SAMPLE_POSITION' else
-      if SAMPLE_LOCATION = self then
-        Result := 'SAMPLE_LOCATION' else
       if PROGRAMMABLE_SAMPLE_LOCATION = self then
         Result := 'PROGRAMMABLE_SAMPLE_LOCATION' else
         Result := $'glGetMultisamplePName[{self.val}]';
@@ -14792,24 +14756,16 @@
         Result := 'POINT_SIZE' else
       if POINT_SIZE_RANGE = self then
         Result := 'POINT_SIZE_RANGE' else
-      if SMOOTH_POINT_SIZE_RANGE = self then
-        Result := 'SMOOTH_POINT_SIZE_RANGE' else
       if POINT_SIZE_GRANULARITY = self then
         Result := 'POINT_SIZE_GRANULARITY' else
-      if SMOOTH_POINT_SIZE_GRANULARITY = self then
-        Result := 'SMOOTH_POINT_SIZE_GRANULARITY' else
       if LINE_SMOOTH = self then
         Result := 'LINE_SMOOTH' else
       if LINE_WIDTH = self then
         Result := 'LINE_WIDTH' else
       if LINE_WIDTH_RANGE = self then
         Result := 'LINE_WIDTH_RANGE' else
-      if SMOOTH_LINE_WIDTH_RANGE = self then
-        Result := 'SMOOTH_LINE_WIDTH_RANGE' else
       if LINE_WIDTH_GRANULARITY = self then
         Result := 'LINE_WIDTH_GRANULARITY' else
-      if SMOOTH_LINE_WIDTH_GRANULARITY = self then
-        Result := 'SMOOTH_LINE_WIDTH_GRANULARITY' else
       if LINE_STIPPLE = self then
         Result := 'LINE_STIPPLE' else
       if LINE_STIPPLE_PATTERN = self then
@@ -14906,16 +14862,12 @@
         Result := 'VIEWPORT' else
       if MODELVIEW_STACK_DEPTH = self then
         Result := 'MODELVIEW_STACK_DEPTH' else
-      if MODELVIEW0_STACK_DEPTH = self then
-        Result := 'MODELVIEW0_STACK_DEPTH' else
       if PROJECTION_STACK_DEPTH = self then
         Result := 'PROJECTION_STACK_DEPTH' else
       if TEXTURE_STACK_DEPTH = self then
         Result := 'TEXTURE_STACK_DEPTH' else
       if MODELVIEW_MATRIX = self then
         Result := 'MODELVIEW_MATRIX' else
-      if MODELVIEW0_MATRIX = self then
-        Result := 'MODELVIEW0_MATRIX' else
       if PROJECTION_MATRIX = self then
         Result := 'PROJECTION_MATRIX' else
       if TEXTURE_MATRIX = self then
@@ -14942,8 +14894,6 @@
         Result := 'LOGIC_OP_MODE' else
       if INDEX_LOGIC_OP = self then
         Result := 'INDEX_LOGIC_OP' else
-      if LOGIC_OP = self then
-        Result := 'LOGIC_OP' else
       if COLOR_LOGIC_OP = self then
         Result := 'COLOR_LOGIC_OP' else
       if AUX_BUFFERS = self then
@@ -15074,8 +15024,6 @@
         Result := 'MAX_LIGHTS' else
       if MAX_CLIP_PLANES = self then
         Result := 'MAX_CLIP_PLANES' else
-      if MAX_CLIP_DISTANCES = self then
-        Result := 'MAX_CLIP_DISTANCES' else
       if MAX_TEXTURE_SIZE = self then
         Result := 'MAX_TEXTURE_SIZE' else
       if MAX_PIXEL_MAP_TABLE = self then
@@ -15214,8 +15162,6 @@
         Result := 'BLEND_COLOR' else
       if BLEND_EQUATION = self then
         Result := 'BLEND_EQUATION' else
-      if BLEND_EQUATION_RGB = self then
-        Result := 'BLEND_EQUATION_RGB' else
       if PACK_CMYK_HINT = self then
         Result := 'PACK_CMYK_HINT' else
       if UNPACK_CMYK_HINT = self then
@@ -15260,8 +15206,6 @@
         Result := 'TEXTURE_BINDING_2D' else
       if TEXTURE_3D_BINDING = self then
         Result := 'TEXTURE_3D_BINDING' else
-      if TEXTURE_BINDING_3D = self then
-        Result := 'TEXTURE_BINDING_3D' else
       if PACK_SKIP_IMAGES = self then
         Result := 'PACK_SKIP_IMAGES' else
       if PACK_IMAGE_HEIGHT = self then
@@ -15344,12 +15288,8 @@
         Result := 'SAMPLES' else
       if SAMPLE_COVERAGE_VALUE = self then
         Result := 'SAMPLE_COVERAGE_VALUE' else
-      if SAMPLE_MASK_VALUE_SGIS = self then
-        Result := 'SAMPLE_MASK_VALUE_SGIS' else
       if SAMPLE_COVERAGE_INVERT = self then
         Result := 'SAMPLE_COVERAGE_INVERT' else
-      if SAMPLE_MASK_INVERT = self then
-        Result := 'SAMPLE_MASK_INVERT' else
       if SAMPLE_PATTERN = self then
         Result := 'SAMPLE_PATTERN' else
       if COLOR_MATRIX = self then
@@ -15402,8 +15342,6 @@
         Result := 'POINT_FADE_THRESHOLD_SIZE' else
       if DISTANCE_ATTENUATION = self then
         Result := 'DISTANCE_ATTENUATION' else
-      if POINT_DISTANCE_ATTENUATION = self then
-        Result := 'POINT_DISTANCE_ATTENUATION' else
       if FOG_FUNC_POINTS = self then
         Result := 'FOG_FUNC_POINTS' else
       if MAX_FOG_FUNC_POINTS = self then
@@ -15690,8 +15628,6 @@
         Result := 'MAX_VERTEX_UNIFORM_COMPONENTS' else
       if MAX_VARYING_FLOATS = self then
         Result := 'MAX_VARYING_FLOATS' else
-      if MAX_VARYING_COMPONENTS = self then
-        Result := 'MAX_VARYING_COMPONENTS' else
       if MAX_VERTEX_TEXTURE_IMAGE_UNITS = self then
         Result := 'MAX_VERTEX_TEXTURE_IMAGE_UNITS' else
       if MAX_COMBINED_TEXTURE_IMAGE_UNITS = self then
@@ -16040,8 +15976,6 @@
         Result := 'TEXTURE_HEIGHT' else
       if TEXTURE_INTERNAL_FORMAT = self then
         Result := 'TEXTURE_INTERNAL_FORMAT' else
-      if TEXTURE_COMPONENTS = self then
-        Result := 'TEXTURE_COMPONENTS' else
       if TEXTURE_BORDER_COLOR = self then
         Result := 'TEXTURE_BORDER_COLOR' else
       if TEXTURE_BORDER = self then
@@ -17163,12 +17097,8 @@
         Result := 'COMPRESSED_SIGNED_RED_RGTC1' else
       if COMPRESSED_RED_GREEN_RGTC2 = self then
         Result := 'COMPRESSED_RED_GREEN_RGTC2' else
-      if COMPRESSED_RG_RGTC2 = self then
-        Result := 'COMPRESSED_RG_RGTC2' else
       if COMPRESSED_SIGNED_RED_GREEN_RGTC2 = self then
         Result := 'COMPRESSED_SIGNED_RED_GREEN_RGTC2' else
-      if COMPRESSED_SIGNED_RG_RGTC2 = self then
-        Result := 'COMPRESSED_SIGNED_RG_RGTC2' else
       if COMPRESSED_RGBA_BPTC_UNORM = self then
         Result := 'COMPRESSED_RGBA_BPTC_UNORM' else
       if COMPRESSED_SRGB_ALPHA_BPTC_UNORM = self then
@@ -18335,8 +18265,6 @@
     begin
       if MODELVIEW = self then
         Result := 'MODELVIEW' else
-      if MODELVIEW0 = self then
-        Result := 'MODELVIEW0' else
       if PROJECTION = self then
         Result := 'PROJECTION' else
       if TEXTURE = self then
@@ -20299,8 +20227,6 @@
         Result := 'FLOAT' else
       if HALF_FLOAT = self then
         Result := 'HALF_FLOAT' else
-      if HALF = self then
-        Result := 'HALF' else
       if BITMAP = self then
         Result := 'BITMAP' else
       if UNSIGNED_BYTE_3_3_2 = self then
@@ -20381,8 +20307,6 @@
         Result := 'POINT_FADE_THRESHOLD_SIZE' else
       if DISTANCE_ATTENUATION = self then
         Result := 'DISTANCE_ATTENUATION' else
-      if POINT_DISTANCE_ATTENUATION = self then
-        Result := 'POINT_DISTANCE_ATTENUATION' else
         Result := $'glPointParameterName[{self.val}]';
     end;
     
@@ -21113,8 +21037,6 @@
     begin
       if RENDERBUFFER_COVERAGE_SAMPLES = self then
         Result := 'RENDERBUFFER_COVERAGE_SAMPLES' else
-      if RENDERBUFFER_SAMPLES = self then
-        Result := 'RENDERBUFFER_SAMPLES' else
       if RENDERBUFFER_WIDTH = self then
         Result := 'RENDERBUFFER_WIDTH' else
       if RENDERBUFFER_HEIGHT = self then
@@ -21359,8 +21281,6 @@
     begin
       if D3D12_FENCE_VALUE = self then
         Result := 'D3D12_FENCE_VALUE' else
-      if TIMELINE_SEMAPHORE_VALUE = self then
-        Result := 'TIMELINE_SEMAPHORE_VALUE' else
       if SEMAPHORE_TYPE = self then
         Result := 'SEMAPHORE_TYPE' else
       if SEMAPHORE_TYPE_BINARY = self then
@@ -21939,12 +21859,8 @@
         Result := 'COMPRESSED_SIGNED_RED_RGTC1' else
       if COMPRESSED_RED_GREEN_RGTC2 = self then
         Result := 'COMPRESSED_RED_GREEN_RGTC2' else
-      if COMPRESSED_RG_RGTC2 = self then
-        Result := 'COMPRESSED_RG_RGTC2' else
       if COMPRESSED_SIGNED_RED_GREEN_RGTC2 = self then
         Result := 'COMPRESSED_SIGNED_RED_GREEN_RGTC2' else
-      if COMPRESSED_SIGNED_RG_RGTC2 = self then
-        Result := 'COMPRESSED_SIGNED_RG_RGTC2' else
       if COMPRESSED_RGBA_BPTC_UNORM = self then
         Result := 'COMPRESSED_RGBA_BPTC_UNORM' else
       if COMPRESSED_SRGB_ALPHA_BPTC_UNORM = self then
@@ -22559,8 +22475,6 @@
         Result := 'NONE' else
       if COMPARE_R_TO_TEXTURE = self then
         Result := 'COMPARE_R_TO_TEXTURE' else
-      if COMPARE_REF_TO_TEXTURE = self then
-        Result := 'COMPARE_REF_TO_TEXTURE' else
         Result := $'glTextureCompareMode[{self.val}]';
     end;
     
@@ -22700,30 +22614,18 @@
         Result := 'PREVIOUS' else
       if SOURCE0_RGB = self then
         Result := 'SOURCE0_RGB' else
-      if SRC0_RGB = self then
-        Result := 'SRC0_RGB' else
       if SOURCE1_RGB = self then
         Result := 'SOURCE1_RGB' else
-      if SRC1_RGB = self then
-        Result := 'SRC1_RGB' else
       if SOURCE2_RGB = self then
         Result := 'SOURCE2_RGB' else
-      if SRC2_RGB = self then
-        Result := 'SRC2_RGB' else
       if SOURCE3_RGB = self then
         Result := 'SOURCE3_RGB' else
       if SOURCE0_ALPHA = self then
         Result := 'SOURCE0_ALPHA' else
-      if SRC0_ALPHA = self then
-        Result := 'SRC0_ALPHA' else
       if SOURCE1_ALPHA = self then
         Result := 'SOURCE1_ALPHA' else
-      if SRC1_ALPHA = self then
-        Result := 'SRC1_ALPHA' else
       if SOURCE2_ALPHA = self then
         Result := 'SOURCE2_ALPHA' else
-      if SRC2_ALPHA = self then
-        Result := 'SRC2_ALPHA' else
       if SOURCE3_ALPHA = self then
         Result := 'SOURCE3_ALPHA' else
       if OPERAND0_RGB = self then
@@ -23087,8 +22989,6 @@
         Result := 'TEXTURE_HEIGHT' else
       if TEXTURE_INTERNAL_FORMAT = self then
         Result := 'TEXTURE_INTERNAL_FORMAT' else
-      if TEXTURE_COMPONENTS = self then
-        Result := 'TEXTURE_COMPONENTS' else
       if TEXTURE_BORDER_COLOR = self then
         Result := 'TEXTURE_BORDER_COLOR' else
       if TEXTURE_BORDER = self then
@@ -24284,8 +24184,6 @@
         Result := 'INT64' else
       if UNSIGNED_INT64_ARB = self then
         Result := 'UNSIGNED_INT64_ARB' else
-      if UNSIGNED_INT64_NV = self then
-        Result := 'UNSIGNED_INT64_NV' else
       if UNSIGNED_INT_2_10_10_10_REV = self then
         Result := 'UNSIGNED_INT_2_10_10_10_REV' else
       if UNSIGNED_INT_10F_11F_11F_REV = self then
