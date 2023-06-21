@@ -1,5 +1,7 @@
 ﻿unit Essentials;
 
+{$savepcu false}//TODO #2868
+
 interface
 
 //TODO #2844
@@ -226,6 +228,9 @@ end;
 procedure PackAllItems;
 begin
   
+  Func.LogAllEnumToType;
+  Group.LogAllPropLists;
+  
   Feature.WriteAll;
   Extension.WriteAll;
   
@@ -237,9 +242,6 @@ begin
   Delegate.LogAll;
   Func.LogAll;
   Extension.LogAll;
-  
-  Func.LogAllEnumToType;
-  Group.LogAllPropLists;
   
   begin
     var intr_wr := new FileWriter(GetFullPathRTA('Types.Interface.template'));

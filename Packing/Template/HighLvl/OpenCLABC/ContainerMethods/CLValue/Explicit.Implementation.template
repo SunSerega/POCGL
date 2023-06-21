@@ -36,7 +36,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
           val.Pointer,
           evs.count, evs.evs, res_ev
@@ -104,7 +104,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
           val,
           evs.count, evs.evs, res_ev
@@ -177,7 +177,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, native_data.ByteSize,
           native_data.ptr,
           evs.count, evs.evs, res_ev
@@ -247,7 +247,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, native_data.Area.ByteSize,
           native_data.Area.ptr,
           evs.count, evs.evs, res_ev
@@ -317,7 +317,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, native_data.ByteSize,
           native_data.ptr,
           evs.count, evs.evs, res_ev
@@ -387,7 +387,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, native_data.Area.ByteSize,
           native_data.Area.ptr,
           evs.count, evs.evs, res_ev

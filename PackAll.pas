@@ -1,32 +1,35 @@
-﻿uses System.Threading;
-uses System.Threading.Tasks;
-uses System.IO;
-
-uses AOtp       in 'Utils\AOtp';
-uses Timers     in 'Utils\Timers';
-uses ATask      in 'Utils\ATask';
-uses PathUtils  in 'Utils\PathUtils';
-
+﻿
 // АРГУМЕНТЫ КОМАНДНОЙ СТРОКИ:
 // 
 // - "Stages=...+...+..." | запускает только указанные стадии упаковки
-//   - "FirstPack"  - Датаскрапинг спецификаций и исходников. Следует проводить только 1 раз, единственная по-умолчанию выключенная стадия
+//   - "FirstPack"  - Датаскрапинг данных о исходных модулях. Единственная по умолчанию выключенная стадия
 //   - "Reference"  - Упаковка справок
+//   - "Dummy"      - Упаковка модуля Dummy.pas (тест кодогенерации)
 //   - "OpenCL"     - Упаковка модуля OpenCL.pas
 //   - "OpenCLABC"  - Упаковка модуля OpenCLABC.pas
 //   - "OpenGL"     - Упаковка модуля OpenGL.pas
 //   - "OpenGLABC"  - Упаковка модуля OpenGLABC.pas
 //   - "Compile"    - Компиляция всех упакованных модулей
-//   - "Test"       - Тестирование (вообще можно запускать тестер напрямую, через его .exe)
+//   - "Test"       - Тестирование (то же что запуск "Tests\Tester.exe" напрямую, но с указанными модулями)
 //   - "Release"    - Создание и наполнение папки Release, а так же копирование чего надо в ProgramFiles
 // === К примеру: "Stages= OpenCLABC + Compile + Test + Release"
 // === Лишние пробелы по краям имён стадий допускаются, но "Stages=" должно быть слитно и без пробелов в начале
 // 
 
+uses System.Threading;
+uses System.Threading.Tasks;
+uses System.IO;
+
+uses 'Utils\AOtp';
+uses 'Utils\Timers';
+uses 'Utils\ATask';
+uses 'Utils\PathUtils';
+
 {$region SpecialNames}
 
 const FirstPackStr  = 'FirstPack';
 const ReferenceStr  = 'Reference';
+const DummyStr      = 'Dummy';
 const OpenCLStr     = 'OpenCL';
 const OpenCLABCStr  = 'OpenCLABC';
 const OpenGLStr     = 'OpenGL';
@@ -36,15 +39,17 @@ const TestStr       = 'Test';
 const ReleaseStr    = 'Release';
 
 var AllLLModules := HSet(
-  OpenCLStr,OpenGLStr
+  DummyStr,OpenCLStr,OpenGLStr
 );
 var AllModules := HSet(
+  DummyStr,
   OpenCLStr,OpenCLABCStr,
   OpenGLStr,OpenGLABCStr
 );
 var AllStages := HSet(
   FirstPackStr,
   ReferenceStr,
+  DummyStr,
   OpenCLStr,OpenCLABCStr,
   OpenGLStr,OpenGLABCStr,
   CompileStr,
@@ -132,7 +137,6 @@ var AllStages := HSet(
         TitleTask('Update Reps', '~')
         +
         
-//        ExecTask('DataScraping\Reps\0BrokenSource\GL\GenerateCoreSource.pas', 'GL BrokenSource') *
         ExecTask('DataScraping\Reps\PullReps.pas', 'SubReps Update')
         
       ;
@@ -144,8 +148,9 @@ var AllStages := HSet(
       var T_ScrapXML :=
         TitleTask('Scrap XML', '~') +
         
-        ExecTask('DataScraping\XML\CL\ScrapXML.pas', 'ScrapXML[CL]') *
-        ExecTask('DataScraping\XML\GL\ScrapXML.pas', 'ScrapXML[GL]')
+        |'Dummy','OpenCL','OpenGL'|
+        .Select(id->ExecTask($'DataScraping\XML\{id}\ScrapXML.pas', $'ScrapXML[{id}]'))
+        .CombineAsyncTask
         
       ;
       
@@ -172,33 +177,11 @@ var AllStages := HSet(
     end;
     
     function MakeCoreTask: AsyncTask; override :=
-    ExecTask('Packing\Reference\ReferencePacker.pas', 'ReferencePacker');
+      ExecTask('Packing\Reference\ReferencePacker.pas', 'ReferencePacker');
     
   end;
   
   {$endregion Reference}
-  
-  {$region FVT}
-  
-  FVTStage = sealed class(PackingStage)
-    
-    constructor;
-    begin
-      inherited Create(nil);
-      self.description := 'FuncVirtualTest';
-      self.log_name := 'FVT';
-    end;
-    
-    function MakeCoreTask: AsyncTask; override;
-    begin
-      Result := nil;
-      if not AllLLModules.All(CurrentStages.Contains) then exit;
-      Result := ExecTask('Packing\Template\FuncVirtualTest.pas', 'FVT');
-    end;
-    
-  end;
-  
-  {$endregion FVT}
   
   {$region Modules}
   
@@ -216,7 +199,7 @@ var AllStages := HSet(
     end;
     
     constructor(module_name: string) :=
-    inherited Create(module_name);
+      inherited Create(module_name);
     
     function MakeCoreTask: AsyncTask; override :=
       MakeModuleTask +
@@ -229,7 +212,7 @@ var AllStages := HSet(
     function MakeModuleTask: AsyncTask; override :=
       ProcTask(()->Directory.CreateDirectory('Modules.Packed'))
       +
-      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'"inp_fname=Modules\{id}.pas"', $'"otp_fname=Modules.Packed\{id}.pas"')
+      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'dir=LowLvl', $'"inp_fname=Modules\{id}.pas"', $'"otp_fname=Modules.Packed\{id}.pas"')
     ;
     
   end;
@@ -238,7 +221,7 @@ var AllStages := HSet(
     function MakeModuleTask: AsyncTask; override :=
       ProcTask(()->Directory.CreateDirectory('Modules.Packed'))
       +
-      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'"inp_fname=Modules\{id}.pas"', $'"otp_fname=Modules.Packed\{id}.pas"')
+      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'dir=HighLvl', $'"inp_fname=Modules\{id}.pas"', $'"otp_fname=Modules.Packed\{id}.pas"')
       +
       ExecTask('Packing\Descriptions\PackDescriptions.pas', $'Descriptions[{id}]', $'nick={id}', $'"fname=Modules.Packed\{id}.pas"')
     ;
@@ -271,7 +254,7 @@ var AllStages := HSet(
     end;
     
     function MakeCoreTask: AsyncTask; override :=
-    AllLLModules.Select(MakeModuleCompileTask).CombineAsyncTask;
+      AllLLModules.Select(MakeModuleCompileTask).CombineAsyncTask;
     
   end;
   
@@ -290,7 +273,7 @@ var AllStages := HSet(
     end;
     
     function MakeCoreTask: AsyncTask; override :=
-    ExecTask('Tests\Tester.pas', 'Tester', $'"Modules={module_stages_str}"', 'AutoUpdate=true');
+      ExecTask('Tests\Tester.pas', 'Tester', $'"Modules={module_stages_str}"', 'AutoUpdate=true');
     
   end;
   
@@ -454,12 +437,7 @@ begin
     begin
       var arg := CommandLineArgs.SingleOrDefault(arg->arg.StartsWith('Stages='));
       
-      if arg=nil then
-      begin
-        PackingStage.CurrentStages := AllStages.ToHashSet;
-        PackingStage.CurrentStages.ExceptWith(|FirstPackStr|);
-        Otp($'Executing default stages:');
-      end else
+      if arg<>nil then
       begin
         PackingStage.CurrentStages := arg.Remove(0,'Stages='.Length).Split('+').Select(st->st.Trim).ToHashSet;
         PackingStage.CurrentStages.RemoveWhere(stage->
@@ -469,8 +447,21 @@ begin
           Result := true;
         end);
         Otp($'Executing selected stages:');
+      end else
+      if not |'[REDIRECTIOMODE]','[RUNMODE]'|.Any(m->m in System.Environment.GetCommandLineArgs) then
+      begin
+        PackingStage.CurrentStages := AllStages.ToHashSet;
+        PackingStage.CurrentStages.ExceptWith(|FirstPackStr|);
+        Otp($'Executing default stages:');
+      end else
+      begin
+        PackingStage.CurrentStages := AllStages.ToHashSet;
+        PackingStage.CurrentStages := HSet(FirstPackStr);
+        PackingStage.CurrentStages := HSet(DummyStr, OpenCLStr, OpenGLStr, CompileStr);
+        PackingStage.CurrentStages := HSet(OpenCLABCStr, OpenGLABCStr, CompileStr);
+        PackingStage.CurrentStages := HSet(DummyStr, OpenCLStr,OpenCLABCStr, OpenGLStr,OpenGLABCStr, CompileStr);
+        Otp($'Executing debug stages:');
       end;
-//      PackingStage.CurrentStages := HSet(OpenCLABCStr);
       
       Otp(PackingStage.CurrentStages.JoinIntoString(' + '));
     end;
@@ -497,7 +488,7 @@ begin
     
     var T_FirstPack := FirstPackStage .Create               .MakeTask;
     var T_Reference := ReferenceStage .Create               .MakeTask;
-    var T_FVT       := FVTStage       .Create               .MakeTask;
+    var T_Dummy     := LLModuleStage  .Create(DummyStr)     .MakeTask;
     var T_OpenCL    := LLModuleStage  .Create(OpenCLStr)    .MakeTask;
     var T_OpenCLABC := HLModuleStage  .Create(OpenCLABCStr) .MakeTask;
     var T_OpenGL    := LLModuleStage  .Create(OpenGLStr)    .MakeTask;
@@ -512,9 +503,9 @@ begin
       T_FirstPack +
       
       T_Reference *
-      T_FVT *
-      T_OpenCL * T_OpenCLABC *
-      T_OpenGL * T_OpenGLABC
+      ( T_Dummy ) *
+      ( T_OpenCL + T_OpenCLABC ) *
+      ( T_OpenGL + T_OpenGLABC )
       
       + T_Compile * T_Test
       + T_Release

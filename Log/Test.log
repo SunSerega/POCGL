@@ -1,6 +1,8 @@
 ﻿Runing Tester
 Tester: Testing selected modules:
-Tester: OpenCL + OpenCLABC + OpenGL + OpenGLABC
+Tester: Dummy + OpenCL + OpenCLABC + OpenGL + OpenGLABC
+Tester: Compiling "Tests\DebugPCU\Dummy.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests\DebugPCU\OpenCLABC.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\DebugPCU\OpenGLABC.pas"

@@ -1,85 +1,211 @@
 ﻿
 
 
-# cl::CommandBufferProperties
-	Prop COMMAND_BUFFER_FLAGS[4755]: Type=clCommandBufferFlags
+# clCommandBufferProperties
+--- COMMAND_BUFFER_FLAGS
+!type
+clCommandBufferFlags
 
-# cl::ContextProperties
-	Prop CONTEXT_PLATFORM[4228]: Type=cl_platform_id
-	Prop CONTEXT_INTEROP_USER_SYNC[4229]: Type=clBool
-	Prop GL_CONTEXT[8200]: Type=IntPtr
-	Prop EGL_DISPLAY[8201]: Type=IntPtr
-	Prop GLX_DISPLAY[8202]: Type=IntPtr
-	Prop WGL_HDC[8203]: Type=IntPtr
-	Prop CGL_SHAREGROUP[8204]: Type=IntPtr
-	Prop CONTEXT_ADAPTER_D3D9[8229]: Type=IntPtr
-	Prop CONTEXT_ADAPTER_D3D9EX[8230]: Type=IntPtr
-	Prop CONTEXT_ADAPTER_DXVA[8231]: Type=IntPtr
-	Prop CONTEXT_MEMORY_INITIALIZE[8240]: Type=IntPtr
-	Prop CONTEXT_TERMINATE[8242]: Type=clBool
-	Prop CONTEXT_D3D10_DEVICE[16404]: Type=IntPtr
-	Prop CONTEXT_D3D11_DEVICE[16413]: Type=IntPtr
-	Prop CONTEXT_D3D9_DEVICE[16422]: Type=IntPtr
-	Prop CONTEXT_D3D9EX_DEVICE[16498]: Type=IntPtr
-	Prop CONTEXT_DXVA_DEVICE[16499]: Type=IntPtr
-	Prop PRINTF_CALLBACK[16560]: Type=IntPtr
-	Prop PRINTF_BUFFERSIZE[16561]: Type=UIntPtr
-	Prop CONTEXT_SHOW_DIAGNOSTICS[16646]: Type=clContextPropertyDiagnosticsLevel
+# clContextProperties
+--- CONTEXT_PLATFORM
+!type
+cl_platform_id
+--- CONTEXT_INTEROP_USER_SYNC
+!type
+clBool
+--- GL_CONTEXT
+!type
+IntPtr
+--- EGL_DISPLAY
+!type
+IntPtr
+--- GLX_DISPLAY
+!type
+IntPtr
+--- WGL_HDC
+!type
+IntPtr
+--- CGL_SHAREGROUP
+!type
+IntPtr
+--- CONTEXT_ADAPTER_D3D9
+!type
+IntPtr
+--- CONTEXT_ADAPTER_D3D9EX
+!type
+IntPtr
+--- CONTEXT_ADAPTER_DXVA
+!type
+IntPtr
+--- CONTEXT_MEMORY_INITIALIZE
+!type
+IntPtr
+--- CONTEXT_TERMINATE
+!type
+clBool
+--- CONTEXT_D3D10_DEVICE
+!type
+IntPtr
+--- CONTEXT_D3D11_DEVICE
+!type
+IntPtr
+--- CONTEXT_D3D9_DEVICE
+!type
+IntPtr
+--- CONTEXT_D3D9EX_DEVICE
+!type
+IntPtr
+--- CONTEXT_DXVA_DEVICE
+!type
+IntPtr
+--- PRINTF_CALLBACK
+!type
+IntPtr
+--- PRINTF_BUFFERSIZE
+!type
+UIntPtr
+--- CONTEXT_SHOW_DIAGNOSTICS
+!type
+clContextPropertyDiagnosticsLevel
 
-# cl::DevicePartitionProperty
-	Prop DEVICE_PARTITION_EQUALLY[4230]: Type=UInt32
-	Prop DEVICE_PARTITION_BY_COUNTS[4231]: Type=UInt32 ListEnd=DEVICE_PARTITION_BY_COUNTS_LIST_END[0]
-	Prop DEVICE_PARTITION_BY_AFFINITY_DOMAIN[4232]: Type=clDeviceAffinityDomain
-	Prop DEVICE_PARTITION_BY_NAMES[16466]: Type=UInt64 ListEnd=PARTITION_BY_NAMES_LIST_END[-1]
+# clDevicePartitionProperty
+--- DEVICE_PARTITION_EQUALLY
+!type
+UInt32
+--- DEVICE_PARTITION_BY_COUNTS
+!type
+UInt32
+!list_end
+DEVICE_PARTITION_BY_COUNTS_LIST_END
+--- DEVICE_PARTITION_BY_AFFINITY_DOMAIN
+!type
+clDeviceAffinityDomain
+--- DEVICE_PARTITION_BY_NAMES
+!type
+UInt64
+!list_end
+PARTITION_BY_NAMES_LIST_END
 
-# cl::EglImageProperties
-	Prop EGL_YUV_PLANE[16647]: Type=Int32
+# clEglImageProperties
+--- EGL_YUV_PLANE
+!type
+Int32
 
-# cl::ImportProperties
-	Prop IMPORT_TYPE[16562]: Type=clImportType
-	Prop IMPORT_TYPE_PROTECTED[16565]: Type=clBool
-	Prop IMPORT_DMA_BUF_DATA_CONSISTENCY_WITH_HOST[16867]: Type=clBool
-	Prop IMPORT_ANDROID_HARDWARE_BUFFER_PLANE_INDEX[16879]: Type=UInt32
-	Prop IMPORT_ANDROID_HARDWARE_BUFFER_LAYER_INDEX[16880]: Type=UInt32
+# clImportProperties
+--- IMPORT_TYPE
+!type
+clImportType
+--- IMPORT_TYPE_PROTECTED
+!type
+clBool
+--- IMPORT_DMA_BUF_DATA_CONSISTENCY_WITH_HOST
+!type
+clBool
+--- IMPORT_ANDROID_HARDWARE_BUFFER_PLANE_INDEX
+!type
+UInt32
+--- IMPORT_ANDROID_HARDWARE_BUFFER_LAYER_INDEX
+!type
+UInt32
 
-# cl::MemProperties
-	Prop DEVICE_HANDLE_LIST[8273]: Type=cl_device_id ListEnd=DEVICE_HANDLE_LIST_END[0]
-	Prop MEM_ALLOC_FLAGS + IMG[16599]: Type=clMemAllocFlagsIMG
-	Prop MEM_LOCALLY_UNCACHED_RESOURCE[16920]: Type=IntPtr
-	Prop MEM_DEVICE_ID[16921]: Type=IntPtr
+# clMemProperties
+--- DEVICE_HANDLE_LIST
+!type
+cl_device_id
+!list_end
+DEVICE_HANDLE_LIST_END
+--- MEM_ALLOC_FLAGS + IMG
+!type
+clMemAllocFlagsIMG
+--- MEM_LOCALLY_UNCACHED_RESOURCE
+!type
+IntPtr
+--- MEM_DEVICE_ID
+!type
+IntPtr
 
-# cl::NDRangeKernelCommandProperties
-	Prop MUTABLE_DISPATCH_UPDATABLE_FIELDS[4785]: Type=clMutableDispatchFields
+# clNDRangeKernelCommandProperties
+--- MUTABLE_DISPATCH_UPDATABLE_FIELDS
+!type
+clMutableDispatchFields
 
-# cl::QueueProperties
-	Prop QUEUE_PRIORITY[4246]: Type=clQueuePriority
-	Prop QUEUE_THROTTLE[4247]: Type=clQueueThrottle
-	Prop QUEUE_FAMILY[16780]: Type=UInt32
-	Prop QUEUE_INDEX[16781]: Type=UInt32
-	Prop QUEUE_JOB_SLOT[16865]: Type=UInt32
-	Prop QUEUE_KERNEL_BATCHING[16871]: Type=clBool
-	Prop QUEUE_DEFERRED_FLUSH[16876]: Type=clBool
+# clQueueProperties
+--- QUEUE_PRIORITY
+!type
+clQueuePriority
+--- QUEUE_THROTTLE
+!type
+clQueueThrottle
+--- QUEUE_FAMILY
+!type
+UInt32
+--- QUEUE_INDEX
+!type
+UInt32
+--- QUEUE_JOB_SLOT
+!type
+UInt32
+--- QUEUE_KERNEL_BATCHING
+!type
+clBool
+--- QUEUE_DEFERRED_FLUSH
+!type
+clBool
 
-# cl::SamplerProperties
-	Prop SAMPLER_MIP_FILTER_MODE[4437]: Type=clFilterMode
-	Prop SAMPLER_LOD_MIN[4438]: Type=single
-	Prop SAMPLER_LOD_MAX[4439]: Type=single
+# clSamplerProperties
+--- SAMPLER_MIP_FILTER_MODE
+!type
+clFilterMode
+--- SAMPLER_LOD_MIN
+!type
+single
+--- SAMPLER_LOD_MAX
+!type
+single
 
-# cl::SemaphoreProperties
-	Prop SEMAPHORE_TYPE[8253]: Type=clSemaphoreType
-	Prop SEMAPHORE_EXPORT_HANDLE_TYPES[8255]: Type=clExternalSemaphoreHandleType ListEnd=SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END[0]
-	Prop DEVICE_HANDLE_LIST[8273]: Type=cl_device_id ListEnd=DEVICE_HANDLE_LIST_END[0]
+# clSemaphoreProperties
+--- SEMAPHORE_TYPE
+!type
+clSemaphoreType
+--- SEMAPHORE_EXPORT_HANDLE_TYPES
+!type
+clExternalSemaphoreHandleType
+!list_end
+SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END
+--- DEVICE_HANDLE_LIST
+!type
+cl_device_id
+!list_end
+DEVICE_HANDLE_LIST_END
 
-# cl::DevicePartitionProperty + ext
-	Prop DEVICE_PARTITION_EQUALLY + EXT[16464]: Type=UInt32
-	Prop DEVICE_PARTITION_BY_COUNTS + EXT[16465]: Type=UInt32 ListEnd=PARTITION_BY_COUNTS_LIST_END[0]
-	Prop DEVICE_PARTITION_BY_NAMES[16466]: Type=UInt64 ListEnd=PARTITION_BY_NAMES_LIST_END[-1]
-	Prop DEVICE_PARTITION_BY_AFFINITY_DOMAIN + EXT[16467]: Type=clAffinityDomain
-	GLE PROPERTIES_LIST_END[0]
+# clDevicePartitionPropertyEXT
+PROPERTIES_LIST_END
+--- DEVICE_PARTITION_EQUALLY + EXT
+!type
+UInt32
+--- DEVICE_PARTITION_BY_COUNTS + EXT
+!type
+UInt32
+!list_end
+PARTITION_BY_COUNTS_LIST_END
+--- DEVICE_PARTITION_BY_NAMES
+!type
+UInt64
+!list_end
+PARTITION_BY_NAMES_LIST_END
+--- DEVICE_PARTITION_BY_AFFINITY_DOMAIN + EXT
+!type
+clAffinityDomain
 
-# cl::MemProperties + intel
-	Prop MEM_ALLOC_FLAGS + INTEL[16789]: Type=clMemAllocFlagsINTEL
-	Prop MEM_ALLOC_BUFFER_LOCATION[16798]: Type=UInt32
-	Prop MEM_CHANNEL[16915]: Type=UInt32
+# clMemPropertiesINTEL
+--- MEM_ALLOC_FLAGS + INTEL
+!type
+clMemAllocFlagsINTEL
+--- MEM_ALLOC_BUFFER_LOCATION
+!type
+UInt32
+--- MEM_CHANNEL
+!type
+UInt32
 
 

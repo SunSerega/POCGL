@@ -7,7 +7,7 @@ var gl: OpenGL.gl;
 
 {$region Shader}
 
-function InitShader(fname: string; st: ShaderType): gl_shader;
+function InitShader(fname: string; st: glShaderType): gl_shader;
 begin
   Result := gl.CreateShader(st);
   
@@ -23,13 +23,13 @@ begin
   // 1=успешно
   // 0=ошибка
   var comp_ok: integer;
-  gl.GetShaderiv(Result, ShaderParameterName.COMPILE_STATUS, comp_ok);
+  gl.GetShaderiv(Result, glShaderParameterName.COMPILE_STATUS, comp_ok);
   if comp_ok = 0 then
   begin
     
     // Узнаём нужную длинную строки
     var l: integer;
-    gl.GetShaderiv(Result, ShaderParameterName.INFO_LOG_LENGTH, l);
+    gl.GetShaderiv(Result, glShaderParameterName.INFO_LOG_LENGTH, l);
     
     // Выделяем достаточно памяти чтоб сохранить строку
     var ptr := System.Runtime.InteropServices.Marshal.AllocHGlobal(l);
@@ -63,12 +63,12 @@ begin
   gl.LinkProgram(Result);
   // Всё то же самое что и у шейдеров
   var link_ok: integer;
-  gl.GetProgramiv(Result, ProgramProperty.LINK_STATUS, link_ok);
+  gl.GetProgramiv(Result, glProgramProperty.LINK_STATUS, link_ok);
   if link_ok = 0 then
   begin
     
     var l: integer;
-    gl.GetProgramiv(Result, ProgramProperty.INFO_LOG_LENGTH, l);
+    gl.GetProgramiv(Result, glProgramProperty.INFO_LOG_LENGTH, l);
     var ptr := System.Runtime.InteropServices.Marshal.AllocHGlobal(l);
     
     gl.GetProgramInfoLog(Result, l, IntPtr.Zero, ptr);

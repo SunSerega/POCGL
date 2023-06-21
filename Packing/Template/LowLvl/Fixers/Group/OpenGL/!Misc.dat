@@ -1,6 +1,12 @@
 ﻿
 
 
+# gl::ErrorCode
+!cust_memb
+public function IS_ERROR := val<>0;
+!cust_memb
+public procedure RaiseIfError;
+
 # gl::Boolean
 !base
 UInt32
@@ -10,7 +16,7 @@ gl::Bool32
 public static function operator implicit(b: glBool32): boolean := b<>FALSE;
 public static function operator implicit(b: boolean): glBool32 := new glBool32(UInt32(b));
 !cust_memb
-public static function operator not(b: glBool32): glBool32 := if b then TRUE else FALSE;
+public static function operator not(b: glBool32): glBool32 := if b then FALSE else TRUE;
 
 # gl::Bool8
 !add
@@ -22,7 +28,7 @@ gl::TRUE	= 1
 public static function operator implicit(b: glBool8): boolean := b<>FALSE;
 public static function operator implicit(b: boolean): glBool8 := new glBool8(Byte(b));
 !cust_memb
-public static function operator not(b: glBool8): glBool8 := if b then TRUE else FALSE;
+public static function operator not(b: glBool8): glBool8 := if b then FALSE else TRUE;
 
 # gl::ConvolutionBorderMode
 # gl::DepthStencilTextureMode

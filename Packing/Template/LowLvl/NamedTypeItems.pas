@@ -499,7 +499,9 @@ type
         wr += inds_str;
         wr += ': integer): ';
         wr += gen_tname;
-        wr += ') :='#10;
+        wr += '): ';
+        wr += res_tname;
+        wr += ' :='#10;
         wr += '      ';
         NameConditional(
           sz->
@@ -677,7 +679,7 @@ type
       wr += res_tname;
       wr += '(';
       wr.WriteNumbered(Name.TotalSize,
-        (wr,i)->(wr += 'a+Random(r)'),
+        (wr,i)->(wr += 'a+PABCSystem.Random(r)'),
         (wr,i)->(wr += ', ')
       );
       wr += ');'#10;
@@ -835,6 +837,21 @@ type
       
       {$region ToString}
       
+      wr += '    private static function ValStr(val: ';
+      wr += Name.OriginalType;
+      wr += '): string;'#10;
+      wr += '    begin'#10;
+      
+      wr += '      Result := val.ToString';
+      if Name.IsFloat then
+        wr += '(''f2'')';
+      wr += ';'#10;
+      
+      wr += '      if Result.First<>''-'' then'#10;
+      wr += '        Result := ''+''+Result;'#10;
+      
+      wr += '    end;'#10;
+      
       wr += '    public function ToString: string; override;'#10;
       
       wr += '    begin'#10;
@@ -847,12 +864,9 @@ type
           wr.WriteNumbered(sz,
             (wr,i)->
             begin
-              wr += '      res += val';
+              wr += '      res += ValStr(val';
               wr += i;
-              wr += '.ToString';
-              if Name.IsFloat then
-                wr += '(''f2'')';
-              wr += ';';
+              wr += ');';
             end,
             (wr,i)->(wr += ' res += '', '';'#10),
             0
@@ -891,10 +905,10 @@ type
               wr += 'var s';
               wr += row_i;
               wr += col_i;
-              wr += ' := val';
+              wr += ' := ValStr(val';
               wr += row_i;
               wr += col_i;
-              wr += '.ToString(''f2''); ';
+              wr += '); ';
               if not Name.IsFloat then
                 raise new NotSupportedException;
             end;
@@ -914,7 +928,7 @@ type
           end;
           
           wr += '      var total_w := ';
-          wr += sz2*2;
+          wr += 2*sz2;
           wr += '; // 2*(ColCount-1) + 2'#10;
           for var col_i := 0 to sz2-1 do
           begin
@@ -927,7 +941,7 @@ type
           
           wr += '      res += ''╓'';'#10;
           wr += '      res.Append('' '', total_w);'#10;
-          wr += '      res += ''╖'';'#10;
+          wr += '      res += ''╖''#10;'#10;
           
           for var row_i := 0 to sz1-1 do
           begin
@@ -935,21 +949,21 @@ type
             wr.WriteNumbered(sz2,
               (wr,col_i)->
               begin
-                wr += '      res += s';
-                wr += row_i;
-                wr += col_i;
-                wr += '; res.Append('' '', coL_sz';
+                wr += '      res.Append('' '', col_sz';
                 wr += col_i;
                 wr += ' - s';
                 wr += row_i;
                 wr += col_i;
-                wr += '.Length);';
+                wr += '.Length); res += s';
+                wr += row_i;
+                wr += col_i;
+                wr += ';';
               end,
-              (wr,col_i)->(wr += ' res += '' '';'#10),
+              (wr,col_i)->(wr += ' res += '', '';'#10),
               0
             );
             wr += #10;
-            wr += '      res += '' ║'';'#10;
+            wr += '      res += '' ║''#10;'#10;
           end;
           
           wr += '      res += ''╙'';'#10;
@@ -981,7 +995,7 @@ type
         
         wr += '      ';
         wr += if ln then
-          'Writeln' else 'Print';
+          'Writeln' else 'PABCSystem.Print';
         wr += '(self.ToString);'#10;
         
         wr += '      Result := self;'#10;
@@ -1114,8 +1128,8 @@ type
               (wr,col_i)->
               begin
                 wr += 'val';
-                wr += col_i;
                 wr += i;
+                wr += col_i;
               end,
               (wr,i)->(wr += ', '),
               0
@@ -1139,8 +1153,8 @@ type
               (wr,col_i)->
               begin
                 wr += 'val';
-                wr += col_i;
                 wr += i;
+                wr += col_i;
               end,
               (wr,i)->(wr += ', '),
               0
@@ -1199,7 +1213,7 @@ type
         wr += 'At[';
         wr += ind_name;
         wr += ': integer]: ';
-        wr += Name.OriginalType;
+        wr += vec_tname;
         wr += ' read Get';
         wr += vec_word;
         wr += 'At write Set';
@@ -1299,7 +1313,9 @@ type
           wr += ': ';
           wr += use_word;
           wr += vec_tname;
-          wr += 'SafePtrCallback';
+          if with_ptr then
+            wr += 'SafePtr';
+          wr += 'Callback';
           if with_ret then
             wr += '<T>';
           wr += ')';
@@ -1957,7 +1973,7 @@ type
       {$region Determinant}
       
       wr += '    public function Determinant: ';
-      wr += res_tname;
+      wr += Name.OriginalType;
       wr += ';'#10;
       
       wr += '    begin'#10;
@@ -2091,13 +2107,13 @@ type
               (wr,col_i)->
               begin
                 var t2_col_tname := t2.Name.MatrixColTypeName.ToString(nil);
-                if (col_i>=t1_sz1) and (col_i>=t2_sz1) then
+                if (col_i>=t1_sz2) and (col_i>=t2_sz1) then
                 begin
                   wr += 'default(';
                   wr += t2_col_tname;
                   wr += ')';
                 end else
-                if (t2_sz2>t1_sz2) and (col_i>t1_sz2) or (col_i>=t1_sz1) then
+                if (t2_sz2>t1_sz2) and (col_i>t1_sz2) or (col_i>=t1_sz2) then
                 begin
                   wr += 'new ';
                   wr += t2_col_tname;
@@ -2384,21 +2400,33 @@ type
           end;
           
           if Name.IsFloat then
-          begin
-            
-            intr_wr += '  Use';
-            intr_wr += main_name;
-            intr_wr += 'SafePtrCallback = procedure(var v: ';
-            intr_wr += main_name;
-            intr_wr += ');'#10;
-            
-            intr_wr += '  Conv';
-            intr_wr += main_name;
-            intr_wr += 'SafePtrCallback<T> = function(var v: ';
-            intr_wr += main_name;
-            intr_wr += '): T;'#10;
-            
-          end;
+            for var with_ptr := false to true do
+              for var with_ret := false to true do 
+              begin
+                
+                intr_wr += '  ';
+                intr_wr += if with_ret then
+                  'Conv' else 'Use';
+                intr_wr += main_name;
+                if with_ptr then
+                  intr_wr += 'SafePtr';
+                intr_wr += 'Callback';
+                if with_ret then
+                  intr_wr += '<T>';
+                intr_wr += ' = ';
+                intr_wr += if with_ret then
+                  'function' else 'procedure';
+                intr_wr += '(';
+                if with_ptr then
+                  intr_wr += 'var ';
+                intr_wr += 'v: ';
+                intr_wr += main_name;
+                intr_wr += ')';
+                if with_ret then
+                  intr_wr += ': T';
+                intr_wr += ';'#10;
+                
+              end;
           
         end;
         
@@ -2644,6 +2672,13 @@ type
     public property IsValueList: boolean read list_end_ind<>nil;
     public property ValueListEnd: EnumItems.Enum read EnumItems.Enum.ByIndex(list_end_ind.Value);
     
+    public function AllEnums: sequence of EnumItems.Enum;
+    begin
+      yield Enum;
+      if IsValueList then
+        yield ValueListEnd;
+    end;
+    
   end;
   PropListEnumsInGroup = sealed class(EnumsInGroup)
     private _enums: array of EnumWithPropList;
@@ -2666,7 +2701,7 @@ type
     
     public function IsBitfield: boolean; override := false;
     
-    public function AllEnums: sequence of Enum; override := self.Enums.Select(r->r.Enum) + GlovalListEnds;
+    public function AllEnums: sequence of Enum; override := self.Enums.SelectMany(r->r.AllEnums) + GlovalListEnds;
     
     public procedure MarkReferenced; override;
     begin
@@ -2800,7 +2835,7 @@ type
         var zero_enums := Body.AllEnums.Where(e->e.Value=0).ToArray;
         
         var enum_names := new Dictionary<Enum, string>;
-        var enum_screened_names := new Dictionary<Enum, string>;
+        var enum_escaped_names := new Dictionary<Enum, string>;
         foreach var e in Body.AllEnums do
         begin
           var ename := e.Name.l_name;
@@ -2811,16 +2846,28 @@ type
           
           enum_names.Add(e, ename);
           
+          if not ename.First.IsLetter then
+            ename := '_'+ename else
           if ename in pas_keywords then
             ename := '&'+ename;
           
-          enum_screened_names.Add(e, ename);
+          enum_escaped_names.Add(e, ename);
+        end;
+        foreach var e in Body.AllEnums do
+        begin
+          var get_s := 'get_';
+          var ename := enum_names[e];
+          if not ename.StartsWith(get_s, true, nil) then continue;
+          if not enum_names.Values.Contains(ename.Substring(get_s.Length), StringComparer.OrdinalIgnoreCase) then continue;
+          ename := '_'+ename;
+          enum_names[e] := ename;
+          enum_escaped_names[e] := ename;
         end;
         
         if enum_names.Count=0 then
           Otp($'WARNING: {self} had 0 enums');
         
-        var max_scr_w := enum_screened_names.Values.Select(ename->ename.Length).DefaultIfEmpty(0).Max;
+        var max_scr_w := enum_escaped_names.Values.Select(ename->ename.Length).DefaultIfEmpty(0).Max;
         
         {$endregion Prepare}
         
@@ -2890,7 +2937,7 @@ type
           foreach var e in SortedEnums do
           begin
             wr += '    public static property ';
-            var ename_scr := enum_screened_names[e];
+            var ename_scr := enum_escaped_names[e];
             wr += ename_scr;
             wr += ': ';
             loop max_scr_w-ename_scr.Length do
@@ -2979,7 +3026,7 @@ type
             if Body.IsBitfield and (e.Value=0) then continue;
             
             wr += '      if ';
-            wr += enum_names[e];
+            wr += enum_escaped_names[e];
             wr += if Body.IsBitfield then ' in ' else ' = ';
             wr += 'self then'#10;
             
@@ -2992,7 +3039,7 @@ type
               wr += '+'';'#10;
               
               wr += '        left_val := left_val and not ';
-              wr += enum_names[e];
+              wr += enum_escaped_names[e];
               wr += '.val;'#10;
               
               wr += '      end;'#10;
@@ -3053,7 +3100,7 @@ type
           wr += BaseSuffixFor(castable_to.ToSeq.First, false);
           wr += ' = ';
           wr += MakeWriteableName;
-          wr += ''#10;
+          wr += ';'#10;
         end;
         
         wr += '  '#10;
@@ -3094,35 +3141,20 @@ type
         var enums := g.enums as PropListEnumsInGroup;
         if enums=nil then exit;
         
-        log.Otp($'# {g.Name}');
+        log.Otp($'# {g.MakeWriteableName}');
         var api := g.Name.api;
-        var add_enum := procedure(sb: StringBuilder; e: Enum)->
-        begin
-          sb += e.Name.ToString(api, false);
-          sb += '[';
-          sb += e.Value.ToString;
-          sb += ']';
-        end;
+        
+        foreach var gle in enums.GlovalListEnds do
+          log.Otp(gle.Name.ToString(api, false));
         
         foreach var r: EnumWithPropList in enums.Enums do
         begin
-          var sb := new StringBuilder(#9'Prop ');
-          add_enum(sb, r.Enum);
-          sb += ': Type=';
-          sb += r.PropertyT.ToString(false);
-          if r.IsValueList then
-          begin
-            sb += ' ListEnd=';
-            add_enum(sb, r.ValueListEnd);
-          end;
-          log.Otp(sb.ToString);
-        end;
-        
-        foreach var gle in enums.GlovalListEnds do
-        begin
-          var sb := new StringBuilder(#9'GLE ');
-          add_enum(sb, gle);
-          log.Otp(sb.ToString);
+          log.Otp($'--- {r.Enum.Name.ToString(api, false)}');
+          log.Otp('!type');
+          log.Otp(r.PropertyT.ToString(false));
+          if not r.IsValueList then continue;
+          log.Otp('!list_end');
+          log.Otp(r.ValueListEnd.Name.ToString(api, false));
         end;
         
         log.Otp('');
@@ -3219,7 +3251,7 @@ type
         wr += MakeWriteableName;
         wr += ' read default(';
         wr += MakeWriteableName;
-        wr += ')'#10;
+        wr += ');'#10;
         
         wr += '    '#10;
         
@@ -3227,7 +3259,7 @@ type
         wr += base_tname;
         wr += '>;'#10;
         wr += '    public static property Size: integer read val_sz;'#10;
-        wr += '    public property ValSize: integer read val_sz;'#10;
+        wr += '    public property ValSize: integer read integer(val_sz);'#10;
         
         wr += '    '#10;
         
@@ -3237,7 +3269,7 @@ type
         
         wr += '    '#10;
         
-        wr += '  end'#10;
+        wr += '  end;'#10;
         
         wr += '  '#10;
       end;
@@ -3286,7 +3318,7 @@ type
     
     public procedure MarkReferenced := base.MarkReferenced;
     
-    public function ToString(write_vis: boolean?): string;
+    public function ToString(write_vis: boolean?; escape: boolean): string;
     begin
       var sb := new StringBuilder;
       if write_vis=nil then
@@ -3296,6 +3328,8 @@ type
         sb += vis;
         sb += ' ';
       end;
+      if escape and (base.Name in pas_keywords) then
+        sb += '&';
       sb += base.ToString(true);
       if def_val<>nil then
       begin
@@ -3304,7 +3338,7 @@ type
       end;
       Result := sb.ToString;
     end;
-    public function ToString: string; override := ToString(nil);
+    public function ToString: string; override := ToString(nil, false);
     
   end;
   
@@ -3492,7 +3526,7 @@ type
           if nf<>nil then
           begin
             var f := nf.Value;
-            wr += f.ToString(true);
+            wr += f.ToString(true, true);
             wr += ';';
             if f.descr<>nil then
             begin
@@ -3510,7 +3544,7 @@ type
           
           wr += '    public constructor(';
           wr.WriteSeparated(ctor_fields,
-            (wr,f)->(wr += f.ToString(false)), '; '
+            (wr,f)->(wr += f.ToString(false, true)), '; '
           );
           wr += ');'#10;
           
@@ -3523,6 +3557,8 @@ type
             loop max_ctor_field_w-f.base.Name.Length do
               wr += ' ';
             wr += ' := ';
+            if f.base.Name in pas_keywords then
+              wr += '&';
             wr += f.base.Name;
             wr += ';'#10;
           end;
@@ -3611,7 +3647,12 @@ type
         begin
           wr += '(';
           wr.WriteSeparated(ExistingParameters,
-            (wr,par)->(wr += par.ToString(true)), '; '
+            (wr,par)->
+            begin
+              if par.Name in pas_keywords then
+                wr += '&';
+              wr += par.ToString(true);
+            end, '; '
           );
           wr += ')';
         end;

@@ -40,9 +40,9 @@ type
       pfd.nVersion := 1;
       
       pfd.dwFlags :=
-        GDI_PixelFormatFlags.PFD_DRAW_TO_WINDOW or
-        GDI_PixelFormatFlags.PFD_SUPPORT_OPENGL or
-        GDI_PixelFormatFlags.PFD_DOUBLEBUFFER
+        gdiPixelFormatFlags.DRAW_TO_WINDOW or
+        gdiPixelFormatFlags.SUPPORT_OPENGL or
+        gdiPixelFormatFlags.DOUBLEBUFFER
       ;
       pfd.cColorBits := 24;
       pfd.cDepthBits := 16;

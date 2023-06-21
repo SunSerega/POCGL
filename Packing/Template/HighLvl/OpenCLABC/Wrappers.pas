@@ -1,8 +1,8 @@
-﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
-uses Fixers       in '..\..\..\Utils\Fixers';
-uses CodeGen      in '..\..\..\Utils\CodeGen';
+﻿uses '..\..\..\..\POCGL_Utils';
+uses '..\..\..\..\Utils\Fixers';
+uses '..\..\..\..\Utils\CodeGen';
 
-uses PackingUtils in '..\PackingUtils';
+uses '..\..\Common\PackingUtils';
 
 type
   TypeDescr = sealed class

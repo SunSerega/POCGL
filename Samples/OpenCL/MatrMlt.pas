@@ -11,7 +11,7 @@ const
   
 begin
   Randomize(0); // чтоб при каждом выполнении были одинаковые результаты
-  var ec: ErrorCode;
+  var ec: clErrorCode;
   
   // Инициализация
   
@@ -19,12 +19,12 @@ begin
   cl.GetPlatformIDs(1, platform, IntPtr.Zero).RaiseIfError;
   
   var device: cl_device_id;
-  cl.GetDeviceIDs(platform, DeviceType.DEVICE_TYPE_ALL, 1,device,IntPtr.Zero).RaiseIfError;
+  cl.GetDeviceIDs(platform, clDeviceType.DEVICE_TYPE_ALL, 1,device,IntPtr.Zero).RaiseIfError;
   
   var context := cl.CreateContext(IntPtr.Zero, 1,device, nil,IntPtr.Zero, ec);
   ec.RaiseIfError;
   
-  var command_queue := cl.CreateCommandQueue(context, device, CommandQueueProperties.NONE, ec);
+  var command_queue := cl.CreateCommandQueue(context, device, clCommandQueueProperties.NONE, ec);
   ec.RaiseIfError;
   
   // Чтение и компиляция .cl файла
@@ -46,21 +46,11 @@ begin
   end;
   
   ec := cl.BuildProgram(prog, 1,device, nil, nil,IntPtr.Zero);
-  if ec=ErrorCode.BUILD_PROGRAM_FAILURE then
+  if ec=clErrorCode.BUILD_PROGRAM_FAILURE then
   begin
-    var sz: UIntPtr;
-    cl.GetProgramBuildInfo(prog, device, ProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,IntPtr.Zero,sz).RaiseIfError;
-    
-    var ptr := System.Runtime.InteropServices.Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-    try
-      cl.GetProgramBuildInfo(prog, device, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,ptr,IntPtr.Zero).RaiseIfError;
-      raise new InvalidOperationException(
-        System.Runtime.InteropServices.Marshal.PtrToStringAnsi(ptr)
-      );
-    finally
-      System.Runtime.InteropServices.Marshal.FreeHGlobal(ptr);
-    end;
-    
+    var log: string;
+    cl.GetProgramBuildInfo_PROGRAM_BUILD_LOG(prog, device, log).RaiseIfError;
+    raise new InvalidOperationException( log );
   end else
     ec.RaiseIfError;
   
@@ -75,29 +65,29 @@ begin
   Writeln('Матрица A:');
   var A := MatrRandomReal(MatrW,MatrW,0,1).Println;
   Writeln;
-  var A_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(MatrByteSize),nil, ec);
+  var A_buf := cl.CreateBuffer(context, clMemFlags.MEM_READ_WRITE, new UIntPtr(MatrByteSize),nil, ec);
   ec.RaiseIfError;
-  cl.EnqueueWriteBuffer(command_queue, A_buf, Bool.NON_BLOCKING, UIntPtr.Zero,new UIntPtr(MatrByteSize), A[0,0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
+  cl.EnqueueWriteBuffer(command_queue, A_buf, clBool.NON_BLOCKING, UIntPtr.Zero,new UIntPtr(MatrByteSize), A[0,0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
   
   Writeln('Матрица B:');
   var B := MatrRandomReal(MatrW,MatrW,0,1).Println;
   Writeln;
-  var B_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(MatrByteSize),nil, ec);
+  var B_buf := cl.CreateBuffer(context, clMemFlags.MEM_READ_WRITE, new UIntPtr(MatrByteSize),nil, ec);
   ec.RaiseIfError;
-  cl.EnqueueWriteBuffer(command_queue, B_buf, Bool.NON_BLOCKING, UIntPtr.Zero,new UIntPtr(MatrByteSize), B[0,0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
+  cl.EnqueueWriteBuffer(command_queue, B_buf, clBool.NON_BLOCKING, UIntPtr.Zero,new UIntPtr(MatrByteSize), B[0,0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
   
   Writeln('Вектор V1:');
   var V1 := ArrRandomReal(MatrW);
   V1.Println;
   Writeln;
-  var V1_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(VecByteSize),nil, ec);
+  var V1_buf := cl.CreateBuffer(context, clMemFlags.MEM_READ_WRITE, new UIntPtr(VecByteSize),nil, ec);
   ec.RaiseIfError;
-  cl.EnqueueWriteBuffer(command_queue, V1_buf, Bool.NON_BLOCKING, UIntPtr.Zero,new UIntPtr(VecByteSize), V1[0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
+  cl.EnqueueWriteBuffer(command_queue, V1_buf, clBool.NON_BLOCKING, UIntPtr.Zero,new UIntPtr(VecByteSize), V1[0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
   
-  var C_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(MatrByteSize),nil, ec);
+  var C_buf := cl.CreateBuffer(context, clMemFlags.MEM_READ_WRITE, new UIntPtr(MatrByteSize),nil, ec);
   ec.RaiseIfError;
   
-  var V2_buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(VecByteSize),nil, ec);
+  var V2_buf := cl.CreateBuffer(context, clMemFlags.MEM_READ_WRITE, new UIntPtr(VecByteSize),nil, ec);
   ec.RaiseIfError;
   
   var MatrWParam := MatrW;
@@ -128,9 +118,9 @@ begin
   
   // Чтение и вывод результата
   
-  cl.EnqueueReadBuffer(command_queue, C_buf,  Bool.NON_BLOCKING, UIntPtr.Zero, new UIntPtr(MatrByteSize), A[0,0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
+  cl.EnqueueReadBuffer(command_queue, C_buf,  clBool.NON_BLOCKING, UIntPtr.Zero, new UIntPtr(MatrByteSize), A[0,0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
   
-  cl.EnqueueReadBuffer(command_queue, V2_buf, Bool.NON_BLOCKING, UIntPtr.Zero, new UIntPtr(VecByteSize), V1[0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
+  cl.EnqueueReadBuffer(command_queue, V2_buf, clBool.NON_BLOCKING, UIntPtr.Zero, new UIntPtr(VecByteSize), V1[0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
   
   cl.Finish(command_queue).RaiseIfError;
   

@@ -1,8 +1,8 @@
-﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
+﻿uses '..\..\..\..\POCGL_Utils';
 
-uses CodeGen      in '..\..\..\Utils\CodeGen';
-uses Fixers       in '..\..\..\Utils\Fixers';
-uses ATask        in '..\..\..\Utils\ATask';
+uses '..\..\..\..\Utils\CodeGen';
+uses '..\..\..\..\Utils\Fixers';
+uses '..\..\..\..\Utils\ATask';
 
 const MaxQueueStaticArraySize = 7;
 
@@ -115,7 +115,7 @@ begin
           foreach var c in 0+(2..MaxQueueStaticArraySize) do
           begin
             var WriteNumbered := procedure(wr: Writer; a: string)->
-            wr.WriteNumbered(c, a);
+              wr.WriteNumbered(c, a);
             
             var WriteTInps := procedure(wr: Writer)->
             if c=0 then wr += 'TInp' else

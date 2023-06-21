@@ -1209,8 +1209,8 @@ function operator*(m1: Mtr2f; m2: Mtr2x3f); extensionmethod :=
     new Vec2f(m1.Row0*m2.Col2, m1.Row1*m2.Col2)
   );
 
-function operator implicit(m: Mtr2x3f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, default(Vec2d));
-function operator implicit(m: Mtr2x3d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, default(Vec2f));
+function operator implicit(m: Mtr2x3f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator implicit(m: Mtr2x3d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
 
 function Transpose(self: Mtr2x3f); extensionmethod :=
   Mtr3x2f.FromCols(self.Row0, self.Row1);
@@ -1235,11 +1235,11 @@ function operator*(m1: Mtr2d; m2: Mtr2x4d); extensionmethod :=
 function operator implicit(m: Mtr2x4d): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
 function operator explicit(m: Mtr2f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
 
-function operator implicit(m: Mtr2x4d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, default(Vec2d));
-function operator explicit(m: Mtr2x3d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
+function operator implicit(m: Mtr2x4d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
 
-function operator implicit(m: Mtr2x4d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, default(Vec2f));
-function operator explicit(m: Mtr2x3f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
+function operator implicit(m: Mtr2x4d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
 
 function Transpose(self: Mtr2x4d); extensionmethod :=
   Mtr4x2d.FromCols(self.Row0, self.Row1);
@@ -1264,14 +1264,14 @@ function operator*(m1: Mtr2f; m2: Mtr2x4f); extensionmethod :=
     new Vec2f(m1.Row0*m2.Col3, m1.Row1*m2.Col3)
   );
 
-function operator implicit(m: Mtr2x4f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, default(Vec2d));
-function operator explicit(m: Mtr2x3d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, default(Vec2f), default(Vec2f));
+function operator implicit(m: Mtr2x4f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
 
-function operator implicit(m: Mtr2x4f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, default(Vec2f));
-function operator explicit(m: Mtr2x3f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, default(Vec2f), default(Vec2f));
+function operator implicit(m: Mtr2x4f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr2x3f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
 
-function operator implicit(m: Mtr2x4f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
-function operator implicit(m: Mtr2x4d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, default(Vec2f), default(Vec2f));
+function operator implicit(m: Mtr2x4f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator implicit(m: Mtr2x4d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
 
 function Transpose(self: Mtr2x4f); extensionmethod :=
   Mtr4x2f.FromCols(self.Row0, self.Row1);
@@ -1294,7 +1294,7 @@ function operator*(m1: Mtr3x2d; m2: Mtr2d); extensionmethod :=
 function operator implicit(m: Mtr3x2d): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
 function operator explicit(m: Mtr2f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1));
 
-function operator explicit(m: Mtr3x2d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3x2d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, default(Vec2d));
 function operator explicit(m: Mtr2x3d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1));
 
 function operator*(m1: Mtr3x2d; m2: Mtr2x3d); extensionmethod :=
@@ -1310,10 +1310,10 @@ function operator*(m1: Mtr2x3d; m2: Mtr3x2d); extensionmethod :=
     new Vec2d(m1.Row0*m2.Col1, m1.Row1*m2.Col1)
   );
 
-function operator explicit(m: Mtr3x2d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3x2d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, default(Vec2f));
 function operator explicit(m: Mtr2x3f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1));
 
-function operator explicit(m: Mtr3x2d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
+function operator explicit(m: Mtr3x2d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
 function operator explicit(m: Mtr2x4d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1));
 
 function operator*(m1: Mtr3x2d; m2: Mtr2x4d); extensionmethod :=
@@ -1324,7 +1324,7 @@ function operator*(m1: Mtr3x2d; m2: Mtr2x4d); extensionmethod :=
     new Vec3d(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3)
   );
 
-function operator explicit(m: Mtr3x2d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
+function operator explicit(m: Mtr3x2d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, default(Vec2f), default(Vec2f));
 function operator explicit(m: Mtr2x4f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1));
 
 function Transpose(self: Mtr3x2d); extensionmethod :=
@@ -1348,10 +1348,10 @@ function operator*(m1: Mtr3x2f; m2: Mtr2f); extensionmethod :=
     new Vec3f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1)
   );
 
-function operator explicit(m: Mtr3x2f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3x2f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, default(Vec2d));
 function operator explicit(m: Mtr2x3d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1));
 
-function operator explicit(m: Mtr3x2f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3x2f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, default(Vec2f));
 function operator explicit(m: Mtr2x3f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1));
 
 function operator*(m1: Mtr3x2f; m2: Mtr2x3f); extensionmethod :=
@@ -1367,10 +1367,10 @@ function operator*(m1: Mtr2x3f; m2: Mtr3x2f); extensionmethod :=
     new Vec2f(m1.Row0*m2.Col1, m1.Row1*m2.Col1)
   );
 
-function operator explicit(m: Mtr3x2f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
+function operator explicit(m: Mtr3x2f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
 function operator explicit(m: Mtr2x4d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1));
 
-function operator explicit(m: Mtr3x2f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
+function operator explicit(m: Mtr3x2f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, default(Vec2f), default(Vec2f));
 function operator explicit(m: Mtr2x4f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1));
 
 function operator*(m1: Mtr3x2f; m2: Mtr2x4f); extensionmethod :=
@@ -1400,7 +1400,7 @@ function operator implicit(m: Mtr3d): Mtr2f; extensionmethod := Mtr2f.FromCols(m
 function operator explicit(m: Mtr2f): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr3d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3d): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0));
+function operator explicit(m: Mtr2x3d): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), Vec3d(m.Col2));
 
 function operator*(m1: Mtr2x3d; m2: Mtr3d); extensionmethod :=
   Mtr2x3d.FromCols(
@@ -1410,16 +1410,16 @@ function operator*(m1: Mtr2x3d; m2: Mtr3d); extensionmethod :=
   );
 
 function operator implicit(m: Mtr3d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3f): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0));
+function operator explicit(m: Mtr2x3f): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), Vec3d(m.Col2));
 
 function operator explicit(m: Mtr3d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
-function operator explicit(m: Mtr2x4d): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0));
+function operator explicit(m: Mtr2x4d): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), Vec3d(m.Col2));
 
 function operator explicit(m: Mtr3d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
-function operator explicit(m: Mtr2x4f): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0));
+function operator explicit(m: Mtr2x4f): Mtr3d; extensionmethod := Mtr3d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), Vec3d(m.Col2));
 
 function operator implicit(m: Mtr3d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2d): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3x2d): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, new Vec3d(0.0, 0.0, 1.0));
 
 function operator*(m1: Mtr3d; m2: Mtr3x2d); extensionmethod :=
   Mtr3x2d.FromCols(
@@ -1428,7 +1428,7 @@ function operator*(m1: Mtr3d; m2: Mtr3x2d); extensionmethod :=
   );
 
 function operator implicit(m: Mtr3d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2f): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3x2f): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, new Vec3d(0.0, 0.0, 1.0));
 
 function operator*(m1: Mtr3d; m2: Mtr3d); extensionmethod :=
   Mtr3d.FromCols(
@@ -1453,10 +1453,10 @@ function operator implicit(m: Mtr3f): Mtr2f; extensionmethod := Mtr2f.FromCols(m
 function operator explicit(m: Mtr2f): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr3f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3d): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0));
+function operator explicit(m: Mtr2x3d): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), Vec3f(m.Col2));
 
 function operator implicit(m: Mtr3f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3f): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0));
+function operator explicit(m: Mtr2x3f): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), Vec3f(m.Col2));
 
 function operator*(m1: Mtr2x3f; m2: Mtr3f); extensionmethod :=
   Mtr2x3f.FromCols(
@@ -1466,16 +1466,16 @@ function operator*(m1: Mtr2x3f; m2: Mtr3f); extensionmethod :=
   );
 
 function operator explicit(m: Mtr3f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
-function operator explicit(m: Mtr2x4d): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0));
+function operator explicit(m: Mtr2x4d): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), Vec3f(m.Col2));
 
 function operator explicit(m: Mtr3f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
-function operator explicit(m: Mtr2x4f): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0));
+function operator explicit(m: Mtr2x4f): Mtr3f; extensionmethod := Mtr3f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), Vec3f(m.Col2));
 
 function operator implicit(m: Mtr3f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2d): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3x2d): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, new Vec3f(0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr3f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2f): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr3x2f): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, new Vec3f(0.0, 0.0, 1.0));
 
 function operator*(m1: Mtr3f; m2: Mtr3x2f); extensionmethod :=
   Mtr3x2f.FromCols(
@@ -1509,7 +1509,7 @@ function operator implicit(m: Mtr3x4d): Mtr2f; extensionmethod := Mtr2f.FromCols
 function operator explicit(m: Mtr2f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(0.0, 0.0, 1.0), default(Vec3d));
 
 function operator implicit(m: Mtr3x4d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0), default(Vec3d));
+function operator explicit(m: Mtr2x3d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), Vec3d(m.Col2), default(Vec3d));
 
 function operator*(m1: Mtr2x3d; m2: Mtr3x4d); extensionmethod :=
   Mtr2x4d.FromCols(
@@ -1520,19 +1520,19 @@ function operator*(m1: Mtr2x3d; m2: Mtr3x4d); extensionmethod :=
   );
 
 function operator implicit(m: Mtr3x4d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0), default(Vec3d));
+function operator explicit(m: Mtr2x3f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), Vec3d(m.Col2), default(Vec3d));
 
-function operator implicit(m: Mtr3x4d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
-function operator explicit(m: Mtr2x4d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0), default(Vec3d));
+function operator implicit(m: Mtr3x4d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr2x4d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), Vec3d(m.Col2), Vec3d(m.Col3));
 
-function operator implicit(m: Mtr3x4d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
-function operator explicit(m: Mtr2x4f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), new Vec3d(m.val02, m.val12, 1.0), default(Vec3d));
+function operator implicit(m: Mtr3x4d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr2x4f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(Vec3d(m.Col0), Vec3d(m.Col1), Vec3d(m.Col2), Vec3d(m.Col3));
 
 function operator implicit(m: Mtr3x4d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3d));
+function operator explicit(m: Mtr3x2d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, new Vec3d(0.0, 0.0, 1.0), default(Vec3d));
 
 function operator implicit(m: Mtr3x4d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3d));
+function operator explicit(m: Mtr3x2f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, new Vec3d(0.0, 0.0, 1.0), default(Vec3d));
 
 function operator implicit(m: Mtr3x4d): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
 function operator explicit(m: Mtr3d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3d));
@@ -1564,10 +1564,10 @@ function operator implicit(m: Mtr3x4f): Mtr2f; extensionmethod := Mtr2f.FromCols
 function operator explicit(m: Mtr2f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(0.0, 0.0, 1.0), default(Vec3f));
 
 function operator implicit(m: Mtr3x4f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0), default(Vec3f));
+function operator explicit(m: Mtr2x3d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), Vec3f(m.Col2), default(Vec3f));
 
 function operator implicit(m: Mtr3x4f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0), default(Vec3f));
+function operator explicit(m: Mtr2x3f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), Vec3f(m.Col2), default(Vec3f));
 
 function operator*(m1: Mtr2x3f; m2: Mtr3x4f); extensionmethod :=
   Mtr2x4f.FromCols(
@@ -1577,17 +1577,17 @@ function operator*(m1: Mtr2x3f; m2: Mtr3x4f); extensionmethod :=
     new Vec2f(m1.Row0*m2.Col3, m1.Row1*m2.Col3)
   );
 
-function operator implicit(m: Mtr3x4f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
-function operator explicit(m: Mtr2x4d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0), default(Vec3f));
+function operator implicit(m: Mtr3x4f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr2x4d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), Vec3f(m.Col2), Vec3f(m.Col3));
 
-function operator implicit(m: Mtr3x4f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
-function operator explicit(m: Mtr2x4f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), new Vec3f(m.val02, m.val12, 1.0), default(Vec3f));
+function operator implicit(m: Mtr3x4f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr2x4f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(Vec3f(m.Col0), Vec3f(m.Col1), Vec3f(m.Col2), Vec3f(m.Col3));
 
 function operator implicit(m: Mtr3x4f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3f));
+function operator explicit(m: Mtr3x2d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, new Vec3f(0.0, 0.0, 1.0), default(Vec3f));
 
 function operator implicit(m: Mtr3x4f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3f));
+function operator explicit(m: Mtr3x2f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, new Vec3f(0.0, 0.0, 1.0), default(Vec3f));
 
 function operator implicit(m: Mtr3x4f): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
 function operator explicit(m: Mtr3d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3f));
@@ -1603,8 +1603,8 @@ function operator*(m1: Mtr3f; m2: Mtr3x4f); extensionmethod :=
     new Vec3f(m1.Row0*m2.Col3, m1.Row1*m2.Col3, m1.Row2*m2.Col3)
   );
 
-function operator implicit(m: Mtr3x4f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3d));
-function operator implicit(m: Mtr3x4d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3f));
+function operator implicit(m: Mtr3x4f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator implicit(m: Mtr3x4d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
 
 function Transpose(self: Mtr3x4f); extensionmethod :=
   Mtr4x3f.FromCols(self.Row0, self.Row1, self.Row2);
@@ -1627,7 +1627,7 @@ function operator*(m1: Mtr4x2d; m2: Mtr2d); extensionmethod :=
 function operator implicit(m: Mtr4x2d): Mtr2f; extensionmethod := Mtr2f.FromCols(m.Col0, m.Col1);
 function operator explicit(m: Mtr2f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
 
-function operator explicit(m: Mtr4x2d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x2d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, default(Vec2d));
 function operator explicit(m: Mtr2x3d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
 
 function operator*(m1: Mtr4x2d; m2: Mtr2x3d); extensionmethod :=
@@ -1637,10 +1637,10 @@ function operator*(m1: Mtr4x2d; m2: Mtr2x3d); extensionmethod :=
     new Vec4d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2)
   );
 
-function operator explicit(m: Mtr4x2d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x2d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, default(Vec2f));
 function operator explicit(m: Mtr2x3f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
 
-function operator explicit(m: Mtr4x2d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec2d(0.0, 0.0));
+function operator explicit(m: Mtr4x2d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
 function operator explicit(m: Mtr2x4d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
 
 function operator*(m1: Mtr4x2d; m2: Mtr2x4d); extensionmethod :=
@@ -1657,7 +1657,7 @@ function operator*(m1: Mtr2x4d; m2: Mtr4x2d); extensionmethod :=
     new Vec2d(m1.Row0*m2.Col1, m1.Row1*m2.Col1)
   );
 
-function operator explicit(m: Mtr4x2d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec2f(0.0, 0.0));
+function operator explicit(m: Mtr4x2d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, default(Vec2f), default(Vec2f));
 function operator explicit(m: Mtr2x4f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
 
 function operator implicit(m: Mtr4x2d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
@@ -1666,13 +1666,13 @@ function operator explicit(m: Mtr3x2d): Mtr4x2d; extensionmethod := Mtr4x2d.From
 function operator implicit(m: Mtr4x2d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
 function operator explicit(m: Mtr3x2f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
 
-function operator explicit(m: Mtr4x2d): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x2d): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, new Vec3d(0.0, 0.0, 1.0));
 function operator explicit(m: Mtr3d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
 
-function operator explicit(m: Mtr4x2d): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x2d): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, new Vec3f(0.0, 0.0, 1.0));
 function operator explicit(m: Mtr3f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
 
-function operator explicit(m: Mtr4x2d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec3d(0.0, 0.0, 0.0));
+function operator explicit(m: Mtr4x2d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, new Vec3d(0.0, 0.0, 1.0), default(Vec3d));
 function operator explicit(m: Mtr3x4d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
 
 function operator*(m1: Mtr3x4d; m2: Mtr4x2d); extensionmethod :=
@@ -1681,7 +1681,7 @@ function operator*(m1: Mtr3x4d; m2: Mtr4x2d); extensionmethod :=
     new Vec3d(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1)
   );
 
-function operator explicit(m: Mtr4x2d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec3f(0.0, 0.0, 0.0));
+function operator explicit(m: Mtr4x2d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, new Vec3f(0.0, 0.0, 1.0), default(Vec3f));
 function operator explicit(m: Mtr3x4f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1));
 
 function Transpose(self: Mtr4x2d); extensionmethod :=
@@ -1705,10 +1705,10 @@ function operator*(m1: Mtr4x2f; m2: Mtr2f); extensionmethod :=
     new Vec4f(m1.Row0*m2.Col1, m1.Row1*m2.Col1, m1.Row2*m2.Col1, m1.Row3*m2.Col1)
   );
 
-function operator explicit(m: Mtr4x2f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x2f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, default(Vec2d));
 function operator explicit(m: Mtr2x3d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
 
-function operator explicit(m: Mtr4x2f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x2f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, default(Vec2f));
 function operator explicit(m: Mtr2x3f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
 
 function operator*(m1: Mtr4x2f; m2: Mtr2x3f); extensionmethod :=
@@ -1718,10 +1718,10 @@ function operator*(m1: Mtr4x2f; m2: Mtr2x3f); extensionmethod :=
     new Vec4f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2)
   );
 
-function operator explicit(m: Mtr4x2f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec2d(0.0, 0.0));
+function operator explicit(m: Mtr4x2f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, default(Vec2d), default(Vec2d));
 function operator explicit(m: Mtr2x4d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
 
-function operator explicit(m: Mtr4x2f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec2f(0.0, 0.0));
+function operator explicit(m: Mtr4x2f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, default(Vec2f), default(Vec2f));
 function operator explicit(m: Mtr2x4f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
 
 function operator*(m1: Mtr4x2f; m2: Mtr2x4f); extensionmethod :=
@@ -1744,16 +1744,16 @@ function operator explicit(m: Mtr3x2d): Mtr4x2f; extensionmethod := Mtr4x2f.From
 function operator implicit(m: Mtr4x2f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
 function operator explicit(m: Mtr3x2f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
 
-function operator explicit(m: Mtr4x2f): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x2f): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, new Vec3d(0.0, 0.0, 1.0));
 function operator explicit(m: Mtr3d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
 
-function operator explicit(m: Mtr4x2f): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x2f): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, new Vec3f(0.0, 0.0, 1.0));
 function operator explicit(m: Mtr3f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
 
-function operator explicit(m: Mtr4x2f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec3d(0.0, 0.0, 0.0));
+function operator explicit(m: Mtr4x2f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, new Vec3d(0.0, 0.0, 1.0), default(Vec3d));
 function operator explicit(m: Mtr3x4d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
 
-function operator explicit(m: Mtr4x2f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec3f(0.0, 0.0, 0.0));
+function operator explicit(m: Mtr4x2f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, new Vec3f(0.0, 0.0, 1.0), default(Vec3f));
 function operator explicit(m: Mtr3x4f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1));
 
 function operator*(m1: Mtr3x4f; m2: Mtr4x2f); extensionmethod :=
@@ -1781,13 +1781,13 @@ function operator implicit(m: Mtr4x3d): Mtr2f; extensionmethod := Mtr2f.FromCols
 function operator explicit(m: Mtr2f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(0.0, 0.0, 1.0, 0.0));
 
 function operator implicit(m: Mtr4x3d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0));
+function operator explicit(m: Mtr2x3d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
 
 function operator implicit(m: Mtr4x3d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0));
+function operator explicit(m: Mtr2x3f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
 
-function operator explicit(m: Mtr4x3d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
-function operator explicit(m: Mtr2x4d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0));
+function operator explicit(m: Mtr4x3d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
+function operator explicit(m: Mtr2x4d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
 
 function operator*(m1: Mtr2x4d; m2: Mtr4x3d); extensionmethod :=
   Mtr2x3d.FromCols(
@@ -1796,11 +1796,11 @@ function operator*(m1: Mtr2x4d; m2: Mtr4x3d); extensionmethod :=
     new Vec2d(m1.Row0*m2.Col2, m1.Row1*m2.Col2)
   );
 
-function operator explicit(m: Mtr4x3d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
-function operator explicit(m: Mtr2x4f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0));
+function operator explicit(m: Mtr4x3d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
+function operator explicit(m: Mtr2x4f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
 
 function operator implicit(m: Mtr4x3d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
+function operator explicit(m: Mtr3x2d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(0.0, 0.0, 1.0, 0.0));
 
 function operator*(m1: Mtr4x3d; m2: Mtr3x2d); extensionmethod :=
   Mtr4x2d.FromCols(
@@ -1809,7 +1809,7 @@ function operator*(m1: Mtr4x3d; m2: Mtr3x2d); extensionmethod :=
   );
 
 function operator implicit(m: Mtr4x3d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
+function operator explicit(m: Mtr3x2f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(0.0, 0.0, 1.0, 0.0));
 
 function operator implicit(m: Mtr4x3d): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
 function operator explicit(m: Mtr3d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
@@ -1824,7 +1824,7 @@ function operator*(m1: Mtr4x3d; m2: Mtr3d); extensionmethod :=
 function operator implicit(m: Mtr4x3d): Mtr3f; extensionmethod := Mtr3f.FromCols(m.Col0, m.Col1, m.Col2);
 function operator explicit(m: Mtr3f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
 
-function operator explicit(m: Mtr4x3d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr4x3d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3d));
 function operator explicit(m: Mtr3x4d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
 
 function operator*(m1: Mtr4x3d; m2: Mtr3x4d); extensionmethod :=
@@ -1842,14 +1842,14 @@ function operator*(m1: Mtr3x4d; m2: Mtr4x3d); extensionmethod :=
     new Vec3d(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2)
   );
 
-function operator explicit(m: Mtr4x3d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr4x3d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3f));
 function operator explicit(m: Mtr3x4f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2));
 
 function operator implicit(m: Mtr4x3d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr4x2d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x2d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(m.Col0, m.Col1, new Vec4d(0.0, 0.0, 1.0, 0.0));
 
 function operator implicit(m: Mtr4x3d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr4x2f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x2f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(m.Col0, m.Col1, new Vec4d(0.0, 0.0, 1.0, 0.0));
 
 function Transpose(self: Mtr4x3d); extensionmethod :=
   Mtr3x4d.FromCols(self.Row0, self.Row1, self.Row2, self.Row3);
@@ -1867,16 +1867,16 @@ function operator implicit(m: Mtr4x3f): Mtr2f; extensionmethod := Mtr2f.FromCols
 function operator explicit(m: Mtr2f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(0.0, 0.0, 1.0, 0.0));
 
 function operator implicit(m: Mtr4x3f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0));
+function operator explicit(m: Mtr2x3d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
 
 function operator implicit(m: Mtr4x3f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0));
+function operator explicit(m: Mtr2x3f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
 
-function operator explicit(m: Mtr4x3f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
-function operator explicit(m: Mtr2x4d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0));
+function operator explicit(m: Mtr4x3f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2d));
+function operator explicit(m: Mtr2x4d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
 
-function operator explicit(m: Mtr4x3f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
-function operator explicit(m: Mtr2x4f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0));
+function operator explicit(m: Mtr4x3f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec2f));
+function operator explicit(m: Mtr2x4f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
 
 function operator*(m1: Mtr2x4f; m2: Mtr4x3f); extensionmethod :=
   Mtr2x3f.FromCols(
@@ -1886,10 +1886,10 @@ function operator*(m1: Mtr2x4f; m2: Mtr4x3f); extensionmethod :=
   );
 
 function operator implicit(m: Mtr4x3f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
+function operator explicit(m: Mtr3x2d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(0.0, 0.0, 1.0, 0.0));
 
 function operator implicit(m: Mtr4x3f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
+function operator explicit(m: Mtr3x2f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(0.0, 0.0, 1.0, 0.0));
 
 function operator*(m1: Mtr4x3f; m2: Mtr3x2f); extensionmethod :=
   Mtr4x2f.FromCols(
@@ -1910,10 +1910,10 @@ function operator*(m1: Mtr4x3f; m2: Mtr3f); extensionmethod :=
     new Vec4f(m1.Row0*m2.Col2, m1.Row1*m2.Col2, m1.Row2*m2.Col2, m1.Row3*m2.Col2)
   );
 
-function operator explicit(m: Mtr4x3f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr4x3f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3d));
 function operator explicit(m: Mtr3x4d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
 
-function operator explicit(m: Mtr4x3f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr4x3f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, default(Vec3f));
 function operator explicit(m: Mtr3x4f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2));
 
 function operator*(m1: Mtr4x3f; m2: Mtr3x4f); extensionmethod :=
@@ -1932,10 +1932,10 @@ function operator*(m1: Mtr3x4f; m2: Mtr4x3f); extensionmethod :=
   );
 
 function operator implicit(m: Mtr4x3f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr4x2d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x2d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(m.Col0, m.Col1, new Vec4f(0.0, 0.0, 1.0, 0.0));
 
 function operator implicit(m: Mtr4x3f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr4x2f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(m.Col0, m.Col1, m.Col2);
+function operator explicit(m: Mtr4x2f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(m.Col0, m.Col1, new Vec4f(0.0, 0.0, 1.0, 0.0));
 
 function operator implicit(m: Mtr4x3f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(m.Col0, m.Col1, m.Col2);
 function operator implicit(m: Mtr4x3d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(m.Col0, m.Col1, m.Col2);
@@ -1956,13 +1956,13 @@ function operator implicit(m: Mtr4d): Mtr2f; extensionmethod := Mtr2f.FromCols(m
 function operator explicit(m: Mtr2f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(0.0, 0.0, 1.0, 0.0), new Vec4d(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4d): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0), new Vec4d(0.0, 0.0, 0.0, 1.0));
+function operator explicit(m: Mtr2x3d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4d): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0), new Vec4d(0.0, 0.0, 0.0, 1.0));
+function operator explicit(m: Mtr2x3f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4d): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
-function operator explicit(m: Mtr2x4d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0), new Vec4d(m.val03, m.val13, 0.0, 1.0));
+function operator explicit(m: Mtr2x4d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), Vec4d(m.Col3));
 
 function operator*(m1: Mtr2x4d; m2: Mtr4d); extensionmethod :=
   Mtr2x4d.FromCols(
@@ -1973,13 +1973,13 @@ function operator*(m1: Mtr2x4d; m2: Mtr4d); extensionmethod :=
   );
 
 function operator implicit(m: Mtr4d): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
-function operator explicit(m: Mtr2x4f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(m.val02, m.val12, 1.0, 0.0), new Vec4d(m.val03, m.val13, 0.0, 1.0));
+function operator explicit(m: Mtr2x4f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), Vec4d(m.Col3));
 
 function operator implicit(m: Mtr4d): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(0.0, 0.0, 0.0, 1.0));
+function operator explicit(m: Mtr3x2d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(0.0, 0.0, 1.0, 0.0), new Vec4d(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4d): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(0.0, 0.0, 0.0, 1.0));
+function operator explicit(m: Mtr3x2f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), new Vec4d(0.0, 0.0, 1.0, 0.0), new Vec4d(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4d): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
 function operator explicit(m: Mtr3d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(0.0, 0.0, 0.0, 1.0));
@@ -1988,7 +1988,7 @@ function operator implicit(m: Mtr4d): Mtr3f; extensionmethod := Mtr3f.FromCols(m
 function operator explicit(m: Mtr3f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4d): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
-function operator explicit(m: Mtr3x4d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(m.val03, m.val13, m.val23, 1.0));
+function operator explicit(m: Mtr3x4d): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), Vec4d(m.Col3));
 
 function operator*(m1: Mtr3x4d; m2: Mtr4d); extensionmethod :=
   Mtr3x4d.FromCols(
@@ -1999,10 +1999,10 @@ function operator*(m1: Mtr3x4d; m2: Mtr4d); extensionmethod :=
   );
 
 function operator implicit(m: Mtr4d): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
-function operator explicit(m: Mtr3x4f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), new Vec4d(m.val03, m.val13, m.val23, 1.0));
+function operator explicit(m: Mtr3x4f): Mtr4d; extensionmethod := Mtr4d.FromCols(Vec4d(m.Col0), Vec4d(m.Col1), Vec4d(m.Col2), Vec4d(m.Col3));
 
 function operator implicit(m: Mtr4d): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr4x2d): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec4d(0.0, 0.0, 0.0, 1.0));
+function operator explicit(m: Mtr4x2d): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, new Vec4d(0.0, 0.0, 1.0, 0.0), new Vec4d(0.0, 0.0, 0.0, 1.0));
 
 function operator*(m1: Mtr4d; m2: Mtr4x2d); extensionmethod :=
   Mtr4x2d.FromCols(
@@ -2011,10 +2011,10 @@ function operator*(m1: Mtr4d; m2: Mtr4x2d); extensionmethod :=
   );
 
 function operator implicit(m: Mtr4d): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr4x2f): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec4d(0.0, 0.0, 0.0, 1.0));
+function operator explicit(m: Mtr4x2f): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, new Vec4d(0.0, 0.0, 1.0, 0.0), new Vec4d(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4d): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr4x3d): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr4x3d): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec4d(0.0, 0.0, 0.0, 1.0));
 
 function operator*(m1: Mtr4d; m2: Mtr4x3d); extensionmethod :=
   Mtr4x3d.FromCols(
@@ -2024,7 +2024,7 @@ function operator*(m1: Mtr4d; m2: Mtr4x3d); extensionmethod :=
   );
 
 function operator implicit(m: Mtr4d): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr4x3f): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr4x3f): Mtr4d; extensionmethod := Mtr4d.FromCols(m.Col0, m.Col1, m.Col2, new Vec4d(0.0, 0.0, 0.0, 1.0));
 
 function operator*(m1: Mtr4d; m2: Mtr4d); extensionmethod :=
   Mtr4d.FromCols(
@@ -2050,16 +2050,16 @@ function operator implicit(m: Mtr4f): Mtr2f; extensionmethod := Mtr2f.FromCols(m
 function operator explicit(m: Mtr2f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(0.0, 0.0, 1.0, 0.0), new Vec4f(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4f): Mtr2x3d; extensionmethod := Mtr2x3d.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0), new Vec4f(0.0, 0.0, 0.0, 1.0));
+function operator explicit(m: Mtr2x3d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4f): Mtr2x3f; extensionmethod := Mtr2x3f.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr2x3f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0), new Vec4f(0.0, 0.0, 0.0, 1.0));
+function operator explicit(m: Mtr2x3f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4f): Mtr2x4d; extensionmethod := Mtr2x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
-function operator explicit(m: Mtr2x4d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0), new Vec4f(m.val03, m.val13, 0.0, 1.0));
+function operator explicit(m: Mtr2x4d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), Vec4f(m.Col3));
 
 function operator implicit(m: Mtr4f): Mtr2x4f; extensionmethod := Mtr2x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
-function operator explicit(m: Mtr2x4f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(m.val02, m.val12, 1.0, 0.0), new Vec4f(m.val03, m.val13, 0.0, 1.0));
+function operator explicit(m: Mtr2x4f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), Vec4f(m.Col3));
 
 function operator*(m1: Mtr2x4f; m2: Mtr4f); extensionmethod :=
   Mtr2x4f.FromCols(
@@ -2070,10 +2070,10 @@ function operator*(m1: Mtr2x4f; m2: Mtr4f); extensionmethod :=
   );
 
 function operator implicit(m: Mtr4f): Mtr3x2d; extensionmethod := Mtr3x2d.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(0.0, 0.0, 0.0, 1.0));
+function operator explicit(m: Mtr3x2d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(0.0, 0.0, 1.0, 0.0), new Vec4f(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4f): Mtr3x2f; extensionmethod := Mtr3x2f.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr3x2f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(0.0, 0.0, 0.0, 1.0));
+function operator explicit(m: Mtr3x2f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), new Vec4f(0.0, 0.0, 1.0, 0.0), new Vec4f(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4f): Mtr3d; extensionmethod := Mtr3d.FromCols(m.Col0, m.Col1, m.Col2);
 function operator explicit(m: Mtr3d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(0.0, 0.0, 0.0, 1.0));
@@ -2082,10 +2082,10 @@ function operator implicit(m: Mtr4f): Mtr3f; extensionmethod := Mtr3f.FromCols(m
 function operator explicit(m: Mtr3f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4f): Mtr3x4d; extensionmethod := Mtr3x4d.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
-function operator explicit(m: Mtr3x4d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(m.val03, m.val13, m.val23, 1.0));
+function operator explicit(m: Mtr3x4d): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), Vec4f(m.Col3));
 
 function operator implicit(m: Mtr4f): Mtr3x4f; extensionmethod := Mtr3x4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
-function operator explicit(m: Mtr3x4f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), new Vec4f(m.val03, m.val13, m.val23, 1.0));
+function operator explicit(m: Mtr3x4f): Mtr4f; extensionmethod := Mtr4f.FromCols(Vec4f(m.Col0), Vec4f(m.Col1), Vec4f(m.Col2), Vec4f(m.Col3));
 
 function operator*(m1: Mtr3x4f; m2: Mtr4f); extensionmethod :=
   Mtr3x4f.FromCols(
@@ -2096,10 +2096,10 @@ function operator*(m1: Mtr3x4f; m2: Mtr4f); extensionmethod :=
   );
 
 function operator implicit(m: Mtr4f): Mtr4x2d; extensionmethod := Mtr4x2d.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr4x2d): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec4f(0.0, 0.0, 0.0, 1.0));
+function operator explicit(m: Mtr4x2d): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, new Vec4f(0.0, 0.0, 1.0, 0.0), new Vec4f(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4f): Mtr4x2f; extensionmethod := Mtr4x2f.FromCols(m.Col0, m.Col1);
-function operator explicit(m: Mtr4x2f): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec4f(0.0, 0.0, 0.0, 1.0));
+function operator explicit(m: Mtr4x2f): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, new Vec4f(0.0, 0.0, 1.0, 0.0), new Vec4f(0.0, 0.0, 0.0, 1.0));
 
 function operator*(m1: Mtr4f; m2: Mtr4x2f); extensionmethod :=
   Mtr4x2f.FromCols(
@@ -2108,10 +2108,10 @@ function operator*(m1: Mtr4f; m2: Mtr4x2f); extensionmethod :=
   );
 
 function operator implicit(m: Mtr4f): Mtr4x3d; extensionmethod := Mtr4x3d.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr4x3d): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr4x3d): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec4f(0.0, 0.0, 0.0, 1.0));
 
 function operator implicit(m: Mtr4f): Mtr4x3f; extensionmethod := Mtr4x3f.FromCols(m.Col0, m.Col1, m.Col2);
-function operator explicit(m: Mtr4x3f): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, m.Col2, m.Col3);
+function operator explicit(m: Mtr4x3f): Mtr4f; extensionmethod := Mtr4f.FromCols(m.Col0, m.Col1, m.Col2, new Vec4f(0.0, 0.0, 0.0, 1.0));
 
 function operator*(m1: Mtr4f; m2: Mtr4x3f); extensionmethod :=
   Mtr4x3f.FromCols(

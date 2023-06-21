@@ -1628,7 +1628,7 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_PARTITION_MAX_SUB_DEVICES                                 | *                | var UInt32                                                | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_PARTITION_PROPERTIES                                      | *                | var array of clDevicePartitionProperty                    | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_PARTITION_PROPERTIES                                      | UInt32           | var clDevicePartitionProperty                             | *                    |
-	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_PARTITION_AFFINITY_DOMAIN                                 | *                | var clBool                                                | *                    |
+	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_PARTITION_AFFINITY_DOMAIN                                 | *                | var clDeviceAffinityDomain                                | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_PARTITION_TYPE                                            | *                | var array of clDevicePartitionProperty                    | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_PARTITION_TYPE                                            | UInt32           | var clDevicePartitionProperty                             | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_REFERENCE_COUNT                                           | *                | var UInt32                                                | *                    |
@@ -2177,29 +2177,29 @@ param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
 21
-	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | var T                      | var UIntPtr          |
-	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | var T                      | IntPtr               |
-	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | pointer                    | var UIntPtr          |
-	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | pointer                    | IntPtr               |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_REFERENCE_COUNT            | *                | var UInt32                 | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_CONTEXT                    | *                | var cl_context             | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_NUM_DEVICES                | *                | var UInt32                 | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_DEVICES                    | *                | var array of cl_device_id  | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_DEVICES                    | UInt32           | var cl_device_id           | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_SOURCE                     | *                | var string                 | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_BINARY_SIZES               | *                | var array of UIntPtr       | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_BINARY_SIZES               | UInt32           | var UIntPtr                | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_BINARIES                   | *                | var array of array of Byte | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_BINARIES                   | UInt32           | var Byte                   | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_NUM_KERNELS                | *                | var UIntPtr                | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_KERNEL_NAMES               | *                | var string                 | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_IL                         | *                | var string                 | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT | *                | var clBool                 | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT | *                | var clBool                 | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_NUM_HOST_PIPES             | *                | var UIntPtr                | *                    |
-	clErrorCode | cl_program | clProgramInfo.PROGRAM_HOST_PIPE_NAMES            | *                | var string                 | *                    |
-	----------- | ---------- | ------------------------------------------------ | ---------------- | -------------------------- | -------------------- |
-	            | program    | param_name                                       | param_value_size | param_value                | param_value_size_ret |
+	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | var T                     | var UIntPtr          |
+	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | var T                     | IntPtr               |
+	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | pointer                   | var UIntPtr          |
+	clErrorCode | cl_program | clProgramInfo                                    | UIntPtr          | pointer                   | IntPtr               |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_REFERENCE_COUNT            | *                | var UInt32                | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_CONTEXT                    | *                | var cl_context            | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_NUM_DEVICES                | *                | var UInt32                | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_DEVICES                    | *                | var array of cl_device_id | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_DEVICES                    | UInt32           | var cl_device_id          | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_SOURCE                     | *                | var string                | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_BINARY_SIZES               | *                | var array of UIntPtr      | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_BINARY_SIZES               | UInt32           | var UIntPtr               | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_BINARIES                   | UInt32           | var IntPtr                | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_NUM_KERNELS                | *                | var UIntPtr               | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_KERNEL_NAMES               | *                | var string                | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_IL                         | *                | var array of Byte         | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_IL                         | UInt32           | var Byte                  | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT | *                | var clBool                | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT | *                | var clBool                | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_NUM_HOST_PIPES             | *                | var UIntPtr               | *                    |
+	clErrorCode | cl_program | clProgramInfo.PROGRAM_HOST_PIPE_NAMES            | *                | var string                | *                    |
+	----------- | ---------- | ------------------------------------------------ | ---------------- | ------------------------- | -------------------- |
+	            | program    | param_name                                       | param_value_size | param_value               | param_value_size_ret |
 
 # cl::GetSamplerInfo
 !ppt

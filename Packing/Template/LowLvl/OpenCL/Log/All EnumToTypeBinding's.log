@@ -1,7 +1,7 @@
 ﻿
 
 
-# cl::GetCommandQueueInfo
+# cl.GetCommandQueueInfo
 2
 !output
 3
@@ -35,7 +35,7 @@ UInt32
 !output
 UInt32
 
-# cl::GetContextInfo
+# cl.GetContextInfo
 2
 !output
 3
@@ -63,7 +63,7 @@ clBool
 !output
 IntPtr
 
-# cl::GetDeviceInfo
+# cl.GetDeviceInfo
 2
 !output
 3
@@ -281,7 +281,7 @@ UInt32
 array of clDevicePartitionProperty
 --- DEVICE_PARTITION_AFFINITY_DOMAIN
 !output
-clBool
+clDeviceAffinityDomain
 --- DEVICE_PARTITION_TYPE
 !output
 array of clDevicePartitionProperty
@@ -601,7 +601,7 @@ UInt32
 !output
 clDeviceFeatureCapabilities
 
-# cl::GetEventInfo
+# cl.GetEventInfo
 2
 !output
 3
@@ -626,7 +626,7 @@ cl_context
 !output
 clCommandTerminationReason
 
-# cl::GetEventProfilingInfo
+# cl.GetEventProfilingInfo
 2
 !output
 3
@@ -648,7 +648,7 @@ UInt64
 !output
 UInt64
 
-# cl::GetGLTextureInfo
+# cl.GetGLTextureInfo
 2
 !output
 3
@@ -664,7 +664,7 @@ Int32
 !output
 UIntPtr
 
-# cl::GetImageInfo
+# cl.GetImageInfo
 2
 !output
 3
@@ -722,7 +722,7 @@ UInt32
 !output
 Int32
 
-# cl::GetKernelArgInfo
+# cl.GetKernelArgInfo
 3
 !output
 4
@@ -744,7 +744,7 @@ clKernelArgTypeQualifier
 !output
 string
 
-# cl::GetKernelInfo
+# cl.GetKernelInfo
 2
 !output
 3
@@ -772,7 +772,7 @@ string
 !output
 UInt32
 
-# cl::GetKernelSubGroupInfo
+# cl.GetKernelSubGroupInfo
 3
 !input
 4
@@ -806,7 +806,7 @@ UIntPtr
 !output
 UIntPtr
 
-# cl::GetKernelWorkGroupInfo
+# cl.GetKernelWorkGroupInfo
 3
 !output
 4
@@ -834,7 +834,7 @@ array[3] of UIntPtr
 !output
 UInt64
 
-# cl::GetLayerInfo
+# cl.GetLayerInfo
 1
 !output
 2
@@ -847,7 +847,7 @@ UInt32
 !output
 string
 
-# cl::GetMemObjectInfo
+# cl.GetMemObjectInfo
 2
 !output
 3
@@ -926,7 +926,7 @@ UIntPtr
 !output
 cl_device_id
 
-# cl::GetPipeInfo
+# cl.GetPipeInfo
 2
 !output
 3
@@ -942,7 +942,7 @@ UInt32
 !output
 IntPtr
 
-# cl::GetPlatformInfo
+# cl.GetPlatformInfo
 2
 !output
 3
@@ -991,7 +991,7 @@ array of clExternalSemaphoreHandleType
 !output
 array of clExternalMemoryHandleType
 
-# cl::GetProgramBuildInfo
+# cl.GetProgramBuildInfo
 3
 !output
 4
@@ -1013,7 +1013,7 @@ clProgramBinaryType
 !output
 UIntPtr
 
-# cl::GetProgramInfo
+# cl.GetProgramInfo
 2
 !output
 3
@@ -1048,7 +1048,7 @@ UIntPtr
 string
 --- PROGRAM_IL
 !output
-string
+array of Byte
 --- PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT
 !output
 clBool
@@ -1062,7 +1062,7 @@ UIntPtr
 !output
 string
 
-# cl::GetSamplerInfo
+# cl.GetSamplerInfo
 2
 !output
 3
@@ -1096,7 +1096,7 @@ single
 !output
 array of clSamplerProperties
 
-# cl::SetKernelExecInfo
+# cl.SetKernelExecInfo
 2
 !input
 3
@@ -1132,7 +1132,7 @@ clBool
 !input
 array of IntPtr
 
-# cl::SetKernelExecInfo + ARM
+# cl.SetKernelExecInfoARM
 2
 !input
 3
@@ -1144,7 +1144,7 @@ array of IntPtr
 !input
 clBool
 
-# cl::GetImageRequirementsInfo + EXT
+# cl.GetImageRequirementsInfoEXT
 6
 !output
 7
@@ -1175,7 +1175,7 @@ UInt32
 !output
 UInt32
 
-# cl::GetAcceleratorInfo + INTEL
+# cl.GetAcceleratorInfoINTEL
 2
 !output
 3
@@ -1191,7 +1191,7 @@ cl_context
 !output
 UInt32
 
-# cl::GetMemAllocInfo + INTEL
+# cl.GetMemAllocInfoINTEL
 3
 !output
 4
@@ -1201,7 +1201,7 @@ UInt32
 !output
 UInt32
 
-# cl::GetCommandBufferInfo + KHR
+# cl.GetCommandBufferInfoKHR
 2
 !output
 3
@@ -1226,7 +1226,7 @@ array of clCommandBufferProperties
 !output
 cl_context
 
-# cl::GetGLContextInfo + KHR
+# cl.GetGLContextInfoKHR
 2
 !output
 3
@@ -1239,7 +1239,7 @@ cl_device_id
 !output
 array of cl_device_id
 
-# cl::GetKernelSubGroupInfo + KHR
+# cl.GetKernelSubGroupInfoKHR
 3
 !input
 4
@@ -1273,7 +1273,7 @@ UIntPtr
 !output
 UIntPtr
 
-# cl::GetMutableCommandInfo + KHR
+# cl.GetMutableCommandInfoKHR
 2
 !output
 3
@@ -1307,7 +1307,7 @@ array of UIntPtr
 !output
 clCommandType
 
-# cl::GetSemaphoreInfo + KHR
+# cl.GetSemaphoreInfoKHR
 2
 !output
 3
@@ -1335,7 +1335,7 @@ array of clExternalSemaphoreHandleType
 !output
 array of cl_device_id
 
-# cl::GetICDLoaderInfo + OCLICD
+# cl.GetICDLoaderInfoOCLICD
 1
 !output
 2
@@ -1354,7 +1354,7 @@ string
 !output
 string
 
-# cl::GetDeviceImageInfo + QCOM
+# cl.GetDeviceImageInfoQCOM
 5
 !output
 6

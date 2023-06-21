@@ -1,14 +1,27 @@
 ﻿cl_program
-ProgramInfo
-clGetProgramInfo
+clProgramInfo
+cl.GetProgramInfo
 
 
 
-# REFERENCE_COUNT:				UInt32
-# SOURCE:						String
-# IL:							array of Byte
+# SOURCE
+# IL
+# SCOPE_GLOBAL_CTORS_PRESENT
+# SCOPE_GLOBAL_DTORS_PRESENT
+# NUM_HOST_PIPES
+# HOST_PIPE_NAMES
+Flat
 
-# SCOPE_GLOBAL_CTORS_PRESENT:	Bool
-# SCOPE_GLOBAL_DTORS_PRESENT:	Bool
+
+
+# REFERENCE_COUNT
+# CONTEXT
+# NUM_DEVICES
+# DEVICES
+# BINARY_SIZES
+# BINARIES
+# NUM_KERNELS
+# KERNEL_NAMES
+Disable
 
 

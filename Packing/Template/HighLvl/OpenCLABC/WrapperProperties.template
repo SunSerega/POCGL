@@ -1,0 +1,1788 @@
+﻿  
+  
+  
+  {$region CLPlatform}
+  
+  ///
+  CLPlatformProperties = class
+    private ntv: cl_platform_id;
+    
+    public constructor(ntv: cl_platform_id) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    private function GetProfile: string;
+    begin
+      cl.GetPlatformInfo_PLATFORM_PROFILE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVersion: string;
+    begin
+      cl.GetPlatformInfo_PLATFORM_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetName: string;
+    begin
+      cl.GetPlatformInfo_PLATFORM_NAME(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVendor: string;
+    begin
+      cl.GetPlatformInfo_PLATFORM_VENDOR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExtensions: string;
+    begin
+      cl.GetPlatformInfo_PLATFORM_EXTENSIONS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHostTimerResolution: UInt64;
+    begin
+      cl.GetPlatformInfo_PLATFORM_HOST_TIMER_RESOLUTION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumericVersion: UInt32;
+    begin
+      cl.GetPlatformInfo_PLATFORM_NUMERIC_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExtensionsWithVersion: array of cl_name_version;
+    begin
+      cl.GetPlatformInfo_PLATFORM_EXTENSIONS_WITH_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCommandBufferCapabilities: clPlatformCommandBufferCapabilities;
+    begin
+      cl.GetPlatformInfo_PLATFORM_COMMAND_BUFFER_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIcdSuffix: string;
+    begin
+      cl.GetPlatformInfo_PLATFORM_ICD_SUFFIX(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSemaphoreTypes: array of clSemaphoreType;
+    begin
+      cl.GetPlatformInfo_PLATFORM_SEMAPHORE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSemaphoreImportHandleTypes: array of clExternalSemaphoreHandleType;
+    begin
+      cl.GetPlatformInfo_PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSemaphoreExportHandleTypes: array of clExternalSemaphoreHandleType;
+    begin
+      cl.GetPlatformInfo_PLATFORM_SEMAPHORE_EXPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExternalMemoryImportHandleTypes: array of clExternalMemoryHandleType;
+    begin
+      cl.GetPlatformInfo_PLATFORM_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    
+    public property Profile:                         string                                 read GetProfile;
+    public property Version:                         string                                 read GetVersion;
+    public property Name:                            string                                 read GetName;
+    public property Vendor:                          string                                 read GetVendor;
+    public property Extensions:                      string                                 read GetExtensions;
+    public property HostTimerResolution:             UInt64                                 read GetHostTimerResolution;
+    public property NumericVersion:                  UInt32                                 read GetNumericVersion;
+    public property ExtensionsWithVersion:           array of cl_name_version               read GetExtensionsWithVersion;
+    public property CommandBufferCapabilities:       clPlatformCommandBufferCapabilities    read GetCommandBufferCapabilities;
+    public property IcdSuffix:                       string                                 read GetIcdSuffix;
+    public property SemaphoreTypes:                  array of clSemaphoreType               read GetSemaphoreTypes;
+    public property SemaphoreImportHandleTypes:      array of clExternalSemaphoreHandleType read GetSemaphoreImportHandleTypes;
+    public property SemaphoreExportHandleTypes:      array of clExternalSemaphoreHandleType read GetSemaphoreExportHandleTypes;
+    public property ExternalMemoryImportHandleTypes: array of clExternalMemoryHandleType    read GetExternalMemoryImportHandleTypes;
+    
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'Profile                         = '; AddProp(res, Profile                        ); res += #10;
+      res += 'Version                         = '; AddProp(res, Version                        ); res += #10;
+      res += 'Name                            = '; AddProp(res, Name                           ); res += #10;
+      res += 'Vendor                          = '; AddProp(res, Vendor                         ); res += #10;
+      res += 'Extensions                      = '; AddProp(res, Extensions                     ); res += #10;
+      res += 'HostTimerResolution             = '; AddProp(res, HostTimerResolution            ); res += #10;
+      res += 'NumericVersion                  = '; AddProp(res, NumericVersion                 ); res += #10;
+      res += 'ExtensionsWithVersion           = '; AddProp(res, ExtensionsWithVersion          ); res += #10;
+      res += 'CommandBufferCapabilities       = '; AddProp(res, CommandBufferCapabilities      ); res += #10;
+      res += 'IcdSuffix                       = '; AddProp(res, IcdSuffix                      ); res += #10;
+      res += 'SemaphoreTypes                  = '; AddProp(res, SemaphoreTypes                 ); res += #10;
+      res += 'SemaphoreImportHandleTypes      = '; AddProp(res, SemaphoreImportHandleTypes     ); res += #10;
+      res += 'SemaphoreExportHandleTypes      = '; AddProp(res, SemaphoreExportHandleTypes     ); res += #10;
+      res += 'ExternalMemoryImportHandleTypes = '; AddProp(res, ExternalMemoryImportHandleTypes);
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  {$endregion CLPlatform}
+  
+  {$region CLDevice}
+  
+  ///
+  CLDeviceProperties = class
+    private ntv: cl_device_id;
+    
+    public constructor(ntv: cl_device_id) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    private function GetType: clDeviceType;
+    begin
+      cl.GetDeviceInfo_DEVICE_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVendorId: clKhronosVendorId;
+    begin
+      cl.GetDeviceInfo_DEVICE_VENDOR_ID(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxComputeUnits: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_COMPUTE_UNITS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxWorkItemDimensions: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_WORK_ITEM_DIMENSIONS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxWorkGroupSize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_WORK_GROUP_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxWorkItemSizes: array of UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_WORK_ITEM_SIZES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredVectorWidthChar: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_CHAR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredVectorWidthShort: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_SHORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredVectorWidthInt: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_INT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredVectorWidthLong: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_LONG(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredVectorWidthFloat: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredVectorWidthDouble: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxClockFrequency: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_CLOCK_FREQUENCY(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAddressBits: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_ADDRESS_BITS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxReadImageArgs: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_READ_IMAGE_ARGS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxWriteImageArgs: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_WRITE_IMAGE_ARGS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxMemAllocSize: UInt64;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_MEM_ALLOC_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImage2dMaxWidth: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE2D_MAX_WIDTH(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImage2dMaxHeight: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE2D_MAX_HEIGHT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImage3dMaxWidth: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE3D_MAX_WIDTH(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImage3dMaxHeight: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE3D_MAX_HEIGHT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImage3dMaxDepth: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE3D_MAX_DEPTH(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImageSupport: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE_SUPPORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxParameterSize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_PARAMETER_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxSamplers: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_SAMPLERS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMemBaseAddrAlign: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MEM_BASE_ADDR_ALIGN(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMinDataTypeAlignSize: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MIN_DATA_TYPE_ALIGN_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSingleFpConfig: clDeviceFPConfig;
+    begin
+      cl.GetDeviceInfo_DEVICE_SINGLE_FP_CONFIG(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetGlobalMemCacheType: clDeviceMemCacheType;
+    begin
+      cl.GetDeviceInfo_DEVICE_GLOBAL_MEM_CACHE_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetGlobalMemCachelineSize: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_GLOBAL_MEM_CACHELINE_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetGlobalMemCacheSize: UInt64;
+    begin
+      cl.GetDeviceInfo_DEVICE_GLOBAL_MEM_CACHE_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetGlobalMemSize: UInt64;
+    begin
+      cl.GetDeviceInfo_DEVICE_GLOBAL_MEM_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxConstantBufferSize: UInt64;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_CONSTANT_BUFFER_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxConstantArgs: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_CONSTANT_ARGS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetLocalMemType: clDeviceLocalMemType;
+    begin
+      cl.GetDeviceInfo_DEVICE_LOCAL_MEM_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetLocalMemSize: UInt64;
+    begin
+      cl.GetDeviceInfo_DEVICE_LOCAL_MEM_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetErrorCorrectionSupport: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_ERROR_CORRECTION_SUPPORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetProfilingTimerResolution: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_PROFILING_TIMER_RESOLUTION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetEndianLittle: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_ENDIAN_LITTLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAvailable: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_AVAILABLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCompilerAvailable: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMPILER_AVAILABLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExecutionCapabilities: clDeviceExecCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_EXECUTION_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetQueueProperties: clCommandQueueProperties;
+    begin
+      cl.GetDeviceInfo_DEVICE_QUEUE_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetQueueOnHostProperties: clCommandQueueProperties;
+    begin
+      cl.GetDeviceInfo_DEVICE_QUEUE_ON_HOST_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetName: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_NAME(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVendor: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_VENDOR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDriverVersion: string;
+    begin
+      cl.GetDeviceInfo_DRIVER_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetProfile: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_PROFILE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVersion: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExtensions: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_EXTENSIONS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDoubleFpConfig: clDeviceFPConfig;
+    begin
+      cl.GetDeviceInfo_DEVICE_DOUBLE_FP_CONFIG(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHalfFpConfig: clDeviceFPConfig;
+    begin
+      cl.GetDeviceInfo_DEVICE_HALF_FP_CONFIG(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredVectorWidthHalf: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_HALF(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHostUnifiedMemory: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_HOST_UNIFIED_MEMORY(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthChar: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_CHAR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthShort: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_SHORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthInt: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_INT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthLong: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_LONG(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthFloat: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_FLOAT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthDouble: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_DOUBLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthHalf: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_HALF(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetOpenclCVersion: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_OPENCL_C_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetLinkerAvailable: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_LINKER_AVAILABLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetBuiltInKernels: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_BUILT_IN_KERNELS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImageMaxBufferSize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE_MAX_BUFFER_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImageMaxArraySize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE_MAX_ARRAY_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetParentDevice: cl_device_id;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARENT_DEVICE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPartitionMaxSubDevices: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARTITION_MAX_SUB_DEVICES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPartitionProperties: array of clDevicePartitionProperty;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARTITION_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPartitionAffinityDomain: clDeviceAffinityDomain;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARTITION_AFFINITY_DOMAIN(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPartitionType: array of clDevicePartitionProperty;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARTITION_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetReferenceCount: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_REFERENCE_COUNT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredInteropUserSync: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_INTEROP_USER_SYNC(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPrintfBufferSize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_PRINTF_BUFFER_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImagePitchAlignment: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE_PITCH_ALIGNMENT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImageBaseAddressAlignment: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxReadWriteImageArgs: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_READ_WRITE_IMAGE_ARGS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxGlobalVariableSize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_GLOBAL_VARIABLE_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetQueueOnDeviceProperties: clCommandQueueProperties;
+    begin
+      cl.GetDeviceInfo_DEVICE_QUEUE_ON_DEVICE_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetQueueOnDevicePreferredSize: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetQueueOnDeviceMaxSize: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_QUEUE_ON_DEVICE_MAX_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxOnDeviceQueues: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_ON_DEVICE_QUEUES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxOnDeviceEvents: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_ON_DEVICE_EVENTS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSvmCapabilities: clDeviceSVMCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_SVM_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetGlobalVariablePreferredTotalSize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_GLOBAL_VARIABLE_PREFERRED_TOTAL_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxPipeArgs: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_PIPE_ARGS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPipeMaxActiveReservations: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PIPE_MAX_ACTIVE_RESERVATIONS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPipeMaxPacketSize: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PIPE_MAX_PACKET_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredPlatformAtomicAlignment: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_PLATFORM_ATOMIC_ALIGNMENT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredGlobalAtomicAlignment: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredLocalAtomicAlignment: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIlVersion: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_IL_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxNumSubGroups: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_NUM_SUB_GROUPS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSubGroupIndependentForwardProgress: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumericVersion: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NUMERIC_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetOpenclCNumericVersion: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_OPENCL_C_NUMERIC_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExtensionsWithVersion: array of cl_name_version;
+    begin
+      cl.GetDeviceInfo_DEVICE_EXTENSIONS_WITH_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIlsWithVersion: array of cl_name_version;
+    begin
+      cl.GetDeviceInfo_DEVICE_ILS_WITH_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetBuiltInKernelsWithVersion: array of cl_name_version;
+    begin
+      cl.GetDeviceInfo_DEVICE_BUILT_IN_KERNELS_WITH_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAtomicMemoryCapabilities: clDeviceAtomicCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_ATOMIC_MEMORY_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAtomicFenceCapabilities: clDeviceAtomicCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_ATOMIC_FENCE_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNonUniformWorkGroupSupport: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetOpenclCAllVersions: array of cl_name_version;
+    begin
+      cl.GetDeviceInfo_DEVICE_OPENCL_C_ALL_VERSIONS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredWorkGroupSizeMultiple: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetWorkGroupCollectiveFunctionsSupport: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetGenericAddressSpaceSupport: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUuid: array of Byte;
+    begin
+      cl.GetDeviceInfo_DEVICE_UUID(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDriverUuid: array of Byte;
+    begin
+      cl.GetDeviceInfo_DRIVER_UUID(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetLuidValid: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_LUID_VALID(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetLuid: array of Byte;
+    begin
+      cl.GetDeviceInfo_DEVICE_LUID(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNodeMask: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NODE_MASK(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetOpenclCFeatures: array of cl_name_version;
+    begin
+      cl.GetDeviceInfo_DEVICE_OPENCL_C_FEATURES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDeviceEnqueueCapabilities: clDeviceOnDeviceEnqueueCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_DEVICE_ENQUEUE_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPipeSupport: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_PIPE_SUPPORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetLatestConformanceVersionPassed: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_LATEST_CONFORMANCE_VERSION_PASSED(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIntegerDotProductCapabilities: clDeviceIntegerDotProductCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_INTEGER_DOT_PRODUCT_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIntegerDotProductAccelerationProperties8bit: cl_device_integer_dot_product_acceleration_properties;
+    begin
+      cl.GetDeviceInfo_DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIntegerDotProductAccelerationProperties4x8bitPacked: cl_device_integer_dot_product_acceleration_properties;
+    begin
+      cl.GetDeviceInfo_DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCommandBufferCapabilities: clDeviceCommandBufferCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMMAND_BUFFER_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCommandBufferRequiredQueueProperties: clCommandQueueProperties;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCommandBufferNumSyncDevices: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMMAND_BUFFER_NUM_SYNC_DEVICES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCommandBufferSyncDevices: array of cl_device_id;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMMAND_BUFFER_SYNC_DEVICES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMutableDispatchCapabilities: clMutableDispatchFields;
+    begin
+      cl.GetDeviceInfo_DEVICE_MUTABLE_DISPATCH_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetTerminateCapability: clDeviceTerminateCapability;
+    begin
+      cl.GetDeviceInfo_DEVICE_TERMINATE_CAPABILITY(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxNamedBarrierCount: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_NAMED_BARRIER_COUNT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSemaphoreTypes: array of clSemaphoreType;
+    begin
+      cl.GetDeviceInfo_DEVICE_SEMAPHORE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSemaphoreImportHandleTypes: array of clExternalSemaphoreHandleType;
+    begin
+      cl.GetDeviceInfo_DEVICE_SEMAPHORE_IMPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSemaphoreExportHandleTypes: array of clExternalSemaphoreHandleType;
+    begin
+      cl.GetDeviceInfo_DEVICE_SEMAPHORE_EXPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExternalMemoryImportHandleTypes: array of clExternalMemoryHandleType;
+    begin
+      cl.GetDeviceInfo_DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetComputeCapabilityMajor: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMPUTE_CAPABILITY_MAJOR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetComputeCapabilityMinor: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMPUTE_CAPABILITY_MINOR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetRegistersPerBlock: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_REGISTERS_PER_BLOCK(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetWarpSize: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_WARP_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetGpuOverlap: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_GPU_OVERLAP(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetKernelExecTimeout: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_KERNEL_EXEC_TIMEOUT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIntegratedMemory: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_INTEGRATED_MEMORY(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetParentDeviceExt: cl_device_id;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARENT_DEVICE_EXT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPartitionTypes: array of clDevicePartitionProperty;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARTITION_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAffinityDomains: clDeviceAffinityDomain;
+    begin
+      cl.GetDeviceInfo_DEVICE_AFFINITY_DOMAINS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetReferenceCountExt: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_REFERENCE_COUNT_EXT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPartitionStyle: clDevicePartitionProperty;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARTITION_STYLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMeVersion: clDeviceMeVersion;
+    begin
+      cl.GetDeviceInfo_DEVICE_ME_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSvmCapabilitiesArm: clDeviceSVMCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_SVM_CAPABILITIES_ARM(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetComputeUnitsBitfield: UInt64;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMPUTE_UNITS_BITFIELD(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSpirVersions: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_SPIR_VERSIONS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSimultaneousInterops: array of UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_SIMULTANEOUS_INTEROPS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumSimultaneousInterops: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NUM_SIMULTANEOUS_INTEROPS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSubGroupSizes: array of UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_SUB_GROUP_SIZES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAvcMeVersion: clDeviceAvcMeVersion;
+    begin
+      cl.GetDeviceInfo_DEVICE_AVC_ME_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAvcMeSupportsTextureSamplerUse: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_AVC_ME_SUPPORTS_TEXTURE_SAMPLER_USE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAvcMeSupportsPreemption: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_AVC_ME_SUPPORTS_PREEMPTION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPciBusInfo: cl_device_pci_bus_info;
+    begin
+      cl.GetDeviceInfo_DEVICE_PCI_BUS_INFO(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPlanarYuvMaxWidth: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_PLANAR_YUV_MAX_WIDTH(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPlanarYuvMaxHeight: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_PLANAR_YUV_MAX_HEIGHT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetQueueFamilyProperties: array of cl_queue_family_properties;
+    begin
+      cl.GetDeviceInfo_DEVICE_QUEUE_FAMILY_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHostMemCapabilities: clDeviceUnifiedSharedMemoryCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_HOST_MEM_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDeviceMemCapabilities: clDeviceUnifiedSharedMemoryCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_DEVICE_MEM_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSingleDeviceSharedMemCapabilities: clDeviceUnifiedSharedMemoryCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_SINGLE_DEVICE_SHARED_MEM_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCrossDeviceSharedMemCapabilities: clDeviceUnifiedSharedMemoryCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_CROSS_DEVICE_SHARED_MEM_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSharedSystemMemCapabilities: clDeviceUnifiedSharedMemoryCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_SHARED_SYSTEM_MEM_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetJobSlots: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_JOB_SLOTS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSchedulingControlsCapabilities: clDeviceSchedulingControlsCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_SCHEDULING_CONTROLS_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxWarpCount: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_WARP_COUNT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSupportedRegisterAllocations: array of Int32;
+    begin
+      cl.GetDeviceInfo_DEVICE_SUPPORTED_REGISTER_ALLOCATIONS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetControlledTerminationCapabilities: clDeviceControlledTerminationCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_CONTROLLED_TERMINATION_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCxxForOpenclNumericVersion: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_CXX_FOR_OPENCL_NUMERIC_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSingleFpAtomicCapabilities: clDeviceFpAtomicCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_SINGLE_FP_ATOMIC_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDoubleFpAtomicCapabilities: clDeviceFpAtomicCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_DOUBLE_FP_ATOMIC_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHalfFpAtomicCapabilities: clDeviceFpAtomicCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_HALF_FP_ATOMIC_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIpVersion: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_IP_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetId: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_ID(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumSlices: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NUM_SLICES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumSubSlicesPerSlice: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NUM_SUB_SLICES_PER_SLICE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumEusPerSubSlice: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NUM_EUS_PER_SUB_SLICE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumThreadsPerEu: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NUM_THREADS_PER_EU(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetFeatureCapabilities: clDeviceFeatureCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_FEATURE_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    
+    public property &Type:                                               clDeviceType                                          read GetType;
+    public property VendorId:                                            clKhronosVendorId                                     read GetVendorId;
+    public property MaxComputeUnits:                                     UInt32                                                read GetMaxComputeUnits;
+    public property MaxWorkItemDimensions:                               UInt32                                                read GetMaxWorkItemDimensions;
+    public property MaxWorkGroupSize:                                    UIntPtr                                               read GetMaxWorkGroupSize;
+    public property MaxWorkItemSizes:                                    array of UIntPtr                                      read GetMaxWorkItemSizes;
+    public property PreferredVectorWidthChar:                            UInt32                                                read GetPreferredVectorWidthChar;
+    public property PreferredVectorWidthShort:                           UInt32                                                read GetPreferredVectorWidthShort;
+    public property PreferredVectorWidthInt:                             UInt32                                                read GetPreferredVectorWidthInt;
+    public property PreferredVectorWidthLong:                            UInt32                                                read GetPreferredVectorWidthLong;
+    public property PreferredVectorWidthFloat:                           UInt32                                                read GetPreferredVectorWidthFloat;
+    public property PreferredVectorWidthDouble:                          UInt32                                                read GetPreferredVectorWidthDouble;
+    public property MaxClockFrequency:                                   UInt32                                                read GetMaxClockFrequency;
+    public property AddressBits:                                         UInt32                                                read GetAddressBits;
+    public property MaxReadImageArgs:                                    UInt32                                                read GetMaxReadImageArgs;
+    public property MaxWriteImageArgs:                                   UInt32                                                read GetMaxWriteImageArgs;
+    public property MaxMemAllocSize:                                     UInt64                                                read GetMaxMemAllocSize;
+    public property Image2dMaxWidth:                                     UIntPtr                                               read GetImage2dMaxWidth;
+    public property Image2dMaxHeight:                                    UIntPtr                                               read GetImage2dMaxHeight;
+    public property Image3dMaxWidth:                                     UIntPtr                                               read GetImage3dMaxWidth;
+    public property Image3dMaxHeight:                                    UIntPtr                                               read GetImage3dMaxHeight;
+    public property Image3dMaxDepth:                                     UIntPtr                                               read GetImage3dMaxDepth;
+    public property ImageSupport:                                        clBool                                                read GetImageSupport;
+    public property MaxParameterSize:                                    UIntPtr                                               read GetMaxParameterSize;
+    public property MaxSamplers:                                         UInt32                                                read GetMaxSamplers;
+    public property MemBaseAddrAlign:                                    UInt32                                                read GetMemBaseAddrAlign;
+    public property MinDataTypeAlignSize:                                UInt32                                                read GetMinDataTypeAlignSize;
+    public property SingleFpConfig:                                      clDeviceFPConfig                                      read GetSingleFpConfig;
+    public property GlobalMemCacheType:                                  clDeviceMemCacheType                                  read GetGlobalMemCacheType;
+    public property GlobalMemCachelineSize:                              UInt32                                                read GetGlobalMemCachelineSize;
+    public property GlobalMemCacheSize:                                  UInt64                                                read GetGlobalMemCacheSize;
+    public property GlobalMemSize:                                       UInt64                                                read GetGlobalMemSize;
+    public property MaxConstantBufferSize:                               UInt64                                                read GetMaxConstantBufferSize;
+    public property MaxConstantArgs:                                     UInt32                                                read GetMaxConstantArgs;
+    public property LocalMemType:                                        clDeviceLocalMemType                                  read GetLocalMemType;
+    public property LocalMemSize:                                        UInt64                                                read GetLocalMemSize;
+    public property ErrorCorrectionSupport:                              clBool                                                read GetErrorCorrectionSupport;
+    public property ProfilingTimerResolution:                            UIntPtr                                               read GetProfilingTimerResolution;
+    public property EndianLittle:                                        clBool                                                read GetEndianLittle;
+    public property Available:                                           clBool                                                read GetAvailable;
+    public property CompilerAvailable:                                   clBool                                                read GetCompilerAvailable;
+    public property ExecutionCapabilities:                               clDeviceExecCapabilities                              read GetExecutionCapabilities;
+    public property QueueProperties:                                     clCommandQueueProperties                              read GetQueueProperties;
+    public property QueueOnHostProperties:                               clCommandQueueProperties                              read GetQueueOnHostProperties;
+    public property Name:                                                string                                                read GetName;
+    public property Vendor:                                              string                                                read GetVendor;
+    public property DriverVersion:                                       string                                                read GetDriverVersion;
+    public property Profile:                                             string                                                read GetProfile;
+    public property Version:                                             string                                                read GetVersion;
+    public property Extensions:                                          string                                                read GetExtensions;
+    public property DoubleFpConfig:                                      clDeviceFPConfig                                      read GetDoubleFpConfig;
+    public property HalfFpConfig:                                        clDeviceFPConfig                                      read GetHalfFpConfig;
+    public property PreferredVectorWidthHalf:                            UInt32                                                read GetPreferredVectorWidthHalf;
+    public property HostUnifiedMemory:                                   clBool                                                read GetHostUnifiedMemory;
+    public property NativeVectorWidthChar:                               UInt32                                                read GetNativeVectorWidthChar;
+    public property NativeVectorWidthShort:                              UInt32                                                read GetNativeVectorWidthShort;
+    public property NativeVectorWidthInt:                                UInt32                                                read GetNativeVectorWidthInt;
+    public property NativeVectorWidthLong:                               UInt32                                                read GetNativeVectorWidthLong;
+    public property NativeVectorWidthFloat:                              UInt32                                                read GetNativeVectorWidthFloat;
+    public property NativeVectorWidthDouble:                             UInt32                                                read GetNativeVectorWidthDouble;
+    public property NativeVectorWidthHalf:                               UInt32                                                read GetNativeVectorWidthHalf;
+    public property OpenclCVersion:                                      string                                                read GetOpenclCVersion;
+    public property LinkerAvailable:                                     clBool                                                read GetLinkerAvailable;
+    public property BuiltInKernels:                                      string                                                read GetBuiltInKernels;
+    public property ImageMaxBufferSize:                                  UIntPtr                                               read GetImageMaxBufferSize;
+    public property ImageMaxArraySize:                                   UIntPtr                                               read GetImageMaxArraySize;
+    public property ParentDevice:                                        cl_device_id                                          read GetParentDevice;
+    public property PartitionMaxSubDevices:                              UInt32                                                read GetPartitionMaxSubDevices;
+    public property PartitionProperties:                                 array of clDevicePartitionProperty                    read GetPartitionProperties;
+    public property PartitionAffinityDomain:                             clDeviceAffinityDomain                                read GetPartitionAffinityDomain;
+    public property PartitionType:                                       array of clDevicePartitionProperty                    read GetPartitionType;
+    public property ReferenceCount:                                      UInt32                                                read GetReferenceCount;
+    public property PreferredInteropUserSync:                            clBool                                                read GetPreferredInteropUserSync;
+    public property PrintfBufferSize:                                    UIntPtr                                               read GetPrintfBufferSize;
+    public property ImagePitchAlignment:                                 UInt32                                                read GetImagePitchAlignment;
+    public property ImageBaseAddressAlignment:                           UInt32                                                read GetImageBaseAddressAlignment;
+    public property MaxReadWriteImageArgs:                               UInt32                                                read GetMaxReadWriteImageArgs;
+    public property MaxGlobalVariableSize:                               UIntPtr                                               read GetMaxGlobalVariableSize;
+    public property QueueOnDeviceProperties:                             clCommandQueueProperties                              read GetQueueOnDeviceProperties;
+    public property QueueOnDevicePreferredSize:                          UInt32                                                read GetQueueOnDevicePreferredSize;
+    public property QueueOnDeviceMaxSize:                                UInt32                                                read GetQueueOnDeviceMaxSize;
+    public property MaxOnDeviceQueues:                                   UInt32                                                read GetMaxOnDeviceQueues;
+    public property MaxOnDeviceEvents:                                   UInt32                                                read GetMaxOnDeviceEvents;
+    public property SvmCapabilities:                                     clDeviceSVMCapabilities                               read GetSvmCapabilities;
+    public property GlobalVariablePreferredTotalSize:                    UIntPtr                                               read GetGlobalVariablePreferredTotalSize;
+    public property MaxPipeArgs:                                         UInt32                                                read GetMaxPipeArgs;
+    public property PipeMaxActiveReservations:                           UInt32                                                read GetPipeMaxActiveReservations;
+    public property PipeMaxPacketSize:                                   UInt32                                                read GetPipeMaxPacketSize;
+    public property PreferredPlatformAtomicAlignment:                    UInt32                                                read GetPreferredPlatformAtomicAlignment;
+    public property PreferredGlobalAtomicAlignment:                      UInt32                                                read GetPreferredGlobalAtomicAlignment;
+    public property PreferredLocalAtomicAlignment:                       UInt32                                                read GetPreferredLocalAtomicAlignment;
+    public property IlVersion:                                           string                                                read GetIlVersion;
+    public property MaxNumSubGroups:                                     UInt32                                                read GetMaxNumSubGroups;
+    public property SubGroupIndependentForwardProgress:                  clBool                                                read GetSubGroupIndependentForwardProgress;
+    public property NumericVersion:                                      UInt32                                                read GetNumericVersion;
+    public property OpenclCNumericVersion:                               UInt32                                                read GetOpenclCNumericVersion;
+    public property ExtensionsWithVersion:                               array of cl_name_version                              read GetExtensionsWithVersion;
+    public property IlsWithVersion:                                      array of cl_name_version                              read GetIlsWithVersion;
+    public property BuiltInKernelsWithVersion:                           array of cl_name_version                              read GetBuiltInKernelsWithVersion;
+    public property AtomicMemoryCapabilities:                            clDeviceAtomicCapabilities                            read GetAtomicMemoryCapabilities;
+    public property AtomicFenceCapabilities:                             clDeviceAtomicCapabilities                            read GetAtomicFenceCapabilities;
+    public property NonUniformWorkGroupSupport:                          clBool                                                read GetNonUniformWorkGroupSupport;
+    public property OpenclCAllVersions:                                  array of cl_name_version                              read GetOpenclCAllVersions;
+    public property PreferredWorkGroupSizeMultiple:                      UIntPtr                                               read GetPreferredWorkGroupSizeMultiple;
+    public property WorkGroupCollectiveFunctionsSupport:                 clBool                                                read GetWorkGroupCollectiveFunctionsSupport;
+    public property GenericAddressSpaceSupport:                          clBool                                                read GetGenericAddressSpaceSupport;
+    public property Uuid:                                                array of Byte                                         read GetUuid;
+    public property DriverUuid:                                          array of Byte                                         read GetDriverUuid;
+    public property LuidValid:                                           clBool                                                read GetLuidValid;
+    public property Luid:                                                array of Byte                                         read GetLuid;
+    public property NodeMask:                                            UInt32                                                read GetNodeMask;
+    public property OpenclCFeatures:                                     array of cl_name_version                              read GetOpenclCFeatures;
+    public property DeviceEnqueueCapabilities:                           clDeviceOnDeviceEnqueueCapabilities                   read GetDeviceEnqueueCapabilities;
+    public property PipeSupport:                                         clBool                                                read GetPipeSupport;
+    public property LatestConformanceVersionPassed:                      string                                                read GetLatestConformanceVersionPassed;
+    public property IntegerDotProductCapabilities:                       clDeviceIntegerDotProductCapabilities                 read GetIntegerDotProductCapabilities;
+    public property IntegerDotProductAccelerationProperties8bit:         cl_device_integer_dot_product_acceleration_properties read GetIntegerDotProductAccelerationProperties8bit;
+    public property IntegerDotProductAccelerationProperties4x8bitPacked: cl_device_integer_dot_product_acceleration_properties read GetIntegerDotProductAccelerationProperties4x8bitPacked;
+    public property CommandBufferCapabilities:                           clDeviceCommandBufferCapabilities                     read GetCommandBufferCapabilities;
+    public property CommandBufferRequiredQueueProperties:                clCommandQueueProperties                              read GetCommandBufferRequiredQueueProperties;
+    public property CommandBufferNumSyncDevices:                         UInt32                                                read GetCommandBufferNumSyncDevices;
+    public property CommandBufferSyncDevices:                            array of cl_device_id                                 read GetCommandBufferSyncDevices;
+    public property MutableDispatchCapabilities:                         clMutableDispatchFields                               read GetMutableDispatchCapabilities;
+    public property TerminateCapability:                                 clDeviceTerminateCapability                           read GetTerminateCapability;
+    public property MaxNamedBarrierCount:                                UInt32                                                read GetMaxNamedBarrierCount;
+    public property SemaphoreTypes:                                      array of clSemaphoreType                              read GetSemaphoreTypes;
+    public property SemaphoreImportHandleTypes:                          array of clExternalSemaphoreHandleType                read GetSemaphoreImportHandleTypes;
+    public property SemaphoreExportHandleTypes:                          array of clExternalSemaphoreHandleType                read GetSemaphoreExportHandleTypes;
+    public property ExternalMemoryImportHandleTypes:                     array of clExternalMemoryHandleType                   read GetExternalMemoryImportHandleTypes;
+    public property ComputeCapabilityMajor:                              UInt32                                                read GetComputeCapabilityMajor;
+    public property ComputeCapabilityMinor:                              UInt32                                                read GetComputeCapabilityMinor;
+    public property RegistersPerBlock:                                   UInt32                                                read GetRegistersPerBlock;
+    public property WarpSize:                                            UInt32                                                read GetWarpSize;
+    public property GpuOverlap:                                          clBool                                                read GetGpuOverlap;
+    public property KernelExecTimeout:                                   clBool                                                read GetKernelExecTimeout;
+    public property IntegratedMemory:                                    clBool                                                read GetIntegratedMemory;
+    public property ParentDeviceExt:                                     cl_device_id                                          read GetParentDeviceExt;
+    public property PartitionTypes:                                      array of clDevicePartitionProperty                    read GetPartitionTypes;
+    public property AffinityDomains:                                     clDeviceAffinityDomain                                read GetAffinityDomains;
+    public property ReferenceCountExt:                                   UInt32                                                read GetReferenceCountExt;
+    public property PartitionStyle:                                      clDevicePartitionProperty                             read GetPartitionStyle;
+    public property MeVersion:                                           clDeviceMeVersion                                     read GetMeVersion;
+    public property SvmCapabilitiesArm:                                  clDeviceSVMCapabilities                               read GetSvmCapabilitiesArm;
+    public property ComputeUnitsBitfield:                                UInt64                                                read GetComputeUnitsBitfield;
+    public property SpirVersions:                                        string                                                read GetSpirVersions;
+    public property SimultaneousInterops:                                array of UInt32                                       read GetSimultaneousInterops;
+    public property NumSimultaneousInterops:                             UInt32                                                read GetNumSimultaneousInterops;
+    public property SubGroupSizes:                                       array of UIntPtr                                      read GetSubGroupSizes;
+    public property AvcMeVersion:                                        clDeviceAvcMeVersion                                  read GetAvcMeVersion;
+    public property AvcMeSupportsTextureSamplerUse:                      clBool                                                read GetAvcMeSupportsTextureSamplerUse;
+    public property AvcMeSupportsPreemption:                             clBool                                                read GetAvcMeSupportsPreemption;
+    public property PciBusInfo:                                          cl_device_pci_bus_info                                read GetPciBusInfo;
+    public property PlanarYuvMaxWidth:                                   UIntPtr                                               read GetPlanarYuvMaxWidth;
+    public property PlanarYuvMaxHeight:                                  UIntPtr                                               read GetPlanarYuvMaxHeight;
+    public property QueueFamilyProperties:                               array of cl_queue_family_properties                   read GetQueueFamilyProperties;
+    public property HostMemCapabilities:                                 clDeviceUnifiedSharedMemoryCapabilities               read GetHostMemCapabilities;
+    public property DeviceMemCapabilities:                               clDeviceUnifiedSharedMemoryCapabilities               read GetDeviceMemCapabilities;
+    public property SingleDeviceSharedMemCapabilities:                   clDeviceUnifiedSharedMemoryCapabilities               read GetSingleDeviceSharedMemCapabilities;
+    public property CrossDeviceSharedMemCapabilities:                    clDeviceUnifiedSharedMemoryCapabilities               read GetCrossDeviceSharedMemCapabilities;
+    public property SharedSystemMemCapabilities:                         clDeviceUnifiedSharedMemoryCapabilities               read GetSharedSystemMemCapabilities;
+    public property JobSlots:                                            UInt32                                                read GetJobSlots;
+    public property SchedulingControlsCapabilities:                      clDeviceSchedulingControlsCapabilities                read GetSchedulingControlsCapabilities;
+    public property MaxWarpCount:                                        UInt32                                                read GetMaxWarpCount;
+    public property SupportedRegisterAllocations:                        array of Int32                                        read GetSupportedRegisterAllocations;
+    public property ControlledTerminationCapabilities:                   clDeviceControlledTerminationCapabilities             read GetControlledTerminationCapabilities;
+    public property CxxForOpenclNumericVersion:                          UInt32                                                read GetCxxForOpenclNumericVersion;
+    public property SingleFpAtomicCapabilities:                          clDeviceFpAtomicCapabilities                          read GetSingleFpAtomicCapabilities;
+    public property DoubleFpAtomicCapabilities:                          clDeviceFpAtomicCapabilities                          read GetDoubleFpAtomicCapabilities;
+    public property HalfFpAtomicCapabilities:                            clDeviceFpAtomicCapabilities                          read GetHalfFpAtomicCapabilities;
+    public property IpVersion:                                           UInt32                                                read GetIpVersion;
+    public property Id:                                                  UInt32                                                read GetId;
+    public property NumSlices:                                           UInt32                                                read GetNumSlices;
+    public property NumSubSlicesPerSlice:                                UInt32                                                read GetNumSubSlicesPerSlice;
+    public property NumEusPerSubSlice:                                   UInt32                                                read GetNumEusPerSubSlice;
+    public property NumThreadsPerEu:                                     UInt32                                                read GetNumThreadsPerEu;
+    public property FeatureCapabilities:                                 clDeviceFeatureCapabilities                           read GetFeatureCapabilities;
+    
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'Type                                                = '; AddProp(res, &Type                                              ); res += #10;
+      res += 'VendorId                                            = '; AddProp(res, VendorId                                           ); res += #10;
+      res += 'MaxComputeUnits                                     = '; AddProp(res, MaxComputeUnits                                    ); res += #10;
+      res += 'MaxWorkItemDimensions                               = '; AddProp(res, MaxWorkItemDimensions                              ); res += #10;
+      res += 'MaxWorkGroupSize                                    = '; AddProp(res, MaxWorkGroupSize                                   ); res += #10;
+      res += 'MaxWorkItemSizes                                    = '; AddProp(res, MaxWorkItemSizes                                   ); res += #10;
+      res += 'PreferredVectorWidthChar                            = '; AddProp(res, PreferredVectorWidthChar                           ); res += #10;
+      res += 'PreferredVectorWidthShort                           = '; AddProp(res, PreferredVectorWidthShort                          ); res += #10;
+      res += 'PreferredVectorWidthInt                             = '; AddProp(res, PreferredVectorWidthInt                            ); res += #10;
+      res += 'PreferredVectorWidthLong                            = '; AddProp(res, PreferredVectorWidthLong                           ); res += #10;
+      res += 'PreferredVectorWidthFloat                           = '; AddProp(res, PreferredVectorWidthFloat                          ); res += #10;
+      res += 'PreferredVectorWidthDouble                          = '; AddProp(res, PreferredVectorWidthDouble                         ); res += #10;
+      res += 'MaxClockFrequency                                   = '; AddProp(res, MaxClockFrequency                                  ); res += #10;
+      res += 'AddressBits                                         = '; AddProp(res, AddressBits                                        ); res += #10;
+      res += 'MaxReadImageArgs                                    = '; AddProp(res, MaxReadImageArgs                                   ); res += #10;
+      res += 'MaxWriteImageArgs                                   = '; AddProp(res, MaxWriteImageArgs                                  ); res += #10;
+      res += 'MaxMemAllocSize                                     = '; AddProp(res, MaxMemAllocSize                                    ); res += #10;
+      res += 'Image2dMaxWidth                                     = '; AddProp(res, Image2dMaxWidth                                    ); res += #10;
+      res += 'Image2dMaxHeight                                    = '; AddProp(res, Image2dMaxHeight                                   ); res += #10;
+      res += 'Image3dMaxWidth                                     = '; AddProp(res, Image3dMaxWidth                                    ); res += #10;
+      res += 'Image3dMaxHeight                                    = '; AddProp(res, Image3dMaxHeight                                   ); res += #10;
+      res += 'Image3dMaxDepth                                     = '; AddProp(res, Image3dMaxDepth                                    ); res += #10;
+      res += 'ImageSupport                                        = '; AddProp(res, ImageSupport                                       ); res += #10;
+      res += 'MaxParameterSize                                    = '; AddProp(res, MaxParameterSize                                   ); res += #10;
+      res += 'MaxSamplers                                         = '; AddProp(res, MaxSamplers                                        ); res += #10;
+      res += 'MemBaseAddrAlign                                    = '; AddProp(res, MemBaseAddrAlign                                   ); res += #10;
+      res += 'MinDataTypeAlignSize                                = '; AddProp(res, MinDataTypeAlignSize                               ); res += #10;
+      res += 'SingleFpConfig                                      = '; AddProp(res, SingleFpConfig                                     ); res += #10;
+      res += 'GlobalMemCacheType                                  = '; AddProp(res, GlobalMemCacheType                                 ); res += #10;
+      res += 'GlobalMemCachelineSize                              = '; AddProp(res, GlobalMemCachelineSize                             ); res += #10;
+      res += 'GlobalMemCacheSize                                  = '; AddProp(res, GlobalMemCacheSize                                 ); res += #10;
+      res += 'GlobalMemSize                                       = '; AddProp(res, GlobalMemSize                                      ); res += #10;
+      res += 'MaxConstantBufferSize                               = '; AddProp(res, MaxConstantBufferSize                              ); res += #10;
+      res += 'MaxConstantArgs                                     = '; AddProp(res, MaxConstantArgs                                    ); res += #10;
+      res += 'LocalMemType                                        = '; AddProp(res, LocalMemType                                       ); res += #10;
+      res += 'LocalMemSize                                        = '; AddProp(res, LocalMemSize                                       ); res += #10;
+      res += 'ErrorCorrectionSupport                              = '; AddProp(res, ErrorCorrectionSupport                             ); res += #10;
+      res += 'ProfilingTimerResolution                            = '; AddProp(res, ProfilingTimerResolution                           ); res += #10;
+      res += 'EndianLittle                                        = '; AddProp(res, EndianLittle                                       ); res += #10;
+      res += 'Available                                           = '; AddProp(res, Available                                          ); res += #10;
+      res += 'CompilerAvailable                                   = '; AddProp(res, CompilerAvailable                                  ); res += #10;
+      res += 'ExecutionCapabilities                               = '; AddProp(res, ExecutionCapabilities                              ); res += #10;
+      res += 'QueueProperties                                     = '; AddProp(res, QueueProperties                                    ); res += #10;
+      res += 'QueueOnHostProperties                               = '; AddProp(res, QueueOnHostProperties                              ); res += #10;
+      res += 'Name                                                = '; AddProp(res, Name                                               ); res += #10;
+      res += 'Vendor                                              = '; AddProp(res, Vendor                                             ); res += #10;
+      res += 'DriverVersion                                       = '; AddProp(res, DriverVersion                                      ); res += #10;
+      res += 'Profile                                             = '; AddProp(res, Profile                                            ); res += #10;
+      res += 'Version                                             = '; AddProp(res, Version                                            ); res += #10;
+      res += 'Extensions                                          = '; AddProp(res, Extensions                                         ); res += #10;
+      res += 'DoubleFpConfig                                      = '; AddProp(res, DoubleFpConfig                                     ); res += #10;
+      res += 'HalfFpConfig                                        = '; AddProp(res, HalfFpConfig                                       ); res += #10;
+      res += 'PreferredVectorWidthHalf                            = '; AddProp(res, PreferredVectorWidthHalf                           ); res += #10;
+      res += 'HostUnifiedMemory                                   = '; AddProp(res, HostUnifiedMemory                                  ); res += #10;
+      res += 'NativeVectorWidthChar                               = '; AddProp(res, NativeVectorWidthChar                              ); res += #10;
+      res += 'NativeVectorWidthShort                              = '; AddProp(res, NativeVectorWidthShort                             ); res += #10;
+      res += 'NativeVectorWidthInt                                = '; AddProp(res, NativeVectorWidthInt                               ); res += #10;
+      res += 'NativeVectorWidthLong                               = '; AddProp(res, NativeVectorWidthLong                              ); res += #10;
+      res += 'NativeVectorWidthFloat                              = '; AddProp(res, NativeVectorWidthFloat                             ); res += #10;
+      res += 'NativeVectorWidthDouble                             = '; AddProp(res, NativeVectorWidthDouble                            ); res += #10;
+      res += 'NativeVectorWidthHalf                               = '; AddProp(res, NativeVectorWidthHalf                              ); res += #10;
+      res += 'OpenclCVersion                                      = '; AddProp(res, OpenclCVersion                                     ); res += #10;
+      res += 'LinkerAvailable                                     = '; AddProp(res, LinkerAvailable                                    ); res += #10;
+      res += 'BuiltInKernels                                      = '; AddProp(res, BuiltInKernels                                     ); res += #10;
+      res += 'ImageMaxBufferSize                                  = '; AddProp(res, ImageMaxBufferSize                                 ); res += #10;
+      res += 'ImageMaxArraySize                                   = '; AddProp(res, ImageMaxArraySize                                  ); res += #10;
+      res += 'ParentDevice                                        = '; AddProp(res, ParentDevice                                       ); res += #10;
+      res += 'PartitionMaxSubDevices                              = '; AddProp(res, PartitionMaxSubDevices                             ); res += #10;
+      res += 'PartitionProperties                                 = '; AddProp(res, PartitionProperties                                ); res += #10;
+      res += 'PartitionAffinityDomain                             = '; AddProp(res, PartitionAffinityDomain                            ); res += #10;
+      res += 'PartitionType                                       = '; AddProp(res, PartitionType                                      ); res += #10;
+      res += 'ReferenceCount                                      = '; AddProp(res, ReferenceCount                                     ); res += #10;
+      res += 'PreferredInteropUserSync                            = '; AddProp(res, PreferredInteropUserSync                           ); res += #10;
+      res += 'PrintfBufferSize                                    = '; AddProp(res, PrintfBufferSize                                   ); res += #10;
+      res += 'ImagePitchAlignment                                 = '; AddProp(res, ImagePitchAlignment                                ); res += #10;
+      res += 'ImageBaseAddressAlignment                           = '; AddProp(res, ImageBaseAddressAlignment                          ); res += #10;
+      res += 'MaxReadWriteImageArgs                               = '; AddProp(res, MaxReadWriteImageArgs                              ); res += #10;
+      res += 'MaxGlobalVariableSize                               = '; AddProp(res, MaxGlobalVariableSize                              ); res += #10;
+      res += 'QueueOnDeviceProperties                             = '; AddProp(res, QueueOnDeviceProperties                            ); res += #10;
+      res += 'QueueOnDevicePreferredSize                          = '; AddProp(res, QueueOnDevicePreferredSize                         ); res += #10;
+      res += 'QueueOnDeviceMaxSize                                = '; AddProp(res, QueueOnDeviceMaxSize                               ); res += #10;
+      res += 'MaxOnDeviceQueues                                   = '; AddProp(res, MaxOnDeviceQueues                                  ); res += #10;
+      res += 'MaxOnDeviceEvents                                   = '; AddProp(res, MaxOnDeviceEvents                                  ); res += #10;
+      res += 'SvmCapabilities                                     = '; AddProp(res, SvmCapabilities                                    ); res += #10;
+      res += 'GlobalVariablePreferredTotalSize                    = '; AddProp(res, GlobalVariablePreferredTotalSize                   ); res += #10;
+      res += 'MaxPipeArgs                                         = '; AddProp(res, MaxPipeArgs                                        ); res += #10;
+      res += 'PipeMaxActiveReservations                           = '; AddProp(res, PipeMaxActiveReservations                          ); res += #10;
+      res += 'PipeMaxPacketSize                                   = '; AddProp(res, PipeMaxPacketSize                                  ); res += #10;
+      res += 'PreferredPlatformAtomicAlignment                    = '; AddProp(res, PreferredPlatformAtomicAlignment                   ); res += #10;
+      res += 'PreferredGlobalAtomicAlignment                      = '; AddProp(res, PreferredGlobalAtomicAlignment                     ); res += #10;
+      res += 'PreferredLocalAtomicAlignment                       = '; AddProp(res, PreferredLocalAtomicAlignment                      ); res += #10;
+      res += 'IlVersion                                           = '; AddProp(res, IlVersion                                          ); res += #10;
+      res += 'MaxNumSubGroups                                     = '; AddProp(res, MaxNumSubGroups                                    ); res += #10;
+      res += 'SubGroupIndependentForwardProgress                  = '; AddProp(res, SubGroupIndependentForwardProgress                 ); res += #10;
+      res += 'NumericVersion                                      = '; AddProp(res, NumericVersion                                     ); res += #10;
+      res += 'OpenclCNumericVersion                               = '; AddProp(res, OpenclCNumericVersion                              ); res += #10;
+      res += 'ExtensionsWithVersion                               = '; AddProp(res, ExtensionsWithVersion                              ); res += #10;
+      res += 'IlsWithVersion                                      = '; AddProp(res, IlsWithVersion                                     ); res += #10;
+      res += 'BuiltInKernelsWithVersion                           = '; AddProp(res, BuiltInKernelsWithVersion                          ); res += #10;
+      res += 'AtomicMemoryCapabilities                            = '; AddProp(res, AtomicMemoryCapabilities                           ); res += #10;
+      res += 'AtomicFenceCapabilities                             = '; AddProp(res, AtomicFenceCapabilities                            ); res += #10;
+      res += 'NonUniformWorkGroupSupport                          = '; AddProp(res, NonUniformWorkGroupSupport                         ); res += #10;
+      res += 'OpenclCAllVersions                                  = '; AddProp(res, OpenclCAllVersions                                 ); res += #10;
+      res += 'PreferredWorkGroupSizeMultiple                      = '; AddProp(res, PreferredWorkGroupSizeMultiple                     ); res += #10;
+      res += 'WorkGroupCollectiveFunctionsSupport                 = '; AddProp(res, WorkGroupCollectiveFunctionsSupport                ); res += #10;
+      res += 'GenericAddressSpaceSupport                          = '; AddProp(res, GenericAddressSpaceSupport                         ); res += #10;
+      res += 'Uuid                                                = '; AddProp(res, Uuid                                               ); res += #10;
+      res += 'DriverUuid                                          = '; AddProp(res, DriverUuid                                         ); res += #10;
+      res += 'LuidValid                                           = '; AddProp(res, LuidValid                                          ); res += #10;
+      res += 'Luid                                                = '; AddProp(res, Luid                                               ); res += #10;
+      res += 'NodeMask                                            = '; AddProp(res, NodeMask                                           ); res += #10;
+      res += 'OpenclCFeatures                                     = '; AddProp(res, OpenclCFeatures                                    ); res += #10;
+      res += 'DeviceEnqueueCapabilities                           = '; AddProp(res, DeviceEnqueueCapabilities                          ); res += #10;
+      res += 'PipeSupport                                         = '; AddProp(res, PipeSupport                                        ); res += #10;
+      res += 'LatestConformanceVersionPassed                      = '; AddProp(res, LatestConformanceVersionPassed                     ); res += #10;
+      res += 'IntegerDotProductCapabilities                       = '; AddProp(res, IntegerDotProductCapabilities                      ); res += #10;
+      res += 'IntegerDotProductAccelerationProperties8bit         = '; AddProp(res, IntegerDotProductAccelerationProperties8bit        ); res += #10;
+      res += 'IntegerDotProductAccelerationProperties4x8bitPacked = '; AddProp(res, IntegerDotProductAccelerationProperties4x8bitPacked); res += #10;
+      res += 'CommandBufferCapabilities                           = '; AddProp(res, CommandBufferCapabilities                          ); res += #10;
+      res += 'CommandBufferRequiredQueueProperties                = '; AddProp(res, CommandBufferRequiredQueueProperties               ); res += #10;
+      res += 'CommandBufferNumSyncDevices                         = '; AddProp(res, CommandBufferNumSyncDevices                        ); res += #10;
+      res += 'CommandBufferSyncDevices                            = '; AddProp(res, CommandBufferSyncDevices                           ); res += #10;
+      res += 'MutableDispatchCapabilities                         = '; AddProp(res, MutableDispatchCapabilities                        ); res += #10;
+      res += 'TerminateCapability                                 = '; AddProp(res, TerminateCapability                                ); res += #10;
+      res += 'MaxNamedBarrierCount                                = '; AddProp(res, MaxNamedBarrierCount                               ); res += #10;
+      res += 'SemaphoreTypes                                      = '; AddProp(res, SemaphoreTypes                                     ); res += #10;
+      res += 'SemaphoreImportHandleTypes                          = '; AddProp(res, SemaphoreImportHandleTypes                         ); res += #10;
+      res += 'SemaphoreExportHandleTypes                          = '; AddProp(res, SemaphoreExportHandleTypes                         ); res += #10;
+      res += 'ExternalMemoryImportHandleTypes                     = '; AddProp(res, ExternalMemoryImportHandleTypes                    ); res += #10;
+      res += 'ComputeCapabilityMajor                              = '; AddProp(res, ComputeCapabilityMajor                             ); res += #10;
+      res += 'ComputeCapabilityMinor                              = '; AddProp(res, ComputeCapabilityMinor                             ); res += #10;
+      res += 'RegistersPerBlock                                   = '; AddProp(res, RegistersPerBlock                                  ); res += #10;
+      res += 'WarpSize                                            = '; AddProp(res, WarpSize                                           ); res += #10;
+      res += 'GpuOverlap                                          = '; AddProp(res, GpuOverlap                                         ); res += #10;
+      res += 'KernelExecTimeout                                   = '; AddProp(res, KernelExecTimeout                                  ); res += #10;
+      res += 'IntegratedMemory                                    = '; AddProp(res, IntegratedMemory                                   ); res += #10;
+      res += 'ParentDeviceExt                                     = '; AddProp(res, ParentDeviceExt                                    ); res += #10;
+      res += 'PartitionTypes                                      = '; AddProp(res, PartitionTypes                                     ); res += #10;
+      res += 'AffinityDomains                                     = '; AddProp(res, AffinityDomains                                    ); res += #10;
+      res += 'ReferenceCountExt                                   = '; AddProp(res, ReferenceCountExt                                  ); res += #10;
+      res += 'PartitionStyle                                      = '; AddProp(res, PartitionStyle                                     ); res += #10;
+      res += 'MeVersion                                           = '; AddProp(res, MeVersion                                          ); res += #10;
+      res += 'SvmCapabilitiesArm                                  = '; AddProp(res, SvmCapabilitiesArm                                 ); res += #10;
+      res += 'ComputeUnitsBitfield                                = '; AddProp(res, ComputeUnitsBitfield                               ); res += #10;
+      res += 'SpirVersions                                        = '; AddProp(res, SpirVersions                                       ); res += #10;
+      res += 'SimultaneousInterops                                = '; AddProp(res, SimultaneousInterops                               ); res += #10;
+      res += 'NumSimultaneousInterops                             = '; AddProp(res, NumSimultaneousInterops                            ); res += #10;
+      res += 'SubGroupSizes                                       = '; AddProp(res, SubGroupSizes                                      ); res += #10;
+      res += 'AvcMeVersion                                        = '; AddProp(res, AvcMeVersion                                       ); res += #10;
+      res += 'AvcMeSupportsTextureSamplerUse                      = '; AddProp(res, AvcMeSupportsTextureSamplerUse                     ); res += #10;
+      res += 'AvcMeSupportsPreemption                             = '; AddProp(res, AvcMeSupportsPreemption                            ); res += #10;
+      res += 'PciBusInfo                                          = '; AddProp(res, PciBusInfo                                         ); res += #10;
+      res += 'PlanarYuvMaxWidth                                   = '; AddProp(res, PlanarYuvMaxWidth                                  ); res += #10;
+      res += 'PlanarYuvMaxHeight                                  = '; AddProp(res, PlanarYuvMaxHeight                                 ); res += #10;
+      res += 'QueueFamilyProperties                               = '; AddProp(res, QueueFamilyProperties                              ); res += #10;
+      res += 'HostMemCapabilities                                 = '; AddProp(res, HostMemCapabilities                                ); res += #10;
+      res += 'DeviceMemCapabilities                               = '; AddProp(res, DeviceMemCapabilities                              ); res += #10;
+      res += 'SingleDeviceSharedMemCapabilities                   = '; AddProp(res, SingleDeviceSharedMemCapabilities                  ); res += #10;
+      res += 'CrossDeviceSharedMemCapabilities                    = '; AddProp(res, CrossDeviceSharedMemCapabilities                   ); res += #10;
+      res += 'SharedSystemMemCapabilities                         = '; AddProp(res, SharedSystemMemCapabilities                        ); res += #10;
+      res += 'JobSlots                                            = '; AddProp(res, JobSlots                                           ); res += #10;
+      res += 'SchedulingControlsCapabilities                      = '; AddProp(res, SchedulingControlsCapabilities                     ); res += #10;
+      res += 'MaxWarpCount                                        = '; AddProp(res, MaxWarpCount                                       ); res += #10;
+      res += 'SupportedRegisterAllocations                        = '; AddProp(res, SupportedRegisterAllocations                       ); res += #10;
+      res += 'ControlledTerminationCapabilities                   = '; AddProp(res, ControlledTerminationCapabilities                  ); res += #10;
+      res += 'CxxForOpenclNumericVersion                          = '; AddProp(res, CxxForOpenclNumericVersion                         ); res += #10;
+      res += 'SingleFpAtomicCapabilities                          = '; AddProp(res, SingleFpAtomicCapabilities                         ); res += #10;
+      res += 'DoubleFpAtomicCapabilities                          = '; AddProp(res, DoubleFpAtomicCapabilities                         ); res += #10;
+      res += 'HalfFpAtomicCapabilities                            = '; AddProp(res, HalfFpAtomicCapabilities                           ); res += #10;
+      res += 'IpVersion                                           = '; AddProp(res, IpVersion                                          ); res += #10;
+      res += 'Id                                                  = '; AddProp(res, Id                                                 ); res += #10;
+      res += 'NumSlices                                           = '; AddProp(res, NumSlices                                          ); res += #10;
+      res += 'NumSubSlicesPerSlice                                = '; AddProp(res, NumSubSlicesPerSlice                               ); res += #10;
+      res += 'NumEusPerSubSlice                                   = '; AddProp(res, NumEusPerSubSlice                                  ); res += #10;
+      res += 'NumThreadsPerEu                                     = '; AddProp(res, NumThreadsPerEu                                    ); res += #10;
+      res += 'FeatureCapabilities                                 = '; AddProp(res, FeatureCapabilities                                );
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  {$endregion CLDevice}
+  
+  {$region CLSubDevice}
+  
+  ///
+  CLSubDeviceProperties = CLDeviceProperties;
+  
+  {$endregion CLSubDevice}
+  
+  {$region CLContext}
+  
+  ///
+  CLContextProperties = class
+    private ntv: cl_context;
+    
+    public constructor(ntv: cl_context) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    private function GetProperties: OpenCL.clContextProperties;
+    begin
+      cl.GetContextInfo_CONTEXT_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d10PreferSharedResources: clBool;
+    begin
+      cl.GetContextInfo_CONTEXT_D3D10_PREFER_SHARED_RESOURCES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d11PreferSharedResources: clBool;
+    begin
+      cl.GetContextInfo_CONTEXT_D3D11_PREFER_SHARED_RESOURCES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVaApiDisplay: IntPtr;
+    begin
+      cl.GetContextInfo_CONTEXT_VA_API_DISPLAY(self.ntv, Result).RaiseIfError;
+    end;
+    
+    public property Properties:                 OpenCL.clContextProperties read GetProperties;
+    public property D3d10PreferSharedResources: clBool                     read GetD3d10PreferSharedResources;
+    public property D3d11PreferSharedResources: clBool                     read GetD3d11PreferSharedResources;
+    public property VaApiDisplay:               IntPtr                     read GetVaApiDisplay;
+    
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'Properties                 = '; AddProp(res, Properties                ); res += #10;
+      res += 'D3d10PreferSharedResources = '; AddProp(res, D3d10PreferSharedResources); res += #10;
+      res += 'D3d11PreferSharedResources = '; AddProp(res, D3d11PreferSharedResources); res += #10;
+      res += 'VaApiDisplay               = '; AddProp(res, VaApiDisplay              );
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  {$endregion CLContext}
+  
+  {$region CLCode}
+  
+  ///
+  CLCodeProperties = class
+    private ntv: cl_program;
+    
+    public constructor(ntv: cl_program) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    private function GetSource: string;
+    begin
+      cl.GetProgramInfo_PROGRAM_SOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIl: array of Byte;
+    begin
+      cl.GetProgramInfo_PROGRAM_IL(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetScopeGlobalCtorsPresent: clBool;
+    begin
+      cl.GetProgramInfo_PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetScopeGlobalDtorsPresent: clBool;
+    begin
+      cl.GetProgramInfo_PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumHostPipes: UIntPtr;
+    begin
+      cl.GetProgramInfo_PROGRAM_NUM_HOST_PIPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHostPipeNames: string;
+    begin
+      cl.GetProgramInfo_PROGRAM_HOST_PIPE_NAMES(self.ntv, Result).RaiseIfError;
+    end;
+    
+    public property Source:                  string        read GetSource;
+    public property Il:                      array of Byte read GetIl;
+    public property ScopeGlobalCtorsPresent: clBool        read GetScopeGlobalCtorsPresent;
+    public property ScopeGlobalDtorsPresent: clBool        read GetScopeGlobalDtorsPresent;
+    public property NumHostPipes:            UIntPtr       read GetNumHostPipes;
+    public property HostPipeNames:           string        read GetHostPipeNames;
+    
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'Source                  = '; AddProp(res, Source                 ); res += #10;
+      res += 'Il                      = '; AddProp(res, Il                     ); res += #10;
+      res += 'ScopeGlobalCtorsPresent = '; AddProp(res, ScopeGlobalCtorsPresent); res += #10;
+      res += 'ScopeGlobalDtorsPresent = '; AddProp(res, ScopeGlobalDtorsPresent); res += #10;
+      res += 'NumHostPipes            = '; AddProp(res, NumHostPipes           ); res += #10;
+      res += 'HostPipeNames           = '; AddProp(res, HostPipeNames          );
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  {$endregion CLCode}
+  
+  {$region CLMemory}
+  
+  ///
+  CLMemoryProperties = class
+    private ntv: cl_mem;
+    
+    public constructor(ntv: cl_mem) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    private function GetFlags: clMemFlags;
+    begin
+      cl.GetMemObjectInfo_MEM_FLAGS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHostPtr: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_HOST_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUsesSvmPointer: clBool;
+    begin
+      cl.GetMemObjectInfo_MEM_USES_SVM_POINTER(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetProperties: array of clMemProperties;
+    begin
+      cl.GetMemObjectInfo_MEM_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9MediaAdapterType: clDx9MediaAdapterType;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_MEDIA_ADAPTER_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9MediaSurfaceInfo: cl_dx9_surface_info;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_MEDIA_SURFACE_INFO(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d10Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_D3D10_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d11Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_D3D11_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9SharedHandle: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_SHARED_HANDLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVaApiMediaSurface: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_VA_API_MEDIA_SURFACE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUsesSvmPointerArm: clBool;
+    begin
+      cl.GetMemObjectInfo_MEM_USES_SVM_POINTER_ARM(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocFlagsIntel: clMemAllocFlagsINTEL;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_FLAGS_INTEL(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocType: clUnifiedSharedMemoryType;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocBasePtr: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_BASE_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocSize: UIntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocDevice: cl_device_id;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_DEVICE(self.ntv, Result).RaiseIfError;
+    end;
+    
+    public property Flags:               clMemFlags                read GetFlags;
+    public property HostPtr:             IntPtr                    read GetHostPtr;
+    public property UsesSvmPointer:      clBool                    read GetUsesSvmPointer;
+    public property Properties:          array of clMemProperties  read GetProperties;
+    public property Dx9MediaAdapterType: clDx9MediaAdapterType     read GetDx9MediaAdapterType;
+    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info       read GetDx9MediaSurfaceInfo;
+    public property D3d10Resource:       IntPtr                    read GetD3d10Resource;
+    public property D3d11Resource:       IntPtr                    read GetD3d11Resource;
+    public property Dx9Resource:         IntPtr                    read GetDx9Resource;
+    public property Dx9SharedHandle:     IntPtr                    read GetDx9SharedHandle;
+    public property VaApiMediaSurface:   IntPtr                    read GetVaApiMediaSurface;
+    public property UsesSvmPointerArm:   clBool                    read GetUsesSvmPointerArm;
+    public property AllocFlagsIntel:     clMemAllocFlagsINTEL      read GetAllocFlagsIntel;
+    public property AllocType:           clUnifiedSharedMemoryType read GetAllocType;
+    public property AllocBasePtr:        IntPtr                    read GetAllocBasePtr;
+    public property AllocSize:           UIntPtr                   read GetAllocSize;
+    public property AllocDevice:         cl_device_id              read GetAllocDevice;
+    
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'Flags               = '; AddProp(res, Flags              ); res += #10;
+      res += 'HostPtr             = '; AddProp(res, HostPtr            ); res += #10;
+      res += 'UsesSvmPointer      = '; AddProp(res, UsesSvmPointer     ); res += #10;
+      res += 'Properties          = '; AddProp(res, Properties         ); res += #10;
+      res += 'Dx9MediaAdapterType = '; AddProp(res, Dx9MediaAdapterType); res += #10;
+      res += 'Dx9MediaSurfaceInfo = '; AddProp(res, Dx9MediaSurfaceInfo); res += #10;
+      res += 'D3d10Resource       = '; AddProp(res, D3d10Resource      ); res += #10;
+      res += 'D3d11Resource       = '; AddProp(res, D3d11Resource      ); res += #10;
+      res += 'Dx9Resource         = '; AddProp(res, Dx9Resource        ); res += #10;
+      res += 'Dx9SharedHandle     = '; AddProp(res, Dx9SharedHandle    ); res += #10;
+      res += 'VaApiMediaSurface   = '; AddProp(res, VaApiMediaSurface  ); res += #10;
+      res += 'UsesSvmPointerArm   = '; AddProp(res, UsesSvmPointerArm  ); res += #10;
+      res += 'AllocFlagsIntel     = '; AddProp(res, AllocFlagsIntel    ); res += #10;
+      res += 'AllocType           = '; AddProp(res, AllocType          ); res += #10;
+      res += 'AllocBasePtr        = '; AddProp(res, AllocBasePtr       ); res += #10;
+      res += 'AllocSize           = '; AddProp(res, AllocSize          ); res += #10;
+      res += 'AllocDevice         = '; AddProp(res, AllocDevice        );
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  {$endregion CLMemory}
+  
+  {$region CLMemorySubSegment}
+  
+  ///
+  CLMemorySubSegmentProperties = class(CLMemoryProperties)
+    
+    private function GetOffset: UIntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_OFFSET(self.ntv, Result).RaiseIfError;
+    end;
+    
+    public property Offset: UIntPtr read GetOffset;
+    
+    public procedure ToString(res: StringBuilder); override;
+    begin
+      inherited; res += #10;
+      res += 'Offset = '; AddProp(res, Offset);
+    end;
+    
+  end;
+  
+  {$endregion CLMemorySubSegment}
+  
+  {$region CLValue}
+  
+  ///
+  CLValueProperties = class
+    private ntv: cl_mem;
+    
+    public constructor(ntv: cl_mem) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    private function GetFlags: clMemFlags;
+    begin
+      cl.GetMemObjectInfo_MEM_FLAGS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHostPtr: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_HOST_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUsesSvmPointer: clBool;
+    begin
+      cl.GetMemObjectInfo_MEM_USES_SVM_POINTER(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetProperties: array of clMemProperties;
+    begin
+      cl.GetMemObjectInfo_MEM_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9MediaAdapterType: clDx9MediaAdapterType;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_MEDIA_ADAPTER_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9MediaSurfaceInfo: cl_dx9_surface_info;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_MEDIA_SURFACE_INFO(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d10Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_D3D10_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d11Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_D3D11_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9SharedHandle: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_SHARED_HANDLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVaApiMediaSurface: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_VA_API_MEDIA_SURFACE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUsesSvmPointerArm: clBool;
+    begin
+      cl.GetMemObjectInfo_MEM_USES_SVM_POINTER_ARM(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocFlagsIntel: clMemAllocFlagsINTEL;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_FLAGS_INTEL(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocType: clUnifiedSharedMemoryType;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocBasePtr: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_BASE_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocSize: UIntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocDevice: cl_device_id;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_DEVICE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAssociatedMemobject: cl_mem;
+    begin
+      cl.GetMemObjectInfo_MEM_ASSOCIATED_MEMOBJECT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetOffset: UIntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_OFFSET(self.ntv, Result).RaiseIfError;
+    end;
+    
+    public property Flags:               clMemFlags                read GetFlags;
+    public property HostPtr:             IntPtr                    read GetHostPtr;
+    public property UsesSvmPointer:      clBool                    read GetUsesSvmPointer;
+    public property Properties:          array of clMemProperties  read GetProperties;
+    public property Dx9MediaAdapterType: clDx9MediaAdapterType     read GetDx9MediaAdapterType;
+    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info       read GetDx9MediaSurfaceInfo;
+    public property D3d10Resource:       IntPtr                    read GetD3d10Resource;
+    public property D3d11Resource:       IntPtr                    read GetD3d11Resource;
+    public property Dx9Resource:         IntPtr                    read GetDx9Resource;
+    public property Dx9SharedHandle:     IntPtr                    read GetDx9SharedHandle;
+    public property VaApiMediaSurface:   IntPtr                    read GetVaApiMediaSurface;
+    public property UsesSvmPointerArm:   clBool                    read GetUsesSvmPointerArm;
+    public property AllocFlagsIntel:     clMemAllocFlagsINTEL      read GetAllocFlagsIntel;
+    public property AllocType:           clUnifiedSharedMemoryType read GetAllocType;
+    public property AllocBasePtr:        IntPtr                    read GetAllocBasePtr;
+    public property AllocSize:           UIntPtr                   read GetAllocSize;
+    public property AllocDevice:         cl_device_id              read GetAllocDevice;
+    public property AssociatedMemobject: cl_mem                    read GetAssociatedMemobject;
+    public property Offset:              UIntPtr                   read GetOffset;
+    
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'Flags               = '; AddProp(res, Flags              ); res += #10;
+      res += 'HostPtr             = '; AddProp(res, HostPtr            ); res += #10;
+      res += 'UsesSvmPointer      = '; AddProp(res, UsesSvmPointer     ); res += #10;
+      res += 'Properties          = '; AddProp(res, Properties         ); res += #10;
+      res += 'Dx9MediaAdapterType = '; AddProp(res, Dx9MediaAdapterType); res += #10;
+      res += 'Dx9MediaSurfaceInfo = '; AddProp(res, Dx9MediaSurfaceInfo); res += #10;
+      res += 'D3d10Resource       = '; AddProp(res, D3d10Resource      ); res += #10;
+      res += 'D3d11Resource       = '; AddProp(res, D3d11Resource      ); res += #10;
+      res += 'Dx9Resource         = '; AddProp(res, Dx9Resource        ); res += #10;
+      res += 'Dx9SharedHandle     = '; AddProp(res, Dx9SharedHandle    ); res += #10;
+      res += 'VaApiMediaSurface   = '; AddProp(res, VaApiMediaSurface  ); res += #10;
+      res += 'UsesSvmPointerArm   = '; AddProp(res, UsesSvmPointerArm  ); res += #10;
+      res += 'AllocFlagsIntel     = '; AddProp(res, AllocFlagsIntel    ); res += #10;
+      res += 'AllocType           = '; AddProp(res, AllocType          ); res += #10;
+      res += 'AllocBasePtr        = '; AddProp(res, AllocBasePtr       ); res += #10;
+      res += 'AllocSize           = '; AddProp(res, AllocSize          ); res += #10;
+      res += 'AllocDevice         = '; AddProp(res, AllocDevice        ); res += #10;
+      res += 'AssociatedMemobject = '; AddProp(res, AssociatedMemobject); res += #10;
+      res += 'Offset              = '; AddProp(res, Offset             );
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  {$endregion CLValue}
+  
+  {$region CLArray}
+  
+  ///
+  CLArrayProperties = class
+    private ntv: cl_mem;
+    
+    public constructor(ntv: cl_mem) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    private function GetFlags: clMemFlags;
+    begin
+      cl.GetMemObjectInfo_MEM_FLAGS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHostPtr: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_HOST_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUsesSvmPointer: clBool;
+    begin
+      cl.GetMemObjectInfo_MEM_USES_SVM_POINTER(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetProperties: array of clMemProperties;
+    begin
+      cl.GetMemObjectInfo_MEM_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9MediaAdapterType: clDx9MediaAdapterType;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_MEDIA_ADAPTER_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9MediaSurfaceInfo: cl_dx9_surface_info;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_MEDIA_SURFACE_INFO(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d10Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_D3D10_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d11Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_D3D11_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9SharedHandle: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_SHARED_HANDLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVaApiMediaSurface: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_VA_API_MEDIA_SURFACE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUsesSvmPointerArm: clBool;
+    begin
+      cl.GetMemObjectInfo_MEM_USES_SVM_POINTER_ARM(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocFlagsIntel: clMemAllocFlagsINTEL;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_FLAGS_INTEL(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocType: clUnifiedSharedMemoryType;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocBasePtr: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_BASE_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocSize: UIntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocDevice: cl_device_id;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_DEVICE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAssociatedMemobject: cl_mem;
+    begin
+      cl.GetMemObjectInfo_MEM_ASSOCIATED_MEMOBJECT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetOffset: UIntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_OFFSET(self.ntv, Result).RaiseIfError;
+    end;
+    
+    public property Flags:               clMemFlags                read GetFlags;
+    public property HostPtr:             IntPtr                    read GetHostPtr;
+    public property UsesSvmPointer:      clBool                    read GetUsesSvmPointer;
+    public property Properties:          array of clMemProperties  read GetProperties;
+    public property Dx9MediaAdapterType: clDx9MediaAdapterType     read GetDx9MediaAdapterType;
+    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info       read GetDx9MediaSurfaceInfo;
+    public property D3d10Resource:       IntPtr                    read GetD3d10Resource;
+    public property D3d11Resource:       IntPtr                    read GetD3d11Resource;
+    public property Dx9Resource:         IntPtr                    read GetDx9Resource;
+    public property Dx9SharedHandle:     IntPtr                    read GetDx9SharedHandle;
+    public property VaApiMediaSurface:   IntPtr                    read GetVaApiMediaSurface;
+    public property UsesSvmPointerArm:   clBool                    read GetUsesSvmPointerArm;
+    public property AllocFlagsIntel:     clMemAllocFlagsINTEL      read GetAllocFlagsIntel;
+    public property AllocType:           clUnifiedSharedMemoryType read GetAllocType;
+    public property AllocBasePtr:        IntPtr                    read GetAllocBasePtr;
+    public property AllocSize:           UIntPtr                   read GetAllocSize;
+    public property AllocDevice:         cl_device_id              read GetAllocDevice;
+    public property AssociatedMemobject: cl_mem                    read GetAssociatedMemobject;
+    public property Offset:              UIntPtr                   read GetOffset;
+    
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
+    public procedure ToString(res: StringBuilder); virtual;
+    begin
+      res += 'Flags               = '; AddProp(res, Flags              ); res += #10;
+      res += 'HostPtr             = '; AddProp(res, HostPtr            ); res += #10;
+      res += 'UsesSvmPointer      = '; AddProp(res, UsesSvmPointer     ); res += #10;
+      res += 'Properties          = '; AddProp(res, Properties         ); res += #10;
+      res += 'Dx9MediaAdapterType = '; AddProp(res, Dx9MediaAdapterType); res += #10;
+      res += 'Dx9MediaSurfaceInfo = '; AddProp(res, Dx9MediaSurfaceInfo); res += #10;
+      res += 'D3d10Resource       = '; AddProp(res, D3d10Resource      ); res += #10;
+      res += 'D3d11Resource       = '; AddProp(res, D3d11Resource      ); res += #10;
+      res += 'Dx9Resource         = '; AddProp(res, Dx9Resource        ); res += #10;
+      res += 'Dx9SharedHandle     = '; AddProp(res, Dx9SharedHandle    ); res += #10;
+      res += 'VaApiMediaSurface   = '; AddProp(res, VaApiMediaSurface  ); res += #10;
+      res += 'UsesSvmPointerArm   = '; AddProp(res, UsesSvmPointerArm  ); res += #10;
+      res += 'AllocFlagsIntel     = '; AddProp(res, AllocFlagsIntel    ); res += #10;
+      res += 'AllocType           = '; AddProp(res, AllocType          ); res += #10;
+      res += 'AllocBasePtr        = '; AddProp(res, AllocBasePtr       ); res += #10;
+      res += 'AllocSize           = '; AddProp(res, AllocSize          ); res += #10;
+      res += 'AllocDevice         = '; AddProp(res, AllocDevice        ); res += #10;
+      res += 'AssociatedMemobject = '; AddProp(res, AssociatedMemobject); res += #10;
+      res += 'Offset              = '; AddProp(res, Offset             );
+    end;
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      ToString(res);
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  {$endregion CLArray}
+  
+  
+  

@@ -11,7 +11,7 @@ ind: CommandQueue<integer>
 !ForcePtrQr
 !Enqueue
 var ec := cl.EnqueueReadBuffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   new UIntPtr(int64(!ind!) * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
   !res_ptr!,
   !evs!
@@ -28,7 +28,7 @@ new T[o.Length]
 !PinnRes
 !Enqueue
 var ec := cl.EnqueueReadBuffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   UIntPtr.Zero, new UIntPtr(o.ByteSize),
   !res_pinn_adr!,
   !evs!
@@ -44,7 +44,7 @@ new &T[{%rank? !len! : !len1!,!len2! : !len1!,!len2!,!len3! %}]
 !PinnRes
 !Enqueue
 var ec := cl.EnqueueReadBuffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   UIntPtr.Zero, new UIntPtr(!res!.Length * Marshal.SizeOf(default(T))),
   !res![{%rank? 0 : 0,0 : 0,0,0 %}],
   !evs!

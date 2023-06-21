@@ -7,7 +7,7 @@ const
   buf_byte_size = buf_size * 4;
   
 begin
-  var ec: ErrorCode;
+  var ec: clErrorCode;
   
   // Инициализация
   
@@ -15,13 +15,13 @@ begin
   cl.GetPlatformIDs(1, platform, IntPtr.Zero).RaiseIfError;
   
   var device: cl_device_id;
-  cl.GetDeviceIDs(platform, DeviceType.DEVICE_TYPE_ALL, 1,device,IntPtr.Zero).RaiseIfError;
+  cl.GetDeviceIDs(platform, clDeviceType.DEVICE_TYPE_ALL, 1,device,IntPtr.Zero).RaiseIfError;
   // Если пишет что устройств нет - обновите драйверы
   
   var context := cl.CreateContext(IntPtr.Zero, 1,device, nil,IntPtr.Zero, ec);
   ec.RaiseIfError;
   
-  var command_queue := cl.CreateCommandQueue(context, device, CommandQueueProperties.NONE, ec);
+  var command_queue := cl.CreateCommandQueue(context, device, clCommandQueueProperties.NONE, ec);
   ec.RaiseIfError;
   
   // Чтение и компиляция .cl файла
@@ -49,7 +49,7 @@ begin
   
   // Подготовка и запуск программы на GPU
   
-  var buf := cl.CreateBuffer(context, MemFlags.MEM_READ_WRITE, new UIntPtr(buf_byte_size),nil, ec);
+  var buf := cl.CreateBuffer(context, clMemFlags.MEM_READ_WRITE, new UIntPtr(buf_byte_size),nil, ec);
   ec.RaiseIfError;
   
   begin
@@ -68,7 +68,7 @@ begin
   
   begin
     var res := new integer[buf_size];
-    cl.EnqueueReadBuffer(command_queue, buf, Bool.NON_BLOCKING, UIntPtr.Zero, new UIntPtr(buf_byte_size), res[0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
+    cl.EnqueueReadBuffer(command_queue, buf, clBool.NON_BLOCKING, UIntPtr.Zero, new UIntPtr(buf_byte_size), res[0], 0,IntPtr.Zero,IntPtr.Zero).RaiseIfError;
     cl.Finish(command_queue).RaiseIfError;
     res.Println;
   end;

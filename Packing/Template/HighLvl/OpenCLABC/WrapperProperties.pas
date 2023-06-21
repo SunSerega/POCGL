@@ -1,33 +1,251 @@
-﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
-uses Fixers       in '..\..\..\Utils\Fixers';
-uses CodeGen      in '..\..\..\Utils\CodeGen';
+﻿uses System;
 
-uses PackingUtils in '..\PackingUtils';
+uses '..\..\..\..\POCGL_Utils';
+uses '..\..\..\..\Utils\AOtp';
+uses '..\..\..\..\Utils\Fixers';
+uses '..\..\..\..\Utils\CodeGen';
 
-function FixWord(w: string): string;
-begin
-  w := w.ToLower;
-  w[1] := w[1].ToUpper;
-  Result := w;
-end;
+uses '..\..\Common\PackingUtils';
+
+var log := new FileLogger('WrapperProperties.log');
 
 type
-  Prop = sealed class
-    t, base_name, name, escaped_name: string;
-    special_args := new List<string>;
+  ETTFunc = sealed class
+    private name: string;
+    private ett: Dictionary<string, string>;
+    private used := false;
     
-    constructor(header: string; data: sequence of string);
+    public static ByName := new Dictionary<string, ETTFunc>;
+    private static All := new List<ETTFunc>;
+    
+    public constructor(name: string; ett: Dictionary<string, string>);
     begin
-      var wds := header.ToWords(':');
-      base_name := wds[0].Trim;
-      t := wds[1].Trim;
+      self.name := name;
+      self.ett := ett;
       
-      name := base_name.TrimStart('!').ToWords('_').Select(FixWord).JoinToString('');
-      escaped_name := if name.ToLower in pas_keywords then '&'+name else name;
-      
-      special_args.AddRange(data);
+      ByName.Add(name, self);
+      All += self;
       
     end;
+    private constructor := raise new InvalidOperationException;
+    
+    public static procedure InitAll;
+    begin
+      var ett_log_fname := GetFullPathRTA('..\..\LowLvl\OpenCL\Log\All EnumToTypeBinding''s.log');
+      foreach var (func_name, lines1) in FixerUtils.ReadBlocks(ett_log_fname, nil) do
+      begin
+        var ett := new Dictionary<string, string>;
+        
+        foreach var (enum_name, lines2) in FixerUtils.ReadBlocks(lines1, '---', nil) index func_data_ind do
+        begin
+          if func_data_ind=0 then
+          {$region ett info}
+          begin
+            if (enum_name<>nil) then
+              raise new System.InvalidOperationException;
+            
+            var has_inp := false;
+            var has_otp := false;
+            foreach var (ett_dir, lines3) in FixerUtils.ReadBlocks(lines2, '!', nil) do
+            begin
+              foreach var l in lines3 do
+                if not l.IsInteger then
+                  raise new InvalidOperationException;
+              match ett_dir with
+                
+                nil: lines3.Single; // gr_par_ind
+                
+                'input':
+                begin
+                  has_inp := true;
+                  if lines3.Length<>2 then
+                    raise new InvalidOperationException;
+                end;
+                
+                'output':
+                begin
+                  has_otp := true;
+                  if lines3.Length<>3 then
+                    raise new InvalidOperationException;
+                end;
+                
+                else raise new NotImplementedException;
+              end;
+            end;
+            
+            if has_inp then break;
+            if not has_otp then
+              raise new InvalidOperationException;
+            continue;
+          end
+          {$endregion ett info};
+          
+          foreach var (ett_dir, lines3) in FixerUtils.ReadBlocks(lines2, '!', nil) do
+          begin
+            if ett_dir<>'output' then
+              raise new InvalidOperationException;
+            ett.Add(enum_name, lines3.Single.RegexReplace('array\[\d+\]', 'array'));
+          end;
+          
+        end;
+        
+        if ett.Count=0 then
+          log.Otp($'Func [{func_name}] was skipped when loading') else
+          new ETTFunc(func_name, ett);
+        
+      end;
+    end;
+    
+    public static procedure ReportUnused :=
+      foreach var f in All do
+      begin
+        if f.used then continue;
+        log.Otp($'Func [{f.name}] was not used');
+      end;
+    
+  end;
+  
+  EnumName = record
+    private short_name, escaped_name, full_name: string;
+    
+    public constructor(name, prefix: string);
+    begin
+      self.short_name := name
+        .TrimStart('!')
+        .Split('_')
+        .Select(w->w.First+w.SubString(1).ToLower)
+        .JoinToString('');
+      
+      self.escaped_name := short_name;
+      if escaped_name in pas_keywords then
+        self.escaped_name := '&'+escaped_name;
+      
+      if name.StartsWith('!') then
+        name := name.Substring(1) else
+        name := prefix+name;
+      self.full_name := name;
+      
+    end;
+    public constructor := raise new InvalidOperationException;
+    
+  end;
+  
+  WrapPropType = sealed class
+    private name, ntv_t, info_t: string;
+    private f: ETTFunc;
+    private base: WrapPropType;
+    private writeable_enums: array of EnumName;
+    private all_enums: Dictionary<EnumName, boolean>;
+    
+    private static ByName := new Dictionary<string, WrapPropType>;
+    public static All := new List<WrapPropType>;
+    
+    public constructor(name, ntv_t, info_t: string; f: ETTFunc; base: WrapPropType; writeable_enums: array of EnumName; all_enums: Dictionary<EnumName, boolean>);
+    begin
+      self.name := name;
+      self.ntv_t := ntv_t;
+      self.info_t := info_t;
+      self.f := f;
+      self.base := base;
+      self.writeable_enums := writeable_enums;
+      self.all_enums := all_enums;
+      
+      ByName.Add(name, self);
+      All += self;
+      
+      var expected_enum_names := f.ett.Keys.ToHashSet;
+      var count_disabled := true;
+      var wpt := self;
+      while wpt<>nil do
+      begin
+        
+        foreach var enum_name in wpt.all_enums.Keys do
+        begin
+          if not count_disabled and not wpt.all_enums[enum_name] then continue;
+          if expected_enum_names.Remove(enum_name.full_name) then continue;
+          if enum_name.full_name in f.ett then
+            Otp($'WARNING: {name} double added {enum_name.full_name}') else
+            Otp($'ERROR: {name} added {enum_name.full_name}, but it was not defined in ett');
+        end;
+        
+        count_disabled := false;
+        wpt := wpt.base;
+      end;
+      
+      foreach var enum_name in expected_enum_names do
+        Otp($'WARNING: {name} did not add {enum_name}');
+      
+    end;
+    private constructor := raise new InvalidOperationException;
+    
+    public static procedure InitAll :=
+      foreach var fname in EnumerateFiles(GetFullPathRTA('!Def\WrapperProperties'), '*.dat') do
+      begin
+        var name := System.IO.Path.GetFileNameWithoutExtension(fname);
+        if '#' in name then name := name.Remove(0, name.IndexOf('#')+1);
+        
+        var ntv_t := default(string);
+        var info_t := default(string);
+        var f := default(ETTFunc);
+        var base := default(WrapPropType);
+        var all_enums := new Dictionary<EnumName, boolean>;
+        
+        var enum_prefix := default(string);
+        
+        foreach var (enum_name, lines) in FixerUtils.ReadBlocks(fname, true) index enum_i do
+        begin
+          
+          if enum_i=0 then
+          {$region Header}
+          begin
+            
+            foreach var (header_kind, header_lines) in FixerUtils.ReadBlocks(lines, '!', nil) do
+              match header_kind with
+                
+                nil:
+                begin
+                  if header_lines.Length<>3 then
+                    raise new InvalidOperationException;
+                  
+                  var func_name: string;
+                  (ntv_t, info_t, func_name) := header_lines;
+                  
+                  enum_prefix := info_t.Matches('cl(.*)Info').Single.Groups[1].Value.ToUpper+'_';
+                  
+                  f := ETTFunc.ByName[func_name];
+                  f.used := true;
+                end;
+                
+                'Base':
+                begin
+                  var base_name := header_lines.Single;
+                  if base_name not in ByName then
+                    raise new InvalidOperationException($'{name} => {base_name}');
+                  base := ByName[base_name];
+                end;
+                
+                else raise new NotImplementedException(header_kind);
+              end;
+            
+            continue;
+          end
+          {$endregion Header};
+          
+          if f=nil then
+            raise new InvalidOperationException;
+          
+          var need_write: boolean;
+          case lines.Single of
+            'Flat': need_write := true;
+            'Disable': need_write := false;
+            else raise new NotImplementedException;
+          end;
+          
+          all_enums.Add(new EnumName(enum_name, enum_prefix), need_write);
+        end;
+        
+        new WrapPropType(name, ntv_t, info_t, f, base, all_enums.Keys.Where(e->all_enums[e]).ToArray, all_enums);
+      end;
     
   end;
   
@@ -36,282 +254,213 @@ begin
     var dir := GetFullPathRTA('WrapperProperties');
     System.IO.Directory.CreateDirectory(dir);
     
-    var n := new FileWriter(GetFullPath(     'Interface.template', dir));
-    var m := new FileWriter(GetFullPath('Implementation.template', dir));
-    var all := n * m;
+    ETTFunc.InitAll;
+//    foreach var f in ETTFunc.All do
+//    begin
+//      Otp('');
+//      Otp($'{f.name}:');
+//      foreach var kvp in f.ett do
+//        Otp($'{kvp.Key} => {kvp.Value}');
+//    end;
+//    Halt;
     
-    loop 3 do
-    begin
-      n += '  ';
-      all += #10;
-    end;
+    WrapPropType.InitAll;
+    ETTFunc.ReportUnused;
     
-    foreach var fname in EnumerateFiles(GetFullPathRTA('!Def\WrapperProperties'), '*.dat') do
+    var wr := new FileWriter(GetFullPathRTA('WrapperProperties.template'));
+    loop 3 do wr += '  '#10;
+    
+    foreach var wpt in WrapPropType.All do
     begin
-      var t := System.IO.Path.GetFileNameWithoutExtension(fname);
-      if t.Contains('#') then t := t.Remove(0, t.IndexOf('#')+1);
       
-      var ntv_t: string := nil;
-      var info_t: string := nil;
-      var ntv_proc_name: string := nil;
-      var ps := new List<Prop>;
+      wr += '  ';
+      wr += '{$region ';
+      wr += wpt.name;
+      wr += '}'#10;
       
-      var base_t: string := nil;
+      wr += '  ';
+      wr += #10;
       
-      foreach var (bl_name, bl_data) in FixerUtils.ReadBlocks(fname, false) do
-        if bl_name<>nil then
-          ps += new Prop(bl_name, bl_data) else
-          foreach var (setting_name, setting_data) in FixerUtils.ReadBlocks(bl_data, '!', false) do
-            match setting_name with
-              nil: (ntv_t, info_t, ntv_proc_name) := setting_data;
-              
-              'Base': base_t := setting_data.Single;
-              
-              else raise new System.InvalidOperationException(setting_name);
-            end;
-      
-      var max_type_len := ps.Select(p->p.t.Length).DefaultIfEmpty(0).Max;
-      var max_name_len := ps.Select(p->p.name.Length).DefaultIfEmpty(0).Max;
-      var max_esc_name_len := ps.Select(p->p.escaped_name.Length).DefaultIfEmpty(0).Max;
-      
-      
-      
-      n += '  ';
-      all += '{$region ';
-      all += t;
-      all += '}'#10;
-      
-      n += '  ';
-      all += #10;
-      
-      
-      
-      m += 'type'#10;
-      n += '  ///'#10;
-      all += '  ';
-      all += t;
-      all += 'Properties = partial class';
-      if base_t=nil then
+      if (wpt.base<>nil) and not wpt.writeable_enums.Any then
       begin
-        m += '(NtvPropertiesBase<';
-        m += ntv_t;
-        m += ', ';
-        m += info_t;
-        m += '>)';
+        
+        wr += '  ///'#10;
+        wr += '  ';
+        wr += wpt.name;
+        wr += 'Properties = ';
+        wr += wpt.base.name;
+        wr += 'Properties;'#10;
+        
       end else
       begin
-        all += '(';
-        all += base_t;
-        all += 'Properties)';
-      end;
-      all += #10;
-      
-      all += '    '#10;
-      
-      
-      
-      n += '    public constructor(ntv: ';
-      n += ntv_t;
-      n += ');'#10;
-      n += '    private constructor := raise new System.InvalidOperationException($''%Err:NoParamCtor%'');'#10;
-      
-      n += '    '#10;
-      
-      
-      
-      if ps.Any then
-      begin
         
-        foreach var p in ps do
+        {$region type}
+        
+        wr += '  ///'#10;
+        wr += '  ';
+        wr += wpt.name;
+        wr += 'Properties = class';
+        if wpt.base<>nil then
+        begin
+          wr += '(';
+          wr += wpt.base.name;
+          wr += 'Properties)';
+        end;
+        wr += #10;
+        
+        if wpt.base=nil then
         begin
           
-          n += '    private function Get';
-          n += p.name;
-          n += ': ';
-          n += p.t;
-          n += ';'#10;
+          wr += '    private ntv: ';
+          wr += wpt.ntv_t;
+          wr += ';'#10;
+          
+          wr += '    '#10;
+          
+          wr += '    public constructor(ntv: ';
+          wr += wpt.ntv_t;
+          wr += ') := self.ntv := ntv;'#10;
+          wr += '    private constructor := raise new OpenCLABCInternalException;'#10;
           
         end;
-        n += '    '#10;
         
-        foreach var p in ps do
-        begin
-          
-          n += '    public property ';
-          n += p.escaped_name;
-          n += ': ';
-          n += ' '*(max_esc_name_len-p.escaped_name.Length);
-          n += p.t.PadRight(max_type_len);
-          n += ' read Get';
-          n += p.name;
-          n += ';'#10;
-          
-        end;
-        n += '    '#10;
+        wr += '    '#10;
         
+        if wpt.writeable_enums.Any then
         begin
-          n += '    public procedure ToString(res: StringBuilder);';
-          n += if base_t<>nil then ' override;' else ' virtual;';
-          n += #10;
-          n += '    begin'#10;
-          var max_p_w := ps.Max(p->p.name.Length);
-          var any_p := false;
-          if base_t<>nil then
+          var ett := wpt.writeable_enums.ToDictionary(e->e, e->
           begin
-            n += '      inherited;'#10;
-            any_p := true;
+            Result := wpt.f.ett[e.full_name];
+            if WrapPropType.All.Select(w->w.name+'Properties').Contains(Result, StringComparer.OrdinalIgnoreCase) then
+              Result := 'OpenCL.'+Result;
+          end);
+          
+          var max_name_len := ett.Keys.Max(e->e.short_name.Length);
+          var max_esc_name_len := ett.Keys.Max(e->e.escaped_name.Length);
+          var max_type_len := ett.Values.Max(t->t.Length);
+          
+          {$region function Get}
+          
+          foreach var enum_name in wpt.writeable_enums do
+          begin
+            
+            wr += '    private function Get';
+            wr += enum_name.short_name;
+            wr += ': ';
+            wr += ett[enum_name];
+            wr += ';'#10;
+            wr += '    begin'#10;
+            
+            wr += '      ';
+            wr += wpt.f.name;
+            wr += '_';
+            wr += enum_name.full_name;
+            wr += '(self.ntv, Result).RaiseIfError;'#10;
+            
+            wr += '    end;'#10;
+            
           end;
-          foreach var p in ps do
+          wr += '    '#10;
+          
+          {$endregion function Get}
+          
+          {$region property}
+          
+          foreach var enum_name in wpt.writeable_enums do
           begin
-            if any_p then
-              n += '      res += #10;'#10 else
-              any_p := true;
-            n += '      res += ''';
-            n += p.name.PadRight(max_p_w+1);
-            n += '= '';'#10;
-            n += '      try'#10;
+            
+            wr += '    public property ';
+            wr += enum_name.escaped_name;
+            wr += ': ';
+            loop max_esc_name_len-enum_name.escaped_name.Length do
+              wr += ' ';
+            wr += ett[enum_name];
+            loop max_type_len-ett[enum_name].Length do
+              wr += ' ';
+            wr += ' read Get';
+            wr += enum_name.short_name;
+            wr += ';'#10;
+            
+          end;
+          wr += '    '#10;
+          
+          {$endregion property}
+          
+          {$region ToString}
+          
+          if wpt.base=nil then
+          begin
+            wr += '    private static procedure AddProp(res: StringBuilder; v: object) :='#10;
+            wr += '      try'#10;
             //TODO Использовать второй параметр _ObjectToString
-            n += '        res += _ObjectToString(';
-            n += p.escaped_name;
-            n += ');'#10;
-            n += '      except'#10;
-            n += '        on e: OpenCLException do'#10;
-            n += '          res += e.Code.ToString;'#10;
-            n += '      end;'#10;
+            wr += '        res += _ObjectToString(v);'#10;
+            wr += '      except'#10;
+            wr += '        on e: OpenCLException do'#10;
+            wr += '          res += e.Code.ToString;'#10;
+            wr += '      end;'#10;
           end;
-          n += '    end;'#10;
+          
+          wr += '    public procedure ToString(res: StringBuilder); ';
+          wr += if wpt.base<>nil then 'override' else 'virtual';
+          wr += ';'#10;
+          wr += '    begin'#10;
+          if wpt.base<>nil then
+            wr += '      inherited; res += #10;'#10;
+          wr.WriteSeparated(wpt.writeable_enums,
+            (wr, enum_name)->
+            begin
+              wr += '      res += ''';
+              wr += enum_name.short_name;
+              loop max_name_len-enum_name.short_name.Length do
+                wr += ' ';
+              wr += ' = ''; AddProp(res, ';
+              wr += enum_name.escaped_name;
+              loop max_esc_name_len-enum_name.escaped_name.Length do
+                wr += ' ';
+              wr += ');';
+            end, ' res += #10;'#10
+          );
+          wr += #10;
+          wr += '    end;'#10;
+          
+          if wpt.base=nil then
+          begin
+            wr += '    public function ToString: string; override;'#10;
+            wr += '    begin'#10;
+            wr += '      var res := new StringBuilder;'#10;
+            wr += '      ToString(res);'#10;
+            wr += '      Result := res.ToString;'#10;
+            wr += '    end;'#10;
+          end;
+          
+          wr += '    '#10;
+          
+          {$endregion ToString}
+          
         end;
         
-        if base_t=nil then
-        begin
-          n += '    public function ToString: string; override;'#10;
-          n += '    begin'#10;
-          n += '      var res := new StringBuilder;'#10;
-          n += '      ToString(res);'#10;
-          n += '      Result := res.ToString;'#10;
-          n += '    end;'#10;
-        end;
-        n += '    '#10;
+        wr += '  end;'#10;
         
-      end;
-      
-      
-      m += '    private static function clGetSize(ntv: ';
-      m += ntv_t;
-      m += '; param_name: ';
-      m += info_t;
-      m += '; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;'#10;
-      
-      m += '    external ''opencl.dll'' name ''';
-      m += ntv_proc_name;
-      m += ''';'#10;
-      
-      m += '    private static function clGetVal(ntv: ';
-      m += ntv_t;
-      m += '; param_name: ';
-      m += info_t;
-      m += '; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;'#10;
-      
-      m += '    external ''opencl.dll'' name ''';
-      m += ntv_proc_name;
-      m += ''';'#10;
-      
-      m += '    '#10;
-      
-      
-      
-      m += '    protected procedure GetSizeImpl(id: ';
-      m += info_t;
-      m += '; var sz: UIntPtr); override :='#10;
-      
-      m += '    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;'#10;
-      
-      m += '    protected procedure GetValImpl(id: ';
-      m += info_t;
-      m += '; sz: UIntPtr; var res: byte); override :='#10;
-      
-      m += '    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;'#10;
-      
-      m += '    '#10;
-      
-      
-      
-      all += '  end;'#10;
-      
-      all += '  '#10;
-      
-      
-      
-      m += 'constructor ';
-      m += t;
-      m += 'Properties.Create(ntv: ';
-      m += ntv_t;
-      m += ') := inherited Create(ntv);'#10;
-      
-      m += #10;
-      
-      
-      
-      foreach var p in ps do
-      begin
-        
-        m += 'function ';
-        m += t;
-        m += 'Properties.Get';
-        m += p.name.PadRight(max_name_len);
-        m += ' := ';
-        if p.t = 'String' then
-          m += 'GetString' else
-        begin
-          var arr_c := 0;
-          while p.t.StartsWith('array of ' * (arr_c+1)) do arr_c += 1;
-          m += 'GetVal';
-          loop arr_c do
-            m += 'Arr';
-          m += '&<';
-          m += p.t.Substring('array of '.Length * arr_c);
-          m += '>';
-        end;
-        m += '(';
-        m += info_t;
-        m += '.';
-        if not p.base_name.StartsWith('!') then
-        begin
-          m += info_t.Remove(info_t.Length-'Info'.Length).ToUpper;
-          m += '_';
-        end;
-        m += p.base_name.TrimStart('!');
-        foreach var arg in p.special_args do
-        begin
-          m += ', ';
-          m += arg;
-        end;
-        m += ');'#10;
+        {$endregion type}
         
       end;
       
-      m += #10;
+      wr += '  '#10;
       
+      wr += '  ';
+      wr += '{$endregion ';
+      wr += wpt.name;
+      wr += '}'#10;
       
-      
-      n += '  ';
-      all += '{$endregion ';
-      all += t;
-      all += '}'#10;
-      
-      n += '  ';
-      all += #10;
+      wr += '  ';
+      wr += #10;
       
     end;
     
-    loop 1 do
-    begin
-      n += '  ';
-      all += #10;
-    end;
-    n += '  ';
+    wr += '  '#10'  ';
+    wr.Close;
     
-    all.Close;
+    log.Close;
   except
     on e: Exception do ErrOtp(e);
   end;

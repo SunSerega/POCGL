@@ -24,7 +24,6 @@ Fixing Group items
 Fixing IdClass items
 Fixing Delegate items
 Fixing Func items
-Dumping Feature items
 WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_WORK_GROUP_SIZE]
 WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_MAX_WORK_GROUP_SIZE + AMD]
 WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_CONSTANT_BUFFER_SIZE]
@@ -48,6 +47,9 @@ WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type in
 WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_AVAILABLE_ASYNC_QUEUES]
 WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_EXT_MEM_PADDING_IN_BYTES]
 WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PAGE_SIZE]
+Func [cl::GetProgramInfo] did not generate overload: output type for Group [cl::ProgramInfo] Enum [cl::PROGRAM_BINARIES] is nested array
+WARNING: Func [cl::GetAcceleratorInfo + INTEL] could not generate overload: no output type info for Group [cl::AcceleratorInfo] Enum [cl::ACCELERATOR_DESCRIPTOR]
+Dumping Feature items
 WARNING: 18>12 overloads of non-fixed Func [cl::CompileProgram]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueFillBuffer]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMapImage]
@@ -66,7 +68,6 @@ WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMigrateMemObject + EXT]
 WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueGenerateMipmap + IMG]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGrallocObjects + IMG]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGrallocObjects + IMG]
-WARNING: Func [cl::GetAcceleratorInfo + INTEL] could not generate overload: no output type info for Group [cl::AcceleratorInfo] Enum [cl::ACCELERATOR_DESCRIPTOR]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireDX9Objects + INTEL]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseDX9Objects + INTEL]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireVA_APIMediaSurfaces + INTEL]

@@ -10,7 +10,7 @@ T: record
 !ForcePtrQr
 !Enqueue
 var ec := cl.EnqueueReadBuffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
   !res_ptr!,
   !evs!

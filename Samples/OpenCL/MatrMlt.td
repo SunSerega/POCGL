@@ -2,8 +2,8 @@
 
 
 #Delegates
-OpenCL.ProgramCallback = procedure(program: cl_program; user_data: System.IntPtr)
-OpenCL.CreateContextCallback = procedure(errinfo: System.IntPtr; private_info: System.IntPtr; cb: longword; user_data: System.IntPtr)
+OpenCL.clCreateContextCallback = procedure(errinfo: string; private_info: System.IntPtr; cb: System.UIntPtr; user_data: System.IntPtr)
+OpenCL.clProgramCallback = procedure(program: cl_program; user_data: System.IntPtr)
 
 #ExpExecOtp
 Матрица A:

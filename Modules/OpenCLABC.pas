@@ -1,5 +1,5 @@
 ﻿
-{%..\LicenseHeader%}
+{%..\..\Common\LicenseHeader.txt%}
 
 ///
 ///Высокоуровневая оболочка модуля OpenCL
@@ -787,7 +787,7 @@ type
     {$region constructor's}
     
     private procedure AllocArea(length: UInt32) :=
-    self._area := new NativeArrayArea<T>(length);
+      self._area := new NativeArrayArea<T>(length);
     public constructor(length: UInt32);
     begin
       AllocArea(length);
@@ -946,8 +946,8 @@ type
   
   {$region Re-definition's}
   
-  CLDeviceType              = OpenCL.DeviceType;
-  CLDeviceAffinityDomain    = OpenCL.DeviceAffinityDomain;
+  clDeviceType              = OpenCL.clDeviceType;
+  clDeviceAffinityDomain    = OpenCL.clDeviceAffinityDomain;
   
   {$endregion Re-definition's}
   
@@ -956,17 +956,15 @@ type
   OpenCLABCInternalException = sealed class(Exception)
     
     private constructor(message: string) :=
-    inherited Create(message);
-//    private constructor(message: string; ec: ErrorCode) :=
-//    inherited Create($'{message} with {ec}');
-    private constructor(ec: ErrorCode) :=
-    inherited Create(OpenCLException.Create(ec).Message);
+      inherited Create(message);
+    private constructor(ec: clErrorCode) :=
+      inherited Create(OpenCLException.Create(ec).Message);
     private constructor :=
-    inherited Create($'%Err:NoParamCtor%');
+      inherited Create($'%Err:NoParamCtor%');
     
     private const RelayErrorCode = integer.MinValue;
-    private static procedure RaiseIfError(ec: ErrorCode) :=
-    if ec.IS_ERROR and (ec.val<>RelayErrorCode) then raise new OpenCLABCInternalException(ec);
+    private static procedure RaiseIfError(ec: clErrorCode) :=
+      if ec.IS_ERROR and (ec.val<>RelayErrorCode) then raise new OpenCLABCInternalException(ec);
     
   end;
   
@@ -1239,7 +1237,7 @@ type
   
   {$region WrapperProperties}
   
-  {%WrapperProperties\Interface!WrapperProperties.pas%}
+  {%WrapperProperties!WrapperProperties.pas%}
   
   {$endregion WrapperProperties}
   
@@ -1267,7 +1265,7 @@ type
       var c: UInt32;
       begin
         var ec := cl.GetPlatformIDs(0, IntPtr.Zero, c);
-        if ec=ErrorCode.PLATFORM_NOT_FOUND then exit;
+        if ec=clErrorCode.PLATFORM_NOT_FOUND then exit;
         OpenCLABCInternalException.RaiseIfError(ec);
       end;
       if c=0 then exit;
@@ -1308,18 +1306,18 @@ type
     begin
       var pl: cl_platform_id;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetDeviceInfo(self.ntv, DeviceInfo.DEVICE_PLATFORM, new UIntPtr(sizeof(cl_platform_id)), pl, IntPtr.Zero)
+        cl.GetDeviceInfo_DEVICE_PLATFORM(self.ntv, pl, false)
       );
       Result := new CLPlatform(pl);
     end;
     public property BaseCLPlatform: CLPlatform read GetBaseCLPlatform;
     
-    public static function GetAllFor(pl: CLPlatform; t: CLDeviceType): array of CLDevice;
+    public static function GetAllFor(pl: CLPlatform; t: clDeviceType): array of CLDevice;
     begin
       
       var c: UInt32;
       var ec := cl.GetDeviceIDs(pl.ntv, t, 0, IntPtr.Zero, c);
-      if ec=ErrorCode.DEVICE_NOT_FOUND then exit;
+      if ec=clErrorCode.DEVICE_NOT_FOUND then exit;
       OpenCLABCInternalException.RaiseIfError(ec);
       
       var all := new cl_device_id[c];
@@ -1329,7 +1327,7 @@ type
       
       Result := all.ConvertAll(dvc->new CLDevice(dvc));
     end;
-    public static function GetAllFor(pl: CLPlatform) := GetAllFor(pl, CLDeviceType.DEVICE_TYPE_GPU);
+    public static function GetAllFor(pl: CLPlatform) := GetAllFor(pl, clDeviceType.DEVICE_TYPE_GPU);
     
   end;
   
@@ -1418,7 +1416,7 @@ type
       
       foreach var pl in pls do
       begin
-        var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL);
+        var dvcs := CLDevice.GetAllFor(pl, clDeviceType.DEVICE_TYPE_ALL);
         if dvcs=nil then continue;
         Result := new CLContext(dvcs);
         exit;
@@ -1444,7 +1442,7 @@ type
       self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<CLDevice>(dvcs.ToArray);
       var ntv_dvcs := GetAllNtvDevices;
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       self.ntv := cl.CreateContext(nil, ntv_dvcs.Count, ntv_dvcs, nil, IntPtr.Zero, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
@@ -1454,17 +1452,10 @@ type
     
     protected static function GetContextDevices(ntv: cl_context): array of CLDevice;
     begin
-      
-      var sz: UIntPtr;
+      var res: array of cl_device_id;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetContextInfo(ntv, ContextInfo.CONTEXT_DEVICES, UIntPtr.Zero, IntPtr.Zero, sz)
+        cl.GetContextInfo_CONTEXT_DEVICES(ntv, res)
       );
-      
-      var res := new cl_device_id[uint64(sz) div cl_device_id.Size];
-      OpenCLABCInternalException.RaiseIfError(
-        cl.GetContextInfo(ntv, ContextInfo.CONTEXT_DEVICES, sz, res[0], IntPtr.Zero)
-      );
-      
       Result := res.ConvertAll(dvc->new CLDevice(dvc));
     end;
     private procedure InitFromNtv(ntv: cl_context; dvcs: IList<CLDevice>; main_dvc: CLDevice);
@@ -1731,7 +1722,7 @@ type
     protected constructor(code_text: string; c: CLContext);
     begin
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       self.ntv := cl.CreateProgramWithSource(c.ntv, 1,|code_text|,nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
@@ -1781,30 +1772,17 @@ type
     
     protected static function GetLastLog(ntv: cl_program; d: cl_device_id): string;
     begin
-      
-      var sz: UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetProgramBuildInfo(ntv, d, ProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,IntPtr.Zero,sz)
+        cl.GetProgramBuildInfo_PROGRAM_BUILD_LOG(ntv, d, Result)
       );
-      
-      var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-      try
-        OpenCLABCInternalException.RaiseIfError(
-          cl.GetProgramBuildInfo(ntv, d, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,str_ptr,IntPtr.Zero)
-        );
-        Result := Marshal.PtrToStringAnsi(str_ptr);
-      finally
-        Marshal.FreeHGlobal(str_ptr);
-      end;
-      
     end;
     
-    protected static procedure CheckBuildFail(ntv: cl_program; ec, fail_code: ErrorCode; fail_descr: string; dvcs: sequence of CLDevice);
+    protected static procedure CheckBuildFail(ntv: cl_program; ec, fail_code: clErrorCode; fail_descr: string; dvcs: sequence of CLDevice);
     begin
       
-      // It is common OpenCL impl misstake, to return BUILD_PROGRAM_FAILURE wherever
-      if (ec=fail_code) or (ec=ErrorCode.BUILD_PROGRAM_FAILURE) then
-//      if ec<>ErrorCode.SUCCESS then
+      // It is common OpenCL impl misstake, to return BUILD_PROGRAM_FAILURE, instead of more specific error
+      if (ec=fail_code) or (ec=clErrorCode.BUILD_PROGRAM_FAILURE) then
+//      if ec<>clErrorCode.SUCCESS then
       begin
         var sb := new StringBuilder(fail_descr);
         
@@ -1844,16 +1822,15 @@ type
     
     public function Serialize: array of array of byte;
     begin
-      var sz: UIntPtr;
       
-      OpenCLABCInternalException.RaiseIfError( cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARY_SIZES, UIntPtr.Zero, nil, sz) );
-      var szs := new UIntPtr[sz.ToUInt64 div UIntPtr.Size];
-      OpenCLABCInternalException.RaiseIfError( cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARY_SIZES, sz, szs[0], IntPtr.Zero) );
-      
-      var res := szs.ConvertAll(sz_i->new NativeArray<byte>(sz_i.ToUInt32));
-      
+      var szs: array of UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARIES, sz, res.ConvertAll(a->a.Area.first_ptr)[0], IntPtr.Zero)
+        cl.GetProgramInfo_PROGRAM_BINARY_SIZES(ntv, szs)
+      );
+      
+      var res := szs.ConvertAll(sz->new NativeArray<byte>(sz.ToUInt32));
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetProgramInfo_PROGRAM_BINARIES(ntv, res.Length, res.ConvertAll(a->a.Area.first_ptr)[0])
       );
       
       Result := res.ConvertAll(a->a.Area.ManagedCopy);
@@ -1873,7 +1850,7 @@ type
       
     end;
     public procedure SerializeTo(str: System.IO.Stream) :=
-    SerializeTo(new System.IO.BinaryWriter(str));
+      SerializeTo(new System.IO.BinaryWriter(str));
     
     {$endregion Serialize}
     
@@ -1881,10 +1858,10 @@ type
     
     protected static function DeserializeNative(c: CLContext; bin: array of array of byte): cl_program;
     begin
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       
       var dvcs := c.GetAllNtvDevices;
-      //TODO Отдельные эррор коды?
+      //TODO Отдельные коды ошибок?
       Result := cl.CreateProgramWithBinary(
         c.ntv, dvcs.Length, dvcs,
         bin.ConvertAll(a->new UIntPtr(a.Length)), bin,
@@ -1922,14 +1899,14 @@ type
       for var i := 0 to bin_ntvs.Length-1 do
         bin_ntvs[i] := bins[i].ntv;
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       Result := cl.LinkProgram(opt.BuildContext.ntv, 0,nil, opt.ToString, bin_ntvs.Length,bin_ntvs, nil,IntPtr.Zero, ec);
       
       if Result=cl_program.Zero then
         //TODO В этом случае нельзя получить лог???
         OpenCLABCInternalException.RaiseIfError(ec) else
         CheckBuildFail(Result,
-          ec, ErrorCode.LINK_PROGRAM_FAILURE,
+          ec, clErrorCode.LINK_PROGRAM_FAILURE,
           $'%Err:CLCode:BuildFail:Link%', opt.BuildContext.AllDevices
         );
       
@@ -1955,7 +1932,7 @@ type
       inherited Create(code_text, (opt??new CLProgramCompOptions).BuildContext);
       opt := opt??new CLProgramCompOptions;
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       if headers=nil then
         ec := cl.CompileProgram(self.ntv, 0,nil, opt.ToString, 0,nil,nil, nil,IntPtr.Zero) else
       begin
@@ -1971,7 +1948,7 @@ type
       end;
       
       CheckBuildFail(self.ntv,
-        ec, ErrorCode.COMPILE_PROGRAM_FAILURE,
+        ec, clErrorCode.COMPILE_PROGRAM_FAILURE,
         $'%Err:CLCode:BuildFail:Compile%', opt.BuildContext.AllDevices
       );
       
@@ -2043,7 +2020,7 @@ type
       var ec := cl.BuildProgram(self.ntv, 0,nil, opt.ToString, nil,IntPtr.Zero);
       
       CheckBuildFail(self.ntv,
-        ec, ErrorCode.BUILD_PROGRAM_FAILURE,
+        ec, clErrorCode.BUILD_PROGRAM_FAILURE,
         $'%Err:CLCode:BuildFail:Compile%', opt.BuildContext.AllDevices
       );
       
@@ -2098,41 +2075,44 @@ type
       
       var ntv := DeserializeNative(opt.BuildContext, bin);
       
-      var general_pt := ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE;
+      var general_pt := clProgramBinaryType.PROGRAM_BINARY_TYPE_NONE;
       foreach var d in opt.BuildContext.AllDevices do
       begin
-        var pt: ProgramBinaryType;
+        var pt: clProgramBinaryType;
         OpenCLABCInternalException.RaiseIfError(
-          cl.GetProgramBuildInfo(ntv,d.ntv, ProgramBuildInfo.PROGRAM_BINARY_TYPE, new UIntPtr(sizeof(ProgramBinaryType)),pt,IntPtr.Zero)
+          cl.GetProgramBuildInfo_PROGRAM_BINARY_TYPE(ntv,d.ntv, pt,false)
         );
         
-        if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
+        if pt=clProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
+          continue else
+        if general_pt=clProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
           general_pt := pt else
         if general_pt<>pt then
           raise new NotSupportedException($'%BinCLCode:Deserialize:ProgramBinaryType:Different%');
         
       end;
       
-      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
+      if general_pt = clProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
         raise new NotSupportedException($'%BinCLCode:Deserialize:ProgramBinaryType:Missing%') else
-      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_COMPILED_OBJECT then
+      if general_pt = clProgramBinaryType.PROGRAM_BINARY_TYPE_COMPILED_OBJECT then
         Result := new CLCompCode(ntv,false) else
-      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_LIBRARY then
+      if general_pt = clProgramBinaryType.PROGRAM_BINARY_TYPE_LIBRARY then
         Result := new CLCodeLib(ntv,false) else
-      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_EXECUTABLE then
+      if general_pt = clProgramBinaryType.PROGRAM_BINARY_TYPE_EXECUTABLE then
       begin
         var res := new CLProgramCode(ntv,false);
         res.Build(opt);
         Result := res;
       end else
+        //TODO Ещё есть PROGRAM_BINARY_TYPE_INTERMEDIATE из cl_khr_spir
         raise new NotImplementedException(general_pt.ToString);
       
     end;
     
     public static function DeserializeFrom(br: System.IO.BinaryReader; opt: CLProgramCompOptions := nil) :=
-    Deserialize(LoadBins(br), opt);
+      Deserialize(LoadBins(br), opt);
     public static function DeserializeFrom(str: System.IO.Stream; opt: CLProgramCompOptions := nil) :=
-    DeserializeFrom(new System.IO.BinaryReader(str), opt);
+      DeserializeFrom(new System.IO.BinaryReader(str), opt);
     
   end;
   
@@ -2168,23 +2148,13 @@ type
       
       var code_ntv: cl_program;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_PROGRAM, new UIntPtr(cl_program.Size), code_ntv, IntPtr.Zero)
+        cl.GetKernelInfo_KERNEL_PROGRAM(ntv, code_ntv, false)
       );
       self.code := new CLProgramCode(code_ntv, true);
       
-      var sz: UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, UIntPtr.Zero, IntPtr.Zero, sz)
+        cl.GetKernelInfo_KERNEL_FUNCTION_NAME(ntv, self.k_name)
       );
-      var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-      try
-        OpenCLABCInternalException.RaiseIfError(
-          cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, sz, str_ptr, IntPtr.Zero)
-        );
-        self.k_name := Marshal.PtrToStringAnsi(str_ptr);
-      finally
-        Marshal.FreeHGlobal(str_ptr);
-      end;
       
     end;
     private constructor := raise new OpenCLABCInternalException;
@@ -2244,29 +2214,29 @@ type
     public property CanRead: boolean read data and can_read_bit <> 0;
     public property CanWrite: boolean read data and can_write_bit <> 0;
     
-    private static function MakeCLFlags(kernel_use, map_use: CLMemoryUsage): MemFlags;
+    private static function MakeCLFlags(kernel_use, map_use: CLMemoryUsage): clMemFlags;
     begin
       
       case kernel_use.data of
         none_bits:
           raise new ArgumentException($'%Err:CLMemoryUsage:NoCLKernelAccess%');
         can_read_bit:
-          Result := MemFlags.MEM_READ_ONLY;
+          Result := clMemFlags.MEM_READ_ONLY;
         can_write_bit:
-          Result := MemFlags.MEM_WRITE_ONLY;
+          Result := clMemFlags.MEM_WRITE_ONLY;
         read_write_bits:
-          Result := MemFlags.MEM_READ_WRITE;
+          Result := clMemFlags.MEM_READ_WRITE;
         else
           raise new ArgumentException($'%Err:CLMemoryUsage:Invalid%');
       end;
       
       case map_use.data of
         none_bits:
-          Result += MemFlags.MEM_HOST_NO_ACCESS;
+          Result += clMemFlags.MEM_HOST_NO_ACCESS;
         can_read_bit:
-          Result += MemFlags.MEM_HOST_READ_ONLY;
+          Result += clMemFlags.MEM_HOST_READ_ONLY;
         can_write_bit:
-          Result += MemFlags.MEM_HOST_WRITE_ONLY;
+          Result += clMemFlags.MEM_HOST_WRITE_ONLY;
         read_write_bits:
           ;
         else
@@ -2300,7 +2270,7 @@ type
     public constructor(size: UIntPtr; c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), size, nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
@@ -2333,7 +2303,7 @@ type
     private static function GetSize(ntv: cl_mem): UIntPtr;
     begin
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(UIntPtr.Size), Result, IntPtr.Zero)
+        cl.GetMemObjectInfo_MEM_SIZE(ntv, Result, false)
       );
     end;
     public property Size: UIntPtr read GetSize(ntv);
@@ -2370,10 +2340,10 @@ type
     
     {$region constructor's}
     
-    private static function MakeSubNtv(parent: cl_mem; reg: cl_buffer_region; flags: MemFlags): cl_mem;
+    private static function MakeSubNtv(parent: cl_mem; reg: cl_buffer_region; flags: clMemFlags): cl_mem;
     begin
-      var ec: ErrorCode;
-      Result := cl.CreateSubBuffer(parent, flags, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
+      var ec: clErrorCode;
+      Result := cl.CreateSubBuffer(parent, flags, clBufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
@@ -2418,7 +2388,7 @@ type
     public constructor(c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ValueSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
@@ -2426,8 +2396,8 @@ type
     public constructor(c: CLContext; val: T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       
-      var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
+      var ec: clErrorCode;
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + clMemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
@@ -2487,7 +2457,7 @@ type
     private procedure InitByLen(c: CLContext; kernel_use, map_use: CLMemoryUsage);
     begin
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ByteSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
@@ -2495,8 +2465,8 @@ type
     private procedure InitByVal(c: CLContext; var els: T; kernel_use, map_use: CLMemoryUsage);
     begin
       
-      var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
+      var ec: clErrorCode;
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + clMemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
@@ -2507,7 +2477,7 @@ type
       InitByLen(c, kernel_use, map_use);
     end;
     public constructor(len: integer; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(CLContext.Default, len, kernel_use, map_use);
+      Create(CLContext.Default, len, kernel_use, map_use);
     
     public constructor(c: CLContext; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
@@ -2515,7 +2485,7 @@ type
       InitByVal(c, els[0], kernel_use, map_use);
     end;
     public constructor(els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(CLContext.Default, els, kernel_use, map_use);
+      Create(CLContext.Default, els, kernel_use, map_use);
     
     public constructor(c: CLContext; els_from, len: integer; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
@@ -2523,20 +2493,20 @@ type
       InitByVal(c, els[els_from], kernel_use, map_use);
     end;
     public constructor(els_from, len: integer; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(CLContext.Default, els_from, len, els, kernel_use, map_use);
+      Create(CLContext.Default, els_from, len, els, kernel_use, map_use);
     
     public constructor(ntv: cl_mem);
     begin
       
       var byte_size: UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(UIntPtr.Size), byte_size, IntPtr.Zero)
+        cl.GetMemObjectInfo_MEM_SIZE(ntv, byte_size, false)
       );
-      
       self.len := byte_size.ToUInt64 div item_size;
-      self.ntv := ntv;
       
       OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
+      self.ntv := ntv;
+      
     end;
     
     public static function operator implicit(mem: CLArray<T>): CLMemory := new CLMemory(mem.ntv);
@@ -2598,60 +2568,82 @@ type
   
   CLDevice = partial class
     
-    private supported_split_modes: array of DevicePartitionProperty := nil;
-    private function GetSSM: array of DevicePartitionProperty;
+    private supported_split_modes: array of clDevicePartitionProperty := nil;
+    private function GetSSM: array of clDevicePartitionProperty;
     begin
-      if supported_split_modes=nil then supported_split_modes := {%>Properties.PartitionProperties!!} nil {%};
+      if supported_split_modes=nil then
+      begin
+        supported_split_modes := {%>Properties.PartitionProperties!!} nil {%};
+        if supported_split_modes.Last = new clDevicePartitionProperty(0) then
+          supported_split_modes := supported_split_modes[:^1];
+      end;
       Result := supported_split_modes;
     end;
     
-    private function Split(params props: array of DevicePartitionProperty): array of CLSubDevice;
+    private function Split(params props: array of clDevicePartitionProperty): array of CLSubDevice;
     begin
-      if not GetSSM.Contains(props[0]) then
+      if props[0] not in GetSSM then
         raise new NotSupportedException($'%Err:CLDevice:SplitNotSupported%');
       
       var c: UInt32;
       OpenCLABCInternalException.RaiseIfError( cl.CreateSubDevices(self.ntv, props, 0, IntPtr.Zero, c) );
       
-      var res := new cl_device_id[int64(c)];
+      var res := new cl_device_id[c];
       OpenCLABCInternalException.RaiseIfError( cl.CreateSubDevices(self.ntv, props, c, res[0], IntPtr.Zero) );
       
       Result := res.ConvertAll(sdvc->new CLSubDevice(self.ntv, sdvc));
     end;
     
-    public property CanSplitEqually: boolean read DevicePartitionProperty.DEVICE_PARTITION_EQUALLY in GetSSM;
+    public property CanSplitEqually: boolean read clDevicePartitionProperty.DEVICE_PARTITION_EQUALLY in GetSSM;
     public function SplitEqually(CUCount: integer): array of CLSubDevice;
     begin
       if CUCount <= 0 then raise new ArgumentException($'%Err:CLDevice:SplitCUCount%');
       Result := Split(
-        DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
-        DevicePartitionProperty.Create(CUCount),
-        DevicePartitionProperty.Create(0)
+        clDevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
+        clDevicePartitionProperty.Create(CUCount),
+        clDevicePartitionProperty.Create(0)
       );
     end;
     
-    public property CanSplitByCounts: boolean read DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS in GetSSM;
+    public property CanSplitByCounts: boolean read clDevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS in GetSSM;
     public function SplitByCounts(params CUCounts: array of integer): array of CLSubDevice;
     begin
       foreach var CUCount in CUCounts do
         if CUCount <= 0 then raise new ArgumentException($'%Err:CLDevice:SplitCUCount%');
       
-      var props := new DevicePartitionProperty[CUCounts.Length+2];
-      props[0] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS;
+      var props := new clDevicePartitionProperty[CUCounts.Length+3];
+      props[0] := clDevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS;
       for var i := 0 to CUCounts.Length-1 do
-        props[i+1] := new DevicePartitionProperty(CUCounts[i]);
-      props[props.Length-1] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS_LIST_END;
+        props[i+1] := new clDevicePartitionProperty(CUCounts[i]);
+      props[props.Length-2] := clDevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS_LIST_END;
+      props[props.Length-1] := clDevicePartitionProperty.Create(0);
       
       Result := Split(props);
     end;
     
-    public property CanSplitByAffinityDomain: boolean read DevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN in GetSSM;
-    public function SplitByAffinityDomain(affinity_domain: CLDeviceAffinityDomain) :=
-    Split(
-      DevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN,
-      DevicePartitionProperty.Create(new IntPtr(affinity_domain.val)),
-      DevicePartitionProperty.Create(0)
-    );
+    public property CanSplitByAffinityDomain: boolean read clDevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN in GetSSM;
+    public function SplitByAffinityDomain(affinity_domain: clDeviceAffinityDomain) :=
+      Split(
+        clDevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN,
+        clDevicePartitionProperty.Create(affinity_domain.val),
+        clDevicePartitionProperty.Create(0)
+      );
+    
+    public property CanSplitByNames: boolean read clDevicePartitionProperty.DEVICE_PARTITION_BY_NAMES in GetSSM;
+    public function SplitByNames(params device_names: array of uint64): array of CLSubDevice;
+    begin
+      foreach var device_name in device_names do
+        if device_name < 0 then raise new ArgumentException($'%Err:CLDevice:SplitNames%');
+      
+      var props := new clDevicePartitionProperty[device_names.Length+3];
+      props[0] := clDevicePartitionProperty.DEVICE_PARTITION_BY_NAMES;
+      for var i := 0 to device_names.Length-1 do
+        props[i+1] := new clDevicePartitionProperty(device_names[i]);
+      props[props.Length-2] := clDevicePartitionProperty.PARTITION_BY_NAMES_LIST_END;
+      props[props.Length-1] := clDevicePartitionProperty.Create(0);
+      
+      Result := Split(props);
+    end;
     
   end;
   
@@ -3651,8 +3643,8 @@ type
         if free_cqs.TryTake(Result) then
           else
         begin
-          var ec: ErrorCode;
-          Result := cl.CreateCommandQueue(cl_c, cl_dvc, CommandQueueProperties.NONE, ec);
+          var ec: clErrorCode;
+          Result := cl.CreateCommandQueue(cl_c, cl_dvc, clCommandQueueProperties.NONE, ec);
           OpenCLABCInternalException.RaiseIfError(ec);
         end;
       end;
@@ -3924,7 +3916,7 @@ type
     
     {$region AttachCallback}
     
-    private static procedure InvokeAttachedCallback(ev: cl_event; st: CommandExecutionStatus; data: IntPtr);
+    private static procedure InvokeAttachedCallback(ev: cl_event; st: clCommandExecutionStatus; data: IntPtr);
     begin
       var hnd := GCHandle(data);
       var cb_data := AttachCallbackData(hnd.Target);
@@ -3935,12 +3927,12 @@ type
       hnd.Free;
       cb_data.work();
     end;
-    private static attachable_callback: EventCallback := InvokeAttachedCallback;
+    private static attachable_callback: clEventCallback := InvokeAttachedCallback;
     
     public static procedure AttachCallback(ev: cl_event; work: Action{$ifdef EventDebug}; reason: string{$endif});
     begin
       var cb_data := new AttachCallbackData(work{$ifdef EventDebug}, reason{$endif});
-      var ec := cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, attachable_callback, GCHandle.ToIntPtr(GCHandle.Alloc(cb_data)));
+      var ec := cl.SetEventCallback(ev, clCommandExecutionStatus.COMPLETE, attachable_callback, GCHandle.ToIntPtr(GCHandle.Alloc(cb_data)));
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
@@ -3948,7 +3940,7 @@ type
     
     {$region MultiAttachCallback}
     
-    private static procedure InvokeMultiAttachedCallback(ev: cl_event; st: CommandExecutionStatus; data: IntPtr);
+    private static procedure InvokeMultiAttachedCallback(ev: cl_event; st: clCommandExecutionStatus; data: IntPtr);
     begin
       var hnd := GCHandle(data);
       var cb_data := MultiAttachCallbackData(hnd.Target);
@@ -3961,7 +3953,7 @@ type
       hnd.Free;
       cb_data.work();
     end;
-    private static multi_attachable_callback: EventCallback := InvokeMultiAttachedCallback;
+    private static multi_attachable_callback: clEventCallback := InvokeMultiAttachedCallback;
     
     public procedure MultiAttachCallback(work: Action{$ifdef EventDebug}; reason: string{$endif}) :=
     case self.count of
@@ -3973,7 +3965,7 @@ type
         var hnd_ptr := GCHandle.ToIntPtr(GCHandle.Alloc(cb_data));
         for var i := 0 to count-1 do
         begin
-          var ec := cl.SetEventCallback(evs[i], CommandExecutionStatus.COMPLETE, multi_attachable_callback, hnd_ptr);
+          var ec := cl.SetEventCallback(evs[i], clCommandExecutionStatus.COMPLETE, multi_attachable_callback, hnd_ptr);
           OpenCLABCInternalException.RaiseIfError(ec);
         end;
       end;
@@ -4020,13 +4012,13 @@ type
     {$region Event status}
     
     {$ifdef DEBUG}
-    public static function GetStatus(ev: cl_event): CommandExecutionStatus;
+    public static function GetStatus(ev: cl_event): clCommandExecutionStatus;
     begin
       {$ifdef EventDebug}
       EventDebug.VerifyExists(ev, $'checking event status');
       {$endif EventDebug}
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetEventInfo(ev, EventInfo.EVENT_COMMAND_EXECUTION_STATUS, new UIntPtr(sizeof(CommandExecutionStatus)), Result, IntPtr.Zero)
+        cl.GetEventInfo_EVENT_COMMAND_EXECUTION_STATUS(ev, Result, false)
       );
     end;
     {$endif DEBUG}
@@ -4035,7 +4027,7 @@ type
     public static function HasCompleted(ev: cl_event): boolean;
     begin
       var st := GetStatus(ev);
-      Result := (st=CommandExecutionStatus.COMPLETE) or (st.val<0);
+      Result := (st=clCommandExecutionStatus.COMPLETE) or (st.val<0);
     end;
     {$endif DEBUG}
     
@@ -4524,7 +4516,7 @@ type
     
     private constructor(c: cl_context{$ifdef EventDebug}; reason: string{$endif});
     begin
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       self.uev := cl.CreateUserEvent(c, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       {$ifdef EventDebug}
@@ -4570,8 +4562,8 @@ type
         OpenCLABCInternalException.RaiseIfError(
           cl.SetUserEventStatus(uev,
             if had_error then
-              CommandExecutionStatus.Create(OpenCLABCInternalException.RelayErrorCode) else
-              CommandExecutionStatus.COMPLETE
+              clCommandExecutionStatus.Create(OpenCLABCInternalException.RelayErrorCode) else
+              clCommandExecutionStatus.COMPLETE
           )
         );
       finally
@@ -9119,7 +9111,7 @@ type
       o_const: boolean; get_o: ()->T;
       g: CLTaskGlobalData; l: CLTaskLocalData;
       invoke_params: InvokeParamsFunc<T>;
-      on_err: ErrorCode->()
+      on_err: clErrorCode->()
       {$ifdef DEBUG}; q: object{$endif}
     ): EnqRes;
     begin
@@ -9198,7 +9190,7 @@ type
     protected function ExpectedEnqCount: integer; abstract;
     
     protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<T>; abstract;
-    protected procedure ProcessError(ec: ErrorCode);
+    protected procedure ProcessError(ec: clErrorCode);
     begin
       var TODO := 0; //TODO abstract
     end;
@@ -9357,7 +9349,7 @@ type
     protected function ExpectedEnqCount: integer; abstract;
     
     protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->CLKernelArgCache): ParamInvRes<cl_kernel>; abstract;
-    protected procedure ProcessError(ec: ErrorCode);
+    protected procedure ProcessError(ec: clErrorCode);
     begin
       var TODO := 0; //TODO abstract
     end;
@@ -9462,7 +9454,7 @@ type
     protected function ExpectedEnqCount: integer; abstract;
     
     protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRes>): ParamInvRes<TObj>; abstract;
-    protected procedure ProcessError(ec: ErrorCode);
+    protected procedure ProcessError(ec: clErrorCode);
     begin
       var TODO := 0; //TODO abstract
     end;
@@ -9896,63 +9888,6 @@ HPQ&<SimpleProc0ContainerC>(p, need_own_thread);
 
 {$endregion Global subprograms}
 
-{$region Properties}
-
-{$region Base}
-
-type
-  NtvPropertiesBase<TNtv, TInfo> = abstract class
-    protected ntv: TNtv;
-    public constructor(ntv: TNtv) := self.ntv := ntv;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure GetSizeImpl(id: TInfo; var sz: UIntPtr); abstract;
-    protected procedure GetValImpl(id: TInfo; sz: UIntPtr; var res: byte); abstract;
-    
-    protected function GetSize(id: TInfo): UIntPtr;
-    begin GetSizeImpl(id, Result); end;
-    
-    protected procedure FillPtr(id: TInfo; sz: UIntPtr; ptr: IntPtr) :=
-    GetValImpl(id, sz, PByte(pointer(ptr))^);
-    protected procedure FillVal<T>(id: TInfo; sz: UIntPtr; var res: T) :=
-    GetValImpl(id, sz, PByte(pointer(@res))^);
-    
-    protected function GetVal<T>(id: TInfo): T; where T: record;
-    begin
-      FillVal(id, new UIntPtr(Marshal.SizeOf(default(T))), Result);
-    end;
-    protected function GetValArr<T>(id: TInfo): array of T; where T: record;
-    begin
-      var sz := GetSize(id);
-      Result := new T[uint64(sz) div Marshal.SizeOf(default(T))];
-      
-      if Result.Length<>0 then
-        FillVal(id, sz, Result[0]);
-      
-    end;
-    
-    private function GetString(id: TInfo): string;
-    begin
-      var sz := GetSize(id);
-      
-      var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-      try
-        FillPtr(id, sz, str_ptr);
-        Result := Marshal.PtrToStringAnsi(str_ptr);
-      finally
-        Marshal.FreeHGlobal(str_ptr);
-      end;
-      
-    end;
-    
-  end;
-  
-{$endregion Base}
-
-{%WrapperProperties\Implementation!WrapperProperties.pas%}
-
-{$endregion Properties}
-
 {$region Wrappers}
 
 {$region CLDevice}
@@ -9962,7 +9897,7 @@ begin
   
   var parent: cl_device_id;
   OpenCLABCInternalException.RaiseIfError(
-    cl.GetDeviceInfo(ntv, DeviceInfo.DEVICE_PARENT_DEVICE, new UIntPtr(cl_device_id.Size), parent, IntPtr.Zero)
+    cl.GetDeviceInfo_DEVICE_PARENT_DEVICE(ntv, parent, false)
   );
   
   if parent=cl_device_id.Zero then
@@ -10003,7 +9938,7 @@ begin
   
   var c := CLPlatform.All.SelectMany(pl->
   begin
-    var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL).ToList;
+    var dvcs := CLDevice.GetAllFor(pl, clDeviceType.DEVICE_TYPE_ALL).ToList;
     
     System.Threading.Tasks.Parallel.For(0,dvcs.Count, i->
     begin
@@ -10086,7 +10021,7 @@ begin
       var all_pl_names := CLPlatform.All.Select(pl->$'['+{%>pl.Properties.Name!!}nil{%}+$']').JoinToString(', ');
       raise new InvalidOperationException($'No platform with name [{pl_name}], only: {all_pl_names}');
     end;
-    var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL).ToDictionary(dvc->{%>dvc.Properties.Name!!}default(string){%});
+    var dvcs := CLDevice.GetAllFor(pl, clDeviceType.DEVICE_TYPE_ALL).ToDictionary(dvc->{%>dvc.Properties.Name!!}default(string){%});
     Result := new CLContext(ArrGen(br.ReadInt32, i->
     begin
       Result := default(CLDevice);
@@ -10279,7 +10214,7 @@ type
 function CLKernel.AllocNative :=
 ntvs.TakeOrMake(()->
 begin
-  var ec: ErrorCode;
+  var ec: clErrorCode;
   Result := cl.CreateKernel(code.ntv, k_name, ec);
   OpenCLABCInternalException.RaiseIfError(ec);
 end);
@@ -10294,17 +10229,17 @@ procedure CLKernel.AddExistingNative(ntv: cl_kernel) := ntvs.AddExisting(ntv);
 
 static function CLMemory.FromNative(ntv: cl_mem): CLMemory;
 begin
-  var t: MemObjectType;
+  var t: clMemObjectType;
   OpenCLABCInternalException.RaiseIfError(
-    cl.GetMemObjectInfo(ntv, MemInfo.MEM_TYPE, new UIntPtr(sizeof(MemObjectType)), t, IntPtr.Zero)
+    cl.GetMemObjectInfo_MEM_TYPE(ntv, t, false)
   );
   
-  if t<>MemObjectType.MEM_OBJECT_BUFFER then
+  if t<>clMemObjectType.MEM_OBJECT_BUFFER then
     raise new ArgumentException($'%Err:CLMemory:WrongNtvType%');
   
   var parent: cl_mem;
   OpenCLABCInternalException.RaiseIfError(
-    cl.GetMemObjectInfo(ntv, MemInfo.MEM_ASSOCIATED_MEMOBJECT, new UIntPtr(cl_mem.Size), parent, IntPtr.Zero)
+    cl.GetMemObjectInfo_MEM_ASSOCIATED_MEMOBJECT(ntv, parent, false)
   );
   
   if parent=cl_mem.Zero then

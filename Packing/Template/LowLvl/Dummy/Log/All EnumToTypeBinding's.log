@@ -1,7 +1,7 @@
 ﻿
 
 
-# ::7EnumToType
+# .f7EnumToType
 1
 !input
 2
@@ -33,7 +33,7 @@ array[3] of UIntPtr
 !output
 string
 
-# ::7EnumToTypeInputOnly
+# .f7EnumToTypeInputOnly
 1
 !input
 2

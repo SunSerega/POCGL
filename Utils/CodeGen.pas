@@ -35,7 +35,7 @@ uses System.IO;
     begin
       var ind := a.IndexOf('!');
       var a_body := if ind=-1 then a else a.Remove(ind);
-      var a_tail := if ind=-1 then a else a.Remove(0,ind+1);
+      var a_tail := if ind=-1 then '' else a.Remove(0,ind+1);
       
       WriteNumbered(c,
         (wr,i)->(wr += a_body.Replace('%', i.ToString)),

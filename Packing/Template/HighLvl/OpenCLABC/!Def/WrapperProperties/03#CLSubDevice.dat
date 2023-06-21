@@ -1,8 +1,13 @@
 ﻿cl_device_id
-DeviceInfo
-clGetDeviceInfo
+clDeviceInfo
+cl.GetDeviceInfo
 
 !Base
 CLDevice
+
+
+
+# PLATFORM
+Disable
 
 

@@ -10,7 +10,7 @@ WriteValue(val, 0);
 val: {%Q?TRecord:CommandQueue<TRecord>%}; mem_offset: CommandQueue<integer>
 !Enqueue
 var ec := cl.EnqueueWriteBuffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   new UIntPtr(!mem_offset!), new UIntPtr(Marshal.SizeOf(default(TRecord))),
   !val:ptr!,
   !evs!
@@ -34,7 +34,7 @@ a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>
 !Enqueue
 //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
 var ec := cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   UIntPtr.Zero, new UIntPtr(!a:pinn!.Length*Marshal.SizeOf(default(TRecord))),
   !a:pinn![{%rank? 0 : 0,0 : 0,0,0 %}],
   !evs!
@@ -45,7 +45,7 @@ OpenCLABCInternalException.RaiseIfError(ec);
 a: CommandQueue<array{%rank? : [,] : [,,] %} of TRecord>; {%rank? a_ind : a_ind1,a_ind2 : a_ind1,a_ind2,a_ind3 %}, el_count, mem_offset: CommandQueue<integer>
 !Enqueue
 var ec := cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   new UIntPtr(!mem_offset!), new UIntPtr(!el_count!*Marshal.SizeOf(default(TRecord))),
   !a:pinn![{%rank? !a_ind! : !a_ind1!,!a_ind2! : !a_ind1!,!a_ind2!,!a_ind3! %}],
   !evs!
@@ -72,7 +72,7 @@ a: ArraySegment<TRecord>; mem_offset: CommandQueue<integer>
 ptr: CommandQueue<IntPtr>{%AutoSize?:; mem_offset, len\: CommandQueue<integer>%}
 !Enqueue
 var ec := cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   {%AutoSize? UIntPtr.Zero, o.Size : new UIntPtr(!mem_offset!), new UIntPtr(!len!) %},
   !ptr!,
   !evs!
@@ -100,7 +100,7 @@ native_data: CommandQueue<Native{%MemT%}{%Area%}{%MemT?:<TRecord>:<TRecord>%}>
 native_data: CommandQueue<Native{%MemT%}{%Area%}{%MemT?:<TRecord>:<TRecord>%}>; mem_offset: CommandQueue<integer>
 !Enqueue
 var ec := cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   new UIntPtr(!mem_offset!), !native_data!{%Area?:.Area%}.{%MemT?sz:ByteSize:ByteSize%},
   !native_data!{%Area?:.Area%}.{%MemT?ptr:ptr:first_ptr%},
   !evs!

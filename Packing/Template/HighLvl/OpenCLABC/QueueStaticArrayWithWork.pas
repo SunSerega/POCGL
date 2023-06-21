@@ -1,8 +1,8 @@
-﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
+﻿uses '..\..\..\..\POCGL_Utils';
 
-uses CodeGen      in '..\..\..\Utils\CodeGen';
-uses Fixers       in '..\..\..\Utils\Fixers';
-uses ATask        in '..\..\..\Utils\ATask';
+uses '..\..\..\..\Utils\CodeGen';
+uses '..\..\..\..\Utils\Fixers';
+uses '..\..\..\..\Utils\ATask';
 
 const MaxQueueStaticArraySize = 7;
 

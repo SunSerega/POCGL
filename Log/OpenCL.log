@@ -1,40 +1,112 @@
 ﻿Runing Template[OpenCL]
-Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack NameRecords.pas"
+Template[OpenCL]: Compiling "Packing\Template\LowLvl\OpenCL\Pack Essentials.pas"
 Template[OpenCL]: Compiling: OK
-Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack NameRecords.exe]
-Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack NameRecords.exe]
-Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack Most.pas"
-Template[OpenCL]: Compiling: OK
-Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack Most.exe]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Reading .bin
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Fixing all
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing funcs code
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueMigrateMemObjects]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireD3D10ObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseD3D10ObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireD3D11ObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseD3D11ObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireDX9MediaSurfacesKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseDX9MediaSurfacesKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireEGLObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseEGLObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueMigrateMemObjectEXT]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireGrallocObjectsIMG]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseGrallocObjectsIMG]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireVA_APIMediaSurfacesINTEL]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseVA_APIMediaSurfacesINTEL]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireDX9ObjectsINTEL]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseDX9ObjectsINTEL]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireGLObjects]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseGLObjects]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 30 overloads of non-fixed Func [clEnqueueGenerateMipmapIMG]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 30 overloads of non-fixed Func [clEnqueueWaitSemaphoresKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 30 overloads of non-fixed Func [clEnqueueSignalSemaphoresKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireExternalMemObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseExternalMemObjectsKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueCommandBufferKHR]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clGetImageRequirementsInfoEXT]
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing structs code
-Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing enums code
-Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
+Template[OpenCL]: Runing TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading VendorSuffix items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Enum items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading LoadedBasicType items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Group items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Group fixers
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading IdClass items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading IdClass fixers
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Struct items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Struct fixers
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Delegate items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Delegate fixers
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Func items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Func fixers
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::CreateBuffer] fixer comments
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::CreateAccelerator+INTEL] fixer comments
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Feature items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Extension items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Fixing Group items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Fixing IdClass items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Fixing Delegate items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Fixing Func items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_WORK_GROUP_SIZE]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_MAX_WORK_GROUP_SIZE + AMD]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_CONSTANT_BUFFER_SIZE]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PCIE_ID]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PROFILING_TIMER_OFFSET]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_TOPOLOGY]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_BOARD_NAME]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_FREE_MEMORY]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_SIMD_PER_COMPUTE_UNIT]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_SIMD_WIDTH]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_SIMD_INSTRUCTION_WIDTH]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_WAVEFRONT_WIDTH]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_MEM_CHANNELS]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_MEM_CHANNEL_BANKS]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_MEM_CHANNEL_BANK_WIDTH]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_LOCAL_MEM_SIZE_PER_COMPUTE_UNIT]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_LOCAL_MEM_BANKS]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_THREAD_TRACE_SUPPORTED]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GFXIP_MAJOR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GFXIP_MINOR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_AVAILABLE_ASYNC_QUEUES]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_EXT_MEM_PADDING_IN_BYTES]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PAGE_SIZE]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetAcceleratorInfo + INTEL] could not generate overload: no output type info for Group [cl::AcceleratorInfo] Enum [cl::ACCELERATOR_DESCRIPTOR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping Feature items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::CompileProgram]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueFillBuffer]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMapImage]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMigrateMemObjects]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueNativeKernel]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueNDRangeKernel]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReadBuffer]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMFree]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMemFill]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMigrateMem]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueWriteBuffer]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping Extension items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMFree + ARM]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMemFill + ARM]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMigrateMemObject + EXT]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueGenerateMipmap + IMG]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGrallocObjects + IMG]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGrallocObjects + IMG]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireDX9Objects + INTEL]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseDX9Objects + INTEL]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireVA_APIMediaSurfaces + INTEL]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseVA_APIMediaSurfaces + INTEL]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueCommandBuffer + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireD3D10Objects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseD3D10Objects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireD3D11Objects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseD3D11Objects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireDX9MediaSurfaces + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseDX9MediaSurfaces + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireEGLObjects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseEGLObjects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireExternalMemObjects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseExternalMemObjects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGLObjects]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGLObjects]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueWaitSemaphores + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueSignalSemaphores + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging PascalBasicType items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging TypeCombo items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging Group items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging IdClass items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging Struct items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging Delegate items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging Func items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging Extension items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping PascalBasicType items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping TypeCombo items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping Group items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping IdClass items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping Struct items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping Delegate items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: PascalBasicType: Packed 12 items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Group: Packed 111 items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: IdClass: Packed 28 items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Struct: Packed 17 items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Delegate: Packed 7 items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Func: Packed 237 items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Feature: Packed 1 items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Extension: Packed 103 items
+Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Cleanup
+Template[OpenCL]: Finished runing TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]
 Finished runing Template[OpenCL]

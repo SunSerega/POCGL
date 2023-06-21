@@ -397,6 +397,12 @@ type
             Otp($'WARNING: {self} could not generate overload: no output type info for {enum_to_type_gr} {r.Enum}');
             continue;
           end;
+          // Temp. moved to LogAllEnumToType
+//          if r.HasOutput and (r.OutputT.CalculatedPtr>1) then
+//          begin
+//            log.Otp($'{self} did not generate overload: output type for {enum_to_type_gr} {r.Enum} is nested array');
+//            continue;
+//          end;
           
           var ename := r.Enum.Name;
           
@@ -459,6 +465,8 @@ type
               begin
                 var otp_par := r.OutputT;
                 var otp_t := otp_par.CalculatedDirectType;
+                if explicit_count_par and (otp_par.CalculatedPtr>1) then
+                  otp_t := KnownDirectTypes.IntPtr;
                 
                 var data_rep_c: integer? := 1;
                 var need_arr: boolean;
@@ -550,6 +558,13 @@ type
     
     {$region Helpers}
     
+    private function MakeWriteableName: string;
+    begin
+      Result := self.Name.l_name;
+      if self.Name.vendor_suffix<>nil then
+        Result += self.Name.vendor_suffix.ToUpper;
+    end;
+    
     public static procedure LogAllEnumToType;
     begin
       var l := new FileLogger(GetFullPathRTA('Log\All EnumToTypeBinding''s.log'));
@@ -560,13 +575,13 @@ type
         f.InitOverloads;
         if not f.has_enum_to_type then exit;
         
-        var bound_ovrs := f.all_overloads.Where(ovr->ovr.enum_to_type_bindings<>nil);
+        var bound_ovrs := f.all_overloads.Where(ovr->ovr.enum_to_type_bindings<>nil).ToArray;
         
         var (bindings, gr) := bound_ovrs
           .Select(ovr->ValueTuple.Create(ovr.enum_to_type_bindings, ovr.enum_to_type_gr))
           .Distinct.Single;
         
-        l.Otp($'# {f.Name}');
+        l.Otp($'# {f.Name.api}.{f.MakeWriteableName}');
         l.Otp(f.ntv_pars.FindIndex(par->par.CalculatedDirectType=gr).ToString);
         foreach var b in bindings do
         begin
@@ -583,6 +598,24 @@ type
         foreach var ovr in bound_ovrs do
         begin
           if not visited_enum_names.Add(ovr.enum_to_type_enum_name) then continue;
+          
+          begin
+            var r := ObjInfoEnumsInGroup((gr as Group).Body).Enums.Single(r->
+            begin
+              var ename := r.Enum.Name;
+              var enum_name := ename.l_name;
+              if ename.vendor_suffix<>nil then
+                enum_name += '_'+ename.vendor_suffix;
+              Result := enum_name = ovr.enum_to_type_enum_name;
+            end);
+            if r.HasOutput and (r.OutputT.CalculatedPtr>1) then
+            begin
+              log.Otp($'{f} did not generate overload: output type for {gr} {r.Enum} is nested array');
+              if not f.all_overloads.Remove(ovr) then
+                raise new InvalidOperationException;
+            end;
+          end;
+          
           l.Otp('--- '+ovr.enum_to_type_enum_name);
           foreach var b in bindings do
           begin
@@ -595,6 +628,7 @@ type
               raise new InvalidOperationException;
             l.Otp(par.ToString(true,false, write_const := false));
           end;
+          
         end;
         
         l.Otp('');
@@ -639,7 +673,7 @@ type
     {$endregion Helpers}
     
     private was_written := false;
-    public procedure Save(wr: Writer);
+    public procedure Write(wr: Writer);
     begin
       if not in_wr_block then
         raise new InvalidOperationException;
@@ -701,9 +735,7 @@ type
       
       {$region MiscInit}
       
-      var display_name := self.Name.l_name;
-      if self.Name.vendor_suffix<>nil then
-        display_name += self.Name.vendor_suffix.ToUpper;
+      var display_name := self.MakeWriteableName;
       
       if display_name in last_wr_block_func_lnames then
         raise new InvalidOperationException($'{display_name} added in the same api (lib: {_ObjectToString(lib_name)}) twice: {last_wr_block_func_lnames[display_name]} and {self}');
@@ -725,6 +757,8 @@ type
         if name<>nil then
         begin
           wr += ' ';
+          if name in pas_keywords then
+            wr += '&';
           wr += name;
           if (generic_names<>nil) and (generic_names.Count<>0) then
           begin
@@ -1131,7 +1165,12 @@ type
       begin
         var ovr := md.MakeOverload;
         
-        var par_names := ntv_pars.ConvertAll(par->par.Name);
+        var par_names := ntv_pars.ConvertAll(par->
+        begin
+          Result := par.Name;
+          if Result in pas_keywords then
+            Result := '&'+Result;
+        end);
         md.FixETTCountParNames(par_names);
         
         if md.IsFinalCall then
@@ -1470,6 +1509,18 @@ type
                               wr += ']';
                             end;
                           
+                          if not par.IsString then
+                          begin
+                            
+                            wr.WriteTabs;
+                            wr += 'var ';
+                            wr += par_name;
+                            wr += '_el_sz := Marshal.SizeOf&<';
+                            wr += par.tname;
+                            wr += '>;'#10;
+                            
+                          end;
+                          
                           wr.WriteTabs;
                           wr += 'var ';
                           org_el_at(1);
@@ -1542,37 +1593,63 @@ type
                             
                             wr.WriteTabs;
                             wr += 'var ';
+                            len_at(temp_arr_lvl+1);
+                            wr += ' := ';
                             org_el_at(temp_arr_lvl+1);
-                            wr += '_sz := ';
-                            org_el_at(temp_arr_lvl+1);
-                            wr += '.Length*Marshal.SizeOf&<';
-                            wr += par.tname;
-                            wr += '>;'#10;
+                            wr += '.Length;'#10;
                             
                             wr.WriteTabs;
                             wr += 'var ';
-                            org_el_at(temp_arr_lvl+1);
+                            tmp_el_at(temp_arr_lvl+1);
                             wr += '_ptr := Marshal.AllocHGlobal(';
-                            org_el_at(temp_arr_lvl+1);
-                            wr += '_sz';
-                            wr += ');'#10;
+                            len_at(temp_arr_lvl+1);
+                            wr += ' * ';
+                            wr += par_name;
+                            wr += '_el_sz);'#10;
                             
                             wr.WriteTabs;
                             tmp_el_at(temp_arr_lvl);
                             wr += '[';
                             ind_at(temp_arr_lvl);
                             wr += '] := ';
-                            org_el_at(temp_arr_lvl+1);
+                            tmp_el_at(temp_arr_lvl+1);
                             wr += '_ptr;'#10;
                             
                             wr.WriteTabs;
-                            wr += 'Marshal.Copy(';
+                            wr += 'for var ';
+                            ind_at(temp_arr_lvl+1);
+                            wr += ' := 0 to ';
+                            len_at(temp_arr_lvl+1);
+                            wr += '-1 do'#10;
+                            
+                            wr.BeginBlock('begin');
+                            
+                            wr.WriteTabs;
+                            wr += 'var ';
+                            tmp_el_at(temp_arr_lvl+1);
+                            wr += '_ptr_typed: ^';
+                            wr += par.tname;
+                            wr += ' := ';
+                            tmp_el_at(temp_arr_lvl+1);
+                            wr += '_ptr.ToPointer;'#10;
+                            
+                            wr.WriteTabs;
+                            tmp_el_at(temp_arr_lvl+1);
+                            wr += '_ptr_typed^ := ';
                             org_el_at(temp_arr_lvl+1);
-                            wr += ',0,';
-                            org_el_at(temp_arr_lvl+1);
-                            wr += '_ptr,';
-                            org_el_at(temp_arr_lvl+1);
-                            wr += '_sz);'#10;
+                            wr += '[';
+                            ind_at(temp_arr_lvl+1);
+                            wr += '];'#10;
+                            
+                            wr.WriteTabs;
+                            tmp_el_at(temp_arr_lvl+1);
+                            wr += '_ptr := ';
+                            tmp_el_at(temp_arr_lvl+1);
+                            wr += '_ptr + ';
+                            wr += par_name;
+                            wr += '_el_sz;'#10;
+                            
+                            wr.EndBlock(true);
                             
                           end;
                           
@@ -1708,6 +1785,8 @@ type
               {$endregion No input ovr}
               
               var is_output_data := not data_par.is_const;
+              if is_output_data and (data_par.arr_lvl>1) then
+                raise new NotImplementedException('Cannot determine size of ett output nested array');
               
               var validate_size_par_name := default(string);
               var returned_sz_name := default(string);
@@ -1747,6 +1826,17 @@ type
                         wr += expected_sz_name;
                       end
                     );
+                    
+                    if not is_proc then
+                    begin
+                      var res_type := possible_par_types[0].Single;
+                      if not res_type.tname.EndsWith('ErrorCode') then
+                        raise new NotImplementedException(res_type.ToString(true));
+                      
+                      wr.WriteTabs;
+                      wr += 'if Result.IS_ERROR then exit;'#10;
+                      
+                    end;
                     
                     wr.WriteTabs;
                     wr += 'var ';
@@ -2296,7 +2386,7 @@ type
                   intr_wr += depr_ver(f);
                 end;
                 intr_wr += #10;
-                f.Save(intr_wr);
+                f.Write(intr_wr);
                 intr_wr += $'    '+#10;
               end
           );
@@ -2456,7 +2546,7 @@ type
       Func.DefineWriteBlock(lib_name, ()->
         foreach var f in Added.Funcs do
         begin
-          f.Save(intr_wr);
+          f.Write(intr_wr);
           intr_wr += '    '+#10;
         end
       );

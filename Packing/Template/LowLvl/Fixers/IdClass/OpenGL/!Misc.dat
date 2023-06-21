@@ -68,3 +68,10 @@ IntPtr
 UInt32
 
 
+
+# gles::image
+# gles::client_buffer+EXT
+!add
+IntPtr
+
+

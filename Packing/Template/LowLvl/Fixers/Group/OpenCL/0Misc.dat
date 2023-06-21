@@ -17,7 +17,7 @@ public static function operator explicit(ec: clErrorCode): clCommandExecutionSta
 public static function operator implicit(b: clBool): boolean := b<>FALSE;
 public static function operator implicit(b: boolean): clBool := new clBool(UInt32(b));
 !cust_memb
-public static function operator not(b: clBool): clBool := if b then TRUE else FALSE;
+public static function operator not(b: clBool): clBool := if b then FALSE else TRUE;
 
 
 

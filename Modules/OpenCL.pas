@@ -1,5 +1,5 @@
 ﻿
-{%..\LicenseHeader%}
+{%..\..\Common\LicenseHeader.txt%}
 
 ///
 ///Код переведён отсюда:
@@ -15,56 +15,50 @@ unit OpenCL;
 
 {$zerobasedstrings}
 
-interface
-
 uses System;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
 type
   
-  {$region Записи-имена}
+  {$region Вспомогательные типы}
   
-  {%NameRecords!Pack NameRecords.pas!Stub=}Stub = class end;{%}
+  {%Types.Interface!Pack Essentials.pas%}
   
-  {$endregion Записи-имена}
+  {$endregion Вспомогательные типы}
   
-  {$region Перечисления}
+  {$region Особые типы}
+  {%!!}clErrorCode = record procedure RaiseIfError; end;{%}
+  OpenCLException = sealed class(Exception)
+    private ec: clErrorCode;
+    public property Code: clErrorCode read ec;
+    
+    public constructor(ec: clErrorCode; message: string);
+    begin
+      inherited Create(message);
+      self.ec := ec;
+    end;
+    
+    public constructor(ec: clErrorCode) :=
+      Create(ec, $'Ошибка OpenCL: {ec}');
+    
+  end;
   
-  {%Groups!Pack Most.pas%}
+  {$endregion Особые типы}
   
-  {$endregion Перечисления}
+  {$region Подпрограммы ядра}
   
-  {$region Делегаты}
+  {%Feature.Interface!Pack Essentials.pas%}
   
-  {%Static\Delegates%}
+  {$endregion Подпрограммы ядра}
   
-  {$endregion Делегаты}
+  {$region Подпрограммы расширений}
   
-  {$region Записи}
+  {%Extension.Interface!Pack Essentials.pas%}
   
-  {%Structs!Pack Most.pas%}
+  {$endregion Подпрограммы расширений}
   
-  {$endregion Записи}
-  
-  {$region Другие типы}
-  
-  {%Static\MiscTypes%}
-  
-  {$endregion Другие типы}
-  
-  {$region Функции}
-  
-  {%Funcs!Pack Most.pas%}
-  
-  {$endregion Функции}
-  
-implementation
-
-{$region Misc}
-
-{%Static\MiscImpl%}
-
-{$endregion Misc}
+procedure clErrorCode.RaiseIfError :=
+  {%>if IS_ERROR then%} raise new OpenCLException(self);
 
 end.

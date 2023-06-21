@@ -6,6 +6,6 @@ IF NOT EXIST "PackAll.exe" (
 	DEL "PackAll.pdb"
 )
 
-start PackAll.exe "Stages= FirstPack + Reference + OpenCL+OpenCLABC + OpenGL+OpenGLABC + Compile + Test + Release"
+start PackAll.exe "Stages= FirstPack + Reference + Dummy + OpenCL+OpenCLABC + OpenGL+OpenGLABC + Compile + Test + Release"
 
 

@@ -99,4 +99,8 @@
 
 # wgl_video_output_device_handle_NV (wgl::video_output_device_handle + NV) : IntPtr
 
+# gles_image (gles::image) : IntPtr
+
+# gles_client_buffer_EXT (gles::client_buffer + EXT) : IntPtr
+
 

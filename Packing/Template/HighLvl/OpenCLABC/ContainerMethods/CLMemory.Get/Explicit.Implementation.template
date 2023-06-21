@@ -56,7 +56,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
           (own_qr as QueueResPtr<TRecord>).GetResPtrForWrite,
           evs.count, evs.evs, res_ev
@@ -124,7 +124,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(res.Length * Marshal.SizeOf(default(TRecord))),
           res_hnd.AddrOfPinnedObject.ToPointer,
           evs.count, evs.evs, res_ev
@@ -198,7 +198,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(int64(len) * Marshal.SizeOf(default(TRecord))),
           res[0],
           evs.count, evs.evs, res_ev
@@ -287,7 +287,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(int64(len1)*len2 * Marshal.SizeOf(default(TRecord))),
           res[0,0],
           evs.count, evs.evs, res_ev
@@ -387,7 +387,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(int64(len1)*len2*len3 * Marshal.SizeOf(default(TRecord))),
           res[0,0,0],
           evs.count, evs.evs, res_ev

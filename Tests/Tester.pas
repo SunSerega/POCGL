@@ -102,7 +102,7 @@ type
     
     {$region global testing info}
     
-    static valid_modules := HSet('OpenCL','OpenCLABC', 'OpenGL','OpenGLABC');
+    static valid_modules := HSet('Dummy', 'OpenCL','OpenCLABC', 'OpenGL','OpenGLABC');
     static allowed_modules := new HashSet<string>(valid_modules.Count);
     
     static auto_update := false;
@@ -483,11 +483,13 @@ type
       
       var a := load(nil,fname);
       try
-        var res := new StringBuilder;
+        
+        var all_delegates := new List<string>;
         foreach var t: System.Type in a.GetTypes do
         begin
           if t.Namespace in |'PABCSystem','PABCExtensions'| then continue;
           if not t.IsSubclassOf(typeof(System.Delegate)) then continue;
+          var res := new StringBuilder;
           res += t.Namespace;
           res += '.';
           if t.DeclaringType<>nil then
@@ -512,8 +514,8 @@ type
             res += t.GetGenericArguments.Select(TypeToTypeName).JoinToString(', ');
             res += '>';
           end;
-          res += ' = ';
           var mi := t.GetMethod('Invoke');
+          res += ' = ';
           var is_func := mi.ReturnType<>typeof(System.Void);
           res += if is_func then 'function' else 'procedure';
           var pars := mi.GetParameters;
@@ -540,10 +542,10 @@ type
             res += ': ';
             res += TypeToTypeName(mi.ReturnType);
           end;
-          res += #10;
+          all_delegates += res.ToString;
         end;
-        if res.Length<>0 then res.Length -= 1;
-        dom.SetData('delegates', res.ToString);
+        
+        dom.SetData('delegates', all_delegates.Order.JoinToString(#10));
       except
         on e: System.Reflection.ReflectionTypeLoadException do
           dom.SetData('err', e.LoaderExceptions.Select(e->#10+e.ToString).JoinToString(''));

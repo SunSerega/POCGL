@@ -175,7 +175,7 @@ begin
     var uniform_point_count := 0;
     var buffer_points: gl_buffer;
     gl.CreateBuffers(1, buffer_points);
-    gl.BindBufferBase(BufferTarget.SHADER_STORAGE_BUFFER, 0, buffer_points);
+    gl.BindBufferBase(glBufferTarget.SHADER_STORAGE_BUFFER, 0, buffer_points);
     
     var uniform_aspect  := 1;
     var uniform_scale   := 2;
@@ -211,15 +211,15 @@ begin
         
         gl.DeleteProgram(sprog);
         sprog := InitProgram(
-          InitShader('Empty.vert',                ShaderType.VERTEX_SHADER),
-          InitShader('SinglePointToScreen.geom',  ShaderType.GEOMETRY_SHADER),
+          InitShader('Empty.vert',                glShaderType.VERTEX_SHADER),
+          InitShader('SinglePointToScreen.geom',  glShaderType.GEOMETRY_SHADER),
           InitShader(|
             'Минимум расстояний.frag',
             'Сумма расстояний.frag',
             'Волны.frag',
             'Спирали.frag',
             'Mandelbrot.frag'
-          |[last_fragment_shader], ShaderType.FRAGMENT_SHADER)
+          |[last_fragment_shader], glShaderType.FRAGMENT_SHADER)
         );
         // Применяем вне цикла, потому что это единственная шейдерная программа
         gl.UseProgram(sprog);
@@ -231,7 +231,7 @@ begin
         gl.Uniform1i(uniform_point_count, point_count);
         // Плохо - пересоздаём всё тело буфера при каждой перерисовке
         // Но по сравнению с фрагментным шейдером - это капля в море
-        gl.NamedBufferData(buffer_points, new UIntPtr(point_count*sizeof(vec2d)), points, VertexBufferObjectUsage.DYNAMIC_READ);
+        gl.NamedBufferData(buffer_points, new UIntPtr(point_count*sizeof(vec2d)), points, glVertexBufferObjectUsage.DYNAMIC_READ);
         // Записать point_count точек из массива можно так:
 //        gl.NamedBufferSubData(buffer_points, IntPtr.Zero, new IntPtr(point_count * sizeof(Vec2d)), points);
       end;
@@ -249,13 +249,13 @@ begin
       
       // Вызываем шейдерную программу один раз, не передавая данные
       // Геометричейский шейдер сделает из этого 
-      gl.DrawArrays(PrimitiveType.POINTS, 0,1);
+      gl.DrawArrays(glPrimitiveType.POINTS, 0,1);
       
 //      var temp_data := new real[1];
 //      gl.GetNamedBufferSubData(buffer_temp, new IntPtr(2*sizeof(real)), new IntPtr(1*sizeof(real)), temp_data);
       
       var err := gl.GetError;
-      if err<>ErrorCode.NO_ERROR then MessageBox.Show(err.ToString);
+      if err.IS_ERROR then MessageBox.Show(err.ToString);
       
       gl.Finish;
       if need_set_resize_ev then

@@ -5,7 +5,7 @@
 val: {%Q?&T:CommandQueue<&T>%}
 !Enqueue
 var ec := cl.EnqueueWriteBuffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
   !val:ptr!,
   !evs!
@@ -25,7 +25,7 @@ OpenCLABCInternalException.RaiseIfError(ec);
 native_data: CommandQueue<NativeValue{%Area%}<&T>>
 !Enqueue
 var ec := cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   UIntPtr.Zero, !native_data!{%Area?:.Area%}.ByteSize,
   !native_data!{%Area?:.Area%}.ptr,
   !evs!

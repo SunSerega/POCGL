@@ -110,7 +110,7 @@
     public static function operator implicit(b: clBool): boolean := b<>FALSE;
     public static function operator implicit(b: boolean): clBool := new clBool(UInt32(b));
     
-    public static function operator not(b: clBool): clBool := if b then TRUE else FALSE;
+    public static function operator not(b: clBool): clBool := if b then FALSE else TRUE;
     
   end;
   
@@ -2359,6 +2359,8 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
+    public static property DEVICE_PARTITION_BY_COUNTS_LIST_END: clDevicePartitionProperty read new clDevicePartitionProperty(0);
+    public static property PARTITION_BY_NAMES_LIST_END:         clDevicePartitionProperty read new clDevicePartitionProperty(-1);
     public static property DEVICE_PARTITION_EQUALLY:            clDevicePartitionProperty read new clDevicePartitionProperty($1086);
     public static property DEVICE_PARTITION_BY_COUNTS:          clDevicePartitionProperty read new clDevicePartitionProperty($1087);
     public static property DEVICE_PARTITION_BY_AFFINITY_DOMAIN: clDevicePartitionProperty read new clDevicePartitionProperty($1088);
@@ -2366,6 +2368,10 @@
     
     public function ToString: string; override;
     begin
+      if DEVICE_PARTITION_BY_COUNTS_LIST_END = self then
+        Result := 'DEVICE_PARTITION_BY_COUNTS_LIST_END' else
+      if PARTITION_BY_NAMES_LIST_END = self then
+        Result := 'PARTITION_BY_NAMES_LIST_END' else
       if DEVICE_PARTITION_EQUALLY = self then
         Result := 'DEVICE_PARTITION_EQUALLY' else
       if DEVICE_PARTITION_BY_COUNTS = self then
@@ -4194,6 +4200,7 @@
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
+    public static property DEVICE_HANDLE_LIST_END:        clMemProperties read new clMemProperties(0);
     public static property DEVICE_HANDLE_LIST:            clMemProperties read new clMemProperties($2051);
     public static property MEM_ALLOC_FLAGS_IMG:           clMemProperties read new clMemProperties($40D7);
     public static property MEM_LOCALLY_UNCACHED_RESOURCE: clMemProperties read new clMemProperties($4218);
@@ -4201,6 +4208,8 @@
     
     public function ToString: string; override;
     begin
+      if DEVICE_HANDLE_LIST_END = self then
+        Result := 'DEVICE_HANDLE_LIST_END' else
       if DEVICE_HANDLE_LIST = self then
         Result := 'DEVICE_HANDLE_LIST' else
       if MEM_ALLOC_FLAGS_IMG = self then
@@ -4779,12 +4788,18 @@
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    public static property SEMAPHORE_TYPE:                clSemaphoreProperties read new clSemaphoreProperties($203D);
-    public static property SEMAPHORE_EXPORT_HANDLE_TYPES: clSemaphoreProperties read new clSemaphoreProperties($203F);
-    public static property DEVICE_HANDLE_LIST:            clSemaphoreProperties read new clSemaphoreProperties($2051);
+    public static property SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END: clSemaphoreProperties read new clSemaphoreProperties(0);
+    public static property DEVICE_HANDLE_LIST_END:                 clSemaphoreProperties read new clSemaphoreProperties(0);
+    public static property SEMAPHORE_TYPE:                         clSemaphoreProperties read new clSemaphoreProperties($203D);
+    public static property SEMAPHORE_EXPORT_HANDLE_TYPES:          clSemaphoreProperties read new clSemaphoreProperties($203F);
+    public static property DEVICE_HANDLE_LIST:                     clSemaphoreProperties read new clSemaphoreProperties($2051);
     
     public function ToString: string; override;
     begin
+      if SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END = self then
+        Result := 'SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END' else
+      if DEVICE_HANDLE_LIST_END = self then
+        Result := 'DEVICE_HANDLE_LIST_END' else
       if SEMAPHORE_TYPE = self then
         Result := 'SEMAPHORE_TYPE' else
       if SEMAPHORE_EXPORT_HANDLE_TYPES = self then
@@ -5016,7 +5031,9 @@
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
+    public static property PARTITION_BY_COUNTS_LIST_END:            clDevicePartitionPropertyEXT read new clDevicePartitionPropertyEXT(0);
     public static property PROPERTIES_LIST_END:                     clDevicePartitionPropertyEXT read new clDevicePartitionPropertyEXT(0);
+    public static property PARTITION_BY_NAMES_LIST_END:             clDevicePartitionPropertyEXT read new clDevicePartitionPropertyEXT(-1);
     public static property DEVICE_PARTITION_EQUALLY_EXT:            clDevicePartitionPropertyEXT read new clDevicePartitionPropertyEXT($4050);
     public static property DEVICE_PARTITION_BY_COUNTS_EXT:          clDevicePartitionPropertyEXT read new clDevicePartitionPropertyEXT($4051);
     public static property DEVICE_PARTITION_BY_NAMES:               clDevicePartitionPropertyEXT read new clDevicePartitionPropertyEXT($4052);
@@ -5024,8 +5041,12 @@
     
     public function ToString: string; override;
     begin
+      if PARTITION_BY_COUNTS_LIST_END = self then
+        Result := 'PARTITION_BY_COUNTS_LIST_END' else
       if PROPERTIES_LIST_END = self then
         Result := 'PROPERTIES_LIST_END' else
+      if PARTITION_BY_NAMES_LIST_END = self then
+        Result := 'PARTITION_BY_NAMES_LIST_END' else
       if DEVICE_PARTITION_EQUALLY_EXT = self then
         Result := 'DEVICE_PARTITION_EQUALLY_EXT' else
       if DEVICE_PARTITION_BY_COUNTS_EXT = self then
@@ -5133,15 +5154,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_accelerator read default(cl_accelerator)
+    public static property Zero: cl_accelerator read default(cl_accelerator);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_accelerator[{self.val}]';
     
-  end
+  end;
   
   cl_command_buffer = record
     public val: IntPtr;
@@ -5150,15 +5171,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_command_buffer read default(cl_command_buffer)
+    public static property Zero: cl_command_buffer read default(cl_command_buffer);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_command_buffer[{self.val}]';
     
-  end
+  end;
   
   cl_command_queue = record
     public val: IntPtr;
@@ -5167,15 +5188,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_command_queue read default(cl_command_queue)
+    public static property Zero: cl_command_queue read default(cl_command_queue);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_command_queue[{self.val}]';
     
-  end
+  end;
   
   cl_context = record
     public val: IntPtr;
@@ -5184,15 +5205,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_context read default(cl_context)
+    public static property Zero: cl_context read default(cl_context);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_context[{self.val}]';
     
-  end
+  end;
   
   cl_device_id = record
     public val: IntPtr;
@@ -5201,15 +5222,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_device_id read default(cl_device_id)
+    public static property Zero: cl_device_id read default(cl_device_id);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_device_id[{self.val}]';
     
-  end
+  end;
   
   cl_eglDisplay = record
     public val: IntPtr;
@@ -5218,15 +5239,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_eglDisplay read default(cl_eglDisplay)
+    public static property Zero: cl_eglDisplay read default(cl_eglDisplay);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_eglDisplay[{self.val}]';
     
-  end
+  end;
   
   cl_eglImage = record
     public val: IntPtr;
@@ -5235,15 +5256,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_eglImage read default(cl_eglImage)
+    public static property Zero: cl_eglImage read default(cl_eglImage);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_eglImage[{self.val}]';
     
-  end
+  end;
   
   cl_eglSync = record
     public val: IntPtr;
@@ -5252,15 +5273,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_eglSync read default(cl_eglSync)
+    public static property Zero: cl_eglSync read default(cl_eglSync);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_eglSync[{self.val}]';
     
-  end
+  end;
   
   cl_event = record
     public val: IntPtr;
@@ -5269,15 +5290,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_event read default(cl_event)
+    public static property Zero: cl_event read default(cl_event);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_event[{self.val}]';
     
-  end
+  end;
   
   cl_GLsync = record
     public val: IntPtr;
@@ -5286,15 +5307,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_GLsync read default(cl_GLsync)
+    public static property Zero: cl_GLsync read default(cl_GLsync);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_GLsync[{self.val}]';
     
-  end
+  end;
   
   cl_icd_dispatch = record
     public val: IntPtr;
@@ -5303,15 +5324,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_icd_dispatch read default(cl_icd_dispatch)
+    public static property Zero: cl_icd_dispatch read default(cl_icd_dispatch);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_icd_dispatch[{self.val}]';
     
-  end
+  end;
   
   cl_kernel = record
     public val: IntPtr;
@@ -5320,15 +5341,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_kernel read default(cl_kernel)
+    public static property Zero: cl_kernel read default(cl_kernel);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_kernel[{self.val}]';
     
-  end
+  end;
   
   cl_mem = record
     public val: IntPtr;
@@ -5337,15 +5358,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_mem read default(cl_mem)
+    public static property Zero: cl_mem read default(cl_mem);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_mem[{self.val}]';
     
-  end
+  end;
   
   cl_mutable_command = record
     public val: IntPtr;
@@ -5354,15 +5375,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_mutable_command read default(cl_mutable_command)
+    public static property Zero: cl_mutable_command read default(cl_mutable_command);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_mutable_command[{self.val}]';
     
-  end
+  end;
   
   cl_platform_id = record
     public val: IntPtr;
@@ -5371,15 +5392,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_platform_id read default(cl_platform_id)
+    public static property Zero: cl_platform_id read default(cl_platform_id);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_platform_id[{self.val}]';
     
-  end
+  end;
   
   cl_program = record
     public val: IntPtr;
@@ -5388,15 +5409,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_program read default(cl_program)
+    public static property Zero: cl_program read default(cl_program);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_program[{self.val}]';
     
-  end
+  end;
   
   cl_sampler = record
     public val: IntPtr;
@@ -5405,15 +5426,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_sampler read default(cl_sampler)
+    public static property Zero: cl_sampler read default(cl_sampler);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_sampler[{self.val}]';
     
-  end
+  end;
   
   cl_semaphore = record
     public val: IntPtr;
@@ -5422,30 +5443,30 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: cl_semaphore read default(cl_semaphore)
+    public static property Zero: cl_semaphore read default(cl_semaphore);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_semaphore[{self.val}]';
     
-  end
+  end;
   
   va_image_format = record
     public val: UInt32;
     
     public constructor(val: UInt32) := self.val := val;
     
-    public static property Zero: va_image_format read default(va_image_format)
+    public static property Zero: va_image_format read default(va_image_format);
     
     private static val_sz := Marshal.SizeOf&<UInt32>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'va_image_format[{self.val}]';
     
-  end
+  end;
   
   va_surface_id = record
     public val: IntPtr;
@@ -5454,30 +5475,30 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: va_surface_id read default(va_surface_id)
+    public static property Zero: va_surface_id read default(va_surface_id);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'va_surface_id[{self.val}]';
     
-  end
+  end;
   
   d3d_pixel_format = record
     public val: UInt32;
     
     public constructor(val: UInt32) := self.val := val;
     
-    public static property Zero: d3d_pixel_format read default(d3d_pixel_format)
+    public static property Zero: d3d_pixel_format read default(d3d_pixel_format);
     
     private static val_sz := Marshal.SizeOf&<UInt32>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'d3d_pixel_format[{self.val}]';
     
-  end
+  end;
   
   d3d_surface9 = record
     public val: IntPtr;
@@ -5486,15 +5507,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: d3d_surface9 read default(d3d_surface9)
+    public static property Zero: d3d_surface9 read default(d3d_surface9);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'d3d_surface9[{self.val}]';
     
-  end
+  end;
   
   d3d10_buffer = record
     public val: IntPtr;
@@ -5503,15 +5524,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: d3d10_buffer read default(d3d10_buffer)
+    public static property Zero: d3d10_buffer read default(d3d10_buffer);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'d3d10_buffer[{self.val}]';
     
-  end
+  end;
   
   d3d10_texture_2d = record
     public val: IntPtr;
@@ -5520,15 +5541,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: d3d10_texture_2d read default(d3d10_texture_2d)
+    public static property Zero: d3d10_texture_2d read default(d3d10_texture_2d);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'d3d10_texture_2d[{self.val}]';
     
-  end
+  end;
   
   d3d10_texture_3d = record
     public val: IntPtr;
@@ -5537,15 +5558,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: d3d10_texture_3d read default(d3d10_texture_3d)
+    public static property Zero: d3d10_texture_3d read default(d3d10_texture_3d);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'d3d10_texture_3d[{self.val}]';
     
-  end
+  end;
   
   d3d11_buffer = record
     public val: IntPtr;
@@ -5554,15 +5575,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: d3d11_buffer read default(d3d11_buffer)
+    public static property Zero: d3d11_buffer read default(d3d11_buffer);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'d3d11_buffer[{self.val}]';
     
-  end
+  end;
   
   d3d11_texture_2d = record
     public val: IntPtr;
@@ -5571,15 +5592,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: d3d11_texture_2d read default(d3d11_texture_2d)
+    public static property Zero: d3d11_texture_2d read default(d3d11_texture_2d);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'d3d11_texture_2d[{self.val}]';
     
-  end
+  end;
   
   d3d11_texture_3d = record
     public val: IntPtr;
@@ -5588,15 +5609,15 @@
     public constructor(val: Int32) := self.val := new IntPtr(val);
     public constructor(val: Int64) := self.val := new IntPtr(val);
     
-    public static property Zero: d3d11_texture_3d read default(d3d11_texture_3d)
+    public static property Zero: d3d11_texture_3d read default(d3d11_texture_3d);
     
     private static val_sz := Marshal.SizeOf&<IntPtr>;
     public static property Size: integer read val_sz;
-    public property ValSize: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'d3d11_texture_3d[{self.val}]';
     
-  end
+  end;
   
   [StructLayout(LayoutKind.Explicit, Size = 64)]
   value_ansi_string_64 = record
@@ -5816,7 +5837,7 @@
   end;
   
   cl_mutable_dispatch_config = record
-    public type: clCommandBufferStructureType;
+    public &type: clCommandBufferStructureType;
     public next: IntPtr;
     public command: cl_mutable_command;
     public num_args: UInt32;
@@ -5830,9 +5851,9 @@
     public global_work_size: ^UIntPtr;
     public local_work_size: ^UIntPtr;
     
-    public constructor(type: clCommandBufferStructureType; next: IntPtr; command: cl_mutable_command; num_args: UInt32; num_svm_args: UInt32; num_exec_infos: UInt32; work_dim: UInt32; arg_list: ^cl_mutable_dispatch_arg; arg_svm_list: ^cl_mutable_dispatch_arg; exec_info_list: ^cl_mutable_dispatch_exec_info; global_work_offset: ^UIntPtr; global_work_size: ^UIntPtr; local_work_size: ^UIntPtr);
+    public constructor(&type: clCommandBufferStructureType; next: IntPtr; command: cl_mutable_command; num_args: UInt32; num_svm_args: UInt32; num_exec_infos: UInt32; work_dim: UInt32; arg_list: ^cl_mutable_dispatch_arg; arg_svm_list: ^cl_mutable_dispatch_arg; exec_info_list: ^cl_mutable_dispatch_exec_info; global_work_offset: ^UIntPtr; global_work_size: ^UIntPtr; local_work_size: ^UIntPtr);
     begin
-      self.type               := type;
+      self.type               := &type;
       self.next               := next;
       self.command            := command;
       self.num_args           := num_args;
@@ -5850,14 +5871,14 @@
   end;
   
   cl_mutable_base_config = record
-    public type: clCommandBufferStructureType;
+    public &type: clCommandBufferStructureType;
     public next: IntPtr;
     public num_mutable_dispatch: UInt32;
     public mutable_dispatch_list: ^cl_mutable_dispatch_config;
     
-    public constructor(type: clCommandBufferStructureType; next: IntPtr; num_mutable_dispatch: UInt32; mutable_dispatch_list: ^cl_mutable_dispatch_config);
+    public constructor(&type: clCommandBufferStructureType; next: IntPtr; num_mutable_dispatch: UInt32; mutable_dispatch_list: ^cl_mutable_dispatch_config);
     begin
-      self.type                  := type;
+      self.type                  := &type;
       self.next                  := next;
       self.num_mutable_dispatch  := num_mutable_dispatch;
       self.mutable_dispatch_list := mutable_dispatch_list;
@@ -5911,7 +5932,7 @@
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-  clEventCallback = procedure(event: cl_event; event_command_status: clCommandExecutionStatus; user_data: IntPtr);
+  clEventCallback = procedure(&event: cl_event; event_command_status: clCommandExecutionStatus; user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -5919,7 +5940,7 @@
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-  clProgramCallback = procedure(program: cl_program; user_data: IntPtr);
+  clProgramCallback = procedure(&program: cl_program; user_data: IntPtr);
   
   
   

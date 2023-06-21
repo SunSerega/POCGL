@@ -162,13 +162,18 @@ GLXVideoCaptureDeviceNV	= glx::video_capture_device+NV
 GLXVideoSourceSGIX		= glx::video_source+SGIX
 
 //--------------------------------------------------
+//                      gles
+//--------------------------------------------------
+
+GLeglImageOES			= gles::image
+GLeglClientBufferEXT	= gles::client_buffer+EXT
+
+//--------------------------------------------------
 //                    disabled
 //--------------------------------------------------
 
 // gles
 GLclampx				= DISABLED_TYPE
-GLeglImageOES			= DISABLED_TYPE
-GLeglClientBufferEXT	= DISABLED_TYPE
 
 // unused
 _GPU_DEVICE				= DISABLED_TYPE

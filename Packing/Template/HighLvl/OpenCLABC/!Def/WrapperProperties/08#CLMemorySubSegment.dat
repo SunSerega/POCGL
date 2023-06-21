@@ -1,12 +1,23 @@
 ﻿cl_mem
-MemInfo
-clGetMemObjectInfo
+clMemInfo
+cl.GetMemObjectInfo
 
 !Base
 CLMemory
 
 
 
-# OFFSET:			UIntPtr
+# OFFSET
+Flat
+
+
+
+# TYPE
+# SIZE
+# MAP_COUNT
+# REFERENCE_COUNT
+# CONTEXT
+# ASSOCIATED_MEMOBJECT
+Disable
 
 

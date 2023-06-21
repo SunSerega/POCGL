@@ -1,5 +1,5 @@
 ﻿
-{%..\LicenseHeader%}
+{%..\..\Common\LicenseHeader.txt%}
 
 ///
 ///Код переведён отсюда:
@@ -22,88 +22,69 @@ uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
 type
-  
-  {$region Записи-имена}
-  
-  {%NameRecords!Pack NameRecords.pas%}
-  
-  {$endregion Записи-имена}
-  
-  {$region Перечисления}
-  
-  {%Groups!Pack Most.pas%}
-  
-  {$endregion Перечисления}
-  
-  {$region Делегаты}
-  
-//  [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-//  GL_DEBUG_PROC = procedure(source: DebugSource; &type: DebugType; id: UInt32; severity: DebugSeverity; length: Int32; message_text: IntPtr; userParam: pointer);
-//  
-//  [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-//  GL_VULKAN_PROC_NV = procedure;
-  
-  {$endregion Делегаты}
-  
-  {$region Записи}
-  
-  {%VecTypes!Pack VecTypes.pas%}
-  
-  {%MtrTypes!Pack MtrTypes.pas%}
-  
-  {$region Misc}
-  
-  {%Structs!Pack Most.pas%}
-  
-  {$endregion Misc}
-  
-  {$endregion Записи}
-  
-  {$region Другие типы}
-  
   DummyEnum = UInt32;
   DummyFlags = UInt32;
   
+  {$region Вспомогательные типы}
+  
+  {%Types.Interface!Pack Essentials.pas%}
+  
+  {$endregion Вспомогательные типы}
+  
+  {$region Особые типы}
+  
+  {%!!}glErrorCode = record procedure RaiseIfError; end;{%}
   OpenGLException = sealed class(Exception)
-    private ec: ErrorCode;
-    public property Code: ErrorCode read ec;
+    private ec: glErrorCode;
+    public property Code: glErrorCode read ec;
     
-    public constructor(ec: ErrorCode);
+    public constructor(ec: glErrorCode; message: string);
     begin
-      inherited Create($'Ошибка OpenGL: "{ec}"');
+      inherited Create(message);
       self.ec := ec;
     end;
     
+    public constructor(ec: glErrorCode) :=
+      Create(ec, $'Ошибка OpenGL: {ec}');
+    
   end;
   
+  /// Базовый класс платформы
+  /// Можно наследовать чтобы описать свой загрузчик динамических функций
   PlatformLoader = abstract class
     
     public function GetProcAddress(name: string): IntPtr; abstract;
     
   end;
   
-  {$endregion Другие типы}
+  {$endregion Особые типы}
   
-  {$region Функции}
+  {$region Подпрограммы ядра}
   
-  {%Funcs!Pack Most.pas%}
+  {%Feature.Interface!Pack Essentials.pas%}
   
-  {$endregion Функции}
+  {$endregion Подпрограммы ядра}
   
-  {$region Платформы}
+  {$region Подпрограммы расширений}
+  
+  {%Extension.Interface!Pack Essentials.pas%}
+  
+  {$endregion Подпрограммы расширений}
+  
+  {$region Загрузчики известных платформ}
   
   /// Платформа Windows
   PlWin = sealed class(PlatformLoader)
-    private static lib := LoadLibrary('opengl32.dll');
     
     private static function LoadLibrary(name: string): IntPtr;
     external 'kernel32.dll';
+    private static lib := LoadLibrary('opengl32.dll');
+    
     private static function GetProcAddress(lib: IntPtr; name: string): IntPtr;
     external 'kernel32.dll';
-    
     public function GetProcAddress(name: string): IntPtr; override;
     begin
-      Result := wgl.GetProcAddress(name); if Result<>IntPtr.Zero then exit;
+      {%>Result := wgl.GetProcAddress(name);%} if Result<>IntPtr.Zero then exit;
       Result := GetProcAddress(lib,name); if Result<>IntPtr.Zero then exit;
     end;
     
@@ -114,17 +95,23 @@ type
     
     public function GetProcAddress(name: string): IntPtr; override;
     begin
-      Result := glx.GetProcAddress(name); if Result<>IntPtr.Zero then exit;
+      {%>Result := glx.GetProcAddress(name);%} if Result<>IntPtr.Zero then exit;
       //TODO Then try from 'libGL.so.1'
     end;
     
   end;
   
-  {$endregion Платформы}
+  {$endregion Загрузчики известных платформ}
   
 implementation
 
-{$region Платформо-зависимая реализация}
+{$region Вспомогательные типы}
+
+{%Types.Implementation!Pack Essentials.pas%}
+
+{$endregion Вспомогательные типы}
+
+{$region Особые типы}
 
 type
   api_with_loader = abstract class
@@ -135,10 +122,21 @@ type
     
   end;
   
-{%Funcs.Implementation!Pack Most.pas%}
+procedure glErrorCode.RaiseIfError :=
+  {%>if IS_ERROR then%} raise new OpenGLException(self);
 
-{$endregion Платформо-зависимая реализация}
+{$endregion Особые типы}
 
-{%MtrExt!Pack MtrExt.pas%}
+{$region Подпрограммы ядра}
+
+{%Feature.Implementation!Pack Essentials.pas%}
+
+{$endregion Подпрограммы ядра}
+
+{$region Подпрограммы расширений}
+
+{%Extension.Implementation!Pack Essentials.pas%}
+
+{$endregion Подпрограммы расширений}
 
 end.

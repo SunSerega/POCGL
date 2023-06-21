@@ -1,8 +1,8 @@
-﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
-uses Fixers       in '..\..\..\Utils\Fixers';
-uses CodeGen      in '..\..\..\Utils\CodeGen';
+﻿uses '..\..\..\..\POCGL_Utils';
+uses '..\..\..\..\Utils\Fixers';
+uses '..\..\..\..\Utils\CodeGen';
 
-uses PackingUtils in '..\PackingUtils';
+uses '..\..\Common\PackingUtils';
 
 //TODO Генерация теста
 
@@ -59,8 +59,8 @@ type
     private static container := default(KATypeWriter);
     static constructor;
     begin
-      container.n := new WriterEmpty;
-      container.m := new WriterEmpty;
+      container.n := WriterEmpty.Instance;
+      container.m := WriterEmpty.Instance;
       System.IO.Directory.CreateDirectory(dir);
       container := new KATypeWriter(nil);
     end;
@@ -297,7 +297,7 @@ type
         end;
         
         m += '    public constructor';
-        write_pars_def(m, new WriterEmpty, 'CommandQueue');
+        write_pars_def(m, WriterEmpty.Instance, 'CommandQueue');
         m += ' :='#10;
         m += '    data := new ';
         write_data_tname;
@@ -603,7 +603,7 @@ begin
       foreach var dt in |nil, 'UInt32', 'Int32', 'UInt64', 'Int64'| do
       begin
         var n := wr_local.n;
-        var m := if dt=nil then wr_local.m else new WriterEmpty;
+        var m := if dt=nil then wr_local.m else WriterEmpty.Instance;
         var all := n*m;
         var t := wr_local.t;
         

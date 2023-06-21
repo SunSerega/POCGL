@@ -117,7 +117,7 @@ type
       Result := if wds[0].StartsWith('>') then
         |new StrBlock(wds[0].SubString(1)) as FileBlock| else
         ProcessCommand(
-          GetFullPath(wds[0]+'.template', curr_path),
+          GetFullPath(wds[0], curr_path),
           (wds.Length<2) or string.IsNullOrWhiteSpace(wds[1]) ? nil : GetFullPath(wds[1], curr_path),
           wds?[2:]
         );
@@ -160,7 +160,12 @@ type
         begin
 //          MiscUtils.Otp($'Reading');
 //          Writeln(inp_fname);
-          if not FileExists(inp_fname) then raise new MessageException($'ERROR: File [{GetRelativePathRTA(inp_fname)}] not found');
+          if not FileExists(inp_fname) then
+          begin
+            inp_fname += '.template';
+            if not FileExists(inp_fname) then
+              raise new MessageException($'ERROR: File [{GetRelativePathRTA(inp_fname)}] not found');
+          end;
           var text := ReadAllText(inp_fname, FileLogger.enc).Trim.Remove(#13);
           
           var ind1 := 0;

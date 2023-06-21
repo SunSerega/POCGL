@@ -1,8 +1,8 @@
 ﻿unit ContainerMethodData;
 
-uses CodeGen      in '..\..\..\Utils\CodeGen';
-uses POCGL_Utils  in '..\..\..\POCGL_Utils';
-uses Fixers       in '..\..\..\Utils\Fixers';
+uses '..\..\..\..\Utils\CodeGen';
+uses '..\..\..\..\POCGL_Utils';
+uses '..\..\..\..\Utils\Fixers';
 
 {$string_nullbased+}
 
@@ -1079,14 +1079,14 @@ type
       
       {$region Setup}
       
-      var l_res_EIm := settings.implicit_only ? new WriterEmpty  : res_EIm;
+      var l_res_EIm := settings.implicit_only ? WriterEmpty.Instance  : res_EIm;
       
-      var l_res_In  := settings.implicit_only ? res_IIn          : res_In;
-      var l_res_Im  := settings.implicit_only ? res_IIm          : res_Im;
+      var l_res_In  := settings.implicit_only ? res_IIn               : res_In;
+      var l_res_Im  := settings.implicit_only ? res_IIm               : res_Im;
       
-      var l_res_E   := settings.implicit_only ? new WriterEmpty  : res_E;
+      var l_res_E   := settings.implicit_only ? WriterEmpty.Instance  : res_E;
       
-      var l_res     := settings.implicit_only ? res_I            : res;
+      var l_res     := settings.implicit_only ? res_I                 : res;
       
       {$endregion Setup}
       

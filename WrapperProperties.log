@@ -1,0 +1,25 @@
+﻿Func [cl.GetKernelSubGroupInfo] was skipped when loading
+Func [cl.SetKernelExecInfo] was skipped when loading
+Func [cl.SetKernelExecInfoARM] was skipped when loading
+Func [cl.GetKernelSubGroupInfoKHR] was skipped when loading
+Func [cl.GetCommandQueueInfo] was not used
+Func [cl.GetEventInfo] was not used
+Func [cl.GetEventProfilingInfo] was not used
+Func [cl.GetGLTextureInfo] was not used
+Func [cl.GetImageInfo] was not used
+Func [cl.GetKernelArgInfo] was not used
+Func [cl.GetKernelInfo] was not used
+Func [cl.GetKernelWorkGroupInfo] was not used
+Func [cl.GetLayerInfo] was not used
+Func [cl.GetPipeInfo] was not used
+Func [cl.GetProgramBuildInfo] was not used
+Func [cl.GetSamplerInfo] was not used
+Func [cl.GetImageRequirementsInfoEXT] was not used
+Func [cl.GetAcceleratorInfoINTEL] was not used
+Func [cl.GetMemAllocInfoINTEL] was not used
+Func [cl.GetCommandBufferInfoKHR] was not used
+Func [cl.GetGLContextInfoKHR] was not used
+Func [cl.GetMutableCommandInfoKHR] was not used
+Func [cl.GetSemaphoreInfoKHR] was not used
+Func [cl.GetICDLoaderInfoOCLICD] was not used
+Func [cl.GetDeviceImageInfoQCOM] was not used

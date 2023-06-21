@@ -31,7 +31,7 @@ begin
   {$region Инициализация переменных}
   
   var sprog := InitProgram(
-    InitShader('Крутящийся треугольник.vert', ShaderType.VERTEX_SHADER)
+    InitShader('Крутящийся треугольник.vert', glShaderType.VERTEX_SHADER)
   {, другие_шейдеры});
   gl.UseProgram(sprog);
   
@@ -54,12 +54,12 @@ begin
         );
         
       end),
-      VertexBufferObjectUsage.STATIC_DRAW
+      glVertexBufferObjectUsage.STATIC_DRAW
     );
     var attribute_position := gl.GetAttribLocation(sprog, 'position');
     // Оставляем всё настроенным и привязанным
     // В данном случае можно, потому что шейдерная программа одна
-    gl.VertexAttribFormat(attribute_position, 2,VertexAttribType.FLOAT, false, 0);
+    gl.VertexAttribFormat(attribute_position, 2,glVertexAttribType.FLOAT, false, 0);
     gl.BindVertexBuffer(attribute_position, vertex_pos_buffer, IntPtr.Zero, sizeof(Vec2f));
     gl.EnableVertexAttribArray(attribute_position);
   end;
@@ -76,10 +76,10 @@ begin
         new Vec3f(0,1,0),
         new Vec3f(0,0,1)
       |,
-      VertexBufferObjectUsage.STATIC_DRAW
+      glVertexBufferObjectUsage.STATIC_DRAW
     );
     var attribute_color := gl.GetAttribLocation(sprog, 'color');
-    gl.VertexAttribFormat(attribute_color, 3,VertexAttribType.FLOAT, false, 0);
+    gl.VertexAttribFormat(attribute_color, 3,glVertexAttribType.FLOAT, false, 0);
     gl.BindVertexBuffer(attribute_color, vertex_clr_buffer, IntPtr.Zero, sizeof(Vec3f));
     gl.EnableVertexAttribArray(attribute_color);
   end;
@@ -90,20 +90,12 @@ begin
   {$endregion Инициализация переменных}
   
   // Для поиска, где возникла ошибка
-//  var RaiseIfError := procedure->
-//  begin
-//    
-//    // получаем тип последней ошибки
-//    var err := gl.GetError;
-//    // и если ошибка есть - выводим её
-//    if err<>ErrorCode.NO_ERROR then raise new System.Exception(err.ToString);
-//    
-//  end;
+//  var RaiseIfError := procedure->gl.GetError.RaiseIfError;
   
   while true do
   begin
     // очищаем окно в начале перерисовки
-    gl.Clear(ClearBufferMask.COLOR_BUFFER_BIT);
+    gl.Clear(glClearBufferMask.COLOR_BUFFER_BIT);
     
     
     
@@ -111,14 +103,14 @@ begin
     
     // Рисуем треугольники из всего 3 вершин (то есть получится 1 треугольник)
     // Для каждой вершины берём 1 значение из vertex_pos_buffer и 1 из vertex_clr_buffer
-    gl.DrawArrays(PrimitiveType.TRIANGLES, 0,3);
+    gl.DrawArrays(glPrimitiveType.TRIANGLES, 0,3);
     
     
     
     // получаем тип последней ошибки
     var err := gl.GetError;
     // и если ошибка есть - выводим её
-    if err<>ErrorCode.NO_ERROR then Writeln(err);
+    if err.IS_ERROR then Writeln(err);
     
     gl.Finish;
     // EndFrame меняет местами буферы и ждёт vsync

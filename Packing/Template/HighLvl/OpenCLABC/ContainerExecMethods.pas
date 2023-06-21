@@ -1,7 +1,7 @@
-﻿uses POCGL_Utils  in '..\..\..\POCGL_Utils';
+﻿uses '..\..\..\..\POCGL_Utils';
 uses ContainerMethodData;
 
-uses ATask        in '..\..\..\Utils\ATask';
+uses '..\..\..\..\Utils\ATask';
 
 {$string_nullbased+}
 

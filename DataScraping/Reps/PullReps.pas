@@ -49,7 +49,7 @@ end;
 begin
   try
     Seq(
-      new class( nick := 'OpenCL', name := 'OpenCL-Docs',     branch := 'main' ),
+      new class( nick := 'OpenCL', name := 'OpenCL-Docs',     branch := 'custom' ),
       new class( nick := 'OpenGL', name := 'OpenGL-Registry', branch := 'custom' )
     ).ForEach(r->PullRep(r.name, r.branch, r.nick));
   except

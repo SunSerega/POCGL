@@ -1,11 +1,20 @@
 ﻿cl_context
-ContextInfo
-clGetContextInfo
+clContextInfo
+cl.GetContextInfo
 
 
 
-# REFERENCE_COUNT:	UInt32
-# NUM_DEVICES:		UInt32
-# PROPERTIES:		array of OpenCL.ContextProperties
+# PROPERTIES
+# D3D10_PREFER_SHARED_RESOURCES
+# D3D11_PREFER_SHARED_RESOURCES
+# VA_API_DISPLAY
+Flat
+
+
+
+# REFERENCE_COUNT
+# DEVICES
+# NUM_DEVICES
+Disable
 
 

@@ -1,37 +1,63 @@
 ﻿Runing Template[OpenGL]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack NameRecords.pas"
+Template[OpenGL]: Compiling "Packing\Template\LowLvl\OpenGL\Pack Essentials.pas"
 Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack NameRecords.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack NameRecords.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack Most.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack Most.exe]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Reading .bin
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Fixing all
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: Group [VertexAttribEnumNV] had different enums from [VertexAttribEnum]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing funcs code
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glDrawCommandsStatesNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glDrawCommandsStatesAddressNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glListDrawCommandsStatesClientNV]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glAsyncCopyBufferSubDataNVX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glAsyncCopyImageSubDataNVX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [wglChoosePixelFormatARB]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [wglChoosePixelFormatEXT]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glXQueryChannelRectSGIX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: WARNING: 17 overloads of non-fixed Func [glXQueryChannelDeltasSGIX]
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing structs code
-Template[OpenGL]: TemplateCommand[OpenGL\Pack Most.exe]: Constructing enums code
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack Most.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack VecTypes.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack VecTypes.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack VecTypes.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrTypes.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrTypes.exe]
-Template[OpenGL]: Compiling "Packing\Template\OpenGL\Pack MtrExt.pas"
-Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[OpenGL\Pack MtrExt.exe]
-Template[OpenGL]: Finished runing TemplateCommand[OpenGL\Pack MtrExt.exe]
+Template[OpenGL]: Runing TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading VendorSuffix items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Enum items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading LoadedBasicType items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Group items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Group fixers
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading IdClass items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading IdClass fixers
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Struct items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Struct fixers
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Delegate items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Delegate fixers
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Func items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Func fixers
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: Func [glx::QueryHyperpipeBestAttrib+SGIX] fixer comments
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: Func [glx::HyperpipeAttrib+SGIX] fixer comments
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: Func [glx::QueryHyperpipeAttrib+SGIX] fixer comments
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Feature items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Extension items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Fixing Group items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Fixing IdClass items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Fixing Struct items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Fixing Delegate items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Fixing Func items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping Feature items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping Extension items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::DrawCommandsStates + NV]
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::DrawCommandsStatesAddress + NV]
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::ListDrawCommandsStatesClient + NV]
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::AsyncCopyBufferSubData + NVX]
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::AsyncCopyImageSubData + NVX]
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [glx::QueryChannelRect + SGIX]
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [glx::QueryChannelDeltas + SGIX]
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [wgl::ChoosePixelFormat + ARB]
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [wgl::ChoosePixelFormat + EXT]
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging PascalBasicType items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging TypeCombo items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging Group items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging IdClass items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging Struct items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging Delegate items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging Func items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging Extension items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping PascalBasicType items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping TypeCombo items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping Group items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping IdClass items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping Struct items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping Delegate items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: PascalBasicType: Packed 17 items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Group: Packed 312 items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: IdClass: Packed 51 items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Struct: Packed 4 items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Delegate: Packed 4 items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Func: Packed 3253 items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Feature: Packed 4 items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Extension: Packed 743 items
+Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Cleanup
+Template[OpenGL]: Finished runing TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]
 Finished runing Template[OpenGL]

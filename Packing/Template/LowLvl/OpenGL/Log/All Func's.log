@@ -20224,13 +20224,13 @@ flags:  glBufferStorageMask
 target:       DummyEnum
 offset:       IntPtr
 size:         UIntPtr
-clientBuffer: DISABLED_TYPE
+clientBuffer: gles_client_buffer_EXT
 flags:        glBufferStorageMask
 !ffo
 1
-	DummyEnum | IntPtr | UIntPtr | DISABLED_TYPE | glBufferStorageMask |
-	--------- | ------ | ------- | ------------- | ------------------- |
-	target    | offset | size    | clientBuffer  | flags               |
+	DummyEnum | IntPtr | UIntPtr | gles_client_buffer_EXT | glBufferStorageMask |
+	--------- | ------ | ------- | ---------------------- | ------------------- |
+	target    | offset | size    | clientBuffer           | flags               |
 
 # gl::BufferStorageMem + EXT
 !ppt
@@ -21491,28 +21491,28 @@ pointer: array of glBool8 const / var glBool8 const / IntPtr const
 # gl::EGLImageTargetTexStorage + EXT
 !ppt
 target:      DummyEnum
-image:       DISABLED_TYPE
+image:       gles_image
 attrib_list: array of Int32 const / var Int32 const / IntPtr const
 !ffo
 3
-	DummyEnum | DISABLED_TYPE | array of Int32 const |
-	DummyEnum | DISABLED_TYPE | var Int32 const      |
-	DummyEnum | DISABLED_TYPE | IntPtr const         |
-	--------- | ------------- | -------------------- |
-	target    | image         | attrib_list          |
+	DummyEnum | gles_image | array of Int32 const |
+	DummyEnum | gles_image | var Int32 const      |
+	DummyEnum | gles_image | IntPtr const         |
+	--------- | ---------- | -------------------- |
+	target    | image      | attrib_list          |
 
 # gl::EGLImageTargetTextureStorage + EXT
 !ppt
 texture:     gl_texture
-image:       DISABLED_TYPE
+image:       gles_image
 attrib_list: array of Int32 const / var Int32 const / IntPtr const
 !ffo
 3
-	gl_texture | DISABLED_TYPE | array of Int32 const |
-	gl_texture | DISABLED_TYPE | var Int32 const      |
-	gl_texture | DISABLED_TYPE | IntPtr const         |
-	---------- | ------------- | -------------------- |
-	texture    | image         | attrib_list          |
+	gl_texture | gles_image | array of Int32 const |
+	gl_texture | gles_image | var Int32 const      |
+	gl_texture | gles_image | IntPtr const         |
+	---------- | ---------- | -------------------- |
+	texture    | image      | attrib_list          |
 
 # gl::EnableClientStatei + EXT
 !ppt
@@ -24348,13 +24348,13 @@ flags:  glBufferStorageMask
 buffer:       gl_buffer
 offset:       IntPtr
 size:         UIntPtr
-clientBuffer: DISABLED_TYPE
+clientBuffer: gles_client_buffer_EXT
 flags:        glBufferStorageMask
 !ffo
 1
-	gl_buffer | IntPtr | UIntPtr | DISABLED_TYPE | glBufferStorageMask |
-	--------- | ------ | ------- | ------------- | ------------------- |
-	buffer    | offset | size    | clientBuffer  | flags               |
+	gl_buffer | IntPtr | UIntPtr | gles_client_buffer_EXT | glBufferStorageMask |
+	--------- | ------ | ------- | ---------------------- | ------------------- |
+	buffer    | offset | size    | clientBuffer           | flags               |
 
 # gl::NamedBufferStorageMem + EXT
 !ppt
@@ -36516,22 +36516,22 @@ coords: array of gl_fixed const / var gl_fixed const / IntPtr const
 # gl::EGLImageTargetRenderbufferStorage + OES
 !ppt
 target: DummyEnum
-image:  DISABLED_TYPE
+image:  gles_image
 !ffo
 1
-	DummyEnum | DISABLED_TYPE |
-	--------- | ------------- |
-	target    | image         |
+	DummyEnum | gles_image |
+	--------- | ---------- |
+	target    | image      |
 
 # gl::EGLImageTargetTexture2D + OES
 !ppt
 target: DummyEnum
-image:  DISABLED_TYPE
+image:  gles_image
 !ffo
 1
-	DummyEnum | DISABLED_TYPE |
-	--------- | ------------- |
-	target    | image         |
+	DummyEnum | gles_image |
+	--------- | ---------- |
+	target    | image      |
 
 # gl::Enablei + OES
 !ppt

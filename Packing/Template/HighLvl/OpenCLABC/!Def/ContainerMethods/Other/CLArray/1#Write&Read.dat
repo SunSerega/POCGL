@@ -5,7 +5,7 @@
 val: {%Q?&T:CommandQueue<&T>%}; ind: CommandQueue<integer>
 !Enqueue
 var ec := cl.EnqueueWriteBuffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   new UIntPtr(!ind! * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
   !val:ptr!,
   !evs!
@@ -19,7 +19,7 @@ a: CommandQueue<array{%rank? : [,] : [,,] %} of &T>
 !Enqueue
 //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
 var ec := cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   UIntPtr.Zero, new UIntPtr(!a:pinn!.Length * Marshal.SizeOf(default(T))),
   !a:pinn![{%rank? 0 : 0,0 : 0,0,0 %}],
   !evs!
@@ -30,7 +30,7 @@ OpenCLABCInternalException.RaiseIfError(ec);
 a: CommandQueue<array{%rank? : [,] : [,,] %} of &T>; {%rank? a_ind : a_ind1,a_ind2 : a_ind1,a_ind2,a_ind3 %}, len, ind: CommandQueue<integer>
 !Enqueue
 var ec := cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   new UIntPtr(!ind! * Marshal.SizeOf(default(T))), new UIntPtr(!len! * Marshal.SizeOf(default(T))),
   !a:pinn![{%rank? !a_ind! : !a_ind1!,!a_ind2! : !a_ind1!,!a_ind2!,!a_ind3! %}],
   !evs!
@@ -48,7 +48,7 @@ a: CommandQueue<ArraySegment<&T>>
 a: CommandQueue<ArraySegment<&T>>; ind: CommandQueue<integer>
 !Enqueue
 var ec := cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   new UIntPtr(!ind!*Marshal.SizeOf(default(T))),
   new UIntPtr(!a:pinn!.Count * Marshal.SizeOf(default(T))),
   !a:pinn!.Array[!a:pinn!.Offset],
@@ -69,7 +69,7 @@ OpenCLABCInternalException.RaiseIfError(ec);
 ptr: CommandQueue<IntPtr>{%AutoSize?:; ind, len\: CommandQueue<integer>%}
 !Enqueue
 var ec := cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   new UIntPtr({%AutoSize? 0 : !ind! * Marshal.SizeOf(default(T)) %}),
   new UIntPtr({%AutoSize? o.ByteSize : !len!*Marshal.SizeOf(default(T)) %}),
   !ptr!,
@@ -93,7 +93,7 @@ native_data: CommandQueue<Native{%MemT%}{%Area%}{%MemT?:<&T>:<&T>%}>
 native_data: CommandQueue<Native{%MemT%}{%Area%}{%MemT?:<&T>:<&T>%}>; mem_offset: CommandQueue<integer>
 !Enqueue
 var ec := cl.Enqueue{%mode%}Buffer(
-  cq, o.Native, Bool.NON_BLOCKING,
+  cq, o.Native, clBool.NON_BLOCKING,
   new UIntPtr(!mem_offset!), !native_data!{%Area?:.Area%}.{%MemT?sz:ByteSize:ByteSize%},
   !native_data!{%Area?:.Area%}.{%MemT?ptr:ptr:first_ptr%},
   !evs!

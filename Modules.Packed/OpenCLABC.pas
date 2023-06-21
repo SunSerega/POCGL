@@ -868,7 +868,7 @@ type
     {$region constructor's}
     
     private procedure AllocArea(length: UInt32) :=
-    self._area := new NativeArrayArea<T>(length);
+      self._area := new NativeArrayArea<T>(length);
     public constructor(length: UInt32);
     begin
       AllocArea(length);
@@ -1056,8 +1056,8 @@ type
   
   {$region Re-definition's}
   
-  CLDeviceType              = OpenCL.DeviceType;
-  CLDeviceAffinityDomain    = OpenCL.DeviceAffinityDomain;
+  clDeviceType              = OpenCL.clDeviceType;
+  clDeviceAffinityDomain    = OpenCL.clDeviceAffinityDomain;
   
   {$endregion Re-definition's}
   
@@ -1068,17 +1068,15 @@ type
   OpenCLABCInternalException = sealed class(Exception)
     
     private constructor(message: string) :=
-    inherited Create(message);
-//    private constructor(message: string; ec: ErrorCode) :=
-//    inherited Create($'{message} with {ec}');
-    private constructor(ec: ErrorCode) :=
-    inherited Create(OpenCLException.Create(ec).Message);
+      inherited Create(message);
+    private constructor(ec: clErrorCode) :=
+      inherited Create(OpenCLException.Create(ec).Message);
     private constructor :=
-    inherited Create($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+      inherited Create($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
     
     private const RelayErrorCode = integer.MinValue;
-    private static procedure RaiseIfError(ec: ErrorCode) :=
-    if ec.IS_ERROR and (ec.val<>RelayErrorCode) then raise new OpenCLABCInternalException(ec);
+    private static procedure RaiseIfError(ec: clErrorCode) :=
+      if ec.IS_ERROR and (ec.val<>RelayErrorCode) then raise new OpenCLABCInternalException(ec);
     
   end;
   
@@ -1354,74 +1352,107 @@ type
   {$region CLPlatform}
   
   ///
-  CLPlatformProperties = partial class
+  CLPlatformProperties = class
+    private ntv: cl_platform_id;
     
-    public constructor(ntv: cl_platform_id);
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor(ntv: cl_platform_id) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
     
-    private function GetProfile: String;
-    private function GetVersion: String;
-    private function GetName: String;
-    private function GetVendor: String;
-    private function GetExtensions: String;
+    private function GetProfile: string;
+    begin
+      cl.GetPlatformInfo_PLATFORM_PROFILE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVersion: string;
+    begin
+      cl.GetPlatformInfo_PLATFORM_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetName: string;
+    begin
+      cl.GetPlatformInfo_PLATFORM_NAME(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVendor: string;
+    begin
+      cl.GetPlatformInfo_PLATFORM_VENDOR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExtensions: string;
+    begin
+      cl.GetPlatformInfo_PLATFORM_EXTENSIONS(self.ntv, Result).RaiseIfError;
+    end;
     private function GetHostTimerResolution: UInt64;
+    begin
+      cl.GetPlatformInfo_PLATFORM_HOST_TIMER_RESOLUTION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumericVersion: UInt32;
+    begin
+      cl.GetPlatformInfo_PLATFORM_NUMERIC_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExtensionsWithVersion: array of cl_name_version;
+    begin
+      cl.GetPlatformInfo_PLATFORM_EXTENSIONS_WITH_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCommandBufferCapabilities: clPlatformCommandBufferCapabilities;
+    begin
+      cl.GetPlatformInfo_PLATFORM_COMMAND_BUFFER_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIcdSuffix: string;
+    begin
+      cl.GetPlatformInfo_PLATFORM_ICD_SUFFIX(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSemaphoreTypes: array of clSemaphoreType;
+    begin
+      cl.GetPlatformInfo_PLATFORM_SEMAPHORE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSemaphoreImportHandleTypes: array of clExternalSemaphoreHandleType;
+    begin
+      cl.GetPlatformInfo_PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSemaphoreExportHandleTypes: array of clExternalSemaphoreHandleType;
+    begin
+      cl.GetPlatformInfo_PLATFORM_SEMAPHORE_EXPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExternalMemoryImportHandleTypes: array of clExternalMemoryHandleType;
+    begin
+      cl.GetPlatformInfo_PLATFORM_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
     
-    public property Profile:             String read GetProfile;
-    public property Version:             String read GetVersion;
-    public property Name:                String read GetName;
-    public property Vendor:              String read GetVendor;
-    public property Extensions:          String read GetExtensions;
-    public property HostTimerResolution: UInt64 read GetHostTimerResolution;
+    public property Profile:                         string                                 read GetProfile;
+    public property Version:                         string                                 read GetVersion;
+    public property Name:                            string                                 read GetName;
+    public property Vendor:                          string                                 read GetVendor;
+    public property Extensions:                      string                                 read GetExtensions;
+    public property HostTimerResolution:             UInt64                                 read GetHostTimerResolution;
+    public property NumericVersion:                  UInt32                                 read GetNumericVersion;
+    public property ExtensionsWithVersion:           array of cl_name_version               read GetExtensionsWithVersion;
+    public property CommandBufferCapabilities:       clPlatformCommandBufferCapabilities    read GetCommandBufferCapabilities;
+    public property IcdSuffix:                       string                                 read GetIcdSuffix;
+    public property SemaphoreTypes:                  array of clSemaphoreType               read GetSemaphoreTypes;
+    public property SemaphoreImportHandleTypes:      array of clExternalSemaphoreHandleType read GetSemaphoreImportHandleTypes;
+    public property SemaphoreExportHandleTypes:      array of clExternalSemaphoreHandleType read GetSemaphoreExportHandleTypes;
+    public property ExternalMemoryImportHandleTypes: array of clExternalMemoryHandleType    read GetExternalMemoryImportHandleTypes;
     
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'Profile             = ';
-      try
-        res += _ObjectToString(Profile);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Version             = ';
-      try
-        res += _ObjectToString(Version);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Name                = ';
-      try
-        res += _ObjectToString(Name);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Vendor              = ';
-      try
-        res += _ObjectToString(Vendor);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Extensions          = ';
-      try
-        res += _ObjectToString(Extensions);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'HostTimerResolution = ';
-      try
-        res += _ObjectToString(HostTimerResolution);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
+      res += 'Profile                         = '; AddProp(res, Profile                        ); res += #10;
+      res += 'Version                         = '; AddProp(res, Version                        ); res += #10;
+      res += 'Name                            = '; AddProp(res, Name                           ); res += #10;
+      res += 'Vendor                          = '; AddProp(res, Vendor                         ); res += #10;
+      res += 'Extensions                      = '; AddProp(res, Extensions                     ); res += #10;
+      res += 'HostTimerResolution             = '; AddProp(res, HostTimerResolution            ); res += #10;
+      res += 'NumericVersion                  = '; AddProp(res, NumericVersion                 ); res += #10;
+      res += 'ExtensionsWithVersion           = '; AddProp(res, ExtensionsWithVersion          ); res += #10;
+      res += 'CommandBufferCapabilities       = '; AddProp(res, CommandBufferCapabilities      ); res += #10;
+      res += 'IcdSuffix                       = '; AddProp(res, IcdSuffix                      ); res += #10;
+      res += 'SemaphoreTypes                  = '; AddProp(res, SemaphoreTypes                 ); res += #10;
+      res += 'SemaphoreImportHandleTypes      = '; AddProp(res, SemaphoreImportHandleTypes     ); res += #10;
+      res += 'SemaphoreExportHandleTypes      = '; AddProp(res, SemaphoreExportHandleTypes     ); res += #10;
+      res += 'ExternalMemoryImportHandleTypes = '; AddProp(res, ExternalMemoryImportHandleTypes);
     end;
     public function ToString: string; override;
     begin
@@ -1437,934 +1468,1079 @@ type
   {$region CLDevice}
   
   ///
-  CLDeviceProperties = partial class
+  CLDeviceProperties = class
+    private ntv: cl_device_id;
     
-    public constructor(ntv: cl_device_id);
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor(ntv: cl_device_id) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
     
-    private function GetType: DeviceType;
-    private function GetVendorId: UInt32;
+    private function GetType: clDeviceType;
+    begin
+      cl.GetDeviceInfo_DEVICE_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVendorId: clKhronosVendorId;
+    begin
+      cl.GetDeviceInfo_DEVICE_VENDOR_ID(self.ntv, Result).RaiseIfError;
+    end;
     private function GetMaxComputeUnits: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_COMPUTE_UNITS(self.ntv, Result).RaiseIfError;
+    end;
     private function GetMaxWorkItemDimensions: UInt32;
-    private function GetMaxWorkItemSizes: array of UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_WORK_ITEM_DIMENSIONS(self.ntv, Result).RaiseIfError;
+    end;
     private function GetMaxWorkGroupSize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_WORK_GROUP_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxWorkItemSizes: array of UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_WORK_ITEM_SIZES(self.ntv, Result).RaiseIfError;
+    end;
     private function GetPreferredVectorWidthChar: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_CHAR(self.ntv, Result).RaiseIfError;
+    end;
     private function GetPreferredVectorWidthShort: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_SHORT(self.ntv, Result).RaiseIfError;
+    end;
     private function GetPreferredVectorWidthInt: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_INT(self.ntv, Result).RaiseIfError;
+    end;
     private function GetPreferredVectorWidthLong: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_LONG(self.ntv, Result).RaiseIfError;
+    end;
     private function GetPreferredVectorWidthFloat: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT(self.ntv, Result).RaiseIfError;
+    end;
     private function GetPreferredVectorWidthDouble: UInt32;
-    private function GetPreferredVectorWidthHalf: UInt32;
-    private function GetNativeVectorWidthChar: UInt32;
-    private function GetNativeVectorWidthShort: UInt32;
-    private function GetNativeVectorWidthInt: UInt32;
-    private function GetNativeVectorWidthLong: UInt32;
-    private function GetNativeVectorWidthFloat: UInt32;
-    private function GetNativeVectorWidthDouble: UInt32;
-    private function GetNativeVectorWidthHalf: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE(self.ntv, Result).RaiseIfError;
+    end;
     private function GetMaxClockFrequency: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_CLOCK_FREQUENCY(self.ntv, Result).RaiseIfError;
+    end;
     private function GetAddressBits: UInt32;
-    private function GetMaxMemAllocSize: UInt64;
-    private function GetImageSupport: Bool;
+    begin
+      cl.GetDeviceInfo_DEVICE_ADDRESS_BITS(self.ntv, Result).RaiseIfError;
+    end;
     private function GetMaxReadImageArgs: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_READ_IMAGE_ARGS(self.ntv, Result).RaiseIfError;
+    end;
     private function GetMaxWriteImageArgs: UInt32;
-    private function GetMaxReadWriteImageArgs: UInt32;
-    private function GetIlVersion: String;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_WRITE_IMAGE_ARGS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxMemAllocSize: UInt64;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_MEM_ALLOC_SIZE(self.ntv, Result).RaiseIfError;
+    end;
     private function GetImage2dMaxWidth: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE2D_MAX_WIDTH(self.ntv, Result).RaiseIfError;
+    end;
     private function GetImage2dMaxHeight: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE2D_MAX_HEIGHT(self.ntv, Result).RaiseIfError;
+    end;
     private function GetImage3dMaxWidth: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE3D_MAX_WIDTH(self.ntv, Result).RaiseIfError;
+    end;
     private function GetImage3dMaxHeight: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE3D_MAX_HEIGHT(self.ntv, Result).RaiseIfError;
+    end;
     private function GetImage3dMaxDepth: UIntPtr;
-    private function GetImageMaxBufferSize: UIntPtr;
-    private function GetImageMaxArraySize: UIntPtr;
-    private function GetMaxSamplers: UInt32;
-    private function GetImagePitchAlignment: UInt32;
-    private function GetImageBaseAddressAlignment: UInt32;
-    private function GetMaxPipeArgs: UInt32;
-    private function GetPipeMaxActiveReservations: UInt32;
-    private function GetPipeMaxPacketSize: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE3D_MAX_DEPTH(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImageSupport: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE_SUPPORT(self.ntv, Result).RaiseIfError;
+    end;
     private function GetMaxParameterSize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_PARAMETER_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxSamplers: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_SAMPLERS(self.ntv, Result).RaiseIfError;
+    end;
     private function GetMemBaseAddrAlign: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MEM_BASE_ADDR_ALIGN(self.ntv, Result).RaiseIfError;
+    end;
     private function GetMinDataTypeAlignSize: UInt32;
-    private function GetSingleFpConfig: DeviceFPConfig;
-    private function GetDoubleFpConfig: DeviceFPConfig;
-    private function GetGlobalMemCacheType: DeviceMemCacheType;
+    begin
+      cl.GetDeviceInfo_DEVICE_MIN_DATA_TYPE_ALIGN_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSingleFpConfig: clDeviceFPConfig;
+    begin
+      cl.GetDeviceInfo_DEVICE_SINGLE_FP_CONFIG(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetGlobalMemCacheType: clDeviceMemCacheType;
+    begin
+      cl.GetDeviceInfo_DEVICE_GLOBAL_MEM_CACHE_TYPE(self.ntv, Result).RaiseIfError;
+    end;
     private function GetGlobalMemCachelineSize: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_GLOBAL_MEM_CACHELINE_SIZE(self.ntv, Result).RaiseIfError;
+    end;
     private function GetGlobalMemCacheSize: UInt64;
+    begin
+      cl.GetDeviceInfo_DEVICE_GLOBAL_MEM_CACHE_SIZE(self.ntv, Result).RaiseIfError;
+    end;
     private function GetGlobalMemSize: UInt64;
+    begin
+      cl.GetDeviceInfo_DEVICE_GLOBAL_MEM_SIZE(self.ntv, Result).RaiseIfError;
+    end;
     private function GetMaxConstantBufferSize: UInt64;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_CONSTANT_BUFFER_SIZE(self.ntv, Result).RaiseIfError;
+    end;
     private function GetMaxConstantArgs: UInt32;
-    private function GetMaxGlobalVariableSize: UIntPtr;
-    private function GetGlobalVariablePreferredTotalSize: UIntPtr;
-    private function GetLocalMemType: DeviceLocalMemType;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_CONSTANT_ARGS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetLocalMemType: clDeviceLocalMemType;
+    begin
+      cl.GetDeviceInfo_DEVICE_LOCAL_MEM_TYPE(self.ntv, Result).RaiseIfError;
+    end;
     private function GetLocalMemSize: UInt64;
-    private function GetErrorCorrectionSupport: Bool;
-    private function GetHostUnifiedMemory: Bool;
+    begin
+      cl.GetDeviceInfo_DEVICE_LOCAL_MEM_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetErrorCorrectionSupport: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_ERROR_CORRECTION_SUPPORT(self.ntv, Result).RaiseIfError;
+    end;
     private function GetProfilingTimerResolution: UIntPtr;
-    private function GetEndianLittle: Bool;
-    private function GetAvailable: Bool;
-    private function GetCompilerAvailable: Bool;
-    private function GetLinkerAvailable: Bool;
-    private function GetExecutionCapabilities: DeviceExecCapabilities;
-    private function GetQueueProperties: CommandQueueProperties;
-    private function GetQueueOnHostProperties: CommandQueueProperties;
-    private function GetQueueOnDeviceProperties: CommandQueueProperties;
-    private function GetQueueOnDevicePreferredSize: UInt32;
-    private function GetQueueOnDeviceMaxSize: UInt32;
-    private function GetMaxOnDeviceQueues: UInt32;
-    private function GetMaxOnDeviceEvents: UInt32;
-    private function GetBuiltInKernels: String;
-    private function GetName: String;
-    private function GetVendor: String;
-    private function GetDriverVersion: String;
-    private function GetProfile: String;
-    private function GetVersion: String;
-    private function GetOpenclCVersion: String;
-    private function GetExtensions: String;
-    private function GetPrintfBufferSize: UIntPtr;
-    private function GetPreferredInteropUserSync: Bool;
+    begin
+      cl.GetDeviceInfo_DEVICE_PROFILING_TIMER_RESOLUTION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetEndianLittle: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_ENDIAN_LITTLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAvailable: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_AVAILABLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCompilerAvailable: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMPILER_AVAILABLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExecutionCapabilities: clDeviceExecCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_EXECUTION_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetQueueProperties: clCommandQueueProperties;
+    begin
+      cl.GetDeviceInfo_DEVICE_QUEUE_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetQueueOnHostProperties: clCommandQueueProperties;
+    begin
+      cl.GetDeviceInfo_DEVICE_QUEUE_ON_HOST_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetName: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_NAME(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVendor: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_VENDOR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDriverVersion: string;
+    begin
+      cl.GetDeviceInfo_DRIVER_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetProfile: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_PROFILE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVersion: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExtensions: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_EXTENSIONS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDoubleFpConfig: clDeviceFPConfig;
+    begin
+      cl.GetDeviceInfo_DEVICE_DOUBLE_FP_CONFIG(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHalfFpConfig: clDeviceFPConfig;
+    begin
+      cl.GetDeviceInfo_DEVICE_HALF_FP_CONFIG(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredVectorWidthHalf: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_VECTOR_WIDTH_HALF(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHostUnifiedMemory: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_HOST_UNIFIED_MEMORY(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthChar: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_CHAR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthShort: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_SHORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthInt: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_INT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthLong: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_LONG(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthFloat: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_FLOAT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthDouble: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_DOUBLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNativeVectorWidthHalf: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NATIVE_VECTOR_WIDTH_HALF(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetOpenclCVersion: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_OPENCL_C_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetLinkerAvailable: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_LINKER_AVAILABLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetBuiltInKernels: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_BUILT_IN_KERNELS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImageMaxBufferSize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE_MAX_BUFFER_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImageMaxArraySize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE_MAX_ARRAY_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetParentDevice: cl_device_id;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARENT_DEVICE(self.ntv, Result).RaiseIfError;
+    end;
     private function GetPartitionMaxSubDevices: UInt32;
-    private function GetPartitionProperties: array of DevicePartitionProperty;
-    private function GetPartitionAffinityDomain: DeviceAffinityDomain;
-    private function GetPartitionType: array of DevicePartitionProperty;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARTITION_MAX_SUB_DEVICES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPartitionProperties: array of clDevicePartitionProperty;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARTITION_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPartitionAffinityDomain: clDeviceAffinityDomain;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARTITION_AFFINITY_DOMAIN(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPartitionType: array of clDevicePartitionProperty;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARTITION_TYPE(self.ntv, Result).RaiseIfError;
+    end;
     private function GetReferenceCount: UInt32;
-    private function GetSvmCapabilities: DeviceSVMCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_REFERENCE_COUNT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredInteropUserSync: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_INTEROP_USER_SYNC(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPrintfBufferSize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_PRINTF_BUFFER_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImagePitchAlignment: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE_PITCH_ALIGNMENT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetImageBaseAddressAlignment: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxReadWriteImageArgs: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_READ_WRITE_IMAGE_ARGS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxGlobalVariableSize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_GLOBAL_VARIABLE_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetQueueOnDeviceProperties: clCommandQueueProperties;
+    begin
+      cl.GetDeviceInfo_DEVICE_QUEUE_ON_DEVICE_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetQueueOnDevicePreferredSize: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetQueueOnDeviceMaxSize: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_QUEUE_ON_DEVICE_MAX_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxOnDeviceQueues: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_ON_DEVICE_QUEUES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxOnDeviceEvents: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_ON_DEVICE_EVENTS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSvmCapabilities: clDeviceSVMCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_SVM_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetGlobalVariablePreferredTotalSize: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_GLOBAL_VARIABLE_PREFERRED_TOTAL_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxPipeArgs: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_PIPE_ARGS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPipeMaxActiveReservations: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PIPE_MAX_ACTIVE_RESERVATIONS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPipeMaxPacketSize: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PIPE_MAX_PACKET_SIZE(self.ntv, Result).RaiseIfError;
+    end;
     private function GetPreferredPlatformAtomicAlignment: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_PLATFORM_ATOMIC_ALIGNMENT(self.ntv, Result).RaiseIfError;
+    end;
     private function GetPreferredGlobalAtomicAlignment: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT(self.ntv, Result).RaiseIfError;
+    end;
     private function GetPreferredLocalAtomicAlignment: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIlVersion: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_IL_VERSION(self.ntv, Result).RaiseIfError;
+    end;
     private function GetMaxNumSubGroups: UInt32;
-    private function GetSubGroupIndependentForwardProgress: Bool;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_NUM_SUB_GROUPS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSubGroupIndependentForwardProgress: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumericVersion: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NUMERIC_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetOpenclCNumericVersion: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_OPENCL_C_NUMERIC_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExtensionsWithVersion: array of cl_name_version;
+    begin
+      cl.GetDeviceInfo_DEVICE_EXTENSIONS_WITH_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIlsWithVersion: array of cl_name_version;
+    begin
+      cl.GetDeviceInfo_DEVICE_ILS_WITH_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetBuiltInKernelsWithVersion: array of cl_name_version;
+    begin
+      cl.GetDeviceInfo_DEVICE_BUILT_IN_KERNELS_WITH_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAtomicMemoryCapabilities: clDeviceAtomicCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_ATOMIC_MEMORY_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAtomicFenceCapabilities: clDeviceAtomicCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_ATOMIC_FENCE_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNonUniformWorkGroupSupport: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_NON_UNIFORM_WORK_GROUP_SUPPORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetOpenclCAllVersions: array of cl_name_version;
+    begin
+      cl.GetDeviceInfo_DEVICE_OPENCL_C_ALL_VERSIONS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPreferredWorkGroupSizeMultiple: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_PREFERRED_WORK_GROUP_SIZE_MULTIPLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetWorkGroupCollectiveFunctionsSupport: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_WORK_GROUP_COLLECTIVE_FUNCTIONS_SUPPORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetGenericAddressSpaceSupport: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_GENERIC_ADDRESS_SPACE_SUPPORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUuid: array of Byte;
+    begin
+      cl.GetDeviceInfo_DEVICE_UUID(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDriverUuid: array of Byte;
+    begin
+      cl.GetDeviceInfo_DRIVER_UUID(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetLuidValid: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_LUID_VALID(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetLuid: array of Byte;
+    begin
+      cl.GetDeviceInfo_DEVICE_LUID(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNodeMask: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NODE_MASK(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetOpenclCFeatures: array of cl_name_version;
+    begin
+      cl.GetDeviceInfo_DEVICE_OPENCL_C_FEATURES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDeviceEnqueueCapabilities: clDeviceOnDeviceEnqueueCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_DEVICE_ENQUEUE_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPipeSupport: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_PIPE_SUPPORT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetLatestConformanceVersionPassed: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_LATEST_CONFORMANCE_VERSION_PASSED(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIntegerDotProductCapabilities: clDeviceIntegerDotProductCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_INTEGER_DOT_PRODUCT_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIntegerDotProductAccelerationProperties8bit: cl_device_integer_dot_product_acceleration_properties;
+    begin
+      cl.GetDeviceInfo_DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIntegerDotProductAccelerationProperties4x8bitPacked: cl_device_integer_dot_product_acceleration_properties;
+    begin
+      cl.GetDeviceInfo_DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCommandBufferCapabilities: clDeviceCommandBufferCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMMAND_BUFFER_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCommandBufferRequiredQueueProperties: clCommandQueueProperties;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCommandBufferNumSyncDevices: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMMAND_BUFFER_NUM_SYNC_DEVICES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCommandBufferSyncDevices: array of cl_device_id;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMMAND_BUFFER_SYNC_DEVICES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMutableDispatchCapabilities: clMutableDispatchFields;
+    begin
+      cl.GetDeviceInfo_DEVICE_MUTABLE_DISPATCH_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetTerminateCapability: clDeviceTerminateCapability;
+    begin
+      cl.GetDeviceInfo_DEVICE_TERMINATE_CAPABILITY(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxNamedBarrierCount: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_NAMED_BARRIER_COUNT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSemaphoreTypes: array of clSemaphoreType;
+    begin
+      cl.GetDeviceInfo_DEVICE_SEMAPHORE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSemaphoreImportHandleTypes: array of clExternalSemaphoreHandleType;
+    begin
+      cl.GetDeviceInfo_DEVICE_SEMAPHORE_IMPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSemaphoreExportHandleTypes: array of clExternalSemaphoreHandleType;
+    begin
+      cl.GetDeviceInfo_DEVICE_SEMAPHORE_EXPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetExternalMemoryImportHandleTypes: array of clExternalMemoryHandleType;
+    begin
+      cl.GetDeviceInfo_DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetComputeCapabilityMajor: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMPUTE_CAPABILITY_MAJOR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetComputeCapabilityMinor: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMPUTE_CAPABILITY_MINOR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetRegistersPerBlock: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_REGISTERS_PER_BLOCK(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetWarpSize: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_WARP_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetGpuOverlap: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_GPU_OVERLAP(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetKernelExecTimeout: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_KERNEL_EXEC_TIMEOUT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIntegratedMemory: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_INTEGRATED_MEMORY(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetParentDeviceExt: cl_device_id;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARENT_DEVICE_EXT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPartitionTypes: array of clDevicePartitionProperty;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARTITION_TYPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAffinityDomains: clDeviceAffinityDomain;
+    begin
+      cl.GetDeviceInfo_DEVICE_AFFINITY_DOMAINS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetReferenceCountExt: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_REFERENCE_COUNT_EXT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPartitionStyle: clDevicePartitionProperty;
+    begin
+      cl.GetDeviceInfo_DEVICE_PARTITION_STYLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMeVersion: clDeviceMeVersion;
+    begin
+      cl.GetDeviceInfo_DEVICE_ME_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSvmCapabilitiesArm: clDeviceSVMCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_SVM_CAPABILITIES_ARM(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetComputeUnitsBitfield: UInt64;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMPUTE_UNITS_BITFIELD(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSpirVersions: string;
+    begin
+      cl.GetDeviceInfo_DEVICE_SPIR_VERSIONS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSimultaneousInterops: array of UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_SIMULTANEOUS_INTEROPS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumSimultaneousInterops: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NUM_SIMULTANEOUS_INTEROPS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSubGroupSizes: array of UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_SUB_GROUP_SIZES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAvcMeVersion: clDeviceAvcMeVersion;
+    begin
+      cl.GetDeviceInfo_DEVICE_AVC_ME_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAvcMeSupportsTextureSamplerUse: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_AVC_ME_SUPPORTS_TEXTURE_SAMPLER_USE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAvcMeSupportsPreemption: clBool;
+    begin
+      cl.GetDeviceInfo_DEVICE_AVC_ME_SUPPORTS_PREEMPTION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPciBusInfo: cl_device_pci_bus_info;
+    begin
+      cl.GetDeviceInfo_DEVICE_PCI_BUS_INFO(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPlanarYuvMaxWidth: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_PLANAR_YUV_MAX_WIDTH(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetPlanarYuvMaxHeight: UIntPtr;
+    begin
+      cl.GetDeviceInfo_DEVICE_PLANAR_YUV_MAX_HEIGHT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetQueueFamilyProperties: array of cl_queue_family_properties;
+    begin
+      cl.GetDeviceInfo_DEVICE_QUEUE_FAMILY_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHostMemCapabilities: clDeviceUnifiedSharedMemoryCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_HOST_MEM_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDeviceMemCapabilities: clDeviceUnifiedSharedMemoryCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_DEVICE_MEM_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSingleDeviceSharedMemCapabilities: clDeviceUnifiedSharedMemoryCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_SINGLE_DEVICE_SHARED_MEM_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCrossDeviceSharedMemCapabilities: clDeviceUnifiedSharedMemoryCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_CROSS_DEVICE_SHARED_MEM_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSharedSystemMemCapabilities: clDeviceUnifiedSharedMemoryCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_SHARED_SYSTEM_MEM_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetJobSlots: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_JOB_SLOTS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSchedulingControlsCapabilities: clDeviceSchedulingControlsCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_SCHEDULING_CONTROLS_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetMaxWarpCount: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_MAX_WARP_COUNT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSupportedRegisterAllocations: array of Int32;
+    begin
+      cl.GetDeviceInfo_DEVICE_SUPPORTED_REGISTER_ALLOCATIONS(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetControlledTerminationCapabilities: clDeviceControlledTerminationCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_CONTROLLED_TERMINATION_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetCxxForOpenclNumericVersion: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_CXX_FOR_OPENCL_NUMERIC_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetSingleFpAtomicCapabilities: clDeviceFpAtomicCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_SINGLE_FP_ATOMIC_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDoubleFpAtomicCapabilities: clDeviceFpAtomicCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_DOUBLE_FP_ATOMIC_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHalfFpAtomicCapabilities: clDeviceFpAtomicCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_HALF_FP_ATOMIC_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetIpVersion: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_IP_VERSION(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetId: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_ID(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumSlices: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NUM_SLICES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumSubSlicesPerSlice: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NUM_SUB_SLICES_PER_SLICE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumEusPerSubSlice: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NUM_EUS_PER_SUB_SLICE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumThreadsPerEu: UInt32;
+    begin
+      cl.GetDeviceInfo_DEVICE_NUM_THREADS_PER_EU(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetFeatureCapabilities: clDeviceFeatureCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_FEATURE_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
     
-    public property &Type:                              DeviceType                       read GetType;
-    public property VendorId:                           UInt32                           read GetVendorId;
-    public property MaxComputeUnits:                    UInt32                           read GetMaxComputeUnits;
-    public property MaxWorkItemDimensions:              UInt32                           read GetMaxWorkItemDimensions;
-    public property MaxWorkItemSizes:                   array of UIntPtr                 read GetMaxWorkItemSizes;
-    public property MaxWorkGroupSize:                   UIntPtr                          read GetMaxWorkGroupSize;
-    public property PreferredVectorWidthChar:           UInt32                           read GetPreferredVectorWidthChar;
-    public property PreferredVectorWidthShort:          UInt32                           read GetPreferredVectorWidthShort;
-    public property PreferredVectorWidthInt:            UInt32                           read GetPreferredVectorWidthInt;
-    public property PreferredVectorWidthLong:           UInt32                           read GetPreferredVectorWidthLong;
-    public property PreferredVectorWidthFloat:          UInt32                           read GetPreferredVectorWidthFloat;
-    public property PreferredVectorWidthDouble:         UInt32                           read GetPreferredVectorWidthDouble;
-    public property PreferredVectorWidthHalf:           UInt32                           read GetPreferredVectorWidthHalf;
-    public property NativeVectorWidthChar:              UInt32                           read GetNativeVectorWidthChar;
-    public property NativeVectorWidthShort:             UInt32                           read GetNativeVectorWidthShort;
-    public property NativeVectorWidthInt:               UInt32                           read GetNativeVectorWidthInt;
-    public property NativeVectorWidthLong:              UInt32                           read GetNativeVectorWidthLong;
-    public property NativeVectorWidthFloat:             UInt32                           read GetNativeVectorWidthFloat;
-    public property NativeVectorWidthDouble:            UInt32                           read GetNativeVectorWidthDouble;
-    public property NativeVectorWidthHalf:              UInt32                           read GetNativeVectorWidthHalf;
-    public property MaxClockFrequency:                  UInt32                           read GetMaxClockFrequency;
-    public property AddressBits:                        UInt32                           read GetAddressBits;
-    public property MaxMemAllocSize:                    UInt64                           read GetMaxMemAllocSize;
-    public property ImageSupport:                       Bool                             read GetImageSupport;
-    public property MaxReadImageArgs:                   UInt32                           read GetMaxReadImageArgs;
-    public property MaxWriteImageArgs:                  UInt32                           read GetMaxWriteImageArgs;
-    public property MaxReadWriteImageArgs:              UInt32                           read GetMaxReadWriteImageArgs;
-    public property IlVersion:                          String                           read GetIlVersion;
-    public property Image2dMaxWidth:                    UIntPtr                          read GetImage2dMaxWidth;
-    public property Image2dMaxHeight:                   UIntPtr                          read GetImage2dMaxHeight;
-    public property Image3dMaxWidth:                    UIntPtr                          read GetImage3dMaxWidth;
-    public property Image3dMaxHeight:                   UIntPtr                          read GetImage3dMaxHeight;
-    public property Image3dMaxDepth:                    UIntPtr                          read GetImage3dMaxDepth;
-    public property ImageMaxBufferSize:                 UIntPtr                          read GetImageMaxBufferSize;
-    public property ImageMaxArraySize:                  UIntPtr                          read GetImageMaxArraySize;
-    public property MaxSamplers:                        UInt32                           read GetMaxSamplers;
-    public property ImagePitchAlignment:                UInt32                           read GetImagePitchAlignment;
-    public property ImageBaseAddressAlignment:          UInt32                           read GetImageBaseAddressAlignment;
-    public property MaxPipeArgs:                        UInt32                           read GetMaxPipeArgs;
-    public property PipeMaxActiveReservations:          UInt32                           read GetPipeMaxActiveReservations;
-    public property PipeMaxPacketSize:                  UInt32                           read GetPipeMaxPacketSize;
-    public property MaxParameterSize:                   UIntPtr                          read GetMaxParameterSize;
-    public property MemBaseAddrAlign:                   UInt32                           read GetMemBaseAddrAlign;
-    public property MinDataTypeAlignSize:               UInt32                           read GetMinDataTypeAlignSize;
-    public property SingleFpConfig:                     DeviceFPConfig                   read GetSingleFpConfig;
-    public property DoubleFpConfig:                     DeviceFPConfig                   read GetDoubleFpConfig;
-    public property GlobalMemCacheType:                 DeviceMemCacheType               read GetGlobalMemCacheType;
-    public property GlobalMemCachelineSize:             UInt32                           read GetGlobalMemCachelineSize;
-    public property GlobalMemCacheSize:                 UInt64                           read GetGlobalMemCacheSize;
-    public property GlobalMemSize:                      UInt64                           read GetGlobalMemSize;
-    public property MaxConstantBufferSize:              UInt64                           read GetMaxConstantBufferSize;
-    public property MaxConstantArgs:                    UInt32                           read GetMaxConstantArgs;
-    public property MaxGlobalVariableSize:              UIntPtr                          read GetMaxGlobalVariableSize;
-    public property GlobalVariablePreferredTotalSize:   UIntPtr                          read GetGlobalVariablePreferredTotalSize;
-    public property LocalMemType:                       DeviceLocalMemType               read GetLocalMemType;
-    public property LocalMemSize:                       UInt64                           read GetLocalMemSize;
-    public property ErrorCorrectionSupport:             Bool                             read GetErrorCorrectionSupport;
-    public property HostUnifiedMemory:                  Bool                             read GetHostUnifiedMemory;
-    public property ProfilingTimerResolution:           UIntPtr                          read GetProfilingTimerResolution;
-    public property EndianLittle:                       Bool                             read GetEndianLittle;
-    public property Available:                          Bool                             read GetAvailable;
-    public property CompilerAvailable:                  Bool                             read GetCompilerAvailable;
-    public property LinkerAvailable:                    Bool                             read GetLinkerAvailable;
-    public property ExecutionCapabilities:              DeviceExecCapabilities           read GetExecutionCapabilities;
-    public property QueueProperties:                    CommandQueueProperties           read GetQueueProperties;
-    public property QueueOnHostProperties:              CommandQueueProperties           read GetQueueOnHostProperties;
-    public property QueueOnDeviceProperties:            CommandQueueProperties           read GetQueueOnDeviceProperties;
-    public property QueueOnDevicePreferredSize:         UInt32                           read GetQueueOnDevicePreferredSize;
-    public property QueueOnDeviceMaxSize:               UInt32                           read GetQueueOnDeviceMaxSize;
-    public property MaxOnDeviceQueues:                  UInt32                           read GetMaxOnDeviceQueues;
-    public property MaxOnDeviceEvents:                  UInt32                           read GetMaxOnDeviceEvents;
-    public property BuiltInKernels:                     String                           read GetBuiltInKernels;
-    public property Name:                               String                           read GetName;
-    public property Vendor:                             String                           read GetVendor;
-    public property DriverVersion:                      String                           read GetDriverVersion;
-    public property Profile:                            String                           read GetProfile;
-    public property Version:                            String                           read GetVersion;
-    public property OpenclCVersion:                     String                           read GetOpenclCVersion;
-    public property Extensions:                         String                           read GetExtensions;
-    public property PrintfBufferSize:                   UIntPtr                          read GetPrintfBufferSize;
-    public property PreferredInteropUserSync:           Bool                             read GetPreferredInteropUserSync;
-    public property PartitionMaxSubDevices:             UInt32                           read GetPartitionMaxSubDevices;
-    public property PartitionProperties:                array of DevicePartitionProperty read GetPartitionProperties;
-    public property PartitionAffinityDomain:            DeviceAffinityDomain             read GetPartitionAffinityDomain;
-    public property PartitionType:                      array of DevicePartitionProperty read GetPartitionType;
-    public property ReferenceCount:                     UInt32                           read GetReferenceCount;
-    public property SvmCapabilities:                    DeviceSVMCapabilities            read GetSvmCapabilities;
-    public property PreferredPlatformAtomicAlignment:   UInt32                           read GetPreferredPlatformAtomicAlignment;
-    public property PreferredGlobalAtomicAlignment:     UInt32                           read GetPreferredGlobalAtomicAlignment;
-    public property PreferredLocalAtomicAlignment:      UInt32                           read GetPreferredLocalAtomicAlignment;
-    public property MaxNumSubGroups:                    UInt32                           read GetMaxNumSubGroups;
-    public property SubGroupIndependentForwardProgress: Bool                             read GetSubGroupIndependentForwardProgress;
+    public property &Type:                                               clDeviceType                                          read GetType;
+    public property VendorId:                                            clKhronosVendorId                                     read GetVendorId;
+    public property MaxComputeUnits:                                     UInt32                                                read GetMaxComputeUnits;
+    public property MaxWorkItemDimensions:                               UInt32                                                read GetMaxWorkItemDimensions;
+    public property MaxWorkGroupSize:                                    UIntPtr                                               read GetMaxWorkGroupSize;
+    public property MaxWorkItemSizes:                                    array of UIntPtr                                      read GetMaxWorkItemSizes;
+    public property PreferredVectorWidthChar:                            UInt32                                                read GetPreferredVectorWidthChar;
+    public property PreferredVectorWidthShort:                           UInt32                                                read GetPreferredVectorWidthShort;
+    public property PreferredVectorWidthInt:                             UInt32                                                read GetPreferredVectorWidthInt;
+    public property PreferredVectorWidthLong:                            UInt32                                                read GetPreferredVectorWidthLong;
+    public property PreferredVectorWidthFloat:                           UInt32                                                read GetPreferredVectorWidthFloat;
+    public property PreferredVectorWidthDouble:                          UInt32                                                read GetPreferredVectorWidthDouble;
+    public property MaxClockFrequency:                                   UInt32                                                read GetMaxClockFrequency;
+    public property AddressBits:                                         UInt32                                                read GetAddressBits;
+    public property MaxReadImageArgs:                                    UInt32                                                read GetMaxReadImageArgs;
+    public property MaxWriteImageArgs:                                   UInt32                                                read GetMaxWriteImageArgs;
+    public property MaxMemAllocSize:                                     UInt64                                                read GetMaxMemAllocSize;
+    public property Image2dMaxWidth:                                     UIntPtr                                               read GetImage2dMaxWidth;
+    public property Image2dMaxHeight:                                    UIntPtr                                               read GetImage2dMaxHeight;
+    public property Image3dMaxWidth:                                     UIntPtr                                               read GetImage3dMaxWidth;
+    public property Image3dMaxHeight:                                    UIntPtr                                               read GetImage3dMaxHeight;
+    public property Image3dMaxDepth:                                     UIntPtr                                               read GetImage3dMaxDepth;
+    public property ImageSupport:                                        clBool                                                read GetImageSupport;
+    public property MaxParameterSize:                                    UIntPtr                                               read GetMaxParameterSize;
+    public property MaxSamplers:                                         UInt32                                                read GetMaxSamplers;
+    public property MemBaseAddrAlign:                                    UInt32                                                read GetMemBaseAddrAlign;
+    public property MinDataTypeAlignSize:                                UInt32                                                read GetMinDataTypeAlignSize;
+    public property SingleFpConfig:                                      clDeviceFPConfig                                      read GetSingleFpConfig;
+    public property GlobalMemCacheType:                                  clDeviceMemCacheType                                  read GetGlobalMemCacheType;
+    public property GlobalMemCachelineSize:                              UInt32                                                read GetGlobalMemCachelineSize;
+    public property GlobalMemCacheSize:                                  UInt64                                                read GetGlobalMemCacheSize;
+    public property GlobalMemSize:                                       UInt64                                                read GetGlobalMemSize;
+    public property MaxConstantBufferSize:                               UInt64                                                read GetMaxConstantBufferSize;
+    public property MaxConstantArgs:                                     UInt32                                                read GetMaxConstantArgs;
+    public property LocalMemType:                                        clDeviceLocalMemType                                  read GetLocalMemType;
+    public property LocalMemSize:                                        UInt64                                                read GetLocalMemSize;
+    public property ErrorCorrectionSupport:                              clBool                                                read GetErrorCorrectionSupport;
+    public property ProfilingTimerResolution:                            UIntPtr                                               read GetProfilingTimerResolution;
+    public property EndianLittle:                                        clBool                                                read GetEndianLittle;
+    public property Available:                                           clBool                                                read GetAvailable;
+    public property CompilerAvailable:                                   clBool                                                read GetCompilerAvailable;
+    public property ExecutionCapabilities:                               clDeviceExecCapabilities                              read GetExecutionCapabilities;
+    public property QueueProperties:                                     clCommandQueueProperties                              read GetQueueProperties;
+    public property QueueOnHostProperties:                               clCommandQueueProperties                              read GetQueueOnHostProperties;
+    public property Name:                                                string                                                read GetName;
+    public property Vendor:                                              string                                                read GetVendor;
+    public property DriverVersion:                                       string                                                read GetDriverVersion;
+    public property Profile:                                             string                                                read GetProfile;
+    public property Version:                                             string                                                read GetVersion;
+    public property Extensions:                                          string                                                read GetExtensions;
+    public property DoubleFpConfig:                                      clDeviceFPConfig                                      read GetDoubleFpConfig;
+    public property HalfFpConfig:                                        clDeviceFPConfig                                      read GetHalfFpConfig;
+    public property PreferredVectorWidthHalf:                            UInt32                                                read GetPreferredVectorWidthHalf;
+    public property HostUnifiedMemory:                                   clBool                                                read GetHostUnifiedMemory;
+    public property NativeVectorWidthChar:                               UInt32                                                read GetNativeVectorWidthChar;
+    public property NativeVectorWidthShort:                              UInt32                                                read GetNativeVectorWidthShort;
+    public property NativeVectorWidthInt:                                UInt32                                                read GetNativeVectorWidthInt;
+    public property NativeVectorWidthLong:                               UInt32                                                read GetNativeVectorWidthLong;
+    public property NativeVectorWidthFloat:                              UInt32                                                read GetNativeVectorWidthFloat;
+    public property NativeVectorWidthDouble:                             UInt32                                                read GetNativeVectorWidthDouble;
+    public property NativeVectorWidthHalf:                               UInt32                                                read GetNativeVectorWidthHalf;
+    public property OpenclCVersion:                                      string                                                read GetOpenclCVersion;
+    public property LinkerAvailable:                                     clBool                                                read GetLinkerAvailable;
+    public property BuiltInKernels:                                      string                                                read GetBuiltInKernels;
+    public property ImageMaxBufferSize:                                  UIntPtr                                               read GetImageMaxBufferSize;
+    public property ImageMaxArraySize:                                   UIntPtr                                               read GetImageMaxArraySize;
+    public property ParentDevice:                                        cl_device_id                                          read GetParentDevice;
+    public property PartitionMaxSubDevices:                              UInt32                                                read GetPartitionMaxSubDevices;
+    public property PartitionProperties:                                 array of clDevicePartitionProperty                    read GetPartitionProperties;
+    public property PartitionAffinityDomain:                             clDeviceAffinityDomain                                read GetPartitionAffinityDomain;
+    public property PartitionType:                                       array of clDevicePartitionProperty                    read GetPartitionType;
+    public property ReferenceCount:                                      UInt32                                                read GetReferenceCount;
+    public property PreferredInteropUserSync:                            clBool                                                read GetPreferredInteropUserSync;
+    public property PrintfBufferSize:                                    UIntPtr                                               read GetPrintfBufferSize;
+    public property ImagePitchAlignment:                                 UInt32                                                read GetImagePitchAlignment;
+    public property ImageBaseAddressAlignment:                           UInt32                                                read GetImageBaseAddressAlignment;
+    public property MaxReadWriteImageArgs:                               UInt32                                                read GetMaxReadWriteImageArgs;
+    public property MaxGlobalVariableSize:                               UIntPtr                                               read GetMaxGlobalVariableSize;
+    public property QueueOnDeviceProperties:                             clCommandQueueProperties                              read GetQueueOnDeviceProperties;
+    public property QueueOnDevicePreferredSize:                          UInt32                                                read GetQueueOnDevicePreferredSize;
+    public property QueueOnDeviceMaxSize:                                UInt32                                                read GetQueueOnDeviceMaxSize;
+    public property MaxOnDeviceQueues:                                   UInt32                                                read GetMaxOnDeviceQueues;
+    public property MaxOnDeviceEvents:                                   UInt32                                                read GetMaxOnDeviceEvents;
+    public property SvmCapabilities:                                     clDeviceSVMCapabilities                               read GetSvmCapabilities;
+    public property GlobalVariablePreferredTotalSize:                    UIntPtr                                               read GetGlobalVariablePreferredTotalSize;
+    public property MaxPipeArgs:                                         UInt32                                                read GetMaxPipeArgs;
+    public property PipeMaxActiveReservations:                           UInt32                                                read GetPipeMaxActiveReservations;
+    public property PipeMaxPacketSize:                                   UInt32                                                read GetPipeMaxPacketSize;
+    public property PreferredPlatformAtomicAlignment:                    UInt32                                                read GetPreferredPlatformAtomicAlignment;
+    public property PreferredGlobalAtomicAlignment:                      UInt32                                                read GetPreferredGlobalAtomicAlignment;
+    public property PreferredLocalAtomicAlignment:                       UInt32                                                read GetPreferredLocalAtomicAlignment;
+    public property IlVersion:                                           string                                                read GetIlVersion;
+    public property MaxNumSubGroups:                                     UInt32                                                read GetMaxNumSubGroups;
+    public property SubGroupIndependentForwardProgress:                  clBool                                                read GetSubGroupIndependentForwardProgress;
+    public property NumericVersion:                                      UInt32                                                read GetNumericVersion;
+    public property OpenclCNumericVersion:                               UInt32                                                read GetOpenclCNumericVersion;
+    public property ExtensionsWithVersion:                               array of cl_name_version                              read GetExtensionsWithVersion;
+    public property IlsWithVersion:                                      array of cl_name_version                              read GetIlsWithVersion;
+    public property BuiltInKernelsWithVersion:                           array of cl_name_version                              read GetBuiltInKernelsWithVersion;
+    public property AtomicMemoryCapabilities:                            clDeviceAtomicCapabilities                            read GetAtomicMemoryCapabilities;
+    public property AtomicFenceCapabilities:                             clDeviceAtomicCapabilities                            read GetAtomicFenceCapabilities;
+    public property NonUniformWorkGroupSupport:                          clBool                                                read GetNonUniformWorkGroupSupport;
+    public property OpenclCAllVersions:                                  array of cl_name_version                              read GetOpenclCAllVersions;
+    public property PreferredWorkGroupSizeMultiple:                      UIntPtr                                               read GetPreferredWorkGroupSizeMultiple;
+    public property WorkGroupCollectiveFunctionsSupport:                 clBool                                                read GetWorkGroupCollectiveFunctionsSupport;
+    public property GenericAddressSpaceSupport:                          clBool                                                read GetGenericAddressSpaceSupport;
+    public property Uuid:                                                array of Byte                                         read GetUuid;
+    public property DriverUuid:                                          array of Byte                                         read GetDriverUuid;
+    public property LuidValid:                                           clBool                                                read GetLuidValid;
+    public property Luid:                                                array of Byte                                         read GetLuid;
+    public property NodeMask:                                            UInt32                                                read GetNodeMask;
+    public property OpenclCFeatures:                                     array of cl_name_version                              read GetOpenclCFeatures;
+    public property DeviceEnqueueCapabilities:                           clDeviceOnDeviceEnqueueCapabilities                   read GetDeviceEnqueueCapabilities;
+    public property PipeSupport:                                         clBool                                                read GetPipeSupport;
+    public property LatestConformanceVersionPassed:                      string                                                read GetLatestConformanceVersionPassed;
+    public property IntegerDotProductCapabilities:                       clDeviceIntegerDotProductCapabilities                 read GetIntegerDotProductCapabilities;
+    public property IntegerDotProductAccelerationProperties8bit:         cl_device_integer_dot_product_acceleration_properties read GetIntegerDotProductAccelerationProperties8bit;
+    public property IntegerDotProductAccelerationProperties4x8bitPacked: cl_device_integer_dot_product_acceleration_properties read GetIntegerDotProductAccelerationProperties4x8bitPacked;
+    public property CommandBufferCapabilities:                           clDeviceCommandBufferCapabilities                     read GetCommandBufferCapabilities;
+    public property CommandBufferRequiredQueueProperties:                clCommandQueueProperties                              read GetCommandBufferRequiredQueueProperties;
+    public property CommandBufferNumSyncDevices:                         UInt32                                                read GetCommandBufferNumSyncDevices;
+    public property CommandBufferSyncDevices:                            array of cl_device_id                                 read GetCommandBufferSyncDevices;
+    public property MutableDispatchCapabilities:                         clMutableDispatchFields                               read GetMutableDispatchCapabilities;
+    public property TerminateCapability:                                 clDeviceTerminateCapability                           read GetTerminateCapability;
+    public property MaxNamedBarrierCount:                                UInt32                                                read GetMaxNamedBarrierCount;
+    public property SemaphoreTypes:                                      array of clSemaphoreType                              read GetSemaphoreTypes;
+    public property SemaphoreImportHandleTypes:                          array of clExternalSemaphoreHandleType                read GetSemaphoreImportHandleTypes;
+    public property SemaphoreExportHandleTypes:                          array of clExternalSemaphoreHandleType                read GetSemaphoreExportHandleTypes;
+    public property ExternalMemoryImportHandleTypes:                     array of clExternalMemoryHandleType                   read GetExternalMemoryImportHandleTypes;
+    public property ComputeCapabilityMajor:                              UInt32                                                read GetComputeCapabilityMajor;
+    public property ComputeCapabilityMinor:                              UInt32                                                read GetComputeCapabilityMinor;
+    public property RegistersPerBlock:                                   UInt32                                                read GetRegistersPerBlock;
+    public property WarpSize:                                            UInt32                                                read GetWarpSize;
+    public property GpuOverlap:                                          clBool                                                read GetGpuOverlap;
+    public property KernelExecTimeout:                                   clBool                                                read GetKernelExecTimeout;
+    public property IntegratedMemory:                                    clBool                                                read GetIntegratedMemory;
+    public property ParentDeviceExt:                                     cl_device_id                                          read GetParentDeviceExt;
+    public property PartitionTypes:                                      array of clDevicePartitionProperty                    read GetPartitionTypes;
+    public property AffinityDomains:                                     clDeviceAffinityDomain                                read GetAffinityDomains;
+    public property ReferenceCountExt:                                   UInt32                                                read GetReferenceCountExt;
+    public property PartitionStyle:                                      clDevicePartitionProperty                             read GetPartitionStyle;
+    public property MeVersion:                                           clDeviceMeVersion                                     read GetMeVersion;
+    public property SvmCapabilitiesArm:                                  clDeviceSVMCapabilities                               read GetSvmCapabilitiesArm;
+    public property ComputeUnitsBitfield:                                UInt64                                                read GetComputeUnitsBitfield;
+    public property SpirVersions:                                        string                                                read GetSpirVersions;
+    public property SimultaneousInterops:                                array of UInt32                                       read GetSimultaneousInterops;
+    public property NumSimultaneousInterops:                             UInt32                                                read GetNumSimultaneousInterops;
+    public property SubGroupSizes:                                       array of UIntPtr                                      read GetSubGroupSizes;
+    public property AvcMeVersion:                                        clDeviceAvcMeVersion                                  read GetAvcMeVersion;
+    public property AvcMeSupportsTextureSamplerUse:                      clBool                                                read GetAvcMeSupportsTextureSamplerUse;
+    public property AvcMeSupportsPreemption:                             clBool                                                read GetAvcMeSupportsPreemption;
+    public property PciBusInfo:                                          cl_device_pci_bus_info                                read GetPciBusInfo;
+    public property PlanarYuvMaxWidth:                                   UIntPtr                                               read GetPlanarYuvMaxWidth;
+    public property PlanarYuvMaxHeight:                                  UIntPtr                                               read GetPlanarYuvMaxHeight;
+    public property QueueFamilyProperties:                               array of cl_queue_family_properties                   read GetQueueFamilyProperties;
+    public property HostMemCapabilities:                                 clDeviceUnifiedSharedMemoryCapabilities               read GetHostMemCapabilities;
+    public property DeviceMemCapabilities:                               clDeviceUnifiedSharedMemoryCapabilities               read GetDeviceMemCapabilities;
+    public property SingleDeviceSharedMemCapabilities:                   clDeviceUnifiedSharedMemoryCapabilities               read GetSingleDeviceSharedMemCapabilities;
+    public property CrossDeviceSharedMemCapabilities:                    clDeviceUnifiedSharedMemoryCapabilities               read GetCrossDeviceSharedMemCapabilities;
+    public property SharedSystemMemCapabilities:                         clDeviceUnifiedSharedMemoryCapabilities               read GetSharedSystemMemCapabilities;
+    public property JobSlots:                                            UInt32                                                read GetJobSlots;
+    public property SchedulingControlsCapabilities:                      clDeviceSchedulingControlsCapabilities                read GetSchedulingControlsCapabilities;
+    public property MaxWarpCount:                                        UInt32                                                read GetMaxWarpCount;
+    public property SupportedRegisterAllocations:                        array of Int32                                        read GetSupportedRegisterAllocations;
+    public property ControlledTerminationCapabilities:                   clDeviceControlledTerminationCapabilities             read GetControlledTerminationCapabilities;
+    public property CxxForOpenclNumericVersion:                          UInt32                                                read GetCxxForOpenclNumericVersion;
+    public property SingleFpAtomicCapabilities:                          clDeviceFpAtomicCapabilities                          read GetSingleFpAtomicCapabilities;
+    public property DoubleFpAtomicCapabilities:                          clDeviceFpAtomicCapabilities                          read GetDoubleFpAtomicCapabilities;
+    public property HalfFpAtomicCapabilities:                            clDeviceFpAtomicCapabilities                          read GetHalfFpAtomicCapabilities;
+    public property IpVersion:                                           UInt32                                                read GetIpVersion;
+    public property Id:                                                  UInt32                                                read GetId;
+    public property NumSlices:                                           UInt32                                                read GetNumSlices;
+    public property NumSubSlicesPerSlice:                                UInt32                                                read GetNumSubSlicesPerSlice;
+    public property NumEusPerSubSlice:                                   UInt32                                                read GetNumEusPerSubSlice;
+    public property NumThreadsPerEu:                                     UInt32                                                read GetNumThreadsPerEu;
+    public property FeatureCapabilities:                                 clDeviceFeatureCapabilities                           read GetFeatureCapabilities;
     
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'Type                               = ';
-      try
-        res += _ObjectToString(&Type);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'VendorId                           = ';
-      try
-        res += _ObjectToString(VendorId);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxComputeUnits                    = ';
-      try
-        res += _ObjectToString(MaxComputeUnits);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxWorkItemDimensions              = ';
-      try
-        res += _ObjectToString(MaxWorkItemDimensions);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxWorkItemSizes                   = ';
-      try
-        res += _ObjectToString(MaxWorkItemSizes);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxWorkGroupSize                   = ';
-      try
-        res += _ObjectToString(MaxWorkGroupSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PreferredVectorWidthChar           = ';
-      try
-        res += _ObjectToString(PreferredVectorWidthChar);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PreferredVectorWidthShort          = ';
-      try
-        res += _ObjectToString(PreferredVectorWidthShort);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PreferredVectorWidthInt            = ';
-      try
-        res += _ObjectToString(PreferredVectorWidthInt);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PreferredVectorWidthLong           = ';
-      try
-        res += _ObjectToString(PreferredVectorWidthLong);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PreferredVectorWidthFloat          = ';
-      try
-        res += _ObjectToString(PreferredVectorWidthFloat);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PreferredVectorWidthDouble         = ';
-      try
-        res += _ObjectToString(PreferredVectorWidthDouble);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PreferredVectorWidthHalf           = ';
-      try
-        res += _ObjectToString(PreferredVectorWidthHalf);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'NativeVectorWidthChar              = ';
-      try
-        res += _ObjectToString(NativeVectorWidthChar);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'NativeVectorWidthShort             = ';
-      try
-        res += _ObjectToString(NativeVectorWidthShort);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'NativeVectorWidthInt               = ';
-      try
-        res += _ObjectToString(NativeVectorWidthInt);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'NativeVectorWidthLong              = ';
-      try
-        res += _ObjectToString(NativeVectorWidthLong);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'NativeVectorWidthFloat             = ';
-      try
-        res += _ObjectToString(NativeVectorWidthFloat);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'NativeVectorWidthDouble            = ';
-      try
-        res += _ObjectToString(NativeVectorWidthDouble);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'NativeVectorWidthHalf              = ';
-      try
-        res += _ObjectToString(NativeVectorWidthHalf);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxClockFrequency                  = ';
-      try
-        res += _ObjectToString(MaxClockFrequency);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'AddressBits                        = ';
-      try
-        res += _ObjectToString(AddressBits);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxMemAllocSize                    = ';
-      try
-        res += _ObjectToString(MaxMemAllocSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ImageSupport                       = ';
-      try
-        res += _ObjectToString(ImageSupport);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxReadImageArgs                   = ';
-      try
-        res += _ObjectToString(MaxReadImageArgs);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxWriteImageArgs                  = ';
-      try
-        res += _ObjectToString(MaxWriteImageArgs);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxReadWriteImageArgs              = ';
-      try
-        res += _ObjectToString(MaxReadWriteImageArgs);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'IlVersion                          = ';
-      try
-        res += _ObjectToString(IlVersion);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Image2dMaxWidth                    = ';
-      try
-        res += _ObjectToString(Image2dMaxWidth);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Image2dMaxHeight                   = ';
-      try
-        res += _ObjectToString(Image2dMaxHeight);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Image3dMaxWidth                    = ';
-      try
-        res += _ObjectToString(Image3dMaxWidth);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Image3dMaxHeight                   = ';
-      try
-        res += _ObjectToString(Image3dMaxHeight);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Image3dMaxDepth                    = ';
-      try
-        res += _ObjectToString(Image3dMaxDepth);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ImageMaxBufferSize                 = ';
-      try
-        res += _ObjectToString(ImageMaxBufferSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ImageMaxArraySize                  = ';
-      try
-        res += _ObjectToString(ImageMaxArraySize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxSamplers                        = ';
-      try
-        res += _ObjectToString(MaxSamplers);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ImagePitchAlignment                = ';
-      try
-        res += _ObjectToString(ImagePitchAlignment);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ImageBaseAddressAlignment          = ';
-      try
-        res += _ObjectToString(ImageBaseAddressAlignment);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxPipeArgs                        = ';
-      try
-        res += _ObjectToString(MaxPipeArgs);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PipeMaxActiveReservations          = ';
-      try
-        res += _ObjectToString(PipeMaxActiveReservations);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PipeMaxPacketSize                  = ';
-      try
-        res += _ObjectToString(PipeMaxPacketSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxParameterSize                   = ';
-      try
-        res += _ObjectToString(MaxParameterSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MemBaseAddrAlign                   = ';
-      try
-        res += _ObjectToString(MemBaseAddrAlign);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MinDataTypeAlignSize               = ';
-      try
-        res += _ObjectToString(MinDataTypeAlignSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'SingleFpConfig                     = ';
-      try
-        res += _ObjectToString(SingleFpConfig);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'DoubleFpConfig                     = ';
-      try
-        res += _ObjectToString(DoubleFpConfig);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'GlobalMemCacheType                 = ';
-      try
-        res += _ObjectToString(GlobalMemCacheType);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'GlobalMemCachelineSize             = ';
-      try
-        res += _ObjectToString(GlobalMemCachelineSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'GlobalMemCacheSize                 = ';
-      try
-        res += _ObjectToString(GlobalMemCacheSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'GlobalMemSize                      = ';
-      try
-        res += _ObjectToString(GlobalMemSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxConstantBufferSize              = ';
-      try
-        res += _ObjectToString(MaxConstantBufferSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxConstantArgs                    = ';
-      try
-        res += _ObjectToString(MaxConstantArgs);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxGlobalVariableSize              = ';
-      try
-        res += _ObjectToString(MaxGlobalVariableSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'GlobalVariablePreferredTotalSize   = ';
-      try
-        res += _ObjectToString(GlobalVariablePreferredTotalSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'LocalMemType                       = ';
-      try
-        res += _ObjectToString(LocalMemType);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'LocalMemSize                       = ';
-      try
-        res += _ObjectToString(LocalMemSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ErrorCorrectionSupport             = ';
-      try
-        res += _ObjectToString(ErrorCorrectionSupport);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'HostUnifiedMemory                  = ';
-      try
-        res += _ObjectToString(HostUnifiedMemory);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ProfilingTimerResolution           = ';
-      try
-        res += _ObjectToString(ProfilingTimerResolution);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'EndianLittle                       = ';
-      try
-        res += _ObjectToString(EndianLittle);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Available                          = ';
-      try
-        res += _ObjectToString(Available);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'CompilerAvailable                  = ';
-      try
-        res += _ObjectToString(CompilerAvailable);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'LinkerAvailable                    = ';
-      try
-        res += _ObjectToString(LinkerAvailable);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ExecutionCapabilities              = ';
-      try
-        res += _ObjectToString(ExecutionCapabilities);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'QueueProperties                    = ';
-      try
-        res += _ObjectToString(QueueProperties);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'QueueOnHostProperties              = ';
-      try
-        res += _ObjectToString(QueueOnHostProperties);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'QueueOnDeviceProperties            = ';
-      try
-        res += _ObjectToString(QueueOnDeviceProperties);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'QueueOnDevicePreferredSize         = ';
-      try
-        res += _ObjectToString(QueueOnDevicePreferredSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'QueueOnDeviceMaxSize               = ';
-      try
-        res += _ObjectToString(QueueOnDeviceMaxSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxOnDeviceQueues                  = ';
-      try
-        res += _ObjectToString(MaxOnDeviceQueues);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxOnDeviceEvents                  = ';
-      try
-        res += _ObjectToString(MaxOnDeviceEvents);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'BuiltInKernels                     = ';
-      try
-        res += _ObjectToString(BuiltInKernels);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Name                               = ';
-      try
-        res += _ObjectToString(Name);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Vendor                             = ';
-      try
-        res += _ObjectToString(Vendor);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'DriverVersion                      = ';
-      try
-        res += _ObjectToString(DriverVersion);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Profile                            = ';
-      try
-        res += _ObjectToString(Profile);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Version                            = ';
-      try
-        res += _ObjectToString(Version);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'OpenclCVersion                     = ';
-      try
-        res += _ObjectToString(OpenclCVersion);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Extensions                         = ';
-      try
-        res += _ObjectToString(Extensions);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PrintfBufferSize                   = ';
-      try
-        res += _ObjectToString(PrintfBufferSize);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PreferredInteropUserSync           = ';
-      try
-        res += _ObjectToString(PreferredInteropUserSync);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PartitionMaxSubDevices             = ';
-      try
-        res += _ObjectToString(PartitionMaxSubDevices);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PartitionProperties                = ';
-      try
-        res += _ObjectToString(PartitionProperties);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PartitionAffinityDomain            = ';
-      try
-        res += _ObjectToString(PartitionAffinityDomain);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PartitionType                      = ';
-      try
-        res += _ObjectToString(PartitionType);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ReferenceCount                     = ';
-      try
-        res += _ObjectToString(ReferenceCount);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'SvmCapabilities                    = ';
-      try
-        res += _ObjectToString(SvmCapabilities);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PreferredPlatformAtomicAlignment   = ';
-      try
-        res += _ObjectToString(PreferredPlatformAtomicAlignment);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PreferredGlobalAtomicAlignment     = ';
-      try
-        res += _ObjectToString(PreferredGlobalAtomicAlignment);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'PreferredLocalAtomicAlignment      = ';
-      try
-        res += _ObjectToString(PreferredLocalAtomicAlignment);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MaxNumSubGroups                    = ';
-      try
-        res += _ObjectToString(MaxNumSubGroups);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'SubGroupIndependentForwardProgress = ';
-      try
-        res += _ObjectToString(SubGroupIndependentForwardProgress);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
+      res += 'Type                                                = '; AddProp(res, &Type                                              ); res += #10;
+      res += 'VendorId                                            = '; AddProp(res, VendorId                                           ); res += #10;
+      res += 'MaxComputeUnits                                     = '; AddProp(res, MaxComputeUnits                                    ); res += #10;
+      res += 'MaxWorkItemDimensions                               = '; AddProp(res, MaxWorkItemDimensions                              ); res += #10;
+      res += 'MaxWorkGroupSize                                    = '; AddProp(res, MaxWorkGroupSize                                   ); res += #10;
+      res += 'MaxWorkItemSizes                                    = '; AddProp(res, MaxWorkItemSizes                                   ); res += #10;
+      res += 'PreferredVectorWidthChar                            = '; AddProp(res, PreferredVectorWidthChar                           ); res += #10;
+      res += 'PreferredVectorWidthShort                           = '; AddProp(res, PreferredVectorWidthShort                          ); res += #10;
+      res += 'PreferredVectorWidthInt                             = '; AddProp(res, PreferredVectorWidthInt                            ); res += #10;
+      res += 'PreferredVectorWidthLong                            = '; AddProp(res, PreferredVectorWidthLong                           ); res += #10;
+      res += 'PreferredVectorWidthFloat                           = '; AddProp(res, PreferredVectorWidthFloat                          ); res += #10;
+      res += 'PreferredVectorWidthDouble                          = '; AddProp(res, PreferredVectorWidthDouble                         ); res += #10;
+      res += 'MaxClockFrequency                                   = '; AddProp(res, MaxClockFrequency                                  ); res += #10;
+      res += 'AddressBits                                         = '; AddProp(res, AddressBits                                        ); res += #10;
+      res += 'MaxReadImageArgs                                    = '; AddProp(res, MaxReadImageArgs                                   ); res += #10;
+      res += 'MaxWriteImageArgs                                   = '; AddProp(res, MaxWriteImageArgs                                  ); res += #10;
+      res += 'MaxMemAllocSize                                     = '; AddProp(res, MaxMemAllocSize                                    ); res += #10;
+      res += 'Image2dMaxWidth                                     = '; AddProp(res, Image2dMaxWidth                                    ); res += #10;
+      res += 'Image2dMaxHeight                                    = '; AddProp(res, Image2dMaxHeight                                   ); res += #10;
+      res += 'Image3dMaxWidth                                     = '; AddProp(res, Image3dMaxWidth                                    ); res += #10;
+      res += 'Image3dMaxHeight                                    = '; AddProp(res, Image3dMaxHeight                                   ); res += #10;
+      res += 'Image3dMaxDepth                                     = '; AddProp(res, Image3dMaxDepth                                    ); res += #10;
+      res += 'ImageSupport                                        = '; AddProp(res, ImageSupport                                       ); res += #10;
+      res += 'MaxParameterSize                                    = '; AddProp(res, MaxParameterSize                                   ); res += #10;
+      res += 'MaxSamplers                                         = '; AddProp(res, MaxSamplers                                        ); res += #10;
+      res += 'MemBaseAddrAlign                                    = '; AddProp(res, MemBaseAddrAlign                                   ); res += #10;
+      res += 'MinDataTypeAlignSize                                = '; AddProp(res, MinDataTypeAlignSize                               ); res += #10;
+      res += 'SingleFpConfig                                      = '; AddProp(res, SingleFpConfig                                     ); res += #10;
+      res += 'GlobalMemCacheType                                  = '; AddProp(res, GlobalMemCacheType                                 ); res += #10;
+      res += 'GlobalMemCachelineSize                              = '; AddProp(res, GlobalMemCachelineSize                             ); res += #10;
+      res += 'GlobalMemCacheSize                                  = '; AddProp(res, GlobalMemCacheSize                                 ); res += #10;
+      res += 'GlobalMemSize                                       = '; AddProp(res, GlobalMemSize                                      ); res += #10;
+      res += 'MaxConstantBufferSize                               = '; AddProp(res, MaxConstantBufferSize                              ); res += #10;
+      res += 'MaxConstantArgs                                     = '; AddProp(res, MaxConstantArgs                                    ); res += #10;
+      res += 'LocalMemType                                        = '; AddProp(res, LocalMemType                                       ); res += #10;
+      res += 'LocalMemSize                                        = '; AddProp(res, LocalMemSize                                       ); res += #10;
+      res += 'ErrorCorrectionSupport                              = '; AddProp(res, ErrorCorrectionSupport                             ); res += #10;
+      res += 'ProfilingTimerResolution                            = '; AddProp(res, ProfilingTimerResolution                           ); res += #10;
+      res += 'EndianLittle                                        = '; AddProp(res, EndianLittle                                       ); res += #10;
+      res += 'Available                                           = '; AddProp(res, Available                                          ); res += #10;
+      res += 'CompilerAvailable                                   = '; AddProp(res, CompilerAvailable                                  ); res += #10;
+      res += 'ExecutionCapabilities                               = '; AddProp(res, ExecutionCapabilities                              ); res += #10;
+      res += 'QueueProperties                                     = '; AddProp(res, QueueProperties                                    ); res += #10;
+      res += 'QueueOnHostProperties                               = '; AddProp(res, QueueOnHostProperties                              ); res += #10;
+      res += 'Name                                                = '; AddProp(res, Name                                               ); res += #10;
+      res += 'Vendor                                              = '; AddProp(res, Vendor                                             ); res += #10;
+      res += 'DriverVersion                                       = '; AddProp(res, DriverVersion                                      ); res += #10;
+      res += 'Profile                                             = '; AddProp(res, Profile                                            ); res += #10;
+      res += 'Version                                             = '; AddProp(res, Version                                            ); res += #10;
+      res += 'Extensions                                          = '; AddProp(res, Extensions                                         ); res += #10;
+      res += 'DoubleFpConfig                                      = '; AddProp(res, DoubleFpConfig                                     ); res += #10;
+      res += 'HalfFpConfig                                        = '; AddProp(res, HalfFpConfig                                       ); res += #10;
+      res += 'PreferredVectorWidthHalf                            = '; AddProp(res, PreferredVectorWidthHalf                           ); res += #10;
+      res += 'HostUnifiedMemory                                   = '; AddProp(res, HostUnifiedMemory                                  ); res += #10;
+      res += 'NativeVectorWidthChar                               = '; AddProp(res, NativeVectorWidthChar                              ); res += #10;
+      res += 'NativeVectorWidthShort                              = '; AddProp(res, NativeVectorWidthShort                             ); res += #10;
+      res += 'NativeVectorWidthInt                                = '; AddProp(res, NativeVectorWidthInt                               ); res += #10;
+      res += 'NativeVectorWidthLong                               = '; AddProp(res, NativeVectorWidthLong                              ); res += #10;
+      res += 'NativeVectorWidthFloat                              = '; AddProp(res, NativeVectorWidthFloat                             ); res += #10;
+      res += 'NativeVectorWidthDouble                             = '; AddProp(res, NativeVectorWidthDouble                            ); res += #10;
+      res += 'NativeVectorWidthHalf                               = '; AddProp(res, NativeVectorWidthHalf                              ); res += #10;
+      res += 'OpenclCVersion                                      = '; AddProp(res, OpenclCVersion                                     ); res += #10;
+      res += 'LinkerAvailable                                     = '; AddProp(res, LinkerAvailable                                    ); res += #10;
+      res += 'BuiltInKernels                                      = '; AddProp(res, BuiltInKernels                                     ); res += #10;
+      res += 'ImageMaxBufferSize                                  = '; AddProp(res, ImageMaxBufferSize                                 ); res += #10;
+      res += 'ImageMaxArraySize                                   = '; AddProp(res, ImageMaxArraySize                                  ); res += #10;
+      res += 'ParentDevice                                        = '; AddProp(res, ParentDevice                                       ); res += #10;
+      res += 'PartitionMaxSubDevices                              = '; AddProp(res, PartitionMaxSubDevices                             ); res += #10;
+      res += 'PartitionProperties                                 = '; AddProp(res, PartitionProperties                                ); res += #10;
+      res += 'PartitionAffinityDomain                             = '; AddProp(res, PartitionAffinityDomain                            ); res += #10;
+      res += 'PartitionType                                       = '; AddProp(res, PartitionType                                      ); res += #10;
+      res += 'ReferenceCount                                      = '; AddProp(res, ReferenceCount                                     ); res += #10;
+      res += 'PreferredInteropUserSync                            = '; AddProp(res, PreferredInteropUserSync                           ); res += #10;
+      res += 'PrintfBufferSize                                    = '; AddProp(res, PrintfBufferSize                                   ); res += #10;
+      res += 'ImagePitchAlignment                                 = '; AddProp(res, ImagePitchAlignment                                ); res += #10;
+      res += 'ImageBaseAddressAlignment                           = '; AddProp(res, ImageBaseAddressAlignment                          ); res += #10;
+      res += 'MaxReadWriteImageArgs                               = '; AddProp(res, MaxReadWriteImageArgs                              ); res += #10;
+      res += 'MaxGlobalVariableSize                               = '; AddProp(res, MaxGlobalVariableSize                              ); res += #10;
+      res += 'QueueOnDeviceProperties                             = '; AddProp(res, QueueOnDeviceProperties                            ); res += #10;
+      res += 'QueueOnDevicePreferredSize                          = '; AddProp(res, QueueOnDevicePreferredSize                         ); res += #10;
+      res += 'QueueOnDeviceMaxSize                                = '; AddProp(res, QueueOnDeviceMaxSize                               ); res += #10;
+      res += 'MaxOnDeviceQueues                                   = '; AddProp(res, MaxOnDeviceQueues                                  ); res += #10;
+      res += 'MaxOnDeviceEvents                                   = '; AddProp(res, MaxOnDeviceEvents                                  ); res += #10;
+      res += 'SvmCapabilities                                     = '; AddProp(res, SvmCapabilities                                    ); res += #10;
+      res += 'GlobalVariablePreferredTotalSize                    = '; AddProp(res, GlobalVariablePreferredTotalSize                   ); res += #10;
+      res += 'MaxPipeArgs                                         = '; AddProp(res, MaxPipeArgs                                        ); res += #10;
+      res += 'PipeMaxActiveReservations                           = '; AddProp(res, PipeMaxActiveReservations                          ); res += #10;
+      res += 'PipeMaxPacketSize                                   = '; AddProp(res, PipeMaxPacketSize                                  ); res += #10;
+      res += 'PreferredPlatformAtomicAlignment                    = '; AddProp(res, PreferredPlatformAtomicAlignment                   ); res += #10;
+      res += 'PreferredGlobalAtomicAlignment                      = '; AddProp(res, PreferredGlobalAtomicAlignment                     ); res += #10;
+      res += 'PreferredLocalAtomicAlignment                       = '; AddProp(res, PreferredLocalAtomicAlignment                      ); res += #10;
+      res += 'IlVersion                                           = '; AddProp(res, IlVersion                                          ); res += #10;
+      res += 'MaxNumSubGroups                                     = '; AddProp(res, MaxNumSubGroups                                    ); res += #10;
+      res += 'SubGroupIndependentForwardProgress                  = '; AddProp(res, SubGroupIndependentForwardProgress                 ); res += #10;
+      res += 'NumericVersion                                      = '; AddProp(res, NumericVersion                                     ); res += #10;
+      res += 'OpenclCNumericVersion                               = '; AddProp(res, OpenclCNumericVersion                              ); res += #10;
+      res += 'ExtensionsWithVersion                               = '; AddProp(res, ExtensionsWithVersion                              ); res += #10;
+      res += 'IlsWithVersion                                      = '; AddProp(res, IlsWithVersion                                     ); res += #10;
+      res += 'BuiltInKernelsWithVersion                           = '; AddProp(res, BuiltInKernelsWithVersion                          ); res += #10;
+      res += 'AtomicMemoryCapabilities                            = '; AddProp(res, AtomicMemoryCapabilities                           ); res += #10;
+      res += 'AtomicFenceCapabilities                             = '; AddProp(res, AtomicFenceCapabilities                            ); res += #10;
+      res += 'NonUniformWorkGroupSupport                          = '; AddProp(res, NonUniformWorkGroupSupport                         ); res += #10;
+      res += 'OpenclCAllVersions                                  = '; AddProp(res, OpenclCAllVersions                                 ); res += #10;
+      res += 'PreferredWorkGroupSizeMultiple                      = '; AddProp(res, PreferredWorkGroupSizeMultiple                     ); res += #10;
+      res += 'WorkGroupCollectiveFunctionsSupport                 = '; AddProp(res, WorkGroupCollectiveFunctionsSupport                ); res += #10;
+      res += 'GenericAddressSpaceSupport                          = '; AddProp(res, GenericAddressSpaceSupport                         ); res += #10;
+      res += 'Uuid                                                = '; AddProp(res, Uuid                                               ); res += #10;
+      res += 'DriverUuid                                          = '; AddProp(res, DriverUuid                                         ); res += #10;
+      res += 'LuidValid                                           = '; AddProp(res, LuidValid                                          ); res += #10;
+      res += 'Luid                                                = '; AddProp(res, Luid                                               ); res += #10;
+      res += 'NodeMask                                            = '; AddProp(res, NodeMask                                           ); res += #10;
+      res += 'OpenclCFeatures                                     = '; AddProp(res, OpenclCFeatures                                    ); res += #10;
+      res += 'DeviceEnqueueCapabilities                           = '; AddProp(res, DeviceEnqueueCapabilities                          ); res += #10;
+      res += 'PipeSupport                                         = '; AddProp(res, PipeSupport                                        ); res += #10;
+      res += 'LatestConformanceVersionPassed                      = '; AddProp(res, LatestConformanceVersionPassed                     ); res += #10;
+      res += 'IntegerDotProductCapabilities                       = '; AddProp(res, IntegerDotProductCapabilities                      ); res += #10;
+      res += 'IntegerDotProductAccelerationProperties8bit         = '; AddProp(res, IntegerDotProductAccelerationProperties8bit        ); res += #10;
+      res += 'IntegerDotProductAccelerationProperties4x8bitPacked = '; AddProp(res, IntegerDotProductAccelerationProperties4x8bitPacked); res += #10;
+      res += 'CommandBufferCapabilities                           = '; AddProp(res, CommandBufferCapabilities                          ); res += #10;
+      res += 'CommandBufferRequiredQueueProperties                = '; AddProp(res, CommandBufferRequiredQueueProperties               ); res += #10;
+      res += 'CommandBufferNumSyncDevices                         = '; AddProp(res, CommandBufferNumSyncDevices                        ); res += #10;
+      res += 'CommandBufferSyncDevices                            = '; AddProp(res, CommandBufferSyncDevices                           ); res += #10;
+      res += 'MutableDispatchCapabilities                         = '; AddProp(res, MutableDispatchCapabilities                        ); res += #10;
+      res += 'TerminateCapability                                 = '; AddProp(res, TerminateCapability                                ); res += #10;
+      res += 'MaxNamedBarrierCount                                = '; AddProp(res, MaxNamedBarrierCount                               ); res += #10;
+      res += 'SemaphoreTypes                                      = '; AddProp(res, SemaphoreTypes                                     ); res += #10;
+      res += 'SemaphoreImportHandleTypes                          = '; AddProp(res, SemaphoreImportHandleTypes                         ); res += #10;
+      res += 'SemaphoreExportHandleTypes                          = '; AddProp(res, SemaphoreExportHandleTypes                         ); res += #10;
+      res += 'ExternalMemoryImportHandleTypes                     = '; AddProp(res, ExternalMemoryImportHandleTypes                    ); res += #10;
+      res += 'ComputeCapabilityMajor                              = '; AddProp(res, ComputeCapabilityMajor                             ); res += #10;
+      res += 'ComputeCapabilityMinor                              = '; AddProp(res, ComputeCapabilityMinor                             ); res += #10;
+      res += 'RegistersPerBlock                                   = '; AddProp(res, RegistersPerBlock                                  ); res += #10;
+      res += 'WarpSize                                            = '; AddProp(res, WarpSize                                           ); res += #10;
+      res += 'GpuOverlap                                          = '; AddProp(res, GpuOverlap                                         ); res += #10;
+      res += 'KernelExecTimeout                                   = '; AddProp(res, KernelExecTimeout                                  ); res += #10;
+      res += 'IntegratedMemory                                    = '; AddProp(res, IntegratedMemory                                   ); res += #10;
+      res += 'ParentDeviceExt                                     = '; AddProp(res, ParentDeviceExt                                    ); res += #10;
+      res += 'PartitionTypes                                      = '; AddProp(res, PartitionTypes                                     ); res += #10;
+      res += 'AffinityDomains                                     = '; AddProp(res, AffinityDomains                                    ); res += #10;
+      res += 'ReferenceCountExt                                   = '; AddProp(res, ReferenceCountExt                                  ); res += #10;
+      res += 'PartitionStyle                                      = '; AddProp(res, PartitionStyle                                     ); res += #10;
+      res += 'MeVersion                                           = '; AddProp(res, MeVersion                                          ); res += #10;
+      res += 'SvmCapabilitiesArm                                  = '; AddProp(res, SvmCapabilitiesArm                                 ); res += #10;
+      res += 'ComputeUnitsBitfield                                = '; AddProp(res, ComputeUnitsBitfield                               ); res += #10;
+      res += 'SpirVersions                                        = '; AddProp(res, SpirVersions                                       ); res += #10;
+      res += 'SimultaneousInterops                                = '; AddProp(res, SimultaneousInterops                               ); res += #10;
+      res += 'NumSimultaneousInterops                             = '; AddProp(res, NumSimultaneousInterops                            ); res += #10;
+      res += 'SubGroupSizes                                       = '; AddProp(res, SubGroupSizes                                      ); res += #10;
+      res += 'AvcMeVersion                                        = '; AddProp(res, AvcMeVersion                                       ); res += #10;
+      res += 'AvcMeSupportsTextureSamplerUse                      = '; AddProp(res, AvcMeSupportsTextureSamplerUse                     ); res += #10;
+      res += 'AvcMeSupportsPreemption                             = '; AddProp(res, AvcMeSupportsPreemption                            ); res += #10;
+      res += 'PciBusInfo                                          = '; AddProp(res, PciBusInfo                                         ); res += #10;
+      res += 'PlanarYuvMaxWidth                                   = '; AddProp(res, PlanarYuvMaxWidth                                  ); res += #10;
+      res += 'PlanarYuvMaxHeight                                  = '; AddProp(res, PlanarYuvMaxHeight                                 ); res += #10;
+      res += 'QueueFamilyProperties                               = '; AddProp(res, QueueFamilyProperties                              ); res += #10;
+      res += 'HostMemCapabilities                                 = '; AddProp(res, HostMemCapabilities                                ); res += #10;
+      res += 'DeviceMemCapabilities                               = '; AddProp(res, DeviceMemCapabilities                              ); res += #10;
+      res += 'SingleDeviceSharedMemCapabilities                   = '; AddProp(res, SingleDeviceSharedMemCapabilities                  ); res += #10;
+      res += 'CrossDeviceSharedMemCapabilities                    = '; AddProp(res, CrossDeviceSharedMemCapabilities                   ); res += #10;
+      res += 'SharedSystemMemCapabilities                         = '; AddProp(res, SharedSystemMemCapabilities                        ); res += #10;
+      res += 'JobSlots                                            = '; AddProp(res, JobSlots                                           ); res += #10;
+      res += 'SchedulingControlsCapabilities                      = '; AddProp(res, SchedulingControlsCapabilities                     ); res += #10;
+      res += 'MaxWarpCount                                        = '; AddProp(res, MaxWarpCount                                       ); res += #10;
+      res += 'SupportedRegisterAllocations                        = '; AddProp(res, SupportedRegisterAllocations                       ); res += #10;
+      res += 'ControlledTerminationCapabilities                   = '; AddProp(res, ControlledTerminationCapabilities                  ); res += #10;
+      res += 'CxxForOpenclNumericVersion                          = '; AddProp(res, CxxForOpenclNumericVersion                         ); res += #10;
+      res += 'SingleFpAtomicCapabilities                          = '; AddProp(res, SingleFpAtomicCapabilities                         ); res += #10;
+      res += 'DoubleFpAtomicCapabilities                          = '; AddProp(res, DoubleFpAtomicCapabilities                         ); res += #10;
+      res += 'HalfFpAtomicCapabilities                            = '; AddProp(res, HalfFpAtomicCapabilities                           ); res += #10;
+      res += 'IpVersion                                           = '; AddProp(res, IpVersion                                          ); res += #10;
+      res += 'Id                                                  = '; AddProp(res, Id                                                 ); res += #10;
+      res += 'NumSlices                                           = '; AddProp(res, NumSlices                                          ); res += #10;
+      res += 'NumSubSlicesPerSlice                                = '; AddProp(res, NumSubSlicesPerSlice                               ); res += #10;
+      res += 'NumEusPerSubSlice                                   = '; AddProp(res, NumEusPerSubSlice                                  ); res += #10;
+      res += 'NumThreadsPerEu                                     = '; AddProp(res, NumThreadsPerEu                                    ); res += #10;
+      res += 'FeatureCapabilities                                 = '; AddProp(res, FeatureCapabilities                                );
     end;
     public function ToString: string; override;
     begin
@@ -2380,56 +2556,54 @@ type
   {$region CLSubDevice}
   
   ///
-  CLSubDeviceProperties = partial class(CLDeviceProperties)
-    
-    public constructor(ntv: cl_device_id);
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
-    
-  end;
+  CLSubDeviceProperties = CLDeviceProperties;
   
   {$endregion CLSubDevice}
   
   {$region CLContext}
   
   ///
-  CLContextProperties = partial class
+  CLContextProperties = class
+    private ntv: cl_context;
     
-    public constructor(ntv: cl_context);
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor(ntv: cl_context) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
     
-    private function GetReferenceCount: UInt32;
-    private function GetNumDevices: UInt32;
-    private function GetProperties: array of OpenCL.ContextProperties;
+    private function GetProperties: OpenCL.clContextProperties;
+    begin
+      cl.GetContextInfo_CONTEXT_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d10PreferSharedResources: clBool;
+    begin
+      cl.GetContextInfo_CONTEXT_D3D10_PREFER_SHARED_RESOURCES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d11PreferSharedResources: clBool;
+    begin
+      cl.GetContextInfo_CONTEXT_D3D11_PREFER_SHARED_RESOURCES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVaApiDisplay: IntPtr;
+    begin
+      cl.GetContextInfo_CONTEXT_VA_API_DISPLAY(self.ntv, Result).RaiseIfError;
+    end;
     
-    public property ReferenceCount: UInt32                            read GetReferenceCount;
-    public property NumDevices:     UInt32                            read GetNumDevices;
-    public property Properties:     array of OpenCL.ContextProperties read GetProperties;
+    public property Properties:                 OpenCL.clContextProperties read GetProperties;
+    public property D3d10PreferSharedResources: clBool                     read GetD3d10PreferSharedResources;
+    public property D3d11PreferSharedResources: clBool                     read GetD3d11PreferSharedResources;
+    public property VaApiDisplay:               IntPtr                     read GetVaApiDisplay;
     
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'ReferenceCount = ';
-      try
-        res += _ObjectToString(ReferenceCount);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'NumDevices     = ';
-      try
-        res += _ObjectToString(NumDevices);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Properties     = ';
-      try
-        res += _ObjectToString(Properties);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
+      res += 'Properties                 = '; AddProp(res, Properties                ); res += #10;
+      res += 'D3d10PreferSharedResources = '; AddProp(res, D3d10PreferSharedResources); res += #10;
+      res += 'D3d11PreferSharedResources = '; AddProp(res, D3d11PreferSharedResources); res += #10;
+      res += 'VaApiDisplay               = '; AddProp(res, VaApiDisplay              );
     end;
     public function ToString: string; override;
     begin
@@ -2445,64 +2619,59 @@ type
   {$region CLCode}
   
   ///
-  CLCodeProperties = partial class
+  CLCodeProperties = class
+    private ntv: cl_program;
     
-    public constructor(ntv: cl_program);
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor(ntv: cl_program) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
     
-    private function GetReferenceCount: UInt32;
-    private function GetSource: String;
+    private function GetSource: string;
+    begin
+      cl.GetProgramInfo_PROGRAM_SOURCE(self.ntv, Result).RaiseIfError;
+    end;
     private function GetIl: array of Byte;
-    private function GetScopeGlobalCtorsPresent: Bool;
-    private function GetScopeGlobalDtorsPresent: Bool;
+    begin
+      cl.GetProgramInfo_PROGRAM_IL(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetScopeGlobalCtorsPresent: clBool;
+    begin
+      cl.GetProgramInfo_PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetScopeGlobalDtorsPresent: clBool;
+    begin
+      cl.GetProgramInfo_PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetNumHostPipes: UIntPtr;
+    begin
+      cl.GetProgramInfo_PROGRAM_NUM_HOST_PIPES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetHostPipeNames: string;
+    begin
+      cl.GetProgramInfo_PROGRAM_HOST_PIPE_NAMES(self.ntv, Result).RaiseIfError;
+    end;
     
-    public property ReferenceCount:          UInt32        read GetReferenceCount;
-    public property Source:                  String        read GetSource;
+    public property Source:                  string        read GetSource;
     public property Il:                      array of Byte read GetIl;
-    public property ScopeGlobalCtorsPresent: Bool          read GetScopeGlobalCtorsPresent;
-    public property ScopeGlobalDtorsPresent: Bool          read GetScopeGlobalDtorsPresent;
+    public property ScopeGlobalCtorsPresent: clBool        read GetScopeGlobalCtorsPresent;
+    public property ScopeGlobalDtorsPresent: clBool        read GetScopeGlobalDtorsPresent;
+    public property NumHostPipes:            UIntPtr       read GetNumHostPipes;
+    public property HostPipeNames:           string        read GetHostPipeNames;
     
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'ReferenceCount          = ';
-      try
-        res += _ObjectToString(ReferenceCount);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Source                  = ';
-      try
-        res += _ObjectToString(Source);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'Il                      = ';
-      try
-        res += _ObjectToString(Il);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ScopeGlobalCtorsPresent = ';
-      try
-        res += _ObjectToString(ScopeGlobalCtorsPresent);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ScopeGlobalDtorsPresent = ';
-      try
-        res += _ObjectToString(ScopeGlobalDtorsPresent);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
+      res += 'Source                  = '; AddProp(res, Source                 ); res += #10;
+      res += 'Il                      = '; AddProp(res, Il                     ); res += #10;
+      res += 'ScopeGlobalCtorsPresent = '; AddProp(res, ScopeGlobalCtorsPresent); res += #10;
+      res += 'ScopeGlobalDtorsPresent = '; AddProp(res, ScopeGlobalDtorsPresent); res += #10;
+      res += 'NumHostPipes            = '; AddProp(res, NumHostPipes           ); res += #10;
+      res += 'HostPipeNames           = '; AddProp(res, HostPipeNames          );
     end;
     public function ToString: string; override;
     begin
@@ -2518,64 +2687,125 @@ type
   {$region CLMemory}
   
   ///
-  CLMemoryProperties = partial class
+  CLMemoryProperties = class
+    private ntv: cl_mem;
     
-    public constructor(ntv: cl_mem);
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor(ntv: cl_mem) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
     
-    private function GetFlags: MemFlags;
+    private function GetFlags: clMemFlags;
+    begin
+      cl.GetMemObjectInfo_MEM_FLAGS(self.ntv, Result).RaiseIfError;
+    end;
     private function GetHostPtr: IntPtr;
-    private function GetMapCount: UInt32;
-    private function GetReferenceCount: UInt32;
-    private function GetUsesSvmPointer: Bool;
+    begin
+      cl.GetMemObjectInfo_MEM_HOST_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUsesSvmPointer: clBool;
+    begin
+      cl.GetMemObjectInfo_MEM_USES_SVM_POINTER(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetProperties: array of clMemProperties;
+    begin
+      cl.GetMemObjectInfo_MEM_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9MediaAdapterType: clDx9MediaAdapterType;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_MEDIA_ADAPTER_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9MediaSurfaceInfo: cl_dx9_surface_info;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_MEDIA_SURFACE_INFO(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d10Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_D3D10_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d11Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_D3D11_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9SharedHandle: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_SHARED_HANDLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVaApiMediaSurface: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_VA_API_MEDIA_SURFACE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUsesSvmPointerArm: clBool;
+    begin
+      cl.GetMemObjectInfo_MEM_USES_SVM_POINTER_ARM(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocFlagsIntel: clMemAllocFlagsINTEL;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_FLAGS_INTEL(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocType: clUnifiedSharedMemoryType;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocBasePtr: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_BASE_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocSize: UIntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocDevice: cl_device_id;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_DEVICE(self.ntv, Result).RaiseIfError;
+    end;
     
-    public property Flags:          MemFlags read GetFlags;
-    public property HostPtr:        IntPtr   read GetHostPtr;
-    public property MapCount:       UInt32   read GetMapCount;
-    public property ReferenceCount: UInt32   read GetReferenceCount;
-    public property UsesSvmPointer: Bool     read GetUsesSvmPointer;
+    public property Flags:               clMemFlags                read GetFlags;
+    public property HostPtr:             IntPtr                    read GetHostPtr;
+    public property UsesSvmPointer:      clBool                    read GetUsesSvmPointer;
+    public property Properties:          array of clMemProperties  read GetProperties;
+    public property Dx9MediaAdapterType: clDx9MediaAdapterType     read GetDx9MediaAdapterType;
+    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info       read GetDx9MediaSurfaceInfo;
+    public property D3d10Resource:       IntPtr                    read GetD3d10Resource;
+    public property D3d11Resource:       IntPtr                    read GetD3d11Resource;
+    public property Dx9Resource:         IntPtr                    read GetDx9Resource;
+    public property Dx9SharedHandle:     IntPtr                    read GetDx9SharedHandle;
+    public property VaApiMediaSurface:   IntPtr                    read GetVaApiMediaSurface;
+    public property UsesSvmPointerArm:   clBool                    read GetUsesSvmPointerArm;
+    public property AllocFlagsIntel:     clMemAllocFlagsINTEL      read GetAllocFlagsIntel;
+    public property AllocType:           clUnifiedSharedMemoryType read GetAllocType;
+    public property AllocBasePtr:        IntPtr                    read GetAllocBasePtr;
+    public property AllocSize:           UIntPtr                   read GetAllocSize;
+    public property AllocDevice:         cl_device_id              read GetAllocDevice;
     
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'Flags          = ';
-      try
-        res += _ObjectToString(Flags);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'HostPtr        = ';
-      try
-        res += _ObjectToString(HostPtr);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MapCount       = ';
-      try
-        res += _ObjectToString(MapCount);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ReferenceCount = ';
-      try
-        res += _ObjectToString(ReferenceCount);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'UsesSvmPointer = ';
-      try
-        res += _ObjectToString(UsesSvmPointer);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
+      res += 'Flags               = '; AddProp(res, Flags              ); res += #10;
+      res += 'HostPtr             = '; AddProp(res, HostPtr            ); res += #10;
+      res += 'UsesSvmPointer      = '; AddProp(res, UsesSvmPointer     ); res += #10;
+      res += 'Properties          = '; AddProp(res, Properties         ); res += #10;
+      res += 'Dx9MediaAdapterType = '; AddProp(res, Dx9MediaAdapterType); res += #10;
+      res += 'Dx9MediaSurfaceInfo = '; AddProp(res, Dx9MediaSurfaceInfo); res += #10;
+      res += 'D3d10Resource       = '; AddProp(res, D3d10Resource      ); res += #10;
+      res += 'D3d11Resource       = '; AddProp(res, D3d11Resource      ); res += #10;
+      res += 'Dx9Resource         = '; AddProp(res, Dx9Resource        ); res += #10;
+      res += 'Dx9SharedHandle     = '; AddProp(res, Dx9SharedHandle    ); res += #10;
+      res += 'VaApiMediaSurface   = '; AddProp(res, VaApiMediaSurface  ); res += #10;
+      res += 'UsesSvmPointerArm   = '; AddProp(res, UsesSvmPointerArm  ); res += #10;
+      res += 'AllocFlagsIntel     = '; AddProp(res, AllocFlagsIntel    ); res += #10;
+      res += 'AllocType           = '; AddProp(res, AllocType          ); res += #10;
+      res += 'AllocBasePtr        = '; AddProp(res, AllocBasePtr       ); res += #10;
+      res += 'AllocSize           = '; AddProp(res, AllocSize          ); res += #10;
+      res += 'AllocDevice         = '; AddProp(res, AllocDevice        );
     end;
     public function ToString: string; override;
     begin
@@ -2591,26 +2821,19 @@ type
   {$region CLMemorySubSegment}
   
   ///
-  CLMemorySubSegmentProperties = partial class(CLMemoryProperties)
-    
-    public constructor(ntv: cl_mem);
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+  CLMemorySubSegmentProperties = class(CLMemoryProperties)
     
     private function GetOffset: UIntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_OFFSET(self.ntv, Result).RaiseIfError;
+    end;
     
     public property Offset: UIntPtr read GetOffset;
     
     public procedure ToString(res: StringBuilder); override;
     begin
-      inherited;
-      res += #10;
-      res += 'Offset = ';
-      try
-        res += _ObjectToString(Offset);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
+      inherited; res += #10;
+      res += 'Offset = '; AddProp(res, Offset);
     end;
     
   end;
@@ -2620,64 +2843,137 @@ type
   {$region CLValue}
   
   ///
-  CLValueProperties = partial class
+  CLValueProperties = class
+    private ntv: cl_mem;
     
-    public constructor(ntv: cl_mem);
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor(ntv: cl_mem) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
     
-    private function GetFlags: MemFlags;
+    private function GetFlags: clMemFlags;
+    begin
+      cl.GetMemObjectInfo_MEM_FLAGS(self.ntv, Result).RaiseIfError;
+    end;
     private function GetHostPtr: IntPtr;
-    private function GetMapCount: UInt32;
-    private function GetReferenceCount: UInt32;
-    private function GetUsesSvmPointer: Bool;
+    begin
+      cl.GetMemObjectInfo_MEM_HOST_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUsesSvmPointer: clBool;
+    begin
+      cl.GetMemObjectInfo_MEM_USES_SVM_POINTER(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetProperties: array of clMemProperties;
+    begin
+      cl.GetMemObjectInfo_MEM_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9MediaAdapterType: clDx9MediaAdapterType;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_MEDIA_ADAPTER_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9MediaSurfaceInfo: cl_dx9_surface_info;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_MEDIA_SURFACE_INFO(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d10Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_D3D10_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d11Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_D3D11_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9SharedHandle: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_SHARED_HANDLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVaApiMediaSurface: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_VA_API_MEDIA_SURFACE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUsesSvmPointerArm: clBool;
+    begin
+      cl.GetMemObjectInfo_MEM_USES_SVM_POINTER_ARM(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocFlagsIntel: clMemAllocFlagsINTEL;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_FLAGS_INTEL(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocType: clUnifiedSharedMemoryType;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocBasePtr: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_BASE_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocSize: UIntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocDevice: cl_device_id;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_DEVICE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAssociatedMemobject: cl_mem;
+    begin
+      cl.GetMemObjectInfo_MEM_ASSOCIATED_MEMOBJECT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetOffset: UIntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_OFFSET(self.ntv, Result).RaiseIfError;
+    end;
     
-    public property Flags:          MemFlags read GetFlags;
-    public property HostPtr:        IntPtr   read GetHostPtr;
-    public property MapCount:       UInt32   read GetMapCount;
-    public property ReferenceCount: UInt32   read GetReferenceCount;
-    public property UsesSvmPointer: Bool     read GetUsesSvmPointer;
+    public property Flags:               clMemFlags                read GetFlags;
+    public property HostPtr:             IntPtr                    read GetHostPtr;
+    public property UsesSvmPointer:      clBool                    read GetUsesSvmPointer;
+    public property Properties:          array of clMemProperties  read GetProperties;
+    public property Dx9MediaAdapterType: clDx9MediaAdapterType     read GetDx9MediaAdapterType;
+    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info       read GetDx9MediaSurfaceInfo;
+    public property D3d10Resource:       IntPtr                    read GetD3d10Resource;
+    public property D3d11Resource:       IntPtr                    read GetD3d11Resource;
+    public property Dx9Resource:         IntPtr                    read GetDx9Resource;
+    public property Dx9SharedHandle:     IntPtr                    read GetDx9SharedHandle;
+    public property VaApiMediaSurface:   IntPtr                    read GetVaApiMediaSurface;
+    public property UsesSvmPointerArm:   clBool                    read GetUsesSvmPointerArm;
+    public property AllocFlagsIntel:     clMemAllocFlagsINTEL      read GetAllocFlagsIntel;
+    public property AllocType:           clUnifiedSharedMemoryType read GetAllocType;
+    public property AllocBasePtr:        IntPtr                    read GetAllocBasePtr;
+    public property AllocSize:           UIntPtr                   read GetAllocSize;
+    public property AllocDevice:         cl_device_id              read GetAllocDevice;
+    public property AssociatedMemobject: cl_mem                    read GetAssociatedMemobject;
+    public property Offset:              UIntPtr                   read GetOffset;
     
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'Flags          = ';
-      try
-        res += _ObjectToString(Flags);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'HostPtr        = ';
-      try
-        res += _ObjectToString(HostPtr);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MapCount       = ';
-      try
-        res += _ObjectToString(MapCount);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ReferenceCount = ';
-      try
-        res += _ObjectToString(ReferenceCount);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'UsesSvmPointer = ';
-      try
-        res += _ObjectToString(UsesSvmPointer);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
+      res += 'Flags               = '; AddProp(res, Flags              ); res += #10;
+      res += 'HostPtr             = '; AddProp(res, HostPtr            ); res += #10;
+      res += 'UsesSvmPointer      = '; AddProp(res, UsesSvmPointer     ); res += #10;
+      res += 'Properties          = '; AddProp(res, Properties         ); res += #10;
+      res += 'Dx9MediaAdapterType = '; AddProp(res, Dx9MediaAdapterType); res += #10;
+      res += 'Dx9MediaSurfaceInfo = '; AddProp(res, Dx9MediaSurfaceInfo); res += #10;
+      res += 'D3d10Resource       = '; AddProp(res, D3d10Resource      ); res += #10;
+      res += 'D3d11Resource       = '; AddProp(res, D3d11Resource      ); res += #10;
+      res += 'Dx9Resource         = '; AddProp(res, Dx9Resource        ); res += #10;
+      res += 'Dx9SharedHandle     = '; AddProp(res, Dx9SharedHandle    ); res += #10;
+      res += 'VaApiMediaSurface   = '; AddProp(res, VaApiMediaSurface  ); res += #10;
+      res += 'UsesSvmPointerArm   = '; AddProp(res, UsesSvmPointerArm  ); res += #10;
+      res += 'AllocFlagsIntel     = '; AddProp(res, AllocFlagsIntel    ); res += #10;
+      res += 'AllocType           = '; AddProp(res, AllocType          ); res += #10;
+      res += 'AllocBasePtr        = '; AddProp(res, AllocBasePtr       ); res += #10;
+      res += 'AllocSize           = '; AddProp(res, AllocSize          ); res += #10;
+      res += 'AllocDevice         = '; AddProp(res, AllocDevice        ); res += #10;
+      res += 'AssociatedMemobject = '; AddProp(res, AssociatedMemobject); res += #10;
+      res += 'Offset              = '; AddProp(res, Offset             );
     end;
     public function ToString: string; override;
     begin
@@ -2693,64 +2989,137 @@ type
   {$region CLArray}
   
   ///
-  CLArrayProperties = partial class
+  CLArrayProperties = class
+    private ntv: cl_mem;
     
-    public constructor(ntv: cl_mem);
-    private constructor := raise new System.InvalidOperationException($'Был вызван не_применимый конструктор без параметров... Обратитесь к разработчику OpenCLABC');
+    public constructor(ntv: cl_mem) := self.ntv := ntv;
+    private constructor := raise new OpenCLABCInternalException;
     
-    private function GetFlags: MemFlags;
+    private function GetFlags: clMemFlags;
+    begin
+      cl.GetMemObjectInfo_MEM_FLAGS(self.ntv, Result).RaiseIfError;
+    end;
     private function GetHostPtr: IntPtr;
-    private function GetMapCount: UInt32;
-    private function GetReferenceCount: UInt32;
-    private function GetUsesSvmPointer: Bool;
+    begin
+      cl.GetMemObjectInfo_MEM_HOST_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUsesSvmPointer: clBool;
+    begin
+      cl.GetMemObjectInfo_MEM_USES_SVM_POINTER(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetProperties: array of clMemProperties;
+    begin
+      cl.GetMemObjectInfo_MEM_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9MediaAdapterType: clDx9MediaAdapterType;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_MEDIA_ADAPTER_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9MediaSurfaceInfo: cl_dx9_surface_info;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_MEDIA_SURFACE_INFO(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d10Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_D3D10_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetD3d11Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_D3D11_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9Resource: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_RESOURCE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDx9SharedHandle: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_DX9_SHARED_HANDLE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetVaApiMediaSurface: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_VA_API_MEDIA_SURFACE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetUsesSvmPointerArm: clBool;
+    begin
+      cl.GetMemObjectInfo_MEM_USES_SVM_POINTER_ARM(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocFlagsIntel: clMemAllocFlagsINTEL;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_FLAGS_INTEL(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocType: clUnifiedSharedMemoryType;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_TYPE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocBasePtr: IntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_BASE_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocSize: UIntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_SIZE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAllocDevice: cl_device_id;
+    begin
+      cl.GetMemObjectInfo_MEM_ALLOC_DEVICE(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetAssociatedMemobject: cl_mem;
+    begin
+      cl.GetMemObjectInfo_MEM_ASSOCIATED_MEMOBJECT(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetOffset: UIntPtr;
+    begin
+      cl.GetMemObjectInfo_MEM_OFFSET(self.ntv, Result).RaiseIfError;
+    end;
     
-    public property Flags:          MemFlags read GetFlags;
-    public property HostPtr:        IntPtr   read GetHostPtr;
-    public property MapCount:       UInt32   read GetMapCount;
-    public property ReferenceCount: UInt32   read GetReferenceCount;
-    public property UsesSvmPointer: Bool     read GetUsesSvmPointer;
+    public property Flags:               clMemFlags                read GetFlags;
+    public property HostPtr:             IntPtr                    read GetHostPtr;
+    public property UsesSvmPointer:      clBool                    read GetUsesSvmPointer;
+    public property Properties:          array of clMemProperties  read GetProperties;
+    public property Dx9MediaAdapterType: clDx9MediaAdapterType     read GetDx9MediaAdapterType;
+    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info       read GetDx9MediaSurfaceInfo;
+    public property D3d10Resource:       IntPtr                    read GetD3d10Resource;
+    public property D3d11Resource:       IntPtr                    read GetD3d11Resource;
+    public property Dx9Resource:         IntPtr                    read GetDx9Resource;
+    public property Dx9SharedHandle:     IntPtr                    read GetDx9SharedHandle;
+    public property VaApiMediaSurface:   IntPtr                    read GetVaApiMediaSurface;
+    public property UsesSvmPointerArm:   clBool                    read GetUsesSvmPointerArm;
+    public property AllocFlagsIntel:     clMemAllocFlagsINTEL      read GetAllocFlagsIntel;
+    public property AllocType:           clUnifiedSharedMemoryType read GetAllocType;
+    public property AllocBasePtr:        IntPtr                    read GetAllocBasePtr;
+    public property AllocSize:           UIntPtr                   read GetAllocSize;
+    public property AllocDevice:         cl_device_id              read GetAllocDevice;
+    public property AssociatedMemobject: cl_mem                    read GetAssociatedMemobject;
+    public property Offset:              UIntPtr                   read GetOffset;
     
+    private static procedure AddProp(res: StringBuilder; v: object) :=
+      try
+        res += _ObjectToString(v);
+      except
+        on e: OpenCLException do
+          res += e.Code.ToString;
+      end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'Flags          = ';
-      try
-        res += _ObjectToString(Flags);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'HostPtr        = ';
-      try
-        res += _ObjectToString(HostPtr);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'MapCount       = ';
-      try
-        res += _ObjectToString(MapCount);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'ReferenceCount = ';
-      try
-        res += _ObjectToString(ReferenceCount);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-      res += #10;
-      res += 'UsesSvmPointer = ';
-      try
-        res += _ObjectToString(UsesSvmPointer);
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
+      res += 'Flags               = '; AddProp(res, Flags              ); res += #10;
+      res += 'HostPtr             = '; AddProp(res, HostPtr            ); res += #10;
+      res += 'UsesSvmPointer      = '; AddProp(res, UsesSvmPointer     ); res += #10;
+      res += 'Properties          = '; AddProp(res, Properties         ); res += #10;
+      res += 'Dx9MediaAdapterType = '; AddProp(res, Dx9MediaAdapterType); res += #10;
+      res += 'Dx9MediaSurfaceInfo = '; AddProp(res, Dx9MediaSurfaceInfo); res += #10;
+      res += 'D3d10Resource       = '; AddProp(res, D3d10Resource      ); res += #10;
+      res += 'D3d11Resource       = '; AddProp(res, D3d11Resource      ); res += #10;
+      res += 'Dx9Resource         = '; AddProp(res, Dx9Resource        ); res += #10;
+      res += 'Dx9SharedHandle     = '; AddProp(res, Dx9SharedHandle    ); res += #10;
+      res += 'VaApiMediaSurface   = '; AddProp(res, VaApiMediaSurface  ); res += #10;
+      res += 'UsesSvmPointerArm   = '; AddProp(res, UsesSvmPointerArm  ); res += #10;
+      res += 'AllocFlagsIntel     = '; AddProp(res, AllocFlagsIntel    ); res += #10;
+      res += 'AllocType           = '; AddProp(res, AllocType          ); res += #10;
+      res += 'AllocBasePtr        = '; AddProp(res, AllocBasePtr       ); res += #10;
+      res += 'AllocSize           = '; AddProp(res, AllocSize          ); res += #10;
+      res += 'AllocDevice         = '; AddProp(res, AllocDevice        ); res += #10;
+      res += 'AssociatedMemobject = '; AddProp(res, AssociatedMemobject); res += #10;
+      res += 'Offset              = '; AddProp(res, Offset             );
     end;
     public function ToString: string; override;
     begin
@@ -2791,7 +3160,7 @@ type
       var c: UInt32;
       begin
         var ec := cl.GetPlatformIDs(0, IntPtr.Zero, c);
-        if ec=ErrorCode.PLATFORM_NOT_FOUND then exit;
+        if ec=clErrorCode.PLATFORM_NOT_FOUND then exit;
         OpenCLABCInternalException.RaiseIfError(ec);
       end;
       if c=0 then exit;
@@ -2832,18 +3201,18 @@ type
     begin
       var pl: cl_platform_id;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetDeviceInfo(self.ntv, DeviceInfo.DEVICE_PLATFORM, new UIntPtr(sizeof(cl_platform_id)), pl, IntPtr.Zero)
+        cl.GetDeviceInfo_DEVICE_PLATFORM(self.ntv, pl, false)
       );
       Result := new CLPlatform(pl);
     end;
     public property BaseCLPlatform: CLPlatform read GetBaseCLPlatform;
     
-    public static function GetAllFor(pl: CLPlatform; t: CLDeviceType): array of CLDevice;
+    public static function GetAllFor(pl: CLPlatform; t: clDeviceType): array of CLDevice;
     begin
       
       var c: UInt32;
       var ec := cl.GetDeviceIDs(pl.ntv, t, 0, IntPtr.Zero, c);
-      if ec=ErrorCode.DEVICE_NOT_FOUND then exit;
+      if ec=clErrorCode.DEVICE_NOT_FOUND then exit;
       OpenCLABCInternalException.RaiseIfError(ec);
       
       var all := new cl_device_id[c];
@@ -2853,7 +3222,7 @@ type
       
       Result := all.ConvertAll(dvc->new CLDevice(dvc));
     end;
-    public static function GetAllFor(pl: CLPlatform) := GetAllFor(pl, CLDeviceType.DEVICE_TYPE_GPU);
+    public static function GetAllFor(pl: CLPlatform) := GetAllFor(pl, clDeviceType.DEVICE_TYPE_GPU);
     
   end;
   
@@ -2942,7 +3311,7 @@ type
       
       foreach var pl in pls do
       begin
-        var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL);
+        var dvcs := CLDevice.GetAllFor(pl, clDeviceType.DEVICE_TYPE_ALL);
         if dvcs=nil then continue;
         Result := new CLContext(dvcs);
         exit;
@@ -2968,7 +3337,7 @@ type
       self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<CLDevice>(dvcs.ToArray);
       var ntv_dvcs := GetAllNtvDevices;
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       self.ntv := cl.CreateContext(nil, ntv_dvcs.Count, ntv_dvcs, nil, IntPtr.Zero, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
@@ -2978,17 +3347,10 @@ type
     
     protected static function GetContextDevices(ntv: cl_context): array of CLDevice;
     begin
-      
-      var sz: UIntPtr;
+      var res: array of cl_device_id;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetContextInfo(ntv, ContextInfo.CONTEXT_DEVICES, UIntPtr.Zero, IntPtr.Zero, sz)
+        cl.GetContextInfo_CONTEXT_DEVICES(ntv, res)
       );
-      
-      var res := new cl_device_id[uint64(sz) div cl_device_id.Size];
-      OpenCLABCInternalException.RaiseIfError(
-        cl.GetContextInfo(ntv, ContextInfo.CONTEXT_DEVICES, sz, res[0], IntPtr.Zero)
-      );
-      
       Result := res.ConvertAll(dvc->new CLDevice(dvc));
     end;
     private procedure InitFromNtv(ntv: cl_context; dvcs: IList<CLDevice>; main_dvc: CLDevice);
@@ -3255,7 +3617,7 @@ type
     protected constructor(code_text: string; c: CLContext);
     begin
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       self.ntv := cl.CreateProgramWithSource(c.ntv, 1,|code_text|,nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
@@ -3305,30 +3667,17 @@ type
     
     protected static function GetLastLog(ntv: cl_program; d: cl_device_id): string;
     begin
-      
-      var sz: UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetProgramBuildInfo(ntv, d, ProgramBuildInfo.PROGRAM_BUILD_LOG, UIntPtr.Zero,IntPtr.Zero,sz)
+        cl.GetProgramBuildInfo_PROGRAM_BUILD_LOG(ntv, d, Result)
       );
-      
-      var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-      try
-        OpenCLABCInternalException.RaiseIfError(
-          cl.GetProgramBuildInfo(ntv, d, ProgramBuildInfo.PROGRAM_BUILD_LOG, sz,str_ptr,IntPtr.Zero)
-        );
-        Result := Marshal.PtrToStringAnsi(str_ptr);
-      finally
-        Marshal.FreeHGlobal(str_ptr);
-      end;
-      
     end;
     
-    protected static procedure CheckBuildFail(ntv: cl_program; ec, fail_code: ErrorCode; fail_descr: string; dvcs: sequence of CLDevice);
+    protected static procedure CheckBuildFail(ntv: cl_program; ec, fail_code: clErrorCode; fail_descr: string; dvcs: sequence of CLDevice);
     begin
       
-      // It is common OpenCL impl misstake, to return BUILD_PROGRAM_FAILURE wherever
-      if (ec=fail_code) or (ec=ErrorCode.BUILD_PROGRAM_FAILURE) then
-//      if ec<>ErrorCode.SUCCESS then
+      // It is common OpenCL impl misstake, to return BUILD_PROGRAM_FAILURE, instead of more specific error
+      if (ec=fail_code) or (ec=clErrorCode.BUILD_PROGRAM_FAILURE) then
+//      if ec<>clErrorCode.SUCCESS then
       begin
         var sb := new StringBuilder(fail_descr);
         
@@ -3368,16 +3717,15 @@ type
     
     public function Serialize: array of array of byte;
     begin
-      var sz: UIntPtr;
       
-      OpenCLABCInternalException.RaiseIfError( cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARY_SIZES, UIntPtr.Zero, nil, sz) );
-      var szs := new UIntPtr[sz.ToUInt64 div UIntPtr.Size];
-      OpenCLABCInternalException.RaiseIfError( cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARY_SIZES, sz, szs[0], IntPtr.Zero) );
-      
-      var res := szs.ConvertAll(sz_i->new NativeArray<byte>(sz_i.ToUInt32));
-      
+      var szs: array of UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetProgramInfo(ntv, ProgramInfo.PROGRAM_BINARIES, sz, res.ConvertAll(a->a.Area.first_ptr)[0], IntPtr.Zero)
+        cl.GetProgramInfo_PROGRAM_BINARY_SIZES(ntv, szs)
+      );
+      
+      var res := szs.ConvertAll(sz->new NativeArray<byte>(sz.ToUInt32));
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetProgramInfo_PROGRAM_BINARIES(ntv, res.Length, res.ConvertAll(a->a.Area.first_ptr)[0])
       );
       
       Result := res.ConvertAll(a->a.Area.ManagedCopy);
@@ -3397,7 +3745,7 @@ type
       
     end;
     public procedure SerializeTo(str: System.IO.Stream) :=
-    SerializeTo(new System.IO.BinaryWriter(str));
+      SerializeTo(new System.IO.BinaryWriter(str));
     
     {$endregion Serialize}
     
@@ -3405,10 +3753,10 @@ type
     
     protected static function DeserializeNative(c: CLContext; bin: array of array of byte): cl_program;
     begin
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       
       var dvcs := c.GetAllNtvDevices;
-      //TODO Отдельные эррор коды?
+      //TODO Отдельные коды ошибок?
       Result := cl.CreateProgramWithBinary(
         c.ntv, dvcs.Length, dvcs,
         bin.ConvertAll(a->new UIntPtr(a.Length)), bin,
@@ -3446,14 +3794,14 @@ type
       for var i := 0 to bin_ntvs.Length-1 do
         bin_ntvs[i] := bins[i].ntv;
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       Result := cl.LinkProgram(opt.BuildContext.ntv, 0,nil, opt.ToString, bin_ntvs.Length,bin_ntvs, nil,IntPtr.Zero, ec);
       
       if Result=cl_program.Zero then
         //TODO В этом случае нельзя получить лог???
         OpenCLABCInternalException.RaiseIfError(ec) else
         CheckBuildFail(Result,
-          ec, ErrorCode.LINK_PROGRAM_FAILURE,
+          ec, clErrorCode.LINK_PROGRAM_FAILURE,
           $'%Err:CLCode:BuildFail:Link%', opt.BuildContext.AllDevices
         );
       
@@ -3479,7 +3827,7 @@ type
       inherited Create(code_text, (opt??new CLProgramCompOptions).BuildContext);
       opt := opt??new CLProgramCompOptions;
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       if headers=nil then
         ec := cl.CompileProgram(self.ntv, 0,nil, opt.ToString, 0,nil,nil, nil,IntPtr.Zero) else
       begin
@@ -3495,7 +3843,7 @@ type
       end;
       
       CheckBuildFail(self.ntv,
-        ec, ErrorCode.COMPILE_PROGRAM_FAILURE,
+        ec, clErrorCode.COMPILE_PROGRAM_FAILURE,
         $'%Err:CLCode:BuildFail:Compile%', opt.BuildContext.AllDevices
       );
       
@@ -3567,7 +3915,7 @@ type
       var ec := cl.BuildProgram(self.ntv, 0,nil, opt.ToString, nil,IntPtr.Zero);
       
       CheckBuildFail(self.ntv,
-        ec, ErrorCode.BUILD_PROGRAM_FAILURE,
+        ec, clErrorCode.BUILD_PROGRAM_FAILURE,
         $'%Err:CLCode:BuildFail:Compile%', opt.BuildContext.AllDevices
       );
       
@@ -3622,41 +3970,44 @@ type
       
       var ntv := DeserializeNative(opt.BuildContext, bin);
       
-      var general_pt := ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE;
+      var general_pt := clProgramBinaryType.PROGRAM_BINARY_TYPE_NONE;
       foreach var d in opt.BuildContext.AllDevices do
       begin
-        var pt: ProgramBinaryType;
+        var pt: clProgramBinaryType;
         OpenCLABCInternalException.RaiseIfError(
-          cl.GetProgramBuildInfo(ntv,d.ntv, ProgramBuildInfo.PROGRAM_BINARY_TYPE, new UIntPtr(sizeof(ProgramBinaryType)),pt,IntPtr.Zero)
+          cl.GetProgramBuildInfo_PROGRAM_BINARY_TYPE(ntv,d.ntv, pt,false)
         );
         
-        if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
+        if pt=clProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
+          continue else
+        if general_pt=clProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
           general_pt := pt else
         if general_pt<>pt then
           raise new NotSupportedException($'%BinCLCode:Deserialize:ProgramBinaryType:Different%');
         
       end;
       
-      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
+      if general_pt = clProgramBinaryType.PROGRAM_BINARY_TYPE_NONE then
         raise new NotSupportedException($'%BinCLCode:Deserialize:ProgramBinaryType:Missing%') else
-      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_COMPILED_OBJECT then
+      if general_pt = clProgramBinaryType.PROGRAM_BINARY_TYPE_COMPILED_OBJECT then
         Result := new CLCompCode(ntv,false) else
-      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_LIBRARY then
+      if general_pt = clProgramBinaryType.PROGRAM_BINARY_TYPE_LIBRARY then
         Result := new CLCodeLib(ntv,false) else
-      if general_pt=ProgramBinaryType.PROGRAM_BINARY_TYPE_EXECUTABLE then
+      if general_pt = clProgramBinaryType.PROGRAM_BINARY_TYPE_EXECUTABLE then
       begin
         var res := new CLProgramCode(ntv,false);
         res.Build(opt);
         Result := res;
       end else
+        //TODO Ещё есть PROGRAM_BINARY_TYPE_INTERMEDIATE из cl_khr_spir
         raise new NotImplementedException(general_pt.ToString);
       
     end;
     
     public static function DeserializeFrom(br: System.IO.BinaryReader; opt: CLProgramCompOptions := nil) :=
-    Deserialize(LoadBins(br), opt);
+      Deserialize(LoadBins(br), opt);
     public static function DeserializeFrom(str: System.IO.Stream; opt: CLProgramCompOptions := nil) :=
-    DeserializeFrom(new System.IO.BinaryReader(str), opt);
+      DeserializeFrom(new System.IO.BinaryReader(str), opt);
     
   end;
   
@@ -3692,23 +4043,13 @@ type
       
       var code_ntv: cl_program;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_PROGRAM, new UIntPtr(cl_program.Size), code_ntv, IntPtr.Zero)
+        cl.GetKernelInfo_KERNEL_PROGRAM(ntv, code_ntv, false)
       );
       self.code := new CLProgramCode(code_ntv, true);
       
-      var sz: UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, UIntPtr.Zero, IntPtr.Zero, sz)
+        cl.GetKernelInfo_KERNEL_FUNCTION_NAME(ntv, self.k_name)
       );
-      var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-      try
-        OpenCLABCInternalException.RaiseIfError(
-          cl.GetKernelInfo(ntv, KernelInfo.KERNEL_FUNCTION_NAME, sz, str_ptr, IntPtr.Zero)
-        );
-        self.k_name := Marshal.PtrToStringAnsi(str_ptr);
-      finally
-        Marshal.FreeHGlobal(str_ptr);
-      end;
       
     end;
     private constructor := raise new OpenCLABCInternalException;
@@ -3778,29 +4119,29 @@ type
     public property CanRead: boolean read data and can_read_bit <> 0;
     public property CanWrite: boolean read data and can_write_bit <> 0;
     
-    private static function MakeCLFlags(kernel_use, map_use: CLMemoryUsage): MemFlags;
+    private static function MakeCLFlags(kernel_use, map_use: CLMemoryUsage): clMemFlags;
     begin
       
       case kernel_use.data of
         none_bits:
           raise new ArgumentException($'%Err:CLMemoryUsage:NoCLKernelAccess%');
         can_read_bit:
-          Result := MemFlags.MEM_READ_ONLY;
+          Result := clMemFlags.MEM_READ_ONLY;
         can_write_bit:
-          Result := MemFlags.MEM_WRITE_ONLY;
+          Result := clMemFlags.MEM_WRITE_ONLY;
         read_write_bits:
-          Result := MemFlags.MEM_READ_WRITE;
+          Result := clMemFlags.MEM_READ_WRITE;
         else
           raise new ArgumentException($'%Err:CLMemoryUsage:Invalid%');
       end;
       
       case map_use.data of
         none_bits:
-          Result += MemFlags.MEM_HOST_NO_ACCESS;
+          Result += clMemFlags.MEM_HOST_NO_ACCESS;
         can_read_bit:
-          Result += MemFlags.MEM_HOST_READ_ONLY;
+          Result += clMemFlags.MEM_HOST_READ_ONLY;
         can_write_bit:
-          Result += MemFlags.MEM_HOST_WRITE_ONLY;
+          Result += clMemFlags.MEM_HOST_WRITE_ONLY;
         read_write_bits:
           ;
         else
@@ -3835,7 +4176,7 @@ type
     public constructor(size: UIntPtr; c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), size, nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
@@ -3871,7 +4212,7 @@ type
     private static function GetSize(ntv: cl_mem): UIntPtr;
     begin
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(UIntPtr.Size), Result, IntPtr.Zero)
+        cl.GetMemObjectInfo_MEM_SIZE(ntv, Result, false)
       );
     end;
     ///Возвращает размер области памяти в байтах
@@ -4451,10 +4792,10 @@ type
     
     {$region constructor's}
     
-    private static function MakeSubNtv(parent: cl_mem; reg: cl_buffer_region; flags: MemFlags): cl_mem;
+    private static function MakeSubNtv(parent: cl_mem; reg: cl_buffer_region; flags: clMemFlags): cl_mem;
     begin
-      var ec: ErrorCode;
-      Result := cl.CreateSubBuffer(parent, flags, BufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
+      var ec: clErrorCode;
+      Result := cl.CreateSubBuffer(parent, flags, clBufferCreateType.BUFFER_CREATE_TYPE_REGION, reg, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
@@ -4501,7 +4842,7 @@ type
     public constructor(c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ValueSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
@@ -4509,8 +4850,8 @@ type
     public constructor(c: CLContext; val: T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
       
-      var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
+      var ec: clErrorCode;
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + clMemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
@@ -4626,7 +4967,7 @@ type
     private procedure InitByLen(c: CLContext; kernel_use, map_use: CLMemoryUsage);
     begin
       
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ByteSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
@@ -4634,8 +4975,8 @@ type
     private procedure InitByVal(c: CLContext; var els: T; kernel_use, map_use: CLMemoryUsage);
     begin
       
-      var ec: ErrorCode;
-      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + MemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
+      var ec: clErrorCode;
+      self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + clMemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
     end;
@@ -4646,7 +4987,7 @@ type
       InitByLen(c, kernel_use, map_use);
     end;
     public constructor(len: integer; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(CLContext.Default, len, kernel_use, map_use);
+      Create(CLContext.Default, len, kernel_use, map_use);
     
     public constructor(c: CLContext; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
@@ -4654,7 +4995,7 @@ type
       InitByVal(c, els[0], kernel_use, map_use);
     end;
     public constructor(els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(CLContext.Default, els, kernel_use, map_use);
+      Create(CLContext.Default, els, kernel_use, map_use);
     
     public constructor(c: CLContext; els_from, len: integer; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
@@ -4662,7 +5003,7 @@ type
       InitByVal(c, els[els_from], kernel_use, map_use);
     end;
     public constructor(els_from, len: integer; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(CLContext.Default, els_from, len, els, kernel_use, map_use);
+      Create(CLContext.Default, els_from, len, els, kernel_use, map_use);
     
     ///Создаёт обёртку для указанного неуправляемого объекта
     ///При успешном создании обёртки вызывается cl.Retain
@@ -4672,13 +5013,13 @@ type
       
       var byte_size: UIntPtr;
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetMemObjectInfo(ntv, MemInfo.MEM_SIZE, new UIntPtr(UIntPtr.Size), byte_size, IntPtr.Zero)
+        cl.GetMemObjectInfo_MEM_SIZE(ntv, byte_size, false)
       );
-      
       self.len := byte_size.ToUInt64 div item_size;
-      self.ntv := ntv;
       
       OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
+      self.ntv := ntv;
+      
     end;
     
     public static function operator implicit(mem: CLArray<T>): CLMemory := new CLMemory(mem.ntv);
@@ -5357,60 +5698,82 @@ type
   
   CLDevice = partial class
     
-    private supported_split_modes: array of DevicePartitionProperty := nil;
-    private function GetSSM: array of DevicePartitionProperty;
+    private supported_split_modes: array of clDevicePartitionProperty := nil;
+    private function GetSSM: array of clDevicePartitionProperty;
     begin
-      if supported_split_modes=nil then supported_split_modes := Properties.PartitionProperties;
+      if supported_split_modes=nil then
+      begin
+        supported_split_modes := Properties.PartitionProperties;
+        if supported_split_modes.Last = new clDevicePartitionProperty(0) then
+          supported_split_modes := supported_split_modes[:^1];
+      end;
       Result := supported_split_modes;
     end;
     
-    private function Split(params props: array of DevicePartitionProperty): array of CLSubDevice;
+    private function Split(params props: array of clDevicePartitionProperty): array of CLSubDevice;
     begin
-      if not GetSSM.Contains(props[0]) then
+      if props[0] not in GetSSM then
         raise new NotSupportedException($'%Err:CLDevice:SplitNotSupported%');
       
       var c: UInt32;
       OpenCLABCInternalException.RaiseIfError( cl.CreateSubDevices(self.ntv, props, 0, IntPtr.Zero, c) );
       
-      var res := new cl_device_id[int64(c)];
+      var res := new cl_device_id[c];
       OpenCLABCInternalException.RaiseIfError( cl.CreateSubDevices(self.ntv, props, c, res[0], IntPtr.Zero) );
       
       Result := res.ConvertAll(sdvc->new CLSubDevice(self.ntv, sdvc));
     end;
     
-    public property CanSplitEqually: boolean read DevicePartitionProperty.DEVICE_PARTITION_EQUALLY in GetSSM;
+    public property CanSplitEqually: boolean read clDevicePartitionProperty.DEVICE_PARTITION_EQUALLY in GetSSM;
     public function SplitEqually(CUCount: integer): array of CLSubDevice;
     begin
       if CUCount <= 0 then raise new ArgumentException($'%Err:CLDevice:SplitCUCount%');
       Result := Split(
-        DevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
-        DevicePartitionProperty.Create(CUCount),
-        DevicePartitionProperty.Create(0)
+        clDevicePartitionProperty.DEVICE_PARTITION_EQUALLY,
+        clDevicePartitionProperty.Create(CUCount),
+        clDevicePartitionProperty.Create(0)
       );
     end;
     
-    public property CanSplitByCounts: boolean read DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS in GetSSM;
+    public property CanSplitByCounts: boolean read clDevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS in GetSSM;
     public function SplitByCounts(params CUCounts: array of integer): array of CLSubDevice;
     begin
       foreach var CUCount in CUCounts do
         if CUCount <= 0 then raise new ArgumentException($'%Err:CLDevice:SplitCUCount%');
       
-      var props := new DevicePartitionProperty[CUCounts.Length+2];
-      props[0] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS;
+      var props := new clDevicePartitionProperty[CUCounts.Length+3];
+      props[0] := clDevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS;
       for var i := 0 to CUCounts.Length-1 do
-        props[i+1] := new DevicePartitionProperty(CUCounts[i]);
-      props[props.Length-1] := DevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS_LIST_END;
+        props[i+1] := new clDevicePartitionProperty(CUCounts[i]);
+      props[props.Length-2] := clDevicePartitionProperty.DEVICE_PARTITION_BY_COUNTS_LIST_END;
+      props[props.Length-1] := clDevicePartitionProperty.Create(0);
       
       Result := Split(props);
     end;
     
-    public property CanSplitByAffinityDomain: boolean read DevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN in GetSSM;
-    public function SplitByAffinityDomain(affinity_domain: CLDeviceAffinityDomain) :=
-    Split(
-      DevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN,
-      DevicePartitionProperty.Create(new IntPtr(affinity_domain.val)),
-      DevicePartitionProperty.Create(0)
-    );
+    public property CanSplitByAffinityDomain: boolean read clDevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN in GetSSM;
+    public function SplitByAffinityDomain(affinity_domain: clDeviceAffinityDomain) :=
+      Split(
+        clDevicePartitionProperty.DEVICE_PARTITION_BY_AFFINITY_DOMAIN,
+        clDevicePartitionProperty.Create(affinity_domain.val),
+        clDevicePartitionProperty.Create(0)
+      );
+    
+    public property CanSplitByNames: boolean read clDevicePartitionProperty.DEVICE_PARTITION_BY_NAMES in GetSSM;
+    public function SplitByNames(params device_names: array of uint64): array of CLSubDevice;
+    begin
+      foreach var device_name in device_names do
+        if device_name < 0 then raise new ArgumentException($'%Err:CLDevice:SplitNames%');
+      
+      var props := new clDevicePartitionProperty[device_names.Length+3];
+      props[0] := clDevicePartitionProperty.DEVICE_PARTITION_BY_NAMES;
+      for var i := 0 to device_names.Length-1 do
+        props[i+1] := new clDevicePartitionProperty(device_names[i]);
+      props[props.Length-2] := clDevicePartitionProperty.PARTITION_BY_NAMES_LIST_END;
+      props[props.Length-1] := clDevicePartitionProperty.Create(0);
+      
+      Result := Split(props);
+    end;
     
   end;
   
@@ -8286,8 +8649,8 @@ type
         if free_cqs.TryTake(Result) then
           else
         begin
-          var ec: ErrorCode;
-          Result := cl.CreateCommandQueue(cl_c, cl_dvc, CommandQueueProperties.NONE, ec);
+          var ec: clErrorCode;
+          Result := cl.CreateCommandQueue(cl_c, cl_dvc, clCommandQueueProperties.NONE, ec);
           OpenCLABCInternalException.RaiseIfError(ec);
         end;
       end;
@@ -8559,7 +8922,7 @@ type
     
     {$region AttachCallback}
     
-    private static procedure InvokeAttachedCallback(ev: cl_event; st: CommandExecutionStatus; data: IntPtr);
+    private static procedure InvokeAttachedCallback(ev: cl_event; st: clCommandExecutionStatus; data: IntPtr);
     begin
       var hnd := GCHandle(data);
       var cb_data := AttachCallbackData(hnd.Target);
@@ -8570,12 +8933,12 @@ type
       hnd.Free;
       cb_data.work();
     end;
-    private static attachable_callback: EventCallback := InvokeAttachedCallback;
+    private static attachable_callback: clEventCallback := InvokeAttachedCallback;
     
     public static procedure AttachCallback(ev: cl_event; work: Action{$ifdef EventDebug}; reason: string{$endif});
     begin
       var cb_data := new AttachCallbackData(work{$ifdef EventDebug}, reason{$endif});
-      var ec := cl.SetEventCallback(ev, CommandExecutionStatus.COMPLETE, attachable_callback, GCHandle.ToIntPtr(GCHandle.Alloc(cb_data)));
+      var ec := cl.SetEventCallback(ev, clCommandExecutionStatus.COMPLETE, attachable_callback, GCHandle.ToIntPtr(GCHandle.Alloc(cb_data)));
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
@@ -8583,7 +8946,7 @@ type
     
     {$region MultiAttachCallback}
     
-    private static procedure InvokeMultiAttachedCallback(ev: cl_event; st: CommandExecutionStatus; data: IntPtr);
+    private static procedure InvokeMultiAttachedCallback(ev: cl_event; st: clCommandExecutionStatus; data: IntPtr);
     begin
       var hnd := GCHandle(data);
       var cb_data := MultiAttachCallbackData(hnd.Target);
@@ -8596,7 +8959,7 @@ type
       hnd.Free;
       cb_data.work();
     end;
-    private static multi_attachable_callback: EventCallback := InvokeMultiAttachedCallback;
+    private static multi_attachable_callback: clEventCallback := InvokeMultiAttachedCallback;
     
     public procedure MultiAttachCallback(work: Action{$ifdef EventDebug}; reason: string{$endif}) :=
     case self.count of
@@ -8608,7 +8971,7 @@ type
         var hnd_ptr := GCHandle.ToIntPtr(GCHandle.Alloc(cb_data));
         for var i := 0 to count-1 do
         begin
-          var ec := cl.SetEventCallback(evs[i], CommandExecutionStatus.COMPLETE, multi_attachable_callback, hnd_ptr);
+          var ec := cl.SetEventCallback(evs[i], clCommandExecutionStatus.COMPLETE, multi_attachable_callback, hnd_ptr);
           OpenCLABCInternalException.RaiseIfError(ec);
         end;
       end;
@@ -8655,13 +9018,13 @@ type
     {$region Event status}
     
     {$ifdef DEBUG}
-    public static function GetStatus(ev: cl_event): CommandExecutionStatus;
+    public static function GetStatus(ev: cl_event): clCommandExecutionStatus;
     begin
       {$ifdef EventDebug}
       EventDebug.VerifyExists(ev, $'checking event status');
       {$endif EventDebug}
       OpenCLABCInternalException.RaiseIfError(
-        cl.GetEventInfo(ev, EventInfo.EVENT_COMMAND_EXECUTION_STATUS, new UIntPtr(sizeof(CommandExecutionStatus)), Result, IntPtr.Zero)
+        cl.GetEventInfo_EVENT_COMMAND_EXECUTION_STATUS(ev, Result, false)
       );
     end;
     {$endif DEBUG}
@@ -8670,7 +9033,7 @@ type
     public static function HasCompleted(ev: cl_event): boolean;
     begin
       var st := GetStatus(ev);
-      Result := (st=CommandExecutionStatus.COMPLETE) or (st.val<0);
+      Result := (st=clCommandExecutionStatus.COMPLETE) or (st.val<0);
     end;
     {$endif DEBUG}
     
@@ -9159,7 +9522,7 @@ type
     
     private constructor(c: cl_context{$ifdef EventDebug}; reason: string{$endif});
     begin
-      var ec: ErrorCode;
+      var ec: clErrorCode;
       self.uev := cl.CreateUserEvent(c, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       {$ifdef EventDebug}
@@ -9205,8 +9568,8 @@ type
         OpenCLABCInternalException.RaiseIfError(
           cl.SetUserEventStatus(uev,
             if had_error then
-              CommandExecutionStatus.Create(OpenCLABCInternalException.RelayErrorCode) else
-              CommandExecutionStatus.COMPLETE
+              clCommandExecutionStatus.Create(OpenCLABCInternalException.RelayErrorCode) else
+              clCommandExecutionStatus.COMPLETE
           )
         );
       finally
@@ -17389,7 +17752,7 @@ type
       o_const: boolean; get_o: ()->T;
       g: CLTaskGlobalData; l: CLTaskLocalData;
       invoke_params: InvokeParamsFunc<T>;
-      on_err: ErrorCode->()
+      on_err: clErrorCode->()
       {$ifdef DEBUG}; q: object{$endif}
     ): EnqRes;
     begin
@@ -17468,7 +17831,7 @@ type
     protected function ExpectedEnqCount: integer; abstract;
     
     protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<T>; abstract;
-    protected procedure ProcessError(ec: ErrorCode);
+    protected procedure ProcessError(ec: clErrorCode);
     begin
       var TODO := 0; //TODO abstract
     end;
@@ -17627,7 +17990,7 @@ type
     protected function ExpectedEnqCount: integer; abstract;
     
     protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->CLKernelArgCache): ParamInvRes<cl_kernel>; abstract;
-    protected procedure ProcessError(ec: ErrorCode);
+    protected procedure ProcessError(ec: clErrorCode);
     begin
       var TODO := 0; //TODO abstract
     end;
@@ -17732,7 +18095,7 @@ type
     protected function ExpectedEnqCount: integer; abstract;
     
     protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRes>): ParamInvRes<TObj>; abstract;
-    protected procedure ProcessError(ec: ErrorCode);
+    protected procedure ProcessError(ec: clErrorCode);
     begin
       var TODO := 0; //TODO abstract
     end;
@@ -19023,7 +19386,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
           val.Pointer,
           evs.count, evs.evs, res_ev
@@ -19108,7 +19471,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
           val,
           evs.count, evs.evs, res_ev
@@ -19301,7 +19664,7 @@ type
         
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           a[0],
           evs.count, evs.evs, res_ev
@@ -19381,7 +19744,7 @@ type
         
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           a[0,0],
           evs.count, evs.evs, res_ev
@@ -19461,7 +19824,7 @@ type
         
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           a[0,0,0],
           evs.count, evs.evs, res_ev
@@ -19541,7 +19904,7 @@ type
         
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           a[0],
           evs.count, evs.evs, res_ev
@@ -19621,7 +19984,7 @@ type
         
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           a[0,0],
           evs.count, evs.evs, res_ev
@@ -19701,7 +20064,7 @@ type
         
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length*Marshal.SizeOf(default(TRecord))),
           a[0,0,0],
           evs.count, evs.evs, res_ev
@@ -19798,7 +20161,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf(default(TRecord))),
           a[a_ind],
           evs.count, evs.evs, res_ev
@@ -19916,7 +20279,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf(default(TRecord))),
           a[a_ind1,a_ind2],
           evs.count, evs.evs, res_ev
@@ -20045,7 +20408,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf(default(TRecord))),
           a[a_ind1,a_ind2,a_ind3],
           evs.count, evs.evs, res_ev
@@ -20167,7 +20530,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf(default(TRecord))),
           a[a_ind],
           evs.count, evs.evs, res_ev
@@ -20285,7 +20648,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf(default(TRecord))),
           a[a_ind1,a_ind2],
           evs.count, evs.evs, res_ev
@@ -20414,7 +20777,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(el_count*Marshal.SizeOf(default(TRecord))),
           a[a_ind1,a_ind2,a_ind3],
           evs.count, evs.evs, res_ev
@@ -20529,7 +20892,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, o.Size,
           ptr,
           evs.count, evs.evs, res_ev
@@ -20610,7 +20973,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(len),
           ptr,
           evs.count, evs.evs, res_ev
@@ -20689,7 +21052,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, o.Size,
           ptr,
           evs.count, evs.evs, res_ev
@@ -20770,7 +21133,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(len),
           ptr,
           evs.count, evs.evs, res_ev
@@ -21215,7 +21578,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.sz,
           native_data.ptr,
           evs.count, evs.evs, res_ev
@@ -21295,7 +21658,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.Area.sz,
           native_data.Area.ptr,
           evs.count, evs.evs, res_ev
@@ -21380,7 +21743,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.ByteSize,
           native_data.ptr,
           evs.count, evs.evs, res_ev
@@ -21465,7 +21828,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.Area.ByteSize,
           native_data.Area.ptr,
           evs.count, evs.evs, res_ev
@@ -21550,7 +21913,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.ByteSize,
           native_data.first_ptr,
           evs.count, evs.evs, res_ev
@@ -21635,7 +21998,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.Area.ByteSize,
           native_data.Area.first_ptr,
           evs.count, evs.evs, res_ev
@@ -21715,7 +22078,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.sz,
           native_data.ptr,
           evs.count, evs.evs, res_ev
@@ -21795,7 +22158,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.Area.sz,
           native_data.Area.ptr,
           evs.count, evs.evs, res_ev
@@ -21880,7 +22243,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.ByteSize,
           native_data.ptr,
           evs.count, evs.evs, res_ev
@@ -21965,7 +22328,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.Area.ByteSize,
           native_data.Area.ptr,
           evs.count, evs.evs, res_ev
@@ -22050,7 +22413,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.ByteSize,
           native_data.first_ptr,
           evs.count, evs.evs, res_ev
@@ -22135,7 +22498,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.Area.ByteSize,
           native_data.Area.first_ptr,
           evs.count, evs.evs, res_ev
@@ -25130,7 +25493,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), new UIntPtr(Marshal.SizeOf(default(TRecord))),
           (own_qr as QueueResPtr<TRecord>).GetResPtrForWrite,
           evs.count, evs.evs, res_ev
@@ -25198,7 +25561,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(res.Length * Marshal.SizeOf(default(TRecord))),
           res_hnd.AddrOfPinnedObject.ToPointer,
           evs.count, evs.evs, res_ev
@@ -25272,7 +25635,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(int64(len) * Marshal.SizeOf(default(TRecord))),
           res[0],
           evs.count, evs.evs, res_ev
@@ -25361,7 +25724,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(int64(len1)*len2 * Marshal.SizeOf(default(TRecord))),
           res[0,0],
           evs.count, evs.evs, res_ev
@@ -25461,7 +25824,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(0), new UIntPtr(int64(len1)*len2*len3 * Marshal.SizeOf(default(TRecord))),
           res[0,0,0],
           evs.count, evs.evs, res_ev
@@ -25632,7 +25995,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
           val.Pointer,
           evs.count, evs.evs, res_ev
@@ -25700,7 +26063,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
           val,
           evs.count, evs.evs, res_ev
@@ -25773,7 +26136,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, native_data.ByteSize,
           native_data.ptr,
           evs.count, evs.evs, res_ev
@@ -25843,7 +26206,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, native_data.Area.ByteSize,
           native_data.Area.ptr,
           evs.count, evs.evs, res_ev
@@ -25913,7 +26276,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, native_data.ByteSize,
           native_data.ptr,
           evs.count, evs.evs, res_ev
@@ -25983,7 +26346,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, native_data.Area.ByteSize,
           native_data.Area.ptr,
           evs.count, evs.evs, res_ev
@@ -26368,7 +26731,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(Marshal.SizeOf(default(T))),
           (own_qr as QueueResPtr<&T>).GetResPtrForWrite,
           evs.count, evs.evs, res_ev
@@ -26996,7 +27359,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
           val.Pointer,
           evs.count, evs.evs, res_ev
@@ -27077,7 +27440,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
           val,
           evs.count, evs.evs, res_ev
@@ -27158,7 +27521,7 @@ type
         
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           a[0],
           evs.count, evs.evs, res_ev
@@ -27234,7 +27597,7 @@ type
         
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           a[0,0],
           evs.count, evs.evs, res_ev
@@ -27310,7 +27673,7 @@ type
         
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           a[0,0,0],
           evs.count, evs.evs, res_ev
@@ -27386,7 +27749,7 @@ type
         
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           a[0],
           evs.count, evs.evs, res_ev
@@ -27462,7 +27825,7 @@ type
         
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           a[0,0],
           evs.count, evs.evs, res_ev
@@ -27538,7 +27901,7 @@ type
         
         //TODO unable to merge this Enqueue with non-AutoSize, because {-rank-} block would be nested in {-AutoSize-}
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(a.Length * Marshal.SizeOf(default(T))),
           a[0,0,0],
           evs.count, evs.evs, res_ev
@@ -27631,7 +27994,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(len * Marshal.SizeOf(default(T))),
           a[a_ind],
           evs.count, evs.evs, res_ev
@@ -27745,7 +28108,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(len * Marshal.SizeOf(default(T))),
           a[a_ind1,a_ind2],
           evs.count, evs.evs, res_ev
@@ -27870,7 +28233,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(len * Marshal.SizeOf(default(T))),
           a[a_ind1,a_ind2,a_ind3],
           evs.count, evs.evs, res_ev
@@ -27988,7 +28351,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(len * Marshal.SizeOf(default(T))),
           a[a_ind],
           evs.count, evs.evs, res_ev
@@ -28102,7 +28465,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(len * Marshal.SizeOf(default(T))),
           a[a_ind1,a_ind2],
           evs.count, evs.evs, res_ev
@@ -28227,7 +28590,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))), new UIntPtr(len * Marshal.SizeOf(default(T))),
           a[a_ind1,a_ind2,a_ind3],
           evs.count, evs.evs, res_ev
@@ -28351,7 +28714,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(ind*Marshal.SizeOf(default(T))),
           new UIntPtr(a.Count * Marshal.SizeOf(default(T))),
           a.Array[a.Offset],
@@ -28438,7 +28801,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(ind*Marshal.SizeOf(default(T))),
           new UIntPtr(a.Count * Marshal.SizeOf(default(T))),
           a.Array[a.Offset],
@@ -28517,7 +28880,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(0),
           new UIntPtr(o.ByteSize),
           ptr,
@@ -28600,7 +28963,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))),
           new UIntPtr(len*Marshal.SizeOf(default(T))),
           ptr,
@@ -28681,7 +29044,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(0),
           new UIntPtr(o.ByteSize),
           ptr,
@@ -28764,7 +29127,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(ind * Marshal.SizeOf(default(T))),
           new UIntPtr(len*Marshal.SizeOf(default(T))),
           ptr,
@@ -28995,7 +29358,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.sz,
           native_data.ptr,
           evs.count, evs.evs, res_ev
@@ -29076,7 +29439,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.Area.sz,
           native_data.Area.ptr,
           evs.count, evs.evs, res_ev
@@ -29157,7 +29520,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.ByteSize,
           native_data.ptr,
           evs.count, evs.evs, res_ev
@@ -29238,7 +29601,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.Area.ByteSize,
           native_data.Area.ptr,
           evs.count, evs.evs, res_ev
@@ -29319,7 +29682,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.ByteSize,
           native_data.first_ptr,
           evs.count, evs.evs, res_ev
@@ -29400,7 +29763,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueWriteBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.Area.ByteSize,
           native_data.Area.first_ptr,
           evs.count, evs.evs, res_ev
@@ -29481,7 +29844,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.sz,
           native_data.ptr,
           evs.count, evs.evs, res_ev
@@ -29562,7 +29925,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.Area.sz,
           native_data.Area.ptr,
           evs.count, evs.evs, res_ev
@@ -29643,7 +30006,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.ByteSize,
           native_data.ptr,
           evs.count, evs.evs, res_ev
@@ -29724,7 +30087,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.Area.ByteSize,
           native_data.Area.ptr,
           evs.count, evs.evs, res_ev
@@ -29805,7 +30168,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.ByteSize,
           native_data.first_ptr,
           evs.count, evs.evs, res_ev
@@ -29886,7 +30249,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(mem_offset), native_data.Area.ByteSize,
           native_data.Area.first_ptr,
           evs.count, evs.evs, res_ev
@@ -33242,7 +33605,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           new UIntPtr(int64(ind) * Marshal.SizeOf(default(T))), new UIntPtr(Marshal.SizeOf(default(T))),
           (own_qr as QueueResPtr<&T>).GetResPtrForWrite,
           evs.count, evs.evs, res_ev
@@ -33306,7 +33669,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(o.ByteSize),
           res_hnd.AddrOfPinnedObject.ToPointer,
           evs.count, evs.evs, res_ev
@@ -33376,7 +33739,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(res.Length * Marshal.SizeOf(default(T))),
           res[0],
           evs.count, evs.evs, res_ev
@@ -33461,7 +33824,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(res.Length * Marshal.SizeOf(default(T))),
           res[0,0],
           evs.count, evs.evs, res_ev
@@ -33557,7 +33920,7 @@ type
         var res_ev: cl_event;
         
         var ec := cl.EnqueueReadBuffer(
-          cq, o.Native, Bool.NON_BLOCKING,
+          cq, o.Native, clBool.NON_BLOCKING,
           UIntPtr.Zero, new UIntPtr(res.Length * Marshal.SizeOf(default(T))),
           res[0,0,0],
           evs.count, evs.evs, res_ev
@@ -34997,381 +35360,6 @@ end;
 
 {$endregion Global subprograms}
 
-{$region Properties}
-
-{$region Base}
-
-type
-  NtvPropertiesBase<TNtv, TInfo> = abstract class
-    protected ntv: TNtv;
-    public constructor(ntv: TNtv) := self.ntv := ntv;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure GetSizeImpl(id: TInfo; var sz: UIntPtr); abstract;
-    protected procedure GetValImpl(id: TInfo; sz: UIntPtr; var res: byte); abstract;
-    
-    protected function GetSize(id: TInfo): UIntPtr;
-    begin GetSizeImpl(id, Result); end;
-    
-    protected procedure FillPtr(id: TInfo; sz: UIntPtr; ptr: IntPtr) :=
-    GetValImpl(id, sz, PByte(pointer(ptr))^);
-    protected procedure FillVal<T>(id: TInfo; sz: UIntPtr; var res: T) :=
-    GetValImpl(id, sz, PByte(pointer(@res))^);
-    
-    protected function GetVal<T>(id: TInfo): T; where T: record;
-    begin
-      FillVal(id, new UIntPtr(Marshal.SizeOf(default(T))), Result);
-    end;
-    protected function GetValArr<T>(id: TInfo): array of T; where T: record;
-    begin
-      var sz := GetSize(id);
-      Result := new T[uint64(sz) div Marshal.SizeOf(default(T))];
-      
-      if Result.Length<>0 then
-        FillVal(id, sz, Result[0]);
-      
-    end;
-    
-    private function GetString(id: TInfo): string;
-    begin
-      var sz := GetSize(id);
-      
-      var str_ptr := Marshal.AllocHGlobal(IntPtr(pointer(sz)));
-      try
-        FillPtr(id, sz, str_ptr);
-        Result := Marshal.PtrToStringAnsi(str_ptr);
-      finally
-        Marshal.FreeHGlobal(str_ptr);
-      end;
-      
-    end;
-    
-  end;
-  
-{$endregion Base}
-
-{$region CLPlatform}
-
-type
-  CLPlatformProperties = partial class(NtvPropertiesBase<cl_platform_id, PlatformInfo>)
-    
-    private static function clGetSize(ntv: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetPlatformInfo';
-    private static function clGetVal(ntv: cl_platform_id; param_name: PlatformInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetPlatformInfo';
-    
-    protected procedure GetSizeImpl(id: PlatformInfo; var sz: UIntPtr); override :=
-    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
-    protected procedure GetValImpl(id: PlatformInfo; sz: UIntPtr; var res: byte); override :=
-    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
-    
-  end;
-  
-constructor CLPlatformProperties.Create(ntv: cl_platform_id) := inherited Create(ntv);
-
-function CLPlatformProperties.GetProfile             := GetString(PlatformInfo.PLATFORM_PROFILE);
-function CLPlatformProperties.GetVersion             := GetString(PlatformInfo.PLATFORM_VERSION);
-function CLPlatformProperties.GetName                := GetString(PlatformInfo.PLATFORM_NAME);
-function CLPlatformProperties.GetVendor              := GetString(PlatformInfo.PLATFORM_VENDOR);
-function CLPlatformProperties.GetExtensions          := GetString(PlatformInfo.PLATFORM_EXTENSIONS);
-function CLPlatformProperties.GetHostTimerResolution := GetVal&<UInt64>(PlatformInfo.PLATFORM_HOST_TIMER_RESOLUTION);
-
-{$endregion CLPlatform}
-
-{$region CLDevice}
-
-type
-  CLDeviceProperties = partial class(NtvPropertiesBase<cl_device_id, DeviceInfo>)
-    
-    private static function clGetSize(ntv: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetDeviceInfo';
-    private static function clGetVal(ntv: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetDeviceInfo';
-    
-    protected procedure GetSizeImpl(id: DeviceInfo; var sz: UIntPtr); override :=
-    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
-    protected procedure GetValImpl(id: DeviceInfo; sz: UIntPtr; var res: byte); override :=
-    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
-    
-  end;
-  
-constructor CLDeviceProperties.Create(ntv: cl_device_id) := inherited Create(ntv);
-
-function CLDeviceProperties.GetType                               := GetVal&<DeviceType>(DeviceInfo.DEVICE_TYPE);
-function CLDeviceProperties.GetVendorId                           := GetVal&<UInt32>(DeviceInfo.DEVICE_VENDOR_ID);
-function CLDeviceProperties.GetMaxComputeUnits                    := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_COMPUTE_UNITS);
-function CLDeviceProperties.GetMaxWorkItemDimensions              := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_WORK_ITEM_DIMENSIONS);
-function CLDeviceProperties.GetMaxWorkItemSizes                   := GetValArr&<UIntPtr>(DeviceInfo.DEVICE_MAX_WORK_ITEM_SIZES);
-function CLDeviceProperties.GetMaxWorkGroupSize                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_MAX_WORK_GROUP_SIZE);
-function CLDeviceProperties.GetPreferredVectorWidthChar           := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_CHAR);
-function CLDeviceProperties.GetPreferredVectorWidthShort          := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_SHORT);
-function CLDeviceProperties.GetPreferredVectorWidthInt            := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_INT);
-function CLDeviceProperties.GetPreferredVectorWidthLong           := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_LONG);
-function CLDeviceProperties.GetPreferredVectorWidthFloat          := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_FLOAT);
-function CLDeviceProperties.GetPreferredVectorWidthDouble         := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE);
-function CLDeviceProperties.GetPreferredVectorWidthHalf           := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_VECTOR_WIDTH_HALF);
-function CLDeviceProperties.GetNativeVectorWidthChar              := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_CHAR);
-function CLDeviceProperties.GetNativeVectorWidthShort             := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_SHORT);
-function CLDeviceProperties.GetNativeVectorWidthInt               := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_INT);
-function CLDeviceProperties.GetNativeVectorWidthLong              := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_LONG);
-function CLDeviceProperties.GetNativeVectorWidthFloat             := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_FLOAT);
-function CLDeviceProperties.GetNativeVectorWidthDouble            := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_DOUBLE);
-function CLDeviceProperties.GetNativeVectorWidthHalf              := GetVal&<UInt32>(DeviceInfo.DEVICE_NATIVE_VECTOR_WIDTH_HALF);
-function CLDeviceProperties.GetMaxClockFrequency                  := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_CLOCK_FREQUENCY);
-function CLDeviceProperties.GetAddressBits                        := GetVal&<UInt32>(DeviceInfo.DEVICE_ADDRESS_BITS);
-function CLDeviceProperties.GetMaxMemAllocSize                    := GetVal&<UInt64>(DeviceInfo.DEVICE_MAX_MEM_ALLOC_SIZE);
-function CLDeviceProperties.GetImageSupport                       := GetVal&<Bool>(DeviceInfo.DEVICE_IMAGE_SUPPORT);
-function CLDeviceProperties.GetMaxReadImageArgs                   := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_READ_IMAGE_ARGS);
-function CLDeviceProperties.GetMaxWriteImageArgs                  := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_WRITE_IMAGE_ARGS);
-function CLDeviceProperties.GetMaxReadWriteImageArgs              := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_READ_WRITE_IMAGE_ARGS);
-function CLDeviceProperties.GetIlVersion                          := GetString(DeviceInfo.DEVICE_IL_VERSION);
-function CLDeviceProperties.GetImage2dMaxWidth                    := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE2D_MAX_WIDTH);
-function CLDeviceProperties.GetImage2dMaxHeight                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE2D_MAX_HEIGHT);
-function CLDeviceProperties.GetImage3dMaxWidth                    := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE3D_MAX_WIDTH);
-function CLDeviceProperties.GetImage3dMaxHeight                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE3D_MAX_HEIGHT);
-function CLDeviceProperties.GetImage3dMaxDepth                    := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE3D_MAX_DEPTH);
-function CLDeviceProperties.GetImageMaxBufferSize                 := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE_MAX_BUFFER_SIZE);
-function CLDeviceProperties.GetImageMaxArraySize                  := GetVal&<UIntPtr>(DeviceInfo.DEVICE_IMAGE_MAX_ARRAY_SIZE);
-function CLDeviceProperties.GetMaxSamplers                        := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_SAMPLERS);
-function CLDeviceProperties.GetImagePitchAlignment                := GetVal&<UInt32>(DeviceInfo.DEVICE_IMAGE_PITCH_ALIGNMENT);
-function CLDeviceProperties.GetImageBaseAddressAlignment          := GetVal&<UInt32>(DeviceInfo.DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT);
-function CLDeviceProperties.GetMaxPipeArgs                        := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_PIPE_ARGS);
-function CLDeviceProperties.GetPipeMaxActiveReservations          := GetVal&<UInt32>(DeviceInfo.DEVICE_PIPE_MAX_ACTIVE_RESERVATIONS);
-function CLDeviceProperties.GetPipeMaxPacketSize                  := GetVal&<UInt32>(DeviceInfo.DEVICE_PIPE_MAX_PACKET_SIZE);
-function CLDeviceProperties.GetMaxParameterSize                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_MAX_PARAMETER_SIZE);
-function CLDeviceProperties.GetMemBaseAddrAlign                   := GetVal&<UInt32>(DeviceInfo.DEVICE_MEM_BASE_ADDR_ALIGN);
-function CLDeviceProperties.GetMinDataTypeAlignSize               := GetVal&<UInt32>(DeviceInfo.DEVICE_MIN_DATA_TYPE_ALIGN_SIZE);
-function CLDeviceProperties.GetSingleFpConfig                     := GetVal&<DeviceFPConfig>(DeviceInfo.DEVICE_SINGLE_FP_CONFIG);
-function CLDeviceProperties.GetDoubleFpConfig                     := GetVal&<DeviceFPConfig>(DeviceInfo.DEVICE_DOUBLE_FP_CONFIG);
-function CLDeviceProperties.GetGlobalMemCacheType                 := GetVal&<DeviceMemCacheType>(DeviceInfo.DEVICE_GLOBAL_MEM_CACHE_TYPE);
-function CLDeviceProperties.GetGlobalMemCachelineSize             := GetVal&<UInt32>(DeviceInfo.DEVICE_GLOBAL_MEM_CACHELINE_SIZE);
-function CLDeviceProperties.GetGlobalMemCacheSize                 := GetVal&<UInt64>(DeviceInfo.DEVICE_GLOBAL_MEM_CACHE_SIZE);
-function CLDeviceProperties.GetGlobalMemSize                      := GetVal&<UInt64>(DeviceInfo.DEVICE_GLOBAL_MEM_SIZE);
-function CLDeviceProperties.GetMaxConstantBufferSize              := GetVal&<UInt64>(DeviceInfo.DEVICE_MAX_CONSTANT_BUFFER_SIZE);
-function CLDeviceProperties.GetMaxConstantArgs                    := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_CONSTANT_ARGS);
-function CLDeviceProperties.GetMaxGlobalVariableSize              := GetVal&<UIntPtr>(DeviceInfo.DEVICE_MAX_GLOBAL_VARIABLE_SIZE);
-function CLDeviceProperties.GetGlobalVariablePreferredTotalSize   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_GLOBAL_VARIABLE_PREFERRED_TOTAL_SIZE);
-function CLDeviceProperties.GetLocalMemType                       := GetVal&<DeviceLocalMemType>(DeviceInfo.DEVICE_LOCAL_MEM_TYPE);
-function CLDeviceProperties.GetLocalMemSize                       := GetVal&<UInt64>(DeviceInfo.DEVICE_LOCAL_MEM_SIZE);
-function CLDeviceProperties.GetErrorCorrectionSupport             := GetVal&<Bool>(DeviceInfo.DEVICE_ERROR_CORRECTION_SUPPORT);
-function CLDeviceProperties.GetHostUnifiedMemory                  := GetVal&<Bool>(DeviceInfo.DEVICE_HOST_UNIFIED_MEMORY);
-function CLDeviceProperties.GetProfilingTimerResolution           := GetVal&<UIntPtr>(DeviceInfo.DEVICE_PROFILING_TIMER_RESOLUTION);
-function CLDeviceProperties.GetEndianLittle                       := GetVal&<Bool>(DeviceInfo.DEVICE_ENDIAN_LITTLE);
-function CLDeviceProperties.GetAvailable                          := GetVal&<Bool>(DeviceInfo.DEVICE_AVAILABLE);
-function CLDeviceProperties.GetCompilerAvailable                  := GetVal&<Bool>(DeviceInfo.DEVICE_COMPILER_AVAILABLE);
-function CLDeviceProperties.GetLinkerAvailable                    := GetVal&<Bool>(DeviceInfo.DEVICE_LINKER_AVAILABLE);
-function CLDeviceProperties.GetExecutionCapabilities              := GetVal&<DeviceExecCapabilities>(DeviceInfo.DEVICE_EXECUTION_CAPABILITIES);
-function CLDeviceProperties.GetQueueProperties                    := GetVal&<CommandQueueProperties>(DeviceInfo.DEVICE_QUEUE_PROPERTIES);
-function CLDeviceProperties.GetQueueOnHostProperties              := GetVal&<CommandQueueProperties>(DeviceInfo.DEVICE_QUEUE_ON_HOST_PROPERTIES);
-function CLDeviceProperties.GetQueueOnDeviceProperties            := GetVal&<CommandQueueProperties>(DeviceInfo.DEVICE_QUEUE_ON_DEVICE_PROPERTIES);
-function CLDeviceProperties.GetQueueOnDevicePreferredSize         := GetVal&<UInt32>(DeviceInfo.DEVICE_QUEUE_ON_DEVICE_PREFERRED_SIZE);
-function CLDeviceProperties.GetQueueOnDeviceMaxSize               := GetVal&<UInt32>(DeviceInfo.DEVICE_QUEUE_ON_DEVICE_MAX_SIZE);
-function CLDeviceProperties.GetMaxOnDeviceQueues                  := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_ON_DEVICE_QUEUES);
-function CLDeviceProperties.GetMaxOnDeviceEvents                  := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_ON_DEVICE_EVENTS);
-function CLDeviceProperties.GetBuiltInKernels                     := GetString(DeviceInfo.DEVICE_BUILT_IN_KERNELS);
-function CLDeviceProperties.GetName                               := GetString(DeviceInfo.DEVICE_NAME);
-function CLDeviceProperties.GetVendor                             := GetString(DeviceInfo.DEVICE_VENDOR);
-function CLDeviceProperties.GetDriverVersion                      := GetString(DeviceInfo.DRIVER_VERSION);
-function CLDeviceProperties.GetProfile                            := GetString(DeviceInfo.DEVICE_PROFILE);
-function CLDeviceProperties.GetVersion                            := GetString(DeviceInfo.DEVICE_VERSION);
-function CLDeviceProperties.GetOpenclCVersion                     := GetString(DeviceInfo.DEVICE_OPENCL_C_VERSION);
-function CLDeviceProperties.GetExtensions                         := GetString(DeviceInfo.DEVICE_EXTENSIONS);
-function CLDeviceProperties.GetPrintfBufferSize                   := GetVal&<UIntPtr>(DeviceInfo.DEVICE_PRINTF_BUFFER_SIZE);
-function CLDeviceProperties.GetPreferredInteropUserSync           := GetVal&<Bool>(DeviceInfo.DEVICE_PREFERRED_INTEROP_USER_SYNC);
-function CLDeviceProperties.GetPartitionMaxSubDevices             := GetVal&<UInt32>(DeviceInfo.DEVICE_PARTITION_MAX_SUB_DEVICES);
-function CLDeviceProperties.GetPartitionProperties                := GetValArr&<DevicePartitionProperty>(DeviceInfo.DEVICE_PARTITION_PROPERTIES);
-function CLDeviceProperties.GetPartitionAffinityDomain            := GetVal&<DeviceAffinityDomain>(DeviceInfo.DEVICE_PARTITION_AFFINITY_DOMAIN);
-function CLDeviceProperties.GetPartitionType                      := GetValArr&<DevicePartitionProperty>(DeviceInfo.DEVICE_PARTITION_TYPE);
-function CLDeviceProperties.GetReferenceCount                     := GetVal&<UInt32>(DeviceInfo.DEVICE_REFERENCE_COUNT);
-function CLDeviceProperties.GetSvmCapabilities                    := GetVal&<DeviceSVMCapabilities>(DeviceInfo.DEVICE_SVM_CAPABILITIES);
-function CLDeviceProperties.GetPreferredPlatformAtomicAlignment   := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_PLATFORM_ATOMIC_ALIGNMENT);
-function CLDeviceProperties.GetPreferredGlobalAtomicAlignment     := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_GLOBAL_ATOMIC_ALIGNMENT);
-function CLDeviceProperties.GetPreferredLocalAtomicAlignment      := GetVal&<UInt32>(DeviceInfo.DEVICE_PREFERRED_LOCAL_ATOMIC_ALIGNMENT);
-function CLDeviceProperties.GetMaxNumSubGroups                    := GetVal&<UInt32>(DeviceInfo.DEVICE_MAX_NUM_SUB_GROUPS);
-function CLDeviceProperties.GetSubGroupIndependentForwardProgress := GetVal&<Bool>(DeviceInfo.DEVICE_SUB_GROUP_INDEPENDENT_FORWARD_PROGRESS);
-
-{$endregion CLDevice}
-
-{$region CLSubDevice}
-
-type
-  CLSubDeviceProperties = partial class(CLDeviceProperties)
-    
-    private static function clGetSize(ntv: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetDeviceInfo';
-    private static function clGetVal(ntv: cl_device_id; param_name: DeviceInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetDeviceInfo';
-    
-    protected procedure GetSizeImpl(id: DeviceInfo; var sz: UIntPtr); override :=
-    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
-    protected procedure GetValImpl(id: DeviceInfo; sz: UIntPtr; var res: byte); override :=
-    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
-    
-  end;
-  
-constructor CLSubDeviceProperties.Create(ntv: cl_device_id) := inherited Create(ntv);
-
-
-{$endregion CLSubDevice}
-
-{$region CLContext}
-
-type
-  CLContextProperties = partial class(NtvPropertiesBase<cl_context, ContextInfo>)
-    
-    private static function clGetSize(ntv: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetContextInfo';
-    private static function clGetVal(ntv: cl_context; param_name: ContextInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetContextInfo';
-    
-    protected procedure GetSizeImpl(id: ContextInfo; var sz: UIntPtr); override :=
-    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
-    protected procedure GetValImpl(id: ContextInfo; sz: UIntPtr; var res: byte); override :=
-    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
-    
-  end;
-  
-constructor CLContextProperties.Create(ntv: cl_context) := inherited Create(ntv);
-
-function CLContextProperties.GetReferenceCount := GetVal&<UInt32>(ContextInfo.CONTEXT_REFERENCE_COUNT);
-function CLContextProperties.GetNumDevices     := GetVal&<UInt32>(ContextInfo.CONTEXT_NUM_DEVICES);
-function CLContextProperties.GetProperties     := GetValArr&<OpenCL.ContextProperties>(ContextInfo.CONTEXT_PROPERTIES);
-
-{$endregion CLContext}
-
-{$region CLCode}
-
-type
-  CLCodeProperties = partial class(NtvPropertiesBase<cl_program, ProgramInfo>)
-    
-    private static function clGetSize(ntv: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetProgramInfo';
-    private static function clGetVal(ntv: cl_program; param_name: ProgramInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetProgramInfo';
-    
-    protected procedure GetSizeImpl(id: ProgramInfo; var sz: UIntPtr); override :=
-    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
-    protected procedure GetValImpl(id: ProgramInfo; sz: UIntPtr; var res: byte); override :=
-    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
-    
-  end;
-  
-constructor CLCodeProperties.Create(ntv: cl_program) := inherited Create(ntv);
-
-function CLCodeProperties.GetReferenceCount          := GetVal&<UInt32>(ProgramInfo.PROGRAM_REFERENCE_COUNT);
-function CLCodeProperties.GetSource                  := GetString(ProgramInfo.PROGRAM_SOURCE);
-function CLCodeProperties.GetIl                      := GetValArr&<Byte>(ProgramInfo.PROGRAM_IL);
-function CLCodeProperties.GetScopeGlobalCtorsPresent := GetVal&<Bool>(ProgramInfo.PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT);
-function CLCodeProperties.GetScopeGlobalDtorsPresent := GetVal&<Bool>(ProgramInfo.PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT);
-
-{$endregion CLCode}
-
-{$region CLMemory}
-
-type
-  CLMemoryProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
-    
-    private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
-    private static function clGetVal(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
-    
-    protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
-    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
-    protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
-    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
-    
-  end;
-  
-constructor CLMemoryProperties.Create(ntv: cl_mem) := inherited Create(ntv);
-
-function CLMemoryProperties.GetFlags          := GetVal&<MemFlags>(MemInfo.MEM_FLAGS);
-function CLMemoryProperties.GetHostPtr        := GetVal&<IntPtr>(MemInfo.MEM_HOST_PTR);
-function CLMemoryProperties.GetMapCount       := GetVal&<UInt32>(MemInfo.MEM_MAP_COUNT);
-function CLMemoryProperties.GetReferenceCount := GetVal&<UInt32>(MemInfo.MEM_REFERENCE_COUNT);
-function CLMemoryProperties.GetUsesSvmPointer := GetVal&<Bool>(MemInfo.MEM_USES_SVM_POINTER);
-
-{$endregion CLMemory}
-
-{$region CLMemorySubSegment}
-
-type
-  CLMemorySubSegmentProperties = partial class(CLMemoryProperties)
-    
-    private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
-    private static function clGetVal(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
-    
-    protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
-    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
-    protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
-    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
-    
-  end;
-  
-constructor CLMemorySubSegmentProperties.Create(ntv: cl_mem) := inherited Create(ntv);
-
-function CLMemorySubSegmentProperties.GetOffset := GetVal&<UIntPtr>(MemInfo.MEM_OFFSET);
-
-{$endregion CLMemorySubSegment}
-
-{$region CLValue}
-
-type
-  CLValueProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
-    
-    private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
-    private static function clGetVal(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
-    
-    protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
-    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
-    protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
-    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
-    
-  end;
-  
-constructor CLValueProperties.Create(ntv: cl_mem) := inherited Create(ntv);
-
-function CLValueProperties.GetFlags          := GetVal&<MemFlags>(MemInfo.MEM_FLAGS);
-function CLValueProperties.GetHostPtr        := GetVal&<IntPtr>(MemInfo.MEM_HOST_PTR);
-function CLValueProperties.GetMapCount       := GetVal&<UInt32>(MemInfo.MEM_MAP_COUNT);
-function CLValueProperties.GetReferenceCount := GetVal&<UInt32>(MemInfo.MEM_REFERENCE_COUNT);
-function CLValueProperties.GetUsesSvmPointer := GetVal&<Bool>(MemInfo.MEM_USES_SVM_POINTER);
-
-{$endregion CLValue}
-
-{$region CLArray}
-
-type
-  CLArrayProperties = partial class(NtvPropertiesBase<cl_mem, MemInfo>)
-    
-    private static function clGetSize(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; param_value: IntPtr; var param_value_size_ret: UIntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
-    private static function clGetVal(ntv: cl_mem; param_name: MemInfo; param_value_size: UIntPtr; var param_value: byte; param_value_size_ret: IntPtr): ErrorCode;
-    external 'opencl.dll' name 'clGetMemObjectInfo';
-    
-    protected procedure GetSizeImpl(id: MemInfo; var sz: UIntPtr); override :=
-    clGetSize(ntv, id, UIntPtr.Zero, IntPtr.Zero, sz).RaiseIfError;
-    protected procedure GetValImpl(id: MemInfo; sz: UIntPtr; var res: byte); override :=
-    clGetVal(ntv, id, sz, res, IntPtr.Zero).RaiseIfError;
-    
-  end;
-  
-constructor CLArrayProperties.Create(ntv: cl_mem) := inherited Create(ntv);
-
-function CLArrayProperties.GetFlags          := GetVal&<MemFlags>(MemInfo.MEM_FLAGS);
-function CLArrayProperties.GetHostPtr        := GetVal&<IntPtr>(MemInfo.MEM_HOST_PTR);
-function CLArrayProperties.GetMapCount       := GetVal&<UInt32>(MemInfo.MEM_MAP_COUNT);
-function CLArrayProperties.GetReferenceCount := GetVal&<UInt32>(MemInfo.MEM_REFERENCE_COUNT);
-function CLArrayProperties.GetUsesSvmPointer := GetVal&<Bool>(MemInfo.MEM_USES_SVM_POINTER);
-
-{$endregion CLArray}
-
-{$endregion Properties}
-
 {$region Wrappers}
 
 {$region CLDevice}
@@ -35381,7 +35369,7 @@ begin
   
   var parent: cl_device_id;
   OpenCLABCInternalException.RaiseIfError(
-    cl.GetDeviceInfo(ntv, DeviceInfo.DEVICE_PARENT_DEVICE, new UIntPtr(cl_device_id.Size), parent, IntPtr.Zero)
+    cl.GetDeviceInfo_DEVICE_PARENT_DEVICE(ntv, parent, false)
   );
   
   if parent=cl_device_id.Zero then
@@ -35422,7 +35410,7 @@ begin
   
   var c := CLPlatform.All.SelectMany(pl->
   begin
-    var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL).ToList;
+    var dvcs := CLDevice.GetAllFor(pl, clDeviceType.DEVICE_TYPE_ALL).ToList;
     
     System.Threading.Tasks.Parallel.For(0,dvcs.Count, i->
     begin
@@ -35505,7 +35493,7 @@ begin
       var all_pl_names := CLPlatform.All.Select(pl->$'['+pl.Properties.Name+$']').JoinToString(', ');
       raise new InvalidOperationException($'No platform with name [{pl_name}], only: {all_pl_names}');
     end;
-    var dvcs := CLDevice.GetAllFor(pl, CLDeviceType.DEVICE_TYPE_ALL).ToDictionary(dvc->dvc.Properties.Name);
+    var dvcs := CLDevice.GetAllFor(pl, clDeviceType.DEVICE_TYPE_ALL).ToDictionary(dvc->dvc.Properties.Name);
     Result := new CLContext(ArrGen(br.ReadInt32, i->
     begin
       Result := default(CLDevice);
@@ -35698,7 +35686,7 @@ type
 function CLKernel.AllocNative :=
 ntvs.TakeOrMake(()->
 begin
-  var ec: ErrorCode;
+  var ec: clErrorCode;
   Result := cl.CreateKernel(code.ntv, k_name, ec);
   OpenCLABCInternalException.RaiseIfError(ec);
 end);
@@ -35713,17 +35701,17 @@ procedure CLKernel.AddExistingNative(ntv: cl_kernel) := ntvs.AddExisting(ntv);
 
 static function CLMemory.FromNative(ntv: cl_mem): CLMemory;
 begin
-  var t: MemObjectType;
+  var t: clMemObjectType;
   OpenCLABCInternalException.RaiseIfError(
-    cl.GetMemObjectInfo(ntv, MemInfo.MEM_TYPE, new UIntPtr(sizeof(MemObjectType)), t, IntPtr.Zero)
+    cl.GetMemObjectInfo_MEM_TYPE(ntv, t, false)
   );
   
-  if t<>MemObjectType.MEM_OBJECT_BUFFER then
+  if t<>clMemObjectType.MEM_OBJECT_BUFFER then
     raise new ArgumentException($'Неправильный тип неуправляемого объекта памяти. Ожидалось [MEM_OBJECT_BUFFER], а не [{t}]');
   
   var parent: cl_mem;
   OpenCLABCInternalException.RaiseIfError(
-    cl.GetMemObjectInfo(ntv, MemInfo.MEM_ASSOCIATED_MEMOBJECT, new UIntPtr(cl_mem.Size), parent, IntPtr.Zero)
+    cl.GetMemObjectInfo_MEM_ASSOCIATED_MEMOBJECT(ntv, parent, false)
   );
   
   if parent=cl_mem.Zero then

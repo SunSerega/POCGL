@@ -30,61 +30,61 @@
 	<commands>
 		
 		<command>
-			<proto><type>void</type>					<name>1NoParam</name></proto>
+			<proto><type>void</type>					<name>f1NoParam</name></proto>
 		</command>
 		<command>
-			<proto><type>size_t</type>					<name>1NoParamResult</name></proto>
+			<proto><type>size_t</type>					<name>f1NoParamResult</name></proto>
 		</command>
 		
 		<command>
-			<proto><type>void</type>					<name>2ParamString</name></proto>
+			<proto><type>void</type>					<name>f2ParamString</name></proto>
 			<param><type>ntv_char</type> *				<name>s</name></param>
 		</command>
 		<command>
-			<proto><type>void</type>					<name>2ParamStringRO</name></proto>
+			<proto><type>void</type>					<name>f2ParamStringRO</name></proto>
 			<param><type>ntv_char</type> const*			<name>s</name></param>
 		</command>
 		
 		<command>
-			<proto><type>ntv_char</type> *				<name>3ResultString</name></proto>
+			<proto><type>ntv_char</type> *				<name>f3ResultString</name></proto>
 		</command>
 		<command>
-			<proto><type>ntv_char</type> const*			<name>3ResultStringRO</name></proto>
+			<proto><type>ntv_char</type> const*			<name>f3ResultStringRO</name></proto>
 		</command>
 		
 		<command>
-			<proto><type>void</type>					<name>4Generic</name></proto>
+			<proto><type>void</type>					<name>f4Generic</name></proto>
 			<param><type>ntv_generic</type> *			<name>data</name></param>
 		</command>
 		<command>
-			<proto><type>void</type>					<name>4GenericRO</name></proto>
+			<proto><type>void</type>					<name>f4GenericRO</name></proto>
 			<param><type>ntv_generic</type> const*		<name>data</name></param>
 		</command>
 		<!-- var-arg removed in fixers -->
 		<command>
-			<proto><type>void</type>					<name>4GenericWOVarArg</name></proto>
+			<proto><type>void</type>					<name>f4GenericWOVarArg</name></proto>
 			<param><type>ntv_generic</type> *			<name>data</name></param>
 		</command>
 		<command>
-			<proto><type>void</type>					<name>4GenericWOVarArgRO</name></proto>
+			<proto><type>void</type>					<name>f4GenericWOVarArgRO</name></proto>
 			<param><type>ntv_generic</type> const*		<name>data</name></param>
 		</command>
 		
 		<command>
-			<proto><type>void</type>					<name>5Arrrrrray</name></proto>
+			<proto><type>void</type>					<name>f5Arrrrrray</name></proto>
 			<param><type>size_t</type> const*****		<name>a</name></param>
 		</command>
 		<command>
-			<proto><type>void</type>					<name>5ArrrrrrayOfGeneric</name></proto>
+			<proto><type>void</type>					<name>f5ArrrrrrayOfGeneric</name></proto>
 			<param><type>ntv_generic</type> const*****	<name>a</name></param>
 		</command>
 		<command>
-			<proto><type>void</type>					<name>5ArrrrrrayOfString</name></proto>
+			<proto><type>void</type>					<name>f5ArrrrrrayOfString</name></proto>
 			<param><type>ntv_char</type> const*****		<name>s</name></param>
 		</command>
 		
 		<command>
-			<proto><type>ntv_char</type> *				<name>6Mix</name></proto>
+			<proto><type>ntv_char</type> *				<name>f6Mix</name></proto>
 			<param><type>ntv_char</type> *				<name>s1</name></param>
 			<param><type>ntv_char</type> const*			<name>s2</name></param>
 			<param><type>ntv_generic</type> *			<name>gen</name></param>
@@ -92,7 +92,7 @@
 		</command>
 		
 		<command>
-			<proto><type>void</type>					<name>7EnumToType</name></proto>
+			<proto><type>void</type>					<name>f7EnumToType</name></proto>
 			<param><type>Multichoise1</type>			<name>choise</name></param>
 			<param><type>size_t</type>					<name>inp_value_size</name></param>
 			<param><type>void</type> const*				<name>inp_value</name></param>
@@ -101,7 +101,7 @@
 			<param><type>size_t</type> *				<name>otp_value_size_ret</name></param>
 		</command>
 		<command>
-			<proto><type>void</type>					<name>7EnumToTypeInputOnly</name></proto>
+			<proto><type>void</type>					<name>f7EnumToTypeInputOnly</name></proto>
 			<param><type>Multichoise2</type>			<name>choise</name></param>
 			<param><type>size_t</type>					<name>inp_value_size</name></param>
 			<param><type>void</type> const*				<name>inp_value</name></param>
