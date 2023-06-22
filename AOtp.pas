@@ -218,7 +218,7 @@ type
     public static All := new List<EmergencyHandler>;
     
     public constructor :=
-    lock All do All += self;
+      lock All do All += self;
     
     public procedure Handle; abstract;
     
@@ -276,6 +276,14 @@ if Logger.main=nil then
 /// На случай ThreadAbortException - после вызова ErrOtp в потоке больше ничего быть не должно
 procedure ErrOtp(e: Exception);
 begin
+//  Otp(e.ToString);
+  
+  foreach var h in EmergencyHandler.All do
+    h.Handle;
+  
+  if e is ParentHaltException then
+    Halt;
+  
   var EternalSleep := procedure->
   begin
     Thread.CurrentThread.IsBackground := true;
@@ -301,6 +309,9 @@ begin
     end;
     in_err_state := true;
   end;
+//  Otp($'Thread {Thread.CurrentThread.ManagedThreadId} runs ErrOtp');
+//  Otp(System.Environment.StackTrace);
+//  Otp(e.ToString);
   
   lock sec_thrs do
     foreach var thr in sec_thrs do
@@ -310,11 +321,8 @@ begin
       except
         on abort_e: System.Threading.ThreadStateException do
           if not thr.ThreadState.HasFlag(System.Threading.ThreadState.Suspended) then
-            raise abort_e;
+            raise;
       end;
-  
-  foreach var h in EmergencyHandler.All do
-    h.Handle;
   
   try
     
@@ -325,8 +333,6 @@ begin
       curr_otp.Dump;
     end;
     
-    if e is ParentHaltException then
-      else
     if e is MessageException then
       Otp(e.Message) else
       Otp(e.ToString);
