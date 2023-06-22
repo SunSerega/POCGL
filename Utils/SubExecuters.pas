@@ -3,6 +3,7 @@
 uses System.Diagnostics;
 
 uses AOtp;
+uses CLArgs;
 uses PathUtils;
 uses Timers;
 
@@ -17,7 +18,7 @@ type
     private halt_str: System.IO.Pipes.AnonymousPipeServerStream;
     
     public constructor(p: Process) :=
-    self.p := p;
+      self.p := p;
     
     public procedure Handle; override;
     begin
@@ -49,6 +50,60 @@ type
       end;
       
       if not p.WaitForExit(100) then p.Kill;
+    end;
+    
+  end;
+  
+  CompHelper = static class
+    
+    private static pas_comp_path := default(string);
+    
+    public static function SetPasCompPath(path: string): boolean;
+    begin
+      Result := false;
+      if not FileExists(path) then
+      begin
+        Otp($'WARNING: pas_comp_path "{path}" did not refer to a file');
+        exit;
+      end;
+      if pas_comp_path<>nil then
+        raise new System.InvalidOperationException($'Path already set to: {pas_comp_path}');
+      pas_comp_path := path;
+      Result := true;
+    end;
+    
+    private static pas_comp_path_lock := new object;
+    public static function PasCompPath: string;
+    begin
+      lock pas_comp_path_lock do
+      begin
+        if pas_comp_path=nil then
+        begin
+          foreach var path in GetArgs('PasCompPath') do
+            if SetPasCompPath(path) then
+              break;
+          if pas_comp_path=nil then
+          begin
+            var path := 'C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe';
+            if FileExists(path) then
+              pas_comp_path := path;
+          end;
+        end;
+        if pas_comp_path=nil then
+          raise new System.NotImplementedException($'No compiler found');
+      end;
+      
+      Result := pas_comp_path;
+    end;
+    
+    public static function SubProcessArgs: sequence of string;
+    begin
+      try
+        var path := PasCompPath;
+        Result := |$'"PasCompPath={path}"'|;
+      except
+        Result := System.Array.Empty&<string>;
+      end;
     end;
     
   end;
@@ -121,7 +176,13 @@ begin
   if pek<>nil then pek.halt_str := new System.IO.Pipes.AnonymousPipeServerStream(System.IO.Pipes.PipeDirection.Out, System.IO.HandleInheritability.Inheritable);
   
   var all_pars := pars.AsEnumerable;
-  if pek<>nil then all_pars := all_pars+$'"{OutputPipeIdStr}={pipe.GetClientHandleAsString} {pek.halt_str.GetClientHandleAsString}"';
+  if nick<>nil then
+  begin
+    all_pars := all_pars
+      + $'"{OutputPipeIdStr}={pipe.GetClientHandleAsString} {pek.halt_str.GetClientHandleAsString}"'
+      + CompHelper.SubProcessArgs
+    ;
+  end;
   
   var psi := new ProcessStartInfo(fname, all_pars.JoinToString);
   psi.UseShellExecute := false;
@@ -197,7 +258,7 @@ begin
       on e: System.IO.EndOfStreamException do
       begin
         if pipe_connection_established=true then
-          thr_otp.Finish else
+          {thr_otp.Finish} else
           Otp($'WARNING: Pipe connection with "{nick??fname}" wasn''t established');
         exit;
       end;
@@ -295,7 +356,7 @@ begin
   if args<>nil then args_strs := args_strs.Append(args);
   args_strs := args_strs.Append($'"{fname}"');
   var psi := new ProcessStartInfo(
-    'C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe',
+    CompHelper.PasCompPath,
     args_strs.JoinToString
   );
 //  Otp(psi.Arguments);

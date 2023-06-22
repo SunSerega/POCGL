@@ -988,6 +988,11 @@ type
       var inp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       var otp_value_sz: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_1_InpFlat, inp_value_sz,inp_value, UIntPtr.Zero,nil,otp_value_sz);
+      if otp_value_sz = UIntPtr.Zero then
+      begin
+        otp_value := nil;
+        exit;
+      end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
       try
         f7EnumToType(Multichoise1.Choise1_1_InpFlat, inp_value_sz,inp_value, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
@@ -1001,6 +1006,11 @@ type
       var inp_value_sz := new UIntPtr(inp_value.Length*Marshal.SizeOf&<UIntPtr>);
       var otp_value_sz: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value[0], UIntPtr.Zero,nil,otp_value_sz);
+      if otp_value_sz = UIntPtr.Zero then
+      begin
+        otp_value := nil;
+        exit;
+      end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
       try
         f7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value[0], otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
@@ -1014,6 +1024,11 @@ type
       var inp_value_sz := new UIntPtr(inp_value_count*Marshal.SizeOf&<UIntPtr>);
       var otp_value_sz: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value, UIntPtr.Zero,nil,otp_value_sz);
+      if otp_value_sz = UIntPtr.Zero then
+      begin
+        otp_value := nil;
+        exit;
+      end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
       try
         f7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
@@ -1034,6 +1049,11 @@ type
     begin
       var otp_value_sz: UIntPtr;
       ntv_f7EnumToType_7(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
+      if otp_value_sz = UIntPtr.Zero then
+      begin
+        otp_value := nil;
+        exit;
+      end;
       var otp_value_temp_res := new UIntPtr[otp_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
       f7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],IntPtr.Zero);
       otp_value := otp_value_temp_res;
@@ -1065,6 +1085,11 @@ type
     begin
       var otp_value_sz: UIntPtr;
       ntv_f7EnumToType_7(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
+      if otp_value_sz = UIntPtr.Zero then
+      begin
+        otp_value := nil;
+        exit;
+      end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
       try
         ntv_f7EnumToType_8(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
@@ -1984,6 +2009,11 @@ type
       var inp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       var otp_value_sz: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_1_InpFlat, inp_value_sz,inp_value, UIntPtr.Zero,nil,otp_value_sz);
+      if otp_value_sz = UIntPtr.Zero then
+      begin
+        otp_value := nil;
+        exit;
+      end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
       try
         f7EnumToType(Multichoise1.Choise1_1_InpFlat, inp_value_sz,inp_value, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
@@ -1997,6 +2027,11 @@ type
       var inp_value_sz := new UIntPtr(inp_value.Length*Marshal.SizeOf&<UIntPtr>);
       var otp_value_sz: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value[0], UIntPtr.Zero,nil,otp_value_sz);
+      if otp_value_sz = UIntPtr.Zero then
+      begin
+        otp_value := nil;
+        exit;
+      end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
       try
         f7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value[0], otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
@@ -2010,6 +2045,11 @@ type
       var inp_value_sz := new UIntPtr(inp_value_count*Marshal.SizeOf&<UIntPtr>);
       var otp_value_sz: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value, UIntPtr.Zero,nil,otp_value_sz);
+      if otp_value_sz = UIntPtr.Zero then
+      begin
+        otp_value := nil;
+        exit;
+      end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
       try
         f7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);
@@ -2030,6 +2070,11 @@ type
     begin
       var otp_value_sz: UIntPtr;
       ntv_f7EnumToType_7(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
+      if otp_value_sz = UIntPtr.Zero then
+      begin
+        otp_value := nil;
+        exit;
+      end;
       var otp_value_temp_res := new UIntPtr[otp_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
       f7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],IntPtr.Zero);
       otp_value := otp_value_temp_res;
@@ -2061,6 +2106,11 @@ type
     begin
       var otp_value_sz: UIntPtr;
       ntv_f7EnumToType_7(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
+      if otp_value_sz = UIntPtr.Zero then
+      begin
+        otp_value := nil;
+        exit;
+      end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
       try
         ntv_f7EnumToType_8(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res.ToPointer,IntPtr.Zero);

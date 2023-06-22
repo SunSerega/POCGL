@@ -1838,6 +1838,22 @@ type
                       
                     end;
                     
+                    if data_par.enum_to_type_data_rep_c=nil then
+                    begin
+                      wr.WriteTabs;
+                      wr += 'if ';
+                      wr += expected_sz_name;
+                      wr += ' = UIntPtr.Zero then'#10;
+                      wr.MakeBlock('begin', wr->
+                      begin
+                        wr.WriteTabs;
+                        wr += data_par_name;
+                        wr += ' := nil;'#10;
+                        wr.WriteTabs;
+                        wr += 'exit;'#10;
+                      end);
+                    end;
+                    
                     wr.WriteTabs;
                     wr += 'var ';
                     wr += temp_res_name;

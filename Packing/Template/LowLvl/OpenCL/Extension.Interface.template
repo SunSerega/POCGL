@@ -32,6 +32,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_OCL_VERSION, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
         Result := ntv_GetICDLoaderInfoOCLICD_4(clIcdlInfo.ICDL_OCL_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
@@ -45,6 +50,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_VERSION, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
         Result := ntv_GetICDLoaderInfoOCLICD_4(clIcdlInfo.ICDL_VERSION, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
@@ -58,6 +68,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_NAME, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
         Result := ntv_GetICDLoaderInfoOCLICD_4(clIcdlInfo.ICDL_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
@@ -71,6 +86,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetICDLoaderInfoOCLICD_3(clIcdlInfo.ICDL_VENDOR, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
         Result := ntv_GetICDLoaderInfoOCLICD_4(clIcdlInfo.ICDL_VENDOR, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
@@ -121,6 +141,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetLayerInfo_3(clLayerInfo.LAYER_NAME, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := Marshal.AllocHGlobal(IntPtr(param_value_sz.ToPointer));
       try
         Result := ntv_GetLayerInfo_4(clLayerInfo.LAYER_NAME, param_value_sz,param_value_temp_res.ToPointer,IntPtr.Zero);
@@ -3115,6 +3140,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetCommandBufferInfoKHR_3(command_buffer, clCommandBufferInfo.COMMAND_BUFFER_QUEUES, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := new cl_command_queue[param_value_sz.ToUInt64 div Marshal.SizeOf&<cl_command_queue>];
       Result := GetCommandBufferInfoKHR(command_buffer, clCommandBufferInfo.COMMAND_BUFFER_QUEUES, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -3153,6 +3183,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetCommandBufferInfoKHR_3(command_buffer, clCommandBufferInfo.COMMAND_BUFFER_PROPERTIES_ARRAY, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := new clCommandBufferProperties[param_value_sz.ToUInt64 div Marshal.SizeOf&<clCommandBufferProperties>];
       Result := GetCommandBufferInfoKHR(command_buffer, clCommandBufferInfo.COMMAND_BUFFER_PROPERTIES_ARRAY, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -3301,6 +3336,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetMutableCommandInfoKHR_3(command, clMutableCommandInfo.MUTABLE_DISPATCH_PROPERTIES_ARRAY, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := new clNDRangeKernelCommandProperties[param_value_sz.ToUInt64 div Marshal.SizeOf&<clNDRangeKernelCommandProperties>];
       Result := GetMutableCommandInfoKHR(command, clMutableCommandInfo.MUTABLE_DISPATCH_PROPERTIES_ARRAY, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -3331,6 +3371,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetMutableCommandInfoKHR_3(command, clMutableCommandInfo.MUTABLE_DISPATCH_GLOBAL_WORK_OFFSET, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := new UIntPtr[param_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
       Result := GetMutableCommandInfoKHR(command, clMutableCommandInfo.MUTABLE_DISPATCH_GLOBAL_WORK_OFFSET, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -3345,6 +3390,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetMutableCommandInfoKHR_3(command, clMutableCommandInfo.MUTABLE_DISPATCH_GLOBAL_WORK_SIZE, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := new UIntPtr[param_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
       Result := GetMutableCommandInfoKHR(command, clMutableCommandInfo.MUTABLE_DISPATCH_GLOBAL_WORK_SIZE, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -3359,6 +3409,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetMutableCommandInfoKHR_3(command, clMutableCommandInfo.MUTABLE_DISPATCH_LOCAL_WORK_SIZE, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := new UIntPtr[param_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
       Result := GetMutableCommandInfoKHR(command, clMutableCommandInfo.MUTABLE_DISPATCH_LOCAL_WORK_SIZE, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -4729,6 +4784,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetGLContextInfoKHR_3(properties, clGlContextInfo.DEVICES_FOR_GL_CONTEXT, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := new cl_device_id[param_value_sz.ToUInt64 div Marshal.SizeOf&<cl_device_id>];
       Result := GetGLContextInfoKHR(properties, clGlContextInfo.DEVICES_FOR_GL_CONTEXT, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -5619,6 +5679,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetSemaphoreInfoKHR_3(sema_object, clSemaphoreInfo.SEMAPHORE_EXPORT_HANDLE_TYPES, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := new clExternalSemaphoreHandleType[param_value_sz.ToUInt64 div Marshal.SizeOf&<clExternalSemaphoreHandleType>];
       Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.SEMAPHORE_EXPORT_HANDLE_TYPES, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -5633,6 +5698,11 @@
       var param_value_sz: UIntPtr;
       Result := ntv_GetSemaphoreInfoKHR_3(sema_object, clSemaphoreInfo.DEVICE_HANDLE_LIST, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := new cl_device_id[param_value_sz.ToUInt64 div Marshal.SizeOf&<cl_device_id>];
       Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.DEVICE_HANDLE_LIST, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
@@ -5721,6 +5791,11 @@
       var param_value_sz: UIntPtr;
       Result := GetKernelSubGroupInfoKHR(in_kernel, in_device, clKernelSubGroupInfo.KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT, input_value_sz,input_value, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
       var param_value_temp_res := new UIntPtr[param_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
       Result := GetKernelSubGroupInfoKHR(in_kernel, in_device, clKernelSubGroupInfo.KERNEL_LOCAL_SIZE_FOR_SUB_GROUP_COUNT, input_value_sz,input_value, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;

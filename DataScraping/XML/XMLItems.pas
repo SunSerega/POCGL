@@ -777,7 +777,7 @@ type
         Result := castable_to.Length < g1.castable_to.Length+g2.castable_to.Length;
         if not Result then
         begin
-          l_otp($'No castable_to in common');
+          l_otp($'No castable_to in common: {_ObjectToString(g1.castable_to)} vs {_ObjectToString(g2.castable_to)}');
           exit;
         end;
         

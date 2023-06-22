@@ -1430,29 +1430,29 @@ type
     public property SemaphoreExportHandleTypes:      array of clExternalSemaphoreHandleType read GetSemaphoreExportHandleTypes;
     public property ExternalMemoryImportHandleTypes: array of clExternalMemoryHandleType    read GetExternalMemoryImportHandleTypes;
     
-    private static procedure AddProp(res: StringBuilder; v: object) :=
+    private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(v);
+        res += _ObjectToString(get_prop());
       except
         on e: OpenCLException do
           res += e.Code.ToString;
       end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'Profile                         = '; AddProp(res, Profile                        ); res += #10;
-      res += 'Version                         = '; AddProp(res, Version                        ); res += #10;
-      res += 'Name                            = '; AddProp(res, Name                           ); res += #10;
-      res += 'Vendor                          = '; AddProp(res, Vendor                         ); res += #10;
-      res += 'Extensions                      = '; AddProp(res, Extensions                     ); res += #10;
-      res += 'HostTimerResolution             = '; AddProp(res, HostTimerResolution            ); res += #10;
-      res += 'NumericVersion                  = '; AddProp(res, NumericVersion                 ); res += #10;
-      res += 'ExtensionsWithVersion           = '; AddProp(res, ExtensionsWithVersion          ); res += #10;
-      res += 'CommandBufferCapabilities       = '; AddProp(res, CommandBufferCapabilities      ); res += #10;
-      res += 'IcdSuffix                       = '; AddProp(res, IcdSuffix                      ); res += #10;
-      res += 'SemaphoreTypes                  = '; AddProp(res, SemaphoreTypes                 ); res += #10;
-      res += 'SemaphoreImportHandleTypes      = '; AddProp(res, SemaphoreImportHandleTypes     ); res += #10;
-      res += 'SemaphoreExportHandleTypes      = '; AddProp(res, SemaphoreExportHandleTypes     ); res += #10;
-      res += 'ExternalMemoryImportHandleTypes = '; AddProp(res, ExternalMemoryImportHandleTypes);
+      res += 'Profile                         = '; AddProp(res, GetProfile                        ); res += #10;
+      res += 'Version                         = '; AddProp(res, GetVersion                        ); res += #10;
+      res += 'Name                            = '; AddProp(res, GetName                           ); res += #10;
+      res += 'Vendor                          = '; AddProp(res, GetVendor                         ); res += #10;
+      res += 'Extensions                      = '; AddProp(res, GetExtensions                     ); res += #10;
+      res += 'HostTimerResolution             = '; AddProp(res, GetHostTimerResolution            ); res += #10;
+      res += 'NumericVersion                  = '; AddProp(res, GetNumericVersion                 ); res += #10;
+      res += 'ExtensionsWithVersion           = '; AddProp(res, GetExtensionsWithVersion          ); res += #10;
+      res += 'CommandBufferCapabilities       = '; AddProp(res, GetCommandBufferCapabilities      ); res += #10;
+      res += 'IcdSuffix                       = '; AddProp(res, GetIcdSuffix                      ); res += #10;
+      res += 'SemaphoreTypes                  = '; AddProp(res, GetSemaphoreTypes                 ); res += #10;
+      res += 'SemaphoreImportHandleTypes      = '; AddProp(res, GetSemaphoreImportHandleTypes     ); res += #10;
+      res += 'SemaphoreExportHandleTypes      = '; AddProp(res, GetSemaphoreExportHandleTypes     ); res += #10;
+      res += 'ExternalMemoryImportHandleTypes = '; AddProp(res, GetExternalMemoryImportHandleTypes);
     end;
     public function ToString: string; override;
     begin
@@ -2356,191 +2356,191 @@ type
     public property NumThreadsPerEu:                                     UInt32                                                read GetNumThreadsPerEu;
     public property FeatureCapabilities:                                 clDeviceFeatureCapabilities                           read GetFeatureCapabilities;
     
-    private static procedure AddProp(res: StringBuilder; v: object) :=
+    private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(v);
+        res += _ObjectToString(get_prop());
       except
         on e: OpenCLException do
           res += e.Code.ToString;
       end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'Type                                                = '; AddProp(res, &Type                                              ); res += #10;
-      res += 'VendorId                                            = '; AddProp(res, VendorId                                           ); res += #10;
-      res += 'MaxComputeUnits                                     = '; AddProp(res, MaxComputeUnits                                    ); res += #10;
-      res += 'MaxWorkItemDimensions                               = '; AddProp(res, MaxWorkItemDimensions                              ); res += #10;
-      res += 'MaxWorkGroupSize                                    = '; AddProp(res, MaxWorkGroupSize                                   ); res += #10;
-      res += 'MaxWorkItemSizes                                    = '; AddProp(res, MaxWorkItemSizes                                   ); res += #10;
-      res += 'PreferredVectorWidthChar                            = '; AddProp(res, PreferredVectorWidthChar                           ); res += #10;
-      res += 'PreferredVectorWidthShort                           = '; AddProp(res, PreferredVectorWidthShort                          ); res += #10;
-      res += 'PreferredVectorWidthInt                             = '; AddProp(res, PreferredVectorWidthInt                            ); res += #10;
-      res += 'PreferredVectorWidthLong                            = '; AddProp(res, PreferredVectorWidthLong                           ); res += #10;
-      res += 'PreferredVectorWidthFloat                           = '; AddProp(res, PreferredVectorWidthFloat                          ); res += #10;
-      res += 'PreferredVectorWidthDouble                          = '; AddProp(res, PreferredVectorWidthDouble                         ); res += #10;
-      res += 'MaxClockFrequency                                   = '; AddProp(res, MaxClockFrequency                                  ); res += #10;
-      res += 'AddressBits                                         = '; AddProp(res, AddressBits                                        ); res += #10;
-      res += 'MaxReadImageArgs                                    = '; AddProp(res, MaxReadImageArgs                                   ); res += #10;
-      res += 'MaxWriteImageArgs                                   = '; AddProp(res, MaxWriteImageArgs                                  ); res += #10;
-      res += 'MaxMemAllocSize                                     = '; AddProp(res, MaxMemAllocSize                                    ); res += #10;
-      res += 'Image2dMaxWidth                                     = '; AddProp(res, Image2dMaxWidth                                    ); res += #10;
-      res += 'Image2dMaxHeight                                    = '; AddProp(res, Image2dMaxHeight                                   ); res += #10;
-      res += 'Image3dMaxWidth                                     = '; AddProp(res, Image3dMaxWidth                                    ); res += #10;
-      res += 'Image3dMaxHeight                                    = '; AddProp(res, Image3dMaxHeight                                   ); res += #10;
-      res += 'Image3dMaxDepth                                     = '; AddProp(res, Image3dMaxDepth                                    ); res += #10;
-      res += 'ImageSupport                                        = '; AddProp(res, ImageSupport                                       ); res += #10;
-      res += 'MaxParameterSize                                    = '; AddProp(res, MaxParameterSize                                   ); res += #10;
-      res += 'MaxSamplers                                         = '; AddProp(res, MaxSamplers                                        ); res += #10;
-      res += 'MemBaseAddrAlign                                    = '; AddProp(res, MemBaseAddrAlign                                   ); res += #10;
-      res += 'MinDataTypeAlignSize                                = '; AddProp(res, MinDataTypeAlignSize                               ); res += #10;
-      res += 'SingleFpConfig                                      = '; AddProp(res, SingleFpConfig                                     ); res += #10;
-      res += 'GlobalMemCacheType                                  = '; AddProp(res, GlobalMemCacheType                                 ); res += #10;
-      res += 'GlobalMemCachelineSize                              = '; AddProp(res, GlobalMemCachelineSize                             ); res += #10;
-      res += 'GlobalMemCacheSize                                  = '; AddProp(res, GlobalMemCacheSize                                 ); res += #10;
-      res += 'GlobalMemSize                                       = '; AddProp(res, GlobalMemSize                                      ); res += #10;
-      res += 'MaxConstantBufferSize                               = '; AddProp(res, MaxConstantBufferSize                              ); res += #10;
-      res += 'MaxConstantArgs                                     = '; AddProp(res, MaxConstantArgs                                    ); res += #10;
-      res += 'LocalMemType                                        = '; AddProp(res, LocalMemType                                       ); res += #10;
-      res += 'LocalMemSize                                        = '; AddProp(res, LocalMemSize                                       ); res += #10;
-      res += 'ErrorCorrectionSupport                              = '; AddProp(res, ErrorCorrectionSupport                             ); res += #10;
-      res += 'ProfilingTimerResolution                            = '; AddProp(res, ProfilingTimerResolution                           ); res += #10;
-      res += 'EndianLittle                                        = '; AddProp(res, EndianLittle                                       ); res += #10;
-      res += 'Available                                           = '; AddProp(res, Available                                          ); res += #10;
-      res += 'CompilerAvailable                                   = '; AddProp(res, CompilerAvailable                                  ); res += #10;
-      res += 'ExecutionCapabilities                               = '; AddProp(res, ExecutionCapabilities                              ); res += #10;
-      res += 'QueueProperties                                     = '; AddProp(res, QueueProperties                                    ); res += #10;
-      res += 'QueueOnHostProperties                               = '; AddProp(res, QueueOnHostProperties                              ); res += #10;
-      res += 'Name                                                = '; AddProp(res, Name                                               ); res += #10;
-      res += 'Vendor                                              = '; AddProp(res, Vendor                                             ); res += #10;
-      res += 'DriverVersion                                       = '; AddProp(res, DriverVersion                                      ); res += #10;
-      res += 'Profile                                             = '; AddProp(res, Profile                                            ); res += #10;
-      res += 'Version                                             = '; AddProp(res, Version                                            ); res += #10;
-      res += 'Extensions                                          = '; AddProp(res, Extensions                                         ); res += #10;
-      res += 'DoubleFpConfig                                      = '; AddProp(res, DoubleFpConfig                                     ); res += #10;
-      res += 'HalfFpConfig                                        = '; AddProp(res, HalfFpConfig                                       ); res += #10;
-      res += 'PreferredVectorWidthHalf                            = '; AddProp(res, PreferredVectorWidthHalf                           ); res += #10;
-      res += 'HostUnifiedMemory                                   = '; AddProp(res, HostUnifiedMemory                                  ); res += #10;
-      res += 'NativeVectorWidthChar                               = '; AddProp(res, NativeVectorWidthChar                              ); res += #10;
-      res += 'NativeVectorWidthShort                              = '; AddProp(res, NativeVectorWidthShort                             ); res += #10;
-      res += 'NativeVectorWidthInt                                = '; AddProp(res, NativeVectorWidthInt                               ); res += #10;
-      res += 'NativeVectorWidthLong                               = '; AddProp(res, NativeVectorWidthLong                              ); res += #10;
-      res += 'NativeVectorWidthFloat                              = '; AddProp(res, NativeVectorWidthFloat                             ); res += #10;
-      res += 'NativeVectorWidthDouble                             = '; AddProp(res, NativeVectorWidthDouble                            ); res += #10;
-      res += 'NativeVectorWidthHalf                               = '; AddProp(res, NativeVectorWidthHalf                              ); res += #10;
-      res += 'OpenclCVersion                                      = '; AddProp(res, OpenclCVersion                                     ); res += #10;
-      res += 'LinkerAvailable                                     = '; AddProp(res, LinkerAvailable                                    ); res += #10;
-      res += 'BuiltInKernels                                      = '; AddProp(res, BuiltInKernels                                     ); res += #10;
-      res += 'ImageMaxBufferSize                                  = '; AddProp(res, ImageMaxBufferSize                                 ); res += #10;
-      res += 'ImageMaxArraySize                                   = '; AddProp(res, ImageMaxArraySize                                  ); res += #10;
-      res += 'ParentDevice                                        = '; AddProp(res, ParentDevice                                       ); res += #10;
-      res += 'PartitionMaxSubDevices                              = '; AddProp(res, PartitionMaxSubDevices                             ); res += #10;
-      res += 'PartitionProperties                                 = '; AddProp(res, PartitionProperties                                ); res += #10;
-      res += 'PartitionAffinityDomain                             = '; AddProp(res, PartitionAffinityDomain                            ); res += #10;
-      res += 'PartitionType                                       = '; AddProp(res, PartitionType                                      ); res += #10;
-      res += 'ReferenceCount                                      = '; AddProp(res, ReferenceCount                                     ); res += #10;
-      res += 'PreferredInteropUserSync                            = '; AddProp(res, PreferredInteropUserSync                           ); res += #10;
-      res += 'PrintfBufferSize                                    = '; AddProp(res, PrintfBufferSize                                   ); res += #10;
-      res += 'ImagePitchAlignment                                 = '; AddProp(res, ImagePitchAlignment                                ); res += #10;
-      res += 'ImageBaseAddressAlignment                           = '; AddProp(res, ImageBaseAddressAlignment                          ); res += #10;
-      res += 'MaxReadWriteImageArgs                               = '; AddProp(res, MaxReadWriteImageArgs                              ); res += #10;
-      res += 'MaxGlobalVariableSize                               = '; AddProp(res, MaxGlobalVariableSize                              ); res += #10;
-      res += 'QueueOnDeviceProperties                             = '; AddProp(res, QueueOnDeviceProperties                            ); res += #10;
-      res += 'QueueOnDevicePreferredSize                          = '; AddProp(res, QueueOnDevicePreferredSize                         ); res += #10;
-      res += 'QueueOnDeviceMaxSize                                = '; AddProp(res, QueueOnDeviceMaxSize                               ); res += #10;
-      res += 'MaxOnDeviceQueues                                   = '; AddProp(res, MaxOnDeviceQueues                                  ); res += #10;
-      res += 'MaxOnDeviceEvents                                   = '; AddProp(res, MaxOnDeviceEvents                                  ); res += #10;
-      res += 'SvmCapabilities                                     = '; AddProp(res, SvmCapabilities                                    ); res += #10;
-      res += 'GlobalVariablePreferredTotalSize                    = '; AddProp(res, GlobalVariablePreferredTotalSize                   ); res += #10;
-      res += 'MaxPipeArgs                                         = '; AddProp(res, MaxPipeArgs                                        ); res += #10;
-      res += 'PipeMaxActiveReservations                           = '; AddProp(res, PipeMaxActiveReservations                          ); res += #10;
-      res += 'PipeMaxPacketSize                                   = '; AddProp(res, PipeMaxPacketSize                                  ); res += #10;
-      res += 'PreferredPlatformAtomicAlignment                    = '; AddProp(res, PreferredPlatformAtomicAlignment                   ); res += #10;
-      res += 'PreferredGlobalAtomicAlignment                      = '; AddProp(res, PreferredGlobalAtomicAlignment                     ); res += #10;
-      res += 'PreferredLocalAtomicAlignment                       = '; AddProp(res, PreferredLocalAtomicAlignment                      ); res += #10;
-      res += 'IlVersion                                           = '; AddProp(res, IlVersion                                          ); res += #10;
-      res += 'MaxNumSubGroups                                     = '; AddProp(res, MaxNumSubGroups                                    ); res += #10;
-      res += 'SubGroupIndependentForwardProgress                  = '; AddProp(res, SubGroupIndependentForwardProgress                 ); res += #10;
-      res += 'NumericVersion                                      = '; AddProp(res, NumericVersion                                     ); res += #10;
-      res += 'OpenclCNumericVersion                               = '; AddProp(res, OpenclCNumericVersion                              ); res += #10;
-      res += 'ExtensionsWithVersion                               = '; AddProp(res, ExtensionsWithVersion                              ); res += #10;
-      res += 'IlsWithVersion                                      = '; AddProp(res, IlsWithVersion                                     ); res += #10;
-      res += 'BuiltInKernelsWithVersion                           = '; AddProp(res, BuiltInKernelsWithVersion                          ); res += #10;
-      res += 'AtomicMemoryCapabilities                            = '; AddProp(res, AtomicMemoryCapabilities                           ); res += #10;
-      res += 'AtomicFenceCapabilities                             = '; AddProp(res, AtomicFenceCapabilities                            ); res += #10;
-      res += 'NonUniformWorkGroupSupport                          = '; AddProp(res, NonUniformWorkGroupSupport                         ); res += #10;
-      res += 'OpenclCAllVersions                                  = '; AddProp(res, OpenclCAllVersions                                 ); res += #10;
-      res += 'PreferredWorkGroupSizeMultiple                      = '; AddProp(res, PreferredWorkGroupSizeMultiple                     ); res += #10;
-      res += 'WorkGroupCollectiveFunctionsSupport                 = '; AddProp(res, WorkGroupCollectiveFunctionsSupport                ); res += #10;
-      res += 'GenericAddressSpaceSupport                          = '; AddProp(res, GenericAddressSpaceSupport                         ); res += #10;
-      res += 'Uuid                                                = '; AddProp(res, Uuid                                               ); res += #10;
-      res += 'DriverUuid                                          = '; AddProp(res, DriverUuid                                         ); res += #10;
-      res += 'LuidValid                                           = '; AddProp(res, LuidValid                                          ); res += #10;
-      res += 'Luid                                                = '; AddProp(res, Luid                                               ); res += #10;
-      res += 'NodeMask                                            = '; AddProp(res, NodeMask                                           ); res += #10;
-      res += 'OpenclCFeatures                                     = '; AddProp(res, OpenclCFeatures                                    ); res += #10;
-      res += 'DeviceEnqueueCapabilities                           = '; AddProp(res, DeviceEnqueueCapabilities                          ); res += #10;
-      res += 'PipeSupport                                         = '; AddProp(res, PipeSupport                                        ); res += #10;
-      res += 'LatestConformanceVersionPassed                      = '; AddProp(res, LatestConformanceVersionPassed                     ); res += #10;
-      res += 'IntegerDotProductCapabilities                       = '; AddProp(res, IntegerDotProductCapabilities                      ); res += #10;
-      res += 'IntegerDotProductAccelerationProperties8bit         = '; AddProp(res, IntegerDotProductAccelerationProperties8bit        ); res += #10;
-      res += 'IntegerDotProductAccelerationProperties4x8bitPacked = '; AddProp(res, IntegerDotProductAccelerationProperties4x8bitPacked); res += #10;
-      res += 'CommandBufferCapabilities                           = '; AddProp(res, CommandBufferCapabilities                          ); res += #10;
-      res += 'CommandBufferRequiredQueueProperties                = '; AddProp(res, CommandBufferRequiredQueueProperties               ); res += #10;
-      res += 'CommandBufferNumSyncDevices                         = '; AddProp(res, CommandBufferNumSyncDevices                        ); res += #10;
-      res += 'CommandBufferSyncDevices                            = '; AddProp(res, CommandBufferSyncDevices                           ); res += #10;
-      res += 'MutableDispatchCapabilities                         = '; AddProp(res, MutableDispatchCapabilities                        ); res += #10;
-      res += 'TerminateCapability                                 = '; AddProp(res, TerminateCapability                                ); res += #10;
-      res += 'MaxNamedBarrierCount                                = '; AddProp(res, MaxNamedBarrierCount                               ); res += #10;
-      res += 'SemaphoreTypes                                      = '; AddProp(res, SemaphoreTypes                                     ); res += #10;
-      res += 'SemaphoreImportHandleTypes                          = '; AddProp(res, SemaphoreImportHandleTypes                         ); res += #10;
-      res += 'SemaphoreExportHandleTypes                          = '; AddProp(res, SemaphoreExportHandleTypes                         ); res += #10;
-      res += 'ExternalMemoryImportHandleTypes                     = '; AddProp(res, ExternalMemoryImportHandleTypes                    ); res += #10;
-      res += 'ComputeCapabilityMajor                              = '; AddProp(res, ComputeCapabilityMajor                             ); res += #10;
-      res += 'ComputeCapabilityMinor                              = '; AddProp(res, ComputeCapabilityMinor                             ); res += #10;
-      res += 'RegistersPerBlock                                   = '; AddProp(res, RegistersPerBlock                                  ); res += #10;
-      res += 'WarpSize                                            = '; AddProp(res, WarpSize                                           ); res += #10;
-      res += 'GpuOverlap                                          = '; AddProp(res, GpuOverlap                                         ); res += #10;
-      res += 'KernelExecTimeout                                   = '; AddProp(res, KernelExecTimeout                                  ); res += #10;
-      res += 'IntegratedMemory                                    = '; AddProp(res, IntegratedMemory                                   ); res += #10;
-      res += 'ParentDeviceExt                                     = '; AddProp(res, ParentDeviceExt                                    ); res += #10;
-      res += 'PartitionTypes                                      = '; AddProp(res, PartitionTypes                                     ); res += #10;
-      res += 'AffinityDomains                                     = '; AddProp(res, AffinityDomains                                    ); res += #10;
-      res += 'ReferenceCountExt                                   = '; AddProp(res, ReferenceCountExt                                  ); res += #10;
-      res += 'PartitionStyle                                      = '; AddProp(res, PartitionStyle                                     ); res += #10;
-      res += 'MeVersion                                           = '; AddProp(res, MeVersion                                          ); res += #10;
-      res += 'SvmCapabilitiesArm                                  = '; AddProp(res, SvmCapabilitiesArm                                 ); res += #10;
-      res += 'ComputeUnitsBitfield                                = '; AddProp(res, ComputeUnitsBitfield                               ); res += #10;
-      res += 'SpirVersions                                        = '; AddProp(res, SpirVersions                                       ); res += #10;
-      res += 'SimultaneousInterops                                = '; AddProp(res, SimultaneousInterops                               ); res += #10;
-      res += 'NumSimultaneousInterops                             = '; AddProp(res, NumSimultaneousInterops                            ); res += #10;
-      res += 'SubGroupSizes                                       = '; AddProp(res, SubGroupSizes                                      ); res += #10;
-      res += 'AvcMeVersion                                        = '; AddProp(res, AvcMeVersion                                       ); res += #10;
-      res += 'AvcMeSupportsTextureSamplerUse                      = '; AddProp(res, AvcMeSupportsTextureSamplerUse                     ); res += #10;
-      res += 'AvcMeSupportsPreemption                             = '; AddProp(res, AvcMeSupportsPreemption                            ); res += #10;
-      res += 'PciBusInfo                                          = '; AddProp(res, PciBusInfo                                         ); res += #10;
-      res += 'PlanarYuvMaxWidth                                   = '; AddProp(res, PlanarYuvMaxWidth                                  ); res += #10;
-      res += 'PlanarYuvMaxHeight                                  = '; AddProp(res, PlanarYuvMaxHeight                                 ); res += #10;
-      res += 'QueueFamilyProperties                               = '; AddProp(res, QueueFamilyProperties                              ); res += #10;
-      res += 'HostMemCapabilities                                 = '; AddProp(res, HostMemCapabilities                                ); res += #10;
-      res += 'DeviceMemCapabilities                               = '; AddProp(res, DeviceMemCapabilities                              ); res += #10;
-      res += 'SingleDeviceSharedMemCapabilities                   = '; AddProp(res, SingleDeviceSharedMemCapabilities                  ); res += #10;
-      res += 'CrossDeviceSharedMemCapabilities                    = '; AddProp(res, CrossDeviceSharedMemCapabilities                   ); res += #10;
-      res += 'SharedSystemMemCapabilities                         = '; AddProp(res, SharedSystemMemCapabilities                        ); res += #10;
-      res += 'JobSlots                                            = '; AddProp(res, JobSlots                                           ); res += #10;
-      res += 'SchedulingControlsCapabilities                      = '; AddProp(res, SchedulingControlsCapabilities                     ); res += #10;
-      res += 'MaxWarpCount                                        = '; AddProp(res, MaxWarpCount                                       ); res += #10;
-      res += 'SupportedRegisterAllocations                        = '; AddProp(res, SupportedRegisterAllocations                       ); res += #10;
-      res += 'ControlledTerminationCapabilities                   = '; AddProp(res, ControlledTerminationCapabilities                  ); res += #10;
-      res += 'CxxForOpenclNumericVersion                          = '; AddProp(res, CxxForOpenclNumericVersion                         ); res += #10;
-      res += 'SingleFpAtomicCapabilities                          = '; AddProp(res, SingleFpAtomicCapabilities                         ); res += #10;
-      res += 'DoubleFpAtomicCapabilities                          = '; AddProp(res, DoubleFpAtomicCapabilities                         ); res += #10;
-      res += 'HalfFpAtomicCapabilities                            = '; AddProp(res, HalfFpAtomicCapabilities                           ); res += #10;
-      res += 'IpVersion                                           = '; AddProp(res, IpVersion                                          ); res += #10;
-      res += 'Id                                                  = '; AddProp(res, Id                                                 ); res += #10;
-      res += 'NumSlices                                           = '; AddProp(res, NumSlices                                          ); res += #10;
-      res += 'NumSubSlicesPerSlice                                = '; AddProp(res, NumSubSlicesPerSlice                               ); res += #10;
-      res += 'NumEusPerSubSlice                                   = '; AddProp(res, NumEusPerSubSlice                                  ); res += #10;
-      res += 'NumThreadsPerEu                                     = '; AddProp(res, NumThreadsPerEu                                    ); res += #10;
-      res += 'FeatureCapabilities                                 = '; AddProp(res, FeatureCapabilities                                );
+      res += 'Type                                                = '; AddProp(res, GetType                                              ); res += #10;
+      res += 'VendorId                                            = '; AddProp(res, GetVendorId                                           ); res += #10;
+      res += 'MaxComputeUnits                                     = '; AddProp(res, GetMaxComputeUnits                                    ); res += #10;
+      res += 'MaxWorkItemDimensions                               = '; AddProp(res, GetMaxWorkItemDimensions                              ); res += #10;
+      res += 'MaxWorkGroupSize                                    = '; AddProp(res, GetMaxWorkGroupSize                                   ); res += #10;
+      res += 'MaxWorkItemSizes                                    = '; AddProp(res, GetMaxWorkItemSizes                                   ); res += #10;
+      res += 'PreferredVectorWidthChar                            = '; AddProp(res, GetPreferredVectorWidthChar                           ); res += #10;
+      res += 'PreferredVectorWidthShort                           = '; AddProp(res, GetPreferredVectorWidthShort                          ); res += #10;
+      res += 'PreferredVectorWidthInt                             = '; AddProp(res, GetPreferredVectorWidthInt                            ); res += #10;
+      res += 'PreferredVectorWidthLong                            = '; AddProp(res, GetPreferredVectorWidthLong                           ); res += #10;
+      res += 'PreferredVectorWidthFloat                           = '; AddProp(res, GetPreferredVectorWidthFloat                          ); res += #10;
+      res += 'PreferredVectorWidthDouble                          = '; AddProp(res, GetPreferredVectorWidthDouble                         ); res += #10;
+      res += 'MaxClockFrequency                                   = '; AddProp(res, GetMaxClockFrequency                                  ); res += #10;
+      res += 'AddressBits                                         = '; AddProp(res, GetAddressBits                                        ); res += #10;
+      res += 'MaxReadImageArgs                                    = '; AddProp(res, GetMaxReadImageArgs                                   ); res += #10;
+      res += 'MaxWriteImageArgs                                   = '; AddProp(res, GetMaxWriteImageArgs                                  ); res += #10;
+      res += 'MaxMemAllocSize                                     = '; AddProp(res, GetMaxMemAllocSize                                    ); res += #10;
+      res += 'Image2dMaxWidth                                     = '; AddProp(res, GetImage2dMaxWidth                                    ); res += #10;
+      res += 'Image2dMaxHeight                                    = '; AddProp(res, GetImage2dMaxHeight                                   ); res += #10;
+      res += 'Image3dMaxWidth                                     = '; AddProp(res, GetImage3dMaxWidth                                    ); res += #10;
+      res += 'Image3dMaxHeight                                    = '; AddProp(res, GetImage3dMaxHeight                                   ); res += #10;
+      res += 'Image3dMaxDepth                                     = '; AddProp(res, GetImage3dMaxDepth                                    ); res += #10;
+      res += 'ImageSupport                                        = '; AddProp(res, GetImageSupport                                       ); res += #10;
+      res += 'MaxParameterSize                                    = '; AddProp(res, GetMaxParameterSize                                   ); res += #10;
+      res += 'MaxSamplers                                         = '; AddProp(res, GetMaxSamplers                                        ); res += #10;
+      res += 'MemBaseAddrAlign                                    = '; AddProp(res, GetMemBaseAddrAlign                                   ); res += #10;
+      res += 'MinDataTypeAlignSize                                = '; AddProp(res, GetMinDataTypeAlignSize                               ); res += #10;
+      res += 'SingleFpConfig                                      = '; AddProp(res, GetSingleFpConfig                                     ); res += #10;
+      res += 'GlobalMemCacheType                                  = '; AddProp(res, GetGlobalMemCacheType                                 ); res += #10;
+      res += 'GlobalMemCachelineSize                              = '; AddProp(res, GetGlobalMemCachelineSize                             ); res += #10;
+      res += 'GlobalMemCacheSize                                  = '; AddProp(res, GetGlobalMemCacheSize                                 ); res += #10;
+      res += 'GlobalMemSize                                       = '; AddProp(res, GetGlobalMemSize                                      ); res += #10;
+      res += 'MaxConstantBufferSize                               = '; AddProp(res, GetMaxConstantBufferSize                              ); res += #10;
+      res += 'MaxConstantArgs                                     = '; AddProp(res, GetMaxConstantArgs                                    ); res += #10;
+      res += 'LocalMemType                                        = '; AddProp(res, GetLocalMemType                                       ); res += #10;
+      res += 'LocalMemSize                                        = '; AddProp(res, GetLocalMemSize                                       ); res += #10;
+      res += 'ErrorCorrectionSupport                              = '; AddProp(res, GetErrorCorrectionSupport                             ); res += #10;
+      res += 'ProfilingTimerResolution                            = '; AddProp(res, GetProfilingTimerResolution                           ); res += #10;
+      res += 'EndianLittle                                        = '; AddProp(res, GetEndianLittle                                       ); res += #10;
+      res += 'Available                                           = '; AddProp(res, GetAvailable                                          ); res += #10;
+      res += 'CompilerAvailable                                   = '; AddProp(res, GetCompilerAvailable                                  ); res += #10;
+      res += 'ExecutionCapabilities                               = '; AddProp(res, GetExecutionCapabilities                              ); res += #10;
+      res += 'QueueProperties                                     = '; AddProp(res, GetQueueProperties                                    ); res += #10;
+      res += 'QueueOnHostProperties                               = '; AddProp(res, GetQueueOnHostProperties                              ); res += #10;
+      res += 'Name                                                = '; AddProp(res, GetName                                               ); res += #10;
+      res += 'Vendor                                              = '; AddProp(res, GetVendor                                             ); res += #10;
+      res += 'DriverVersion                                       = '; AddProp(res, GetDriverVersion                                      ); res += #10;
+      res += 'Profile                                             = '; AddProp(res, GetProfile                                            ); res += #10;
+      res += 'Version                                             = '; AddProp(res, GetVersion                                            ); res += #10;
+      res += 'Extensions                                          = '; AddProp(res, GetExtensions                                         ); res += #10;
+      res += 'DoubleFpConfig                                      = '; AddProp(res, GetDoubleFpConfig                                     ); res += #10;
+      res += 'HalfFpConfig                                        = '; AddProp(res, GetHalfFpConfig                                       ); res += #10;
+      res += 'PreferredVectorWidthHalf                            = '; AddProp(res, GetPreferredVectorWidthHalf                           ); res += #10;
+      res += 'HostUnifiedMemory                                   = '; AddProp(res, GetHostUnifiedMemory                                  ); res += #10;
+      res += 'NativeVectorWidthChar                               = '; AddProp(res, GetNativeVectorWidthChar                              ); res += #10;
+      res += 'NativeVectorWidthShort                              = '; AddProp(res, GetNativeVectorWidthShort                             ); res += #10;
+      res += 'NativeVectorWidthInt                                = '; AddProp(res, GetNativeVectorWidthInt                               ); res += #10;
+      res += 'NativeVectorWidthLong                               = '; AddProp(res, GetNativeVectorWidthLong                              ); res += #10;
+      res += 'NativeVectorWidthFloat                              = '; AddProp(res, GetNativeVectorWidthFloat                             ); res += #10;
+      res += 'NativeVectorWidthDouble                             = '; AddProp(res, GetNativeVectorWidthDouble                            ); res += #10;
+      res += 'NativeVectorWidthHalf                               = '; AddProp(res, GetNativeVectorWidthHalf                              ); res += #10;
+      res += 'OpenclCVersion                                      = '; AddProp(res, GetOpenclCVersion                                     ); res += #10;
+      res += 'LinkerAvailable                                     = '; AddProp(res, GetLinkerAvailable                                    ); res += #10;
+      res += 'BuiltInKernels                                      = '; AddProp(res, GetBuiltInKernels                                     ); res += #10;
+      res += 'ImageMaxBufferSize                                  = '; AddProp(res, GetImageMaxBufferSize                                 ); res += #10;
+      res += 'ImageMaxArraySize                                   = '; AddProp(res, GetImageMaxArraySize                                  ); res += #10;
+      res += 'ParentDevice                                        = '; AddProp(res, GetParentDevice                                       ); res += #10;
+      res += 'PartitionMaxSubDevices                              = '; AddProp(res, GetPartitionMaxSubDevices                             ); res += #10;
+      res += 'PartitionProperties                                 = '; AddProp(res, GetPartitionProperties                                ); res += #10;
+      res += 'PartitionAffinityDomain                             = '; AddProp(res, GetPartitionAffinityDomain                            ); res += #10;
+      res += 'PartitionType                                       = '; AddProp(res, GetPartitionType                                      ); res += #10;
+      res += 'ReferenceCount                                      = '; AddProp(res, GetReferenceCount                                     ); res += #10;
+      res += 'PreferredInteropUserSync                            = '; AddProp(res, GetPreferredInteropUserSync                           ); res += #10;
+      res += 'PrintfBufferSize                                    = '; AddProp(res, GetPrintfBufferSize                                   ); res += #10;
+      res += 'ImagePitchAlignment                                 = '; AddProp(res, GetImagePitchAlignment                                ); res += #10;
+      res += 'ImageBaseAddressAlignment                           = '; AddProp(res, GetImageBaseAddressAlignment                          ); res += #10;
+      res += 'MaxReadWriteImageArgs                               = '; AddProp(res, GetMaxReadWriteImageArgs                              ); res += #10;
+      res += 'MaxGlobalVariableSize                               = '; AddProp(res, GetMaxGlobalVariableSize                              ); res += #10;
+      res += 'QueueOnDeviceProperties                             = '; AddProp(res, GetQueueOnDeviceProperties                            ); res += #10;
+      res += 'QueueOnDevicePreferredSize                          = '; AddProp(res, GetQueueOnDevicePreferredSize                         ); res += #10;
+      res += 'QueueOnDeviceMaxSize                                = '; AddProp(res, GetQueueOnDeviceMaxSize                               ); res += #10;
+      res += 'MaxOnDeviceQueues                                   = '; AddProp(res, GetMaxOnDeviceQueues                                  ); res += #10;
+      res += 'MaxOnDeviceEvents                                   = '; AddProp(res, GetMaxOnDeviceEvents                                  ); res += #10;
+      res += 'SvmCapabilities                                     = '; AddProp(res, GetSvmCapabilities                                    ); res += #10;
+      res += 'GlobalVariablePreferredTotalSize                    = '; AddProp(res, GetGlobalVariablePreferredTotalSize                   ); res += #10;
+      res += 'MaxPipeArgs                                         = '; AddProp(res, GetMaxPipeArgs                                        ); res += #10;
+      res += 'PipeMaxActiveReservations                           = '; AddProp(res, GetPipeMaxActiveReservations                          ); res += #10;
+      res += 'PipeMaxPacketSize                                   = '; AddProp(res, GetPipeMaxPacketSize                                  ); res += #10;
+      res += 'PreferredPlatformAtomicAlignment                    = '; AddProp(res, GetPreferredPlatformAtomicAlignment                   ); res += #10;
+      res += 'PreferredGlobalAtomicAlignment                      = '; AddProp(res, GetPreferredGlobalAtomicAlignment                     ); res += #10;
+      res += 'PreferredLocalAtomicAlignment                       = '; AddProp(res, GetPreferredLocalAtomicAlignment                      ); res += #10;
+      res += 'IlVersion                                           = '; AddProp(res, GetIlVersion                                          ); res += #10;
+      res += 'MaxNumSubGroups                                     = '; AddProp(res, GetMaxNumSubGroups                                    ); res += #10;
+      res += 'SubGroupIndependentForwardProgress                  = '; AddProp(res, GetSubGroupIndependentForwardProgress                 ); res += #10;
+      res += 'NumericVersion                                      = '; AddProp(res, GetNumericVersion                                     ); res += #10;
+      res += 'OpenclCNumericVersion                               = '; AddProp(res, GetOpenclCNumericVersion                              ); res += #10;
+      res += 'ExtensionsWithVersion                               = '; AddProp(res, GetExtensionsWithVersion                              ); res += #10;
+      res += 'IlsWithVersion                                      = '; AddProp(res, GetIlsWithVersion                                     ); res += #10;
+      res += 'BuiltInKernelsWithVersion                           = '; AddProp(res, GetBuiltInKernelsWithVersion                          ); res += #10;
+      res += 'AtomicMemoryCapabilities                            = '; AddProp(res, GetAtomicMemoryCapabilities                           ); res += #10;
+      res += 'AtomicFenceCapabilities                             = '; AddProp(res, GetAtomicFenceCapabilities                            ); res += #10;
+      res += 'NonUniformWorkGroupSupport                          = '; AddProp(res, GetNonUniformWorkGroupSupport                         ); res += #10;
+      res += 'OpenclCAllVersions                                  = '; AddProp(res, GetOpenclCAllVersions                                 ); res += #10;
+      res += 'PreferredWorkGroupSizeMultiple                      = '; AddProp(res, GetPreferredWorkGroupSizeMultiple                     ); res += #10;
+      res += 'WorkGroupCollectiveFunctionsSupport                 = '; AddProp(res, GetWorkGroupCollectiveFunctionsSupport                ); res += #10;
+      res += 'GenericAddressSpaceSupport                          = '; AddProp(res, GetGenericAddressSpaceSupport                         ); res += #10;
+      res += 'Uuid                                                = '; AddProp(res, GetUuid                                               ); res += #10;
+      res += 'DriverUuid                                          = '; AddProp(res, GetDriverUuid                                         ); res += #10;
+      res += 'LuidValid                                           = '; AddProp(res, GetLuidValid                                          ); res += #10;
+      res += 'Luid                                                = '; AddProp(res, GetLuid                                               ); res += #10;
+      res += 'NodeMask                                            = '; AddProp(res, GetNodeMask                                           ); res += #10;
+      res += 'OpenclCFeatures                                     = '; AddProp(res, GetOpenclCFeatures                                    ); res += #10;
+      res += 'DeviceEnqueueCapabilities                           = '; AddProp(res, GetDeviceEnqueueCapabilities                          ); res += #10;
+      res += 'PipeSupport                                         = '; AddProp(res, GetPipeSupport                                        ); res += #10;
+      res += 'LatestConformanceVersionPassed                      = '; AddProp(res, GetLatestConformanceVersionPassed                     ); res += #10;
+      res += 'IntegerDotProductCapabilities                       = '; AddProp(res, GetIntegerDotProductCapabilities                      ); res += #10;
+      res += 'IntegerDotProductAccelerationProperties8bit         = '; AddProp(res, GetIntegerDotProductAccelerationProperties8bit        ); res += #10;
+      res += 'IntegerDotProductAccelerationProperties4x8bitPacked = '; AddProp(res, GetIntegerDotProductAccelerationProperties4x8bitPacked); res += #10;
+      res += 'CommandBufferCapabilities                           = '; AddProp(res, GetCommandBufferCapabilities                          ); res += #10;
+      res += 'CommandBufferRequiredQueueProperties                = '; AddProp(res, GetCommandBufferRequiredQueueProperties               ); res += #10;
+      res += 'CommandBufferNumSyncDevices                         = '; AddProp(res, GetCommandBufferNumSyncDevices                        ); res += #10;
+      res += 'CommandBufferSyncDevices                            = '; AddProp(res, GetCommandBufferSyncDevices                           ); res += #10;
+      res += 'MutableDispatchCapabilities                         = '; AddProp(res, GetMutableDispatchCapabilities                        ); res += #10;
+      res += 'TerminateCapability                                 = '; AddProp(res, GetTerminateCapability                                ); res += #10;
+      res += 'MaxNamedBarrierCount                                = '; AddProp(res, GetMaxNamedBarrierCount                               ); res += #10;
+      res += 'SemaphoreTypes                                      = '; AddProp(res, GetSemaphoreTypes                                     ); res += #10;
+      res += 'SemaphoreImportHandleTypes                          = '; AddProp(res, GetSemaphoreImportHandleTypes                         ); res += #10;
+      res += 'SemaphoreExportHandleTypes                          = '; AddProp(res, GetSemaphoreExportHandleTypes                         ); res += #10;
+      res += 'ExternalMemoryImportHandleTypes                     = '; AddProp(res, GetExternalMemoryImportHandleTypes                    ); res += #10;
+      res += 'ComputeCapabilityMajor                              = '; AddProp(res, GetComputeCapabilityMajor                             ); res += #10;
+      res += 'ComputeCapabilityMinor                              = '; AddProp(res, GetComputeCapabilityMinor                             ); res += #10;
+      res += 'RegistersPerBlock                                   = '; AddProp(res, GetRegistersPerBlock                                  ); res += #10;
+      res += 'WarpSize                                            = '; AddProp(res, GetWarpSize                                           ); res += #10;
+      res += 'GpuOverlap                                          = '; AddProp(res, GetGpuOverlap                                         ); res += #10;
+      res += 'KernelExecTimeout                                   = '; AddProp(res, GetKernelExecTimeout                                  ); res += #10;
+      res += 'IntegratedMemory                                    = '; AddProp(res, GetIntegratedMemory                                   ); res += #10;
+      res += 'ParentDeviceExt                                     = '; AddProp(res, GetParentDeviceExt                                    ); res += #10;
+      res += 'PartitionTypes                                      = '; AddProp(res, GetPartitionTypes                                     ); res += #10;
+      res += 'AffinityDomains                                     = '; AddProp(res, GetAffinityDomains                                    ); res += #10;
+      res += 'ReferenceCountExt                                   = '; AddProp(res, GetReferenceCountExt                                  ); res += #10;
+      res += 'PartitionStyle                                      = '; AddProp(res, GetPartitionStyle                                     ); res += #10;
+      res += 'MeVersion                                           = '; AddProp(res, GetMeVersion                                          ); res += #10;
+      res += 'SvmCapabilitiesArm                                  = '; AddProp(res, GetSvmCapabilitiesArm                                 ); res += #10;
+      res += 'ComputeUnitsBitfield                                = '; AddProp(res, GetComputeUnitsBitfield                               ); res += #10;
+      res += 'SpirVersions                                        = '; AddProp(res, GetSpirVersions                                       ); res += #10;
+      res += 'SimultaneousInterops                                = '; AddProp(res, GetSimultaneousInterops                               ); res += #10;
+      res += 'NumSimultaneousInterops                             = '; AddProp(res, GetNumSimultaneousInterops                            ); res += #10;
+      res += 'SubGroupSizes                                       = '; AddProp(res, GetSubGroupSizes                                      ); res += #10;
+      res += 'AvcMeVersion                                        = '; AddProp(res, GetAvcMeVersion                                       ); res += #10;
+      res += 'AvcMeSupportsTextureSamplerUse                      = '; AddProp(res, GetAvcMeSupportsTextureSamplerUse                     ); res += #10;
+      res += 'AvcMeSupportsPreemption                             = '; AddProp(res, GetAvcMeSupportsPreemption                            ); res += #10;
+      res += 'PciBusInfo                                          = '; AddProp(res, GetPciBusInfo                                         ); res += #10;
+      res += 'PlanarYuvMaxWidth                                   = '; AddProp(res, GetPlanarYuvMaxWidth                                  ); res += #10;
+      res += 'PlanarYuvMaxHeight                                  = '; AddProp(res, GetPlanarYuvMaxHeight                                 ); res += #10;
+      res += 'QueueFamilyProperties                               = '; AddProp(res, GetQueueFamilyProperties                              ); res += #10;
+      res += 'HostMemCapabilities                                 = '; AddProp(res, GetHostMemCapabilities                                ); res += #10;
+      res += 'DeviceMemCapabilities                               = '; AddProp(res, GetDeviceMemCapabilities                              ); res += #10;
+      res += 'SingleDeviceSharedMemCapabilities                   = '; AddProp(res, GetSingleDeviceSharedMemCapabilities                  ); res += #10;
+      res += 'CrossDeviceSharedMemCapabilities                    = '; AddProp(res, GetCrossDeviceSharedMemCapabilities                   ); res += #10;
+      res += 'SharedSystemMemCapabilities                         = '; AddProp(res, GetSharedSystemMemCapabilities                        ); res += #10;
+      res += 'JobSlots                                            = '; AddProp(res, GetJobSlots                                           ); res += #10;
+      res += 'SchedulingControlsCapabilities                      = '; AddProp(res, GetSchedulingControlsCapabilities                     ); res += #10;
+      res += 'MaxWarpCount                                        = '; AddProp(res, GetMaxWarpCount                                       ); res += #10;
+      res += 'SupportedRegisterAllocations                        = '; AddProp(res, GetSupportedRegisterAllocations                       ); res += #10;
+      res += 'ControlledTerminationCapabilities                   = '; AddProp(res, GetControlledTerminationCapabilities                  ); res += #10;
+      res += 'CxxForOpenclNumericVersion                          = '; AddProp(res, GetCxxForOpenclNumericVersion                         ); res += #10;
+      res += 'SingleFpAtomicCapabilities                          = '; AddProp(res, GetSingleFpAtomicCapabilities                         ); res += #10;
+      res += 'DoubleFpAtomicCapabilities                          = '; AddProp(res, GetDoubleFpAtomicCapabilities                         ); res += #10;
+      res += 'HalfFpAtomicCapabilities                            = '; AddProp(res, GetHalfFpAtomicCapabilities                           ); res += #10;
+      res += 'IpVersion                                           = '; AddProp(res, GetIpVersion                                          ); res += #10;
+      res += 'Id                                                  = '; AddProp(res, GetId                                                 ); res += #10;
+      res += 'NumSlices                                           = '; AddProp(res, GetNumSlices                                          ); res += #10;
+      res += 'NumSubSlicesPerSlice                                = '; AddProp(res, GetNumSubSlicesPerSlice                               ); res += #10;
+      res += 'NumEusPerSubSlice                                   = '; AddProp(res, GetNumEusPerSubSlice                                  ); res += #10;
+      res += 'NumThreadsPerEu                                     = '; AddProp(res, GetNumThreadsPerEu                                    ); res += #10;
+      res += 'FeatureCapabilities                                 = '; AddProp(res, GetFeatureCapabilities                                );
     end;
     public function ToString: string; override;
     begin
@@ -2591,19 +2591,19 @@ type
     public property D3d11PreferSharedResources: clBool                     read GetD3d11PreferSharedResources;
     public property VaApiDisplay:               IntPtr                     read GetVaApiDisplay;
     
-    private static procedure AddProp(res: StringBuilder; v: object) :=
+    private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(v);
+        res += _ObjectToString(get_prop());
       except
         on e: OpenCLException do
           res += e.Code.ToString;
       end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'Properties                 = '; AddProp(res, Properties                ); res += #10;
-      res += 'D3d10PreferSharedResources = '; AddProp(res, D3d10PreferSharedResources); res += #10;
-      res += 'D3d11PreferSharedResources = '; AddProp(res, D3d11PreferSharedResources); res += #10;
-      res += 'VaApiDisplay               = '; AddProp(res, VaApiDisplay              );
+      res += 'Properties                 = '; AddProp(res, GetProperties                ); res += #10;
+      res += 'D3d10PreferSharedResources = '; AddProp(res, GetD3d10PreferSharedResources); res += #10;
+      res += 'D3d11PreferSharedResources = '; AddProp(res, GetD3d11PreferSharedResources); res += #10;
+      res += 'VaApiDisplay               = '; AddProp(res, GetVaApiDisplay              );
     end;
     public function ToString: string; override;
     begin
@@ -2657,21 +2657,21 @@ type
     public property NumHostPipes:            UIntPtr       read GetNumHostPipes;
     public property HostPipeNames:           string        read GetHostPipeNames;
     
-    private static procedure AddProp(res: StringBuilder; v: object) :=
+    private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(v);
+        res += _ObjectToString(get_prop());
       except
         on e: OpenCLException do
           res += e.Code.ToString;
       end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'Source                  = '; AddProp(res, Source                 ); res += #10;
-      res += 'Il                      = '; AddProp(res, Il                     ); res += #10;
-      res += 'ScopeGlobalCtorsPresent = '; AddProp(res, ScopeGlobalCtorsPresent); res += #10;
-      res += 'ScopeGlobalDtorsPresent = '; AddProp(res, ScopeGlobalDtorsPresent); res += #10;
-      res += 'NumHostPipes            = '; AddProp(res, NumHostPipes           ); res += #10;
-      res += 'HostPipeNames           = '; AddProp(res, HostPipeNames          );
+      res += 'Source                  = '; AddProp(res, GetSource                 ); res += #10;
+      res += 'Il                      = '; AddProp(res, GetIl                     ); res += #10;
+      res += 'ScopeGlobalCtorsPresent = '; AddProp(res, GetScopeGlobalCtorsPresent); res += #10;
+      res += 'ScopeGlobalDtorsPresent = '; AddProp(res, GetScopeGlobalDtorsPresent); res += #10;
+      res += 'NumHostPipes            = '; AddProp(res, GetNumHostPipes           ); res += #10;
+      res += 'HostPipeNames           = '; AddProp(res, GetHostPipeNames          );
     end;
     public function ToString: string; override;
     begin
@@ -2780,32 +2780,32 @@ type
     public property AllocSize:           UIntPtr                   read GetAllocSize;
     public property AllocDevice:         cl_device_id              read GetAllocDevice;
     
-    private static procedure AddProp(res: StringBuilder; v: object) :=
+    private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(v);
+        res += _ObjectToString(get_prop());
       except
         on e: OpenCLException do
           res += e.Code.ToString;
       end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'Flags               = '; AddProp(res, Flags              ); res += #10;
-      res += 'HostPtr             = '; AddProp(res, HostPtr            ); res += #10;
-      res += 'UsesSvmPointer      = '; AddProp(res, UsesSvmPointer     ); res += #10;
-      res += 'Properties          = '; AddProp(res, Properties         ); res += #10;
-      res += 'Dx9MediaAdapterType = '; AddProp(res, Dx9MediaAdapterType); res += #10;
-      res += 'Dx9MediaSurfaceInfo = '; AddProp(res, Dx9MediaSurfaceInfo); res += #10;
-      res += 'D3d10Resource       = '; AddProp(res, D3d10Resource      ); res += #10;
-      res += 'D3d11Resource       = '; AddProp(res, D3d11Resource      ); res += #10;
-      res += 'Dx9Resource         = '; AddProp(res, Dx9Resource        ); res += #10;
-      res += 'Dx9SharedHandle     = '; AddProp(res, Dx9SharedHandle    ); res += #10;
-      res += 'VaApiMediaSurface   = '; AddProp(res, VaApiMediaSurface  ); res += #10;
-      res += 'UsesSvmPointerArm   = '; AddProp(res, UsesSvmPointerArm  ); res += #10;
-      res += 'AllocFlagsIntel     = '; AddProp(res, AllocFlagsIntel    ); res += #10;
-      res += 'AllocType           = '; AddProp(res, AllocType          ); res += #10;
-      res += 'AllocBasePtr        = '; AddProp(res, AllocBasePtr       ); res += #10;
-      res += 'AllocSize           = '; AddProp(res, AllocSize          ); res += #10;
-      res += 'AllocDevice         = '; AddProp(res, AllocDevice        );
+      res += 'Flags               = '; AddProp(res, GetFlags              ); res += #10;
+      res += 'HostPtr             = '; AddProp(res, GetHostPtr            ); res += #10;
+      res += 'UsesSvmPointer      = '; AddProp(res, GetUsesSvmPointer     ); res += #10;
+      res += 'Properties          = '; AddProp(res, GetProperties         ); res += #10;
+      res += 'Dx9MediaAdapterType = '; AddProp(res, GetDx9MediaAdapterType); res += #10;
+      res += 'Dx9MediaSurfaceInfo = '; AddProp(res, GetDx9MediaSurfaceInfo); res += #10;
+      res += 'D3d10Resource       = '; AddProp(res, GetD3d10Resource      ); res += #10;
+      res += 'D3d11Resource       = '; AddProp(res, GetD3d11Resource      ); res += #10;
+      res += 'Dx9Resource         = '; AddProp(res, GetDx9Resource        ); res += #10;
+      res += 'Dx9SharedHandle     = '; AddProp(res, GetDx9SharedHandle    ); res += #10;
+      res += 'VaApiMediaSurface   = '; AddProp(res, GetVaApiMediaSurface  ); res += #10;
+      res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  ); res += #10;
+      res += 'AllocFlagsIntel     = '; AddProp(res, GetAllocFlagsIntel    ); res += #10;
+      res += 'AllocType           = '; AddProp(res, GetAllocType          ); res += #10;
+      res += 'AllocBasePtr        = '; AddProp(res, GetAllocBasePtr       ); res += #10;
+      res += 'AllocSize           = '; AddProp(res, GetAllocSize          ); res += #10;
+      res += 'AllocDevice         = '; AddProp(res, GetAllocDevice        );
     end;
     public function ToString: string; override;
     begin
@@ -2833,7 +2833,7 @@ type
     public procedure ToString(res: StringBuilder); override;
     begin
       inherited; res += #10;
-      res += 'Offset = '; AddProp(res, Offset);
+      res += 'Offset = '; AddProp(res, GetOffset);
     end;
     
   end;
@@ -2946,34 +2946,34 @@ type
     public property AssociatedMemobject: cl_mem                    read GetAssociatedMemobject;
     public property Offset:              UIntPtr                   read GetOffset;
     
-    private static procedure AddProp(res: StringBuilder; v: object) :=
+    private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(v);
+        res += _ObjectToString(get_prop());
       except
         on e: OpenCLException do
           res += e.Code.ToString;
       end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'Flags               = '; AddProp(res, Flags              ); res += #10;
-      res += 'HostPtr             = '; AddProp(res, HostPtr            ); res += #10;
-      res += 'UsesSvmPointer      = '; AddProp(res, UsesSvmPointer     ); res += #10;
-      res += 'Properties          = '; AddProp(res, Properties         ); res += #10;
-      res += 'Dx9MediaAdapterType = '; AddProp(res, Dx9MediaAdapterType); res += #10;
-      res += 'Dx9MediaSurfaceInfo = '; AddProp(res, Dx9MediaSurfaceInfo); res += #10;
-      res += 'D3d10Resource       = '; AddProp(res, D3d10Resource      ); res += #10;
-      res += 'D3d11Resource       = '; AddProp(res, D3d11Resource      ); res += #10;
-      res += 'Dx9Resource         = '; AddProp(res, Dx9Resource        ); res += #10;
-      res += 'Dx9SharedHandle     = '; AddProp(res, Dx9SharedHandle    ); res += #10;
-      res += 'VaApiMediaSurface   = '; AddProp(res, VaApiMediaSurface  ); res += #10;
-      res += 'UsesSvmPointerArm   = '; AddProp(res, UsesSvmPointerArm  ); res += #10;
-      res += 'AllocFlagsIntel     = '; AddProp(res, AllocFlagsIntel    ); res += #10;
-      res += 'AllocType           = '; AddProp(res, AllocType          ); res += #10;
-      res += 'AllocBasePtr        = '; AddProp(res, AllocBasePtr       ); res += #10;
-      res += 'AllocSize           = '; AddProp(res, AllocSize          ); res += #10;
-      res += 'AllocDevice         = '; AddProp(res, AllocDevice        ); res += #10;
-      res += 'AssociatedMemobject = '; AddProp(res, AssociatedMemobject); res += #10;
-      res += 'Offset              = '; AddProp(res, Offset             );
+      res += 'Flags               = '; AddProp(res, GetFlags              ); res += #10;
+      res += 'HostPtr             = '; AddProp(res, GetHostPtr            ); res += #10;
+      res += 'UsesSvmPointer      = '; AddProp(res, GetUsesSvmPointer     ); res += #10;
+      res += 'Properties          = '; AddProp(res, GetProperties         ); res += #10;
+      res += 'Dx9MediaAdapterType = '; AddProp(res, GetDx9MediaAdapterType); res += #10;
+      res += 'Dx9MediaSurfaceInfo = '; AddProp(res, GetDx9MediaSurfaceInfo); res += #10;
+      res += 'D3d10Resource       = '; AddProp(res, GetD3d10Resource      ); res += #10;
+      res += 'D3d11Resource       = '; AddProp(res, GetD3d11Resource      ); res += #10;
+      res += 'Dx9Resource         = '; AddProp(res, GetDx9Resource        ); res += #10;
+      res += 'Dx9SharedHandle     = '; AddProp(res, GetDx9SharedHandle    ); res += #10;
+      res += 'VaApiMediaSurface   = '; AddProp(res, GetVaApiMediaSurface  ); res += #10;
+      res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  ); res += #10;
+      res += 'AllocFlagsIntel     = '; AddProp(res, GetAllocFlagsIntel    ); res += #10;
+      res += 'AllocType           = '; AddProp(res, GetAllocType          ); res += #10;
+      res += 'AllocBasePtr        = '; AddProp(res, GetAllocBasePtr       ); res += #10;
+      res += 'AllocSize           = '; AddProp(res, GetAllocSize          ); res += #10;
+      res += 'AllocDevice         = '; AddProp(res, GetAllocDevice        ); res += #10;
+      res += 'AssociatedMemobject = '; AddProp(res, GetAssociatedMemobject); res += #10;
+      res += 'Offset              = '; AddProp(res, GetOffset             );
     end;
     public function ToString: string; override;
     begin
@@ -3092,34 +3092,34 @@ type
     public property AssociatedMemobject: cl_mem                    read GetAssociatedMemobject;
     public property Offset:              UIntPtr                   read GetOffset;
     
-    private static procedure AddProp(res: StringBuilder; v: object) :=
+    private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(v);
+        res += _ObjectToString(get_prop());
       except
         on e: OpenCLException do
           res += e.Code.ToString;
       end;
     public procedure ToString(res: StringBuilder); virtual;
     begin
-      res += 'Flags               = '; AddProp(res, Flags              ); res += #10;
-      res += 'HostPtr             = '; AddProp(res, HostPtr            ); res += #10;
-      res += 'UsesSvmPointer      = '; AddProp(res, UsesSvmPointer     ); res += #10;
-      res += 'Properties          = '; AddProp(res, Properties         ); res += #10;
-      res += 'Dx9MediaAdapterType = '; AddProp(res, Dx9MediaAdapterType); res += #10;
-      res += 'Dx9MediaSurfaceInfo = '; AddProp(res, Dx9MediaSurfaceInfo); res += #10;
-      res += 'D3d10Resource       = '; AddProp(res, D3d10Resource      ); res += #10;
-      res += 'D3d11Resource       = '; AddProp(res, D3d11Resource      ); res += #10;
-      res += 'Dx9Resource         = '; AddProp(res, Dx9Resource        ); res += #10;
-      res += 'Dx9SharedHandle     = '; AddProp(res, Dx9SharedHandle    ); res += #10;
-      res += 'VaApiMediaSurface   = '; AddProp(res, VaApiMediaSurface  ); res += #10;
-      res += 'UsesSvmPointerArm   = '; AddProp(res, UsesSvmPointerArm  ); res += #10;
-      res += 'AllocFlagsIntel     = '; AddProp(res, AllocFlagsIntel    ); res += #10;
-      res += 'AllocType           = '; AddProp(res, AllocType          ); res += #10;
-      res += 'AllocBasePtr        = '; AddProp(res, AllocBasePtr       ); res += #10;
-      res += 'AllocSize           = '; AddProp(res, AllocSize          ); res += #10;
-      res += 'AllocDevice         = '; AddProp(res, AllocDevice        ); res += #10;
-      res += 'AssociatedMemobject = '; AddProp(res, AssociatedMemobject); res += #10;
-      res += 'Offset              = '; AddProp(res, Offset             );
+      res += 'Flags               = '; AddProp(res, GetFlags              ); res += #10;
+      res += 'HostPtr             = '; AddProp(res, GetHostPtr            ); res += #10;
+      res += 'UsesSvmPointer      = '; AddProp(res, GetUsesSvmPointer     ); res += #10;
+      res += 'Properties          = '; AddProp(res, GetProperties         ); res += #10;
+      res += 'Dx9MediaAdapterType = '; AddProp(res, GetDx9MediaAdapterType); res += #10;
+      res += 'Dx9MediaSurfaceInfo = '; AddProp(res, GetDx9MediaSurfaceInfo); res += #10;
+      res += 'D3d10Resource       = '; AddProp(res, GetD3d10Resource      ); res += #10;
+      res += 'D3d11Resource       = '; AddProp(res, GetD3d11Resource      ); res += #10;
+      res += 'Dx9Resource         = '; AddProp(res, GetDx9Resource        ); res += #10;
+      res += 'Dx9SharedHandle     = '; AddProp(res, GetDx9SharedHandle    ); res += #10;
+      res += 'VaApiMediaSurface   = '; AddProp(res, GetVaApiMediaSurface  ); res += #10;
+      res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  ); res += #10;
+      res += 'AllocFlagsIntel     = '; AddProp(res, GetAllocFlagsIntel    ); res += #10;
+      res += 'AllocType           = '; AddProp(res, GetAllocType          ); res += #10;
+      res += 'AllocBasePtr        = '; AddProp(res, GetAllocBasePtr       ); res += #10;
+      res += 'AllocSize           = '; AddProp(res, GetAllocSize          ); res += #10;
+      res += 'AllocDevice         = '; AddProp(res, GetAllocDevice        ); res += #10;
+      res += 'AssociatedMemobject = '; AddProp(res, GetAssociatedMemobject); res += #10;
+      res += 'Offset              = '; AddProp(res, GetOffset             );
     end;
     public function ToString: string; override;
     begin

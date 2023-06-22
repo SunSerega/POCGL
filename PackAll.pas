@@ -310,6 +310,7 @@ var AllStages := HSet(
           foreach var mn in AllLLModules do
             if mn+'ABC' in mns then
               mns += mn;
+          mns.Remove(DummyStr);
           
           var pf_dir := 'C:\Program Files (x86)\PascalABC.NET';
           var copy_to_pf := Directory.Exists(pf_dir);
@@ -389,7 +390,7 @@ var AllStages := HSet(
             if ext not in AllowedExtensions then
               Otp('WARNING: Sample file with unknown extension:');
             Otp($'Packing sample file "{fname}"');
-            var res_fname := GetFullPath(GetRelativePath(fname, 'Samples'), 'Release\InstallerSamples\StandardUnits');
+            var res_fname := GetFullPath(GetRelativePath(fname, 'Samples'), 'Release\InstallerSamples\StandardUnits\OpenGL и OpenCL');
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(res_fname));
             System.IO.File.Copy(fname, res_fname);
             c += 1;

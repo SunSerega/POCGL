@@ -7,7 +7,7 @@ uses '..\..\..\..\Utils\CodeGen';
 
 uses '..\..\Common\PackingUtils';
 
-var log := new FileLogger('WrapperProperties.log');
+var log := new FileLogger(GetFullPathRTA('WrapperProperties.log'));
 
 type
   ETTFunc = sealed class
@@ -251,8 +251,6 @@ type
   
 begin
   try
-    var dir := GetFullPathRTA('WrapperProperties');
-    System.IO.Directory.CreateDirectory(dir);
     
     ETTFunc.InitAll;
 //    foreach var f in ETTFunc.All do
@@ -390,10 +388,10 @@ begin
           
           if wpt.base=nil then
           begin
-            wr += '    private static procedure AddProp(res: StringBuilder; v: object) :='#10;
+            wr += '    private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :='#10;
             wr += '      try'#10;
             //TODO Использовать второй параметр _ObjectToString
-            wr += '        res += _ObjectToString(v);'#10;
+            wr += '        res += _ObjectToString(get_prop());'#10;
             wr += '      except'#10;
             wr += '        on e: OpenCLException do'#10;
             wr += '          res += e.Code.ToString;'#10;
@@ -413,9 +411,9 @@ begin
               wr += enum_name.short_name;
               loop max_name_len-enum_name.short_name.Length do
                 wr += ' ';
-              wr += ' = ''; AddProp(res, ';
-              wr += enum_name.escaped_name;
-              loop max_esc_name_len-enum_name.escaped_name.Length do
+              wr += ' = ''; AddProp(res, Get';
+              wr += enum_name.short_name;
+              loop max_name_len-enum_name.escaped_name.Length do
                 wr += ' ';
               wr += ');';
             end, ' res += #10;'#10
