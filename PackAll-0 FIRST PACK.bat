@@ -1,3 +1,5 @@
+﻿@setlocal enableextensions
+@cd /d "%~dp0"
 
 
 
