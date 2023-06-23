@@ -3,6 +3,8 @@ Packing Modules.Packed\OpenCL.pas
 Packing Modules.Packed\OpenCLABC.pas
 Packing Modules.Packed\OpenGL.pas
 Packing Modules.Packed\OpenGLABC.pas
+WARNING: Modules.Packed\OpenGL.pcu not found!
+WARNING: Modules.Packed\OpenGLABC.pcu not found!
 Done copying release modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying samples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Packing sample file "Samples\OpenCL\MatrMlt.cl"

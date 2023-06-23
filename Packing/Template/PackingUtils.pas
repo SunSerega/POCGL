@@ -17,7 +17,7 @@ try
   _pas_keywords := ReadLines('Packing\Template\Utils\pas_keywords.dat')
   .Where(l->not string.IsNullOrWhiteSpace(l))
   .Select(l->l.Trim.ToLower)
-  .ToHashSet;
+  .ToHashSet(System.StringComparer.OrdinalIgnoreCase);
   
 except
   on e: Exception do

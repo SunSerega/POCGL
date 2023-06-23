@@ -9,6 +9,10 @@ uses System.Runtime.CompilerServices;
 //TODO IPatternEdgePointer<TData, TSelf>
 // - Позволит передавать на много меньше данных, но взамен код станет значительно сложнее...
 
+{$ifdef DEBUG}
+  {$define PatternPointSorterDebug}
+{$endif DEBUG}
+
 type
   
   {$region Generic Pattern}
@@ -18,14 +22,27 @@ type
   IPatternPoint<TSelf> = interface(IEquatable<TSelf>)
   where TSelf: IPatternPoint<TSelf>;
     
-    function AnyEdgesDone: boolean;
     function AllEdgesDone: boolean;
-    
-    function IncLessThan(p: TSelf): boolean;
     
   end;
   
   {$endregion Point}
+  
+  {$region PointSorter}
+  
+  IPatternPointSorter<TPoint> = interface
+  where TPoint: IPatternPoint<TPoint>;
+    
+    /// Result: (blocked, stop_checking)
+    function IsAddBlocked<T>(p: TPoint; lst: List<T>; mapping: T->TPoint; i1,i2: integer{$ifdef PatternPointSorterDebug}; org_p: object{$endif}): ValueTuple<boolean,boolean>;
+    /// Result: added, now go cleanup
+    function TryAdd<T>(org_p: T; p: TPoint; lst: List<T>; mapping: T->TPoint; i1,i2: integer): boolean;
+    /// Result: all corresponding edges in lst[i1:i2] are >=p, stop checking
+    function TryFinishAdd<T>(p: TPoint; lst: List<T>; mapping: T->TPoint; i1,i2: integer{$ifdef PatternPointSorterDebug}; org_p: object{$endif}): boolean;
+    
+  end;
+  
+  {$endregion PointSorter}
   
   {$region Cost}
   
@@ -42,7 +59,7 @@ type
   
   Pattern = static class
     
-//    private constructor := raise new System.InvalidOperationException;
+//    private constructor := raise new InvalidOperationException;
     
     ///p0: The Point looking at the first symbol of all edges
     /// - Must implement IPatternPoint<TSelf>
@@ -53,12 +70,13 @@ type
     ///on_no_path what to do when no path was found
     /// - If no set and no path found, throws InvalidOperationException
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    static function MinPaths<TPoint, TJumpNode,TJumpCost>(
-      p0: TPoint; zero_jump: TJumpNode; zero_cost: TJumpCost
+    static function MinPaths<TPoint,TSorter, TJumpNode,TJumpCost>(
+      p0: TPoint; sorter: TSorter; zero_jump: TJumpNode; zero_cost: TJumpCost
       ; get_zero_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode>
       ; get_cost_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode,TJumpCost>
     ): ValueTuple<sequence of TJumpNode, TJumpCost>;
     where TPoint: IPatternPoint<TPoint>;
+    where TSorter: IPatternPointSorter<TPoint>;
     where TJumpCost: IJumpCost<TJumpCost>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -106,12 +124,7 @@ type
     public constructor := Create(default(TPointer));
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AnyEdgesDone := ep.IsOut;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function AllEdgesDone := ep.IsOut;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function IncLessThan(p: BasicPatternPoint1<TPointer>) := self.ep.CompareTo(p.ep)<=0;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Equals(p: BasicPatternPoint1<TPointer>) := self.ep.Equals(p.ep);
@@ -140,12 +153,7 @@ type
     public constructor := Create(default(TPointer), default(TOther));
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AnyEdgesDone := first.AnyEdgesDone  or other.AnyEdgesDone;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function AllEdgesDone := first.AllEdgesDone and other.AllEdgesDone;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function IncLessThan(p: BasicPatternPointRec<TPointer, TOther>) := first.IncLessThan(p.first) and other.IncLessThan(p.other);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Equals(p: BasicPatternPointRec<TPointer, TOther>) := self.first.Equals(p.first) and self.other.Equals(p.other);
@@ -169,12 +177,7 @@ type
     new BasicPatternPoint2<TPointer1, TPointer2>(p.Item1, p.Item2);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AnyEdgesDone := impl.AnyEdgesDone;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function AllEdgesDone := impl.AllEdgesDone;
-    
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function IncLessThan(p: BasicPatternPoint2<TPointer1, TPointer2>) := impl.IncLessThan(p.impl);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Equals(p: BasicPatternPoint2<TPointer1, TPointer2>) := impl.Equals(p.impl);
@@ -190,6 +193,424 @@ type
   
   {$endregion Point}
   
+  {$region PointSorter}
+  
+  BasicPatternPoint1Sorter<TPointer> = record(IPatternPointSorter<BasicPatternPoint1<TPointer>>)
+  where TPointer: IPatternEdgePointer<TPointer>;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /// Result: (blocked, stop_checking)
+    function IsAddBlocked<T>(p: BasicPatternPoint1<TPointer>; lst: List<T>; mapping: T->BasicPatternPoint1<TPointer>; i1,i2: integer{$ifdef PatternPointSorterDebug}; org_p: object{$endif}): ValueTuple<boolean,boolean>;
+    begin
+      {$ifdef DEBUG}
+      if i2-i1 <> 1 then
+        raise new InvalidOperationException;
+      {$endif DEBUG}
+      var blocked := mapping(lst[i1]).Edge.CompareTo(p.Edge) >= 0;
+      Result := ValueTuple.Create(
+        blocked, true
+      );
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /// Result: added, now go cleanup
+    function TryAdd<T>(org_p: T; p: BasicPatternPoint1<TPointer>; lst: List<T>; mapping: T->BasicPatternPoint1<TPointer>; i1,i2: integer): boolean;
+    begin
+      {$ifdef DEBUG}
+      if i2-i1 not in 0..1 then
+        raise new InvalidOperationException;
+      {$endif DEBUG}
+      Result := false;
+      if i1=i2 then
+        lst.Insert(i1, org_p) else
+      if mapping(lst[i1]).Edge.CompareTo(p.Edge) < 0 then
+        lst[i1] := org_p else
+        exit;
+      Result := true;
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /// Result: all corresponding edges in lst[i1:i2] are >=p, stop checking
+    function TryFinishAdd<T>(p: BasicPatternPoint1<TPointer>; lst: List<T>; mapping: T->BasicPatternPoint1<TPointer>; i1,i2: integer{$ifdef PatternPointSorterDebug}; org_p: object{$endif}): boolean;
+    begin
+      {$ifdef DEBUG}
+      if i2-i1 <> 1 then
+        raise new InvalidOperationException;
+      {$endif DEBUG}
+      Result := mapping(lst[i1]).Edge.CompareTo(p.Edge) >= 0;
+      if Result then exit;
+      lst.RemoveAt(i1);
+    end;
+    
+  end;
+  
+  BasicPatternPointRecSorter<TPointer, TOther, TOtherSorter> = record(IPatternPointSorter<BasicPatternPointRec<TPointer, TOther>>)
+  where TPointer: IPatternEdgePointer<TPointer>;
+  where TOther: IPatternPoint<TOther>;
+  where TOtherSorter: record, IPatternPointSorter<TOther>, constructor;
+    
+    static constructor;
+    begin
+      {$ifdef DEBUG}
+      var t := typeof(TOther);
+      if not t.IsGenericType then exit;
+      t := t.GetGenericTypeDefinition;
+      //TODO Протестить ошибку
+      if t = typeof(BasicPatternPoint1<>) then
+        // Inefficient, instead use BasicPatternPoint2Sorter
+        raise new InvalidOperationException;
+      {$endif DEBUG}
+    end;
+    
+    private static function FindFEBounds<T>(p: BasicPatternPointRec<TPointer, TOther>; lst: List<T>; mapping: T->BasicPatternPointRec<TPointer, TOther>; i1,i2: integer): ValueTuple<integer, integer>;
+    begin
+      {$ifdef DEBUG}
+      // Empty not allowed
+      if i1>=i2 then raise new InvalidOperationException;
+      {$endif DEBUG}
+//      if i1=i2 then
+//      begin
+//        Result := ValueTuple.Create(i1,i2);
+//        exit;
+//      end;
+      
+      var lb1 := i1;
+      var lb2 := i2;
+      
+      var ub1 := lb1;
+      var ub2 := lb2;
+      
+      while lb2>lb1 do
+      begin
+        var m := (lb1+lb2) div 2;
+        
+        var cmp := mapping(lst[m]).FirstEdge.CompareTo(p.FirstEdge);
+        if cmp > 0 then
+        begin
+          lb2 := m;
+          ub2 := m;
+        end else
+        if cmp < 0 then
+        begin
+          lb1 := m+1;
+          ub1 := m+1;
+        end else
+        begin
+          lb2 := m;
+          ub1 := m+1;
+          break;
+        end;
+        
+      end;
+      
+      while lb2 > lb1 do
+      begin
+        var m := (lb1+lb2) div 2;
+        
+        var cmp := mapping(lst[m]).FirstEdge.CompareTo(p.FirstEdge);
+        if cmp >= 0 then
+          lb2 := m else
+          lb1 := m+1;
+        
+      end;
+      
+      while ub2>ub1 do
+      begin
+        var m := (ub1+ub2) div 2;
+        
+        var cmp := mapping(lst[m]).FirstEdge.CompareTo(p.FirstEdge);
+        if cmp > 0 then
+          ub2 := m else
+          ub1 := m+1;
+        
+      end;
+      
+      Result := ValueTuple.Create(lb1, ub1);
+    end;
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static function BinaryFESearchOuter(p: BasicPatternPointRec<TPointer, TOther>; lst: List<T>; mapping: T->BasicPatternPointRec<TPointer, TOther>; i1,i2: integer; strict_cmp: boolean): integer;
+    begin
+      {$ifdef DEBUG}
+      if -1 >= i1 then raise new IndexOutOfRangeException;
+      if i1 >= i2 then raise new InvalidOperationException;
+      {$endif DEBUG}
+      
+      var len := i2-i1;
+      repeat
+        var ld2 := len div 2;
+        
+        var cmp := mapping(lst[i1+ld2]).FirstEdge.CompareTo(p.FirstEdge);
+        if cmp >= Ord(strict_cmp) then
+          len := ld2 else
+        begin
+          i1 += ld2 + 1;
+          len -= ld2 + 1;
+        end;
+        
+      until len=0;
+      
+      Result := i1;
+    end;
+    
+//    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+//    static function BinaryFESearchStep(p: BasicPatternPointRec<TPointer, TOther>; lst: List<T>; mapping: T->BasicPatternPointRec<TPointer, TOther>; from,bound, direction,step: integer): integer;
+//    begin
+//      {$ifdef DEBUG}
+//      if direction=0 then raise new InvalidOperationException('direction=0');
+//      if step=0 then raise new InvalidOperationException('step=0');
+//      if direction not in -1..+1 then raise new InvalidOperationException($'direction={direction} is not normalized');
+//      if Sign(step) <> direction then raise new InvalidOperationException($'step={step} is in wrong direction={direction}');
+//      {$endif DEBUG}
+//      
+//      raise new NotImplementedException;
+//      
+//    end;
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static function BinaryFESearchStepDown(p: BasicPatternPointRec<TPointer, TOther>; lst: List<T>; mapping: T->BasicPatternPointRec<TPointer, TOther>; i1,i2, step: integer): integer;
+    begin
+      {$ifdef DEBUG}
+      if step <= 0 then raise new InvalidOperationException($'step={step}');
+      {$endif DEBUG}
+      
+      
+      
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /// Result: (found <=p, found >=p)
+    function FindRelTo<T>(p: BasicPatternPointRec<TPointer, TOther>; lst: List<T>; mapping: T->BasicPatternPointRec<TPointer, TOther>; i1,i2: integer; care_le, care_me: boolean{$ifdef PatternPointSorterDebug}; org_p: object{$endif}): ValueTuple<boolean,boolean>;
+    begin
+      {$ifdef DEBUG}
+      if i1>=i2 then raise new InvalidOperationException;
+      {$endif DEBUG}
+      
+      var fe_more_ind := BinaryFESearchOuter(p, lst, mapping, i1,i2, false);
+      
+      var oe_mapping: T->TOther :=
+        o->mapping(o).OtherEdges;
+      
+      if fe_more_ind<>i2 then
+      begin
+        //TODO Дорогостоющая проверка... Проверяющая по сути всё то же самое что нужно, но в обратную сторону
+        // - Идея с care_le,care_me интересна, но так же мож всё же придётся делать 2 отдельных метода
+        var (fle, fme) := TOtherSorter.Create.FindRelTo(p.OtherEdges, lst, oe_mapping, fe_more_ind,i2{$ifdef PatternPointSorterDebug}, org_p{$endif});
+        if fme then
+        begin
+          Result.Item1 := false; // no <=p, because fe>p.fe, oe>=p.oe
+          Result.Item2 := true;
+          exit;
+        end;
+      end;
+      
+      
+      
+//      if (fe_more_ind<>i2) and TOtherSorter.Create.FindMore(p.OtherEdges, lst, oe_mapping, fe_more_ind,i2{$ifdef PatternPointSorterDebug}, org_p{$endif}).Item1 then
+//      begin
+//        Result := ValueTuple.Create(false, true);
+//        exit;
+//      end;
+      
+      //TODO Воспрос теперь:
+      // - Границы диапазона можно представлять как [i1,i2] вместо [i1,i2) - таким образом смена direction только меняет их местами, без доп. танцев с бубном
+      // - Но что насчёт результата функций BinarySearch-, ведь он представляет границу между 2 индексами
+      // - Может вообще вывернуть индексы, то есть i := (lst.Count-1)-i
+      // - Нет, это лишнее, по сути вопрос только в том как получить следующий элемент, имея индекс границы
+      // - Можно индекс границы хранить как i*2-1, тогда (i+direction) div 2 будет следующим индексом
+      // - Но если вызов с константным direction инлайнится - if должен быть быстрее...
+      
+      i2 := fe_more_ind;
+      if i1<>i2 then
+      begin
+        var fe_equ := p.FirstEdge.Equals(lst[fe_more_ind-1]);
+        var step := 1;
+        repeat
+          var i_spl := BinaryFESearchStepDown(p, lst, mapping, i1,i2, step);
+          {$ifdef DEBUG}
+          if i2>=i_spl then raise new IndexOutOfRangeException;
+          if fe_equ <> p.FirstEdge.Equals(lst[i_spl]) then
+            raise new System.InvalidOperationException;
+          {$endif DEBUG}
+          
+          // ?????
+          var (found_less_equ, found_more_equ) := TOtherSorter.Create.FindLess(p.OtherEdges, lst, oe_mapping, i_spl,i2{$ifdef PatternPointSorterDebug}, org_p{$endif});
+          if found_less_equ then
+          begin
+            Result.Item1 := found_less_equ;
+            Result.Item2 := found_more_equ and fe_equ;
+            exit;
+          end;
+          if found_more_equ then
+            break;
+          
+          fe_equ := false;
+          step := i2-i_spl;
+          i2 := i_spl;
+        until i1=i2;
+      end;
+      
+      Result := ValueTuple.Create(false, false);
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /// Result: found
+    function FindMore<T>(p: BasicPatternPointRec<TPointer, TOther>; lst: List<T>; mapping: T->BasicPatternPointRec<TPointer, TOther>; i1,i2: integer{$ifdef PatternPointSorterDebug}; org_p: object{$endif}): ValueTuple<boolean,boolean>;
+    begin
+      
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /// Result: added, now go cleanup
+    function TryAdd<T>(org_p: T; p: BasicPatternPointRec<TPointer, TOther>; lst: List<T>; mapping: T->BasicPatternPointRec<TPointer, TOther>; i1,i2: integer): boolean;
+    begin
+      if i1=i2 then
+      begin
+        //TODO
+        exit;
+      end;
+      
+      var (b1,b2) := FindFEBounds(p, lst, mapping, i1,i2);
+      
+      if b1<>b2 then
+      begin
+        
+      end;
+      
+      
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //TODO Copy description
+    /// Result: all corresponding edges in lst[i1:i2] are >=p or deleted, stop checking
+    function TryFinishAdd<T>(p: BasicPatternPointRec<TPointer, TOther>; lst: List<T>; mapping: T->BasicPatternPointRec<TPointer, TOther>; i1,i2: integer{$ifdef PatternPointSorterDebug}; org_p: object{$endif}): boolean;
+    begin
+      
+      {$ifdef DEBUG}
+      if i1=i2 then raise new InvalidOperationException;
+      {$endif DEBUG}
+      //TODO Этот случай поидее можно обрабатывать вместе с более общей проверкой
+      if mapping[i2-1].FirstEdge.Equals(p) then
+      begin
+        lst.RemoveAt(i2-1);
+        Result := true;
+        exit;
+      end;
+      
+      var b1 := i1;
+      var b2 := i2;
+      while b2>b1 do
+      begin
+        var m := (b1+b2) div 2;
+        
+        var cmp := mapping(lst[m]).FirstEdge.CompareTo(p.FirstEdge);
+        if cmp > 0 then
+          b2 := m else
+          b1 := m+1;
+        
+      end;
+      // .FirstEdge in lst[i1:i2] are all >=p.FirstEdge
+      //TODO Не единственное условие остановки
+      // - Тут проверяется что нет .FirstEdge, которое меньше p
+      // - Надо ещё проверить, что нет ничего меньше p в .OtherEdges
+      Result := b1=i1;
+      
+      var oe_mapping := function(o: T): TOther ->
+        o->mapping(o).OtherEdges;
+      
+      i2 := b1;
+      while i2>i1 do
+      begin
+        var m := i2-1;
+        var curr_fe := mapping(lst[m]).FirstEdge;
+        
+        while m>i1 do
+        begin
+          // Maybe step can be dynamically scaled
+          // But it's unlikely to be much better
+          var nm := m-1;
+          
+          if mapping(lst[nm]).FirstEdge.Equals(curr_fe) then
+            m := nm else
+            break;
+          
+        end;
+        
+//        var newly_removed := TOtherSorter.Create.TryFinishAdd(p, lst, oe_mapping, m,i2);
+        // Added [5 11 8]
+        // Now looking at what to remove:
+        //
+        // [1 12 8]
+        // [2 11 8]
+        // [3 7 11]
+        // [4 7 10]
+        // [4 10 8]
+        // [5 7 9]
+        // [5 9 7]
+        //
+        // Need to remove:
+        // [2 11 8]
+        // [4 10 8]
+        // [5 9 7]
+        //
+        // Only a problem because [7 11] and [10 8] are incomparible
+        // (bigger in different directions)
+        // Need to break this loop only if all results of oe_mapping were >= 
+//        if newly_removed=0 then break;
+//        Result += newly_removed;
+        
+        if TOtherSorter.Create.TryFinishAdd(p.OtherEdges, lst, oe_mapping, m,i2{$ifdef PatternPointSorterDebug}, org_p{$endif}) then break;
+        i2 := m;
+      end;
+      
+    end;
+    
+  end;
+  
+  BasicPatternPoint2Sorter<TPointer1, TPointer2> = record(IPatternPointSorter<BasicPatternPoint2<TPointer1, TPointer2>>)
+  where TPointer1: IPatternEdgePointer<TPointer1>;
+  where TPointer2: IPatternEdgePointer<TPointer2>;
+    
+    //TODO Вызывает методы для PointRec неправильно, надо более оптимизированные версии реализовать
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function AnyMoreEqual   <T>(p: T; lst: List<T>; mapping: T->BasicPatternPoint2<TPointer1, TPointer2>; i1,i2: integer) :=
+      BasicPatternPointRecSorter&<TPointer1, BasicPatternPoint1<TPointer2>, BasicPatternPoint1Sorter<TPointer2>>.Create
+      .AnyMoreEqual(p, lst, o->mapping(o).impl, i1,i2);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function TryInsert      <T>(p: T; lst: List<T>; mapping: T->BasicPatternPoint2<TPointer1, TPointer2>; i1,i2: integer) :=
+      BasicPatternPointRecSorter&<TPointer1, BasicPatternPoint1<TPointer2>, BasicPatternPoint1Sorter<TPointer2>>.Create
+      .TryInsert(p, lst, o->mapping(o).impl, i1,i2);
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function RemoveLessEqual<T>(p: T; lst: List<T>; mapping: T->BasicPatternPoint2<TPointer1, TPointer2>; i1,i2: integer) :=
+      BasicPatternPointRecSorter&<TPointer1, BasicPatternPoint1<TPointer2>, BasicPatternPoint1Sorter<TPointer2>>.Create
+      .RemoveLessEqual(p, lst, o->mapping(o).impl, i1,i2);
+    
+//    public function RemoveLessEqual<T>(p: T; lst: List<T>; mapping: T->BasicPatternPoint1<TPointer>; i1,i2: integer): integer;
+//    begin
+//      var b1 := i1;
+//      var b2 := i2;
+//      
+//      while b2>b1 do
+//      begin
+//        var m := (b1+b2) div 2;
+//        
+//        if mapping(lst[m]).Edge.CompareTo(mapping(p).Edge) <= 0 then
+//          b1 := m+1 else
+//          b2 := m;
+//        
+//      end;
+//      
+//      Result := b1-i1;
+//      lst.RemoveRange(i1, Result);
+//    end;
+    
+  end;
+  
+  {$endregion PointSorter}
+  
   {$region Jump}
   
   PatternJumpNode<TJumpNode> = abstract class
@@ -197,7 +618,7 @@ type
     private _prev: TJumpNode;
     
     protected constructor(prev: TJumpNode) := self._prev := prev;
-    private constructor := raise new System.InvalidOperationException;
+    private constructor := raise new InvalidOperationException;
     
     public property Prev: TJumpNode read _prev;
     
@@ -269,7 +690,7 @@ type
     private ind: integer;
     
     private constructor(ind: integer) := self.ind := ind;
-    private constructor := raise new System.InvalidOperationException;
+    private constructor := raise new InvalidOperationException;
     
     public property Index: integer read ind;
     
@@ -316,95 +737,90 @@ end;
 {$region Pattern}
 
 type
-  PatternCostStep<TPoint, TJumpNode,TJumpCost> = sealed class
+  PatternCostStep<TPoint,TSorter, TJumpNode,TJumpCost> = sealed class
   where TPoint: IPatternPoint<TPoint>;
+  where TSorter: IPatternPointSorter<TPoint>;
   where TJumpCost: IJumpCost<TJumpCost>;
     cost: TJumpCost;
     pts: List<ValueTuple<TPoint, TJumpNode>>;
-    next := default(PatternCostStep<TPoint, TJumpNode,TJumpCost>);
+    next := default(PatternCostStep<TPoint,TSorter, TJumpNode,TJumpCost>);
     
     constructor(cost: TJumpCost; pts: List<ValueTuple<TPoint, TJumpNode>>);
     begin
       self.cost := cost;
       self.pts := pts ?? new List<ValueTuple<TPoint, TJumpNode>>;
       {$ifdef DEBUG}
-      if self.pts.Any then raise new System.InvalidOperationException($'Old buffer was not empty');
+      if self.pts.Any then raise new InvalidOperationException($'Old buffer was not empty');
       {$endif DEBUG}
     end;
-    constructor := raise new System.InvalidOperationException;
+    constructor := raise new InvalidOperationException;
     
-    function HasBetterThan(p: TPoint): boolean;
-    begin
-      Result := false;
-      
-      foreach var j_res in self.pts do
-      begin
-        Result := p.IncLessThan(j_res.Item1);
-        if Result then exit;
-      end;
-      
-    end;
-    
-    procedure RemoveWorseThan(p: TPoint) :=
-    pts.RemoveAll(j_res->j_res.Item1.IncLessThan(p));
+//    function HasBetterThan(p: TPoint; sorter: TSorter) :=
+//    sorter.AnyMoreEqual(ValueTuple.Create(p, default(TJumpNode)), pts, t->t.Item1, 0,pts.Count);
+//    
+//    procedure RemoveWorseThan(p: TPoint) :=
+//    pts.RemoveAll(j_res->j_res.Item1.IncLessThan(p));
     
   end;
   
-  PatternMinCombinationState<TPoint, TJumpNode,TJumpCost> = record
+  PatternMinCombinationState<TPoint,TSorter, TJumpNode,TJumpCost> = record
   where TPoint: IPatternPoint<TPoint>;
+  where TSorter: IPatternPointSorter<TPoint>;
   where TJumpCost: IJumpCost<TJumpCost>;
-    min_step: PatternCostStep<TPoint, TJumpNode,TJumpCost>;
+    min_step: PatternCostStep<TPoint,TSorter, TJumpNode,TJumpCost>;
     old_step_buff: List<ValueTuple<TPoint, TJumpNode>> := nil;
     
-    function CheckInsertable(p: TPoint; cost: TJumpCost): PatternCostStep<TPoint, TJumpNode,TJumpCost>;
+    procedure TryInsert(cost: TJumpCost; p: TPoint; sorter: TSorter; n: TJumpNode);
     begin
-      Result := nil;
-      var curr := Result;
-      var next := min_step;
-      
-      while (next<>nil) and (next.cost.CompareTo(cost)<0) do
-      begin
-        curr := next;
-        if curr.HasBetterThan(p) then exit;
-        next := curr.next;
-      end;
-      
-      if (next=nil) or (next.cost.CompareTo(cost)<>0) then
-      begin
-        Result := new PatternCostStep<TPoint, TJumpNode,TJumpCost>(cost, old_step_buff);
-        if curr=nil then
-          min_step := Result else
-          curr.next := Result;
-        Result.next := next;
-        old_step_buff := nil;
-      end else
-      begin
-        if next.HasBetterThan(p) then exit;
-        next.RemoveWorseThan(p);
-        Result := next;
-      end;
-      
-      curr := Result.next;
-      while curr<>nil do
-      begin
-        curr.RemoveWorseThan(p);
-        curr := curr.next;
-      end;
-      
+      var TODO := 0;
+//      Result := nil;
+//      var curr := Result;
+//      var next := min_step;
+//      
+//      while (next<>nil) and (next.cost.CompareTo(cost)<0) do
+//      begin
+//        curr := next;
+//        if curr.HasBetterThan(p) then exit;
+//        next := curr.next;
+//      end;
+//      
+//      if (next=nil) or (next.cost.CompareTo(cost)<>0) then
+//      begin
+//        Result := new PatternCostStep<TPoint, TJumpNode,TJumpCost>(cost, old_step_buff);
+//        if curr=nil then
+//          min_step := Result else
+//          curr.next := Result;
+//        Result.next := next;
+//        old_step_buff := nil;
+//      end else
+//      begin
+//        if next.HasBetterThan(p) then exit;
+//        next.RemoveWorseThan(p);
+//        Result := next;
+//      end;
+//      
+//      curr := Result.next;
+//      while curr<>nil do
+//      begin
+//        curr.RemoveWorseThan(p);
+//        curr := curr.next;
+//      end;
+//      
     end;
     
   end;
   
-static function Pattern.MinPaths<TPoint, TJumpNode,TJumpCost>(
-  p0: TPoint; zero_jump: TJumpNode; zero_cost: TJumpCost
+static function Pattern.MinPaths<TPoint,TSorter, TJumpNode,TJumpCost>(
+  p0: TPoint; sorter: TSorter; zero_jump: TJumpNode; zero_cost: TJumpCost
   ; get_zero_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode>
   ; get_cost_jumps: (TPoint, TJumpNode) -> sequence of ValueTuple<TPoint, TJumpNode,TJumpCost>
 ): ValueTuple<sequence of TJumpNode, TJumpCost>;
 where TPoint: IPatternPoint<TPoint>;
+where TSorter: IPatternPointSorter<TPoint>;
 where TJumpCost: IJumpCost<TJumpCost>;
 begin
-  var state := new PatternMinCombinationState<TPoint, TJumpNode,TJumpCost>;
-  state.min_step := new PatternCostStep<TPoint, TJumpNode,TJumpCost>(zero_cost, nil);
+  var state := new PatternMinCombinationState<TPoint,TSorter, TJumpNode,TJumpCost>;
+  state.min_step := new PatternCostStep<TPoint,TSorter, TJumpNode,TJumpCost>(zero_cost, nil);
   
   begin
     var pjs := get_zero_jumps(p0, zero_jump);
@@ -419,6 +835,7 @@ begin
         );
         exit;
       end;
+      //TODO
       state.min_step.pts += pj;
     end;
   end;
@@ -453,11 +870,7 @@ begin
         cost := old_cost.Plus(cost);
         
         foreach var (p,j) in get_zero_jumps(mid_p, mid_j) do
-        begin
-          var step := state.CheckInsertable(p, cost);
-          if step=nil then continue;
-          step.pts += ValueTuple.Create(p, j);
-        end;
+          state.TryInsert(cost, p, sorter, j);
         
       end;
       
@@ -487,7 +900,7 @@ begin
       var (p,j) := pj;
       {$ifdef DEBUG}
       if st.Any and not st.Peek.Item1.IncLessThan(p) then
-        raise new System.InvalidOperationException($'Points should be ordered');
+        raise new InvalidOperationException($'Points should be ordered');
       {$endif DEBUG}
       if p.AllEdgesDone then
         yield j else
@@ -511,7 +924,7 @@ type
     public static make_zero: Pattern2EdgeMakeZeroJumpsFunc<TPointer1,TPointer2> := nil;
     public static make_cost: Pattern2EdgeMakeCostJumpsFunc<TPointer1,TPointer2> := nil;
     
-    private constructor := raise new System.InvalidOperationException;
+    private constructor := raise new InvalidOperationException;
     
     static constructor;
     begin
@@ -545,7 +958,7 @@ type
         Result := p ->
           Pattern2EdgeJumpGenerator&<TPointer2, TPointer1>.make_zero(p.impl.other.ep, p.Edge1)
           .Select(\(ep2,ep1) -> new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2)) else
-        raise new System.InvalidOperationException;
+        raise new InvalidOperationException;
     end;
     
     static function WrapCost: BasicPatternPoint2<TPointer1, TPointer2> -> sequence of ValueTuple<BasicPatternPoint2<TPointer1, TPointer2>, BasicJumpCost>;
@@ -558,7 +971,7 @@ type
         Result := p->
           Pattern2EdgeJumpGenerator&<TPointer2, TPointer1>.make_cost(p.impl.other.ep, p.Edge1)
           .Select(\(ep2,ep1, cost) -> ValueTuple.Create(new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2), cost)) else
-        raise new System.InvalidOperationException;
+        raise new InvalidOperationException;
     end;
     
   end;
@@ -584,6 +997,7 @@ begin
   
   foreach var n in Pattern.MinPaths(
     new BasicPatternPoint2<TPointer1, TPointer2>(ep1, ep2),
+    new BasicPatternPoint2Sorter<TPointer1, TPointer2>,
     default(BasicPatternJumpNode),
     new BasicJumpCost,
     

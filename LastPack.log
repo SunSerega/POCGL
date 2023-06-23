@@ -1,9 +1,50 @@
 ﻿Executing selected stages:
-OpenCLABC + Compile + Test + Release
+OpenCL + OpenCLABC + Compile + Test + Release
 Start packing
-==================================== OpenCLABC ===================================
+===================================== OpenCL =====================================
 Compiling "Packing\Template\Pack Template.pas"
 Compiling: OK
+Runing Template[OpenCL]
+Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack NameRecords.pas"
+Template[OpenCL]: Compiling: OK
+Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack NameRecords.exe]
+Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack NameRecords.exe]
+Template[OpenCL]: Compiling "Packing\Template\OpenCL\Pack Most.pas"
+Template[OpenCL]: Compiling: OK
+Template[OpenCL]: Runing TemplateCommand[OpenCL\Pack Most.exe]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Reading .bin
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Fixing all
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing funcs code
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueMigrateMemObjects]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireD3D10ObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseD3D10ObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireD3D11ObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseD3D11ObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireDX9MediaSurfacesKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseDX9MediaSurfacesKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireEGLObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseEGLObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueMigrateMemObjectEXT]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireGrallocObjectsIMG]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseGrallocObjectsIMG]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireVA_APIMediaSurfacesINTEL]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseVA_APIMediaSurfacesINTEL]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireDX9ObjectsINTEL]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseDX9ObjectsINTEL]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireGLObjects]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseGLObjects]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 30 overloads of non-fixed Func [clEnqueueGenerateMipmapIMG]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 30 overloads of non-fixed Func [clEnqueueWaitSemaphoresKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 30 overloads of non-fixed Func [clEnqueueSignalSemaphoresKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueAcquireExternalMemObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueReleaseExternalMemObjectsKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clEnqueueCommandBufferKHR]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: WARNING: 18 overloads of non-fixed Func [clGetImageRequirementsInfoEXT]
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing structs code
+Template[OpenCL]: TemplateCommand[OpenCL\Pack Most.exe]: Constructing enums code
+Template[OpenCL]: Finished runing TemplateCommand[OpenCL\Pack Most.exe]
+Finished runing Template[OpenCL]
+==================================== OpenCLABC ===================================
 Runing Template[OpenCLABC]
 Template[OpenCLABC]: Compiling "Packing\Template\OpenCLABC\WrapperProperties.pas"
 Template[OpenCLABC]: Compiling: OK
@@ -63,8 +104,10 @@ Compiling "Tests\Tester.pas"
 Compiling: OK
 Runing Tester
 Tester: Testing selected modules:
-Tester: OpenCLABC
+Tester: OpenCL + OpenCLABC
 Tester: Compiling "Tests\DebugPCU\OpenCLABC.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests\Exec\CL\ToString.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\gen def context.pas"
 Tester: Compiling: OK
@@ -242,6 +285,10 @@ Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\06#CLCode\1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь.pas"
 Tester: Compiling: OK
+Tester: Compiling "Samples\OpenCL\MatrMlt.pas"
+Tester: Compiling: OK
+Tester: Compiling "Samples\OpenCL\SimpleAddition.pas"
+Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
@@ -254,6 +301,8 @@ Tester: Compiling "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas
 Tester: Compiling: OK
 Tester: Compiling "Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем.pas"
 Tester: Compiling: OK
+Tester: Executing Test[Tests\Exec\CL\ToString]
+Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\gen def context]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\01#CLPlatform\1]
@@ -430,6 +479,10 @@ Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\06#CLCode\1]
 Tester: Done executing
 Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
 Tester: Done executing
+Tester: Executing Test[Samples\OpenCL\MatrMlt]
+Tester: Done executing
+Tester: Executing Test[Samples\OpenCL\SimpleAddition]
+Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
 Tester: Done executing
 Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
@@ -443,12 +496,12 @@ Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying modules ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Packing Modules.Packed\OpenCLABC.pas
-WARNING: Not enough rights to copy [Modules.Packed\OpenCLABC.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
 Packing Modules.Packed\OpenCL.pas
 WARNING: Not enough rights to copy [Modules.Packed\OpenCL.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
-WARNING: Not enough rights to copy [Modules.Packed\OpenCLABC.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
+Packing Modules.Packed\OpenCLABC.pas
+WARNING: Not enough rights to copy [Modules.Packed\OpenCLABC.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
 WARNING: Not enough rights to copy [Modules.Packed\OpenCL.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
+WARNING: Not enough rights to copy [Modules.Packed\OpenCLABC.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
 Done copying release modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying samples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Packing sample file "Samples\OpenCL\MatrMlt.cl"

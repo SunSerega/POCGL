@@ -1,1 +1,796 @@
-﻿
+﻿# NativeMemoryArea.(UIntPtr)
+
+# NativeMemoryArea.
+
+# NativeMemoryArea.IsAllocated
+
+# NativeMemoryArea.Alloc
+
+# NativeMemoryArea.Release
+
+# NativeMemoryArea.TryRelease
+
+# NativeValueArea<T>
+
+# NativeArrayArea<T>
+
+# NativeMemory
+
+# NativeValue<T>.Area
+
+# NativeValue<T>.AreaUntyped
+
+# NativeArray<T>.(UInt32)
+
+# NativeArray<T>.Area
+
+# NativeArray<T>.AreaUntyped
+
+# NativeArray<T>.Length
+
+# NativeArray<T>.ItemAreaUnchecked[integer]
+
+# NativeArray<T>.ItemArea[integer]
+
+# CLDeviceType
+
+# CLDeviceAffinityDomain
+
+# CLKernelArg
+
+# CLPlatform
+
+# CLDevice
+
+# CLSubDevice
+
+# CLContext
+
+# CLCodeOptions
+
+# CLCodeLibOptions
+
+# CLProgramOptions
+
+# CLCodeDefines
+
+# CLProgramCompOptions
+
+# CLProgramLinkOptions
+
+# CLCode
+
+# CLHeaderCode
+
+# BinCLCode
+
+# LinkableCLCode
+
+# CLCompCode
+
+# CLCodeLib
+
+# CLProgramCode
+
+# CLKernel
+
+# CLMemoryUsage
+
+# CLMemory.(UIntPtr, CLContext, CLMemoryUsage, CLMemoryUsage)
+
+# CLMemory.(integer, CLContext, CLMemoryUsage, CLMemoryUsage)
+
+# CLMemory.(int64, CLContext, CLMemoryUsage, CLMemoryUsage)
+
+# CLMemory.(UIntPtr, CLMemoryUsage, CLMemoryUsage)
+
+# CLMemory.(integer, CLMemoryUsage, CLMemoryUsage)
+
+# CLMemory.(int64, CLMemoryUsage, CLMemoryUsage)
+
+# CLMemory.WriteNativeMemoryArea(NativeMemoryArea)
+
+# CLMemory.WriteNativeMemoryArea(NativeMemoryArea, CommandQueue<integer>)
+
+# CLMemory.WriteNativeMemory(NativeMemory)
+
+# CLMemory.WriteNativeMemory(NativeMemory, CommandQueue<integer>)
+
+# CLMemory.WriteNativeValueArea<TRecord>(NativeValueArea<TRecord>)
+
+# CLMemory.WriteNativeValueArea<TRecord>(NativeValueArea<TRecord>, CommandQueue<integer>)
+
+# CLMemory.WriteNativeArrayArea<TRecord>(NativeArrayArea<TRecord>)
+
+# CLMemory.WriteNativeArrayArea<TRecord>(NativeArrayArea<TRecord>, CommandQueue<integer>)
+
+# CLMemory.WriteNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>)
+
+# CLMemory.ReadNativeMemoryArea(NativeMemoryArea)
+
+# CLMemory.ReadNativeMemoryArea(NativeMemoryArea, CommandQueue<integer>)
+
+# CLMemory.ReadNativeMemory(NativeMemory)
+
+# CLMemory.ReadNativeMemory(NativeMemory, CommandQueue<integer>)
+
+# CLMemory.ReadNativeValueArea<TRecord>(NativeValueArea<TRecord>)
+
+# CLMemory.ReadNativeValueArea<TRecord>(NativeValueArea<TRecord>, CommandQueue<integer>)
+
+# CLMemory.ReadNativeArrayArea<TRecord>(NativeArrayArea<TRecord>)
+
+# CLMemory.ReadNativeArrayArea<TRecord>(NativeArrayArea<TRecord>, CommandQueue<integer>)
+
+# CLMemory.ReadNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>)
+
+# CLMemory.WriteNativeMemoryArea(CommandQueue<NativeMemoryArea>)
+
+# CLMemory.WriteNativeMemory(CommandQueue<NativeMemory>)
+
+# CLMemory.WriteNativeValueArea<TRecord>(CommandQueue<NativeValueArea<TRecord>>)
+
+# CLMemory.WriteNativeArrayArea<TRecord>(CommandQueue<NativeArrayArea<TRecord>>)
+
+# CLMemory.ReadNativeMemoryArea(CommandQueue<NativeMemoryArea>)
+
+# CLMemory.ReadNativeMemory(CommandQueue<NativeMemory>)
+
+# CLMemory.ReadNativeValueArea<TRecord>(CommandQueue<NativeValueArea<TRecord>>)
+
+# CLMemory.ReadNativeArrayArea<TRecord>(CommandQueue<NativeArrayArea<TRecord>>)
+
+# CLMemory.WriteNativeMemoryArea(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+
+# CLMemory.WriteNativeMemory(CommandQueue<NativeMemory>, CommandQueue<integer>)
+
+# CLMemory.WriteNativeValueArea<TRecord>(CommandQueue<NativeValueArea<TRecord>>, CommandQueue<integer>)
+
+# CLMemory.WriteNativeArrayArea<TRecord>(CommandQueue<NativeArrayArea<TRecord>>, CommandQueue<integer>)
+
+# CLMemory.WriteNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>)
+
+# CLMemory.ReadNativeMemoryArea(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+
+# CLMemory.ReadNativeMemory(CommandQueue<NativeMemory>, CommandQueue<integer>)
+
+# CLMemory.ReadNativeValueArea<TRecord>(CommandQueue<NativeValueArea<TRecord>>, CommandQueue<integer>)
+
+# CLMemory.ReadNativeArrayArea<TRecord>(CommandQueue<NativeArrayArea<TRecord>>, CommandQueue<integer>)
+
+# CLMemory.ReadNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>)
+
+# CLMemory.FillArraySegment<TRecord>(CommandQueue<ArraySegment<TRecord>>)
+
+# CLMemory.FillArraySegment<TRecord>(CommandQueue<ArraySegment<TRecord>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemory.FillNativeMemoryArea(NativeMemoryArea)
+
+# CLMemory.FillNativeMemoryArea(NativeMemoryArea, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemory.FillNativeMemory(NativeMemory)
+
+# CLMemory.FillNativeMemory(NativeMemory, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemory.FillNativeValueArea<TRecord>(NativeValueArea<TRecord>)
+
+# CLMemory.FillNativeValueArea<TRecord>(NativeValueArea<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemory.FillNativeArrayArea<TRecord>(NativeArrayArea<TRecord>)
+
+# CLMemory.FillNativeArrayArea<TRecord>(NativeArrayArea<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemory.FillNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemory.FillNativeMemoryArea(CommandQueue<NativeMemoryArea>)
+
+# CLMemory.FillNativeMemoryArea(CommandQueue<NativeMemoryArea>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemory.FillNativeMemory(CommandQueue<NativeMemory>)
+
+# CLMemory.FillNativeMemory(CommandQueue<NativeMemory>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemory.FillNativeValueArea<TRecord>(CommandQueue<NativeValueArea<TRecord>>)
+
+# CLMemory.FillNativeValueArea<TRecord>(CommandQueue<NativeValueArea<TRecord>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemory.FillNativeArrayArea<TRecord>(CommandQueue<NativeArrayArea<TRecord>>)
+
+# CLMemory.FillNativeArrayArea<TRecord>(CommandQueue<NativeArrayArea<TRecord>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemory.FillNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemorySubSegment.(CLMemory, UIntPtr, UIntPtr, CLMemoryUsage, CLMemoryUsage)
+
+# CLMemorySubSegment.(CLMemory, UInt32, UInt32, CLMemoryUsage, CLMemoryUsage)
+
+# CLMemorySubSegment.(CLMemory, UInt64, UInt64, CLMemoryUsage, CLMemoryUsage)
+
+# CLValue<T>.(CLContext, CLMemoryUsage, CLMemoryUsage)
+
+# CLValue<T>.(CLContext, T, CLMemoryUsage, CLMemoryUsage)
+
+# CLValue<T>.(CLMemoryUsage, CLMemoryUsage)
+
+# CLValue<T>.(T, CLMemoryUsage, CLMemoryUsage)
+
+# CLValue<T>.(CLMemory)
+
+# CLValue<T>.WriteNativeValueArea(CommandQueue<NativeValueArea<&T>>)
+
+# CLValue<T>.ReadNativeValueArea(CommandQueue<NativeValueArea<&T>>)
+
+# CLArray<T>.(CLContext, integer, CLMemoryUsage, CLMemoryUsage)
+
+# CLArray<T>.(integer, CLMemoryUsage, CLMemoryUsage)
+
+# CLArray<T>.(CLContext, array of T, CLMemoryUsage, CLMemoryUsage)
+
+# CLArray<T>.(array of T, CLMemoryUsage, CLMemoryUsage)
+
+# CLArray<T>.(CLContext, integer, integer, array of T, CLMemoryUsage, CLMemoryUsage)
+
+# CLArray<T>.(integer, integer, array of T, CLMemoryUsage, CLMemoryUsage)
+
+# CLArray<T>.(CLMemory)
+
+# CLArray<T>.WriteNativeMemoryArea(CommandQueue<NativeMemoryArea>)
+
+# CLArray<T>.WriteNativeMemory(CommandQueue<NativeMemory>)
+
+# CLArray<T>.WriteNativeValueArea(CommandQueue<NativeValueArea<&T>>)
+
+# CLArray<T>.WriteNativeValue(CommandQueue<NativeValue<&T>>)
+
+# CLArray<T>.WriteNativeArrayArea(CommandQueue<NativeArrayArea<&T>>)
+
+# CLArray<T>.ReadNativeMemoryArea(CommandQueue<NativeMemoryArea>)
+
+# CLArray<T>.ReadNativeMemory(CommandQueue<NativeMemory>)
+
+# CLArray<T>.ReadNativeValueArea(CommandQueue<NativeValueArea<&T>>)
+
+# CLArray<T>.ReadNativeValue(CommandQueue<NativeValue<&T>>)
+
+# CLArray<T>.ReadNativeArrayArea(CommandQueue<NativeArrayArea<&T>>)
+
+# CLArray<T>.WriteNativeMemoryArea(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+
+# CLArray<T>.WriteNativeMemory(CommandQueue<NativeMemory>, CommandQueue<integer>)
+
+# CLArray<T>.WriteNativeValueArea(CommandQueue<NativeValueArea<&T>>, CommandQueue<integer>)
+
+# CLArray<T>.WriteNativeArrayArea(CommandQueue<NativeArrayArea<&T>>, CommandQueue<integer>)
+
+# CLArray<T>.WriteNativeArray(CommandQueue<NativeArray<&T>>, CommandQueue<integer>)
+
+# CLArray<T>.ReadNativeMemoryArea(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+
+# CLArray<T>.ReadNativeMemory(CommandQueue<NativeMemory>, CommandQueue<integer>)
+
+# CLArray<T>.ReadNativeValueArea(CommandQueue<NativeValueArea<&T>>, CommandQueue<integer>)
+
+# CLArray<T>.ReadNativeArrayArea(CommandQueue<NativeArrayArea<&T>>, CommandQueue<integer>)
+
+# CLArray<T>.ReadNativeArray(CommandQueue<NativeArray<&T>>, CommandQueue<integer>)
+
+# CLArray<T>.FillNativeMemoryArea(NativeMemoryArea)
+
+# CLArray<T>.FillNativeMemoryArea(NativeMemoryArea, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArray<T>.FillNativeMemory(NativeMemory)
+
+# CLArray<T>.FillNativeMemory(NativeMemory, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArray<T>.FillNativeValueArea(NativeValueArea<&T>)
+
+# CLArray<T>.FillNativeValueArea(NativeValueArea<&T>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArray<T>.FillNativeValue(NativeValue<&T>)
+
+# CLArray<T>.FillNativeValue(NativeValue<&T>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArray<T>.FillNativeArrayArea(NativeArrayArea<&T>)
+
+# CLArray<T>.FillNativeArrayArea(NativeArrayArea<&T>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArray<T>.FillNativeArray(NativeArray<&T>)
+
+# CLArray<T>.FillNativeArray(NativeArray<&T>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArray<T>.FillNativeMemoryArea(CommandQueue<NativeMemoryArea>)
+
+# CLArray<T>.FillNativeMemoryArea(CommandQueue<NativeMemoryArea>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArray<T>.FillNativeMemory(CommandQueue<NativeMemory>)
+
+# CLArray<T>.FillNativeMemory(CommandQueue<NativeMemory>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArray<T>.FillNativeValueArea(CommandQueue<NativeValueArea<&T>>)
+
+# CLArray<T>.FillNativeValueArea(CommandQueue<NativeValueArea<&T>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArray<T>.FillNativeArrayArea(CommandQueue<NativeArrayArea<&T>>)
+
+# CLArray<T>.FillNativeArrayArea(CommandQueue<NativeArrayArea<&T>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArray<T>.FillNativeArray(CommandQueue<NativeArray<&T>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemory.GetHashCode
+
+# CLValue<T>.GetHashCode
+
+# CLArray<T>.GetHashCode
+
+# ConstQueueNil
+
+# CommandQueue<T>.(T, array of CommandQueueBase)
+
+# CommandQueue<T>.ThenConvert<TOtp>(T->TOtp, boolean, boolean)
+
+# CommandQueue<T>.ThenConvert<TOtp>((T, CLContext)->TOtp, boolean, boolean)
+
+# CommandQueue<T>.ThenUse(T->(), boolean, boolean)
+
+# CommandQueue<T>.ThenUse((T, CLContext)->(), boolean, boolean)
+
+# CommandQueueMarkedCapNil
+
+# CommandQueueMarkedCap<T>
+
+# CLTaskBase.OrgCLContext
+
+# CLKernelCCQ
+
+# CLMemoryCCQ.ThenProc(CLMemory->(), boolean, boolean)
+
+# CLMemoryCCQ.ThenProc((CLMemory, CLContext)->(), boolean, boolean)
+
+# CLMemoryCCQ.ThenWriteNativeMemoryArea(NativeMemoryArea)
+
+# CLMemoryCCQ.ThenWriteNativeMemoryArea(NativeMemoryArea, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenWriteNativeMemory(NativeMemory)
+
+# CLMemoryCCQ.ThenWriteNativeMemory(NativeMemory, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenWriteNativeValueArea<TRecord>(NativeValueArea<TRecord>)
+
+# CLMemoryCCQ.ThenWriteNativeValueArea<TRecord>(NativeValueArea<TRecord>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenWriteNativeArrayArea<TRecord>(NativeArrayArea<TRecord>)
+
+# CLMemoryCCQ.ThenWriteNativeArrayArea<TRecord>(NativeArrayArea<TRecord>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenWriteNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenReadNativeMemoryArea(NativeMemoryArea)
+
+# CLMemoryCCQ.ThenReadNativeMemoryArea(NativeMemoryArea, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenReadNativeMemory(NativeMemory)
+
+# CLMemoryCCQ.ThenReadNativeMemory(NativeMemory, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenReadNativeValueArea<TRecord>(NativeValueArea<TRecord>)
+
+# CLMemoryCCQ.ThenReadNativeValueArea<TRecord>(NativeValueArea<TRecord>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenReadNativeArrayArea<TRecord>(NativeArrayArea<TRecord>)
+
+# CLMemoryCCQ.ThenReadNativeArrayArea<TRecord>(NativeArrayArea<TRecord>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenReadNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenWriteNativeMemoryArea(CommandQueue<NativeMemoryArea>)
+
+# CLMemoryCCQ.ThenWriteNativeMemory(CommandQueue<NativeMemory>)
+
+# CLMemoryCCQ.ThenWriteNativeValueArea<TRecord>(CommandQueue<NativeValueArea<TRecord>>)
+
+# CLMemoryCCQ.ThenWriteNativeArrayArea<TRecord>(CommandQueue<NativeArrayArea<TRecord>>)
+
+# CLMemoryCCQ.ThenReadNativeMemoryArea(CommandQueue<NativeMemoryArea>)
+
+# CLMemoryCCQ.ThenReadNativeMemory(CommandQueue<NativeMemory>)
+
+# CLMemoryCCQ.ThenReadNativeValueArea<TRecord>(CommandQueue<NativeValueArea<TRecord>>)
+
+# CLMemoryCCQ.ThenReadNativeArrayArea<TRecord>(CommandQueue<NativeArrayArea<TRecord>>)
+
+# CLMemoryCCQ.ThenWriteNativeMemoryArea(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenWriteNativeMemory(CommandQueue<NativeMemory>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenWriteNativeValueArea<TRecord>(CommandQueue<NativeValueArea<TRecord>>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenWriteNativeArrayArea<TRecord>(CommandQueue<NativeArrayArea<TRecord>>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenWriteNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenReadNativeMemoryArea(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenReadNativeMemory(CommandQueue<NativeMemory>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenReadNativeValueArea<TRecord>(CommandQueue<NativeValueArea<TRecord>>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenReadNativeArrayArea<TRecord>(CommandQueue<NativeArrayArea<TRecord>>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenReadNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenFillArraySegment<TRecord>(CommandQueue<ArraySegment<TRecord>>)
+
+# CLMemoryCCQ.ThenFillArraySegment<TRecord>(CommandQueue<ArraySegment<TRecord>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenFillNativeMemoryArea(NativeMemoryArea)
+
+# CLMemoryCCQ.ThenFillNativeMemoryArea(NativeMemoryArea, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenFillNativeMemory(NativeMemory)
+
+# CLMemoryCCQ.ThenFillNativeMemory(NativeMemory, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenFillNativeValueArea<TRecord>(NativeValueArea<TRecord>)
+
+# CLMemoryCCQ.ThenFillNativeValueArea<TRecord>(NativeValueArea<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenFillNativeArrayArea<TRecord>(NativeArrayArea<TRecord>)
+
+# CLMemoryCCQ.ThenFillNativeArrayArea<TRecord>(NativeArrayArea<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenFillNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenFillNativeMemoryArea(CommandQueue<NativeMemoryArea>)
+
+# CLMemoryCCQ.ThenFillNativeMemoryArea(CommandQueue<NativeMemoryArea>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenFillNativeMemory(CommandQueue<NativeMemory>)
+
+# CLMemoryCCQ.ThenFillNativeMemory(CommandQueue<NativeMemory>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenFillNativeValueArea<TRecord>(CommandQueue<NativeValueArea<TRecord>>)
+
+# CLMemoryCCQ.ThenFillNativeValueArea<TRecord>(CommandQueue<NativeValueArea<TRecord>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenFillNativeArrayArea<TRecord>(CommandQueue<NativeArrayArea<TRecord>>)
+
+# CLMemoryCCQ.ThenFillNativeArrayArea<TRecord>(CommandQueue<NativeArrayArea<TRecord>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemoryCCQ.ThenFillNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLMemory.MakeCCQ
+
+# CLValueCCQ<T>.ThenProc(CLValue<T>->(), boolean, boolean)
+
+# CLValueCCQ<T>.ThenProc((CLValue<T>, CLContext)->(), boolean, boolean)
+
+# CLValueCCQ<T>.ThenWriteNativeValueArea(CommandQueue<NativeValueArea<&T>>)
+
+# CLValueCCQ<T>.ThenReadNativeValueArea(CommandQueue<NativeValueArea<&T>>)
+
+# CLValue<T>.MakeCCQ
+
+# CLArrayCCQ<T>.ThenProc(CLArray<T>->(), boolean, boolean)
+
+# CLArrayCCQ<T>.ThenProc((CLArray<T>, CLContext)->(), boolean, boolean)
+
+# CLArrayCCQ<T>.ThenWriteNativeMemoryArea(CommandQueue<NativeMemoryArea>)
+
+# CLArrayCCQ<T>.ThenWriteNativeMemory(CommandQueue<NativeMemory>)
+
+# CLArrayCCQ<T>.ThenWriteNativeValueArea(CommandQueue<NativeValueArea<&T>>)
+
+# CLArrayCCQ<T>.ThenWriteNativeValue(CommandQueue<NativeValue<&T>>)
+
+# CLArrayCCQ<T>.ThenWriteNativeArrayArea(CommandQueue<NativeArrayArea<&T>>)
+
+# CLArrayCCQ<T>.ThenReadNativeMemoryArea(CommandQueue<NativeMemoryArea>)
+
+# CLArrayCCQ<T>.ThenReadNativeMemory(CommandQueue<NativeMemory>)
+
+# CLArrayCCQ<T>.ThenReadNativeValueArea(CommandQueue<NativeValueArea<&T>>)
+
+# CLArrayCCQ<T>.ThenReadNativeValue(CommandQueue<NativeValue<&T>>)
+
+# CLArrayCCQ<T>.ThenReadNativeArrayArea(CommandQueue<NativeArrayArea<&T>>)
+
+# CLArrayCCQ<T>.ThenWriteNativeMemoryArea(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenWriteNativeMemory(CommandQueue<NativeMemory>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenWriteNativeValueArea(CommandQueue<NativeValueArea<&T>>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenWriteNativeArrayArea(CommandQueue<NativeArrayArea<&T>>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenWriteNativeArray(CommandQueue<NativeArray<&T>>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenReadNativeMemoryArea(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenReadNativeMemory(CommandQueue<NativeMemory>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenReadNativeValueArea(CommandQueue<NativeValueArea<&T>>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenReadNativeArrayArea(CommandQueue<NativeArrayArea<&T>>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenReadNativeArray(CommandQueue<NativeArray<&T>>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenFillNativeMemoryArea(NativeMemoryArea)
+
+# CLArrayCCQ<T>.ThenFillNativeMemoryArea(NativeMemoryArea, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenFillNativeMemory(NativeMemory)
+
+# CLArrayCCQ<T>.ThenFillNativeMemory(NativeMemory, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenFillNativeValueArea(NativeValueArea<&T>)
+
+# CLArrayCCQ<T>.ThenFillNativeValueArea(NativeValueArea<&T>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenFillNativeValue(NativeValue<&T>)
+
+# CLArrayCCQ<T>.ThenFillNativeValue(NativeValue<&T>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenFillNativeArrayArea(NativeArrayArea<&T>)
+
+# CLArrayCCQ<T>.ThenFillNativeArrayArea(NativeArrayArea<&T>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenFillNativeArray(NativeArray<&T>)
+
+# CLArrayCCQ<T>.ThenFillNativeArray(NativeArray<&T>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenFillNativeMemoryArea(CommandQueue<NativeMemoryArea>)
+
+# CLArrayCCQ<T>.ThenFillNativeMemoryArea(CommandQueue<NativeMemoryArea>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenFillNativeMemory(CommandQueue<NativeMemory>)
+
+# CLArrayCCQ<T>.ThenFillNativeMemory(CommandQueue<NativeMemory>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenFillNativeValueArea(CommandQueue<NativeValueArea<&T>>)
+
+# CLArrayCCQ<T>.ThenFillNativeValueArea(CommandQueue<NativeValueArea<&T>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenFillNativeArrayArea(CommandQueue<NativeArrayArea<&T>>)
+
+# CLArrayCCQ<T>.ThenFillNativeArrayArea(CommandQueue<NativeArrayArea<&T>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArrayCCQ<T>.ThenFillNativeArray(CommandQueue<NativeArray<&T>>, CommandQueue<integer>, CommandQueue<integer>)
+
+# CLArray<T>.MakeCCQ
+
+# CLKernelArgGlobal
+
+# CLKernelArgConstant
+
+# CLKernelArgLocal
+
+# CLKernelArgPrivate
+
+# CQNil
+
+# HFQ<T>(()->T, boolean)
+
+# HFQ<T>(CLContext->T, boolean)
+
+# HPQ(()->(), boolean)
+
+# HPQ(CLContext->(), boolean)
+
+# CombineWaitAll(array of WaitMarker)
+
+# CombineWaitAll(sequence of WaitMarker)
+
+# CombineWaitAny(array of WaitMarker)
+
+# CombineWaitAny(sequence of WaitMarker)
+
+# CombineSyncQueue(array of CommandQueueBase)
+
+# CombineSyncQueue(array of CommandQueueNil)
+
+# CombineSyncQueue<TQ>(array of TQ, CommandQueueBase)
+
+# CombineSyncQueue<TQ>(array of TQ, CommandQueueNil)
+
+# CombineSyncQueue<T, TQ>(array of TQ, CommandQueue<T>)
+
+# CombineConvSyncQueue<TInp, TRes>(Func<array of TInp, TRes>, array of CommandQueue<TInp>, boolean, boolean)
+
+# CombineConvSyncQueueN2<TInp1,TInp2, TRes>(Func<TInp1, TInp2, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, boolean, boolean)
+
+# CombineConvSyncQueueN3<TInp1,TInp2,TInp3, TRes>(Func<TInp1, TInp2, TInp3, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, boolean, boolean)
+
+# CombineConvSyncQueueN4<TInp1,TInp2,TInp3,TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, boolean, boolean)
+
+# CombineConvSyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, boolean, boolean)
+
+# CombineConvSyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, boolean, boolean)
+
+# CombineConvSyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>, boolean, boolean)
+
+# CombineConvSyncQueue<TInp, TRes>(Func<array of TInp, CLContext, TRes>, array of CommandQueue<TInp>, boolean, boolean)
+
+# CombineConvSyncQueueN2<TInp1,TInp2, TRes>(Func<TInp1, TInp2, CLContext, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, boolean, boolean)
+
+# CombineConvSyncQueueN3<TInp1,TInp2,TInp3, TRes>(Func<TInp1, TInp2, TInp3, CLContext, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, boolean, boolean)
+
+# CombineConvSyncQueueN4<TInp1,TInp2,TInp3,TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, boolean, boolean)
+
+# CombineConvSyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, boolean, boolean)
+
+# CombineConvSyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, boolean, boolean)
+
+# CombineConvSyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>, boolean, boolean)
+
+# CombineUseSyncQueue<TInp>(Action<array of TInp>, array of CommandQueue<TInp>, boolean, boolean)
+
+# CombineUseSyncQueueN2<TInp1,TInp2>(Action<TInp1, TInp2>, CommandQueue<TInp1>, CommandQueue<TInp2>, boolean, boolean)
+
+# CombineUseSyncQueueN3<TInp1,TInp2,TInp3>(Action<TInp1, TInp2, TInp3>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, boolean, boolean)
+
+# CombineUseSyncQueueN4<TInp1,TInp2,TInp3,TInp4>(Action<TInp1, TInp2, TInp3, TInp4>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, boolean, boolean)
+
+# CombineUseSyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5>(Action<TInp1, TInp2, TInp3, TInp4, TInp5>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, boolean, boolean)
+
+# CombineUseSyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, boolean, boolean)
+
+# CombineUseSyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>, boolean, boolean)
+
+# CombineUseSyncQueue<TInp>(Action<array of TInp, CLContext>, array of CommandQueue<TInp>, boolean, boolean)
+
+# CombineUseSyncQueueN2<TInp1,TInp2>(Action<TInp1, TInp2, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, boolean, boolean)
+
+# CombineUseSyncQueueN3<TInp1,TInp2,TInp3>(Action<TInp1, TInp2, TInp3, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, boolean, boolean)
+
+# CombineUseSyncQueueN4<TInp1,TInp2,TInp3,TInp4>(Action<TInp1, TInp2, TInp3, TInp4, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, boolean, boolean)
+
+# CombineUseSyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5>(Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, boolean, boolean)
+
+# CombineUseSyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, boolean, boolean)
+
+# CombineUseSyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>, boolean, boolean)
+
+# CombineAsyncQueue(array of CommandQueueBase)
+
+# CombineAsyncQueue(array of CommandQueueNil)
+
+# CombineAsyncQueue<TQ>(array of TQ, CommandQueueBase)
+
+# CombineAsyncQueue<TQ>(array of TQ, CommandQueueNil)
+
+# CombineAsyncQueue<T, TQ>(array of TQ, CommandQueue<T>)
+
+# CombineConvAsyncQueue<TInp, TRes>(Func<array of TInp, TRes>, array of CommandQueue<TInp>, boolean, boolean)
+
+# CombineConvAsyncQueueN2<TInp1,TInp2, TRes>(Func<TInp1, TInp2, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, boolean, boolean)
+
+# CombineConvAsyncQueueN3<TInp1,TInp2,TInp3, TRes>(Func<TInp1, TInp2, TInp3, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, boolean, boolean)
+
+# CombineConvAsyncQueueN4<TInp1,TInp2,TInp3,TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, boolean, boolean)
+
+# CombineConvAsyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, boolean, boolean)
+
+# CombineConvAsyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, boolean, boolean)
+
+# CombineConvAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>, boolean, boolean)
+
+# CombineConvAsyncQueue<TInp, TRes>(Func<array of TInp, CLContext, TRes>, array of CommandQueue<TInp>, boolean, boolean)
+
+# CombineConvAsyncQueueN2<TInp1,TInp2, TRes>(Func<TInp1, TInp2, CLContext, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, boolean, boolean)
+
+# CombineConvAsyncQueueN3<TInp1,TInp2,TInp3, TRes>(Func<TInp1, TInp2, TInp3, CLContext, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, boolean, boolean)
+
+# CombineConvAsyncQueueN4<TInp1,TInp2,TInp3,TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, CLContext, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, boolean, boolean)
+
+# CombineConvAsyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, boolean, boolean)
+
+# CombineConvAsyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, boolean, boolean)
+
+# CombineConvAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>, boolean, boolean)
+
+# CombineUseAsyncQueue<TInp>(Action<array of TInp>, array of CommandQueue<TInp>, boolean, boolean)
+
+# CombineUseAsyncQueueN2<TInp1,TInp2>(Action<TInp1, TInp2>, CommandQueue<TInp1>, CommandQueue<TInp2>, boolean, boolean)
+
+# CombineUseAsyncQueueN3<TInp1,TInp2,TInp3>(Action<TInp1, TInp2, TInp3>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, boolean, boolean)
+
+# CombineUseAsyncQueueN4<TInp1,TInp2,TInp3,TInp4>(Action<TInp1, TInp2, TInp3, TInp4>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, boolean, boolean)
+
+# CombineUseAsyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5>(Action<TInp1, TInp2, TInp3, TInp4, TInp5>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, boolean, boolean)
+
+# CombineUseAsyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, boolean, boolean)
+
+# CombineUseAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>, boolean, boolean)
+
+# CombineUseAsyncQueue<TInp>(Action<array of TInp, CLContext>, array of CommandQueue<TInp>, boolean, boolean)
+
+# CombineUseAsyncQueueN2<TInp1,TInp2>(Action<TInp1, TInp2, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, boolean, boolean)
+
+# CombineUseAsyncQueueN3<TInp1,TInp2,TInp3>(Action<TInp1, TInp2, TInp3, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, boolean, boolean)
+
+# CombineUseAsyncQueueN4<TInp1,TInp2,TInp3,TInp4>(Action<TInp1, TInp2, TInp3, TInp4, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, boolean, boolean)
+
+# CombineUseAsyncQueueN5<TInp1,TInp2,TInp3,TInp4,TInp5>(Action<TInp1, TInp2, TInp3, TInp4, TInp5, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, boolean, boolean)
+
+# CombineUseAsyncQueueN6<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>(Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, boolean, boolean)
+
+# CombineUseAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>, boolean, boolean)
+
+# Err:NativeArrayArea:ManagedCopy:WriteSize
+
+# Err:CLContext:WrongMainDvc
+
+# Err:ProgramOptions:WarningLevel:Invalid
+
+# Err:CLCode:BuildFail:Link
+
+# Err:CLCode:BuildFail:Compile
+
+# BinCLCode:Deserialize:ProgramBinaryType:Different
+
+# BinCLCode:Deserialize:ProgramBinaryType:Missing
+
+# Err:CLMemoryUsage:NoCLKernelAccess
+
+# Err:CLMemoryUsage:Invalid
+
+# Err:CLDevice:SplitNotSupported
+
+# Err:CLDevice:SplitCUCount
+
+# Err:Blittable:Source:NativeValue[Area]
+
+# Err:Blittable:Source:NativeArray[Area]
+
+# Err:QueueArrayUtils:EmptyNotAllowed
+
+# Err:Invoke:InvalidToPtr
+
+# Err:WaitMarkerCombination.SendSignal
+
+# CommandQueue<CLKernel>.MakeCCQ
+
+# CommandQueue<CLMemory>.MakeCCQ
+
+# CommandQueue<CLValue<T>>.MakeCCQ
+
+# CommandQueue<CLArray<T>>.MakeCCQ
+
+# Err:Blittable:Source:CLKernelArgLocal:ItemCount
+
+# Err:Blittable:Source:CLKernelArgPrivate:Array
+
+# Err:Blittable:Source:CLKernelArgPrivate:Array2
+
+# Err:Blittable:Source:CLKernelArgPrivate:Array3
+
+# Err:Blittable:Source:CLKernelArgPrivate:ArraySegment
+
+# Err:Blittable:Source:CLKernelArgPrivate:NativeValueArea
+
+# Err:Blittable:Source:CLKernelArgPrivate:NativeArrayArea
+
+# Err:Blittable:Source:CLKernelArgPrivate:NativeValue
+
+# Err:Blittable:Source:CLKernelArgPrivate:NativeArray
+
+# Err:Blittable:Source:CLKernelArgPrivate:Value
+
+# Err:Blittable:Source:CLMemory:WriteNativeValueArea
+
+# Err:Blittable:Source:CLMemory:WriteNativeArrayArea
+
+# Err:Blittable:Source:CLMemory:ReadNativeValueArea
+
+# Err:Blittable:Source:CLMemory:ReadNativeArrayArea
+
+# Err:Blittable:Source:CLMemory:FillNativeValueAreaAutoSize
+
+# Err:Blittable:Source:CLMemory:FillNativeValueArea
+
+# Err:Blittable:Source:CLMemory:FillNativeArrayAreaAutoSize
+
+# Err:Blittable:Source:CLMemory:FillNativeArrayArea
+
+# CLContext:GenerateAndCheckDefault:NotFirst
+

@@ -4,6 +4,7 @@ uses Parsing  in '..\..\..\Utils\Parsing';
 
 type
   MarksInfo = abstract class
+    private const esc_sym = '\';
     private s_beg, s_end: string;
     private sub_marks: array of MarksInfo;
     private begs: array of string;
@@ -20,7 +21,7 @@ type
     public procedure MarkAll(text: StringSection; validate: (StringSection, boolean, MarksInfo)->StringIndex) :=
     while true do
     begin
-      var beg := text.SubSectionOfFirstUnescaped(begs);
+      var beg := text.SubSectionOfFirstUnescaped(esc_sym, begs);
       if beg.IsInvalid then exit;
       text.range.i1 := beg.I1;
       var info := sub_marks[begs.FindIndex(bs->bs=beg)];
@@ -28,7 +29,7 @@ type
       var ind := 0;
       while true do
       begin
-        var len := text.IndexOfUnescaped(info.s_beg.Length+ind, info.s_end);
+        var len := text.IndexOfUnescaped(info.s_beg.Length+ind, info.s_end, esc_sym);
         if not len.IsInvalid then len += info.s_end.Length;
         
         var s := text;

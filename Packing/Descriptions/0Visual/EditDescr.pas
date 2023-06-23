@@ -1,140 +1,49 @@
-{$apptype windows}
+﻿//uses System;
+//uses System.Windows;
+//uses System.Windows.Media;
+//uses System.Windows.Controls;
+//uses System.Windows.Documents;
+//
+//uses Fixers       in '..\..\..\Utils\Fixers';
+//uses Parsing      in '..\..\..\Utils\Parsing';
+//uses PathUtils    in '..\..\..\Utils\PathUtils';
+//uses SubExecuters in '..\..\..\Utils\SubExecuters';
+//
+//uses Markings;
+//
+//uses PABCSystem;
 
-{$reference PresentationFramework.dll}
-{$reference PresentationCore.dll}
-{$reference WindowsBase.dll}
+uses _1_HelloPage;
 
-uses System;
-uses System.Windows;
-uses System.Windows.Media;
-uses System.Windows.Controls;
-uses System.Windows.Documents;
+//const inp_file_ext = '.dat';
+//
+//[Cache]
+//function ColorFromKey(key: object): Color;
+//begin
+//  var rng := new System.Random(key.ToString.GetHashCode);
+//  Result := Color.FromRgb(rng.Next(100,150), rng.Next(150,250), rng.Next(150,250));
+//end;
 
-uses Fixers       in '..\..\..\Utils\Fixers';
-uses Parsing      in '..\..\..\Utils\Parsing';
-uses PathUtils    in '..\..\..\Utils\PathUtils';
-uses SubExecuters in '..\..\..\Utils\SubExecuters';
-
-uses Markings;
-
-uses PABCSystem;
-
-const
-  inp_file_ext = '.dat';
-  
-var enc := new System.Text.UTF8Encoding(true);
-
-[Cache]
-function ColorFromKey(key: object): Color;
-begin
-  var rng := new System.Random(key.ToString.GetHashCode);
-  Result := Color.FromRgb(rng.Next(100,150), rng.Next(150,250), rng.Next(150,250));
-end;
-
-//TODO Наверное придётся засунуть весь текст файла в один FixedTextBox
-// - И тогда все особые вещи оборачивать в Span'ы и менять во время редактирования текста
-// - Вообще, лучше сделать специальную систему подсветки
-// --- (Файл TextMarking.pas)
-// --- [%key%] и все связанные {%key%}
-// --- %key% со ссылкой на источник
-// - Как тогда поступать с раскрытием [+]
-// --- Попробовать вставлять TextBlock в инлайны - будет ли он выделяться/редактироваться?
+{$region Old}
+(**
 
 type
-  FixedTextBox = sealed class(ContentControl)
-    public tb := new RichTextBox;
-    
-    public constructor;
-    begin
-      self.Content := tb;
-      self.IsTabStop := false;
-      
-      // Otherwise 1 letter per line
-//      self.SizeChanged += (o,e)->(
-//        tb.Document.PageWidth := e.NewSize.Width
-//      );
-      
-      tb.Document.LineHeight := 1;
-      
-      tb.VerticalScrollBarVisibility := ScrollBarVisibility.Auto;
-      tb.HorizontalScrollBarVisibility := ScrollBarVisibility.Auto;
-      
-      tb.PreviewMouseWheel += (o,e)->
-      if System.Windows.Input.Keyboard.Modifiers.HasFlag(System.Windows.Input.ModifierKeys.Shift) then
-      begin
-        var scr := if e.Delta<0 then tb.LineRight else tb.LineLeft;
-        loop Abs(Round(e.Delta/60)) do scr;
-        e.Handled := true;
-      end;
-      
-    end;
-    
-  end;
+//  ModuleDataStore0 = abstract class
+//    private cont_by_dir := new Dictionary<string, ItemsControl>;
+//    private file_view_cache := new Dictionary<string, UIElement>;
+//    
+//    private apply_changes_wh := new System.Threading.ManualResetEventSlim(false);
+//    public procedure Update := apply_changes_wh.Set;
+//    
+//    public procedure SelectFile(fname: string);
+//    begin
+//      
+//    end;
+//    
+//  end;
   
-  InputDialog = sealed class(Window)
-    private tb := new {Rich}TextBox;
-    
-    public constructor(title, descr, default_inp: string; validate: string->string);
-    begin
-      self.Title := title;
-      self.SizeToContent := System.Windows.SizeToContent.WidthAndHeight;
-      self.MinWidth := 300;
-      
-      var sp := new StackPanel;
-      self.Content := sp;
-      
-      var descr_l := new &Label;
-      sp.Children.Add(descr_l);
-      descr_l.Content := descr;
-      
-      sp.Children.Add(tb);
-      tb.Margin := new Thickness(5);
-      var last_err := default(string);
-      tb.TextChanged += (o,e)->
-      begin
-        last_err := validate(tb.Text);
-        tb.Background := if last_err=nil then
-          Brushes.White else
-          Brushes.LightPink;
-      end;
-      tb.Text := default_inp;
-      tb.Focus;
-      tb.SelectionStart := default_inp.Length;
-      
-      self.KeyDown += (o,e)->
-      case e.Key of
-        System.Windows.Input.Key.Enter:
-        if last_err<>nil then
-          MessageBox.Show(last_err, 'Invalid input') else
-        begin
-          self.DialogResult := true;
-          self.Close;
-        end;
-        System.Windows.Input.Key.Escape:
-        begin
-          self.DialogResult := false;
-          self.Close;
-        end;
-      end;
-      
-    end;
-    private constructor := raise new System.InvalidOperationException;
-    
-    public static function Ask(title, descr, default_inp: string; validate: string->string): string;
-    begin
-      var d := new InputDialog(title, descr, default_inp, validate);
-      Result := if d.ShowDialog = true then
-        d.tb.Text else nil;
-//      Result := if d.ShowDialog = true then
-//        TextRange.Create(
-//          d.tb.Document.ContentStart, d.tb.Document.ContentEnd
-//        ).Text else nil;
-    end;
-    
-  end;
-  
-  FileListItem = sealed class(TreeViewItem)
   FileState = (FS_OK, FS_Unused, FS_Error);
+  FileListItem0 = sealed class(TreeViewItem)
     
     public static function MakeName(path: string): string;
     begin
@@ -298,7 +207,7 @@ type
     
   end;
   
-  InpFileView = sealed class
+  InpFileView0 = sealed class
     private body := new FixedTextBox;
     private headers := new List<(array of string, Run)>;
     
@@ -703,6 +612,93 @@ type
     
   end;
   
+(**)
+{$endregion Old}
+
+{$region Old v2}
+(**
+
+{$region FileView}
+
+type
+  FileView = sealed class
+    public head := new TreeViewItem;
+    public body := new FixedTextBox;
+    
+//    public last_modify := DateTime.MinValue;
+    
+    public constructor(fname: string; set_text: string->(); deleted: ()->());
+    begin
+//      self.last_modify := System.IO.File.GetLastWriteTime(fname);
+      var text := ReadAllText(fname, enc);
+      
+      var TODO := 0;
+      
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+  end;
+  
+  FileList = sealed class
+    public heads := new TreeView;
+    public body := new ContentControl;
+    
+    public constructor(mname: string; FileSelected: FileView->());
+    begin
+      var fsw := new System.IO.FileSystemWatcher(mname);
+      fsw.IncludeSubdirectories := true;
+      fsw.Error += (o,e)->MessageBox.Show(e.GetException.ToString);
+      
+      var all_files := new Dictionary<string, FileView>;
+      var all_dirs := new Dictionary<string, TreeViewItem>;
+      
+      //TODO Надо ли вще тут? Или только в ModuleView
+      var curr_file := default(FileView);
+      
+      var RePopulateFileList := procedure->
+      begin
+        var dirs := EnumerateAllDirectories(mname).ToArray;
+        var files := EnumerateAllFiles(mname, '*.dat').ToArray;
+        
+        foreach var f in all_files.Keys.Except(files).ToArray do
+        begin
+          var fv := all_files[f];
+          if fv=curr_file then
+          begin
+            curr_file := nil;
+            body.Content := nil;
+            FileSelected(nil);
+          end;
+          all_files.Remove(f);
+        end;
+        
+        foreach var d in all_dirs.Keys.Except(dirs).ToArray do
+        begin
+          
+        end;
+        
+        //TODO TreeViewItem's for dir and file are similar...
+        // - Only in context menu, and that is not needed with fsw
+        var TODO := 0;
+        
+      end;
+      fsw.Changed += (o,e)->RePopulateFileList();
+      fsw.Created += (o,e)->RePopulateFileList();
+      fsw.Deleted += (o,e)->RePopulateFileList();
+      fsw.Renamed += (o,e)->RePopulateFileList();
+      
+      fsw.EnableRaisingEvents := true;
+      RePopulateFileList;
+      
+      var TODO := 0;
+    end;
+    private constructor := raise new System.InvalidOperationException;
+    
+  end;
+  
+{$endregion FileView}
+
+type
   DescriptionsPackCanceled = sealed class(Exception) end;
   ModuleView = sealed class(ContentControl)
     
@@ -769,16 +765,16 @@ type
           
           self.Dispatcher.Invoke(()->
           begin
-          
-          unused_headers.Clear;
-          unused_headers.UnionWith(ReadLines(module_dir+'.unused.log', enc));
-          
-          used_headers.Clear;
-          used_headers.UnionWith(ReadLines(module_dir+'.used.log', enc).Where(l->l.StartsWith('#')).Select(l->l.SubString(1).Trim));
-          
-          if curr_file_view<>nil then
-            curr_file_view.UpdateHeaders(unused_headers, used_headers);
-        end);
+            
+            unused_headers.Clear;
+            unused_headers.UnionWith(ReadLines(module_dir+'.unused.log', enc));
+            
+            used_headers.Clear;
+            used_headers.UnionWith(ReadLines(module_dir+'.used.log', enc).Where(l->l.StartsWith('#')).Select(l->l.SubString(1).Trim));
+            
+            if curr_file_view<>nil then
+              curr_file_view.UpdateHeaders(unused_headers, used_headers);
+          end);
           
         except
           on e: Exception do MessageBox.Show(e.ToString);
@@ -877,10 +873,12 @@ type
     
   end;
   
+(**)
+{$endregion Old v2}
+
 begin
-  var w := new Window;
-  w.WindowState := WindowState.Maximized;
-  Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(GetCurrentDir);
+  var w := new System.Windows.Window;
+  w.WindowState := System.Windows.WindowState.Maximized;
   
   begin
     var last_esc_t := DateTime.MinValue;
@@ -896,32 +894,18 @@ begin
     end;
   end;
   
-  w.Loaded += (o,e)->
   begin
-    
-    var sw := new ScrollViewer;
-    w.Content := sw;
-    
-    var sp := new StackPanel;
-    sw.Content := sp;
+    var hp := new LogicHelloPage;
+    w.Content := hp.Visual;
     
     foreach var name in EnumerateFiles('..\', '*.predoc').Select(System.IO.Path.GetFileNameWithoutExtension) do
-    begin
-      
-      var b := new Button;
-      sp.Children.Add(b);
-      b.Content := name;
-      
-      b.Click += (o,e)->
-      begin
-        w.Content := new ModuleView(name);
-      end;
-      
-    end;
+      hp.Add('..\'+name, name,
+        fe->(w.Content := fe)
+      );
     
-    var TODO := 0; //TODO Comment out
-    w.Content := new ModuleView('OpenCLABC');
   end;
   
-  Halt(Application.Create.Run(w));
+  GetResourceStream
+  
+  Halt(System.Windows.Application.Create.Run(w));
 end.

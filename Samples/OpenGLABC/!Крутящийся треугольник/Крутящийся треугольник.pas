@@ -13,10 +13,11 @@ uses OpenGLABC;
 
 uses Common in '..\Common';
 
-{$apptype windows} // Убираем консоль
+{$apptype windows} // убираем консоль
+
+const dy = -Sin(Pi / 6) / 2;
 
 procedure RedrawProc(pl: PlatformLoader; EndFrame: ()->());
-const dy = -Sin(Pi / 6) / 2;
 begin
   
   {$region Настройка глобальных параметров OpenGL}
@@ -31,7 +32,8 @@ begin
   {$region Инициализация переменных}
   
   var sprog := InitProgram(
-    InitShader('Крутящийся треугольник.vert', ShaderType.VERTEX_SHADER)
+    InitShader('Крутящийся треугольник.vert', ShaderType.VERTEX_SHADER),
+    InitShader('Крутящийся треугольник.frag', ShaderType.FRAGMENT_SHADER)
   {, другие_шейдеры});
   gl.UseProgram(sprog);
   
@@ -43,7 +45,7 @@ begin
     gl.CreateBuffers(1, vertex_pos_buffer);
     gl.NamedBufferData(
       vertex_pos_buffer,
-      new UIntPtr(3*sizeof(Vec2f)),
+      new IntPtr(3*sizeof(Vec2f)),
       ArrGen(3, i->
       begin
         var rot := i * Pi * 2 / 3;
@@ -64,13 +66,13 @@ begin
     gl.EnableVertexAttribArray(attribute_position);
   end;
   
-  // Значения, которые будут передаваться в атрибут "color" в шейдере
+  // Значения, которые будут передаваться в атрибут "inp_color" в шейдере
   begin
     var vertex_clr_buffer: gl_buffer;
     gl.CreateBuffers(1, vertex_clr_buffer);
     gl.NamedBufferData(
       vertex_clr_buffer,
-      new UIntPtr(3*sizeof(Vec3f)),
+      new IntPtr(3*sizeof(Vec3f)),
       |
         new Vec3f(1,0,0),
         new Vec3f(0,1,0),
@@ -78,10 +80,10 @@ begin
       |,
       VertexBufferObjectUsage.STATIC_DRAW
     );
-    var attribute_color := gl.GetAttribLocation(sprog, 'color');
-    gl.VertexAttribFormat(attribute_color, 3,VertexAttribType.FLOAT, false, 0);
-    gl.BindVertexBuffer(attribute_color, vertex_clr_buffer, IntPtr.Zero, sizeof(Vec3f));
-    gl.EnableVertexAttribArray(attribute_color);
+    var attribute_inp_color := gl.GetAttribLocation(sprog, 'inp_color');
+    gl.VertexAttribFormat(attribute_inp_color, 3,VertexAttribType.FLOAT, false, 0);
+    gl.BindVertexBuffer(attribute_inp_color, vertex_clr_buffer, IntPtr.Zero, sizeof(Vec3f));
+    gl.EnableVertexAttribArray(attribute_inp_color);
   end;
   
   var t := new Stopwatch;

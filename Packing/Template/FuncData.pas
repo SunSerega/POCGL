@@ -426,7 +426,7 @@ type
       var screened_enums := enums.ToDictionary(kvp->kvp.Key, kvp->
       begin
         Result := kvp.Key;
-        if Result.ToLower in pas_keywords then
+        if Result in pas_keywords then
           Result := '&'+Result;
       end);
       
