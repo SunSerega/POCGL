@@ -15221,7 +15221,8 @@ type
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
       sb += #10;
-      foreach var i in Range(0,children.Length-1).OrderByDescending(i->ref_counts[i]) do
+      // Конфликт с System.Range, но воспроизводится только из под mono
+      foreach var i in PABCSystem.Range(0,children.Length-1).OrderByDescending(i->ref_counts[i]) do
       begin
         children[i].ToString(sb, tabs, index, delayed);
         if ref_counts[i]<>1 then
