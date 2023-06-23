@@ -7,11 +7,11 @@ SubReps Update: OpenCL[OUT] : Your branch is up to date with 'SunSerega/custom'.
 SubReps Update: OpenCL[OUT] : Already on 'custom'
 SubReps Update: OpenCL[OUT] : [pull]
 SubReps Update: OpenCL[ERR] : From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch              main       -> FETCH_HEAD
+SubReps Update: OpenCL[ERR] : * branch            main       -> FETCH_HEAD
 SubReps Update: OpenCL[OUT] : Already up to date.
 SubReps Update: OpenCL[OUT] : [pull-own]:
 SubReps Update: OpenCL[ERR] : From github.com:SunSerega/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch              custom     -> FETCH_HEAD
+SubReps Update: OpenCL[ERR] : * branch            custom     -> FETCH_HEAD
 SubReps Update: OpenCL[OUT] : Already up to date.
 SubReps Update: OpenCL[OUT] : [push]
 SubReps Update: OpenCL[ERR] : Everything up-to-date
@@ -23,11 +23,11 @@ SubReps Update: OpenGL[OUT] : Your branch is up to date with 'SunSerega/custom'.
 SubReps Update: OpenGL[OUT] : Already on 'custom'
 SubReps Update: OpenGL[OUT] : [pull]
 SubReps Update: OpenGL[ERR] : From github.com:KhronosGroup/OpenGL-Registry
-SubReps Update: OpenGL[ERR] : * branch            main       -> FETCH_HEAD
+SubReps Update: OpenGL[ERR] : * branch              main       -> FETCH_HEAD
 SubReps Update: OpenGL[OUT] : Already up to date.
 SubReps Update: OpenGL[OUT] : [pull-own]:
 SubReps Update: OpenGL[ERR] : From github.com:SunSerega/OpenGL-Registry
-SubReps Update: OpenGL[ERR] : * branch            custom     -> FETCH_HEAD
+SubReps Update: OpenGL[ERR] : * branch              custom     -> FETCH_HEAD
 SubReps Update: OpenGL[OUT] : Already up to date.
 SubReps Update: OpenGL[OUT] : [push]
 SubReps Update: OpenGL[ERR] : Everything up-to-date
