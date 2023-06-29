@@ -168,7 +168,7 @@ type
   
 initialization
   try
-    Logger.main += log;
+    Logger.AttachToMain( log );
   except
     on e: Exception do
       ErrOtp(e);

@@ -447,8 +447,10 @@ begin
     FileLogger.RegisterGenerallyExpKind(PackingStage.lk_pack_stage_unspecific);
     FileLogger.RegisterGenerallyExpKind(AsyncTaskProcessExec.lk_exec_task_pre_compile);
     
-    Logger.main += new FileLogger('LastPack.log');
-    Logger.main += new FileLogger('LastPack (Timed).log', true);
+    Logger.AttachToMain(
+      new FileLogger('LastPack.log') +
+      new FileLogger('LastPack (Timed).log', true)
+    );
     
     // ====================================================
     
@@ -474,10 +476,10 @@ begin
       end else
       begin
         PackingStage.CurrentStages := AllStages.ToHashSet;
-        PackingStage.CurrentStages := HSet(FirstPackStr);
-        PackingStage.CurrentStages := HSet(DummyStr, OpenCLStr, OpenGLStr, CompileStr);
-        PackingStage.CurrentStages := HSet(OpenCLABCStr, OpenGLABCStr, CompileStr);
-        PackingStage.CurrentStages := HSet(DummyStr, OpenCLStr,OpenCLABCStr, OpenGLStr,OpenGLABCStr, CompileStr);
+//        PackingStage.CurrentStages := HSet(FirstPackStr);
+//        PackingStage.CurrentStages := HSet(DummyStr, OpenCLStr, OpenGLStr, CompileStr);
+//        PackingStage.CurrentStages := HSet(OpenCLABCStr, OpenGLABCStr, CompileStr);
+//        PackingStage.CurrentStages := HSet(DummyStr, OpenCLStr,OpenCLABCStr, OpenGLStr,OpenGLABCStr, CompileStr);
         Otp($'Executing debug stages:');
       end;
       
