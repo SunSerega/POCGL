@@ -10,9 +10,8 @@ var dir_sep := |Path.DirectorySeparatorChar,Path.AltDirectorySeparatorChar|.Dist
 
 function GetFullPath(fname: string; base_folder: string := nil): string;
 begin
-  if base_folder=nil then
-    base_folder := System.Environment.CurrentDirectory.Replace('\','/');
   
+  fname := fname.Replace('\','/');
   try
     if Path.IsPathRooted(fname) then
     begin
@@ -24,20 +23,23 @@ begin
       raise new System.ArgumentException($'Строка "{fname}" содержала недопустимые символы', 'fname');
   end;
   
-  var res_path := GetFullPath(base_folder);
-  if dir_sep.Any(ch->res_path.EndsWith(ch)) then
-    res_path := res_path.Remove(res_path.Length-1);
+  if base_folder=nil then
+    base_folder := System.Environment.CurrentDirectory;
+  base_folder := GetFullPath(base_folder.Replace('\','/'));
+  if base_folder.EndsWith('/') then
+    base_folder := base_folder.Remove(base_folder.Length-1);
+  var base_folder_parts := base_folder.Split('/');
   
   while true do
   begin
-    if dir_sep.Any(ch->fname.StartsWith(ch)) then
+    if fname.StartsWith('/') then
       fname := fname.Substring(1);
     if not fname.StartsWith('..') then break;
     fname := fname.Substring('..'.Length);
-    res_path := Path.GetDirectoryName(res_path);
+    base_folder_parts := base_folder_parts[:^1];
   end;
   
-  Result := res_path + '/' + fname;
+  Result := base_folder_parts.Append(fname).JoinToString('/');
 end;
 function GetFullPathRTA(fname: string) := GetFullPath(fname, assembly_dir);
 

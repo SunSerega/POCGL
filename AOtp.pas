@@ -120,9 +120,10 @@ type
     private t: int64;
     private kind: OtpKind;
     
-    public static pack_timer := Stopwatch.StartNew;
+    private static pack_timer := Stopwatch.StartNew;
+    public static function TotalTime := pack_timer.Elapsed;
     
-    public constructor(s: string; t: int64; kind: OtpKind);
+    private constructor(s: string; t: int64; kind: OtpKind);
     begin
       self.s := s;
       self.t := t;
@@ -130,6 +131,7 @@ type
     end;
     public constructor(s: string; kind: OtpKind) := Create(s, pack_timer.ElapsedTicks, kind);
     public constructor(s: string) := Create(s, OtpKind.Empty);
+    private constructor := raise new System.InvalidOperationException;
     
     public static function operator implicit(s: string): OtpLine := new OtpLine(s);
     public static function operator implicit(s: char): OtpLine := new OtpLine(s);
@@ -160,11 +162,12 @@ type
   OtpLineColored = sealed class(OtpLine)
     private bg_colors := System.Linq.Enumerable.Empty&<(integer,System.ConsoleColor)>;
     
-    public constructor(s: string; bg_colors: sequence of (integer,System.ConsoleColor));
+    public constructor(s: string; kind: OtpKind; bg_colors: sequence of (integer,System.ConsoleColor));
     begin
-      inherited Create(s);
+      inherited Create(s, kind);
       self.bg_colors := bg_colors;
     end;
+    private constructor := raise new System.InvalidOperationException;
     
     public procedure Println; override;
     begin
@@ -203,37 +206,30 @@ type
   {$region Logger's}
   
   Logger = abstract class
-    public static main: Logger;
-    public sub_loggers := new List<Logger>;
+    protected static main: Logger;
+    protected sub_loggers := new List<Logger>;
     
     public static procedure operator+=(log1, log2: Logger) :=
-    lock log1.sub_loggers do log1.sub_loggers += log2;
+      lock log1.sub_loggers do log1.sub_loggers += log2;
     public static function operator+(log1, log2: Logger): Logger;
     begin
       log1 += log2;
       Result := log1;
     end;
+    public static procedure AttachToMain(l: Logger) := main += l;
     
-    public procedure Otp(l: OtpLine) :=
-    lock self do
+    public procedure Otp(l: OtpLine) := lock self do
     begin
       
       OtpImpl(l);
       
-      lock sub_loggers do
-        foreach var log in sub_loggers do
-          log.Otp(l);
+      foreach var log in sub_loggers do
+        log.Otp(l);
     end;
     protected procedure OtpImpl(l: OtpLine); abstract;
     
-    public static event PreClose: procedure;
     public procedure Close;
     begin
-      if self = Logger.main then
-      begin
-        var PreClose := self.PreClose;
-        if PreClose<>nil then PreClose();
-      end;
       
       CloseImpl;
       
@@ -247,7 +243,12 @@ type
   
   ConsoleLogger = sealed class(Logger)
     
-    private constructor := exit;
+    private constructor;
+    begin
+      if Logger.main<>nil then
+        raise new System.InvalidOperationException;
+      Logger.main := self;
+    end;
     
     public procedure OtpImpl(l: OtpLine); override;
     begin
@@ -297,8 +298,8 @@ type
       self.main_sw    := new System.IO.StreamWriter(fname, false, enc);
       self.backup_sw  := new System.IO.StreamWriter(bu_fname, false, enc);
       self.timed      := timed;
-      self.req_kinds  := if req_kinds=nil then g_req_kinds.Unwrap else req_kinds.Value;
-      self.bad_kinds  := if bad_kinds=nil then g_bad_kinds.Unwrap else bad_kinds.Value;
+      self.req_kinds  := if req_kinds<>nil then req_kinds.Value else g_req_kinds.Unwrap;
+      self.bad_kinds  := if bad_kinds<>nil then bad_kinds.Value else if timed then OtpKind.Empty else g_bad_kinds.Unwrap;
     end;
     
     public property IsTimed: boolean read timed;
@@ -507,7 +508,8 @@ end;
 
 initialization
   try
-    Logger.main := new ConsoleLogger;
+    OtpLine.TotalTime;
+    new ConsoleLogger;
     RegisterThr;
     DefaultEncoding := FileLogger.enc;
   except

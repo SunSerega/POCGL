@@ -1,4 +1,4 @@
-﻿///Модуль, который должен быть подключён ко всему, что ожидает вызов себя из другой программы
+﻿///Модуль, который позволяющий программе более красиво вызвать себя из SubExecuters
 unit SubExecutables;
 
 interface
@@ -10,7 +10,6 @@ uses Timers;
 uses CLArgs;
 
 type
-  
   ParentStreamLogger = sealed class(Logger)
     private bw: System.IO.BinaryWriter;
     
@@ -19,6 +18,11 @@ type
     
     private constructor;
     begin
+      
+      if not (Logger.main is ConsoleLogger) then
+        raise new System.InvalidOperationException;
+      Logger.main := self;
+      
       var hnd_strs := GetArgs(OutputPipeIdStr).Single.ToWords;
       
       var str := new System.IO.Pipes.AnonymousPipeClientStream(
@@ -50,20 +54,24 @@ type
       bw.Flush;
     end;
     
+    public static procedure BinarizeGlobalTimerLog(lines: array of (integer,string,string));
+    begin
+      var psl := ParentStreamLogger(Logger.main);
+      var bw := psl.bw;
+      bw.Write(2);
+      bw.Write(OtpLine.TotalTime.Ticks);
+      bw.Write(lines.Count-1);
+      foreach var (lvl, head, body) in lines.Skip(1) do
+      begin
+        bw.Write(lvl);
+        bw.Write(head);
+        bw.Write(body);
+      end;
+    end;
+    
     public procedure CloseImpl; override;
     begin
       bw.Close;
-    end;
-    
-  end;
-  
-  BinarizingExeTimer = sealed class(ExeTimer)
-    
-    public procedure GlobalLog; override;
-    begin
-      var bw := ParentStreamLogger(Logger.main).bw;
-      bw.Write(2);
-      self.Save( bw );
     end;
     
   end;
@@ -72,8 +80,8 @@ begin
   try
     if GetArgs(ParentStreamLogger.OutputPipeIdStr).Any then
     begin
-      Logger.main := new ParentStreamLogger;
-      Timer.main := new BinarizingExeTimer;
+      new ParentStreamLogger;
+      Timer.GlobalLog := ParentStreamLogger.BinarizeGlobalTimerLog;
     end;
   except
     on e: Exception do ErrOtp(e);

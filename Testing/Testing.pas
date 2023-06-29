@@ -1,5 +1,8 @@
 ﻿unit Testing;
 
+//TODO #2897
+{$savepcu false}
+
 uses System.Diagnostics;
 
 uses '../PathUtils';

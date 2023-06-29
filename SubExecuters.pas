@@ -124,20 +124,23 @@ begin
   foreach var uses_m in text.Matches('(?<!(//|'').*)uses\s([^;]*);') do
   begin
     var uses_s := uses_m.Groups[2].Value.Trim;
+//    Console.WriteLine($'<{prev.JoinToString('';'')}> Looking at file [{fname}]: "{uses_m}" ({uses_s})');
     foreach var unit_m in uses_s.Matches('''([^'']+)''|([\w\.]+)') do
     begin
       var unit_s := unit_m.Groups[1].Value+unit_m.Groups[2].Value;
-      uses_s := uses_s.Trim;
-      if '.' in unit_s then continue;
+      unit_s := unit_s.Trim;
+//      Console.WriteLine($'Looking at uses [{uses_s}]: "{unit_m}" ({unit_s})');
       var uu_fname := GetFullPath(System.IO.Path.ChangeExtension(unit_s, '.pas'), dir);
       if not FileExists(uu_fname) then
       begin
-        if unit_s not in |
-          'System',
+        if unit_s.Split('.').First = 'System' then
+          continue;
+        if unit_s in |
           'OpenGL','OpenCL',
           'OpenGLABC','OpenCLABC',
           'GraphWPF'
-        | then Otp($'WARNING: Compiling "{fname}", used unit "{uu_fname}" ({unit_s}) in ({uses_m}) not found');
+        | then continue;
+        Otp($'WARNING: Compiling "{fname}", used unit "{uu_fname}" ({unit_s}) in ({uses_m}) not found');
         continue;
       end;
       yield sequence GetUsedModules(uu_fname, prev);
@@ -151,13 +154,16 @@ function GetUsedModules(fname: string) := GetUsedModules(fname, System.Array.Emp
 
 {$region Core}
 
-procedure RunFile(fname, nick: string; l_otp: OtpLine->(); l_err: Exception->(); params pars: array of string);
+procedure RunFile(fname, nick: string; on_timer: Timer->(); l_otp: OtpLine->(); l_err: Exception->(); params pars: array of string);
 // Если менять - то в SubExecutables тоже
 const OutputPipeIdStr = 'OutputPipeId';
 begin
   nick := nick?.Replace('error', 'errоr');
   fname := GetFullPath(fname);
   if not System.IO.File.Exists(fname) then raise new System.IO.FileNotFoundException(nil,fname);
+  
+  if (on_timer=nil) and (nick<>nil) then
+    on_timer := t->ExeTimer.Executions.Add(nick, GetRelativePathRTA(fname), LoadedTimer(t));
   
   if nick<>nil then AOtp.Otp($'Runing {nick}');
   if l_otp=nil then l_otp := l->
@@ -189,10 +195,6 @@ begin
   psi.WorkingDirectory := System.IO.Path.GetDirectoryName(fname);
   p.StartInfo := psi;
   
-  var curr_timer :=
-    if nick=nil then nil else
-      Timer.main.exe_exec[nick];
-  
   {$region otp capture}
   var start_time_mark: int64;
   var pipe_connection_established := default(boolean?);
@@ -215,6 +217,7 @@ begin
   try
     var br := new System.IO.BinaryReader(pipe);
     
+    on_timer(new LoadedTimer(()->
     try
       if br.ReadByte <> 0 then raise new System.InvalidOperationException($'Output of {nick??fname} didn''t start from 0');
       
@@ -238,8 +241,7 @@ begin
           begin
             // .Finish in OutputDataReceived, in case error comes there after pipe closing
 //            thr_otp.Finish;
-            curr_timer.Load(br);
-            br.Close;
+            Result := br;
             break;
           end;
           
@@ -256,7 +258,8 @@ begin
           Otp($'WARNING: Pipe connection with "{nick??fname}" wasn''t established');
         exit;
       end;
-    end;
+    end));
+    
   except
     on e: Exception do
     begin
@@ -268,10 +271,9 @@ begin
   
   {$endregion otp capture}
   
-//  lock sec_procs do sec_procs += p;
   var exec_proc := procedure->
   begin
-    start_time_mark := OtpLine.pack_timer.ElapsedTicks;
+    start_time_mark := OtpLine.TotalTime.Ticks;
     try
       p.Start;
     except
@@ -280,7 +282,6 @@ begin
     end;
     
     try
-      
       p.BeginOutputReadLine;
       foreach var l in thr_otp do l_otp(l);
       p.WaitForExit;
@@ -292,26 +293,29 @@ begin
         p.Kill;
       except
       end;
-      if pek<>nil then lock EmergencyHandler.All do
-        EmergencyHandler.All.Remove(pek);
+      if pek<>nil then
+        lock EmergencyHandler.All do
+          EmergencyHandler.All.Remove(pek);
     end;
     
   end;
-  if curr_timer=nil then
+  if nick<>nil then
     exec_proc else
-    curr_timer.MeasureTime(exec_proc);
+    on_timer(new SimpleTimer(exec_proc));
   
   if (pipe<>nil) and (pipe_connection_established<>true) then pipe.Close;
 end;
 
 var unit_locking_lock := new object;
-procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->(); kind: OtpKind; args: string; params search_paths: array of string);
+procedure CompilePasFile(fname: string; on_timer: SimpleTimer->(); l_otp: OtpLine->(); err: string->(); kind: OtpKind; args: string; params search_paths: array of string);
 begin
   fname := GetFullPath(fname);
   if not System.IO.File.Exists(fname) then
     raise new System.IO.FileNotFoundException($'File "{GetRelativePath(fname)}" not found');
   
   var nick := System.IO.Path.GetFileNameWithoutExtension(fname).Replace('error', 'errоr');
+  if on_timer=nil then
+    on_timer := t->ExeTimer.Compilations.Add(nick, GetRelativePathRTA(fname), t);
   
   foreach var p in Process.GetProcessesByName(nick) do
   begin
@@ -321,6 +325,8 @@ begin
   
   if l_otp=nil then l_otp := AOtp.Otp;
   if err=nil then err := s->raise new MessageException($'Error compiling "{GetRelativePath(fname)}": {s}');
+  
+  l_otp(new OtpLine($'Compiling "{GetRelativePath(fname)}"', kind));
   
   var locks := new List<System.IO.FileStream>;
   lock unit_locking_lock do
@@ -343,9 +349,9 @@ begin
       end;
     end;
     
+//    foreach var used_fname in lock_names do
+//      Otp($'Locked [{used_fname}]', new OtpKind('console only'));
   end;
-  
-  l_otp(new OtpLine($'Compiling "{GetRelativePath(fname)}"', kind));
   
   var args_strs := search_paths.Select(spath->$'/SearchDir:"{spath}"').Append('/Locale:en');
   if args<>nil then args_strs := args_strs.Append(args);
@@ -364,20 +370,21 @@ begin
   
   var res_sb := new StringBuilder;
   var p_otp := new AsyncProcOtp(AsyncProcOtp.curr);
-  Timer.main.pas_comp[nick].MeasureTime(()->
+  p.OutputDataReceived += (o,e)->
+    if e.Data=nil then
+      p_otp.Finish else
+    begin
+      p_otp.Enq(new OtpLine($'Compiling: {e.Data}', kind));
+      res_sb.AppendLine(e.Data);
+    end;
+  
+  on_timer(new SimpleTimer(()->
   begin
-    p.OutputDataReceived += (o,e)->
-      if e.Data=nil then
-        p_otp.Finish else
-      begin
-        p_otp.Enq(new OtpLine($'Compiling: {e.Data}', kind));
-        res_sb.AppendLine(e.Data);
-      end;
     p.Start;
     p.BeginOutputReadLine;
     foreach var l in p_otp do l_otp(l);
     p.WaitForExit;
-  end);
+  end));
   
   foreach var l in locks do
     l.Close;
@@ -396,7 +403,7 @@ begin
     
     '.pas':
     begin
-      CompilePasFile(fname, l_otp, nil, OtpKind.Empty, nil);
+      CompilePasFile(fname, nil, l_otp, nil, OtpKind.Empty, nil);
       fname := System.IO.Path.ChangeExtension(fname, '.exe');
     end;
     
@@ -405,7 +412,7 @@ begin
     else raise new MessageException($'ERROR: Not supported file extention: "{fname}"');
   end;
   
-  RunFile(fname, nick, l_otp, nil, pars);
+  RunFile(fname, nick, nil, l_otp, nil, pars);
 end;
 
 {$endregion Core}
@@ -413,10 +420,10 @@ end;
 {$region Additional overloads}
 
 procedure RunFile(fname, nick: string; params pars: array of string) :=
-  RunFile(fname, nick, nil, nil, pars);
+  RunFile(fname, nick, nil, nil, nil, pars);
 
 procedure CompilePasFile(fname: string; kind: OtpKind; args: string := nil) :=
-  CompilePasFile(fname, nil, nil, kind, args);
+  CompilePasFile(fname, nil, nil, nil, kind, args);
 
 procedure ExecuteFile(fname, nick: string; params pars: array of string) :=
   ExecuteFile(fname, nick, nil, pars);
