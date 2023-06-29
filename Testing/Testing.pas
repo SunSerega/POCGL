@@ -2,7 +2,7 @@
 
 uses System.Diagnostics;
 
-uses PathUtils in '..\PathUtils';
+uses '../PathUtils';
 
 type
   FatalTestingException = sealed class(Exception) end;

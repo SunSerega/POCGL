@@ -1,4 +1,4 @@
-﻿## uses System.IO, CLArgs in '..\CLArgs';
+﻿## uses System.IO, '../CLArgs';
 
 procedure OnException(e: Exception; et: string := 'General') :=
 lock Console.Error do

@@ -1,7 +1,7 @@
 ﻿##
 
 (**
-uses Patterns in '../Patterns';
+uses '../Patterns';
 
 var s1 := $'abada';
 var s2 := $'acaea';
@@ -17,8 +17,8 @@ $'Done'.Println;
 //Console.SetError( Console.Out );
 
 uses
-  MergedStrings in 'MergedStrings',
-  ColoredStrings in '../ColoredStrings';
+  'MergedStrings',
+  '../ColoredStrings';
 
 var escape_sym := '%';
 
@@ -37,7 +37,7 @@ end;
 
 var p: MergedString;
 begin
-  var ps := EnumerateFiles('G:\0Prog\AutoMaximize\Classes\1 What')
+  var ps := EnumerateFiles('G:/0Prog/AutoMaximize/Classes/1 What')
     .Select(System.IO.Path.GetFileName)
     .Where(fname->fname.StartsWith('HwndWrapper'))
     .Select(MergedString.Literal)
@@ -94,7 +94,7 @@ begin
   p := ps.Single;
 end;
 
-//var p := EnumerateFiles('G:\0Prog\AutoMaximize\Classes\1 What')
+//var p := EnumerateFiles('G:/0Prog/AutoMaximize/Classes/1 What')
 //.Select(System.IO.Path.GetFileName)
 //.Where(fname->fname.StartsWith('HwndWrapper'))
 //.Select(MergedString.Literal)

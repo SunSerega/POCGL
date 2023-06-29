@@ -5,9 +5,9 @@ interface
 
 uses System;
 
-uses Parsing in '../Parsing';
-uses Patterns in '../Patterns';
-uses ColoredStrings in '../ColoredStrings';
+uses '../Parsing';
+uses '../Patterns';
+uses '../ColoredStrings';
 
 //TODO Снова использовать MergedStringLength
 // - По сути это имеет смысл только в get_*_jumps
@@ -95,7 +95,7 @@ type
       if max.IsValid and (c>integer(max)) then exit;
       Result := true;
     end;
-    public static function operator in(c: integer; l: MergedStringLength) := l.Contains(c);
+    public static function operator in(c: integer; l: MergedStringLength) := c in l;
     
     public static function operator+(c1, c2: MergedStringLength): MergedStringLength;
     begin

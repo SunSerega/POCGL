@@ -117,6 +117,8 @@ type
     private ev: ManualResetEvent;
     private prep_otp: AsyncProcOtp;
     
+    public const lk_exec_task_pre_compile = 'exec task pre-compile';
+    
     private procedure Prepare(evs: Dictionary<string, ManualResetEvent>); override :=
       case System.IO.Path.GetExtension(fname) of
         
@@ -130,7 +132,7 @@ type
           
           var p := new AsyncProc(()->
           begin
-            CompilePasFile(pas_fname, true);
+            CompilePasFile(pas_fname, new OtpKind(AsyncTaskProcessExec.lk_exec_task_pre_compile));
             self.ev.Set;
           end);
           
@@ -188,11 +190,11 @@ function operator*(p1,p2: AsyncTask): AsyncTask; extensionmethod :=
   new AsyncTaskMlt(p1??EmptyTask, p2??EmptyTask);
 procedure operator*=(var p1: AsyncTask; p2: AsyncTask); extensionmethod := p1 := p1*p2;
 
-function CompTask(fname: string; general_task: boolean := false; args: string := nil) :=
-  ProcTask(()->CompilePasFile(fname, general_task, args));
+function CompTask(fname: string; kind: OtpKind? := nil; args: string := nil) :=
+  ProcTask(()->CompilePasFile(fname, if kind=nil then OtpKind.Empty else kind.Value, args));
 
 function ExecTask(fname, nick: string; params pars: array of string): AsyncTask :=
-new AsyncTaskProcessExec(fname, nick, pars);
+  new AsyncTaskProcessExec(fname, nick, pars);
 
 function SetEvTask(ev: ManualResetEvent) := ProcTask(()->ev.Set());
 function EventTask(ev: ManualResetEvent) := ProcTask(()->ev.WaitOne());
