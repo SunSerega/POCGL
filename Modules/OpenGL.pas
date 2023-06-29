@@ -1,5 +1,5 @@
 ﻿
-{%..\..\Common\LicenseHeader.txt%}
+{%../../Common/LicenseHeader.txt%}
 
 ///
 ///Код переведён отсюда:

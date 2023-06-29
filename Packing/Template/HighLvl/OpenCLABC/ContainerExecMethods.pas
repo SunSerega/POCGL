@@ -1,13 +1,13 @@
-﻿uses '..\..\..\..\POCGL_Utils';
+﻿uses '../../../../POCGL_Utils';
 uses ContainerMethodData;
 
-uses '..\..\..\..\Utils\ATask';
+uses '../../../../Utils/ATask';
 
 {$string_nullbased+}
 
 type
   ExecMethodSettings = sealed class(MethodSettings)
-    public static fname := EnumerateFiles(GetFullPathRTA('!Def\ContainerMethods\Exec'), '*.dat').Single;
+    public static fname := EnumerateFiles(GetFullPathRTA('!Def/ContainerMethods/Exec'), '*.dat').Single;
     public static t := System.IO.Path.GetFileNameWithoutExtension(fname);
     private static arg_k_args := new MethodArg('args', new MethodArgTypeBasic($'array of {t}Arg'));
     

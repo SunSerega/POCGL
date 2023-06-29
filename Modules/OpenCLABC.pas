@@ -1,5 +1,5 @@
 ﻿
-{%..\..\Common\LicenseHeader.txt%}
+{%../../Common/LicenseHeader.txt%}
 
 ///
 ///Высокоуровневая оболочка модуля OpenCL
@@ -252,9 +252,9 @@ unit OpenCLABC;
 // Запланированное:
 
 //TODO Папка с расширениями OpenCLABC, что то типа:
-// - uses 'OpenCLABC\GL';		  // Связь с OpenGLABC
-// - uses 'OpenCLABC\Custom';	// Пользовательские очереди
-// - uses 'OpenCLABC\Ext';		// Расширения OpenCL
+// - uses 'OpenCLABC/GL';     // Связь с OpenGLABC
+// - uses 'OpenCLABC/Custom'; // Пользовательские очереди
+// - uses 'OpenCLABC/Ext';    // Расширения OpenCL
 
 //TODO Потоко-безопастность CCQ.AddCommand
 
@@ -382,7 +382,7 @@ uses System.Runtime.CompilerServices;
 uses System.Collections.ObjectModel;
 uses System.Collections.Concurrent;
 
-uses OpenCL{%!!} in '..\Modules.Packed\OpenCL'{%};
+uses OpenCL{%!!} in '../Modules.Packed/OpenCL'{%};
 
 type
   
@@ -1437,7 +1437,7 @@ type
     {$region constructor's}
     
     private static procedure CheckMainDevice(main_dvc: CLDevice; dvc_lst: IList<CLDevice>) :=
-    if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'%Err:CLContext:WrongMainDvc%');
+      if main_dvc not in dvc_lst then raise new ArgumentException($'%Err:CLContext:WrongMainDvc%');
     
     public constructor(dvcs: IList<CLDevice>; main_dvc: CLDevice);
     begin
@@ -2165,7 +2165,7 @@ type
     
     {$endregion constructor's}
     
-    {%ContainerMethods\CLKernel.Exec\Implicit.Interface!ContainerExecMethods.pas%}
+    {%ContainerMethods/CLKernel.Exec/Implicit.Interface!ContainerExecMethods.pas%}
     
   end;
   
@@ -2329,9 +2329,9 @@ type
     
     {$endregion IDisposable}
     
-    {%ContainerMethods\CLMemory\Implicit.Interface!ContainerOtherMethods.pas%}
+    {%ContainerMethods/CLMemory/Implicit.Interface!ContainerOtherMethods.pas%}
     
-    {%ContainerMethods\CLMemory.Get\Implicit.Interface!ContainerGetMethods.pas%}
+    {%ContainerMethods/CLMemory.Get/Implicit.Interface!ContainerGetMethods.pas%}
     
   end;
   
@@ -2442,9 +2442,9 @@ type
     
     {$endregion IDisposable}
     
-    {%ContainerMethods\CLValue\Implicit.Interface!ContainerOtherMethods.pas%}
+    {%ContainerMethods/CLValue/Implicit.Interface!ContainerOtherMethods.pas%}
     
-    {%ContainerMethods\CLValue.Get\Implicit.Interface!ContainerGetMethods.pas%}
+    {%ContainerMethods/CLValue.Get/Implicit.Interface!ContainerGetMethods.pas%}
     
   end;
   
@@ -2552,9 +2552,9 @@ type
     
     {$endregion IDisposable}
     
-    {%ContainerMethods\CLArray\Implicit.Interface!ContainerOtherMethods.pas%}
+    {%ContainerMethods/CLArray/Implicit.Interface!ContainerOtherMethods.pas%}
     
-    {%ContainerMethods\CLArray.Get\Implicit.Interface!ContainerGetMethods.pas%}
+    {%ContainerMethods/CLArray.Get/Implicit.Interface!ContainerGetMethods.pas%}
     
   end;
   
@@ -2564,7 +2564,7 @@ type
   
   {$region Common}
   
-  {%Wrappers\Common!Wrappers.pas%}
+  {%Wrappers/Common!Wrappers.pas%}
   
   {$endregion Common}
   
@@ -3273,9 +3273,9 @@ type
   
   CLKernelCCQ = sealed partial class
     
-    {%ContainerCommon\CLKernel\Interface!ContainerCommon.pas%}
+    {%ContainerCommon/CLKernel/Interface!ContainerCommon.pas%}
     
-    {%ContainerMethods\CLKernel.Exec\Explicit.Interface!ContainerExecMethods.pas%}
+    {%ContainerMethods/CLKernel.Exec/Explicit.Interface!ContainerExecMethods.pas%}
     
   end;
   
@@ -3289,11 +3289,11 @@ type
   
   CLMemoryCCQ = sealed partial class
     
-    {%ContainerCommon\CLMemory\Interface!ContainerCommon.pas%}
+    {%ContainerCommon/CLMemory/Interface!ContainerCommon.pas%}
     
-    {%ContainerMethods\CLMemory\Explicit.Interface!ContainerOtherMethods.pas%}
+    {%ContainerMethods/CLMemory/Explicit.Interface!ContainerOtherMethods.pas%}
     
-    {%ContainerMethods\CLMemory.Get\Explicit.Interface!ContainerGetMethods.pas%}
+    {%ContainerMethods/CLMemory.Get/Explicit.Interface!ContainerGetMethods.pas%}
     
   end;
   
@@ -3308,11 +3308,11 @@ type
   CLValueCCQ<T> = sealed partial class
   where T: record;
     
-    {%ContainerCommon\CLValue\Interface!ContainerCommon.pas%}
+    {%ContainerCommon/CLValue/Interface!ContainerCommon.pas%}
     
-    {%ContainerMethods\CLValue\Explicit.Interface!ContainerOtherMethods.pas%}
+    {%ContainerMethods/CLValue/Explicit.Interface!ContainerOtherMethods.pas%}
     
-    {%ContainerMethods\CLValue.Get\Explicit.Interface!ContainerGetMethods.pas%}
+    {%ContainerMethods/CLValue.Get/Explicit.Interface!ContainerGetMethods.pas%}
     
   end;
   
@@ -3327,11 +3327,11 @@ type
   CLArrayCCQ<T> = sealed partial class
   where T: record;
     
-    {%ContainerCommon\CLArray\Interface!ContainerCommon.pas%}
+    {%ContainerCommon/CLArray/Interface!ContainerCommon.pas%}
     
-    {%ContainerMethods\CLArray\Explicit.Interface!ContainerOtherMethods.pas%}
+    {%ContainerMethods/CLArray/Explicit.Interface!ContainerOtherMethods.pas%}
     
-    {%ContainerMethods\CLArray.Get\Explicit.Interface!ContainerGetMethods.pas%}
+    {%ContainerMethods/CLArray.Get/Explicit.Interface!ContainerGetMethods.pas%}
     
   end;
   
@@ -3345,7 +3345,7 @@ type
   
   {$region CLKernelArg}
   
-  {%CLKernelArg\interface!CLKernelArg.pas%}
+  {%CLKernelArg/interface!CLKernelArg.pas%}
   
   {$region ToString}
   
@@ -3430,7 +3430,7 @@ function WaitFor(marker: WaitMarker): CommandQueueNil;
 
 {$region CombineQueue's}
 
-{%CombineQueues\Interface!CombineQueues.pas%}
+{%CombineQueues/Interface!CombineQueues.pas%}
 
 {$endregion CombineQueue's}
 
@@ -6396,7 +6396,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
   
 {$endregion [Any]}
 
-{%QueueArray\AllStaticArrays!QueueStaticArrayWithWork.pas%}
+{%QueueArray/AllStaticArrays!QueueStaticArrayWithWork.pas%}
 
 {$endregion +/*}
 
@@ -8737,7 +8737,7 @@ type
     
   end;
   
-{%ContainerCommon\CLKernel\Implementation!ContainerCommon.pas%}
+{%ContainerCommon/CLKernel/Implementation!ContainerCommon.pas%}
 
 {$endregion CLKernel}
 
@@ -8751,7 +8751,7 @@ type
     
   end;
   
-{%ContainerCommon\CLMemory\Implementation!ContainerCommon.pas%}
+{%ContainerCommon/CLMemory/Implementation!ContainerCommon.pas%}
 
 {$endregion CLMemory}
 
@@ -8765,7 +8765,7 @@ type
     
   end;
   
-{%ContainerCommon\CLValue\Implementation!ContainerCommon.pas%}
+{%ContainerCommon/CLValue/Implementation!ContainerCommon.pas%}
 
 {$endregion CLArray}
 
@@ -8779,7 +8779,7 @@ type
     
   end;
   
-{%ContainerCommon\CLArray\Implementation!ContainerCommon.pas%}
+{%ContainerCommon/CLArray/Implementation!ContainerCommon.pas%}
 
 {$endregion CLArray}
 
@@ -9058,7 +9058,7 @@ type
 
 {$endregion Common}
 
-{%CLKernelArg\implementation!CLKernelArg.pas%}
+{%CLKernelArg/implementation!CLKernelArg.pas%}
 
 {$endregion CLKernelArg}
 
@@ -9517,13 +9517,13 @@ type
 
 {$region Implicit}
 
-{%ContainerMethods\CLKernel.Exec\Implicit.Implementation!ContainerExecMethods.pas%}
+{%ContainerMethods/CLKernel.Exec/Implicit.Implementation!ContainerExecMethods.pas%}
 
 {$endregion Implicit}
 
 {$region Explicit}
 
-{%ContainerMethods\CLKernel.Exec\Explicit.Implementation!ContainerExecMethods.pas%}
+{%ContainerMethods/CLKernel.Exec/Explicit.Implementation!ContainerExecMethods.pas%}
 
 {$endregion Explicit}
 
@@ -9533,17 +9533,17 @@ type
 
 {$region Implicit}
 
-{%ContainerMethods\CLMemory\Implicit.Implementation!ContainerOtherMethods.pas%}
+{%ContainerMethods/CLMemory/Implicit.Implementation!ContainerOtherMethods.pas%}
 
-{%ContainerMethods\CLMemory.Get\Implicit.Implementation!ContainerGetMethods.pas%}
+{%ContainerMethods/CLMemory.Get/Implicit.Implementation!ContainerGetMethods.pas%}
 
 {$endregion Implicit}
 
 {$region Explicit}
 
-{%ContainerMethods\CLMemory\Explicit.Implementation!ContainerOtherMethods.pas%}
+{%ContainerMethods/CLMemory/Explicit.Implementation!ContainerOtherMethods.pas%}
 
-{%ContainerMethods\CLMemory.Get\Explicit.Implementation!ContainerGetMethods.pas%}
+{%ContainerMethods/CLMemory.Get/Explicit.Implementation!ContainerGetMethods.pas%}
 
 {$endregion Explicit}
 
@@ -9553,17 +9553,17 @@ type
 
 {$region Implicit}
 
-{%ContainerMethods\CLValue\Implicit.Implementation!ContainerOtherMethods.pas%}
+{%ContainerMethods/CLValue/Implicit.Implementation!ContainerOtherMethods.pas%}
 
-{%ContainerMethods\CLValue.Get\Implicit.Implementation!ContainerGetMethods.pas%}
+{%ContainerMethods/CLValue.Get/Implicit.Implementation!ContainerGetMethods.pas%}
 
 {$endregion Implicit}
 
 {$region Explicit}
 
-{%ContainerMethods\CLValue\Explicit.Implementation!ContainerOtherMethods.pas%}
+{%ContainerMethods/CLValue/Explicit.Implementation!ContainerOtherMethods.pas%}
 
-{%ContainerMethods\CLValue.Get\Explicit.Implementation!ContainerGetMethods.pas%}
+{%ContainerMethods/CLValue.Get/Explicit.Implementation!ContainerGetMethods.pas%}
 
 {$endregion Explicit}
 
@@ -9573,17 +9573,17 @@ type
 
 {$region Implicit}
 
-{%ContainerMethods\CLArray\Implicit.Implementation!ContainerOtherMethods.pas%}
+{%ContainerMethods/CLArray/Implicit.Implementation!ContainerOtherMethods.pas%}
 
-{%ContainerMethods\CLArray.Get\Implicit.Implementation!ContainerGetMethods.pas%}
+{%ContainerMethods/CLArray.Get/Implicit.Implementation!ContainerGetMethods.pas%}
 
 {$endregion Implicit}
 
 {$region Explicit}
 
-{%ContainerMethods\CLArray\Explicit.Implementation!ContainerOtherMethods.pas%}
+{%ContainerMethods/CLArray/Explicit.Implementation!ContainerOtherMethods.pas%}
 
-{%ContainerMethods\CLArray.Get\Explicit.Implementation!ContainerGetMethods.pas%}
+{%ContainerMethods/CLArray.Get/Explicit.Implementation!ContainerGetMethods.pas%}
 
 {$endregion Explicit}
 
@@ -9898,7 +9898,7 @@ HPQ&<SimpleProc0ContainerC>(p, need_own_thread);
 
 {$region CombineQueue's}
 
-{%CombineQueues\Implementation!CombineQueues.pas%}
+{%CombineQueues/Implementation!CombineQueues.pas%}
 
 {$endregion CombineQueue's}
 

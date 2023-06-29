@@ -6,14 +6,14 @@ interface
 
 uses System;
 
-uses '..\..\..\POCGL_Utils';
-uses '..\..\..\Utils\AOtp';
-uses '..\..\..\Utils\Fixers';
-uses '..\..\..\Utils\CodeGen';
+uses '../../../POCGL_Utils';
+uses '../../../Utils/AOtp';
+uses '../../../Utils/Fixers';
+uses '../../../Utils/CodeGen';
 
-uses '..\..\..\DataScraping\BinCommon';
+uses '../../../DataScraping/BinCommon';
 
-uses '..\Common\PackingUtils';
+uses '../Common/PackingUtils';
 
 uses LLPackingUtils;
 uses ItemNames;
@@ -42,7 +42,7 @@ type
       TypeLookup.RegisterIndexDerefFunc(TRK_Basic, inherited ByIndex);
       
       var conv := new Dictionary<string, string>;
-      foreach var l in ReadLines(GetFullPathRTA($'MiscInput\TypeTable.dat')) do
+      foreach var l in ReadLines(GetFullPathRTA($'MiscInput/TypeTable.dat')) do
       begin
         var s := l.Split('=');
         if s.Length<2 then continue;
@@ -142,7 +142,7 @@ type
     begin
       
       begin
-        var type_sizes_fname := GetFullPathRTA('MiscInput\TypeSizes.dat');
+        var type_sizes_fname := GetFullPathRTA('MiscInput/TypeSizes.dat');
         if FileExists(type_sizes_fname) then
           foreach var (sz_str, tnames) in FixerUtils.ReadBlocks(type_sizes_fname, false) do
           begin
@@ -171,7 +171,8 @@ type
     
     public procedure MarkBodyReferenced; override := exit;
     
-    function IWritableNamedItem.MakeWriteProc: NamedItemWriteProc;
+    //TODO mono#11034
+    function {IWritableNamedItem.}MakeWriteProc: NamedItemWriteProc;
     begin
       Result := (prev, intr_wr, impl_wr)->exit();
     end;
@@ -184,9 +185,10 @@ type
     end;
     
     public function IsInternalOnly := self.Name in |'void', 'ntv_char'{, 'DISABLED_TYPE'}|;
-    function IDirectNamedType.GetTypeOrder := FPTO_Basic;
-    function IDirectNamedType.GetRawName: object := self.Name;
-    function IDirectNamedType.MakeWriteableName: string;
+    //TODO mono#11034
+    function {IDirectNamedType.}GetTypeOrder := FPTO_Basic;
+    function {IDirectNamedType.}GetRawName: object := self.Name;
+    function {IDirectNamedType.}MakeWriteableName: string;
     begin
       if self.IsInternalOnly then
         raise new InvalidOperationException;
@@ -245,10 +247,11 @@ type
       end;
     end;
     
-    function IDirectNamedType.IsInternalOnly := false;
-    function IDirectNamedType.GetTypeOrder := FPTO_Combo;
-    function IDirectNamedType.GetRawName: object := self.Name.ToString;
-    function IDirectNamedType.MakeWriteableName := self.Name.ToString(true);
+    //TODO mono#11034
+    function {IDirectNamedType.}IsInternalOnly := false;
+    function {IDirectNamedType.}GetTypeOrder := FPTO_Combo;
+    function {IDirectNamedType.}GetRawName: object := self.Name.ToString;
+    function {IDirectNamedType.}MakeWriteableName := self.Name.ToString(true);
     
     {$region Writes}
     
@@ -2738,15 +2741,19 @@ type
     protected static procedure RegisterTypeKind(kind: TypeRefKind) :=
       TypeLookup.RegisterIndexDerefFunc(kind, inherited ByIndex);
     
-    public function ILoadedNamedType.IsVoid := false;
+    //TODO mono#11034
+    public function {ILoadedNamedType.}IsVoid := false;
     
-    public function ILoadedNamedType.FeedToTypeTable := System.ValueTuple.Create(0, nil as array of integer, IDirectNamedType(self));
+    //TODO mono#11034
+    public function {ILoadedNamedType.}FeedToTypeTable := System.ValueTuple.Create(0, nil as array of integer, IDirectNamedType(self));
     
     public function MakeWriteProc: NamedItemWriteProc; abstract;
     
-    function IDirectNamedType.IsInternalOnly := false;
+    //TODO mono#11034
+    function {IDirectNamedType.}IsInternalOnly := false;
     public function GetTypeOrder: FuncParamTypeOrder; abstract;
-    public function IDirectNamedType.GetRawName: object := self.Name;
+    //TODO mono#11034
+    public function {IDirectNamedType.}GetRawName: object := self.Name;
     public function MakeWriteableName: string; abstract;
     
   end;
@@ -3144,7 +3151,7 @@ type
     
     public static procedure LogAllPropLists;
     begin
-      var log := new FileLogger(GetFullPathRTA('Log\All ObjPropList''s.log'));
+      var log := new FileLogger(GetFullPathRTA('Log/All ObjPropList''s.log'));
       loop 3 do log.Otp('');
       ForEachDefined(g->
       begin

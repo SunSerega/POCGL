@@ -1,11 +1,11 @@
-﻿uses POCGL_Utils  in '..\..\POCGL_Utils';
+﻿uses '../../POCGL_Utils';
 
-uses AOtp         in '..\..\Utils\AOtp';
-uses ATask        in '..\..\Utils\ATask';
-uses AQueue       in '..\..\Utils\AQueue';
-uses CLArgs       in '..\..\Utils\CLArgs';
-uses Fixers       in '..\..\Utils\Fixers';
-uses CodeGen      in '..\..\Utils\CodeGen';
+uses '../../Utils/AOtp';
+uses '../../Utils/ATask';
+uses '../../Utils/AQueue';
+uses '../../Utils/CLArgs';
+uses '../../Utils/Fixers';
+uses '../../Utils/CodeGen';
 
 uses DescriptionsData;
 
@@ -129,10 +129,10 @@ type
         match c with
           
           CommentableType(var ct): Result :=
-          ignored_types.Add(ct.FullName);
+            ignored_types.Add(ct.FullName);
           
           CommentableTypeMember(var cm): Result :=
-          (cm.Type=nil) or not ignored_types.Contains(cm.Type.FullName);
+            (cm.Type=nil) or (cm.Type.FullName not in ignored_types);
           
           else raise new System.NotImplementedException($'{c.GetType}');
         end;
@@ -156,19 +156,19 @@ begin
     var fls := GetArgs('fname').ToArray;
     var use_pd := 'UseLastPreDoc' in CommandLineArgs;
     
-    if is_separate_execution and string.IsNullOrWhiteSpace(nick) and (fls.Length=0) and not use_pd then
+    if IsSeparateExecution and string.IsNullOrWhiteSpace(nick) and (fls.Length=0) and not use_pd then
     begin
       
 //      nick := 'OpenCL';
-//      fls := | 'Modules.Packed\OpenCL.pas' |;
+//      fls := | 'Modules.Packed/OpenCL.pas' |;
 //      use_pd := true;
       
       nick := 'OpenGL';
-      fls := | 'Modules.Packed\OpenGL.pas' |;
+      fls := | 'Modules.Packed/OpenGL.pas' |;
       use_pd := true;
       
 //      nick := 'OpenCLABC';
-//      fls := | 'Modules.Packed\OpenCLABC.pas' |;
+//      fls := | 'Modules.Packed/OpenCLABC.pas' |;
 //      use_pd := true;
       
     end;

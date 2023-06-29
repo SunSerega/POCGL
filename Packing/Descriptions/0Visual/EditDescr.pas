@@ -10,9 +10,9 @@ uses System.Windows.Media;
 uses System.Windows.Controls;
 uses System.Windows.Documents;
 
-uses Fixers       in '..\..\..\Utils\Fixers';
-uses Parsing      in '..\..\..\Utils\Parsing';
-uses PathUtils    in '..\..\..\Utils\PathUtils';
+uses '../../../Utils/Fixers';
+uses '../../../Utils/Parsing';
+uses '../../../Utils/PathUtils';
 
 uses Markings;
 
@@ -225,7 +225,7 @@ type
           
           if is_file and (System.IO.Path.GetExtension(new_path)<>inp_file_ext) then
             new_path += inp_file_ext;
-          new_path := GetFullPath('..\'+new_path, path);
+          new_path := GetFullPath('../'+new_path, path);
           
           if is_file then
             System.IO.File.Move(path, new_path) else
@@ -688,7 +688,7 @@ type
         end;
       end;
       
-      var module_dir := GetFullPathRTA('..\'+name);
+      var module_dir := GetFullPathRTA('../'+name);
       var curr_file_view := default(InpFileView);
       
       var unused_headers := new HashSet<string>;
@@ -703,7 +703,7 @@ type
         apply_changes_wh.Wait;
         apply_changes_wh.Reset;
         
-        var TODO0 := 0; // Run "..\PackDescriptions"
+        var TODO0 := 0; // Run "../PackDescriptions"
         
         self.Dispatcher.Invoke(()->
         begin
@@ -838,7 +838,7 @@ begin
     var sp := new StackPanel;
     sw.Content := sp;
     
-    foreach var name in EnumerateFiles('..\', '*.predoc').Select(System.IO.Path.GetFileNameWithoutExtension) do
+    foreach var name in EnumerateFiles('../', '*.predoc').Select(System.IO.Path.GetFileNameWithoutExtension) do
     begin
       
       var b := new Button;

@@ -1,8 +1,8 @@
-﻿uses '..\..\..\..\POCGL_Utils';
-uses '..\..\..\..\Utils\Fixers';
-uses '..\..\..\..\Utils\CodeGen';
+﻿uses '../../../../POCGL_Utils';
+uses '../../../../Utils/Fixers';
+uses '../../../../Utils/CodeGen';
 
-uses '..\..\Common\PackingUtils';
+uses '../../Common/PackingUtils';
 
 type
   TypeDescr = sealed class
@@ -30,7 +30,7 @@ type
   
 begin
   try
-    foreach var (tname, lines) in FixerUtils.ReadBlocks(GetFullPathRTA('!Def\Wrappers.dat'), true) do
+    foreach var (tname, lines) in FixerUtils.ReadBlocks(GetFullPathRTA('!Def/Wrappers.dat'), true) do
     begin
       if tname=nil then continue;
       var t := TypeDescr.ByName(tname);

@@ -1,5 +1,5 @@
 ﻿
-{%..\..\Common\LicenseHeader.txt%}
+{%../../Common/LicenseHeader.txt%}
 
 ///
 ///Модуль, зарезервированный для высокоуровневой оболочки модуля OpenGL
@@ -8,7 +8,7 @@
 unit OpenGLABC;
 
 uses System;
-uses OpenGL{%!!} in '..\Modules.Packed\OpenGL'{%};
+uses OpenGL{%!!} in '../Modules.Packed/OpenGL'{%};
 
 type
   

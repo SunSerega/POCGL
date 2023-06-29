@@ -1,12 +1,12 @@
 ﻿uses System;
 
-uses '..\..\..\POCGL_Utils';
+uses '../../../POCGL_Utils';
 
-uses '..\ScrapUtils';
-uses '..\XMLUtils';
+uses '../ScrapUtils';
+uses '../XMLUtils';
 //
-uses '..\XMLItems';
-uses '..\ItemSources';
+uses '../XMLItems';
+uses '../ItemSources';
 
 const api='cl';
 
@@ -239,7 +239,7 @@ end;
 procedure ScrapXmlFile;
 begin
   Otp($'Parsing XML');
-  var root := new XmlNode(GetFullPathRTA('xml\Dummy.xml'));
+  var root := new XmlNode(GetFullPathRTA('xml/Dummy.xml'));
   
   BasicTypeSource.InitAll(root.Nodes['types'].Single);
   
@@ -253,7 +253,7 @@ end;
 
 begin
   try
-    XMLUtils.Init('..\XML\Dummy');
+    XMLUtils.Init('../XML/Dummy');
     
     ScrapXmlFile;
     

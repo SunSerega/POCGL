@@ -3,7 +3,7 @@
 CLContext.GenerateAndCheckDefault;
 var c := CLContext.Default;
 
-var bw := new System.IO.BinaryWriter(System.IO.File.Create('..\..\..\TestContext.dat'));
+var bw := new System.IO.BinaryWriter(System.IO.File.Create('../../../TestContext.dat'));
 
 if c=nil then
   bw.Write('') else

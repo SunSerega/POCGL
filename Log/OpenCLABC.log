@@ -1,47 +1,49 @@
 ﻿Runing Template[OpenCLABC]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\WrapperProperties.pas"
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/WrapperProperties.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\WrapperProperties.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\WrapperProperties.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\ContainerExecMethods.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/WrapperProperties.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/WrapperProperties.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/ContainerExecMethods.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\ContainerExecMethods.exe]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerExecMethods.exe]: Packed .Exec methods for [CLKernel]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\ContainerExecMethods.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\ContainerOtherMethods.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/ContainerExecMethods.exe]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerExecMethods.exe]: Packed .Exec methods for [CLKernel]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/ContainerExecMethods.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/ContainerOtherMethods.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\ContainerOtherMethods.exe]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLMemory]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLValue]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\ContainerOtherMethods.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\ContainerGetMethods.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/ContainerOtherMethods.exe]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerOtherMethods.exe]: Packed other methods for [CLArray]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerOtherMethods.exe]: Packed other methods for [CLMemory]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerOtherMethods.exe]: Packed other methods for [CLValue]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/ContainerOtherMethods.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/ContainerGetMethods.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\ContainerGetMethods.exe]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLMemory]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLValue]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\ContainerGetMethods.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\Wrappers.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/ContainerGetMethods.exe]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerGetMethods.exe]: Packed .Get methods for [CLArray]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerGetMethods.exe]: Packed .Get methods for [CLMemory]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerGetMethods.exe]: Packed .Get methods for [CLValue]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/ContainerGetMethods.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/Wrappers.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\Wrappers.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\Wrappers.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\ContainerCommon.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/Wrappers.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/Wrappers.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/ContainerCommon.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\ContainerCommon.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\ContainerCommon.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\CLKernelArg.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/ContainerCommon.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/ContainerCommon.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/CLKernelArg.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\CLKernelArg.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\CLKernelArg.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\CombineQueues.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/CLKernelArg.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/CLKernelArg.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/CombineQueues.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\CombineQueues.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\CombineQueues.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\QueueStaticArrayWithWork.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/CombineQueues.exe]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/CombineQueues.exe]: WARNING: Lazy not implemented
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/CombineQueues.exe]: WARNING: Lazy not implemented
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/CombineQueues.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/QueueStaticArrayWithWork.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\QueueStaticArrayWithWork.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\QueueStaticArrayWithWork.exe]
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/QueueStaticArrayWithWork.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/QueueStaticArrayWithWork.exe]
 Finished runing Template[OpenCLABC]
 Runing Descriptions[OpenCLABC]
 Finished runing Descriptions[OpenCLABC]

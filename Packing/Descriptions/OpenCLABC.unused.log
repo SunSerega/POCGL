@@ -1,0 +1,359 @@
+﻿DelegateExec:Background
+DelegateExec:Quick
+OpenCLException
+Err:Device:SplitCUCount
+Err:Device:SplitNotSupported
+Err:Context:WrongMainDvc
+Err:ProgramCode:BuildFail
+Err:NativeArray:SliceCopy:WriteSize
+Err:Blittable:Source:NativeValue
+Err:Blittable:Source:NativeArray
+Err:Blittable:Source:KernelArg
+Err:Blittable:Source:CLMemory:WriteNativeArrayAutoSize
+Err:Blittable:Source:CLMemory:ReadNativeArrayAutoSize
+Err:FlattenQueueArray:InpEmpty
+HostQueue:When:
+HostQueue:When:Q
+HFQ<T>(()->T)
+HFQ<T>(Context->T)
+HFQQ<T>(()->T)
+HFQQ<T>(Context->T)
+HPQ(()->())
+HPQ(Context->())
+HPQQ(()->())
+HPQQ(Context->())
+:WaitCombinationDef
+WaitAll(array of WaitMarker)
+WaitAll(sequence of WaitMarker)
+WaitAny(array of WaitMarker)
+WaitAny(sequence of WaitMarker)
+CombineSyncQueueBase(array of CommandQueueBase)
+CombineSyncQueueBase(sequence of CommandQueueBase)
+CombineAsyncQueueBase(array of CommandQueueBase)
+CombineAsyncQueueBase(sequence of CommandQueueBase)
+CombineSyncQueueNil(array of CommandQueueNil)
+CombineSyncQueueNil(sequence of CommandQueueNil)
+CombineAsyncQueueNil(array of CommandQueueNil)
+CombineAsyncQueueNil(sequence of CommandQueueNil)
+CombineSyncQueue<T>(sequence of CommandQueue<T>)
+CombineAsyncQueue<T>(sequence of CommandQueue<T>)
+CombineSyncQueueNil(sequence of CommandQueueBase, CommandQueueNil)
+CombineAsyncQueueNil(sequence of CommandQueueBase, CommandQueueNil)
+CombineSyncQueue<T>(sequence of CommandQueueBase, CommandQueue<T>)
+CombineAsyncQueue<T>(sequence of CommandQueueBase, CommandQueue<T>)
+CombineConvSyncQueue<TInp, TRes>(Func<array of TInp, TRes>, array of CommandQueue<TInp>)
+CombineConvSyncQueue<TInp, TRes>(Func<array of TInp, TRes>, sequence of CommandQueue<TInp>)
+CombineConvSyncQueue<TInp, TRes>(Func<array of TInp, Context, TRes>, array of CommandQueue<TInp>)
+CombineConvSyncQueue<TInp, TRes>(Func<array of TInp, Context, TRes>, sequence of CommandQueue<TInp>)
+CombineConvAsyncQueue<TInp, TRes>(Func<array of TInp, TRes>, array of CommandQueue<TInp>)
+CombineConvAsyncQueue<TInp, TRes>(Func<array of TInp, TRes>, sequence of CommandQueue<TInp>)
+CombineConvAsyncQueue<TInp, TRes>(Func<array of TInp, Context, TRes>, array of CommandQueue<TInp>)
+CombineConvAsyncQueue<TInp, TRes>(Func<array of TInp, Context, TRes>, sequence of CommandQueue<TInp>)
+CombineQuickConvSyncQueue<TInp, TRes>(Func<array of TInp, TRes>, array of CommandQueue<TInp>)
+CombineQuickConvSyncQueue<TInp, TRes>(Func<array of TInp, TRes>, sequence of CommandQueue<TInp>)
+CombineQuickConvSyncQueue<TInp, TRes>(Func<array of TInp, Context, TRes>, array of CommandQueue<TInp>)
+CombineQuickConvSyncQueue<TInp, TRes>(Func<array of TInp, Context, TRes>, sequence of CommandQueue<TInp>)
+CombineQuickConvAsyncQueue<TInp, TRes>(Func<array of TInp, TRes>, array of CommandQueue<TInp>)
+CombineQuickConvAsyncQueue<TInp, TRes>(Func<array of TInp, TRes>, sequence of CommandQueue<TInp>)
+CombineQuickConvAsyncQueue<TInp, TRes>(Func<array of TInp, Context, TRes>, array of CommandQueue<TInp>)
+CombineQuickConvAsyncQueue<TInp, TRes>(Func<array of TInp, Context, TRes>, sequence of CommandQueue<TInp>)
+CombineConvSyncQueueN2<TInp1, TInp2, TRes>(Func<TInp1, TInp2, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
+CombineConvSyncQueueN2<TInp1, TInp2, TRes>(Func<TInp1, TInp2, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
+CombineConvAsyncQueueN2<TInp1, TInp2, TRes>(Func<TInp1, TInp2, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
+CombineConvAsyncQueueN2<TInp1, TInp2, TRes>(Func<TInp1, TInp2, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
+CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(Func<TInp1, TInp2, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
+CombineQuickConvSyncQueueN2<TInp1, TInp2, TRes>(Func<TInp1, TInp2, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
+CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(Func<TInp1, TInp2, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
+CombineQuickConvAsyncQueueN2<TInp1, TInp2, TRes>(Func<TInp1, TInp2, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>)
+CombineConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
+CombineConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
+CombineConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
+CombineConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
+CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
+CombineQuickConvSyncQueueN3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
+CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
+CombineQuickConvAsyncQueueN3<TInp1, TInp2, TInp3, TRes>(Func<TInp1, TInp2, TInp3, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>)
+CombineConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
+CombineConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
+CombineConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
+CombineConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
+CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
+CombineQuickConvSyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
+CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
+CombineQuickConvAsyncQueueN4<TInp1, TInp2, TInp3, TInp4, TRes>(Func<TInp1, TInp2, TInp3, TInp4, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>)
+CombineConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
+CombineConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
+CombineConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
+CombineConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
+CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
+CombineQuickConvSyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
+CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
+CombineQuickConvAsyncQueueN5<TInp1, TInp2, TInp3, TInp4, TInp5, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>)
+CombineConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
+CombineConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
+CombineConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
+CombineConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
+CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
+CombineQuickConvSyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
+CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
+CombineQuickConvAsyncQueueN6<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>)
+CombineConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
+CombineConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
+CombineConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
+CombineConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
+CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
+CombineQuickConvSyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
+CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
+CombineQuickConvAsyncQueueN7<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, TRes>(Func<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, Context, TRes>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>)
+DeviceType
+DeviceAffinityDomain
+DetachedMarkerSignal:Head
+DetachedMarkerSignal:Body
+DetachedMarkerSignalNil
+DetachedMarkerSignal<T>
+DetachedMarkerSignalNil.(CommandQueueNil, boolean)
+DetachedMarkerSignal<T>.(CommandQueue<T>, boolean)
+DetachedMarkerSignalNil.SignalInFinally
+DetachedMarkerSignal<T>.SignalInFinally
+DetachedMarkerSignalNil.SendSignal
+DetachedMarkerSignal<T>.SendSignal
+Platform.Native
+Device.Native
+Context.Native
+ProgramCode.Native
+Kernel.Native
+Platform.(cl_platform_id)
+Device.FromNative(cl_device_id)
+Context.(cl_context, Device)
+Context.(cl_context)
+ProgramCode.(cl_program)
+Kernel.(cl_kernel, boolean)
+Kernel.NewQueue
+CLMemory.NewQueue
+CLValue<T>.NewQueue
+CLArray<T>.NewQueue
+Context.Dispose
+ProgramCode.Dispose
+Kernel.Dispose
+Platform.Properties
+Device.Properties
+SubDevice.Properties
+Context.Properties
+ProgramCode.Properties
+Kernel.Properties
+SubDevice.Finalize
+Context.Finalize
+ProgramCode.Finalize
+Kernel.Finalize
+Platform.ToString
+Device.ToString
+SubDevice.ToString
+Context.ToString
+ProgramCode.ToString
+Kernel.ToString
+Platform.Equals(object)
+Device.Equals(object)
+Context.Equals(object)
+ProgramCode.Equals(object)
+Kernel.Equals(object)
+Platform
+Platform.All
+Device
+Device.BasePlatform
+Device:GetAllForNilRes
+Device.GetAllFor(Platform, DeviceType)
+Device.GetAllFor(Platform)
+Device.CanSplitEqually
+Device.CanSplitByCounts
+Device.CanSplitByAffinityDomain
+Device.SplitEqually(integer)
+Device.SplitByCounts(array of integer)
+Device.SplitByAffinityDomain(DeviceAffinityDomain)
+SubDevice
+SubDevice.Parent
+Context
+Context.AllDevices
+Context.MainDevice
+Context.Default
+Context.(IList<Device>, Device)
+Context.(array of Device)
+Context.MakeSibling(Device)
+Context.BeginInvoke(CommandQueueBase, array of ParameterQueueSetter)
+Context.BeginInvoke(CommandQueueNil, array of ParameterQueueSetter)
+Context.BeginInvoke<T>(CommandQueue<T>, array of ParameterQueueSetter)
+Context:SyncInvoke
+Context.SyncInvoke(CommandQueueBase, array of ParameterQueueSetter)
+Context.SyncInvoke(CommandQueueNil, array of ParameterQueueSetter)
+Context.SyncInvoke<T>(CommandQueue<T>, array of ParameterQueueSetter)
+Context.MakeNewDefaultContext
+Context.GetContextDevices(cl_context)
+ProgramCode
+ProgramCode.BaseContext
+ProgramCode:ctor
+ProgramCode.(Context, array of string)
+ProgramCode.(array of string)
+ProgramCode.KernelByName[string]
+ProgramCode.GetAllKernels
+ProgramCode.Serialize
+ProgramCode.Deserialize(Context, array of array of byte)
+ProgramCode.SerializeTo(System.IO.BinaryWriter)
+ProgramCode.SerializeTo(System.IO.Stream)
+ProgramCode.DeserializeFrom(Context, System.IO.BinaryReader)
+ProgramCode.DeserializeFrom(Context, System.IO.Stream)
+Kernel
+Kernel.CodeContainer
+Kernel.Name
+Kernel.UseExclusiveNative(cl_kernel->())
+Kernel.UseExclusiveNative<T>(cl_kernel->T)
+Kernel.MakeNewNtv
+NativeValue<T>.MemoryArea
+NativeArray<T>.(integer)
+NativeArray<T>.MemoryArea
+NativeArray<T>.ItemCount
+NativeArray:ItemPtr
+NativeArray<T>.ItemPtr[integer]
+NativeArray<T>.ItemPtrUnchecked[integer]
+NativeArray<T>.SliceCopy[IntRange]
+CLMemory:ctor
+CLMemory.(UIntPtr)
+CLMemory.(integer)
+CLMemory.(int64)
+CLMemory.(UIntPtr, Context)
+CLMemory.(integer, Context)
+CLMemory.(int64, Context)
+CLMemorySubSegment.(CLMemory, UIntPtr, UIntPtr)
+CLMemorySubSegment.(CLMemory, UInt32, UInt32)
+CLMemorySubSegment.(CLMemory, UInt64, UInt64)
+CLValue:ctor(undef)
+CLValue:ctor(value)
+CLValue<T>.
+CLValue<T>.(T)
+CLValue<T>.(Context)
+CLValue<T>.(Context, T)
+CLArray<T>:ctor(length)
+CLArray<T>:ctor(array)
+CLArray<T>:ctor(range,array)
+CLArray<T>.(integer)
+CLArray<T>.(array of T)
+CLArray<T>.(integer, integer, array of T)
+CLArray<T>.(Context, integer)
+CLArray<T>.(Context, array of T)
+CLArray<T>.(Context, integer, integer, array of T)
+CLTaskBase.OrgContext
+CQ:ThenUseConvert:When:
+CQ:ThenUseConvert:When:Quick
+CQ:ThenConvertDef
+CQ:ThenQuickConvertDef
+CommandQueue<T>.ThenConvert<TOtp>(T->TOtp)
+CommandQueue<T>.ThenQuickConvert<TOtp>(T->TOtp)
+CommandQueue<T>.ThenConvert<TOtp>((T, Context)->TOtp)
+CommandQueue<T>.ThenQuickConvert<TOtp>((T, Context)->TOtp)
+CQ:ThenUseDef
+CQ:ThenQuickUseDef
+CommandQueue<T>.ThenUse(T->())
+CommandQueue<T>.ThenQuickUse(T->())
+CommandQueue<T>.ThenUse((T, Context)->())
+CommandQueue<T>.ThenQuickUse((T, Context)->())
+KernelCCQ
+CLMemoryCCQ.(CLMemory)
+KernelCCQ.(Kernel)
+CLValueCCQ<T>.(CLValue<T>)
+CLArrayCCQ<T>.(CLArray<T>)
+KernelCCQ.(CommandQueue<Kernel>)
+KernelCCQ.ThenQueue(CommandQueueBase)
+CLMemoryCCQ.ThenProc(CLMemory->())
+CLMemoryCCQ.ThenQuickProc(CLMemory->())
+CLMemoryCCQ.ThenProc((CLMemory, Context)->())
+CLMemoryCCQ.ThenQuickProc((CLMemory, Context)->())
+KernelCCQ.ThenProc(Kernel->())
+KernelCCQ.ThenQuickProc(Kernel->())
+KernelCCQ.ThenProc((Kernel, Context)->())
+KernelCCQ.ThenQuickProc((Kernel, Context)->())
+CLValueCCQ<T>.ThenProc(CLValue<T>->())
+CLValueCCQ<T>.ThenQuickProc(CLValue<T>->())
+CLValueCCQ<T>.ThenProc((CLValue<T>, Context)->())
+CLValueCCQ<T>.ThenQuickProc((CLValue<T>, Context)->())
+CLArrayCCQ<T>.ThenProc(CLArray<T>->())
+CLArrayCCQ<T>.ThenQuickProc(CLArray<T>->())
+CLArrayCCQ<T>.ThenProc((CLArray<T>, Context)->())
+CLArrayCCQ<T>.ThenQuickProc((CLArray<T>, Context)->())
+KernelCCQ.ThenWait(WaitMarker)
+Kernel.Exec1(CommandQueue<integer>, array of KernelArg)
+Kernel.Exec2(CommandQueue<integer>, CommandQueue<integer>, array of KernelArg)
+Kernel.Exec3(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, array of KernelArg)
+KernelCCQ.ThenExec1(CommandQueue<integer>, array of KernelArg)
+KernelCCQ.ThenExec2(CommandQueue<integer>, CommandQueue<integer>, array of KernelArg)
+KernelCCQ.ThenExec3(CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, array of KernelArg)
+Kernel.Exec(CommandQueue<array of UIntPtr>, CommandQueue<array of UIntPtr>, CommandQueue<array of UIntPtr>, array of KernelArg)
+KernelCCQ.ThenExec(CommandQueue<array of UIntPtr>, CommandQueue<array of UIntPtr>, CommandQueue<array of UIntPtr>, array of KernelArg)
+CLMemory.WriteData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+CLMemoryCCQ.ThenWriteData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+CLMemory.ReadData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+CLMemoryCCQ.ThenReadData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+CLMemory:FillData:Area
+CLMemory.FillData(CommandQueue<NativeMemoryArea>)
+CLMemoryCCQ.ThenFillData(CommandQueue<NativeMemoryArea>)
+CLMemory.FillData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemoryCCQ.ThenFillData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemory.WriteNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemoryCCQ.ThenWriteNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemory.WriteNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemoryCCQ.ThenWriteNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemory.ReadNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemoryCCQ.ThenReadNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemory.ReadNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemoryCCQ.ThenReadNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemory.FillNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemoryCCQ.ThenFillNativeArray<TRecord>(NativeArray<TRecord>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemory.FillNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLMemoryCCQ.ThenFillNativeArray<TRecord>(CommandQueue<NativeArray<TRecord>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLValue<T>.WriteData(CommandQueue<IntPtr>)
+CLValueCCQ<T>.ThenWriteData(CommandQueue<IntPtr>)
+CLValue<T>.WriteData(pointer)
+CLValueCCQ<T>.ThenWriteData(pointer)
+CLValue<T>.ReadData(CommandQueue<IntPtr>)
+CLValueCCQ<T>.ThenReadData(CommandQueue<IntPtr>)
+CLValue<T>.ReadData(pointer)
+CLValueCCQ<T>.ThenReadData(pointer)
+CLArray<T>.WriteData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+CLArrayCCQ<T>.ThenWriteData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+CLArray<T>.ReadData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+CLArrayCCQ<T>.ThenReadData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>)
+CLArray<T>.FillData(CommandQueue<NativeMemoryArea>)
+CLArrayCCQ<T>.ThenFillData(CommandQueue<NativeMemoryArea>)
+CLArray<T>.FillData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>, CommandQueue<integer>)
+CLArrayCCQ<T>.ThenFillData(CommandQueue<NativeMemoryArea>, CommandQueue<integer>, CommandQueue<integer>)
+CLArray<T>.WriteNativeArray(CommandQueue<NativeArray<&T>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLArrayCCQ<T>.ThenWriteNativeArray(CommandQueue<NativeArray<&T>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLArray<T>.ReadNativeArray(CommandQueue<NativeArray<&T>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLArrayCCQ<T>.ThenReadNativeArray(CommandQueue<NativeArray<&T>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLArray<T>.FillNativeArray(CommandQueue<NativeArray<&T>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+CLArrayCCQ<T>.ThenFillNativeArray(CommandQueue<NativeArray<&T>>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>, CommandQueue<integer>)
+KernelArg
+KernelArg:From:Copy
+KernelArg:From:Ref
+KernelArg.FromValue<TRecord>(TRecord)
+KernelArg.FromValueCQ<TRecord>(CommandQueue<TRecord>)
+KernelArg.FromArray<TRecord>(array of TRecord)
+KernelArg.FromArrayCQ<TRecord>(CommandQueue<array of TRecord>)
+KernelArg.FromArray2<TRecord>(array[,] of TRecord)
+KernelArg.FromArray2CQ<TRecord>(CommandQueue<array[,] of TRecord>)
+KernelArg.FromArray3<TRecord>(array[,,] of TRecord)
+KernelArg.FromArray3CQ<TRecord>(CommandQueue<array[,,] of TRecord>)
+KernelArg.FromArraySegment<TRecord>(ArraySegment<TRecord>)
+KernelArg.FromArraySegmentCQ<TRecord>(CommandQueue<ArraySegment<TRecord>>)
+KernelArg.FromData(NativeMemoryArea)
+KernelArg.FromDataCQ(CommandQueue<NativeMemoryArea>)
+KernelArg.FromNativeValue<TRecord>(NativeValue<TRecord>)
+KernelArg.FromNativeValueCQ<TRecord>(CommandQueue<NativeValue<TRecord>>)
+KernelArg.FromNativeArray<TRecord>(NativeArray<TRecord>)
+KernelArg.FromNativeArrayCQ<TRecord>(CommandQueue<NativeArray<TRecord>>)
+KernelArg.FromCLMemory(CLMemory)
+KernelArg.FromCLMemoryCQ(CommandQueue<CLMemory>)
+KernelArg.FromCLValue<T>(CLValue<T>)
+KernelArg.FromCLValueCQ<T>(CommandQueue<CLValue<T>>)
+KernelArg.FromCLArray<T>(CLArray<T>)
+KernelArg.FromCLArrayCQ<T>(CommandQueue<CLArray<T>>)
+KernelArg.ToString
+KernelArg.Print
+KernelArg.Println

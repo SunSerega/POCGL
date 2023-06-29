@@ -4,7 +4,7 @@ interface
 
 uses System;
 
-uses '..\..\..\DataScraping\BinCommon';
+uses '../../../DataScraping/BinCommon';
 
 uses BinUtils;
 uses LLPackingUtils;
@@ -283,7 +283,7 @@ type
   
 implementation
 
-uses '..\..\..\POCGL_Utils';
+uses '../../../POCGL_Utils';
 
 uses ItemNames;
 

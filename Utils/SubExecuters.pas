@@ -63,9 +63,11 @@ type
       Result := false;
       if not FileExists(path) then
       begin
-        Otp($'WARNING: pas_comp_path "{path}" did not refer to a file');
+        Otp($'WARNING: PasCompPath "{path}" did not refer to a file');
         exit;
       end;
+      path := System.IO.Path.GetFullPath(path);
+//      Otp($'PasCompPath is set to "{path}"', true);
       if pas_comp_path<>nil then
         raise new System.InvalidOperationException($'Path already set to: {pas_comp_path}');
       pas_comp_path := path;
@@ -90,7 +92,7 @@ type
           end;
         end;
         if pas_comp_path=nil then
-          raise new System.NotImplementedException($'No compiler found');
+          raise new System.NotImplementedException($'No Pascal compiler found');
       end;
       
       Result := pas_comp_path;
@@ -109,44 +111,41 @@ type
   end;
   
 function GetUsedModules(fname: string; prev: array of string): sequence of string;
-const uses_str = 'uses';
-const in_str = 'in';
+const savepcu_d = '{'+'$savepcu false}';
 begin
-  fname := System.IO.Path.ChangeExtension(fname, '.pas');
-  if not FileExists(fname) then exit;
-  
-  
   if fname in prev then exit;
   prev := prev+|fname|;
   
   var text := ReadAllText(fname, FileLogger.enc);
-  if not text.Contains('{'+'$savepcu false}') then
+  if savepcu_d not in text then
     yield fname;
   
   var dir := System.IO.Path.GetDirectoryName(fname);
-  var ind := 0;
-  while true do
+  foreach var uses_m in text.Matches('(?<!(//|'').*)uses\s([^;]*);') do
   begin
-    //TODO Better parsing
-    ind := text.IndexOf(uses_str, ind);
-    if ind=-1 then break;
-    ind += uses_str.Length;
-    
-    var ind2 := text.IndexOf(';', ind);
-    if ind2=-1 then continue;
-    
-    var u_strs := text.Substring(ind, ind2-ind).Split(',').ConvertAll(u_str->u_str.Split(|in_str|, 2, System.StringSplitOptions.None));
-    if not u_strs.All(u_ss->u_ss.First.All(ch->ch.IsLetter or ch.IsDigit or (ch in '&_'))) then continue;
-    
-    foreach var u_ss in u_strs do
-      yield sequence GetUsedModules(GetFullPath(
-        u_ss.Last.Trim(''' '.ToCharArray), dir
-      ), prev);
-    
+    var uses_s := uses_m.Groups[2].Value.Trim;
+    foreach var unit_m in uses_s.Matches('''([^'']+)''|([\w\.]+)') do
+    begin
+      var unit_s := unit_m.Groups[1].Value+unit_m.Groups[2].Value;
+      uses_s := uses_s.Trim;
+      if '.' in unit_s then continue;
+      var uu_fname := GetFullPath(System.IO.Path.ChangeExtension(unit_s, '.pas'), dir);
+      if not FileExists(uu_fname) then
+      begin
+        if unit_s not in |
+          'System',
+          'OpenGL','OpenCL',
+          'OpenGLABC','OpenCLABC',
+          'GraphWPF'
+        | then Otp($'WARNING: Compiling "{fname}", used unit "{uu_fname}" ({unit_s}) in ({uses_m}) not found');
+        continue;
+      end;
+      yield sequence GetUsedModules(uu_fname, prev);
+    end;
   end;
+  
 end;
-function GetUsedModules(fname: string) := GetUsedModules(fname, new string[0]);
-var GetUsedModules_lock := new object;
+function GetUsedModules(fname: string) := GetUsedModules(fname, System.Array.Empty&<string>);
 
 {$endregion Helpers}
 
@@ -233,12 +232,7 @@ begin
         
         case otp_type of
           
-          1:
-          thr_otp.Enq(new OtpLine(
-            br.ReadString,
-            start_time_mark + br.ReadInt64,
-            br.ReadBoolean
-          ));
+          1: thr_otp.Enq(OtpLine.Load(br, start_time_mark));
           
           2:
           begin
@@ -310,7 +304,8 @@ begin
   if (pipe<>nil) and (pipe_connection_established<>true) then pipe.Close;
 end;
 
-procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->(); general_task: boolean; args: string; params search_paths: array of string);
+var unit_locking_lock := new object;
+procedure CompilePasFile(fname: string; l_otp: OtpLine->(); err: string->(); kind: OtpKind; args: string; params search_paths: array of string);
 begin
   fname := GetFullPath(fname);
   if not System.IO.File.Exists(fname) then
@@ -328,7 +323,7 @@ begin
   if err=nil then err := s->raise new MessageException($'Error compiling "{GetRelativePath(fname)}": {s}');
   
   var locks := new List<System.IO.FileStream>;
-  lock GetUsedModules_lock do
+  lock unit_locking_lock do
   begin
     var lock_names := GetUsedModules(fname).Distinct.Select(u_name->u_name+'.compile_lock').ToList;
     
@@ -350,7 +345,7 @@ begin
     
   end;
   
-  l_otp(new OtpLine($'Compiling "{GetRelativePath(fname)}"', general_task));
+  l_otp(new OtpLine($'Compiling "{GetRelativePath(fname)}"', kind));
   
   var args_strs := search_paths.Select(spath->$'/SearchDir:"{spath}"').Append('/Locale:en');
   if args<>nil then args_strs := args_strs.Append(args);
@@ -375,7 +370,7 @@ begin
       if e.Data=nil then
         p_otp.Finish else
       begin
-        p_otp.Enq(new OtpLine($'Compiling: {e.Data}', general_task));
+        p_otp.Enq(new OtpLine($'Compiling: {e.Data}', kind));
         res_sb.AppendLine(e.Data);
       end;
     p.Start;
@@ -388,7 +383,7 @@ begin
     l.Close;
   
   var res := res_sb.ToString.Remove(#13).Trim(#10' '.ToArray);
-  if res.ToLower.Contains('error') then
+  if 'error' in res.ToLower then
     err(res);
   
 end;
@@ -401,7 +396,7 @@ begin
     
     '.pas':
     begin
-      CompilePasFile(fname, l_otp, nil, false, nil);
+      CompilePasFile(fname, l_otp, nil, OtpKind.Empty, nil);
       fname := System.IO.Path.ChangeExtension(fname, '.exe');
     end;
     
@@ -418,13 +413,13 @@ end;
 {$region Additional overloads}
 
 procedure RunFile(fname, nick: string; params pars: array of string) :=
-RunFile(fname, nick, nil, nil, pars);
+  RunFile(fname, nick, nil, nil, pars);
 
-procedure CompilePasFile(fname: string; general_task: boolean; args: string := nil) :=
-CompilePasFile(fname, nil, nil, general_task, args);
+procedure CompilePasFile(fname: string; kind: OtpKind; args: string := nil) :=
+  CompilePasFile(fname, nil, nil, kind, args);
 
 procedure ExecuteFile(fname, nick: string; params pars: array of string) :=
-ExecuteFile(fname, nick, nil, pars);
+  ExecuteFile(fname, nick, nil, pars);
 
 {$endregion Additional overloads}
 

@@ -1,5 +1,5 @@
-﻿uses AOtp         in '..\AOtp';
-uses SubExecuters in '..\SubExecuters';
+﻿uses '../AOtp';
+uses '../SubExecuters';
 
 begin
   try

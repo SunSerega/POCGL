@@ -1,8 +1,8 @@
-﻿uses '..\..\..\..\POCGL_Utils';
+﻿uses '../../../../POCGL_Utils';
 
-uses '..\..\..\..\Utils\CodeGen';
-uses '..\..\..\..\Utils\Fixers';
-uses '..\..\..\..\Utils\ATask';
+uses '../../../../Utils/CodeGen';
+uses '../../../../Utils/Fixers';
+uses '../../../../Utils/ATask';
 
 const MaxQueueStaticArraySize = 7;
 
@@ -18,8 +18,8 @@ begin
   try
     System.IO.Directory.CreateDirectory(GetFullPathRTA('CombineQueues'));
     
-    var intr := new FileWriter(GetFullPathRTA('CombineQueues\Interface.template'));
-    var impl := new FileWriter(GetFullPathRTA('CombineQueues\Implementation.template'));
+    var intr := new FileWriter(GetFullPathRTA('CombineQueues/Interface.template'));
+    var impl := new FileWriter(GetFullPathRTA('CombineQueues/Implementation.template'));
     var wr := intr * impl;
     
     loop 3 do wr += #10;

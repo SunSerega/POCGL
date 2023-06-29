@@ -1,24 +1,26 @@
 ﻿unit POCGL_Utils;
 
-uses SubExecutables in 'Utils\SubExecutables';
+uses 'Utils/SubExecutables';
 
-uses AOtp           in 'Utils\AOtp';
-uses PathUtils      in 'Utils\PathUtils';
+uses 'Utils/AOtp';
+uses 'Utils/PathUtils';
 
 type
   OtpLine           = AOtp.OtpLine;
   MessageException  = AOtp.MessageException;
   
 procedure Otp(l: OtpLine) := AOtp.Otp(l);
+procedure Otp(l: string; params kinds: array of string) := AOtp.Otp(l, kinds);
 procedure ErrOtp(e: Exception) := AOtp.ErrOtp(e);
 
-function GetFullPath(fname: string; base_folder: string := System.Environment.CurrentDirectory) := PathUtils.GetFullPath(fname, base_folder);
-function GetFullPathRTA(fname: string)                                                          := PathUtils.GetFullPathRTA(fname);
+function GetFullPath(fname: string; base_folder: string := nil) := PathUtils.GetFullPath(fname, base_folder);
+function GetFullPathRTA(fname: string)                          := PathUtils.GetFullPathRTA(fname);
 
-function GetRelativePath(fname: string; base_folder: string := System.Environment.CurrentDirectory) := PathUtils.GetRelativePath(fname, base_folder);
-function GetRelativePathRTA(fname: string)                                                          := PathUtils.GetRelativePathRTA(fname);
+function GetRelativePath(fname: string; base_folder: string := nil) := PathUtils.GetRelativePath(fname, base_folder);
+function GetRelativePathRTA(fname: string)                          := PathUtils.GetRelativePathRTA(fname);
 
-function is_separate_execution := Logger.main is ConsoleLogger;
+function IsSeparateExecution := AOtp.IsSeparateExecution;
+procedure FinishedPause := AOtp.FinishedPause;
 
 function nfi := FileLogger.nfi;
 function enc := FileLogger.enc;

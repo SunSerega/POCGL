@@ -1,14 +1,14 @@
 ﻿uses System;
 
-uses '..\..\..\Utils\AOtp';
+uses '../../../Utils/AOtp';
 
-uses '..\..\..\POCGL_Utils';
+uses '../../../POCGL_Utils';
 
-uses '..\ScrapUtils';
-uses '..\XMLUtils';
+uses '../ScrapUtils';
+uses '../XMLUtils';
 //
-uses '..\XMLItems';
-uses '..\ItemSources';
+uses '../XMLItems';
+uses '../ItemSources';
 
 const api='cl';
 
@@ -1037,7 +1037,7 @@ function ExtensionSource.MakeNewItem :=
 procedure ScrapXmlFile(api_name: string);
 begin
   Otp($'Parsing "{api_name}"');
-  var root := new XmlNode(GetFullPathRTA($'..\..\Reps\OpenCL-Docs\xml\{api_name}.xml'));
+  var root := new XmlNode(GetFullPathRTA($'../../Reps/OpenCL-Docs/xml/{api_name}.xml'));
   root.DiscardNodes('comment');
   
   VendorSuffixSource.InitAll;

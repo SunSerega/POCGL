@@ -4,7 +4,7 @@ interface
 
 uses System;
 
-uses '..\..\..\DataScraping\BinCommon';
+uses '../../../DataScraping/BinCommon';
 uses BinUtils;
 uses ItemNames;
 

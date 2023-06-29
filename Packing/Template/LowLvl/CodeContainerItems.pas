@@ -6,11 +6,11 @@ interface
 
 uses System;
 
-uses '..\..\..\POCGL_Utils';
-uses '..\..\..\Utils\AOtp';
-uses '..\..\..\Utils\CodeGen';
+uses '../../../POCGL_Utils';
+uses '../../../Utils/AOtp';
+uses '../../../Utils/CodeGen';
 
-uses '..\Common\PackingUtils';
+uses '../Common/PackingUtils';
 
 uses BinUtils;
 uses LLPackingUtils;
@@ -567,7 +567,7 @@ type
     
     public static procedure LogAllEnumToType;
     begin
-      var l := new FileLogger(GetFullPathRTA('Log\All EnumToTypeBinding''s.log'));
+      var l := new FileLogger(GetFullPathRTA('Log/All EnumToTypeBinding''s.log'));
       loop 3 do l.Otp('');
       
       ForEachDefined(f->
@@ -2307,7 +2307,7 @@ type
         var func_rem_ver := new Dictionary<Func, string>;
         {$region group by ver}
         begin
-          var log_versions := new FileLogger(GetFullPathRTA($'Log\{api.ToUpper} versions.log'));
+          var log_versions := new FileLogger(GetFullPathRTA($'Log/{api.ToUpper} versions.log'));
           loop 3 do log_versions.Otp('');
           
           foreach var ftr: Feature in g do

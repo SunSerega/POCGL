@@ -1,6 +1,6 @@
 ﻿unit VendorSuffixItems;
 
-uses '..\..\..\POCGL_Utils';
+uses '../../../POCGL_Utils';
 
 uses LLPackingUtils;
 uses ItemNames;

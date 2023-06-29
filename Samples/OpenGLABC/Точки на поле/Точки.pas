@@ -16,7 +16,7 @@ uses System;
 uses OpenGL;
 uses OpenGLABC;
 
-uses Common in '..\Common';
+uses '../Common';
 
 {$apptype windows}
 

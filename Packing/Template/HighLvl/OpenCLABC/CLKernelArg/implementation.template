@@ -3,31 +3,31 @@
 
 {$region Global}
 
-{%Global\implementation%}
+{%Global/implementation%}
 
 {$endregion Global}
 
 {$region Constant}
 
-{%Constant\implementation%}
+{%Constant/implementation%}
 
 {$endregion Constant}
 
 {$region Local}
 
-{%Local\implementation%}
+{%Local/implementation%}
 
 {$endregion Local}
 
 {$region Private}
 
-{%Private\implementation%}
+{%Private/implementation%}
 
 {$endregion Private}
 
 {$region Generic}
 
-{%Generic\implementation%}
+{%Generic/implementation%}
 
 {$endregion Generic}
 

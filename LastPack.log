@@ -3,44 +3,40 @@ FirstPack + Reference + Dummy + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compil
 Start packing
 =================================== First Pack ===================================
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\Reps\PullReps.pas"
+Compiling "DataScraping/Reps/PullReps.pas"
 Compiling: OK
 Runing SubReps Update
 SubReps Update: Pulling OpenCL
-SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull] && git pull 0_official main & echo [pull-own]: && git pull SunSerega custom) && (echo [push] && git push SunSerega custom)" 
+SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull] && git pull 0_official main & echo [pull-own]: && git pull SunSerega custom)"
 SubReps Update: OpenCL[OUT] : [checkout]
 SubReps Update: OpenCL[OUT] : Your branch is up to date with 'SunSerega/custom'.
 SubReps Update: OpenCL[OUT] : Already on 'custom'
 SubReps Update: OpenCL[OUT] : [pull]
-SubReps Update: OpenCL[ERR] : From github.com:KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch            main       -> FETCH_HEAD
+SubReps Update: OpenCL[ERR] : From KhronosGroup/OpenCL-Docs
+SubReps Update: OpenCL[ERR] : * branch main -> FETCH_HEAD
 SubReps Update: OpenCL[OUT] : Already up to date.
 SubReps Update: OpenCL[OUT] : [pull-own]:
-SubReps Update: OpenCL[ERR] : From github.com:SunSerega/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch            custom     -> FETCH_HEAD
+SubReps Update: OpenCL[ERR] : From SunSerega/OpenCL-Docs
+SubReps Update: OpenCL[ERR] : * branch custom -> FETCH_HEAD
 SubReps Update: OpenCL[OUT] : Already up to date.
-SubReps Update: OpenCL[OUT] : [push]
-SubReps Update: OpenCL[ERR] : Everything up-to-date
 SubReps Update: Done pulling OpenCL
 SubReps Update: Pulling OpenGL
-SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull] && git pull 0_official main & echo [pull-own]: && git pull SunSerega custom) && (echo [push] && git push SunSerega custom)" 
+SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull] && git pull 0_official main & echo [pull-own]: && git pull SunSerega custom)"
 SubReps Update: OpenGL[OUT] : [checkout]
 SubReps Update: OpenGL[OUT] : Your branch is up to date with 'SunSerega/custom'.
 SubReps Update: OpenGL[OUT] : Already on 'custom'
 SubReps Update: OpenGL[OUT] : [pull]
-SubReps Update: OpenGL[ERR] : From github.com:KhronosGroup/OpenGL-Registry
-SubReps Update: OpenGL[ERR] : * branch              main       -> FETCH_HEAD
+SubReps Update: OpenGL[ERR] : From KhronosGroup/OpenGL-Registry
+SubReps Update: OpenGL[ERR] : * branch main -> FETCH_HEAD
 SubReps Update: OpenGL[OUT] : Already up to date.
 SubReps Update: OpenGL[OUT] : [pull-own]:
-SubReps Update: OpenGL[ERR] : From github.com:SunSerega/OpenGL-Registry
-SubReps Update: OpenGL[ERR] : * branch              custom     -> FETCH_HEAD
+SubReps Update: OpenGL[ERR] : From SunSerega/OpenGL-Registry
+SubReps Update: OpenGL[ERR] : * branch custom -> FETCH_HEAD
 SubReps Update: OpenGL[OUT] : Already up to date.
-SubReps Update: OpenGL[OUT] : [push]
-SubReps Update: OpenGL[ERR] : Everything up-to-date
 SubReps Update: Done pulling OpenGL
 Finished runing SubReps Update
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping\XML\Dummy\ScrapXML.pas"
+Compiling "DataScraping/XML/Dummy/ScrapXML.pas"
 Compiling: OK
 Runing ScrapXML[Dummy]
 ScrapXML[Dummy]: Parsing XML
@@ -53,7 +49,7 @@ ScrapXML[Dummy]: Func: Saved 16 items
 ScrapXML[Dummy]: Feature: Saved 2 items
 ScrapXML[Dummy]: Done
 Finished runing ScrapXML[Dummy]
-Compiling "DataScraping\XML\OpenCL\ScrapXML.pas"
+Compiling "DataScraping/XML/OpenCL/ScrapXML.pas"
 Compiling: OK
 Runing ScrapXML[OpenCL]
 ScrapXML[OpenCL]: Parsing "cl"
@@ -71,7 +67,7 @@ ScrapXML[OpenCL]: Feature: Saved 7 items
 ScrapXML[OpenCL]: Extension: Saved 103 items
 ScrapXML[OpenCL]: Done
 Finished runing ScrapXML[OpenCL]
-Compiling "DataScraping\XML\OpenGL\ScrapXML.pas"
+Compiling "DataScraping/XML/OpenGL/ScrapXML.pas"
 Compiling: OK
 Runing ScrapXML[OpenGL]
 ScrapXML[OpenGL]: Parsing "gl"
@@ -91,7 +87,7 @@ ScrapXML[OpenGL]: Extension: Saved 1139 items
 ScrapXML[OpenGL]: Done
 Finished runing ScrapXML[OpenGL]
 =================================== References ===================================
-Compiling "Packing\Reference\ReferencePacker.pas"
+Compiling "Packing/Reference/ReferencePacker.pas"
 Compiling: OK
 Runing ReferencePacker
 ReferencePacker: Packing reference "Гайд по использованию OpenGL и OpenCL"
@@ -102,279 +98,279 @@ ReferencePacker: Packing reference "Справка OpenCLABC"
 ReferencePacker: Done packing feference "Справка OpenCLABC"
 Finished runing ReferencePacker
 ====================================== Dummy =====================================
-Compiling "Packing\Template\Pack Template.pas"
+Compiling "Packing/Template/Pack Template.pas"
 Compiling: OK
 Runing Template[Dummy]
-Template[Dummy]: Compiling "Packing\Template\LowLvl\Dummy\Pack Essentials.pas"
+Template[Dummy]: Compiling "Packing/Template/LowLvl/Dummy/Pack Essentials.pas"
 Template[Dummy]: Compiling: OK
-Template[Dummy]: Runing TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading VendorSuffix items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Enum items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading LoadedBasicType items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Group items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading IdClass items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Struct items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Delegate items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Func items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Func fixers
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Feature items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Extension items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Fixing Func items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping Feature items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping Extension items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging PascalBasicType items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging TypeCombo items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging Group items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging IdClass items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging Struct items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging Delegate items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging Func items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging Extension items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping PascalBasicType items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping TypeCombo items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping Group items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping IdClass items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping Struct items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping Delegate items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: PascalBasicType: Packed 9 items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Group: Packed 2 items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Func: Packed 16 items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Feature: Packed 2 items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Cleanup
-Template[Dummy]: Finished runing TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]
+Template[Dummy]: Runing TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading VendorSuffix items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Enum items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading LoadedBasicType items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Group items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading IdClass items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Struct items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Delegate items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Func items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Func fixers
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Feature items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Extension items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Fixing Func items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping Feature items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping Extension items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging PascalBasicType items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging TypeCombo items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging Group items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging IdClass items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging Struct items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging Delegate items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging Func items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging Extension items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping PascalBasicType items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping TypeCombo items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping Group items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping IdClass items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping Struct items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping Delegate items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: PascalBasicType: Packed 9 items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Group: Packed 2 items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Func: Packed 16 items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Feature: Packed 2 items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Cleanup
+Template[Dummy]: Finished runing TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]
 Finished runing Template[Dummy]
-Compiling "Packing\Descriptions\PackDescriptions.pas"
+Compiling "Packing/Descriptions/PackDescriptions.pas"
 Compiling: OK
 Runing Descriptions[Dummy]
 Finished runing Descriptions[Dummy]
 ===================================== OpenCL =====================================
 Runing Template[OpenCL]
-Template[OpenCL]: Compiling "Packing\Template\LowLvl\OpenCL\Pack Essentials.pas"
+Template[OpenCL]: Compiling "Packing/Template/LowLvl/OpenCL/Pack Essentials.pas"
 Template[OpenCL]: Compiling: OK
-Template[OpenCL]: Runing TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading VendorSuffix items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Enum items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading LoadedBasicType items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Group items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Group fixers
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading IdClass items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading IdClass fixers
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Struct items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Struct fixers
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Delegate items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Delegate fixers
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Func items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Func fixers
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::CreateBuffer] fixer comments
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::CreateAccelerator+INTEL] fixer comments
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Feature items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Loading Extension items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Fixing Group items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Fixing IdClass items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Fixing Delegate items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Fixing Func items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_WORK_GROUP_SIZE]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_MAX_WORK_GROUP_SIZE + AMD]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_CONSTANT_BUFFER_SIZE]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PCIE_ID]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PROFILING_TIMER_OFFSET]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_TOPOLOGY]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_BOARD_NAME]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_FREE_MEMORY]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_SIMD_PER_COMPUTE_UNIT]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_SIMD_WIDTH]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_SIMD_INSTRUCTION_WIDTH]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_WAVEFRONT_WIDTH]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_MEM_CHANNELS]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_MEM_CHANNEL_BANKS]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_MEM_CHANNEL_BANK_WIDTH]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_LOCAL_MEM_SIZE_PER_COMPUTE_UNIT]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_LOCAL_MEM_BANKS]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_THREAD_TRACE_SUPPORTED]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GFXIP_MAJOR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GFXIP_MINOR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_AVAILABLE_ASYNC_QUEUES]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_EXT_MEM_PADDING_IN_BYTES]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PAGE_SIZE]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: Func [cl::GetAcceleratorInfo + INTEL] could not generate overload: no output type info for Group [cl::AcceleratorInfo] Enum [cl::ACCELERATOR_DESCRIPTOR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping Feature items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::CompileProgram]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueFillBuffer]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMapImage]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMigrateMemObjects]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueNativeKernel]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueNDRangeKernel]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReadBuffer]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMFree]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMemFill]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMigrateMem]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueWriteBuffer]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping Extension items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMFree + ARM]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMemFill + ARM]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMigrateMemObject + EXT]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueGenerateMipmap + IMG]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGrallocObjects + IMG]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGrallocObjects + IMG]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireDX9Objects + INTEL]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseDX9Objects + INTEL]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireVA_APIMediaSurfaces + INTEL]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseVA_APIMediaSurfaces + INTEL]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueCommandBuffer + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireD3D10Objects + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseD3D10Objects + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireD3D11Objects + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseD3D11Objects + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireDX9MediaSurfaces + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseDX9MediaSurfaces + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireEGLObjects + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseEGLObjects + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireExternalMemObjects + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseExternalMemObjects + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGLObjects]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGLObjects]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueWaitSemaphores + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueSignalSemaphores + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging PascalBasicType items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging TypeCombo items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging Group items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging IdClass items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging Struct items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging Delegate items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging Func items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Logging Extension items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping PascalBasicType items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping TypeCombo items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping Group items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping IdClass items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping Struct items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Dumping Delegate items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: PascalBasicType: Packed 12 items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Group: Packed 111 items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: IdClass: Packed 28 items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Struct: Packed 17 items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Delegate: Packed 7 items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Func: Packed 237 items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Feature: Packed 1 items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Extension: Packed 103 items
-Template[OpenCL]: TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]: Cleanup
-Template[OpenCL]: Finished runing TemplateCommand[LowLvl\OpenCL\Pack Essentials.exe]
+Template[OpenCL]: Runing TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading VendorSuffix items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Enum items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading LoadedBasicType items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Group items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Group fixers
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading IdClass items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading IdClass fixers
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Struct items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Struct fixers
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Delegate items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Delegate fixers
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Func items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Func fixers
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::CreateBuffer] fixer comments
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::CreateAccelerator+INTEL] fixer comments
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Feature items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Extension items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing Group items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing IdClass items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing Delegate items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing Func items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_WORK_GROUP_SIZE]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_MAX_WORK_GROUP_SIZE + AMD]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_CONSTANT_BUFFER_SIZE]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PCIE_ID]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PROFILING_TIMER_OFFSET]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_TOPOLOGY]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_BOARD_NAME]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_FREE_MEMORY]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_SIMD_PER_COMPUTE_UNIT]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_SIMD_WIDTH]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_SIMD_INSTRUCTION_WIDTH]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_WAVEFRONT_WIDTH]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_MEM_CHANNELS]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_MEM_CHANNEL_BANKS]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GLOBAL_MEM_CHANNEL_BANK_WIDTH]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_LOCAL_MEM_SIZE_PER_COMPUTE_UNIT]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_LOCAL_MEM_BANKS]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_THREAD_TRACE_SUPPORTED]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GFXIP_MAJOR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_GFXIP_MINOR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_AVAILABLE_ASYNC_QUEUES]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_EXT_MEM_PADDING_IN_BYTES]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PAGE_SIZE]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetAcceleratorInfo + INTEL] could not generate overload: no output type info for Group [cl::AcceleratorInfo] Enum [cl::ACCELERATOR_DESCRIPTOR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Dumping Feature items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::CompileProgram]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueFillBuffer]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMapImage]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMigrateMemObjects]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueNativeKernel]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueNDRangeKernel]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReadBuffer]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMFree]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMemFill]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMigrateMem]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueWriteBuffer]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Dumping Extension items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMFree + ARM]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueSVMMemFill + ARM]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueMigrateMemObject + EXT]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueGenerateMipmap + IMG]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGrallocObjects + IMG]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGrallocObjects + IMG]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireDX9Objects + INTEL]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseDX9Objects + INTEL]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireVA_APIMediaSurfaces + INTEL]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseVA_APIMediaSurfaces + INTEL]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueCommandBuffer + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireD3D10Objects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseD3D10Objects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireD3D11Objects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseD3D11Objects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireDX9MediaSurfaces + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseDX9MediaSurfaces + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireEGLObjects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseEGLObjects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireExternalMemObjects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseExternalMemObjects + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGLObjects]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGLObjects]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueWaitSemaphores + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueSignalSemaphores + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Logging PascalBasicType items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Logging TypeCombo items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Logging Group items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Logging IdClass items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Logging Struct items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Logging Delegate items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Logging Func items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Logging Extension items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Dumping PascalBasicType items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Dumping TypeCombo items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Dumping Group items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Dumping IdClass items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Dumping Struct items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Dumping Delegate items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: PascalBasicType: Packed 12 items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Group: Packed 111 items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: IdClass: Packed 28 items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Struct: Packed 17 items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Delegate: Packed 7 items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Func: Packed 237 items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Feature: Packed 1 items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Extension: Packed 103 items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Cleanup
+Template[OpenCL]: Finished runing TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]
 Finished runing Template[OpenCL]
 Runing Descriptions[OpenCL]
 Finished runing Descriptions[OpenCL]
 ==================================== OpenCLABC ===================================
 Runing Template[OpenCLABC]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\WrapperProperties.pas"
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/WrapperProperties.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\WrapperProperties.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\WrapperProperties.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\ContainerExecMethods.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/WrapperProperties.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/WrapperProperties.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/ContainerExecMethods.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\ContainerExecMethods.exe]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerExecMethods.exe]: Packed .Exec methods for [CLKernel]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\ContainerExecMethods.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\ContainerOtherMethods.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/ContainerExecMethods.exe]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerExecMethods.exe]: Packed .Exec methods for [CLKernel]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/ContainerExecMethods.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/ContainerOtherMethods.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\ContainerOtherMethods.exe]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLMemory]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerOtherMethods.exe]: Packed other methods for [CLValue]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\ContainerOtherMethods.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\ContainerGetMethods.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/ContainerOtherMethods.exe]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerOtherMethods.exe]: Packed other methods for [CLArray]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerOtherMethods.exe]: Packed other methods for [CLMemory]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerOtherMethods.exe]: Packed other methods for [CLValue]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/ContainerOtherMethods.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/ContainerGetMethods.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\ContainerGetMethods.exe]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLArray]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLMemory]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\ContainerGetMethods.exe]: Packed .Get methods for [CLValue]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\ContainerGetMethods.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\Wrappers.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/ContainerGetMethods.exe]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerGetMethods.exe]: Packed .Get methods for [CLArray]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerGetMethods.exe]: Packed .Get methods for [CLMemory]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/ContainerGetMethods.exe]: Packed .Get methods for [CLValue]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/ContainerGetMethods.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/Wrappers.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\Wrappers.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\Wrappers.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\ContainerCommon.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/Wrappers.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/Wrappers.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/ContainerCommon.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\ContainerCommon.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\ContainerCommon.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\CLKernelArg.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/ContainerCommon.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/ContainerCommon.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/CLKernelArg.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\CLKernelArg.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\CLKernelArg.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\CombineQueues.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/CLKernelArg.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/CLKernelArg.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/CombineQueues.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\CombineQueues.exe]
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\CombineQueues.exe]: WARNING: Lazy not implemented
-Template[OpenCLABC]: TemplateCommand[HighLvl\OpenCLABC\CombineQueues.exe]: WARNING: Lazy not implemented
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\CombineQueues.exe]
-Template[OpenCLABC]: Compiling "Packing\Template\HighLvl\OpenCLABC\QueueStaticArrayWithWork.pas"
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/CombineQueues.exe]
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/CombineQueues.exe]: WARNING: Lazy not implemented
+Template[OpenCLABC]: TemplateCommand[HighLvl/OpenCLABC/CombineQueues.exe]: WARNING: Lazy not implemented
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/CombineQueues.exe]
+Template[OpenCLABC]: Compiling "Packing/Template/HighLvl/OpenCLABC/QueueStaticArrayWithWork.pas"
 Template[OpenCLABC]: Compiling: OK
-Template[OpenCLABC]: Runing TemplateCommand[HighLvl\OpenCLABC\QueueStaticArrayWithWork.exe]
-Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl\OpenCLABC\QueueStaticArrayWithWork.exe]
+Template[OpenCLABC]: Runing TemplateCommand[HighLvl/OpenCLABC/QueueStaticArrayWithWork.exe]
+Template[OpenCLABC]: Finished runing TemplateCommand[HighLvl/OpenCLABC/QueueStaticArrayWithWork.exe]
 Finished runing Template[OpenCLABC]
 Runing Descriptions[OpenCLABC]
 Finished runing Descriptions[OpenCLABC]
 ===================================== OpenGL =====================================
 Runing Template[OpenGL]
-Template[OpenGL]: Compiling "Packing\Template\LowLvl\OpenGL\Pack Essentials.pas"
+Template[OpenGL]: Compiling "Packing/Template/LowLvl/OpenGL/Pack Essentials.pas"
 Template[OpenGL]: Compiling: OK
-Template[OpenGL]: Runing TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading VendorSuffix items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Enum items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading LoadedBasicType items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Group items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Group fixers
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading IdClass items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading IdClass fixers
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Struct items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Struct fixers
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Delegate items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Delegate fixers
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Func items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Func fixers
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: Func [glx::QueryHyperpipeBestAttrib+SGIX] fixer comments
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: Func [glx::HyperpipeAttrib+SGIX] fixer comments
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: Func [glx::QueryHyperpipeAttrib+SGIX] fixer comments
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Feature items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Loading Extension items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Fixing Group items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Fixing IdClass items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Fixing Struct items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Fixing Delegate items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Fixing Func items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping Feature items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping Extension items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::DrawCommandsStates + NV]
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::DrawCommandsStatesAddress + NV]
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::ListDrawCommandsStatesClient + NV]
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::AsyncCopyBufferSubData + NVX]
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::AsyncCopyImageSubData + NVX]
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [glx::QueryChannelRect + SGIX]
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [glx::QueryChannelDeltas + SGIX]
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [wgl::ChoosePixelFormat + ARB]
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [wgl::ChoosePixelFormat + EXT]
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging PascalBasicType items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging TypeCombo items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging Group items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging IdClass items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging Struct items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging Delegate items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging Func items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Logging Extension items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping PascalBasicType items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping TypeCombo items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping Group items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping IdClass items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping Struct items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Dumping Delegate items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: PascalBasicType: Packed 17 items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Group: Packed 312 items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: IdClass: Packed 51 items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Struct: Packed 4 items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Delegate: Packed 4 items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Func: Packed 3253 items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Feature: Packed 4 items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Extension: Packed 743 items
-Template[OpenGL]: TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]: Cleanup
-Template[OpenGL]: Finished runing TemplateCommand[LowLvl\OpenGL\Pack Essentials.exe]
+Template[OpenGL]: Runing TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading VendorSuffix items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading Enum items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading LoadedBasicType items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading Group items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading Group fixers
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading IdClass items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading IdClass fixers
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading Struct items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading Struct fixers
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading Delegate items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading Delegate fixers
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading Func items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading Func fixers
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: WARNING: Func [glx::QueryHyperpipeBestAttrib+SGIX] fixer comments
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: WARNING: Func [glx::HyperpipeAttrib+SGIX] fixer comments
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: WARNING: Func [glx::QueryHyperpipeAttrib+SGIX] fixer comments
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading Feature items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Loading Extension items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Fixing Group items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Fixing IdClass items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Fixing Struct items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Fixing Delegate items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Fixing Func items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Dumping Feature items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Dumping Extension items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::DrawCommandsStates + NV]
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::DrawCommandsStatesAddress + NV]
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::ListDrawCommandsStatesClient + NV]
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::AsyncCopyBufferSubData + NVX]
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [gl::AsyncCopyImageSubData + NVX]
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [glx::QueryChannelRect + SGIX]
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [glx::QueryChannelDeltas + SGIX]
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [wgl::ChoosePixelFormat + ARB]
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: WARNING: 17>12 overloads of non-fixed Func [wgl::ChoosePixelFormat + EXT]
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Logging PascalBasicType items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Logging TypeCombo items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Logging Group items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Logging IdClass items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Logging Struct items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Logging Delegate items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Logging Func items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Logging Extension items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Dumping PascalBasicType items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Dumping TypeCombo items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Dumping Group items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Dumping IdClass items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Dumping Struct items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Dumping Delegate items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: PascalBasicType: Packed 17 items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Group: Packed 312 items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: IdClass: Packed 51 items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Struct: Packed 4 items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Delegate: Packed 4 items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Func: Packed 3253 items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Feature: Packed 4 items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Extension: Packed 743 items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Cleanup
+Template[OpenGL]: Finished runing TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]
 Finished runing Template[OpenGL]
 Runing Descriptions[OpenGL]
 Finished runing Descriptions[OpenGL]
@@ -384,476 +380,470 @@ Finished runing Template[OpenGLABC]
 Runing Descriptions[OpenGLABC]
 Finished runing Descriptions[OpenGLABC]
 ==================================== Compiling ===================================
-Compiling "Modules.Packed\Dummy.pas"
+Compiling "Modules.Packed/Dummy.pas"
 Compiling: OK
-Compiling "Modules.Packed\OpenCLABC.pas"
+Compiling "Modules.Packed/OpenCLABC.pas"
 Compiling: OK
-Compiling "Modules.Packed\OpenGLABC.pas"
+Compiling "Modules.Packed/OpenGLABC.pas"
 Compiling: OK
 ===================================== Testing ====================================
-Compiling "Tests\Tester.pas"
+Compiling "Utils/Testing/TestExecutor.pas"
+Compiling: OK
+Compiling "Tests/Tester.pas"
 Compiling: OK
 Runing Tester
 Tester: Testing selected modules:
 Tester: Dummy + OpenCL + OpenCLABC + OpenGL + OpenGLABC
-Tester: Compiling "Tests\DebugPCU\Dummy.pas"
+Tester: Compiling "Tests/DebugPCU/Dummy.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\DebugPCU\OpenCLABC.pas"
+Tester: Compiling "Tests/DebugPCU/OpenCLABC.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\DebugPCU\OpenGLABC.pas"
+Tester: Compiling "Tests/DebugPCU/OpenGLABC.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CL\ToString.pas"
+Tester: Compiling "Tests/Exec/CL/ToString.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\gen def context.pas"
+Tester: Compiling "Tests/Exec/CLABC/gen def context.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\01#CLPlatform\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/01#Wrap/01#CLPlatform/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\02#CLDevice\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/01#Wrap/02#CLDevice/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\03#CLContext\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/01#Wrap/03#CLContext/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/01#Wrap/04#Memory/1#CLMemory/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\SubSegment1.pas"
+Tester: Compiling "Tests/Exec/CLABC/01#Wrap/04#Memory/1#CLMemory/SubSegment1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\2#CLValue\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/01#Wrap/04#Memory/2#CLValue/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/01#Wrap/04#Memory/3#CLArray/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\err1.pas"
+Tester: Compiling "Tests/Exec/CLABC/01#Wrap/04#Memory/3#CLArray/err1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\05#CLKernel\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/01#Wrap/05#CLKernel/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#CLCode\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/01#Wrap/06#CLCode/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\01#Wrap\06#CLCode\deserialize.pas"
+Tester: Compiling "Tests/Exec/CLABC/01#Wrap/06#CLCode/deserialize.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\00#Err\CCQ-Cancel.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/00#Err/CCQ-Cancel.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/00#Err/ExecutionCancel.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\01#Const\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/01#Const/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/02#Parameter/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\realistic use.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/02#Parameter/realistic use.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~00#Err\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/03#Cast/~00#Err/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~01#Const\0.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/03#Cast/~01#Const/0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\ThenConvUse_ConstDelayedFunc.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/ThenConvUse_ConstDelayedFunc.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~00#Err\0.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~00#Err/0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~00#Err\0c.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~00#Err/0c.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~01#Const\0.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~01#Const/0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~02#Cast\0.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~02#Cast/0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\errоr multiuse.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~00#Err/errоr multiuse.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\multi errоr multiuse.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~00#Err/multi errоr multiuse.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~02#Cast\0.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~02#Cast/0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~05#Wait\marker.mu.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~05#Wait/marker.mu.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~05#Wait/multiusable instead of ThenMarkerSignal.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~07#HostExec\Quick+MU.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~07#HostExec/Quick+MU.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\ThenWait.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/06#Wait/ThenWait.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\WaitOrder.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/06#Wait/WaitOrder.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\ExecCache.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/ExecCache.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\OldClone.Add.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/OldClone.Add.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\ThenQueue(self).pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/ThenQueue(self).pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddProc.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~00#Err/AddProc.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddQueue.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~00#Err/AddQueue.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\LazyQuickErr.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~00#Err/LazyQuickErr.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\QuickErr.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~00#Err/QuickErr.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~02#Cast\0.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~02#Cast/0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~08#HostExec\QuickParOrder.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~08#HostExec/QuickParOrder.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\0.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\ThrCount.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/ThrCount.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1Q.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1Q.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1T.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1T.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~05#Wait\QuickUse.ThenWait.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~05#Wait/QuickUse.ThenWait.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\0.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/09#CombineQueues/0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/09#CombineQueues/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\q count.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/09#CombineQueues/q count.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\~00#Err\err while async.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/09#CombineQueues/~00#Err/err while async.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/10#WaitMarker/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\combine stress.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/10#WaitMarker/combine stress.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\invoke WaitAll.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/10#WaitMarker/~00#Err/invoke WaitAll.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\marker after err.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/10#WaitMarker/~00#Err/marker after err.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#Finally+Handle\BranchCancel.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/BranchCancel.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#Finally+Handle\BranchUnCancel.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/BranchUnCancel.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#Finally+Handle\~00#Err\finally order.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/~00#Err/finally order.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#Finally+Handle\~00#Err\handle only branch.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/~00#Err/handle only branch.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#Finally+Handle\~00#Err\Handle only local.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/~00#Err/Handle only local.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\02#Выполнение очередей\11#Finally+Handle\~00#Err\marker in finally.pas"
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/~00#Err/marker in finally.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\01#Const\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/01#Const/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\02#Parameter\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/02#Parameter/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\03#Cast\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/03#Cast/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\03#Cast\typed nil.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/03#Cast/typed nil.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\04#ThenConvert\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/04#ThenConvert/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\05#Multiusable\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/05#Multiusable/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\06#Wait\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/06#Wait/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\07#GPUCommandContainer\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/07#GPUCommandContainer/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\08#HostExec\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/08#HostExec/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/09#CombineQueues/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\conv1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/09#CombineQueues/conv1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\inline.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/09#CombineQueues/inline.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\optimize.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/09#CombineQueues/optimize.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\09#CombineQueues\remove last const.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/09#CombineQueues/remove last const.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\10#WaitMarker\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/10#WaitMarker/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\11#Finally+Handle\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/11#Finally+Handle/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\12#CLKernelArg\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/12#CLKernelArg/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\01#CLPlatform\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/01#CLPlatform/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\02#CLDevice\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/02#CLDevice/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\03#CLContext\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/03#CLContext/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/1#CLMemory/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory\SubSegment1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/1#CLMemory/SubSegment1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\2#CLValue\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/2#CLValue/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\3#CLArray\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/3#CLArray/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\05#CLKernel\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/05#CLKernel/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\03#ToString\13#Wrap\06#CLCode\1.pas"
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/06#CLCode/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь.pas"
+Tester: Compiling "Tests/Exec/CLABC/04#Samples/Игра жизнь/Игра жизнь.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Det.pas"
+Tester: Compiling "Tests/Exec/GL/Det.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Mtr.Rotate3D.pas"
+Tester: Compiling "Tests/Exec/GL/Mtr.Rotate3D.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Mtr.Translate.pas"
+Tester: Compiling "Tests/Exec/GL/Mtr.Translate.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Random.pas"
+Tester: Compiling "Tests/Exec/GL/Random.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests\Exec\GL\Vec.Cross.pas"
+Tester: Compiling "Tests/Exec/GL/Vec.Cross.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCL\MatrMlt.pas"
+Tester: Compiling "Samples/OpenCL/MatrMlt.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCL\SimpleAddition.pas"
+Tester: Compiling "Samples/OpenCL/SimpleAddition.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
+Tester: Compiling "Samples/OpenCLABC/0Простейшие примеры/MatrMlt.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
+Tester: Compiling "Samples/OpenCLABC/0Простейшие примеры/SimpleAddition.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Wait очереди\1.pas"
+Tester: Compiling "Samples/OpenCLABC/Wait очереди/1.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Wait очереди\2.pas"
+Tester: Compiling "Samples/OpenCLABC/Wait очереди/2.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas"
+Tester: Compiling "Samples/OpenCLABC/Игра жизнь/Игра жизнь.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем.pas"
+Tester: Compiling "Samples/OpenCLABC/Кеширование CLProgramCode/SimpleAddition но с кешем.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.pas"
+Tester: Compiling "Samples/OpenGLABC/!Крутящийся треугольник/Крутящийся треугольник.pas"
 Tester: Compiling: OK
-Tester: Compiling "Samples\OpenGLABC\Точки на поле\Точки.pas"
+Tester: Compiling "Samples/OpenGLABC/Точки на поле/Точки.pas"
 Tester: Compiling: OK
-Tester: Executing Test[Tests\Exec\CL\ToString]
+Tester: Executing Test[Tests/Exec/CL/ToString]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\gen def context]
+Tester: Executing Test[Tests/Exec/CLABC/gen def context]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\01#CLPlatform\1]
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/01#CLPlatform/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\02#CLDevice\1]
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/02#CLDevice/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\03#CLContext\1]
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/03#CLContext/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\1]
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/04#Memory/1#CLMemory/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\1#CLMemory\SubSegment1]
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/04#Memory/1#CLMemory/SubSegment1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\2#CLValue\1]
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/04#Memory/2#CLValue/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\1]
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/04#Memory/3#CLArray/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\04#Memory\3#CLArray\err1]
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/04#Memory/3#CLArray/err1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\05#CLKernel\1]
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/05#CLKernel/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#CLCode\1]
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/06#CLCode/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\01#Wrap\06#CLCode\deserialize]
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/06#CLCode/deserialize]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\00#Err\CCQ-Cancel]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/00#Err/CCQ-Cancel]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\00#Err\ExecutionCancel]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/00#Err/ExecutionCancel]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\01#Const\1]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/01#Const/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\1]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/02#Parameter/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\02#Parameter\realistic use]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/02#Parameter/realistic use]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~00#Err\1]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/03#Cast/~00#Err/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~01#Const\0]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/03#Cast/~01#Const/0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\ThenConvUse_ConstDelayedFunc]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/ThenConvUse_ConstDelayedFunc]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~00#Err\0]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~00#Err/0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~00#Err\0c]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~00#Err/0c]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~01#Const\0]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~01#Const/0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\04#ThenConvert\~02#Cast\0]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~02#Cast/0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\errоr multiuse]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~00#Err/errоr multiuse]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~00#Err\multi errоr multiuse]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~00#Err/multi errоr multiuse]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~02#Cast\0]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~02#Cast/0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~05#Wait\marker.mu]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~05#Wait/marker.mu]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~05#Wait\multiusable instead of ThenMarkerSignal]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~05#Wait/multiusable instead of ThenMarkerSignal]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\05#Multiusable\~07#HostExec\Quick+MU]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~07#HostExec/Quick+MU]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\ThenWait]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/06#Wait/ThenWait]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\06#Wait\WaitOrder]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/06#Wait/WaitOrder]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\ExecCache]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/ExecCache]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\OldClone.Add]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/OldClone.Add]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\ThenQueue(self)]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/ThenQueue(self)]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddProc]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~00#Err/AddProc]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\AddQueue]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~00#Err/AddQueue]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\LazyQuickErr]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~00#Err/LazyQuickErr]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~00#Err\QuickErr]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~00#Err/QuickErr]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~02#Cast\0]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~02#Cast/0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\~08#HostExec\QuickParOrder]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~08#HostExec/QuickParOrder]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\0]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\ThrCount]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/ThrCount]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\0]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1Q]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1Q]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1T]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1T]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~05#Wait\QuickUse.ThenWait]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~05#Wait/QuickUse.ThenWait]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\0]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/09#CombineQueues/0]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\1]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/09#CombineQueues/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\q count]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/09#CombineQueues/q count]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\09#CombineQueues\~00#Err\err while async]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/09#CombineQueues/~00#Err/err while async]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\1]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/10#WaitMarker/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\combine stress]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/10#WaitMarker/combine stress]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\invoke WaitAll]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/10#WaitMarker/~00#Err/invoke WaitAll]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\10#WaitMarker\~00#Err\marker after err]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/10#WaitMarker/~00#Err/marker after err]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#Finally+Handle\BranchCancel]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/BranchCancel]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#Finally+Handle\BranchUnCancel]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/BranchUnCancel]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#Finally+Handle\~00#Err\finally order]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/~00#Err/finally order]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#Finally+Handle\~00#Err\handle only branch]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/~00#Err/handle only branch]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#Finally+Handle\~00#Err\Handle only local]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/~00#Err/Handle only local]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\02#Выполнение очередей\11#Finally+Handle\~00#Err\marker in finally]
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/~00#Err/marker in finally]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\01#Const\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/01#Const/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\02#Parameter\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/02#Parameter/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\03#Cast\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/03#Cast/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\03#Cast\typed nil]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/03#Cast/typed nil]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\04#ThenConvert\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/04#ThenConvert/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\05#Multiusable\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/05#Multiusable/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\06#Wait\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/06#Wait/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\07#GPUCommandContainer\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/07#GPUCommandContainer/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\08#HostExec\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/08#HostExec/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/09#CombineQueues/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\conv1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/09#CombineQueues/conv1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\inline]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/09#CombineQueues/inline]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\optimize]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/09#CombineQueues/optimize]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\09#CombineQueues\remove last const]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/09#CombineQueues/remove last const]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\10#WaitMarker\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/10#WaitMarker/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\11#Finally+Handle\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/11#Finally+Handle/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\12#CLKernelArg\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/12#CLKernelArg/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\01#CLPlatform\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/01#CLPlatform/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\02#CLDevice\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/02#CLDevice/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\03#CLContext\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/03#CLContext/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/1#CLMemory/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\1#CLMemory\SubSegment1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/1#CLMemory/SubSegment1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\2#CLValue\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/2#CLValue/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\04#Memory\3#CLArray\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/3#CLArray/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\05#CLKernel\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/05#CLKernel/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\03#ToString\13#Wrap\06#CLCode\1]
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/06#CLCode/1]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\CLABC\04#Samples\Игра жизнь\Игра жизнь]
+Tester: Executing Test[Tests/Exec/CLABC/04#Samples/Игра жизнь/Игра жизнь]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Det]
+Tester: Executing Test[Tests/Exec/GL/Det]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Mtr.Rotate3D]
+Tester: Executing Test[Tests/Exec/GL/Mtr.Rotate3D]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Mtr.Translate]
+Tester: Executing Test[Tests/Exec/GL/Mtr.Translate]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Random]
+Tester: Executing Test[Tests/Exec/GL/Random]
 Tester: Done executing
-Tester: Executing Test[Tests\Exec\GL\Vec.Cross]
+Tester: Executing Test[Tests/Exec/GL/Vec.Cross]
 Tester: Done executing
-Tester: Executing Test[Samples\OpenCL\MatrMlt]
+Tester: Executing Test[Samples/OpenCL/MatrMlt]
 Tester: Done executing
-Tester: Executing Test[Samples\OpenCL\SimpleAddition]
+Tester: Executing Test[Samples/OpenCL/SimpleAddition]
 Tester: Done executing
-Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\MatrMlt]
+Tester: Executing Test[Samples/OpenCLABC/0Простейшие примеры/MatrMlt]
 Tester: Done executing
-Tester: Executing Test[Samples\OpenCLABC\0Простейшие примеры\SimpleAddition]
+Tester: Executing Test[Samples/OpenCLABC/0Простейшие примеры/SimpleAddition]
 Tester: Done executing
-Tester: Executing Test[Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем]
+Tester: Executing Test[Samples/OpenCLABC/Кеширование CLProgramCode/SimpleAddition но с кешем]
 Tester: Done executing
-Tester: Executing Test[Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем]
+Tester: Executing Test[Samples/OpenCLABC/Кеширование CLProgramCode/SimpleAddition но с кешем]
 Tester: Done executing
 Tester: Cleanup
 Tester: Done testing
 Finished runing Tester
 ===================================== Release ====================================
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying modules ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Packing Modules.Packed\OpenCL.pas
-WARNING: Not enough rights to copy [Modules.Packed\OpenCL.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
-Packing Modules.Packed\OpenCLABC.pas
-WARNING: Not enough rights to copy [Modules.Packed\OpenCLABC.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
-Packing Modules.Packed\OpenGL.pas
-WARNING: Not enough rights to copy [Modules.Packed\OpenGL.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
-Packing Modules.Packed\OpenGLABC.pas
-WARNING: Not enough rights to copy [Modules.Packed\OpenGLABC.pas] to [C:\Program Files (x86)\PascalABC.NET\LibSource]
-WARNING: Not enough rights to copy [Modules.Packed\OpenCL.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
-WARNING: Not enough rights to copy [Modules.Packed\OpenCLABC.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
-WARNING: Not enough rights to copy [Modules.Packed\OpenGL.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
-WARNING: Not enough rights to copy [Modules.Packed\OpenGLABC.pcu] to [C:\Program Files (x86)\PascalABC.NET\Lib]
+Packing Modules.Packed/OpenCL.pas
+Packing Modules.Packed/OpenCLABC.pas
+Packing Modules.Packed/OpenGL.pas
+Packing Modules.Packed/OpenGLABC.pas
 Done copying release modules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Copying samples ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Packing sample file "Samples\OpenCL\MatrMlt.cl"
-Packing sample file "Samples\OpenCL\MatrMlt.pas"
-Packing sample file "Samples\OpenCL\SimpleAddition.cl"
-Packing sample file "Samples\OpenCL\SimpleAddition.pas"
-Packing sample file "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.cl"
-Packing sample file "Samples\OpenCLABC\0Простейшие примеры\MatrMlt.pas"
-Packing sample file "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.cl"
-Packing sample file "Samples\OpenCLABC\0Простейшие примеры\SimpleAddition.pas"
-Packing sample file "Samples\OpenCLABC\Wait очереди\1.pas"
-Packing sample file "Samples\OpenCLABC\Wait очереди\2.pas"
-Packing sample file "Samples\OpenCLABC\Wait очереди\NamedQData.pas"
-Packing sample file "Samples\OpenCLABC\Игра жизнь\Игра жизнь.cl"
-Packing sample file "Samples\OpenCLABC\Игра жизнь\Игра жизнь.pas"
-Packing sample file "Samples\OpenCLABC\Кеширование CLProgramCode\0.cl"
-Packing sample file "Samples\OpenCLABC\Кеширование CLProgramCode\SimpleAddition но с кешем.pas"
-Packing sample file "Samples\OpenGLABC\Common.pas"
-Packing sample file "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.pas"
-Packing sample file "Samples\OpenGLABC\!Крутящийся треугольник\Крутящийся треугольник.vert"
-Packing sample file "Samples\OpenGLABC\Точки на поле\Empty.vert"
-Packing sample file "Samples\OpenGLABC\Точки на поле\Mandelbrot.frag"
-Packing sample file "Samples\OpenGLABC\Точки на поле\SinglePointToScreen.geom"
-Packing sample file "Samples\OpenGLABC\Точки на поле\Волны.frag"
-Packing sample file "Samples\OpenGLABC\Точки на поле\Минимум расстояний.frag"
-Packing sample file "Samples\OpenGLABC\Точки на поле\Спирали.frag"
-Packing sample file "Samples\OpenGLABC\Точки на поле\Сумма расстояний.frag"
-Packing sample file "Samples\OpenGLABC\Точки на поле\Точки.pas"
+Packing sample file "Samples/OpenCL/MatrMlt.cl"
+Packing sample file "Samples/OpenCL/MatrMlt.pas"
+Packing sample file "Samples/OpenCL/SimpleAddition.cl"
+Packing sample file "Samples/OpenCL/SimpleAddition.pas"
+Packing sample file "Samples/OpenCLABC/0Простейшие примеры/MatrMlt.cl"
+Packing sample file "Samples/OpenCLABC/0Простейшие примеры/MatrMlt.pas"
+Packing sample file "Samples/OpenCLABC/0Простейшие примеры/SimpleAddition.cl"
+Packing sample file "Samples/OpenCLABC/0Простейшие примеры/SimpleAddition.pas"
+Packing sample file "Samples/OpenCLABC/Wait очереди/1.pas"
+Packing sample file "Samples/OpenCLABC/Wait очереди/2.pas"
+Packing sample file "Samples/OpenCLABC/Wait очереди/NamedQData.pas"
+Packing sample file "Samples/OpenCLABC/Игра жизнь/Игра жизнь.cl"
+Packing sample file "Samples/OpenCLABC/Игра жизнь/Игра жизнь.pas"
+Packing sample file "Samples/OpenCLABC/Кеширование CLProgramCode/0.cl"
+Packing sample file "Samples/OpenCLABC/Кеширование CLProgramCode/SimpleAddition но с кешем.pas"
+Packing sample file "Samples/OpenGLABC/Common.pas"
+Packing sample file "Samples/OpenGLABC/!Крутящийся треугольник/Крутящийся треугольник.pas"
+Packing sample file "Samples/OpenGLABC/!Крутящийся треугольник/Крутящийся треугольник.vert"
+Packing sample file "Samples/OpenGLABC/Точки на поле/Empty.vert"
+Packing sample file "Samples/OpenGLABC/Точки на поле/Mandelbrot.frag"
+Packing sample file "Samples/OpenGLABC/Точки на поле/SinglePointToScreen.geom"
+Packing sample file "Samples/OpenGLABC/Точки на поле/Волны.frag"
+Packing sample file "Samples/OpenGLABC/Точки на поле/Минимум расстояний.frag"
+Packing sample file "Samples/OpenGLABC/Точки на поле/Спирали.frag"
+Packing sample file "Samples/OpenGLABC/Точки на поле/Сумма расстояний.frag"
+Packing sample file "Samples/OpenGLABC/Точки на поле/Точки.pas"
 Packed 26 sample files
 Done packing

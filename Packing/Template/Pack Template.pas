@@ -1,7 +1,7 @@
-﻿uses POCGL_Utils  in '..\..\POCGL_Utils';
+﻿uses '../../POCGL_Utils';
 
-uses Templates    in '..\..\Utils\Templates';
-uses CLArgs       in '..\..\Utils\CLArgs';
+uses '../../Utils/Templates';
+uses '../../Utils/CLArgs';
 
 begin
   try
@@ -10,21 +10,21 @@ begin
     var nick := GetArgs('nick').SingleOrDefault;
     var dir := GetArgs('dir').SingleOrDefault;
     
-    if is_separate_execution and string.IsNullOrWhiteSpace(inp_fname) and string.IsNullOrWhiteSpace(otp_fname) and string.IsNullOrWhiteSpace(nick) then
+    if IsSeparateExecution and string.IsNullOrWhiteSpace(inp_fname) and string.IsNullOrWhiteSpace(otp_fname) and string.IsNullOrWhiteSpace(nick) then
     begin
       
-//      inp_fname := 'Modules\Template\OpenGL.pas';
-//      otp_fname := 'Modules\OpenGL.pas';
+//      inp_fname := 'Modules/Template/OpenGL.pas';
+//      otp_fname := 'Modules/OpenGL.pas';
 //      nick := 'OpenGL';
 //      dir := 'LowLvl';
       
-//      inp_fname := 'Modules\Template\OpenCL.pas';
-//      otp_fname := 'Modules\OpenCL.pas';
+//      inp_fname := 'Modules/Template/OpenCL.pas';
+//      otp_fname := 'Modules/OpenCL.pas';
 //      nick := 'OpenCL';
 //      dir := 'LowLvl';
       
-      inp_fname := 'Modules\OpenCLABC.pas';
-      otp_fname := 'Modules.Packed\OpenCLABC.pas';
+      inp_fname := 'Modules/OpenCLABC.pas';
+      otp_fname := 'Modules.Packed/OpenCLABC.pas';
       nick := 'OpenCLABC';
       dir := 'HighLvl';
       

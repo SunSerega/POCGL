@@ -1,8 +1,8 @@
-﻿{$reference '!MarkDig\Markdig.dll'}
+﻿{$reference '!MarkDig/Markdig.dll'}
 uses System.IO;
 
-uses POCGL_Utils  in '..\..\POCGL_Utils';
-uses AOtp         in '..\..\Utils\AOtp';
+uses '../../POCGL_Utils';
+uses '../../Utils/AOtp';
 
 type
   HTML = static class
@@ -21,11 +21,11 @@ type
       last_page_id += 1;
       
       var page_name := System.IO.Path.GetFileName(path);
-      if page_name.Contains('#') then page_name := page_name.Substring(page_name.IndexOf('#')+1);
+      if '#' in page_name then page_name := page_name.Substring(page_name.IndexOf('#')+1);
       
       sw.WriteLine($'<div id="page-{last_page_id}" page_name="{page_name}" hidden=true>');
       
-      if System.IO.File.Exists(path+'.css') then
+      if &File.Exists(path+'.css') then
       begin
         sw.WriteLine('<style>');
         sw.WriteLine(ReadAllText(path+'.css').Trim);
@@ -37,7 +37,7 @@ type
         md_pipeline
       ).Trim);
       
-      if System.IO.File.Exists(path+'.js') then
+      if &File.Exists(path+'.js') then
       begin
         sw.WriteLine('<script>');
         sw.WriteLine(ReadAllText(path+'.js').Trim);
@@ -47,25 +47,25 @@ type
       sw.WriteLine($'</div>');
     end;
     
-    public static procedure AddFolder(sw: StreamWriter; path: string);
+    public static procedure AddFolder(sw: StreamWriter; dir: string);
     begin
-      var dir_name := System.IO.Path.GetFileName(path);
-      if dir_name.Contains('#') then dir_name := dir_name.Substring(dir_name.IndexOf('#')+1);
+      var dir_name := Path.GetFileName(dir);
+      if '#' in dir_name then dir_name := dir_name.Substring(dir_name.IndexOf('#')+1);
       
-      if &File.Exists(path+'\.md') then
+      if &File.Exists(dir+'/.md') then
       begin
-        AddPage(sw, path+'\');
+        AddPage(sw, dir+'/');
         sw.WriteLine($'<script>on_start_folder("{dir_name}", document.getElementById("page-{last_page_id}"))</script>');
       end else
         sw.WriteLine($'<script>on_start_folder("{dir_name}", null)</script>');
         
-      foreach var dir in Directory.EnumerateDirectories(path) do
-        AddFolder(sw, dir);
+      foreach var sub_dir in Directory.EnumerateDirectories(dir) do
+        AddFolder(sw, sub_dir);
       
-      foreach var fname in Directory.EnumerateFiles(path, '*.md') do
-        if not fname.EndsWith('\.md') then
+      foreach var fname in Directory.EnumerateFiles(dir, '*.md') do
+        if Path.GetFileNameWithoutExtension(fname) <> '' then
         begin
-          AddPage(sw, fname.Remove(fname.LastIndexOf('.')));
+          AddPage(sw, Path.ChangeExtension(fname, nil));
           sw.WriteLine($'<script>on_page_added(document.getElementById("page-{last_page_id}"))</script>');
         end;
       

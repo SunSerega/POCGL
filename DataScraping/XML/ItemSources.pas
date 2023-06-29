@@ -122,7 +122,7 @@ procedure CreateAll;
 
 implementation
 
-uses POCGL_Utils in '..\..\POCGL_Utils';
+uses '../../POCGL_Utils';
 
 var source_create_callbacks: Action;
 

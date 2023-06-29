@@ -2,9 +2,9 @@
 
 uses System;
 
-uses '..\..\POCGL_Utils';
+uses '../../POCGL_Utils';
 
-uses '..\BinCommon';
+uses '../BinCommon';
 
 uses ScrapUtils;
 uses NamedItems;
@@ -143,7 +143,7 @@ type
     
     protected function GetKind: ParArrSizeKind; override := PASK_NotArray;
     
-    public function Equals(mki: MultiKindItem<ParArrSizeKind>; l_otp: OtpLine->()): boolean; override;
+    public function EqualsMKI(mki: MultiKindItem<ParArrSizeKind>; l_otp: OtpLine->()): boolean; override;
     begin
       Result := ReferenceEquals(mki, Instance);
       {$ifdef DEBUG}
@@ -164,7 +164,7 @@ type
     
     protected function GetKind: ParArrSizeKind; override := PASK_Arbitrary;
     
-    public function Equals(mki: MultiKindItem<ParArrSizeKind>; l_otp: OtpLine->()): boolean; override;
+    public function EqualsMKI(mki: MultiKindItem<ParArrSizeKind>; l_otp: OtpLine->()): boolean; override;
     begin
       Result := ReferenceEquals(mki, Instance);
       {$ifdef DEBUG}
@@ -193,7 +193,7 @@ type
     
     public property Value: integer read sz;
     
-    public function Equals(mki: MultiKindItem<ParArrSizeKind>; l_otp: OtpLine->()): boolean; override :=
+    public function EqualsMKI(mki: MultiKindItem<ParArrSizeKind>; l_otp: OtpLine->()): boolean; override :=
       (mki is ParArrSizeConst(var other)) and (self.Value = other.Value);
     
     protected procedure SaveBody(bw: BinWriter); override :=
@@ -214,7 +214,7 @@ type
     
     public property Index: integer read par_i;
     
-    public function Equals(mki: MultiKindItem<ParArrSizeKind>; l_otp: OtpLine->()): boolean; override :=
+    public function EqualsMKI(mki: MultiKindItem<ParArrSizeKind>; l_otp: OtpLine->()): boolean; override :=
       (mki is ParArrSizeParRef(var other)) and (self.Index = other.Index);
     
     protected procedure SaveBody(bw: BinWriter); override :=
@@ -232,7 +232,7 @@ type
     
     public property SubSizes: array of ParArrSize read sub_sizes;
     
-    public function Equals(mki: MultiKindItem<ParArrSizeKind>; l_otp: OtpLine->()): boolean; override :=
+    public function EqualsMKI(mki: MultiKindItem<ParArrSizeKind>; l_otp: OtpLine->()): boolean; override :=
       (mki is ParArrSizeMlt(var other)) and self.SubSizes.SequenceEqual(other.SubSizes);
     
     protected procedure SaveBody(bw: BinWriter); override;
@@ -261,7 +261,7 @@ type
           new ParArrSizeMlt(sub_sizes[1:])
       );
     
-    public function Equals(mki: MultiKindItem<ParArrSizeKind>; l_otp: OtpLine->()): boolean; override :=
+    public function EqualsMKI(mki: MultiKindItem<ParArrSizeKind>; l_otp: OtpLine->()): boolean; override :=
       (mki is ParArrSizeDiv(var other)) and (self.n = other.n) and (self.d = other.d);
     
     protected procedure SaveBody(bw: BinWriter); override;
@@ -297,7 +297,7 @@ type
     
     protected function GetKind: ParValComboKind; override := PVCK_Vector;
     
-    public function Equals(mki: MultiKindItem<ParValComboKind>; l_otp: OtpLine->()): boolean; override :=
+    public function EqualsMKI(mki: MultiKindItem<ParValComboKind>; l_otp: OtpLine->()): boolean; override :=
       (mki is ParValComboVector(var other)) and (self.sz = other.sz);
     
     protected procedure SaveBody(bw: BinWriter); override :=
@@ -324,7 +324,7 @@ type
     
     protected function GetKind: ParValComboKind; override := PVCK_Matrix;
     
-    public function Equals(mki: MultiKindItem<ParValComboKind>; l_otp: OtpLine->()): boolean; override :=
+    public function EqualsMKI(mki: MultiKindItem<ParValComboKind>; l_otp: OtpLine->()): boolean; override :=
       (mki is ParValComboMatrix(var other)) and (self.sz1 = other.sz1) and (self.sz2 = other.sz2);
     
     protected procedure SaveBody(bw: BinWriter); override;
@@ -521,7 +521,7 @@ type
     
     private function UniqueEnums := Enum.DistillAllUnique(self.enums);
     
-    public function Equals(mki: MultiKindItem<GroupKind>; l_otp: OtpLine->()): boolean; override;
+    public function EqualsMKI(mki: MultiKindItem<GroupKind>; l_otp: OtpLine->()): boolean; override;
     begin
       Result := false;
       var other := mki as SimpleEnumsInGroup;
@@ -595,7 +595,7 @@ type
       
     end;
     
-    public function Equals(mki: MultiKindItem<GroupKind>; l_otp: OtpLine->()): boolean; override;
+    public function EqualsMKI(mki: MultiKindItem<GroupKind>; l_otp: OtpLine->()): boolean; override;
     begin
       Result := false;
       var other := mki as ObjInfoEnumsInGroup;
@@ -697,7 +697,7 @@ type
       
     end;
     
-    public function Equals(mki: MultiKindItem<GroupKind>; l_otp: OtpLine->()): boolean; override;
+    public function EqualsMKI(mki: MultiKindItem<GroupKind>; l_otp: OtpLine->()): boolean; override;
     begin
       Result := false;
       var other := mki as PropListEnumsInGroup;
@@ -781,7 +781,7 @@ type
           exit;
         end;
         
-        Result := g1.enums.Equals(g2.enums, l_otp);
+        Result := g1.enums.EqualsMKI(g2.enums, l_otp);
         if not Result then exit;
         
         g1.castable_to := castable_to;

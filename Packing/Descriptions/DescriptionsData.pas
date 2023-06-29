@@ -265,7 +265,7 @@ begin
 //    l := l;
   var ind := l.IndexOf(separator);
   if ind=-1 then exit;
-  if l.Contains('class;') then exit;
+  if 'class;' in l then exit;
   
   var def := l.Substring(ind+separator.Length);
   var ind2 := def.IndexOf('(');
@@ -301,7 +301,7 @@ begin
   
   var name := l.Substring(ind.Value, ind2.Value-ind.Value).Trim;
   if name.ContainsSpaced('operator') then exit;
-  if name.Contains('.') then exit; // Явные реализации интерфейсов
+  if '.' in name then exit; // Явные реализации интерфейсов
   
   Result := new CommentableMethod(t, name,
     GetArgs(l, ind2.Value, '(', ')')
@@ -338,7 +338,7 @@ begin
   if ind2=nil then raise new System.InvalidOperationException(l);
   
   var name := l.Substring(ind.Value, ind2.Value-ind.Value).Trim;
-  if name.Contains('.') then exit; // явные реализации интерфейсов
+  if '.' in name then exit; // явные реализации интерфейсов
   
   Result := new CommentableProp(t, name,
     GetArgs(l, ind2.Value, '[', ']')
@@ -442,11 +442,11 @@ begin
     var l := enmr.Current;
     
     if not start_checking then
-      if l.Contains('interface') then
+      if 'interface' in l then
         start_checking := true else
         continue;
     
-    if not end_checking and l.Contains('implementation') then end_checking := true;
+    if not end_checking and ('implementation' in l) then end_checking := true;
     if end_checking then continue;
     
     if CommentableType.Parse(l) is CommentableType(var t) then

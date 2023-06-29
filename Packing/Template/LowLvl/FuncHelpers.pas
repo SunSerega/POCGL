@@ -4,8 +4,8 @@
 
 uses System;
 
-uses '..\..\..\Utils\AOtp';
-uses '..\..\..\Utils\CodeGen';
+uses '../../../Utils/AOtp';
+uses '../../../Utils/CodeGen';
 
 uses BinUtils;
 uses ChoiceSets;

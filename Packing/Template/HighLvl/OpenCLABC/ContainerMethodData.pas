@@ -1,8 +1,8 @@
 ﻿unit ContainerMethodData;
 
-uses '..\..\..\..\Utils\CodeGen';
-uses '..\..\..\..\POCGL_Utils';
-uses '..\..\..\..\Utils\Fixers';
+uses '../../../../Utils/CodeGen';
+uses '../../../../POCGL_Utils';
+uses '../../../../Utils/Fixers';
 
 {$string_nullbased+}
 
@@ -402,7 +402,7 @@ type
     begin
       self.t := t;
       
-      var dir := GetFullPathRTA($'ContainerMethods\{MakeOtpFileName(t)}');
+      var dir := GetFullPathRTA($'ContainerMethods/{MakeOtpFileName(t)}');
       System.IO.Directory.CreateDirectory(dir);
       
       self.res_IIn := new FileWriter(GetFullPath('Implicit.Interface.template',       dir));

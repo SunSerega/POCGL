@@ -2,14 +2,14 @@
 
 uses System;
 
-uses '..\..\..\POCGL_Utils';
-uses '..\..\..\Utils\AOtp';
+uses '../../../POCGL_Utils';
+uses '../../../Utils/AOtp';
 
 uses BinUtils;
 
-var log := new FileLogger(GetFullPathRTA('Log\Essentials.log')) +
-           new FileLogger(GetFullPathRTA('Log\Essentials (Timed).log'), true);
-var log_unused := new FileLogger(GetFullPathRTA('Log\Unused.log'));
+var log := new FileLogger(GetFullPathRTA('Log/Essentials.log')) +
+           new FileLogger(GetFullPathRTA('Log/Essentials (Timed).log'), true);
+var log_unused := new FileLogger(GetFullPathRTA('Log/Unused.log'));
 
 type
   

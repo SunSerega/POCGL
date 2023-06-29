@@ -1,7 +1,7 @@
 ﻿unit NamedItems;
 
-uses '..\..\Utils\AOtp';
-uses '..\..\POCGL_Utils';
+uses '../../Utils/AOtp';
+uses '../../POCGL_Utils';
 
 uses System;
 
@@ -457,11 +457,11 @@ type
     
     protected function GetKind: TKind; abstract;
     
-    public function Equals(other: MultiKindItem<TKind>; l_otp: OtpLine->()): boolean; abstract;
+    public function EqualsMKI(other: MultiKindItem<TKind>; l_otp: OtpLine->()): boolean; abstract;
     public static function operator=(mk1,mk2: MultiKindItem<TKind>) :=
       ReferenceEquals(mk1,mk2) or (
         not ReferenceEquals(mk1, nil)
-        and mk1.Equals(mk2, l->begin end)
+        and mk1.EqualsMKI(mk2, l->begin end)
       );
     public static function operator<>(mk1,mk2: MultiKindItem<TKind>) := not(mk1=mk2);
     public function Equals(obj: object): boolean; override :=

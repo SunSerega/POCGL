@@ -3,6 +3,6 @@
 
 
 
-start PackAll.exe "Stages= Reference + Dummy+OpenCL+OpenGL + Compile + Test + Release"
+start PackAll.exe "Stages= Reference + Dummy+OpenCL+OpenGL + Compile + Test + Release" %*
 
 

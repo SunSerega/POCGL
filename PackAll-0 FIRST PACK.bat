@@ -1,6 +1,8 @@
 ﻿@setlocal enableextensions
 @cd /d "%~dp0"
 
+call DeleteAllTemp.bat NoPause
+
 
 
 IF NOT EXIST "PackAll.exe" (
@@ -8,6 +10,6 @@ IF NOT EXIST "PackAll.exe" (
 	DEL "PackAll.pdb"
 )
 
-start PackAll.exe "Stages= FirstPack + Reference + Dummy + OpenCL+OpenCLABC + OpenGL+OpenGLABC + Compile + Test + Release"
+start PackAll.exe "Stages= FirstPack + Reference + Dummy + OpenCL+OpenCLABC + OpenGL+OpenGLABC + Compile + Test + Release" %*
 
 

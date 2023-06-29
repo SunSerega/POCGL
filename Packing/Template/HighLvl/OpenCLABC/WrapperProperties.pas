@@ -1,11 +1,11 @@
 ﻿uses System;
 
-uses '..\..\..\..\POCGL_Utils';
-uses '..\..\..\..\Utils\AOtp';
-uses '..\..\..\..\Utils\Fixers';
-uses '..\..\..\..\Utils\CodeGen';
+uses '../../../../POCGL_Utils';
+uses '../../../../Utils/AOtp';
+uses '../../../../Utils/Fixers';
+uses '../../../../Utils/CodeGen';
 
-uses '..\..\Common\PackingUtils';
+uses '../../Common/PackingUtils';
 
 var log := new FileLogger(GetFullPathRTA('WrapperProperties.log'));
 
@@ -31,7 +31,7 @@ type
     
     public static procedure InitAll;
     begin
-      var ett_log_fname := GetFullPathRTA('..\..\LowLvl\OpenCL\Log\All EnumToTypeBinding''s.log');
+      var ett_log_fname := GetFullPathRTA('../../LowLvl/OpenCL/Log/All EnumToTypeBinding''s.log');
       foreach var (func_name, lines1) in FixerUtils.ReadBlocks(ett_log_fname, nil) do
       begin
         var ett := new Dictionary<string, string>;
@@ -179,7 +179,7 @@ type
     private constructor := raise new InvalidOperationException;
     
     public static procedure InitAll :=
-      foreach var fname in EnumerateFiles(GetFullPathRTA('!Def\WrapperProperties'), '*.dat') do
+      foreach var fname in EnumerateFiles(GetFullPathRTA('!Def/WrapperProperties'), '*.dat') do
       begin
         var name := System.IO.Path.GetFileNameWithoutExtension(fname);
         if '#' in name then name := name.Remove(0, name.IndexOf('#')+1);

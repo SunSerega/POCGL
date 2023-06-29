@@ -1,6 +1,6 @@
-﻿uses '..\..\..\..\POCGL_Utils';
+﻿uses '../../../../POCGL_Utils';
 
-uses '..\Essentials';
+uses '../Essentials';
 
 begin
   try

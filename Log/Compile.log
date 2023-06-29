@@ -1,6 +1,6 @@
-﻿Compiling "Modules.Packed\Dummy.pas"
+﻿Compiling "Modules.Packed/Dummy.pas"
 Compiling: OK
-Compiling "Modules.Packed\OpenCLABC.pas"
+Compiling "Modules.Packed/OpenCLABC.pas"
 Compiling: OK
-Compiling "Modules.Packed\OpenGLABC.pas"
+Compiling "Modules.Packed/OpenGLABC.pas"
 Compiling: OK

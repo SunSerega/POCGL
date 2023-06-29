@@ -1,17 +1,23 @@
 ﻿
 // АРГУМЕНТЫ КОМАНДНОЙ СТРОКИ:
 // 
-// - "Stages=...+...+..." | запускает только указанные стадии упаковки
-//   - "FirstPack"  - Датаскрапинг данных о исходных модулях. Единственная по умолчанию выключенная стадия
-//   - "Reference"  - Упаковка справок
-//   - "Dummy"      - Упаковка модуля Dummy.pas (тест кодогенерации)
-//   - "OpenCL"     - Упаковка модуля OpenCL.pas
-//   - "OpenCLABC"  - Упаковка модуля OpenCLABC.pas
-//   - "OpenGL"     - Упаковка модуля OpenGL.pas
-//   - "OpenGLABC"  - Упаковка модуля OpenGLABC.pas
-//   - "Compile"    - Компиляция всех упакованных модулей
-//   - "Test"       - Тестирование (то же что запуск "Tests\Tester.exe" напрямую, но с указанными модулями)
-//   - "Release"    - Создание и наполнение папки Release, а так же копирование чего надо в ProgramFiles
+// - "PasCompPath=path\PABCNETC\pabcnetcclear.exe"
+// === Использует указанный компилятор для .pas файлов
+// === Если не указать - используется "C:\Program Files (x86)\PascalABC.NET\pabcnetcclear.exe"
+// === Можно указать несколько, будет использован первый существующий .exe файл компилятора
+// 
+// - "Stages=...+...+..."
+// === Запускает только указанные стадии упаковки
+//   - "FirstPack"  | Датаскрапинг данных о исходных модулях. Единственная по умолчанию выключенная стадия
+//   - "Reference"  | Упаковка справок
+//   - "Dummy"      | Упаковка модуля Dummy.pas (тест кодогенерации)
+//   - "OpenCL"     | Упаковка модуля OpenCL.pas
+//   - "OpenCLABC"  | Упаковка модуля OpenCLABC.pas
+//   - "OpenGL"     | Упаковка модуля OpenGL.pas
+//   - "OpenGLABC"  | Упаковка модуля OpenGLABC.pas
+//   - "Compile"    | Компиляция всех упакованных модулей
+//   - "Test"       | Тестирование (то же что запуск "Tests\Tester.exe" напрямую, но с указанными модулями)
+//   - "Release"    | Создание и наполнение папки Release, а так же копирование чего надо в ProgramFiles
 // === К примеру: "Stages= OpenCLABC + Compile + Test + Release"
 // === Лишние пробелы по краям имён стадий допускаются, но "Stages=" должно быть слитно и без пробелов в начале
 // 
@@ -20,10 +26,10 @@ uses System.Threading;
 uses System.Threading.Tasks;
 uses System.IO;
 
-uses 'Utils\AOtp';
-uses 'Utils\Timers';
-uses 'Utils\ATask';
-uses 'Utils\PathUtils';
+uses 'Utils/AOtp';
+uses 'Utils/Timers';
+uses 'Utils/ATask';
+uses 'Utils/PathUtils';
 
 {$region SpecialNames}
 
@@ -64,14 +70,22 @@ var AllStages := HSet(
   {$region Base}
   
   PackingStage = abstract class
-    id, description, log_name: string;
-    log: FileLogger;
+    protected id, description, log_name: string;
+    private log: FileLogger;
     
-    static CurrentStages: HashSet<string>;
-    static function ModuleStages := AllModules.Intersect(CurrentStages);
-    static function IsPackingAllModules := ModuleStages.Count in |0,AllModules.Count|;
+    protected const lk_console_only           = 'console only';
+    protected const lk_pack_stage_unspecific  = 'pack stage unspecific';
+    static constructor;
+    begin
+      FileLogger.RegisterGenerallyBadKind(lk_console_only);
+      FileLogger.RegisterGenerallyBadKind(lk_pack_stage_unspecific);
+    end;
     
-    static function TitleTask(title: string; decor: char := '='): AsyncTask;
+    public static CurrentStages: HashSet<string>;
+    public static function ModuleStages := AllModules.Intersect(CurrentStages);
+    public static function IsPackingAllModules := ModuleStages.Count in |0,AllModules.Count|;
+    
+    public static function TitleTask(title: string; decor: char := '='): AsyncTask;
     begin
       var c := 80-title.Length;
       var c2 := c div 2;
@@ -88,23 +102,23 @@ var AllStages := HSet(
       Result := ProcTask(()->Otp(full_title));
     end;
     
-    constructor(name: string);
+    protected constructor(name: string);
     begin
       self.id := name;
       self.description := name;
       self.log_name := name;
     end;
-    constructor := raise new System.InvalidOperationException;
+    private constructor := raise new System.InvalidOperationException;
     
-    function MakeTask: AsyncTask;
+    public function MakeTask: AsyncTask;
     begin
-      if (id<>nil) and not CurrentStages.Contains(id) then exit;
+      if (id<>nil) and (id not in CurrentStages) then exit;
       Result := MakeCoreTask;
       if Result=nil then exit;
       
       if self.log_name<>nil then
       begin
-        self.log := new FileLogger($'Log\{log_name}.log', false, true);
+        self.log := new FileLogger($'Log/{log_name}.log', false, OtpKind.Empty, new OtpKind(lk_console_only, lk_pack_stage_unspecific, AsyncTaskProcessExec.lk_exec_task_pre_compile));
         Result := new AsyncTaskOtpHandler(Result, self.log.Otp) + ProcTask(self.log.Close);
       end;
       
@@ -112,7 +126,7 @@ var AllStages := HSet(
         Result := TitleTask(self.description) + Result;
       
     end;
-    function MakeCoreTask: AsyncTask; abstract;
+    protected function MakeCoreTask: AsyncTask; abstract;
     
   end;
   
@@ -122,13 +136,13 @@ var AllStages := HSet(
   
   FirstPackStage = sealed class(PackingStage)
     
-    constructor;
+    public constructor;
     begin
       inherited Create(FirstPackStr);
       self.description := 'First Pack';
     end;
     
-    function MakeCoreTask: AsyncTask; override;
+    protected function MakeCoreTask: AsyncTask; override;
     begin
       
       {$region UpdateReps}
@@ -137,7 +151,7 @@ var AllStages := HSet(
         TitleTask('Update Reps', '~')
         +
         
-        ExecTask('DataScraping\Reps\PullReps.pas', 'SubReps Update')
+        ExecTask('DataScraping/Reps/PullReps.pas', 'SubReps Update')
         
       ;
       
@@ -149,7 +163,7 @@ var AllStages := HSet(
         TitleTask('Scrap XML', '~') +
         
         |'Dummy','OpenCL','OpenGL'|
-        .Select(id->ExecTask($'DataScraping\XML\{id}\ScrapXML.pas', $'ScrapXML[{id}]'))
+        .Select(id->ExecTask($'DataScraping/XML/{id}/ScrapXML.pas', $'ScrapXML[{id}]'))
         .CombineAsyncTask
         
       ;
@@ -170,14 +184,14 @@ var AllStages := HSet(
   
   ReferenceStage = sealed class(PackingStage)
     
-    constructor;
+    public constructor;
     begin
       inherited Create(ReferenceStr);
       self.description := 'References';
     end;
     
-    function MakeCoreTask: AsyncTask; override :=
-      ExecTask('Packing\Reference\ReferencePacker.pas', 'ReferencePacker');
+    protected function MakeCoreTask: AsyncTask; override :=
+      ExecTask('Packing/Reference/ReferencePacker.pas', 'ReferencePacker');
     
   end;
   
@@ -187,8 +201,8 @@ var AllStages := HSet(
   
   ModulePackingStage = abstract class(PackingStage)
     
-    static module_pack_evs := new Dictionary<string, ManualResetEvent>;
-    static function GetModulePackEv(module_name: string): ManualResetEvent;
+    private static module_pack_evs := new Dictionary<string, ManualResetEvent>;
+    public static function GetModulePackEv(module_name: string): ManualResetEvent;
     begin
       lock module_pack_evs do
         if not module_pack_evs.TryGetValue(module_name, Result) then
@@ -198,28 +212,28 @@ var AllStages := HSet(
         end;
     end;
     
-    constructor(module_name: string) :=
+    public constructor(module_name: string) :=
       inherited Create(module_name);
     
-    function ModuleLvl: string; abstract;
-    function MakeCoreTask: AsyncTask; override :=
+    protected function ModuleLvl: string; abstract;
+    protected function MakeCoreTask: AsyncTask; override :=
       ProcTask(()->Directory.CreateDirectory('Modules.Packed'))
     +
-      ExecTask('Packing\Template\Pack Template.pas', $'Template[{id}]', $'nick={id}', $'dir={ModuleLvl}', $'"inp_fname=Modules\{id}.pas"', $'"otp_fname=Modules.Packed\{id}.pas"')
+      ExecTask('Packing/Template/Pack Template.pas', $'Template[{id}]', $'nick={id}', $'dir={ModuleLvl}', $'"inp_fname=Modules/{id}.pas"', $'"otp_fname=Modules.Packed/{id}.pas"')
     +
-      ExecTask('Packing\Descriptions\PackDescriptions.pas', $'Descriptions[{id}]', $'nick={id}', $'"fname=Modules.Packed\{id}.pas"')
+      ExecTask('Packing/Descriptions/PackDescriptions.pas', $'Descriptions[{id}]', $'nick={id}', $'"fname=Modules.Packed/{id}.pas"')
     +
       SetEvTask(GetModulePackEv(self.id));
     
   end;
   LLModuleStage = sealed class(ModulePackingStage)
     
-    function ModuleLvl: string; override := 'LowLvl';
+    protected function ModuleLvl: string; override := 'LowLvl';
     
   end;
   HLModuleStage = sealed class(ModulePackingStage)
     
-    function ModuleLvl: string; override := 'HighLvl';
+    protected function ModuleLvl: string; override := 'HighLvl';
     
   end;
   
@@ -229,26 +243,26 @@ var AllStages := HSet(
   
   CompileStage = sealed class(PackingStage)
     
-    constructor;
+    public constructor;
     begin
       inherited Create(CompileStr);
       self.description := 'Compiling';
       if not IsPackingAllModules then log_name := nil;
     end;
     
-    function MakeModuleCompileTask(mn: string): AsyncTask;
+    private function MakeModuleCompileTask(mn: string): AsyncTask;
     begin
-      if CurrentStages.Contains(mn      ) then Result += EventTask(ModulePackingStage.GetModulePackEv(mn));
-      if CurrentStages.Contains(mn+'ABC') then Result += EventTask(ModulePackingStage.GetModulePackEv(mn+'ABC'));
+      if mn       in CurrentStages then Result += EventTask(ModulePackingStage.GetModulePackEv(mn));
+      if mn+'ABC' in CurrentStages then Result += EventTask(ModulePackingStage.GetModulePackEv(mn+'ABC'));
       
-      if CurrentStages.Contains(mn+'ABC') then
-        Result += CompTask($'Modules.Packed\{mn}ABC.pas') else
-      if CurrentStages.Contains(mn) then
-        Result += CompTask($'Modules.Packed\{mn}.pas');
+      if mn+'ABC' in CurrentStages then
+        Result += CompTask($'Modules.Packed/{mn}ABC.pas') else
+      if mn in CurrentStages then
+        Result += CompTask($'Modules.Packed/{mn}.pas');
       
     end;
     
-    function MakeCoreTask: AsyncTask; override :=
+    protected function MakeCoreTask: AsyncTask; override :=
       AllLLModules.Select(MakeModuleCompileTask).CombineAsyncTask;
     
   end;
@@ -258,17 +272,19 @@ var AllStages := HSet(
   {$region Test}
   
   TestStage = sealed class(PackingStage)
-    module_stages_str := ModuleStages.JoinToString(' + ');
+    private module_stages_str := ModuleStages.JoinToString(' + ');
     
-    constructor;
+    public constructor;
     begin
       inherited Create(TestStr);
       self.description := 'Testing';
       if not IsPackingAllModules then log_name := nil;
     end;
     
-    function MakeCoreTask: AsyncTask; override :=
-      ExecTask('Tests\Tester.pas', 'Tester', $'"Modules={module_stages_str}"', 'AutoUpdate=true');
+    protected function MakeCoreTask: AsyncTask; override :=
+      CompTask('Utils/Testing/TestExecutor.pas') +
+      CompTask('Tests/Tester.pas') +
+      ExecTask('Tests/Tester.exe', 'Tester', $'"Modules={module_stages_str}"', 'AutoUpdate=true');
     
   end;
   
@@ -278,13 +294,13 @@ var AllStages := HSet(
   
   ReleaseStage = sealed class(PackingStage)
     
-    constructor;
+    public constructor;
     begin
       inherited Create(ReleaseStr);
       if not IsPackingAllModules then log_name := nil;
     end;
     
-    function MakeCoreTask: AsyncTask; override;
+    protected function MakeCoreTask: AsyncTask; override;
     begin
       
       {$region Clear}
@@ -312,46 +328,47 @@ var AllStages := HSet(
               mns += mn;
           mns.Remove(DummyStr);
           
-          var pf_dir := 'C:\Program Files (x86)\PascalABC.NET';
+          var pf_dir := 'C:/Program Files (x86)/PascalABC.NET';
           var copy_to_pf := Directory.Exists(pf_dir);
-          if not copy_to_pf then Otp($'WARNING: Dir [{pf_dir}] not found, skiping pf release copy');
+          if not copy_to_pf then
+            Otp($'WARNING: Dir [{pf_dir}] not found, skiping pf release copy', |lk_console_only|);
           
           foreach var mn in mns do
           begin
-            var org_fname :=      $'Modules.Packed\{mn}.pas';
-            var release_fname :=  $'Release\bin\Lib\{mn}.pas';
-            var pf_fname :=       $'{pf_dir}\LibSource\{mn}.pas';
+            var org_fname :=      $'Modules.Packed/{mn}.pas';
+            var release_fname :=  $'Release/bin/Lib/{mn}.pas';
+            var pf_fname :=       $'{pf_dir}/LibSource/{mn}.pas';
             Otp($'Packing {org_fname}');
             
             System.IO.Directory.CreateDirectory(Path.GetDirectoryName(release_fname));
             System.IO.File.Copy( org_fname, release_fname );
             if copy_to_pf then
             try
-              foreach var old_fname in EnumerateAllFiles($'{pf_dir}\LibSource', $'{mn}.pas') do
+              foreach var old_fname in EnumerateAllFiles($'{pf_dir}/LibSource', $'{mn}.pas') do
                 System.IO.File.Delete(old_fname);
               System.IO.Directory.CreateDirectory(Path.GetDirectoryName(pf_fname));
               System.IO.File.Copy( org_fname, pf_fname, true );
             except
               on System.UnauthorizedAccessException do
-                Otp(new OtpLine($'WARNING: Not enough rights to copy [{org_fname}] to [{pf_dir}\LibSource]', true));
+                Otp($'WARNING: Not enough rights to copy [{org_fname}] to [{pf_dir}/LibSource]', |lk_console_only|);
             end;
           end;
           
-          if copy_to_pf and (PackingStage.CurrentStages.Contains(CompileStr) or all_modules) then
+          if copy_to_pf and ((CompileStr in PackingStage.CurrentStages) or all_modules) then
             foreach var mn in mns do
             begin
-              var org_fname := $'Modules.Packed\{mn}.pcu';
-              var pf_fname := $'{pf_dir}\Lib\{mn}.pcu';
+              var org_fname := $'Modules.Packed/{mn}.pcu';
+              var pf_fname := $'{pf_dir}/Lib/{mn}.pcu';
               
               if FileExists(org_fname) then
               try
-                foreach var old_fname in EnumerateAllFiles($'{pf_dir}\Lib', $'{mn}.pcu') do
+                foreach var old_fname in EnumerateAllFiles($'{pf_dir}/Lib', $'{mn}.pcu') do
                   System.IO.File.Delete(old_fname);
                 System.IO.Directory.CreateDirectory(Path.GetDirectoryName(pf_fname));
                 System.IO.File.Copy( org_fname, pf_fname, true );
               except
                 on System.UnauthorizedAccessException do
-                  Otp(new OtpLine($'WARNING: Not enough rights to copy [{org_fname}] to [{pf_dir}\Lib]', true));
+                  Otp($'WARNING: Not enough rights to copy [{org_fname}] to [{pf_dir}/Lib]', |lk_console_only|);
               end else
                 Otp($'WARNING: {org_fname} not found!');
               
@@ -382,7 +399,8 @@ var AllStages := HSet(
           );
           
           System.IO.Directory.EnumerateFiles('Samples', '*.*', System.IO.SearchOption.AllDirectories)
-          .Where(fname->not AllModules.Contains(Path.GetFileNameWithoutExtension(fname)))
+          .Select(fname->fname.Replace('\','/'))
+          .Where(fname->Path.GetFileNameWithoutExtension(fname) not in AllModules)
           .ForEach(fname->
           begin
             var ext := Path.GetExtension(fname);
@@ -390,7 +408,7 @@ var AllStages := HSet(
             if ext not in AllowedExtensions then
               Otp('WARNING: Sample file with unknown extension:');
             Otp($'Packing sample file "{fname}"');
-            var res_fname := GetFullPath(GetRelativePath(fname, 'Samples'), 'Release\InstallerSamples\StandardUnits\OpenGL и OpenCL');
+            var res_fname := GetFullPath(GetRelativePath(fname, 'Samples'), 'Release/InstallerSamples/StandardUnits/OpenGL и OpenCL');
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(res_fname));
             System.IO.File.Copy(fname, res_fname);
             c += 1;
@@ -424,6 +442,10 @@ begin
   try
     
     {$region Load}
+    
+    FileLogger.RegisterGenerallyBadKind(PackingStage.lk_console_only);
+    FileLogger.RegisterGenerallyExpKind(PackingStage.lk_pack_stage_unspecific);
+    FileLogger.RegisterGenerallyExpKind(AsyncTaskProcessExec.lk_exec_task_pre_compile);
     
     Logger.main += new FileLogger('LastPack.log');
     Logger.main += new FileLogger('LastPack (Timed).log', true);
@@ -471,7 +493,7 @@ begin
     
     foreach var fname in |{'*.pcu',}'*.pdb'|.SelectMany(p->Directory.EnumerateFiles(GetCurrentDir, p, SearchOption.AllDirectories)) do
     begin
-      if skip_pcu.Contains(Path.GetFileNameWithoutExtension(fname)) then continue;
+      if Path.GetFileNameWithoutExtension(fname) in skip_pcu then continue;
       try
         System.IO.File.Delete(fname);
       except

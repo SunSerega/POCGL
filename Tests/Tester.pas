@@ -1,10 +1,10 @@
-﻿uses POCGL_Utils in '..\POCGL_Utils';
+﻿uses '../POCGL_Utils';
 
-uses AOtp         in '..\Utils\AOtp';
-uses ATask        in '..\Utils\ATask';
-uses CLArgs       in '..\Utils\CLArgs';
-uses SubExecuters in '..\Utils\SubExecuters';
-uses Testing      in '..\Utils\Testing\Testing';
+uses '../Utils/AOtp';
+uses '../Utils/ATask';
+uses '../Utils/CLArgs';
+uses '../Utils/SubExecuters';
+uses '../Utils/Testing/Testing';
 
 {$string_nullbased+}
 
@@ -102,6 +102,8 @@ type
     
     {$region global testing info}
     
+    static lk_pack_stage_unspecific := new OtpKind('pack stage unspecific');
+    
     static valid_modules := HSet('Dummy', 'OpenCL','OpenCLABC', 'OpenGL','OpenGLABC');
     static allowed_modules := new HashSet<string>(valid_modules.Count);
     
@@ -169,19 +171,19 @@ type
     static procedure MakeDebugPCU;
     begin
       
-      System.IO.Directory.CreateDirectory('Tests\DebugPCU');
+      System.IO.Directory.CreateDirectory('Tests/DebugPCU');
       var used_units := allowed_modules.ToHashSet;
       used_units.UnionWith(valid_modules.Where(u->u+'ABC' in allowed_modules));
       
       foreach var mn in used_units do
-        System.IO.File.Copy($'Modules.Packed\{mn}.pas', $'Tests\DebugPCU\{mn}.pas', true);
+        System.IO.File.Copy($'Modules.Packed/{mn}.pas', $'Tests/DebugPCU/{mn}.pas', true);
       used_units
-        .Where(mn->not used_units.Contains(mn+'ABC'))
-        .Select(mn->CompTask($'Tests\DebugPCU\{mn}.pas', false, '/Debug:1 /Define:ForceMaxDebug'))
+        .Where(mn->mn+'ABC' not in used_units)
+        .Select(mn->CompTask($'Tests/DebugPCU/{mn}.pas', nil, '/Debug:1 /Define:ForceMaxDebug'))
         .CombineAsyncTask
       .SyncExec;
       foreach var mn in used_units do
-        System.IO.File.Delete($'Tests\DebugPCU\{mn}.pas');
+        System.IO.File.Delete($'Tests/DebugPCU/{mn}.pas');
       
     end;
     
@@ -285,8 +287,8 @@ type
         if t.all_settings.ContainsKey('#SkipTest') then continue;
         
         t.req_modules := t.ExtractSettingStr('#ReqModules', nil)?.ToWords('+');
-        if (t.req_modules=nil) or t.req_modules.Any(mn->not valid_modules.Contains(mn)) then t.FindReqModules;
-        if not t.req_modules.All(m->allowed_modules.Contains(m)) then continue;
+        if (t.req_modules=nil) or t.req_modules.Any(mn->mn not in valid_modules) then t.FindReqModules;
+        if not t.req_modules.All(m->m in allowed_modules) then continue;
         
         all_loaded += t;
         
@@ -345,13 +347,15 @@ type
       all_loaded.Where(t->(t.req_modules<>nil) and t.test_comp)
       .Select(t->ProcTask(()->
       try
-        var fwoe := System.IO.Path.ChangeExtension(t.pas_fname, nil).Replace('error','errоr');
+        var fwoe := GetRelativePath(
+          System.IO.Path.ChangeExtension(t.pas_fname, nil).Replace('error','errоr').Replace('\','/')
+        );
         
         var comp_err: string := nil;
         CompilePasFile(t.pas_fname,
           l->Otp(l.ConvStr(s->s.Replace('error','errоr'))),
           err->(comp_err := err),
-          false, '/Debug:1', GetFullPath('Tests\DebugPCU')
+          OtpKind.Empty, '/Debug:1', GetFullPath('Tests/DebugPCU')
         );
         
         if comp_err<>nil then
@@ -365,7 +369,7 @@ type
                 t.all_settings['#ExpErr'] := comp_err;
                 t.used_settings += '#ExpErr';
                 t.resave_settings := true;
-                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
               end;
               
               DialogResult.No: ;
@@ -381,7 +385,7 @@ type
                 t.all_settings['#ExpErr'] := comp_err;
                 t.used_settings += '#ExpErr';
                 t.resave_settings := true;
-                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
               end;
               
               DialogResult.No: ;
@@ -400,7 +404,7 @@ type
               begin
                 if not t.all_settings.Remove('#ExpErr') then raise new System.InvalidOperationException;
                 t.resave_settings := true;
-                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
               end;
               
               DialogResult.No: ;
@@ -609,7 +613,9 @@ type
     
     procedure Execute :=
     try
-      var fwoe := System.IO.Path.ChangeExtension(pas_fname, nil).Replace('error','errоr');
+      var fwoe := GetRelativePath(
+        System.IO.Path.ChangeExtension(pas_fname, nil).Replace('error','errоr').Replace('\','/')
+      );
       
       if stop_test then
       begin
@@ -620,7 +626,7 @@ type
       foreach var fname in delete_before_exec do
         if FileExists(fname) then
           System.IO.File.Delete(fname) else
-          Otp($'WARNING: [{GetRelativePath(fname)}] did not exist, but Test[{GetRelativePath(fwoe)}] asked to delete it');
+          Otp($'WARNING: [{GetRelativePath(fname)}] did not exist, but Test[{GetRelativePath(fwoe)}] asked to delete it', |'console only'|);
       
       for var test_i := 0 to self.test_exec-1 do
       begin
@@ -633,7 +639,6 @@ type
         var sn := '';
         if self.test_exec<>1 then sn += test_i;
         
-        fwoe := fwoe;
         if not string.IsNullOrWhiteSpace(err) then
         begin
           
@@ -645,7 +650,7 @@ type
                 all_settings['#ExpExecErr'+sn] := InsertAnyTextParts(err);
                 used_settings += '#ExpExecErr'+sn;
                 resave_settings := true;
-                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
               end;
               
               DialogResult.No: ;
@@ -661,7 +666,7 @@ type
                 all_settings['#ExpExecErr'+sn] := InsertAnyTextParts(err);
                 used_settings += '#ExpExecErr'+sn;
                 resave_settings := true;
-                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
               end;
               
               DialogResult.No: ;
@@ -685,7 +690,7 @@ type
               begin
                 if not all_settings.Remove('#ExpExecErr'+sn) then raise new System.InvalidOperationException;
                 resave_settings := true;
-                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
               end;
               
               DialogResult.No: ;
@@ -698,7 +703,7 @@ type
             all_settings['#ExpExecOtp'+sn] := InsertAnyTextParts(res);
             used_settings += '#ExpExecOtp'+sn;
             resave_settings := true;
-            Otp(new OtpLine($'WARNING: Settings updated for "{fwoe}.td"', true));
+            Otp($'WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
           end else
           if not exec_expected[test_i].otp.Matches(res) then
           begin
@@ -710,7 +715,7 @@ type
                 all_settings['#ExpExecOtp'+sn] := InsertAnyTextParts(res);
                 used_settings += '#ExpExecOtp'+sn;
                 resave_settings := true;
-                Otp(new OtpLine($'%WARNING: Settings updated for "{fwoe}.td"', true));
+                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
               end;
               
               DialogResult.No: ;
@@ -741,8 +746,8 @@ type
     static procedure Cleanup;
     begin
       Otp('Cleanup');
-      if System.IO.Directory.Exists('Tests\DebugPCU') then
-        System.IO.Directory.Delete('Tests\DebugPCU', true);
+      if System.IO.Directory.Exists('Tests/DebugPCU') then
+        System.IO.Directory.Delete('Tests/DebugPCU', true);
       
       foreach var t in all_loaded do
         if t.resave_settings then
@@ -753,8 +758,8 @@ type
           
           var used_settings := t.used_settings.ToHashSet;
           foreach var key in t.all_settings.Keys.Order do
-            if not used_settings.Contains(key) then
-              Otp(new OtpLine($'WARNING: Setting {key} was deleted from "{t.td_fname}"', true)) else
+            if key not in used_settings then
+              Otp($'WARNING: Setting {key} was deleted from "{t.td_fname}"', lk_pack_stage_unspecific) else
             begin
               var val := t.all_settings[key];
               sw.WriteLine;
@@ -766,7 +771,7 @@ type
           sw.WriteLine;
           sw.WriteLine;
           sw.Close;
-          Otp(new OtpLine($'WARNING: File "{t.td_fname}" updated', true));
+          Otp($'WARNING: File "{GetRelativePath(t.td_fname)}" updated', lk_pack_stage_unspecific);
         end;
       
       foreach var td_fname in unused_test_files do
@@ -792,8 +797,8 @@ begin
     TestInfo.LoadCLA;
     TestInfo.MakeDebugPCU;
     
-    TestInfo.LoadAll('Tests\Comp',  'Comp');
-    TestInfo.LoadAll('Tests\Exec',  'Comp','Exec');
+    TestInfo.LoadAll('Tests/Comp',  'Comp');
+    TestInfo.LoadAll('Tests/Exec',  'Comp','Exec');
     TestInfo.LoadAll('Samples',     'Comp');
     (*)
     TestInfo.allowed_modules += 'OpenCLABC';

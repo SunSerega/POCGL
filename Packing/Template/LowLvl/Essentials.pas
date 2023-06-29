@@ -9,7 +9,7 @@ interface
 
 uses System;
 
-uses '..\..\..\POCGL_Utils';
+uses '../../../POCGL_Utils';
 
 uses LLPackingUtils;
 
@@ -34,7 +34,7 @@ procedure PackAllItems;
 
 implementation
 
-uses '..\..\..\Utils\CodeGen';
+uses '../../../Utils/CodeGen';
 
 uses BinUtils;
 uses NamedItemHelpers;
@@ -102,9 +102,9 @@ type NamedItemLoader = sealed class(NamedItemConsumer)
   
   public constructor(unit_name: string);
   begin
-    self.br := new BinReader(System.IO.File.OpenRead(GetFullPathRTA($'..\..\..\..\DataScraping\XML\{unit_name}\funcs.bin')));
+    self.br := new BinReader(System.IO.File.OpenRead(GetFullPathRTA($'../../../../DataScraping/XML/{unit_name}/funcs.bin')));
     
-    foreach var item_dir in EnumerateDirectories(GetFullPathRTA('..\Fixers')) do
+    foreach var item_dir in EnumerateDirectories(GetFullPathRTA('../Fixers')) do
     begin
       var item_t_name := System.IO.Path.GetFileName(item_dir);
       var item_unit_dir := GetFullPath(unit_name, item_dir);

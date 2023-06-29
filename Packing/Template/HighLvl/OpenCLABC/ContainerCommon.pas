@@ -1,14 +1,14 @@
-﻿uses '..\..\..\..\POCGL_Utils';
-uses '..\..\..\..\Utils\ATask';
-uses '..\..\..\..\Utils\Fixers';
-uses '..\..\..\..\Utils\CodeGen';
+﻿uses '../../../../POCGL_Utils';
+uses '../../../../Utils/ATask';
+uses '../../../../Utils/Fixers';
+uses '../../../../Utils/CodeGen';
 
-uses '..\..\Common\PackingUtils';
+uses '../../Common/PackingUtils';
 
 begin
   try
     
-    FixerUtils.ReadBlocks(GetFullPathRTA('!Def\ContainerCommon.dat'), true).TaskForEach(\(t,lines)->
+    FixerUtils.ReadBlocks(GetFullPathRTA('!Def/ContainerCommon.dat'), true).TaskForEach(\(t,lines)->
     begin
       var generics := new List<string>;
       
@@ -21,7 +21,7 @@ begin
         else raise new System.InvalidOperationException(setting_name);
       end;
       
-      var dir := GetFullPathRTA($'ContainerCommon\{t}');
+      var dir := GetFullPathRTA($'ContainerCommon/{t}');
       System.IO.Directory.CreateDirectory(dir);
       
       var res_In := new FileWriter(GetFullPath('Interface.template',      dir));

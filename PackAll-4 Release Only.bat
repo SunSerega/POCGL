@@ -3,6 +3,6 @@
 
 
 
-start PackAll.exe "Stages=Reference+Release"
+start PackAll.exe "Stages=Reference+Release" %*
 
 

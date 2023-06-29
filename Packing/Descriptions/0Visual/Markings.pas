@@ -1,6 +1,6 @@
 ﻿unit Markings;
 
-uses Parsing  in '..\..\..\Utils\Parsing';
+uses '../../../Utils/Parsing';
 
 type
   MarksInfo = abstract class

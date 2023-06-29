@@ -1,41 +1,41 @@
 ﻿Runing Template[Dummy]
-Template[Dummy]: Compiling "Packing\Template\LowLvl\Dummy\Pack Essentials.pas"
+Template[Dummy]: Compiling "Packing/Template/LowLvl/Dummy/Pack Essentials.pas"
 Template[Dummy]: Compiling: OK
-Template[Dummy]: Runing TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading VendorSuffix items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Enum items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading LoadedBasicType items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Group items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading IdClass items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Struct items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Delegate items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Func items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Func fixers
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Feature items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Loading Extension items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Fixing Func items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping Feature items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping Extension items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging PascalBasicType items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging TypeCombo items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging Group items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging IdClass items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging Struct items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging Delegate items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging Func items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Logging Extension items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping PascalBasicType items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping TypeCombo items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping Group items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping IdClass items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping Struct items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Dumping Delegate items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: PascalBasicType: Packed 9 items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Group: Packed 2 items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Func: Packed 16 items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Feature: Packed 2 items
-Template[Dummy]: TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]: Cleanup
-Template[Dummy]: Finished runing TemplateCommand[LowLvl\Dummy\Pack Essentials.exe]
+Template[Dummy]: Runing TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading VendorSuffix items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Enum items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading LoadedBasicType items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Group items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading IdClass items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Struct items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Delegate items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Func items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Func fixers
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Feature items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Loading Extension items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Fixing Func items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping Feature items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping Extension items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging PascalBasicType items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging TypeCombo items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging Group items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging IdClass items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging Struct items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging Delegate items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging Func items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Logging Extension items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping PascalBasicType items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping TypeCombo items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping Group items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping IdClass items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping Struct items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Dumping Delegate items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: PascalBasicType: Packed 9 items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Group: Packed 2 items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Func: Packed 16 items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Feature: Packed 2 items
+Template[Dummy]: TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]: Cleanup
+Template[Dummy]: Finished runing TemplateCommand[LowLvl/Dummy/Pack Essentials.exe]
 Finished runing Template[Dummy]
 Runing Descriptions[Dummy]
 Finished runing Descriptions[Dummy]

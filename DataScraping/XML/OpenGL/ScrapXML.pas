@@ -1,14 +1,14 @@
 ﻿uses System;
 
-uses '..\..\..\Utils\AOtp';
+uses '../../../Utils/AOtp';
 
-uses '..\..\..\POCGL_Utils';
+uses '../../../POCGL_Utils';
 
-uses '..\ScrapUtils';
-uses '..\XMLUtils';
+uses '../ScrapUtils';
+uses '../XMLUtils';
 //
-uses '..\XMLItems';
-uses '..\ItemSources';
+uses '../XMLItems';
+uses '../ItemSources';
 
 var log_missing_ptype := new FileLogger(GetFullPathRTA('missing_ptype.log'));
 var log_naked_enums := new FileLogger(GetFullPathRTA('naked_enums.log'));
@@ -570,7 +570,7 @@ type
           extension_n.DiscardNodes('require');
           continue;
         end;
-        if apis.Remove('glcore') and not apis.Contains('gl') then
+        if apis.Remove('glcore') and ('gl' not in apis) then
           raise new System.InvalidOperationException(name);
         if apis.Count=0 then raise new System.InvalidOperationException(name);
         
@@ -847,7 +847,7 @@ begin
   
   if (gr_source=nil) and (self.tname in |'GLenum','GLbitfield'|) then 
     if LogCache.naked_enums.Add(func_descr) then 
-  	  log_naked_enums.Otp(func_descr); 
+      log_naked_enums.Otp(func_descr); 
   
   var arr_size := MakeParArrSize(self.len_s, par_ind);
   
@@ -1071,7 +1071,7 @@ begin
   foreach var api in api_names do
   begin
     Otp($'Parsing "{api}"');
-    var root := new XmlNode(GetFullPathRTA($'..\..\Reps\OpenGL-Registry\xml\{api}.xml'));
+    var root := new XmlNode(GetFullPathRTA($'../../Reps/OpenGL-Registry/xml/{api}.xml'));
     root.Nodes['comment'].Single.Discard;
     
     TypeHelper.InitAll(api, root.Nodes['types'].Single);

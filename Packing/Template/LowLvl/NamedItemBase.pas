@@ -2,9 +2,9 @@
 
 uses System;
 
-uses '..\..\..\POCGL_Utils';
-uses '..\..\..\Utils\AOtp';
-uses '..\..\..\Utils\CodeGen';
+uses '../../../POCGL_Utils';
+uses '../../../Utils/AOtp';
+uses '../../../Utils/CodeGen';
 
 uses LLPackingUtils;
 uses BinUtils;
@@ -86,7 +86,7 @@ type
     public static procedure LogAll;
     begin
       Otp($'Logging {ItemSmallName} items');
-      var l := new FileLogger(GetFullPathRTA($'Log\All {ItemSmallName}''s.log'));
+      var l := new FileLogger(GetFullPathRTA($'Log/All {ItemSmallName}''s.log'));
       loop 3 do l.Otp('');
       ForEachDefined(item->item.LogContents(l));
       loop 1 do l.Otp('');

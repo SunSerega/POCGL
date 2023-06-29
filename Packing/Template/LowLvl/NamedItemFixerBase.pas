@@ -2,8 +2,8 @@
 
 uses System;
 
-uses '..\..\..\POCGL_Utils';
-uses '..\..\..\Utils\Fixers';
+uses '../../../POCGL_Utils';
+uses '../../../Utils/Fixers';
 
 uses LLPackingUtils;
 uses ItemNames;

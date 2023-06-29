@@ -1,15 +1,15 @@
 ﻿unit XMLUtils;
 {$reference System.XML.dll}
 
-uses '..\..\POCGL_Utils';
+uses '../../POCGL_Utils';
 
 uses ScrapUtils;
 
 var unprocessed_xml_files: HashSet<string>;
 procedure Init(repo_name: string);
 begin
-  var path := System.IO.Path.GetFullPath(GetFullPathRTA($'..\..\Reps\{repo_name}\xml'));
-  unprocessed_xml_files := EnumerateFiles(path, '*.xml').ToHashSet;
+  var path := System.IO.Path.GetFullPath(GetFullPathRTA($'../../Reps/{repo_name}/xml'));
+  unprocessed_xml_files := EnumerateFiles(path, '*.xml').Select(fname->fname.Replace('\','/')).ToHashSet;
 end;
 
 type
@@ -50,7 +50,7 @@ type
     private static AllRoots := new Dictionary<string, XmlNode>;
     public constructor(fname: string);
     begin
-      fname := GetFullPath(fname);
+      fname := GetFullPath(fname).Replace('\','/');
       if not unprocessed_xml_files.Remove(fname) then Otp($'WARNING: File [{fname}] isn''t expected as input');
       var d := new System.Xml.XmlDocument;
       d.LoadXml(ReadAllText(fname).Replace(#13#10,#10));

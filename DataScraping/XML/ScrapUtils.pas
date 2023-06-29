@@ -1,7 +1,7 @@
 ﻿unit ScrapUtils;
 
-uses '..\..\Utils\AOtp';
-uses '..\..\POCGL_Utils';
+uses '../../Utils/AOtp';
+uses '../../POCGL_Utils';
 
 var log := new FileLogger(GetFullPathRTA('xml.log'));
 

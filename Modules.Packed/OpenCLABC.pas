@@ -262,9 +262,9 @@ unit OpenCLABC;
 // Запланированное:
 
 //TODO Папка с расширениями OpenCLABC, что то типа:
-// - uses 'OpenCLABC\GL';		  // Связь с OpenGLABC
-// - uses 'OpenCLABC\Custom';	// Пользовательские очереди
-// - uses 'OpenCLABC\Ext';		// Расширения OpenCL
+// - uses 'OpenCLABC/GL';     // Связь с OpenGLABC
+// - uses 'OpenCLABC/Custom'; // Пользовательские очереди
+// - uses 'OpenCLABC/Ext';    // Расширения OpenCL
 
 //TODO Потоко-безопастность CCQ.AddCommand
 
@@ -3332,7 +3332,7 @@ type
     {$region constructor's}
     
     private static procedure CheckMainDevice(main_dvc: CLDevice; dvc_lst: IList<CLDevice>) :=
-    if not dvc_lst.Contains(main_dvc) then raise new ArgumentException($'%Err:CLContext:WrongMainDvc%');
+      if main_dvc not in dvc_lst then raise new ArgumentException($'%Err:CLContext:WrongMainDvc%');
     
     public constructor(dvcs: IList<CLDevice>; main_dvc: CLDevice);
     begin

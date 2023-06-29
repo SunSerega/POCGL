@@ -5,7 +5,7 @@
   
   CLKernelArgGlobal = abstract partial class(CLKernelArg)
     
-    {%Global\interface%}
+    {%Global/interface%}
     
   end;
   
@@ -15,7 +15,7 @@
   
   CLKernelArgConstant = abstract partial class(CLKernelArg)
     
-    {%Constant\interface%}
+    {%Constant/interface%}
     
   end;
   
@@ -25,7 +25,7 @@
   
   CLKernelArgLocal = abstract partial class(CLKernelArg)
     
-    {%Local\interface%}
+    {%Local/interface%}
     
   end;
   
@@ -35,7 +35,7 @@
   
   CLKernelArgPrivate = abstract partial class(CLKernelArg)
     
-    {%Private\interface%}
+    {%Private/interface%}
     
   end;
   
@@ -45,7 +45,7 @@
   
   CLKernelArg = abstract partial class
     
-    {%Generic\interface%}
+    {%Generic/interface%}
     
   end;
   

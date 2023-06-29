@@ -2,8 +2,8 @@
 
 uses System;
 
-uses '..\..\..\POCGL_Utils';
-uses '..\..\..\Utils\CodeGen';
+uses '../../../POCGL_Utils';
+uses '../../../Utils/CodeGen';
 
 uses LLPackingUtils;
 

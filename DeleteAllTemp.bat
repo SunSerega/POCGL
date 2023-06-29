@@ -1,11 +1,14 @@
 
 
 
-del /S *.pdb
 del /S *.pcu
+del /S *.pdb
+del /S *.exe
+
 del /S *.log
 del /S *.log.backup
 del /S *.template
-pause
+
+if "%1" NEQ "NoPause" pause
 
 

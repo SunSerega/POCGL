@@ -1,8 +1,8 @@
-﻿uses '..\..\..\..\POCGL_Utils';
-uses '..\..\..\..\Utils\Fixers';
-uses '..\..\..\..\Utils\CodeGen';
+﻿uses '../../../../POCGL_Utils';
+uses '../../../../Utils/Fixers';
+uses '../../../../Utils/CodeGen';
 
-uses '..\..\Common\PackingUtils';
+uses '../../Common/PackingUtils';
 
 //TODO Генерация теста
 
@@ -45,7 +45,7 @@ type
     public property IsPrivate: boolean read setter_set_pars<>nil;
     public property IsGeneric: boolean read redirect_to<>nil;
     
-    public property NeedContextPar: boolean read IsGeneric and not need_ccq and not redirect_to.Contains('Private');
+    public property NeedContextPar: boolean read IsGeneric and not need_ccq and ('Private' not in redirect_to);
     
   end;
   
@@ -76,7 +76,7 @@ type
       self.n := new FileWriter(GetFullPath('interface.template', dir));
       self.m := new FileWriter(GetFullPath('implementation.template', dir));
       self.all := n*m;
-      self.t := new FileWriter(GetFullPath(tname??'All', 'Tests\Exec\CLABC\03#ToString\12#CLKernelArg'));
+      self.t := new FileWriter(GetFullPath(tname??'All', 'Tests/Exec/CLABC/03#ToString/12#CLKernelArg'));
       
       loop 3 do
       begin
@@ -108,7 +108,7 @@ type
         container.n += '    ';
         container.all += '{%';
         container.all += tname;
-        container.all += '\';
+        container.all += '/';
         container.n += 'interface';
         container.m += 'implementation';
         container.all += '%}';

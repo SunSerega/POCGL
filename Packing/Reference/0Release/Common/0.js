@@ -122,7 +122,8 @@ const on_start_folder = (folder_name, root_page)=>{
 	}
 	currently_loading_folder = res;
 	
-	if (root_folder !== res) {
+	// if .md file existed or if this is non-root folder
+	if (root_page) {
 		res.content_ref = root_page;
 		root_page.tree_obj = res;
 		document.getElementById("page-display-container-body").append(root_page);
