@@ -1,80 +1,39 @@
 
 
 
-Genral syntax of `.dat` files:
-```
-
-# StructName
-!change_type1
-%change specific syntax line 1%
-%change specific syntax line 2%
-!change_type2
-%change specific syntax%
-
-```
----
 # Change types:
 
 - `!add`
-- `!vis`
-- `!default`
-- `!comment`
+- `!cust_memb`
 
 ---
 ### !add
 
-Creates new struct (record).
+Creates new struct.
 
 Syntax:
 ```
-# AddableStruct
+# NewStructName
 !add
-x: Byte
+private	a:	Byte := 0 // comment
+		b:	Byte := 0
+		c:	Byte // comment
 *
-y: string
+public	d:	Byte
 ```
-
-`*` would be replaced with empty line
+Default visibility is `public`.\
+`*` turns into an empty line between fields.
 
 ---
-### !vis
+### !cust_memb
 
-Changes visibility of fields
+Adds special member to the struct.
 
 Syntax:
 ```
 # StructName
-!vis
-x = private
-y = internal
+!cust_memb
+public procedure ...
 ```
-
----
-### !default
-
-Sets default value of field
-
-Syntax:
-```
-# StructName
-!default
-x = 5
-y = 'abc'
-```
-
----
-### !comment
-
-Adds comment to end of field definition line
-
-Syntax:
-```
-# StructName
-!comment
-x = Поле x содержащее Byte
-y = Строка
-```
-
----
 
 

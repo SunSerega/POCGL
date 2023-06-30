@@ -1,25 +1,11 @@
 
 
 
-Genral syntax of `.dat` files:
-```
-
-# GroupName
-!change_type1
-%change specific syntax line 1%
-%change specific syntax line 2%
-!change_type2
-%change specific syntax%
-
-```
----
 # Change types:
 
 - `!add`
-- `!remove`
 - `!rename`
-- `!bitmask`
-- `!add_enum`
+- `!base`
 - `!cust_memb`
 
 ---
@@ -29,62 +15,47 @@ Creates new group.
 
 Syntax:
 ```
-# AddableGroup
+# NewGroupName
 !add
 UInt32
 true
 x=56
 y=0xAB
 ```
-First line specifies enum value type.\
+First line specifies underlying basic type.\
 Second line specifies if group is bitmask.
-
----
-### !remove
-
-Syntax:
-```
-# RemovableGroup
-!remove
-```
 
 ---
 ### !rename
 
 Syntax:
 ```
-# OldEnumName
+# OldGroupName
 !rename
-NewEnumName
+NewGroupName
 ```
 
 ---
-### !bitmask
+### !base
+
+Sets underlying basic type.\
+Errors out of basic type is already set.
 
 Syntax:
 ```
 # GroupName
-!bitmask
-True
-```
-
----
-### !add_enum
-
-Syntax:
-```
-# GroupName
-!add_enum
-val1	= 1
-val2	= 0x2
+!base
+BasicTypeName
 ```
 
 ---
 ### !cust_memb
 
+Adds special member to the group.
+
 Syntax:
 ```
-# ErrorCode
+# api::ErrorCode
 !cust_memb
 
 public procedure RaiseIfError;
@@ -94,5 +65,4 @@ end;
 
 ```
 
----
 
