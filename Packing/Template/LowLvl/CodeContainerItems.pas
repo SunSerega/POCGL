@@ -26,7 +26,7 @@ uses TypeRefering; //TODO Только для временных авто-фик
 uses EnumItems;
 uses ParData;
 
-uses NamedTypeItems; //TODO Только для костыля obj_info
+uses NamedTypeItems; //TODO Только для костыля obj_info (enum_to_type)
 
 type
   
