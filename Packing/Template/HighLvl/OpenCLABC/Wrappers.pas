@@ -13,6 +13,7 @@ type
     private operator_equ := default(string);
     private to_string_def := default(string);
     private get_hash_code_def := default(string);
+    private need_prop := true;
     private is_abstract := false;
     
     public constructor(name: string) := self.name := name;
@@ -39,33 +40,36 @@ begin
         match setting_name with
           
           nil:
-          if t.base<>nil then
-            raise new System.InvalidOperationException else
-            t.base := setting_lines.Single;
+            if t.base<>nil then
+              raise new System.InvalidOperationException else
+              t.base := setting_lines.Single;
           
           'Generic':
-          t.generics.AddRange(setting_lines);
+            t.generics.AddRange(setting_lines);
           
           'NoNative':
-          t.need_native := false;
+            t.need_native := false;
           
           'operator=':
-          if t.operator_equ<>nil then
-            raise new System.InvalidOperationException else
-            t.operator_equ := setting_lines.Single;
+            if t.operator_equ<>nil then
+              raise new System.InvalidOperationException else
+              t.operator_equ := setting_lines.Single;
           
           'ToString':
-          if t.to_string_def<>nil then
-            raise new System.InvalidOperationException else
-            t.to_string_def := setting_lines.Single;
+            if t.to_string_def<>nil then
+              raise new System.InvalidOperationException else
+              t.to_string_def := setting_lines.Single;
           
           'GetHashCode':
-          if t.get_hash_code_def<>nil then
-            raise new System.InvalidOperationException else
-            t.get_hash_code_def := setting_lines.Single;
+            if t.get_hash_code_def<>nil then
+              raise new System.InvalidOperationException else
+              t.get_hash_code_def := setting_lines.Single;
+          
+          'NoProp':
+            t.need_prop := false;
           
           'Abstract':
-          t.is_abstract := true;
+            t.is_abstract := true;
           
           else raise new System.InvalidOperationException($'#{tname}!{setting_name}');
         end;
@@ -127,7 +131,7 @@ begin
       
       {$region Properties}
       
-      if t.need_native then
+      if t.need_native and t.need_prop then
       begin
         res += '    private prop: ';
         res += t.name;

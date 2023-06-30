@@ -25,6 +25,7 @@ cl_context
 
 # CLCode
 cl_program
+!NoProp
 !Abstract
 
 # CLKernel

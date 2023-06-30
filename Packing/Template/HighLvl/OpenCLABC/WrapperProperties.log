@@ -13,6 +13,7 @@ Func [cl.GetKernelWorkGroupInfo] was not used
 Func [cl.GetLayerInfo] was not used
 Func [cl.GetPipeInfo] was not used
 Func [cl.GetProgramBuildInfo] was not used
+Func [cl.GetProgramInfo] was not used
 Func [cl.GetSamplerInfo] was not used
 Func [cl.GetImageRequirementsInfoEXT] was not used
 Func [cl.GetAcceleratorInfoINTEL] was not used

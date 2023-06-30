@@ -2620,74 +2620,6 @@ type
   
   {$endregion CLContext}
   
-  {$region CLCode}
-  
-  ///
-  CLCodeProperties = class
-    private ntv: cl_program;
-    
-    public constructor(ntv: cl_program) := self.ntv := ntv;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    private function GetSource: string;
-    begin
-      cl.GetProgramInfo_PROGRAM_SOURCE(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetIl: array of Byte;
-    begin
-      cl.GetProgramInfo_PROGRAM_IL(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetScopeGlobalCtorsPresent: clBool;
-    begin
-      cl.GetProgramInfo_PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetScopeGlobalDtorsPresent: clBool;
-    begin
-      cl.GetProgramInfo_PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetNumHostPipes: UIntPtr;
-    begin
-      cl.GetProgramInfo_PROGRAM_NUM_HOST_PIPES(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetHostPipeNames: string;
-    begin
-      cl.GetProgramInfo_PROGRAM_HOST_PIPE_NAMES(self.ntv, Result).RaiseIfError;
-    end;
-    
-    public property Source:                  string        read GetSource;
-    public property Il:                      array of Byte read GetIl;
-    public property ScopeGlobalCtorsPresent: clBool        read GetScopeGlobalCtorsPresent;
-    public property ScopeGlobalDtorsPresent: clBool        read GetScopeGlobalDtorsPresent;
-    public property NumHostPipes:            UIntPtr       read GetNumHostPipes;
-    public property HostPipeNames:           string        read GetHostPipeNames;
-    
-    private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
-      try
-        res += _ObjectToString(get_prop());
-      except
-        on e: OpenCLException do
-          res += e.Code.ToString;
-      end;
-    public procedure ToString(res: StringBuilder); virtual;
-    begin
-      res += 'Source                  = '; AddProp(res, GetSource                 ); res += #10;
-      res += 'Il                      = '; AddProp(res, GetIl                     ); res += #10;
-      res += 'ScopeGlobalCtorsPresent = '; AddProp(res, GetScopeGlobalCtorsPresent); res += #10;
-      res += 'ScopeGlobalDtorsPresent = '; AddProp(res, GetScopeGlobalDtorsPresent); res += #10;
-      res += 'NumHostPipes            = '; AddProp(res, GetNumHostPipes           ); res += #10;
-      res += 'HostPipeNames           = '; AddProp(res, GetHostPipeNames          );
-    end;
-    public function ToString: string; override;
-    begin
-      var res := new StringBuilder;
-      ToString(res);
-      Result := res.ToString;
-    end;
-    
-  end;
-  
-  {$endregion CLCode}
-  
   {$region CLMemory}
   
   ///
@@ -3615,6 +3547,8 @@ type
   
   {$region CLCode}
   
+  //TODO Компилятор сейчас не даёт сделать этот делегат анонимным
+  _GetPropValueFunc<T> = function(ntv: cl_program; var data: T): clErrorCode;
   CLCode = abstract partial class
     private ntv: cl_program;
     
@@ -3637,6 +3571,31 @@ type
     end;
     
     private constructor := raise new OpenCLABCInternalException;
+    
+    private function GetPropValue<T>(prop_f: _GetPropValueFunc<T>): T;
+    begin
+      OpenCLABCInternalException.RaiseIfError(
+        prop_f(self.ntv, Result)
+      );
+    end;
+    
+    //TODO #2899
+    private function GetPropValue2(prop_f: _GetPropValueFunc<array of byte>) := GetPropValue(prop_f);
+    
+    //TODO #634
+    private function GetPropValue3(prop_f: function(ntv: cl_program; var data: clBool; validate: boolean): clErrorCode): clBool;
+    begin
+      OpenCLABCInternalException.RaiseIfError(
+        prop_f(self.ntv, Result, false)
+      );
+    end;
+    
+    public property SourceCode:     string          read GetPropValue (cl.GetProgramInfo_PROGRAM_SOURCE);
+    public property SourceIL:       array of byte   read GetPropValue2(cl.GetProgramInfo_PROGRAM_IL);
+    public property HasGlobalInit:  clBool          read GetPropValue3(cl.GetProgramInfo_PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT);
+    public property HasGlobalFnlz:  clBool          read GetPropValue3(cl.GetProgramInfo_PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT);
+    //TODO #2461
+    public function HostPipeNames: array of string :=    GetPropValue (cl.GetProgramInfo_PROGRAM_HOST_PIPE_NAMES)?.Split(':');
     
     public procedure Dispose;
     begin
@@ -5536,14 +5495,6 @@ type
   CLCode = abstract partial class
     
     public property Native: cl_program read ntv;
-    
-    private prop: CLCodeProperties;
-    private function GetProperties: CLCodeProperties;
-    begin
-      if prop=nil then prop := new CLCodeProperties(ntv);
-      Result := prop;
-    end;
-    public property Properties: CLCodeProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLCode): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);

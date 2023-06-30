@@ -1720,6 +1720,8 @@ type
   
   {$region CLCode}
   
+  //TODO Компилятор сейчас не даёт сделать этот делегат анонимным
+  _GetPropValueFunc<T> = function(ntv: cl_program; var data: T): clErrorCode;
   CLCode = abstract partial class
     private ntv: cl_program;
     
@@ -1742,6 +1744,31 @@ type
     end;
     
     private constructor := raise new OpenCLABCInternalException;
+    
+    private function GetPropValue<T>(prop_f: _GetPropValueFunc<T>): T;
+    begin
+      OpenCLABCInternalException.RaiseIfError(
+        prop_f(self.ntv, Result)
+      );
+    end;
+    
+    //TODO #2899
+    private function GetPropValue2(prop_f: _GetPropValueFunc<array of byte>) := GetPropValue(prop_f);
+    
+    //TODO #634
+    private function GetPropValue3(prop_f: function(ntv: cl_program; var data: clBool; validate: boolean): clErrorCode): clBool;
+    begin
+      OpenCLABCInternalException.RaiseIfError(
+        prop_f(self.ntv, Result, false)
+      );
+    end;
+    
+    public property SourceCode:     string          read GetPropValue (cl.GetProgramInfo_PROGRAM_SOURCE);
+    public property SourceIL:       array of byte   read GetPropValue2(cl.GetProgramInfo_PROGRAM_IL);
+    public property HasGlobalInit:  clBool          read GetPropValue3(cl.GetProgramInfo_PROGRAM_SCOPE_GLOBAL_CTORS_PRESENT);
+    public property HasGlobalFnlz:  clBool          read GetPropValue3(cl.GetProgramInfo_PROGRAM_SCOPE_GLOBAL_DTORS_PRESENT);
+    //TODO #2461
+    public function HostPipeNames: array of string :=    GetPropValue (cl.GetProgramInfo_PROGRAM_HOST_PIPE_NAMES)?.Split(':');
     
     public procedure Dispose;
     begin

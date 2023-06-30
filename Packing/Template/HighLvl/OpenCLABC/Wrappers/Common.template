@@ -104,14 +104,6 @@
     
     public property Native: cl_program read ntv;
     
-    private prop: CLCodeProperties;
-    private function GetProperties: CLCodeProperties;
-    begin
-      if prop=nil then prop := new CLCodeProperties(ntv);
-      Result := prop;
-    end;
-    public property Properties: CLCodeProperties read GetProperties;
-    
     public static function operator=(wr1, wr2: CLCode): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLCode): boolean := false=
