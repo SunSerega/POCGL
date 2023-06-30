@@ -5800,7 +5800,7 @@ type
     public function ToString: string; override;
     begin
       var copy := self;
-      Marshal.PtrToStringAnsi(new IntPtr(@copy));
+      Result := Marshal.PtrToStringAnsi(new IntPtr(@copy));
     end;
     
     public static function operator implicit(s: string): value_ansi_string_64 := new value_ansi_string_64(s);
@@ -6065,6 +6065,29 @@ type
     begin
       self.version := version;
       self.name    := name;
+    end;
+    
+    public function ToString: string; override;
+      const v_major_bits = 10;
+      const v_minor_bits = 10;
+      const v_patch_bits = 12;
+    begin
+      var sb := new StringBuilder;
+      sb += '(';
+      
+      sb += 'v=';
+      sb.Append(version shr (v_minor_bits+v_patch_bits));
+      sb += '.';
+      sb.Append(version shr v_patch_bits and (1 shl v_minor_bits - 1));
+      sb += ':';
+      sb.Append(version and (1 shl v_patch_bits - 1));
+      
+      sb += ' name="';
+      sb += name.ToString;
+      sb += '"';
+      
+      sb += ')';
+      Result := sb.ToString;
     end;
     
   end;

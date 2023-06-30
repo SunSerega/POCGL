@@ -3365,6 +3365,10 @@ type
   Struct = sealed class(CommonDirectNamedType<Struct>)
     private fields: array of StructField?;
     
+    private custom_members := new List<array of string>;
+    public procedure AddCustomMember(lns: array of string) :=
+      custom_members += lns;
+    
     public constructor(name: ApiVendorLName; fields: array of StructField?; from_fixer: boolean);
     begin
       inherited Create(name, from_fixer);
@@ -3485,7 +3489,7 @@ type
             //TODO Не очень хорошо...
             // - Как будет NativeUtils - надо будет протестить, как быстрее
             wr += '      var copy := self;'#10;
-            wr += '      Marshal.PtrToStringAnsi(new IntPtr(@copy));'#10;
+            wr += '      Result := Marshal.PtrToStringAnsi(new IntPtr(@copy));'#10;
             wr += '    end;'#10;
             wr += '    '#10;
             
@@ -3505,6 +3509,9 @@ type
             wr += MakeWriteableName;
             wr += '): string := s.ToString;'#10;
             wr += '    '#10;
+            
+            if self.custom_members.Any then
+              raise new InvalidOperationException;
             
             wr += '  end;'#10;
             
@@ -3590,6 +3597,18 @@ type
           
           wr += '    '#10;
         end;
+        
+        {$region Custom}
+        
+        foreach var lns in self.custom_members do
+          foreach var l in lns.Append(nil) do
+          begin
+            wr += '    ';
+            wr += l;
+            wr += #10;
+          end;
+        
+        {$endregion Custom}
         
         wr += '  end;'#10;
         
@@ -3996,6 +4015,45 @@ uses EnumItems;
   
   {$endregion New}
   
+  {$region CustopMember}
+  
+  StructCustopMemberFixer = sealed class(StructFixer)
+    public member_lns: array of string;
+    
+    static constructor := RegisterLoader('cust_memb',
+      (name, data)->new StructCustopMemberFixer(name, data)
+    );
+    public constructor(name: ApiVendorLName; data: sequence of string);
+    begin
+      inherited Create(name, false);
+      
+      var res := new List<string>;
+      var skiped := new List<string>;
+      
+      foreach var l in data do
+        if not string.IsNullOrWhiteSpace(l) then
+        begin
+          res.AddRange(skiped);
+          skiped.Clear;
+          res += l;
+        end else
+        if res.Count<>0 then
+          skiped += l;
+      
+      member_lns := res.ToArray;
+    end;
+    
+    public function Apply(s: Struct): boolean; override;
+    begin
+      s.AddCustomMember( member_lns );
+      self.ReportUsed;
+      Result := false;
+    end;
+    
+  end;
+  
+  {$endregion CustopMember}
+  
   {$endregion Struct}
   
   {$region Delegate}
@@ -4050,6 +4108,7 @@ begin
     if nil=default(IdClassAdder) then;
     
     if nil=default(StructAdder) then;
+    if nil=default(StructCustopMemberFixer) then;
     
     if nil=default(DelegateNameFixer) then;
     

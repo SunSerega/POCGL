@@ -167,6 +167,7 @@ Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Fe
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Extension items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing Group items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing IdClass items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing Struct items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing Delegate items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing Func items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_WORK_GROUP_SIZE]

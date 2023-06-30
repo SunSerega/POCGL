@@ -22,6 +22,7 @@ Loading Extension items
 Loading Extension fixers canceled: No folder
 Fixing Group items
 Fixing IdClass items
+Fixing Struct items
 Fixing Delegate items
 Fixing Func items
 WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_WORK_GROUP_SIZE]

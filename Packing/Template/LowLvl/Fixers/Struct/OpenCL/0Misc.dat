@@ -1,6 +1,29 @@
 ﻿
 
 
-
+# cl::name_version
+!cust_memb
+public function ToString: string; override;
+  const v_major_bits = 10;
+  const v_minor_bits = 10;
+  const v_patch_bits = 12;
+begin
+  var sb := new StringBuilder;
+  sb += '(';
+  
+  sb += 'v=';
+  sb.Append(version shr (v_minor_bits+v_patch_bits));
+  sb += '.';
+  sb.Append(version shr v_patch_bits and (1 shl v_minor_bits - 1));
+  sb += ':';
+  sb.Append(version and (1 shl v_patch_bits - 1));
+  
+  sb += ' name="';
+  sb += name.ToString;
+  sb += '"';
+  
+  sb += ')';
+  Result := sb.ToString;
+end;
 
 
