@@ -882,6 +882,8 @@
 	Enum [cl::DEVICE_IMAGE_BASE_ADDRESS_ALIGNMENT]
 
 # clInitializeMemoryKHR (cl_khr_initialize_memory)
+	Enum [cl::CONTEXT_MEMORY_INITIALIZE_LOCAL]
+	Enum [cl::CONTEXT_MEMORY_INITIALIZE_PRIVATE]
 	Enum [cl::CONTEXT_MEMORY_INITIALIZE]
 
 # clIntegerDotProductKHR (cl_khr_integer_dot_product)

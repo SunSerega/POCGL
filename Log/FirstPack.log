@@ -46,9 +46,9 @@ ScrapXML[OpenCL]: Parsing "cl"
 ScrapXML[OpenCL]: Constructing named items
 ScrapXML[OpenCL]: Saving as binary
 ScrapXML[OpenCL]: VendorSuffix: Saved 11 items
-ScrapXML[OpenCL]: Enum: Saved 1110 items
+ScrapXML[OpenCL]: Enum: Saved 1112 items
 ScrapXML[OpenCL]: BasicType: Saved 30 items
-ScrapXML[OpenCL]: Group: Saved 118 items
+ScrapXML[OpenCL]: Group: Saved 119 items
 ScrapXML[OpenCL]: IdClass: Saved 18 items
 ScrapXML[OpenCL]: Struct: Saved 16 items
 ScrapXML[OpenCL]: Delegate: Saved 8 items

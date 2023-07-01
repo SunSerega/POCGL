@@ -529,6 +529,18 @@ end;
       
     end;
     
+    private static unreq_type_names := new HashSet<string>;
+    public static procedure ReqType(tname: string);
+    begin
+      unreq_type_names -= tname;
+      var ptr: integer;
+      TypeHelper.TypeRefFromName(tname, ptr);
+      if ptr<>0 then raise new NotImplementedException(tname);
+    end;
+    public static procedure ReportAllUnreq :=
+      foreach var tname in unreq_type_names do
+        Otp($'WARNING: <type name="{tname}"/> was not required');
+    
     public static function MakePar(name, tname, text: string; arr_size: ParArrSize): ParData;
     begin
       if arr_size <> ParArrSizeNotArray.Instance then
@@ -567,7 +579,9 @@ end;
         begin
           if type_n['requires'] <> 'CL/cl_platform.h' then
             raise new System.NotImplementedException(type_n['requires']);
-          new BasicTypeSource(type_n['name']);
+          var tname := type_n['name'];
+          unreq_type_names += tname;
+          new BasicTypeSource(tname);
         end;
         
         'define':
@@ -578,6 +592,7 @@ end;
           
           var base_t := type_n.Nodes['type'].SingleOrDefault?.Text;
           var name := type_n.Nodes['name'].Single.Text;
+          unreq_type_names += name;
           var base_ptr := type_n.Text.CountOf('*');
           
           if type_n.Text.StartsWith('typedef struct _') or (base_t='void') then
@@ -603,16 +618,24 @@ end;
         end else
         if type_n.Text.StartsWith('#define ') then
         begin
-          if not BasicTypeSource.enum_abusing_type_tag.Add(type_n.Nodes['name'].Single.Text) then
+          var tname := type_n.Nodes['name'].Single.Text;
+          unreq_type_names += tname;
+          if not BasicTypeSource.enum_abusing_type_tag.Add(tname) then
             raise new System.InvalidOperationException;
         end else
           Otp($'WARNING: Cannot parse define: {type_n.Text}');
         
         'struct':
+        begin
+          unreq_type_names += type_n['name'];
           new StructSource(type_n);
+        end;
         
         'function':
+        begin
+          unreq_type_names += type_n['name'];
           new DelegateSource(type_n);
+        end;
         
         else Otp($'WARNING: Unexpected type category [{category}]');
       end;
@@ -919,9 +942,11 @@ end;
   
   RequreNodeHelper = static class
     
-    public static function MakeRL(rns: sequence of XmlNode): RequiredList;
+    public static function MakeRL(rns: sequence of XmlNode; debug_descr: ()->string): RequiredList;
     begin
       Result := new RequiredList;
+      var used_type_names := new HashSet<string>;
+      var req_type_names := new HashSet<string>;
       
       foreach var rn in rns do
       begin
@@ -937,13 +962,15 @@ end;
           if name.EndsWith('.h') then continue;
           if name in BasicTypeSource.enum_abusing_type_tag then continue;
           
-          var ptr: integer;
-          TypeHelper.TypeRefFromName(name, ptr);
-          if ptr<>0 then raise new NotImplementedException(name);
+          TypeHelper.ReqType(name);
+          if not req_type_names.Add(name) then
+            raise new InvalidOperationException;
         end;
         {$endregion type}
         
         {$region enum}
+        if rn['group'] is string(var group) then
+          used_type_names += group;
         foreach var enum_n in rn.Nodes['enum'] do
         begin
           processed_node_types += 'enum';
@@ -954,6 +981,7 @@ end;
           var esource := EnumSource.FindOrMakeSource(EnumSource.MakeName(ename, false), nil);
 //          if esource.group_is_throw_away=true then continue;
           Result.enums += esource.GetItem;
+          used_type_names += |enum_n['followed'],enum_n['info_type'],enum_n['input_type']|.Where(tname->tname<>nil).Select(tname->tname.TrimEnd('[]*'.ToCharArray));
         end;
         if ('enum' in processed_node_types) <> (rn in GroupSource.group_nodes) then
           raise new System.InvalidOperationException($'{rn in GroupSource.group_nodes}: '+rn.Nodes['enum'].Select(n->n['name']).JoinToString);
@@ -983,6 +1011,21 @@ end;
         rn.DiscardNodes('comment');
       end;
       
+      //TODO Uncomment
+      // types defined in cl1.0 don't need to be redefined in cl1.1
+      // types like "char" don't need to be defined ever
+//      foreach var tname in used_type_names do
+//      begin
+//        if tname in req_type_names then continue;
+//        Otp($'WARNING: ({debug_descr}) Type [{tname}] was used, but not required');
+//      end;
+//      
+//      foreach var tname in req_type_names do
+//      begin
+//        if tname in used_type_names then continue;
+//        Otp($'WARNING: ({debug_descr}) Type [{tname}] was required, but not used');
+//      end;
+      
     end;
     
   end;
@@ -993,7 +1036,7 @@ end;
 
 function FeatureSource.MakeNewItem :=
   new Feature(self.Name,
-    RequreNodeHelper.MakeRL(self.rns),
+    RequreNodeHelper.MakeRL(self.rns, self.ToString),
     new RequiredList
   );
 
@@ -1003,7 +1046,7 @@ function FeatureSource.MakeNewItem :=
 
 function ExtensionSource.MakeNewItem :=
   new Extension(self.Name, self.ext_str,
-    RequreNodeHelper.MakeRL(self.rns),
+    RequreNodeHelper.MakeRL(self.rns, self.ToString),
     if dep=nil then new Extension[0] else
       |ExtensionSource.FindOrMakeItem(dep)|
   );
@@ -1046,6 +1089,8 @@ begin
     ItemSources.CreateAll;
     
     XMLItems.SaveAll;
+    //TODO Uncomment
+//    TypeHelper.ReportAllUnreq;
     
     Otp($'Done');
   except

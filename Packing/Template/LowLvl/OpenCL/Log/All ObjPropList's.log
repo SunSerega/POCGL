@@ -39,7 +39,7 @@ IntPtr
 IntPtr
 --- CONTEXT_MEMORY_INITIALIZE
 !type
-IntPtr
+clContextMemoryInitialize
 --- CONTEXT_TERMINATE
 !type
 clBool
