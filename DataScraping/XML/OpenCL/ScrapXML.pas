@@ -299,22 +299,19 @@ type
   
   {$region Delegate}
   
-  DelegateSource = sealed class(ItemSource<DelegateSource, string, Delegate>)
-//    private par_name: string;
-    private delegate_id: integer;
+  DelegateSource = sealed class(ItemSource<DelegateSource, DelegateName, Delegate>)
+    private par_ns: array of XmlNode;
     
     public static function MakeName(s: string; allow_nil: boolean) :=
       inherited MakeName&<DelegateName>(api, s, api, allow_nil, true, VendorSuffixSource.known_suffixes);
     
-    private static delegates_created := 0;
-    public constructor(text{, par_name}: string);
+    public constructor(n: XmlNode);
     begin
-      inherited Create(text);
-//      self.par_name := par_name;
-      
-      delegates_created += 1;
-      self.delegate_id := delegates_created;
-      
+      inherited Create(MakeName(n['name'], false));
+      self.par_ns := (
+        n.Nodes['proto'].Single +
+        n.Nodes['param']
+      ).ToArray;
     end;
     
     protected function MakeNewItem: Delegate; override;
@@ -511,7 +508,7 @@ end;
       var gr := GroupSource     .FindOrMakeSource(GroupSource   .MakeName(tname, true), nil);
       var cl := IdClassSource   .FindOrMakeSource(IdClassSource .MakeName(tname, true), nil);
       var s :=  StructSource    .FindOrMakeSource(StructSource  .MakeName(tname, true), nil);
-      var d := default(DelegateSource); //TODO Пока что не так - делегаты не объявлены в cl.xml
+      var d :=  DelegateSource  .FindOrMakeSource(DelegateSource.MakeName(tname, true), nil);
       if gr<>nil then bt := nil;
       
       case Ord(bt<>nil)+Ord(gr<>nil)+Ord(cl<>nil)+Ord(s<>nil)+Ord(d<>nil) of
@@ -545,18 +542,6 @@ end;
       var t := TypeRefFromName(flat_t, ptr);
       
       Result := new ParData(name, t, ptr, readonly_lvls, arr_size, nil);
-    end;
-    
-    public static function MakeDelegatePar(name, text: string): ParData;
-    begin
-      var d := DelegateSource.FindOrMakeSource(text
-        .RemoveBeg('void (CL_CALLBACK* ').TrimStart(' ')
-        .RemoveBeg(name)
-        .RemoveBeg(')(')
-        .RemoveEnd(')'),
-        text->new DelegateSource(text)
-      ).GetItem;
-      Result := new ParData(name, new TypeRef(d), 0, new integer[0], ParArrSizeNotArray.Instance, nil);
     end;
     
     public static procedure InitNode(type_n: XmlNode);
@@ -625,6 +610,9 @@ end;
         
         'struct':
           new StructSource(type_n);
+        
+        'function':
+          new DelegateSource(type_n);
         
         else Otp($'WARNING: Unexpected type category [{category}]');
       end;
@@ -841,39 +829,35 @@ end;
 
 function DelegateSource.MakeNewItem: Delegate;
 begin
-  var params_s := self.Name;
   
-  if string.IsNullOrWhiteSpace(params_s) then
-    raise new System.NotImplementedException; // no parameters, does not exist in cl.xml
-  
-  var pars :=
-    |new ParData(nil, new TypeRef(BasicTypeSource.FindOrMakeItem('void')), 0, System.Array.Empty&<integer>, ParArrSizeNotArray.Instance, nil)|
-  +
-    params_s.Split(',').ConvertAll(par_s->
+  var pars := par_ns.ConvertAll((par_n,par_i)->
+  begin
+    var par_name := if par_i=0 then nil else
+      par_n.Nodes['name'].Single.Text;
+    var text := par_n.Text;
+    
+    var len := default(ParArrSize);
+    var par_arr_str := '[]';
+    if text.EndsWith(par_arr_str) then
     begin
-      par_s := par_s.Trim;
-      
-      var len := default(ParArrSize);
-      var par_arr_str := '[]';
-      if par_s.EndsWith(par_arr_str) then
-      begin
-        len := ParArrSizeArbitrary.Instance;
-        par_s := par_s.RemoveEnd(par_arr_str);
-      end else
-        len := ParArrSizeNotArray.Instance;
-      
-      var par_name := par_s.Reverse.TakeWhile(ch->ch.IsDigit or ch.IsLetter or (ch in $'_')).Reverse.JoinToString('');
-      if par_name='' then
-        par_name := nil else
-      begin
-        if par_name.First.IsDigit then raise new System.InvalidOperationException;
-        par_s := par_s.RemoveEnd(par_name);
-      end;
-      
-      Result := TypeHelper.MakePar(par_name, nil, par_s, len);
-    end);
+      text := text.RemoveEnd(par_arr_str);
+//      len := ParArrSizeArbitrary.Instance;
+      len := ParArrSizeNotArray.Instance;
+      text := text.RemoveEnd(par_name).TrimEnd+'*';
+    end else
+    begin
+      len := ParArrSizeNotArray.Instance;
+      if par_name<>nil then
+        text := text.RemoveEnd(par_name).TrimEnd;
+    end;
+    
+    Result := TypeHelper.MakePar(par_name, par_n.Nodes['type'].Single.Text, text, len);
+  end);
   
-  Result := new Delegate(DelegateSource.MakeName($'cl_callback_{self.delegate_id}', false), pars);
+  var res_name := new DelegateName(self.Name.ApiName, self.Name.VendorSuffix,
+    self.Name.LocalName.Split('_').SelectMany(w->w.First.ToUpper+w.Skip(1)).JoinToString
+  );
+  Result := new Delegate(res_name, pars);
 end;
 
 {$endregion Delegate}
@@ -888,24 +872,18 @@ begin
     var par_name := par_n.Nodes['name'].Single.Text;
     var text := par_n.Text;
     
-    if 'CL_CALLBACK' in text then
-      Result := TypeHelper.MakeDelegatePar(par_name, text) else
+    var len := default(ParArrSize);
+    var par_arr_str := '[]';
+    if text.EndsWith(par_arr_str) then
     begin
-      
-      var len := default(ParArrSize);
-      var par_arr_str := '[]';
-      if text.EndsWith(par_arr_str) then
-      begin
-        len := ParArrSizeArbitrary.Instance;
-        text := text.RemoveEnd(par_arr_str);
-      end else
-        len := ParArrSizeNotArray.Instance;
-      
-      text := text.RemoveEnd(par_name).TrimEnd;
-      if par_i=0 then par_name := nil;
-      Result := TypeHelper.MakePar(par_name, par_n.Nodes['type'].Single.Text, text, len);
-    end;
+      len := ParArrSizeArbitrary.Instance;
+      text := text.RemoveEnd(par_arr_str);
+    end else
+      len := ParArrSizeNotArray.Instance;
     
+    text := text.RemoveEnd(par_name).TrimEnd;
+    if par_i=0 then par_name := nil;
+    Result := TypeHelper.MakePar(par_name, par_n.Nodes['type'].Single.Text, text, len);
   end);
   
   Result := new Func(self.Name, self.entry_point_name, pars, nil);

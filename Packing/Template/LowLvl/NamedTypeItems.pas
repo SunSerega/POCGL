@@ -3645,7 +3645,7 @@ type
       RegisterLoader(br->
       begin
         Result := new Delegate(new ApiVendorLName(br), false);
-        Result.pars := br.ReadArr((br,par_i)->LoadedParData.Load(br, nil, $'arg{par_i}'));
+        Result.pars := br.ReadArr((br,par_i)->LoadedParData.Load(br, par_i<>0));
       end);
       RegisterTypeKind(TRK_Delegate);
     end;

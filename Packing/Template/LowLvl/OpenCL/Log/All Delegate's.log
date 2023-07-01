@@ -15,13 +15,13 @@
 
 # clEnqueueNativeKernelCallback (cl::EnqueueNativeKernelCallback)
 	procedure
-	arg1: IntPtr
+	user_data: IntPtr
 
 # clEnqueueSVMFreeCallback (cl::EnqueueSVMFreeCallback)
 	procedure
 	queue: cl_command_queue
 	num_svm_pointers: UInt32
-	svm_pointers: array of IntPtr
+	svm_pointers: ^IntPtr
 	user_data: IntPtr
 
 # clEventCallback (cl::EventCallback)
@@ -33,6 +33,13 @@
 # clMemObjectDestructorCallback (cl::MemObjectDestructorCallback)
 	procedure
 	memobj: cl_mem
+	user_data: IntPtr
+
+# clPrintfCallbackArm (cl::PrintfCallbackArm)
+	procedure
+	buffer: string
+	len: UIntPtr
+	complete: UIntPtr
 	user_data: IntPtr
 
 # clProgramCallback (cl::ProgramCallback)

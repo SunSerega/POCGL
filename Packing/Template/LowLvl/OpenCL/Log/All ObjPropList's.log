@@ -60,7 +60,7 @@ IntPtr
 IntPtr
 --- PRINTF_CALLBACK
 !type
-IntPtr
+clPrintfCallbackArm
 --- PRINTF_BUFFERSIZE
 !type
 UIntPtr

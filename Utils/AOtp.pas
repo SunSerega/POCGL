@@ -78,7 +78,7 @@ type
   end;
   
   GeneralOtpKind = record
-    private registered := new List<string>;
+    private registered := new HashSet<string>;
     private linked := new List<GeneralOtpKind>(1);
     
     public static procedure Link(k1, k2: GeneralOtpKind);
@@ -91,9 +91,9 @@ type
     public static procedure operator+=(var k: GeneralOtpKind; otp_kind: string) :=
       lock k.registered do
       begin
-        foreach var l in k.linked do
-          if otp_kind in l.registered then
-            raise new System.InvalidOperationException;
+//        foreach var l in k.linked do
+//          if otp_kind in l.registered then
+//            raise new System.InvalidOperationException;
         k.cached_kind := OtpKind.Invalid;
         k.registered += otp_kind;
       end;
@@ -273,6 +273,7 @@ type
     private backup_sw: System.IO.StreamWriter;
     private timed: boolean;
     private req_kinds, bad_kinds: OtpKind;
+    private is_closed := false;
     
     public static nfi := new System.Globalization.NumberFormatInfo;
     public static enc := new System.Text.UTF8Encoding(true);
@@ -313,6 +314,12 @@ type
       if self.bad_kinds.kind_names.Any(k->k in l.kind) then
         exit;
       
+      if is_closed then
+      begin
+        Logger.main.OtpImpl($'WARNING: Tried to write after file close: {l}');
+        exit;
+      end;
+      
       var s := timed ? l.GetTimedStr : l.s;
       
       main_sw.WriteLine(s);
@@ -325,6 +332,11 @@ type
     
     public procedure CloseImpl; override;
     begin
+//      Write(
+//        $'[{bu_fname}] FileLogger.CloseImpl:'+#10+
+//        System.Environment.StackTrace
+//      );
+      is_closed := true;
       main_sw.Close;
       backup_sw.Close;
       System.IO.File.Delete(bu_fname);

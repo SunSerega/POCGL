@@ -172,15 +172,13 @@ type
     end;
     public constructor := exit;
     
-    public static function Load(br: BinReader; expect_name: boolean?; dummy_name: string := nil): LoadedParData;
+    public static function Load(br: BinReader; expect_name: boolean?): LoadedParData;
     begin
-      if (dummy_name<>nil) and (expect_name=true) then
-        raise new InvalidOperationException;
       
       if expect_name=nil then
         expect_name := br.ReadBoolean;
       Result._name := if expect_name.Value then
-        br.ReadString else dummy_name;
+        br.ReadString else nil;
       Result.raw_t := TypeRefOrIndex.FromBR(br);
       
       Result.raw_ptr := br.ReadInt32;

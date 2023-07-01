@@ -949,8 +949,8 @@ type
     protected procedure SaveBody(bw: BinWriter); override;
     begin
       bw.Write(pars.Count);
-      foreach var p in pars do
-        p.Save(bw, nil);
+      foreach var p in pars index par_i do
+        p.Save(bw, par_i<>0);
     end;
     
   end;

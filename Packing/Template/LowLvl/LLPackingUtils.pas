@@ -176,7 +176,7 @@ initialization
 finalization
   try
     Otp('Cleanup');
-    log.Close;
+//    log.Close;
     log_unused.Close;
   except
     on e: Exception do

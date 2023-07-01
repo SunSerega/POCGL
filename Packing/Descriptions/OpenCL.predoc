@@ -6122,12 +6122,12 @@ type
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
   ///
-  clEnqueueNativeKernelCallback = procedure(arg1: IntPtr);
+  clEnqueueNativeKernelCallback = procedure(user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]
   ///
-  clEnqueueSVMFreeCallback = procedure(queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: array of IntPtr; user_data: IntPtr);
+  clEnqueueSVMFreeCallback = procedure(queue: cl_command_queue; num_svm_pointers: UInt32; svm_pointers: ^IntPtr; user_data: IntPtr);
   
   [System.Security.SuppressUnmanagedCodeSecurity]
   [UnmanagedFunctionPointer(CallingConvention.StdCall)]

@@ -27,6 +27,7 @@ function enc := FileLogger.enc;
 
 begin
   try
+    FileLogger.RegisterGenerallyBadKind('console only');
     while not FileExists('POCGL_Utils.pas') do
       System.Environment.CurrentDirectory := System.IO.Path.GetDirectoryName(System.Environment.CurrentDirectory);
   except
