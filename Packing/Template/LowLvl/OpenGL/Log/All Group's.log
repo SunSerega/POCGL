@@ -448,8 +448,12 @@
 # glColorPointerType (gl::ColorPointerType) : UInt32
 	BYTE[$1400]
 	UNSIGNED_BYTE[$1401]
+	SHORT[$1402]
 	UNSIGNED_SHORT[$1403]
+	INT[$1404]
 	UNSIGNED_INT[$1405]
+	FLOAT[$1406]
+	DOUBLE[$140A]
 
 # glColorTableParameterPName (gl::ColorTableParameterPName) : UInt32
 	COLOR_TABLE_SCALE[$80D6]
@@ -2544,6 +2548,9 @@
 	FRAGMENT_LIGHT7[$8413]
 
 # glLightParameter (gl::LightParameter) : UInt32
+	AMBIENT[$1200]
+	DIFFUSE[$1201]
+	SPECULAR[$1202]
 	POSITION[$1203]
 	SPOT_DIRECTION[$1204]
 	SPOT_EXPONENT[$1205]
@@ -4450,12 +4457,6 @@
 	GENERIC_ACCELERATION[$2026]
 	FULL_ACCELERATION[$2027]
 
-# wglBufferRegionType (wgl::BufferRegionType) : UInt32 (Bitfield)
-	FRONT_COLOR_BUFFER_BIT[1 shl 0]
-	BACK_COLOR_BUFFER_BIT[1 shl 1]
-	DEPTH_BUFFER_BIT[1 shl 2]
-	STENCIL_BUFFER_BIT[1 shl 3]
-
 # wglColorBuffer (wgl::ColorBuffer) : Int32
 	FRONT_LEFT[$2083]
 	FRONT_RIGHT[$2084]
@@ -4482,11 +4483,6 @@
 	DIGITAL_VIDEO_CURSOR_INCLUDED[$2052]
 	DIGITAL_VIDEO_GAMMA_CORRECTED[$2053]
 
-# wglDXInteropAccessMask (wgl::DXInteropAccessMask) : UInt32 (Bitfield)
-	ACCESS_READ_ONLY[0]
-	ACCESS_READ_WRITE[1 shl 0]
-	ACCESS_WRITE_DISCARD[1 shl 1]
-
 # wglFontFormat (wgl::FontFormat) : Int32
 	FONT_LINES[0]
 	FONT_POLYGONS[$0001]
@@ -4506,9 +4502,13 @@
 	GPU_NUM_RB[$21A7]
 	GPU_NUM_SPI[$21A8]
 
-# wglImageBufferFlags (wgl::ImageBufferFlags) : UInt32 (Bitfield)
-	IMAGE_BUFFER_MIN_ACCESS[1 shl 0]
-	IMAGE_BUFFER_LOCK[1 shl 1]
+# wglObjectTypeDX (wgl::ObjectTypeDX) : UInt32
+	gl::NONE[0]
+	gl::TEXTURE_2D[$0DE1]
+	gl::TEXTURE_3D[$806F]
+	gl::TEXTURE_RECTANGLE[$84F5]
+	gl::TEXTURE_CUBE_MAP[$8513]
+	gl::RENDERBUFFER[$8D41]
 
 # wglPBufferAttribute (wgl::PBufferAttribute) : Int32
 	PBUFFER_WIDTH[$2034]
@@ -4587,7 +4587,62 @@
 	TYPE_RGBA[$202B]
 	TYPE_COLORINDEX[$202C]
 
-# wglPlane (wgl::Plane) : Int32 (Bitfield)
+# wglStereoEmitterState (wgl::StereoEmitterState) : UInt32
+	STEREO_EMITTER_ENABLE[$2055]
+	STEREO_EMITTER_DISABLE[$2056]
+	STEREO_POLARITY_NORMAL[$2057]
+	STEREO_POLARITY_INVERT[$2058]
+
+# wglSwapMethod (wgl::SwapMethod) : 
+	SWAP_EXCHANGE[$2028]
+	SWAP_COPY[$2029]
+	SWAP_UNDEFINED[$202A]
+
+# wglVideoCaptureDeviceAttribute (wgl::VideoCaptureDeviceAttribute) : Int32
+	UNIQUE_ID[$20CE]
+
+# wglVideoOutputBuffer (wgl::VideoOutputBuffer) : Int32
+	VIDEO_OUT_COLOR[$20C3]
+	VIDEO_OUT_ALPHA[$20C4]
+	VIDEO_OUT_DEPTH[$20C5]
+	VIDEO_OUT_COLOR_AND_ALPHA[$20C6]
+	VIDEO_OUT_COLOR_AND_DEPTH[$20C7]
+
+# wglVideoOutputBufferType (wgl::VideoOutputBufferType) : Int32
+	VIDEO_OUT_FRAME[$20C8]
+	VIDEO_OUT_FIELD_1[$20C9]
+	VIDEO_OUT_FIELD_2[$20CA]
+	VIDEO_OUT_STACKED_FIELDS_1_2[$20CB]
+	VIDEO_OUT_STACKED_FIELDS_2_1[$20CC]
+
+# wglWGLColorBufferMask (wgl::WGLColorBufferMask) : UInt32 (Bitfield)
+	FRONT_COLOR_BUFFER_BIT[1 shl 0]
+	BACK_COLOR_BUFFER_BIT[1 shl 1]
+	DEPTH_BUFFER_BIT[1 shl 2]
+	STENCIL_BUFFER_BIT[1 shl 3]
+
+# wglWGLContextFlagsMask (wgl::WGLContextFlagsMask) :  (Bitfield)
+	CONTEXT_DEBUG_BIT[1 shl 0]
+	CONTEXT_FORWARD_COMPATIBLE_BIT[1 shl 1]
+	CONTEXT_ROBUST_ACCESS_BIT[1 shl 2]
+	CONTEXT_RESET_ISOLATION_BIT[1 shl 3]
+
+# wglWGLContextProfileMask (wgl::WGLContextProfileMask) :  (Bitfield)
+	CONTEXT_CORE_PROFILE_BIT[1 shl 0]
+	CONTEXT_COMPATIBILITY_PROFILE_BIT[1 shl 1]
+	CONTEXT_ES_PROFILE_BIT[1 shl 2]
+	CONTEXT_ES2_PROFILE_BIT[1 shl 2]
+
+# wglWGLDXInteropMask (wgl::WGLDXInteropMask) : UInt32 (Bitfield)
+	ACCESS_READ_ONLY[0]
+	ACCESS_READ_WRITE[1 shl 0]
+	ACCESS_WRITE_DISCARD[1 shl 1]
+
+# wglWGLImageBufferMask (wgl::WGLImageBufferMask) : UInt32 (Bitfield)
+	IMAGE_BUFFER_MIN_ACCESS[1 shl 0]
+	IMAGE_BUFFER_LOCK[1 shl 1]
+
+# wglWGLLayerPlaneMask (wgl::WGLLayerPlaneMask) : Int32 (Bitfield)
 	SWAP_MAIN_PLANE[1 shl 0]
 	SWAP_OVERLAY1[1 shl 1]
 	SWAP_OVERLAY2[1 shl 2]
@@ -4619,33 +4674,5 @@
 	SWAP_UNDERLAY13[1 shl 28]
 	SWAP_UNDERLAY14[1 shl 29]
 	SWAP_UNDERLAY15[1 shl 30]
-
-# wglStereoEmitterState (wgl::StereoEmitterState) : UInt32
-	STEREO_EMITTER_ENABLE[$2055]
-	STEREO_EMITTER_DISABLE[$2056]
-	STEREO_POLARITY_NORMAL[$2057]
-	STEREO_POLARITY_INVERT[$2058]
-
-# wglSwapMethod (wgl::SwapMethod) : 
-	SWAP_EXCHANGE[$2028]
-	SWAP_COPY[$2029]
-	SWAP_UNDEFINED[$202A]
-
-# wglVideoCaptureDeviceAttribute (wgl::VideoCaptureDeviceAttribute) : Int32
-	UNIQUE_ID[$20CE]
-
-# wglVideoOutputBuffer (wgl::VideoOutputBuffer) : Int32
-	VIDEO_OUT_COLOR[$20C3]
-	VIDEO_OUT_ALPHA[$20C4]
-	VIDEO_OUT_DEPTH[$20C5]
-	VIDEO_OUT_COLOR_AND_ALPHA[$20C6]
-	VIDEO_OUT_COLOR_AND_DEPTH[$20C7]
-
-# wglVideoOutputBufferType (wgl::VideoOutputBufferType) : Int32
-	VIDEO_OUT_FRAME[$20C8]
-	VIDEO_OUT_FIELD_1[$20C9]
-	VIDEO_OUT_FIELD_2[$20CA]
-	VIDEO_OUT_STACKED_FIELDS_1_2[$20CB]
-	VIDEO_OUT_STACKED_FIELDS_2_1[$20CC]
 
 

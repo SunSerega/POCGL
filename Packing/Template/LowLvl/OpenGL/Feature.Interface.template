@@ -12147,9 +12147,9 @@
   wgl = static class
     
     // added in wgl1.0
-    private static function ntv_CopyContext_1(hglrcSrc: gdi_rendering_context; hglrcDst: gdi_rendering_context; mask: UInt32): glBool32;
+    private static function ntv_CopyContext_1(hglrcSrc: gdi_rendering_context; hglrcDst: gdi_rendering_context; mask: glAttribMask): glBool32;
     external 'opengl32.dll' name 'wglCopyContext';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CopyContext(hglrcSrc: gdi_rendering_context; hglrcDst: gdi_rendering_context; mask: UInt32): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CopyContext(hglrcSrc: gdi_rendering_context; hglrcDst: gdi_rendering_context; mask: glAttribMask): glBool32 :=
       ntv_CopyContext_1(hglrcSrc, hglrcDst, mask);
     
     // added in wgl1.0
@@ -12260,9 +12260,9 @@
       ntv_ShareLists_1(hrcSrvShare, hrcSrvSource);
     
     // added in wgl1.0
-    private static function ntv_SwapLayerBuffers_1(hdc: gdi_device_context; fuFlags: wglPlane): glBool32;
+    private static function ntv_SwapLayerBuffers_1(hdc: gdi_device_context; fuFlags: wglWGLLayerPlaneMask): glBool32;
     external 'opengl32.dll' name 'wglSwapLayerBuffers';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SwapLayerBuffers(hdc: gdi_device_context; fuFlags: wglPlane): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SwapLayerBuffers(hdc: gdi_device_context; fuFlags: wglWGLLayerPlaneMask): glBool32 :=
       ntv_SwapLayerBuffers_1(hdc, fuFlags);
     
     // added in wgl1.0

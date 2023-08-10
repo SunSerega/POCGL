@@ -174,8 +174,8 @@ type
       var api_sep_ind := name.IndexOf('::');
       if api_sep_ind<>-1 then
       begin
-        if not for_lookup then
-          raise new InvalidOperationException;
+        if not for_lookup and (api = name.Remove(api_sep_ind)) then
+          raise new InvalidOperationException(name);
         api := name.Remove(api_sep_ind);
         name := name.Substring(api_sep_ind+2);
       end;

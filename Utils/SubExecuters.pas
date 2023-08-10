@@ -154,6 +154,7 @@ function GetUsedModules(fname: string) := GetUsedModules(fname, System.Array.Emp
 
 {$region Core}
 
+type SubexecReadCanceledException = sealed class(Exception) end;
 procedure RunFile(fname, nick: string; on_timer: Timer->(); l_otp: OtpLine->(); l_err: Exception->(); params pars: array of string);
 // Если менять - то в SubExecutables тоже
 const OutputPipeIdStr = 'OutputPipeId';
@@ -219,7 +220,7 @@ begin
     
     on_timer(new LoadedTimer(()->
     try
-      if br.ReadByte <> 0 then raise new System.InvalidOperationException($'Output of {nick??fname} didn''t start from 0');
+      if br.ReadByte <> 0 then raise new System.InvalidOperationException($'Output of {nick} didn''t start from 0');
       
       //TODO разобраться на сколько это надо и куда сувать
       // - update: таки без него не видит завершение вывода при умирании процесса
@@ -254,13 +255,14 @@ begin
       on e: System.IO.EndOfStreamException do
       begin
         if pipe_connection_established=true then
-          {thr_otp.Finish} else
-          Otp($'WARNING: Pipe connection with "{nick??fname}" wasn''t established');
-        exit;
+          Otp($'WARNING: Pipe reading for {nick} ended unexpectedly') else
+          Otp($'WARNING: Pipe connection for {nick} wasn''t established');
+        raise new SubexecReadCanceledException;
       end;
     end));
     
   except
+    on SubexecReadCanceledException do ;
     on e: Exception do
     begin
       if pipe_connection_established=nil then

@@ -6815,6 +6815,8 @@
 	Func [gl::ResumeTransformFeedback + NV]
 	Func [gl::DrawTransformFeedback + NV]
 
+# glUniformBufferStd430LayoutNV (GL_NV_uniform_buffer_std430_layout)
+
 # glUniformBufferUnifiedMemoryNV (GL_NV_uniform_buffer_unified_memory)
 	Enum [gl::UNIFORM_BUFFER_UNIFIED]
 	Enum [gl::UNIFORM_BUFFER_ADDRESS]

@@ -742,6 +742,11 @@
     public const _ExtStr = 'cl_ext_image_from_buffer';
   end;
   
+  ///
+  clImageRaw10Raw12EXT = static class
+    public const _ExtStr = 'cl_ext_image_raw10_raw12';
+  end;
+  
   [PCUNotRestore]
   [System.Security.SuppressUnmanagedCodeSecurity]
   ///

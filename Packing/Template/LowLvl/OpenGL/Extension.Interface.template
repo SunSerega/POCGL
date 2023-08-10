@@ -25122,6 +25122,11 @@
   end;
   
   ///
+  glUniformBufferStd430LayoutNV = static class
+    public const _ExtStr = 'GL_NV_uniform_buffer_std430_layout';
+  end;
+  
+  ///
   glUniformBufferUnifiedMemoryNV = static class
     public const _ExtStr = 'GL_NV_uniform_buffer_unified_memory';
   end;
@@ -32400,8 +32405,8 @@
       ntv_GetCurrentAssociatedContextAMD_1;
     
     private BlitContextFramebufferAMD_adr := GetProcAddress('wglBlitContextFramebufferAMD');
-    private ntv_BlitContextFramebufferAMD_1 := GetProcOrNil&<procedure(dstCtx: gdi_rendering_context; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: DummyFlags; filter: DummyEnum)>(BlitContextFramebufferAMD_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlitContextFramebufferAMD(dstCtx: gdi_rendering_context; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: DummyFlags; filter: DummyEnum) :=
+    private ntv_BlitContextFramebufferAMD_1 := GetProcOrNil&<procedure(dstCtx: gdi_rendering_context; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: glClearBufferMask; filter: DummyEnum)>(BlitContextFramebufferAMD_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure BlitContextFramebufferAMD(dstCtx: gdi_rendering_context; srcX0: Int32; srcY0: Int32; srcX1: Int32; srcY1: Int32; dstX0: Int32; dstY0: Int32; dstX1: Int32; dstY1: Int32; mask: glClearBufferMask; filter: DummyEnum) :=
       ntv_BlitContextFramebufferAMD_1(dstCtx, srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
     
   end;
@@ -32417,8 +32422,8 @@
     public const _ExtStr = 'WGL_ARB_buffer_region';
     
     private CreateBufferRegionARB_adr := GetProcAddress('wglCreateBufferRegionARB');
-    private ntv_CreateBufferRegionARB_1 := GetProcOrNil&<function(hDC: gdi_device_context; iLayerPlane: Int32; uType: wglBufferRegionType): IntPtr>(CreateBufferRegionARB_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateBufferRegionARB(hDC: gdi_device_context; iLayerPlane: Int32; uType: wglBufferRegionType): IntPtr :=
+    private ntv_CreateBufferRegionARB_1 := GetProcOrNil&<function(hDC: gdi_device_context; iLayerPlane: Int32; uType: wglWGLColorBufferMask): IntPtr>(CreateBufferRegionARB_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateBufferRegionARB(hDC: gdi_device_context; iLayerPlane: Int32; uType: wglWGLColorBufferMask): IntPtr :=
       ntv_CreateBufferRegionARB_1(hDC, iLayerPlane, uType);
     
     private DeleteBufferRegionARB_adr := GetProcAddress('wglDeleteBufferRegionARB');
@@ -33401,8 +33406,8 @@
     public const _ExtStr = 'WGL_I3D_image_buffer';
     
     private CreateImageBufferI3D_adr := GetProcAddress('wglCreateImageBufferI3D');
-    private ntv_CreateImageBufferI3D_1 := GetProcOrNil&<function(hDC: gdi_device_context; dwSize: UInt32; uFlags: wglImageBufferFlags): IntPtr>(CreateImageBufferI3D_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateImageBufferI3D(hDC: gdi_device_context; dwSize: UInt32; uFlags: wglImageBufferFlags): IntPtr :=
+    private ntv_CreateImageBufferI3D_1 := GetProcOrNil&<function(hDC: gdi_device_context; dwSize: UInt32; uFlags: wglWGLImageBufferMask): IntPtr>(CreateImageBufferI3D_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateImageBufferI3D(hDC: gdi_device_context; dwSize: UInt32; uFlags: wglWGLImageBufferMask): IntPtr :=
       ntv_CreateImageBufferI3D_1(hDC, dwSize, uFlags);
     
     private DestroyImageBufferI3D_adr := GetProcAddress('wglDestroyImageBufferI3D');
@@ -33612,8 +33617,8 @@
     public const _ExtStr = 'WGL_NV_copy_image';
     
     private CopyImageSubDataNV_adr := GetProcAddress('wglCopyImageSubDataNV');
-    private ntv_CopyImageSubDataNV_1 := GetProcOrNil&<function(hSrcRC: gdi_rendering_context; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; hDstRC: gdi_rendering_context; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32): glBool32>(CopyImageSubDataNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CopyImageSubDataNV(hSrcRC: gdi_rendering_context; srcName: UInt32; srcTarget: DummyEnum; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; hDstRC: gdi_rendering_context; dstName: UInt32; dstTarget: DummyEnum; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32): glBool32 :=
+    private ntv_CopyImageSubDataNV_1 := GetProcOrNil&<function(hSrcRC: gdi_rendering_context; srcName: UInt32; srcTarget: glTextureTarget; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; hDstRC: gdi_rendering_context; dstName: UInt32; dstTarget: glTextureTarget; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32): glBool32>(CopyImageSubDataNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CopyImageSubDataNV(hSrcRC: gdi_rendering_context; srcName: UInt32; srcTarget: glTextureTarget; srcLevel: Int32; srcX: Int32; srcY: Int32; srcZ: Int32; hDstRC: gdi_rendering_context; dstName: UInt32; dstTarget: glTextureTarget; dstLevel: Int32; dstX: Int32; dstY: Int32; dstZ: Int32; width: Int32; height: Int32; depth: Int32): glBool32 :=
       ntv_CopyImageSubDataNV_1(hSrcRC, srcName, srcTarget, srcLevel, srcX, srcY, srcZ, hDstRC, dstName, dstTarget, dstLevel, dstX, dstY, dstZ, width, height, depth);
     
   end;
@@ -33661,8 +33666,8 @@
       ntv_DXCloseDeviceNV_1(hDevice);
     
     private DXRegisterObjectNV_adr := GetProcAddress('wglDXRegisterObjectNV');
-    private ntv_DXRegisterObjectNV_1 := GetProcOrNil&<function(hDevice: IntPtr; dxObject: IntPtr; name: UInt32; &type: DummyEnum; access: wglDXInteropAccessMask): IntPtr>(DXRegisterObjectNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DXRegisterObjectNV(hDevice: IntPtr; dxObject: IntPtr; name: UInt32; &type: DummyEnum; access: wglDXInteropAccessMask): IntPtr :=
+    private ntv_DXRegisterObjectNV_1 := GetProcOrNil&<function(hDevice: IntPtr; dxObject: IntPtr; name: UInt32; &type: wglObjectTypeDX; access: wglWGLDXInteropMask): IntPtr>(DXRegisterObjectNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DXRegisterObjectNV(hDevice: IntPtr; dxObject: IntPtr; name: UInt32; &type: wglObjectTypeDX; access: wglWGLDXInteropMask): IntPtr :=
       ntv_DXRegisterObjectNV_1(hDevice, dxObject, name, &type, access);
     
     private DXUnregisterObjectNV_adr := GetProcAddress('wglDXUnregisterObjectNV');
@@ -33671,8 +33676,8 @@
       ntv_DXUnregisterObjectNV_1(hDevice, hObject);
     
     private DXObjectAccessNV_adr := GetProcAddress('wglDXObjectAccessNV');
-    private ntv_DXObjectAccessNV_1 := GetProcOrNil&<function(hObject: IntPtr; access: wglDXInteropAccessMask): glBool32>(DXObjectAccessNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DXObjectAccessNV(hObject: IntPtr; access: wglDXInteropAccessMask): glBool32 :=
+    private ntv_DXObjectAccessNV_1 := GetProcOrNil&<function(hObject: IntPtr; access: wglWGLDXInteropMask): glBool32>(DXObjectAccessNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DXObjectAccessNV(hObject: IntPtr; access: wglWGLDXInteropMask): glBool32 :=
       ntv_DXObjectAccessNV_1(hObject, access);
     
     private DXLockObjectsNV_adr := GetProcAddress('wglDXLockObjectsNV');
@@ -34162,8 +34167,8 @@
       ntv_SwapBuffersMscOML_1(hdc, target_msc, divisor, remainder);
     
     private SwapLayerBuffersMscOML_adr := GetProcAddress('wglSwapLayerBuffersMscOML');
-    private ntv_SwapLayerBuffersMscOML_1 := GetProcOrNil&<function(hdc: gdi_device_context; fuPlanes: wglPlane; target_msc: Int64; divisor: Int64; remainder: Int64): Int64>(SwapLayerBuffersMscOML_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SwapLayerBuffersMscOML(hdc: gdi_device_context; fuPlanes: wglPlane; target_msc: Int64; divisor: Int64; remainder: Int64): Int64 :=
+    private ntv_SwapLayerBuffersMscOML_1 := GetProcOrNil&<function(hdc: gdi_device_context; fuPlanes: wglWGLLayerPlaneMask; target_msc: Int64; divisor: Int64; remainder: Int64): Int64>(SwapLayerBuffersMscOML_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SwapLayerBuffersMscOML(hdc: gdi_device_context; fuPlanes: wglWGLLayerPlaneMask; target_msc: Int64; divisor: Int64; remainder: Int64): Int64 :=
       ntv_SwapLayerBuffersMscOML_1(hdc, fuPlanes, target_msc, divisor, remainder);
     
     private WaitForMscOML_adr := GetProcAddress('wglWaitForMscOML');

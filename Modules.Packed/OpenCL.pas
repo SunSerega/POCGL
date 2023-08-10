@@ -306,6 +306,8 @@ type
     public static property FLOAT:              clChannelType read new clChannelType($10DE);
     public static property UNORM_INT24:        clChannelType read new clChannelType($10DF);
     public static property UNORM_INT_101010_2: clChannelType read new clChannelType($10E0);
+    public static property UNSIGNED_INT_RAW10: clChannelType read new clChannelType($10E3);
+    public static property UNSIGNED_INT_RAW12: clChannelType read new clChannelType($10E4);
     
     public function ToString: string; override;
     begin
@@ -343,6 +345,10 @@ type
         Result := 'UNORM_INT24' else
       if UNORM_INT_101010_2 = self then
         Result := 'UNORM_INT_101010_2' else
+      if UNSIGNED_INT_RAW10 = self then
+        Result := 'UNSIGNED_INT_RAW10' else
+      if UNSIGNED_INT_RAW12 = self then
+        Result := 'UNSIGNED_INT_RAW12' else
         Result := $'clChannelType[{self.val}]';
     end;
     
@@ -403,7 +409,6 @@ type
     public static property COMMAND_BUFFER_STATE_RECORDING:  clCommandBufferState read new clCommandBufferState(0);
     public static property COMMAND_BUFFER_STATE_EXECUTABLE: clCommandBufferState read new clCommandBufferState($0001);
     public static property COMMAND_BUFFER_STATE_PENDING:    clCommandBufferState read new clCommandBufferState($0002);
-    public static property COMMAND_BUFFER_STATE_INVALID:    clCommandBufferState read new clCommandBufferState($0003);
     
     public function ToString: string; override;
     begin
@@ -413,8 +418,6 @@ type
         Result := 'COMMAND_BUFFER_STATE_EXECUTABLE' else
       if COMMAND_BUFFER_STATE_PENDING = self then
         Result := 'COMMAND_BUFFER_STATE_PENDING' else
-      if COMMAND_BUFFER_STATE_INVALID = self then
-        Result := 'COMMAND_BUFFER_STATE_INVALID' else
         Result := $'clCommandBufferState[{self.val}]';
     end;
     
@@ -14164,6 +14167,11 @@ type
   ///
   clImageFromBufferEXT = static class
     public const _ExtStr = 'cl_ext_image_from_buffer';
+  end;
+  
+  ///
+  clImageRaw10Raw12EXT = static class
+    public const _ExtStr = 'cl_ext_image_raw10_raw12';
   end;
   
   [PCUNotRestore]

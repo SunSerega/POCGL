@@ -2005,13 +2005,7 @@ Enum [wgl::COLOR_SAMPLES] was not grouped
 Enum [wgl::COLORSPACE] was not grouped
 Enum [wgl::COLORSPACE_LINEAR] was not grouped
 Enum [wgl::COLORSPACE_SRGB] was not grouped
-Enum [wgl::CONTEXT_COMPATIBILITY_PROFILE_BIT] was not grouped
-Enum [wgl::CONTEXT_CORE_PROFILE_BIT] was not grouped
-Enum [wgl::CONTEXT_DEBUG_BIT] was not grouped
-Enum [wgl::CONTEXT_ES_PROFILE_BIT] was not grouped
-Enum [wgl::CONTEXT_ES2_PROFILE_BIT] was not grouped
 Enum [wgl::CONTEXT_FLAGS] was not grouped
-Enum [wgl::CONTEXT_FORWARD_COMPATIBLE_BIT] was not grouped
 Enum [wgl::CONTEXT_LAYER_PLANE] was not grouped
 Enum [wgl::CONTEXT_MAJOR_VERSION] was not grouped
 Enum [wgl::CONTEXT_MINOR_VERSION] was not grouped
@@ -2025,9 +2019,7 @@ Enum [wgl::CONTEXT_PROFILE_MASK] was not grouped
 Enum [wgl::CONTEXT_RELEASE_BEHAVIOR] was not grouped
 Enum [wgl::CONTEXT_RELEASE_BEHAVIOR_FLUSH] was not grouped
 Enum [wgl::CONTEXT_RELEASE_BEHAVIOR_NONE] was not grouped
-Enum [wgl::CONTEXT_RESET_ISOLATION_BIT] was not grouped
 Enum [wgl::CONTEXT_RESET_NOTIFICATION_STRATEGY] was not grouped
-Enum [wgl::CONTEXT_ROBUST_ACCESS_BIT] was not grouped
 Enum [wgl::COVERAGE_SAMPLES] was not grouped
 Enum [wgl::DEPTH_COMPONENT] was not grouped
 Enum [wgl::DEPTH_FLOAT] was not grouped
@@ -2102,4 +2094,6 @@ Group [wgl::PBufferTextureTarget] was not referenced
 Group [wgl::PixelFormatAttribute] was not referenced
 Group [wgl::PixelType] was not referenced
 Group [wgl::SwapMethod] was not referenced
+Group [wgl::WGLContextFlagsMask] was not referenced
+Group [wgl::WGLContextProfileMask] was not referenced
 Func [wgl::GetDefaultProcAddress] was not referenced
