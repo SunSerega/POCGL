@@ -73,11 +73,13 @@ type
     
     public constructor(exec_body: ()->System.IO.BinaryReader);
     begin
-      var sw := Stopwatch.StartNew;
-      
       if exec_body=nil then
         raise new ArgumentNullException('exec_body');
+      
+      var sw := Stopwatch.StartNew;
       var br := exec_body();
+      self.measured_time := sw.Elapsed;
+      
       if br=nil then
         raise new ArgumentNullException('br');
       self.loaded_time := new TimeSpan(br.ReadInt64);
@@ -86,7 +88,6 @@ type
       );
       br.Close;
       
-      self.measured_time := sw.Elapsed;
     end;
     private constructor := raise new InvalidOperationException;
     
