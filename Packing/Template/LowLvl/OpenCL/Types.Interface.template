@@ -2435,6 +2435,7 @@
     public static property DEVICE_SCHEDULING_REGISTER_ALLOCATION:           clDeviceSchedulingControlsCapabilities read new clDeviceSchedulingControlsCapabilities(1 shl 4);
     public static property DEVICE_SCHEDULING_WARP_THROTTLING:               clDeviceSchedulingControlsCapabilities read new clDeviceSchedulingControlsCapabilities(1 shl 5);
     public static property DEVICE_SCHEDULING_COMPUTE_UNIT_BATCH_QUEUE_SIZE: clDeviceSchedulingControlsCapabilities read new clDeviceSchedulingControlsCapabilities(1 shl 6);
+    public static property DEVICE_SCHEDULING_COMPUTE_UNIT_LIMIT:            clDeviceSchedulingControlsCapabilities read new clDeviceSchedulingControlsCapabilities(1 shl 7);
     
     public static function operator+(v1, v2: clDeviceSchedulingControlsCapabilities) := new clDeviceSchedulingControlsCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceSchedulingControlsCapabilities) := new clDeviceSchedulingControlsCapabilities(v1.val or v2.val);
@@ -2486,6 +2487,11 @@
       begin
         res += 'DEVICE_SCHEDULING_COMPUTE_UNIT_BATCH_QUEUE_SIZE+';
         left_val := left_val and not DEVICE_SCHEDULING_COMPUTE_UNIT_BATCH_QUEUE_SIZE.val;
+      end;
+      if DEVICE_SCHEDULING_COMPUTE_UNIT_LIMIT in self then
+      begin
+        res += 'DEVICE_SCHEDULING_COMPUTE_UNIT_LIMIT+';
+        left_val := left_val and not DEVICE_SCHEDULING_COMPUTE_UNIT_LIMIT.val;
       end;
       if left_val<>0 then
       begin
@@ -4706,13 +4712,14 @@
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    public static property QUEUE_PRIORITY:        clQueueProperties read new clQueueProperties($1096);
-    public static property QUEUE_THROTTLE:        clQueueProperties read new clQueueProperties($1097);
-    public static property QUEUE_FAMILY:          clQueueProperties read new clQueueProperties($418C);
-    public static property QUEUE_INDEX:           clQueueProperties read new clQueueProperties($418D);
-    public static property QUEUE_JOB_SLOT:        clQueueProperties read new clQueueProperties($41E1);
-    public static property QUEUE_KERNEL_BATCHING: clQueueProperties read new clQueueProperties($41E7);
-    public static property QUEUE_DEFERRED_FLUSH:  clQueueProperties read new clQueueProperties($41EC);
+    public static property QUEUE_PRIORITY:           clQueueProperties read new clQueueProperties($1096);
+    public static property QUEUE_THROTTLE:           clQueueProperties read new clQueueProperties($1097);
+    public static property QUEUE_FAMILY:             clQueueProperties read new clQueueProperties($418C);
+    public static property QUEUE_INDEX:              clQueueProperties read new clQueueProperties($418D);
+    public static property QUEUE_JOB_SLOT:           clQueueProperties read new clQueueProperties($41E1);
+    public static property QUEUE_KERNEL_BATCHING:    clQueueProperties read new clQueueProperties($41E7);
+    public static property QUEUE_DEFERRED_FLUSH:     clQueueProperties read new clQueueProperties($41EC);
+    public static property QUEUE_COMPUTE_UNIT_LIMIT: clQueueProperties read new clQueueProperties($41F3);
     
     public function ToString: string; override;
     begin
@@ -4730,6 +4737,8 @@
         Result := 'QUEUE_KERNEL_BATCHING' else
       if QUEUE_DEFERRED_FLUSH = self then
         Result := 'QUEUE_DEFERRED_FLUSH' else
+      if QUEUE_COMPUTE_UNIT_LIMIT = self then
+        Result := 'QUEUE_COMPUTE_UNIT_LIMIT' else
         Result := $'clQueueProperties[{self.val}]';
     end;
     

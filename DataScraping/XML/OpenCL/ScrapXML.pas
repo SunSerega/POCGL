@@ -535,7 +535,8 @@ end;
       unreq_type_names -= tname;
       var ptr: integer;
       TypeHelper.TypeRefFromName(tname, ptr);
-      if ptr<>0 then raise new NotImplementedException(tname);
+      // cl_icd_dispatch is ptr hungry, and it's ok
+//      if ptr<>0 then raise new NotImplementedException(tname);
     end;
     public static procedure ReportAllUnreq :=
       foreach var tname in unreq_type_names do

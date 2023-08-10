@@ -151,6 +151,9 @@ clBool
 --- QUEUE_DEFERRED_FLUSH
 !type
 clBool
+--- QUEUE_COMPUTE_UNIT_LIMIT
+!type
+UInt32
 
 # clSamplerProperties
 --- SAMPLER_MIP_FILTER_MODE
