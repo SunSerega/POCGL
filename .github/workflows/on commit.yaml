@@ -159,7 +159,7 @@ jobs:
         needs: [pack-win, pack-ubuntu]
         
         steps:
-            - uses: actions/github-script@v5
+            - uses: actions/github-script@main
               with:
                 github-token: ${{ secrets.PAT_TOKEN }}
                 script: |
