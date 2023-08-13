@@ -19,7 +19,7 @@ OpenCL.clProgramCallback = procedure(program: cl_program; user_data: System.IntP
    0.55   0.08   0.19   0.45
 
 Вектор V1:
-2.97171865728298 9.8854377911824 6.42697472890232 7.62963588239142
+2.97 9.89 6.43 7.63
 
 Матрица С = A*B:
    2.14   1.51   1.53   1.63
@@ -28,7 +28,7 @@ OpenCL.clProgramCallback = procedure(program: cl_program; user_data: System.IntP
    1.04   0.91   0.73   0.90
 
 Вектор V2 = C*V1:
-43.549829529219 38.1055105291197 44.5335618220427 23.6192068006406
+43.5582595955173 38.1125299615189 44.5418897763742 23.624095929257
 
 #ReqModules
 OpenCL
