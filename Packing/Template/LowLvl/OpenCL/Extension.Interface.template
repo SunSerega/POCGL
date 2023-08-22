@@ -5698,10 +5698,10 @@
       var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<clExternalSemaphoreHandleType>);
       Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.SEMAPHORE_EXPORT_HANDLE_TYPES, param_value_sz,param_value,IntPtr.Zero);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR_DEVICE_HANDLE_LIST(sema_object: cl_semaphore; var param_value: array of cl_device_id): clErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR_SEMAPHORE_DEVICE_HANDLE_LIST(sema_object: cl_semaphore; var param_value: array of cl_device_id): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetSemaphoreInfoKHR_3(sema_object, clSemaphoreInfo.DEVICE_HANDLE_LIST, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetSemaphoreInfoKHR_3(sema_object, clSemaphoreInfo.SEMAPHORE_DEVICE_HANDLE_LIST, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
       if param_value_sz = UIntPtr.Zero then
       begin
@@ -5709,13 +5709,13 @@
         exit;
       end;
       var param_value_temp_res := new cl_device_id[param_value_sz.ToUInt64 div Marshal.SizeOf&<cl_device_id>];
-      Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.DEVICE_HANDLE_LIST, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
+      Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.SEMAPHORE_DEVICE_HANDLE_LIST, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR_DEVICE_HANDLE_LIST(sema_object: cl_semaphore; param_value_count: UInt32; var param_value: cl_device_id): clErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR_SEMAPHORE_DEVICE_HANDLE_LIST(sema_object: cl_semaphore; param_value_count: UInt32; var param_value: cl_device_id): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<cl_device_id>);
-      Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.DEVICE_HANDLE_LIST, param_value_sz,param_value,IntPtr.Zero);
+      Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.SEMAPHORE_DEVICE_HANDLE_LIST, param_value_sz,param_value,IntPtr.Zero);
     end;
     
     private static function ntv_ReleaseSemaphoreKHR_1(sema_object: cl_semaphore): clErrorCode;

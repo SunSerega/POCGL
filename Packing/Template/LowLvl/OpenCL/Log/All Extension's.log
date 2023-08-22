@@ -778,12 +778,12 @@
 	Enum [cl::DEVICE_BUILT_IN_KERNELS_WITH_VERSION]
 
 # clExternalMemoryKHR (cl_khr_external_memory)
-	Enum [cl::DEVICE_HANDLE_LIST_END]
+	Enum [cl::MEM_DEVICE_HANDLE_LIST_END]
 	Enum [cl::PLATFORM_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES]
 	Enum [cl::COMMAND_ACQUIRE_EXTERNAL_MEM_OBJECTS]
 	Enum [cl::COMMAND_RELEASE_EXTERNAL_MEM_OBJECTS]
 	Enum [cl::DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES]
-	Enum [cl::DEVICE_HANDLE_LIST]
+	Enum [cl::MEM_DEVICE_HANDLE_LIST]
 	Func [cl::EnqueueAcquireExternalMemObjects + KHR]
 	Func [cl::EnqueueReleaseExternalMemObjects + KHR]
 
@@ -914,7 +914,7 @@
 
 # clSemaphoreKHR (cl_khr_semaphore)
 	Enum [cl::INVALID_SEMAPHORE]
-	Enum [cl::DEVICE_HANDLE_LIST_END]
+	Enum [cl::SEMAPHORE_DEVICE_HANDLE_LIST_END]
 	Enum [cl::SEMAPHORE_TYPE_BINARY]
 	Enum [cl::PLATFORM_SEMAPHORE_TYPES]
 	Enum [cl::SEMAPHORE_CONTEXT]
@@ -925,7 +925,7 @@
 	Enum [cl::COMMAND_SEMAPHORE_WAIT]
 	Enum [cl::COMMAND_SEMAPHORE_SIGNAL]
 	Enum [cl::DEVICE_SEMAPHORE_TYPES]
-	Enum [cl::DEVICE_HANDLE_LIST]
+	Enum [cl::SEMAPHORE_DEVICE_HANDLE_LIST]
 	Func [cl::CreateSemaphoreWithProperties + KHR]
 	Func [cl::EnqueueWaitSemaphores + KHR]
 	Func [cl::EnqueueSignalSemaphores + KHR]

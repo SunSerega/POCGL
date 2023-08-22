@@ -4887,8 +4887,8 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_TYPE                | *                | var clSemaphoreType                        | *                    |
 	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_EXPORT_HANDLE_TYPES | *                | var array of clExternalSemaphoreHandleType | *                    |
 	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_EXPORT_HANDLE_TYPES | UInt32           | var clExternalSemaphoreHandleType          | *                    |
-	clErrorCode | cl_semaphore | clSemaphoreInfo.DEVICE_HANDLE_LIST            | *                | var array of cl_device_id                  | *                    |
-	clErrorCode | cl_semaphore | clSemaphoreInfo.DEVICE_HANDLE_LIST            | UInt32           | var cl_device_id                           | *                    |
+	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_DEVICE_HANDLE_LIST  | *                | var array of cl_device_id                  | *                    |
+	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_DEVICE_HANDLE_LIST  | UInt32           | var cl_device_id                           | *                    |
 	----------- | ------------ | --------------------------------------------- | ---------------- | ------------------------------------------ | -------------------- |
 	            | sema_object  | param_name                                    | param_value_size | param_value                                | param_value_size_ret |
 

@@ -1331,7 +1331,7 @@ clSemaphoreType
 --- SEMAPHORE_EXPORT_HANDLE_TYPES
 !output
 array of clExternalSemaphoreHandleType
---- DEVICE_HANDLE_LIST
+--- SEMAPHORE_DEVICE_HANDLE_LIST
 !output
 array of cl_device_id
 

@@ -4277,18 +4277,18 @@
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    public static property DEVICE_HANDLE_LIST_END:        clMemProperties read new clMemProperties(0);
-    public static property DEVICE_HANDLE_LIST:            clMemProperties read new clMemProperties($2051);
+    public static property MEM_DEVICE_HANDLE_LIST_END:    clMemProperties read new clMemProperties(0);
+    public static property MEM_DEVICE_HANDLE_LIST:        clMemProperties read new clMemProperties($2051);
     public static property MEM_ALLOC_FLAGS_IMG:           clMemProperties read new clMemProperties($40D7);
     public static property MEM_LOCALLY_UNCACHED_RESOURCE: clMemProperties read new clMemProperties($4218);
     public static property MEM_DEVICE_ID:                 clMemProperties read new clMemProperties($4219);
     
     public function ToString: string; override;
     begin
-      if DEVICE_HANDLE_LIST_END = self then
-        Result := 'DEVICE_HANDLE_LIST_END' else
-      if DEVICE_HANDLE_LIST = self then
-        Result := 'DEVICE_HANDLE_LIST' else
+      if MEM_DEVICE_HANDLE_LIST_END = self then
+        Result := 'MEM_DEVICE_HANDLE_LIST_END' else
+      if MEM_DEVICE_HANDLE_LIST = self then
+        Result := 'MEM_DEVICE_HANDLE_LIST' else
       if MEM_ALLOC_FLAGS_IMG = self then
         Result := 'MEM_ALLOC_FLAGS_IMG' else
       if MEM_LOCALLY_UNCACHED_RESOURCE = self then
@@ -4858,7 +4858,7 @@
     public static property SEMAPHORE_PAYLOAD:             clSemaphoreInfo read new clSemaphoreInfo($203C);
     public static property SEMAPHORE_TYPE:                clSemaphoreInfo read new clSemaphoreInfo($203D);
     public static property SEMAPHORE_EXPORT_HANDLE_TYPES: clSemaphoreInfo read new clSemaphoreInfo($203F);
-    public static property DEVICE_HANDLE_LIST:            clSemaphoreInfo read new clSemaphoreInfo($2051);
+    public static property SEMAPHORE_DEVICE_HANDLE_LIST:  clSemaphoreInfo read new clSemaphoreInfo($2053);
     
     public function ToString: string; override;
     begin
@@ -4874,8 +4874,8 @@
         Result := 'SEMAPHORE_TYPE' else
       if SEMAPHORE_EXPORT_HANDLE_TYPES = self then
         Result := 'SEMAPHORE_EXPORT_HANDLE_TYPES' else
-      if DEVICE_HANDLE_LIST = self then
-        Result := 'DEVICE_HANDLE_LIST' else
+      if SEMAPHORE_DEVICE_HANDLE_LIST = self then
+        Result := 'SEMAPHORE_DEVICE_HANDLE_LIST' else
         Result := $'clSemaphoreInfo[{self.val}]';
     end;
     
@@ -4887,10 +4887,10 @@
     public constructor(val: UInt64) := self.val := val;
     
     public static property SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END: clSemaphoreProperties read new clSemaphoreProperties(0);
-    public static property DEVICE_HANDLE_LIST_END:                 clSemaphoreProperties read new clSemaphoreProperties(0);
+    public static property SEMAPHORE_DEVICE_HANDLE_LIST_END:       clSemaphoreProperties read new clSemaphoreProperties(0);
     public static property SEMAPHORE_TYPE:                         clSemaphoreProperties read new clSemaphoreProperties($203D);
     public static property SEMAPHORE_EXPORT_HANDLE_TYPES:          clSemaphoreProperties read new clSemaphoreProperties($203F);
-    public static property DEVICE_HANDLE_LIST:                     clSemaphoreProperties read new clSemaphoreProperties($2051);
+    public static property SEMAPHORE_DEVICE_HANDLE_LIST:           clSemaphoreProperties read new clSemaphoreProperties($2053);
     
     public function ToString: string; override;
     begin
@@ -4900,8 +4900,8 @@
         Result := 'SEMAPHORE_TYPE' else
       if SEMAPHORE_EXPORT_HANDLE_TYPES = self then
         Result := 'SEMAPHORE_EXPORT_HANDLE_TYPES' else
-      if DEVICE_HANDLE_LIST = self then
-        Result := 'DEVICE_HANDLE_LIST' else
+      if SEMAPHORE_DEVICE_HANDLE_LIST = self then
+        Result := 'SEMAPHORE_DEVICE_HANDLE_LIST' else
         Result := $'clSemaphoreProperties[{self.val}]';
     end;
     

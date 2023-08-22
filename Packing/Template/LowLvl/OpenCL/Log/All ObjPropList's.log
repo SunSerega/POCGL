@@ -109,11 +109,11 @@ UInt32
 UInt32
 
 # clMemProperties
---- DEVICE_HANDLE_LIST
+--- MEM_DEVICE_HANDLE_LIST
 !type
 cl_device_id
 !list_end
-DEVICE_HANDLE_LIST_END
+MEM_DEVICE_HANDLE_LIST_END
 --- MEM_ALLOC_FLAGS + IMG
 !type
 clMemAllocFlagsIMG
@@ -175,11 +175,11 @@ clSemaphoreType
 clExternalSemaphoreHandleType
 !list_end
 SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END
---- DEVICE_HANDLE_LIST
+--- SEMAPHORE_DEVICE_HANDLE_LIST
 !type
 cl_device_id
 !list_end
-DEVICE_HANDLE_LIST_END
+SEMAPHORE_DEVICE_HANDLE_LIST_END
 
 # clDevicePartitionPropertyEXT
 PROPERTIES_LIST_END

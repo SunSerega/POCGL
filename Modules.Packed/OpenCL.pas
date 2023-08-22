@@ -4311,18 +4311,18 @@ type
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    public static property DEVICE_HANDLE_LIST_END:        clMemProperties read new clMemProperties(0);
-    public static property DEVICE_HANDLE_LIST:            clMemProperties read new clMemProperties($2051);
+    public static property MEM_DEVICE_HANDLE_LIST_END:    clMemProperties read new clMemProperties(0);
+    public static property MEM_DEVICE_HANDLE_LIST:        clMemProperties read new clMemProperties($2051);
     public static property MEM_ALLOC_FLAGS_IMG:           clMemProperties read new clMemProperties($40D7);
     public static property MEM_LOCALLY_UNCACHED_RESOURCE: clMemProperties read new clMemProperties($4218);
     public static property MEM_DEVICE_ID:                 clMemProperties read new clMemProperties($4219);
     
     public function ToString: string; override;
     begin
-      if DEVICE_HANDLE_LIST_END = self then
-        Result := 'DEVICE_HANDLE_LIST_END' else
-      if DEVICE_HANDLE_LIST = self then
-        Result := 'DEVICE_HANDLE_LIST' else
+      if MEM_DEVICE_HANDLE_LIST_END = self then
+        Result := 'MEM_DEVICE_HANDLE_LIST_END' else
+      if MEM_DEVICE_HANDLE_LIST = self then
+        Result := 'MEM_DEVICE_HANDLE_LIST' else
       if MEM_ALLOC_FLAGS_IMG = self then
         Result := 'MEM_ALLOC_FLAGS_IMG' else
       if MEM_LOCALLY_UNCACHED_RESOURCE = self then
@@ -4892,7 +4892,7 @@ type
     public static property SEMAPHORE_PAYLOAD:             clSemaphoreInfo read new clSemaphoreInfo($203C);
     public static property SEMAPHORE_TYPE:                clSemaphoreInfo read new clSemaphoreInfo($203D);
     public static property SEMAPHORE_EXPORT_HANDLE_TYPES: clSemaphoreInfo read new clSemaphoreInfo($203F);
-    public static property DEVICE_HANDLE_LIST:            clSemaphoreInfo read new clSemaphoreInfo($2051);
+    public static property SEMAPHORE_DEVICE_HANDLE_LIST:  clSemaphoreInfo read new clSemaphoreInfo($2053);
     
     public function ToString: string; override;
     begin
@@ -4908,8 +4908,8 @@ type
         Result := 'SEMAPHORE_TYPE' else
       if SEMAPHORE_EXPORT_HANDLE_TYPES = self then
         Result := 'SEMAPHORE_EXPORT_HANDLE_TYPES' else
-      if DEVICE_HANDLE_LIST = self then
-        Result := 'DEVICE_HANDLE_LIST' else
+      if SEMAPHORE_DEVICE_HANDLE_LIST = self then
+        Result := 'SEMAPHORE_DEVICE_HANDLE_LIST' else
         Result := $'clSemaphoreInfo[{self.val}]';
     end;
     
@@ -4921,10 +4921,10 @@ type
     public constructor(val: UInt64) := self.val := val;
     
     public static property SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END: clSemaphoreProperties read new clSemaphoreProperties(0);
-    public static property DEVICE_HANDLE_LIST_END:                 clSemaphoreProperties read new clSemaphoreProperties(0);
+    public static property SEMAPHORE_DEVICE_HANDLE_LIST_END:       clSemaphoreProperties read new clSemaphoreProperties(0);
     public static property SEMAPHORE_TYPE:                         clSemaphoreProperties read new clSemaphoreProperties($203D);
     public static property SEMAPHORE_EXPORT_HANDLE_TYPES:          clSemaphoreProperties read new clSemaphoreProperties($203F);
-    public static property DEVICE_HANDLE_LIST:                     clSemaphoreProperties read new clSemaphoreProperties($2051);
+    public static property SEMAPHORE_DEVICE_HANDLE_LIST:           clSemaphoreProperties read new clSemaphoreProperties($2053);
     
     public function ToString: string; override;
     begin
@@ -4934,8 +4934,8 @@ type
         Result := 'SEMAPHORE_TYPE' else
       if SEMAPHORE_EXPORT_HANDLE_TYPES = self then
         Result := 'SEMAPHORE_EXPORT_HANDLE_TYPES' else
-      if DEVICE_HANDLE_LIST = self then
-        Result := 'DEVICE_HANDLE_LIST' else
+      if SEMAPHORE_DEVICE_HANDLE_LIST = self then
+        Result := 'SEMAPHORE_DEVICE_HANDLE_LIST' else
         Result := $'clSemaphoreProperties[{self.val}]';
     end;
     
@@ -19134,10 +19134,10 @@ type
       var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<clExternalSemaphoreHandleType>);
       Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.SEMAPHORE_EXPORT_HANDLE_TYPES, param_value_sz,param_value,IntPtr.Zero);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR_DEVICE_HANDLE_LIST(sema_object: cl_semaphore; var param_value: array of cl_device_id): clErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR_SEMAPHORE_DEVICE_HANDLE_LIST(sema_object: cl_semaphore; var param_value: array of cl_device_id): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
-      Result := ntv_GetSemaphoreInfoKHR_3(sema_object, clSemaphoreInfo.DEVICE_HANDLE_LIST, UIntPtr.Zero,nil,param_value_sz);
+      Result := ntv_GetSemaphoreInfoKHR_3(sema_object, clSemaphoreInfo.SEMAPHORE_DEVICE_HANDLE_LIST, UIntPtr.Zero,nil,param_value_sz);
       if Result.IS_ERROR then exit;
       if param_value_sz = UIntPtr.Zero then
       begin
@@ -19145,13 +19145,13 @@ type
         exit;
       end;
       var param_value_temp_res := new cl_device_id[param_value_sz.ToUInt64 div Marshal.SizeOf&<cl_device_id>];
-      Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.DEVICE_HANDLE_LIST, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
+      Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.SEMAPHORE_DEVICE_HANDLE_LIST, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
       param_value := param_value_temp_res;
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR_DEVICE_HANDLE_LIST(sema_object: cl_semaphore; param_value_count: UInt32; var param_value: cl_device_id): clErrorCode;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetSemaphoreInfoKHR_SEMAPHORE_DEVICE_HANDLE_LIST(sema_object: cl_semaphore; param_value_count: UInt32; var param_value: cl_device_id): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<cl_device_id>);
-      Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.DEVICE_HANDLE_LIST, param_value_sz,param_value,IntPtr.Zero);
+      Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.SEMAPHORE_DEVICE_HANDLE_LIST, param_value_sz,param_value,IntPtr.Zero);
     end;
     
     private static function ntv_ReleaseSemaphoreKHR_1(sema_object: cl_semaphore): clErrorCode;
