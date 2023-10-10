@@ -248,7 +248,7 @@ begin
 //      gl.NamedBufferSubData(buffer_temp, new IntPtr(0*sizeof(real)), new IntPtr(2*sizeof(real)), mouse_pos);
       
       // Вызываем шейдерную программу один раз, не передавая данные
-      // Геометричейский шейдер сделает из этого 
+      // Геометричейский шейдер сделает из этого прямоугольник, покрывающий все пиксели экрана
       gl.DrawArrays(glPrimitiveType.POINTS, 0,1);
       
 //      var temp_data := new real[1];
