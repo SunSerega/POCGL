@@ -12248,6 +12248,8 @@
 
 # gles2RenderSharedExponentQCOM (GL_QCOM_render_shared_exponent)
 
+# gles2RenderSRGBR8RG8QCOM (GL_QCOM_render_sRGB_R8_RG8)
+
 # gles2ShaderFramebufferFetchNoncoherentQCOM (GL_QCOM_shader_framebuffer_fetch_noncoherent)
 	Enum [gl::FRAMEBUFFER_FETCH_NONCOHERENT]
 	Func [gl::FramebufferFetchBarrier + QCOM]
@@ -12281,6 +12283,9 @@
 
 # gles2TextureFoveated2QCOM (GL_QCOM_texture_foveated2)
 	Enum [gl::TEXTURE_FOVEATED_CUTOFF_DENSITY]
+
+# gles2TextureLodBiasQCOM (GL_QCOM_texture_lod_bias)
+	Enum [gl::TEXTURE_LOD_BIAS + QCOM]
 
 # gles2TiledRenderingQCOM (GL_QCOM_tiled_rendering)
 	Enum [gl::COLOR_BUFFER_BIT0]

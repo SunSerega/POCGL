@@ -21572,18 +21572,33 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
+    public static property BYTE:           glScalarType read new glScalarType($1400);
     public static property UNSIGNED_BYTE:  glScalarType read new glScalarType($1401);
+    public static property SHORT:          glScalarType read new glScalarType($1402);
     public static property UNSIGNED_SHORT: glScalarType read new glScalarType($1403);
+    public static property INT:            glScalarType read new glScalarType($1404);
     public static property UNSIGNED_INT:   glScalarType read new glScalarType($1405);
+    public static property FLOAT:          glScalarType read new glScalarType($1406);
+    public static property DOUBLE:         glScalarType read new glScalarType($140A);
     
     public function ToString: string; override;
     begin
+      if BYTE = self then
+        Result := 'BYTE' else
       if UNSIGNED_BYTE = self then
         Result := 'UNSIGNED_BYTE' else
+      if SHORT = self then
+        Result := 'SHORT' else
       if UNSIGNED_SHORT = self then
         Result := 'UNSIGNED_SHORT' else
+      if INT = self then
+        Result := 'INT' else
       if UNSIGNED_INT = self then
         Result := 'UNSIGNED_INT' else
+      if FLOAT = self then
+        Result := 'FLOAT' else
+      if DOUBLE = self then
+        Result := 'DOUBLE' else
         Result := $'glScalarType[{self.val}]';
     end;
     
@@ -23794,17 +23809,14 @@
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property LINEAR_MIPMAP_LINEAR: glTextureWrapMode read new glTextureWrapMode($2703);
-    public static property CLAMP:                glTextureWrapMode read new glTextureWrapMode($2900);
-    public static property &REPEAT:              glTextureWrapMode read new glTextureWrapMode($2901);
-    public static property CLAMP_TO_BORDER:      glTextureWrapMode read new glTextureWrapMode($812D);
-    public static property CLAMP_TO_EDGE:        glTextureWrapMode read new glTextureWrapMode($812F);
-    public static property MIRRORED_REPEAT:      glTextureWrapMode read new glTextureWrapMode($8370);
+    public static property CLAMP:           glTextureWrapMode read new glTextureWrapMode($2900);
+    public static property &REPEAT:         glTextureWrapMode read new glTextureWrapMode($2901);
+    public static property CLAMP_TO_BORDER: glTextureWrapMode read new glTextureWrapMode($812D);
+    public static property CLAMP_TO_EDGE:   glTextureWrapMode read new glTextureWrapMode($812F);
+    public static property MIRRORED_REPEAT: glTextureWrapMode read new glTextureWrapMode($8370);
     
     public function ToString: string; override;
     begin
-      if LINEAR_MIPMAP_LINEAR = self then
-        Result := 'LINEAR_MIPMAP_LINEAR' else
       if CLAMP = self then
         Result := 'CLAMP' else
       if &REPEAT = self then
@@ -25545,6 +25557,64 @@
   end;
   
   ///
+  wglColorBufferMask = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property FRONT_COLOR_BUFFER_BIT: wglColorBufferMask read new wglColorBufferMask(1 shl 0);
+    public static property BACK_COLOR_BUFFER_BIT:  wglColorBufferMask read new wglColorBufferMask(1 shl 1);
+    public static property DEPTH_BUFFER_BIT:       wglColorBufferMask read new wglColorBufferMask(1 shl 2);
+    public static property STENCIL_BUFFER_BIT:     wglColorBufferMask read new wglColorBufferMask(1 shl 3);
+    
+    public static function operator+(v1, v2: wglColorBufferMask) := new wglColorBufferMask(v1.val or v2.val);
+    public static function operator or(v1, v2: wglColorBufferMask) := new wglColorBufferMask(v1.val or v2.val);
+    
+    public static procedure operator+=(var v1: wglColorBufferMask; v2: wglColorBufferMask) := v1 := v1+v2;
+    
+    public static function operator in(v1, v2: wglColorBufferMask) := v1.val and v2.val = v1.val;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      var left_val := self.val;
+      if left_val=0 then
+      begin
+        Result := 'wglColorBufferMask[0]';
+        exit;
+      end;
+      if FRONT_COLOR_BUFFER_BIT in self then
+      begin
+        res += 'FRONT_COLOR_BUFFER_BIT+';
+        left_val := left_val and not FRONT_COLOR_BUFFER_BIT.val;
+      end;
+      if BACK_COLOR_BUFFER_BIT in self then
+      begin
+        res += 'BACK_COLOR_BUFFER_BIT+';
+        left_val := left_val and not BACK_COLOR_BUFFER_BIT.val;
+      end;
+      if DEPTH_BUFFER_BIT in self then
+      begin
+        res += 'DEPTH_BUFFER_BIT+';
+        left_val := left_val and not DEPTH_BUFFER_BIT.val;
+      end;
+      if STENCIL_BUFFER_BIT in self then
+      begin
+        res += 'STENCIL_BUFFER_BIT+';
+        left_val := left_val and not STENCIL_BUFFER_BIT.val;
+      end;
+      if left_val<>0 then
+      begin
+        res += 'wglColorBufferMask[';
+        res += self.val.ToString;
+        res += ']+';
+      end;
+      res.Length -= 1;
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
   wglContextAttribute = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -25584,6 +25654,55 @@
       if DIGITAL_VIDEO_GAMMA_CORRECTED = self then
         Result := 'DIGITAL_VIDEO_GAMMA_CORRECTED' else
         Result := $'wglDigitalVideoAttribute[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  wglDXInteropMask = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property ACCESS_READ_ONLY:     wglDXInteropMask read new wglDXInteropMask(0);
+    public static property ACCESS_READ_WRITE:    wglDXInteropMask read new wglDXInteropMask(1 shl 0);
+    public static property ACCESS_WRITE_DISCARD: wglDXInteropMask read new wglDXInteropMask(1 shl 1);
+    
+    public property ANY_FLAGS: boolean read self.val<>0;
+    
+    public static function operator+(v1, v2: wglDXInteropMask) := new wglDXInteropMask(v1.val or v2.val);
+    public static function operator or(v1, v2: wglDXInteropMask) := new wglDXInteropMask(v1.val or v2.val);
+    
+    public static procedure operator+=(var v1: wglDXInteropMask; v2: wglDXInteropMask) := v1 := v1+v2;
+    
+    public static function operator in(v1, v2: wglDXInteropMask) := v1.val and v2.val = v1.val;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      var left_val := self.val;
+      if left_val=0 then
+      begin
+        Result := 'ACCESS_READ_ONLY';
+        exit;
+      end;
+      if ACCESS_READ_WRITE in self then
+      begin
+        res += 'ACCESS_READ_WRITE+';
+        left_val := left_val and not ACCESS_READ_WRITE.val;
+      end;
+      if ACCESS_WRITE_DISCARD in self then
+      begin
+        res += 'ACCESS_WRITE_DISCARD+';
+        left_val := left_val and not ACCESS_WRITE_DISCARD.val;
+      end;
+      if left_val<>0 then
+      begin
+        res += 'wglDXInteropMask[';
+        res += self.val.ToString;
+        res += ']+';
+      end;
+      res.Length -= 1;
+      Result := res.ToString;
     end;
     
   end;
@@ -25667,186 +25786,19 @@
   end;
   
   ///
-  wglObjectTypeDX = record
+  wglImageBufferMask = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property gl_NONE:              wglObjectTypeDX read new wglObjectTypeDX(0);
-    public static property gl_TEXTURE_2D:        wglObjectTypeDX read new wglObjectTypeDX($0DE1);
-    public static property gl_TEXTURE_3D:        wglObjectTypeDX read new wglObjectTypeDX($806F);
-    public static property gl_TEXTURE_RECTANGLE: wglObjectTypeDX read new wglObjectTypeDX($84F5);
-    public static property gl_TEXTURE_CUBE_MAP:  wglObjectTypeDX read new wglObjectTypeDX($8513);
-    public static property gl_RENDERBUFFER:      wglObjectTypeDX read new wglObjectTypeDX($8D41);
+    public static property IMAGE_BUFFER_MIN_ACCESS: wglImageBufferMask read new wglImageBufferMask(1 shl 0);
+    public static property IMAGE_BUFFER_LOCK:       wglImageBufferMask read new wglImageBufferMask(1 shl 1);
     
-    public function ToString: string; override;
-    begin
-      if gl_NONE = self then
-        Result := 'gl_NONE' else
-      if gl_TEXTURE_2D = self then
-        Result := 'gl_TEXTURE_2D' else
-      if gl_TEXTURE_3D = self then
-        Result := 'gl_TEXTURE_3D' else
-      if gl_TEXTURE_RECTANGLE = self then
-        Result := 'gl_TEXTURE_RECTANGLE' else
-      if gl_TEXTURE_CUBE_MAP = self then
-        Result := 'gl_TEXTURE_CUBE_MAP' else
-      if gl_RENDERBUFFER = self then
-        Result := 'gl_RENDERBUFFER' else
-        Result := $'wglObjectTypeDX[{self.val}]';
-    end;
+    public static function operator+(v1, v2: wglImageBufferMask) := new wglImageBufferMask(v1.val or v2.val);
+    public static function operator or(v1, v2: wglImageBufferMask) := new wglImageBufferMask(v1.val or v2.val);
     
-  end;
-  
-  ///
-  wglPBufferAttribute = record
-    public val: Int32;
-    public constructor(val: Int32) := self.val := val;
+    public static procedure operator+=(var v1: wglImageBufferMask; v2: wglImageBufferMask) := v1 := v1+v2;
     
-    public static property PBUFFER_WIDTH:  wglPBufferAttribute read new wglPBufferAttribute($2034);
-    public static property PBUFFER_HEIGHT: wglPBufferAttribute read new wglPBufferAttribute($2035);
-    public static property PBUFFER_LOST:   wglPBufferAttribute read new wglPBufferAttribute($2036);
-    public static property TEXTURE_FORMAT: wglPBufferAttribute read new wglPBufferAttribute($2072);
-    public static property TEXTURE_TARGET: wglPBufferAttribute read new wglPBufferAttribute($2073);
-    public static property MIPMAP_TEXTURE: wglPBufferAttribute read new wglPBufferAttribute($2074);
-    public static property MIPMAP_LEVEL:   wglPBufferAttribute read new wglPBufferAttribute($207B);
-    public static property CUBE_MAP_FACE:  wglPBufferAttribute read new wglPBufferAttribute($207C);
-    
-    public function ToString: string; override;
-    begin
-      if PBUFFER_WIDTH = self then
-        Result := 'PBUFFER_WIDTH' else
-      if PBUFFER_HEIGHT = self then
-        Result := 'PBUFFER_HEIGHT' else
-      if PBUFFER_LOST = self then
-        Result := 'PBUFFER_LOST' else
-      if TEXTURE_FORMAT = self then
-        Result := 'TEXTURE_FORMAT' else
-      if TEXTURE_TARGET = self then
-        Result := 'TEXTURE_TARGET' else
-      if MIPMAP_TEXTURE = self then
-        Result := 'MIPMAP_TEXTURE' else
-      if MIPMAP_LEVEL = self then
-        Result := 'MIPMAP_LEVEL' else
-      if CUBE_MAP_FACE = self then
-        Result := 'CUBE_MAP_FACE' else
-        Result := $'wglPBufferAttribute[{self.val}]';
-    end;
-    
-  end;
-  
-  ///
-  wglStereoEmitterState = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property STEREO_EMITTER_ENABLE:  wglStereoEmitterState read new wglStereoEmitterState($2055);
-    public static property STEREO_EMITTER_DISABLE: wglStereoEmitterState read new wglStereoEmitterState($2056);
-    public static property STEREO_POLARITY_NORMAL: wglStereoEmitterState read new wglStereoEmitterState($2057);
-    public static property STEREO_POLARITY_INVERT: wglStereoEmitterState read new wglStereoEmitterState($2058);
-    
-    public function ToString: string; override;
-    begin
-      if STEREO_EMITTER_ENABLE = self then
-        Result := 'STEREO_EMITTER_ENABLE' else
-      if STEREO_EMITTER_DISABLE = self then
-        Result := 'STEREO_EMITTER_DISABLE' else
-      if STEREO_POLARITY_NORMAL = self then
-        Result := 'STEREO_POLARITY_NORMAL' else
-      if STEREO_POLARITY_INVERT = self then
-        Result := 'STEREO_POLARITY_INVERT' else
-        Result := $'wglStereoEmitterState[{self.val}]';
-    end;
-    
-  end;
-  
-  ///
-  wglVideoCaptureDeviceAttribute = record
-    public val: Int32;
-    public constructor(val: Int32) := self.val := val;
-    
-    public static property UNIQUE_ID: wglVideoCaptureDeviceAttribute read new wglVideoCaptureDeviceAttribute($20CE);
-    
-    public function ToString: string; override;
-    begin
-      if UNIQUE_ID = self then
-        Result := 'UNIQUE_ID' else
-        Result := $'wglVideoCaptureDeviceAttribute[{self.val}]';
-    end;
-    
-  end;
-  
-  ///
-  wglVideoOutputBuffer = record
-    public val: Int32;
-    public constructor(val: Int32) := self.val := val;
-    
-    public static property VIDEO_OUT_COLOR:           wglVideoOutputBuffer read new wglVideoOutputBuffer($20C3);
-    public static property VIDEO_OUT_ALPHA:           wglVideoOutputBuffer read new wglVideoOutputBuffer($20C4);
-    public static property VIDEO_OUT_DEPTH:           wglVideoOutputBuffer read new wglVideoOutputBuffer($20C5);
-    public static property VIDEO_OUT_COLOR_AND_ALPHA: wglVideoOutputBuffer read new wglVideoOutputBuffer($20C6);
-    public static property VIDEO_OUT_COLOR_AND_DEPTH: wglVideoOutputBuffer read new wglVideoOutputBuffer($20C7);
-    
-    public function ToString: string; override;
-    begin
-      if VIDEO_OUT_COLOR = self then
-        Result := 'VIDEO_OUT_COLOR' else
-      if VIDEO_OUT_ALPHA = self then
-        Result := 'VIDEO_OUT_ALPHA' else
-      if VIDEO_OUT_DEPTH = self then
-        Result := 'VIDEO_OUT_DEPTH' else
-      if VIDEO_OUT_COLOR_AND_ALPHA = self then
-        Result := 'VIDEO_OUT_COLOR_AND_ALPHA' else
-      if VIDEO_OUT_COLOR_AND_DEPTH = self then
-        Result := 'VIDEO_OUT_COLOR_AND_DEPTH' else
-        Result := $'wglVideoOutputBuffer[{self.val}]';
-    end;
-    
-  end;
-  
-  ///
-  wglVideoOutputBufferType = record
-    public val: Int32;
-    public constructor(val: Int32) := self.val := val;
-    
-    public static property VIDEO_OUT_FRAME:              wglVideoOutputBufferType read new wglVideoOutputBufferType($20C8);
-    public static property VIDEO_OUT_FIELD_1:            wglVideoOutputBufferType read new wglVideoOutputBufferType($20C9);
-    public static property VIDEO_OUT_FIELD_2:            wglVideoOutputBufferType read new wglVideoOutputBufferType($20CA);
-    public static property VIDEO_OUT_STACKED_FIELDS_1_2: wglVideoOutputBufferType read new wglVideoOutputBufferType($20CB);
-    public static property VIDEO_OUT_STACKED_FIELDS_2_1: wglVideoOutputBufferType read new wglVideoOutputBufferType($20CC);
-    
-    public function ToString: string; override;
-    begin
-      if VIDEO_OUT_FRAME = self then
-        Result := 'VIDEO_OUT_FRAME' else
-      if VIDEO_OUT_FIELD_1 = self then
-        Result := 'VIDEO_OUT_FIELD_1' else
-      if VIDEO_OUT_FIELD_2 = self then
-        Result := 'VIDEO_OUT_FIELD_2' else
-      if VIDEO_OUT_STACKED_FIELDS_1_2 = self then
-        Result := 'VIDEO_OUT_STACKED_FIELDS_1_2' else
-      if VIDEO_OUT_STACKED_FIELDS_2_1 = self then
-        Result := 'VIDEO_OUT_STACKED_FIELDS_2_1' else
-        Result := $'wglVideoOutputBufferType[{self.val}]';
-    end;
-    
-  end;
-  
-  ///
-  wglWGLColorBufferMask = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property FRONT_COLOR_BUFFER_BIT: wglWGLColorBufferMask read new wglWGLColorBufferMask(1 shl 0);
-    public static property BACK_COLOR_BUFFER_BIT:  wglWGLColorBufferMask read new wglWGLColorBufferMask(1 shl 1);
-    public static property DEPTH_BUFFER_BIT:       wglWGLColorBufferMask read new wglWGLColorBufferMask(1 shl 2);
-    public static property STENCIL_BUFFER_BIT:     wglWGLColorBufferMask read new wglWGLColorBufferMask(1 shl 3);
-    
-    public static function operator+(v1, v2: wglWGLColorBufferMask) := new wglWGLColorBufferMask(v1.val or v2.val);
-    public static function operator or(v1, v2: wglWGLColorBufferMask) := new wglWGLColorBufferMask(v1.val or v2.val);
-    
-    public static procedure operator+=(var v1: wglWGLColorBufferMask; v2: wglWGLColorBufferMask) := v1 := v1+v2;
-    
-    public static function operator in(v1, v2: wglWGLColorBufferMask) := v1.val and v2.val = v1.val;
+    public static function operator in(v1, v2: wglImageBufferMask) := v1.val and v2.val = v1.val;
     
     public function ToString: string; override;
     begin
@@ -25854,112 +25806,7 @@
       var left_val := self.val;
       if left_val=0 then
       begin
-        Result := 'wglWGLColorBufferMask[0]';
-        exit;
-      end;
-      if FRONT_COLOR_BUFFER_BIT in self then
-      begin
-        res += 'FRONT_COLOR_BUFFER_BIT+';
-        left_val := left_val and not FRONT_COLOR_BUFFER_BIT.val;
-      end;
-      if BACK_COLOR_BUFFER_BIT in self then
-      begin
-        res += 'BACK_COLOR_BUFFER_BIT+';
-        left_val := left_val and not BACK_COLOR_BUFFER_BIT.val;
-      end;
-      if DEPTH_BUFFER_BIT in self then
-      begin
-        res += 'DEPTH_BUFFER_BIT+';
-        left_val := left_val and not DEPTH_BUFFER_BIT.val;
-      end;
-      if STENCIL_BUFFER_BIT in self then
-      begin
-        res += 'STENCIL_BUFFER_BIT+';
-        left_val := left_val and not STENCIL_BUFFER_BIT.val;
-      end;
-      if left_val<>0 then
-      begin
-        res += 'wglWGLColorBufferMask[';
-        res += self.val.ToString;
-        res += ']+';
-      end;
-      res.Length -= 1;
-      Result := res.ToString;
-    end;
-    
-  end;
-  
-  ///
-  wglWGLDXInteropMask = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property ACCESS_READ_ONLY:     wglWGLDXInteropMask read new wglWGLDXInteropMask(0);
-    public static property ACCESS_READ_WRITE:    wglWGLDXInteropMask read new wglWGLDXInteropMask(1 shl 0);
-    public static property ACCESS_WRITE_DISCARD: wglWGLDXInteropMask read new wglWGLDXInteropMask(1 shl 1);
-    
-    public property ANY_FLAGS: boolean read self.val<>0;
-    
-    public static function operator+(v1, v2: wglWGLDXInteropMask) := new wglWGLDXInteropMask(v1.val or v2.val);
-    public static function operator or(v1, v2: wglWGLDXInteropMask) := new wglWGLDXInteropMask(v1.val or v2.val);
-    
-    public static procedure operator+=(var v1: wglWGLDXInteropMask; v2: wglWGLDXInteropMask) := v1 := v1+v2;
-    
-    public static function operator in(v1, v2: wglWGLDXInteropMask) := v1.val and v2.val = v1.val;
-    
-    public function ToString: string; override;
-    begin
-      var res := new StringBuilder;
-      var left_val := self.val;
-      if left_val=0 then
-      begin
-        Result := 'ACCESS_READ_ONLY';
-        exit;
-      end;
-      if ACCESS_READ_WRITE in self then
-      begin
-        res += 'ACCESS_READ_WRITE+';
-        left_val := left_val and not ACCESS_READ_WRITE.val;
-      end;
-      if ACCESS_WRITE_DISCARD in self then
-      begin
-        res += 'ACCESS_WRITE_DISCARD+';
-        left_val := left_val and not ACCESS_WRITE_DISCARD.val;
-      end;
-      if left_val<>0 then
-      begin
-        res += 'wglWGLDXInteropMask[';
-        res += self.val.ToString;
-        res += ']+';
-      end;
-      res.Length -= 1;
-      Result := res.ToString;
-    end;
-    
-  end;
-  
-  ///
-  wglWGLImageBufferMask = record
-    public val: UInt32;
-    public constructor(val: UInt32) := self.val := val;
-    
-    public static property IMAGE_BUFFER_MIN_ACCESS: wglWGLImageBufferMask read new wglWGLImageBufferMask(1 shl 0);
-    public static property IMAGE_BUFFER_LOCK:       wglWGLImageBufferMask read new wglWGLImageBufferMask(1 shl 1);
-    
-    public static function operator+(v1, v2: wglWGLImageBufferMask) := new wglWGLImageBufferMask(v1.val or v2.val);
-    public static function operator or(v1, v2: wglWGLImageBufferMask) := new wglWGLImageBufferMask(v1.val or v2.val);
-    
-    public static procedure operator+=(var v1: wglWGLImageBufferMask; v2: wglWGLImageBufferMask) := v1 := v1+v2;
-    
-    public static function operator in(v1, v2: wglWGLImageBufferMask) := v1.val and v2.val = v1.val;
-    
-    public function ToString: string; override;
-    begin
-      var res := new StringBuilder;
-      var left_val := self.val;
-      if left_val=0 then
-      begin
-        Result := 'wglWGLImageBufferMask[0]';
+        Result := 'wglImageBufferMask[0]';
         exit;
       end;
       if IMAGE_BUFFER_MIN_ACCESS in self then
@@ -25974,7 +25821,7 @@
       end;
       if left_val<>0 then
       begin
-        res += 'wglWGLImageBufferMask[';
+        res += 'wglImageBufferMask[';
         res += self.val.ToString;
         res += ']+';
       end;
@@ -25985,48 +25832,48 @@
   end;
   
   ///
-  wglWGLLayerPlaneMask = record
+  wglLayerPlaneMask = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
     
-    public static property SWAP_MAIN_PLANE: wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 0);
-    public static property SWAP_OVERLAY1:   wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 1);
-    public static property SWAP_OVERLAY2:   wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 2);
-    public static property SWAP_OVERLAY3:   wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 3);
-    public static property SWAP_OVERLAY4:   wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 4);
-    public static property SWAP_OVERLAY5:   wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 5);
-    public static property SWAP_OVERLAY6:   wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 6);
-    public static property SWAP_OVERLAY7:   wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 7);
-    public static property SWAP_OVERLAY8:   wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 8);
-    public static property SWAP_OVERLAY9:   wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 9);
-    public static property SWAP_OVERLAY10:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 10);
-    public static property SWAP_OVERLAY11:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 11);
-    public static property SWAP_OVERLAY12:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 12);
-    public static property SWAP_OVERLAY13:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 13);
-    public static property SWAP_OVERLAY14:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 14);
-    public static property SWAP_OVERLAY15:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 15);
-    public static property SWAP_UNDERLAY1:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 16);
-    public static property SWAP_UNDERLAY2:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 17);
-    public static property SWAP_UNDERLAY3:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 18);
-    public static property SWAP_UNDERLAY4:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 19);
-    public static property SWAP_UNDERLAY5:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 20);
-    public static property SWAP_UNDERLAY6:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 21);
-    public static property SWAP_UNDERLAY7:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 22);
-    public static property SWAP_UNDERLAY8:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 23);
-    public static property SWAP_UNDERLAY9:  wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 24);
-    public static property SWAP_UNDERLAY10: wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 25);
-    public static property SWAP_UNDERLAY11: wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 26);
-    public static property SWAP_UNDERLAY12: wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 27);
-    public static property SWAP_UNDERLAY13: wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 28);
-    public static property SWAP_UNDERLAY14: wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 29);
-    public static property SWAP_UNDERLAY15: wglWGLLayerPlaneMask read new wglWGLLayerPlaneMask(1 shl 30);
+    public static property SWAP_MAIN_PLANE: wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 0);
+    public static property SWAP_OVERLAY1:   wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 1);
+    public static property SWAP_OVERLAY2:   wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 2);
+    public static property SWAP_OVERLAY3:   wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 3);
+    public static property SWAP_OVERLAY4:   wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 4);
+    public static property SWAP_OVERLAY5:   wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 5);
+    public static property SWAP_OVERLAY6:   wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 6);
+    public static property SWAP_OVERLAY7:   wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 7);
+    public static property SWAP_OVERLAY8:   wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 8);
+    public static property SWAP_OVERLAY9:   wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 9);
+    public static property SWAP_OVERLAY10:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 10);
+    public static property SWAP_OVERLAY11:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 11);
+    public static property SWAP_OVERLAY12:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 12);
+    public static property SWAP_OVERLAY13:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 13);
+    public static property SWAP_OVERLAY14:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 14);
+    public static property SWAP_OVERLAY15:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 15);
+    public static property SWAP_UNDERLAY1:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 16);
+    public static property SWAP_UNDERLAY2:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 17);
+    public static property SWAP_UNDERLAY3:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 18);
+    public static property SWAP_UNDERLAY4:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 19);
+    public static property SWAP_UNDERLAY5:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 20);
+    public static property SWAP_UNDERLAY6:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 21);
+    public static property SWAP_UNDERLAY7:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 22);
+    public static property SWAP_UNDERLAY8:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 23);
+    public static property SWAP_UNDERLAY9:  wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 24);
+    public static property SWAP_UNDERLAY10: wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 25);
+    public static property SWAP_UNDERLAY11: wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 26);
+    public static property SWAP_UNDERLAY12: wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 27);
+    public static property SWAP_UNDERLAY13: wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 28);
+    public static property SWAP_UNDERLAY14: wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 29);
+    public static property SWAP_UNDERLAY15: wglLayerPlaneMask read new wglLayerPlaneMask(1 shl 30);
     
-    public static function operator+(v1, v2: wglWGLLayerPlaneMask) := new wglWGLLayerPlaneMask(v1.val or v2.val);
-    public static function operator or(v1, v2: wglWGLLayerPlaneMask) := new wglWGLLayerPlaneMask(v1.val or v2.val);
+    public static function operator+(v1, v2: wglLayerPlaneMask) := new wglLayerPlaneMask(v1.val or v2.val);
+    public static function operator or(v1, v2: wglLayerPlaneMask) := new wglLayerPlaneMask(v1.val or v2.val);
     
-    public static procedure operator+=(var v1: wglWGLLayerPlaneMask; v2: wglWGLLayerPlaneMask) := v1 := v1+v2;
+    public static procedure operator+=(var v1: wglLayerPlaneMask; v2: wglLayerPlaneMask) := v1 := v1+v2;
     
-    public static function operator in(v1, v2: wglWGLLayerPlaneMask) := v1.val and v2.val = v1.val;
+    public static function operator in(v1, v2: wglLayerPlaneMask) := v1.val and v2.val = v1.val;
     
     public function ToString: string; override;
     begin
@@ -26034,7 +25881,7 @@
       var left_val := self.val;
       if left_val=0 then
       begin
-        Result := 'wglWGLLayerPlaneMask[0]';
+        Result := 'wglLayerPlaneMask[0]';
         exit;
       end;
       if SWAP_MAIN_PLANE in self then
@@ -26194,12 +26041,316 @@
       end;
       if left_val<>0 then
       begin
-        res += 'wglWGLLayerPlaneMask[';
+        res += 'wglLayerPlaneMask[';
         res += self.val.ToString;
         res += ']+';
       end;
       res.Length -= 1;
       Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
+  wglObjectTypeDX = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property gl_NONE:              wglObjectTypeDX read new wglObjectTypeDX(0);
+    public static property gl_TEXTURE_2D:        wglObjectTypeDX read new wglObjectTypeDX($0DE1);
+    public static property gl_TEXTURE_3D:        wglObjectTypeDX read new wglObjectTypeDX($806F);
+    public static property gl_TEXTURE_RECTANGLE: wglObjectTypeDX read new wglObjectTypeDX($84F5);
+    public static property gl_TEXTURE_CUBE_MAP:  wglObjectTypeDX read new wglObjectTypeDX($8513);
+    public static property gl_RENDERBUFFER:      wglObjectTypeDX read new wglObjectTypeDX($8D41);
+    
+    public function ToString: string; override;
+    begin
+      if gl_NONE = self then
+        Result := 'gl_NONE' else
+      if gl_TEXTURE_2D = self then
+        Result := 'gl_TEXTURE_2D' else
+      if gl_TEXTURE_3D = self then
+        Result := 'gl_TEXTURE_3D' else
+      if gl_TEXTURE_RECTANGLE = self then
+        Result := 'gl_TEXTURE_RECTANGLE' else
+      if gl_TEXTURE_CUBE_MAP = self then
+        Result := 'gl_TEXTURE_CUBE_MAP' else
+      if gl_RENDERBUFFER = self then
+        Result := 'gl_RENDERBUFFER' else
+        Result := $'wglObjectTypeDX[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  wglPBufferAttribute = record
+    public val: Int32;
+    public constructor(val: Int32) := self.val := val;
+    
+    public static property PBUFFER_WIDTH:  wglPBufferAttribute read new wglPBufferAttribute($2034);
+    public static property PBUFFER_HEIGHT: wglPBufferAttribute read new wglPBufferAttribute($2035);
+    public static property PBUFFER_LOST:   wglPBufferAttribute read new wglPBufferAttribute($2036);
+    public static property TEXTURE_FORMAT: wglPBufferAttribute read new wglPBufferAttribute($2072);
+    public static property TEXTURE_TARGET: wglPBufferAttribute read new wglPBufferAttribute($2073);
+    public static property MIPMAP_TEXTURE: wglPBufferAttribute read new wglPBufferAttribute($2074);
+    public static property MIPMAP_LEVEL:   wglPBufferAttribute read new wglPBufferAttribute($207B);
+    public static property CUBE_MAP_FACE:  wglPBufferAttribute read new wglPBufferAttribute($207C);
+    
+    public function ToString: string; override;
+    begin
+      if PBUFFER_WIDTH = self then
+        Result := 'PBUFFER_WIDTH' else
+      if PBUFFER_HEIGHT = self then
+        Result := 'PBUFFER_HEIGHT' else
+      if PBUFFER_LOST = self then
+        Result := 'PBUFFER_LOST' else
+      if TEXTURE_FORMAT = self then
+        Result := 'TEXTURE_FORMAT' else
+      if TEXTURE_TARGET = self then
+        Result := 'TEXTURE_TARGET' else
+      if MIPMAP_TEXTURE = self then
+        Result := 'MIPMAP_TEXTURE' else
+      if MIPMAP_LEVEL = self then
+        Result := 'MIPMAP_LEVEL' else
+      if CUBE_MAP_FACE = self then
+        Result := 'CUBE_MAP_FACE' else
+        Result := $'wglPBufferAttribute[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  wglPixelFormatAttribute = record
+    public val: Int32;
+    public constructor(val: Int32) := self.val := val;
+    
+    public static property NUMBER_PIXEL_FORMATS:    wglPixelFormatAttribute read new wglPixelFormatAttribute($2000);
+    public static property DRAW_TO_WINDOW:          wglPixelFormatAttribute read new wglPixelFormatAttribute($2001);
+    public static property DRAW_TO_BITMAP:          wglPixelFormatAttribute read new wglPixelFormatAttribute($2002);
+    public static property ACCELERATION:            wglPixelFormatAttribute read new wglPixelFormatAttribute($2003);
+    public static property NEED_PALETTE:            wglPixelFormatAttribute read new wglPixelFormatAttribute($2004);
+    public static property NEED_SYSTEM_PALETTE:     wglPixelFormatAttribute read new wglPixelFormatAttribute($2005);
+    public static property SWAP_LAYER_BUFFERS:      wglPixelFormatAttribute read new wglPixelFormatAttribute($2006);
+    public static property SWAP_METHOD:             wglPixelFormatAttribute read new wglPixelFormatAttribute($2007);
+    public static property NUMBER_OVERLAYS:         wglPixelFormatAttribute read new wglPixelFormatAttribute($2008);
+    public static property NUMBER_UNDERLAYS:        wglPixelFormatAttribute read new wglPixelFormatAttribute($2009);
+    public static property TRANSPARENT:             wglPixelFormatAttribute read new wglPixelFormatAttribute($200A);
+    public static property SHARE_DEPTH:             wglPixelFormatAttribute read new wglPixelFormatAttribute($200C);
+    public static property SHARE_STENCIL:           wglPixelFormatAttribute read new wglPixelFormatAttribute($200D);
+    public static property SHARE_ACCUM:             wglPixelFormatAttribute read new wglPixelFormatAttribute($200E);
+    public static property SUPPORT_GDI:             wglPixelFormatAttribute read new wglPixelFormatAttribute($200F);
+    public static property SUPPORT_OPENGL:          wglPixelFormatAttribute read new wglPixelFormatAttribute($2010);
+    public static property DOUBLE_BUFFER:           wglPixelFormatAttribute read new wglPixelFormatAttribute($2011);
+    public static property STEREO:                  wglPixelFormatAttribute read new wglPixelFormatAttribute($2012);
+    public static property PIXEL_TYPE:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2013);
+    public static property COLOR_BITS:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2014);
+    public static property RED_BITS:                wglPixelFormatAttribute read new wglPixelFormatAttribute($2015);
+    public static property RED_SHIFT:               wglPixelFormatAttribute read new wglPixelFormatAttribute($2016);
+    public static property GREEN_BITS:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2017);
+    public static property GREEN_SHIFT:             wglPixelFormatAttribute read new wglPixelFormatAttribute($2018);
+    public static property BLUE_BITS:               wglPixelFormatAttribute read new wglPixelFormatAttribute($2019);
+    public static property BLUE_SHIFT:              wglPixelFormatAttribute read new wglPixelFormatAttribute($201A);
+    public static property ALPHA_BITS:              wglPixelFormatAttribute read new wglPixelFormatAttribute($201B);
+    public static property ALPHA_SHIFT:             wglPixelFormatAttribute read new wglPixelFormatAttribute($201C);
+    public static property ACCUM_BITS:              wglPixelFormatAttribute read new wglPixelFormatAttribute($201D);
+    public static property ACCUM_RED_BITS:          wglPixelFormatAttribute read new wglPixelFormatAttribute($201E);
+    public static property ACCUM_GREEN_BITS:        wglPixelFormatAttribute read new wglPixelFormatAttribute($201F);
+    public static property ACCUM_BLUE_BITS:         wglPixelFormatAttribute read new wglPixelFormatAttribute($2020);
+    public static property ACCUM_ALPHA_BITS:        wglPixelFormatAttribute read new wglPixelFormatAttribute($2021);
+    public static property DEPTH_BITS:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2022);
+    public static property STENCIL_BITS:            wglPixelFormatAttribute read new wglPixelFormatAttribute($2023);
+    public static property AUX_BUFFERS:             wglPixelFormatAttribute read new wglPixelFormatAttribute($2024);
+    public static property DRAW_TO_PBUFFER:         wglPixelFormatAttribute read new wglPixelFormatAttribute($202D);
+    public static property TRANSPARENT_RED_VALUE:   wglPixelFormatAttribute read new wglPixelFormatAttribute($2037);
+    public static property TRANSPARENT_GREEN_VALUE: wglPixelFormatAttribute read new wglPixelFormatAttribute($2038);
+    public static property TRANSPARENT_BLUE_VALUE:  wglPixelFormatAttribute read new wglPixelFormatAttribute($2039);
+    public static property TRANSPARENT_ALPHA_VALUE: wglPixelFormatAttribute read new wglPixelFormatAttribute($203A);
+    public static property TRANSPARENT_INDEX_VALUE: wglPixelFormatAttribute read new wglPixelFormatAttribute($203B);
+    
+    public function ToString: string; override;
+    begin
+      if NUMBER_PIXEL_FORMATS = self then
+        Result := 'NUMBER_PIXEL_FORMATS' else
+      if DRAW_TO_WINDOW = self then
+        Result := 'DRAW_TO_WINDOW' else
+      if DRAW_TO_BITMAP = self then
+        Result := 'DRAW_TO_BITMAP' else
+      if ACCELERATION = self then
+        Result := 'ACCELERATION' else
+      if NEED_PALETTE = self then
+        Result := 'NEED_PALETTE' else
+      if NEED_SYSTEM_PALETTE = self then
+        Result := 'NEED_SYSTEM_PALETTE' else
+      if SWAP_LAYER_BUFFERS = self then
+        Result := 'SWAP_LAYER_BUFFERS' else
+      if SWAP_METHOD = self then
+        Result := 'SWAP_METHOD' else
+      if NUMBER_OVERLAYS = self then
+        Result := 'NUMBER_OVERLAYS' else
+      if NUMBER_UNDERLAYS = self then
+        Result := 'NUMBER_UNDERLAYS' else
+      if TRANSPARENT = self then
+        Result := 'TRANSPARENT' else
+      if SHARE_DEPTH = self then
+        Result := 'SHARE_DEPTH' else
+      if SHARE_STENCIL = self then
+        Result := 'SHARE_STENCIL' else
+      if SHARE_ACCUM = self then
+        Result := 'SHARE_ACCUM' else
+      if SUPPORT_GDI = self then
+        Result := 'SUPPORT_GDI' else
+      if SUPPORT_OPENGL = self then
+        Result := 'SUPPORT_OPENGL' else
+      if DOUBLE_BUFFER = self then
+        Result := 'DOUBLE_BUFFER' else
+      if STEREO = self then
+        Result := 'STEREO' else
+      if PIXEL_TYPE = self then
+        Result := 'PIXEL_TYPE' else
+      if COLOR_BITS = self then
+        Result := 'COLOR_BITS' else
+      if RED_BITS = self then
+        Result := 'RED_BITS' else
+      if RED_SHIFT = self then
+        Result := 'RED_SHIFT' else
+      if GREEN_BITS = self then
+        Result := 'GREEN_BITS' else
+      if GREEN_SHIFT = self then
+        Result := 'GREEN_SHIFT' else
+      if BLUE_BITS = self then
+        Result := 'BLUE_BITS' else
+      if BLUE_SHIFT = self then
+        Result := 'BLUE_SHIFT' else
+      if ALPHA_BITS = self then
+        Result := 'ALPHA_BITS' else
+      if ALPHA_SHIFT = self then
+        Result := 'ALPHA_SHIFT' else
+      if ACCUM_BITS = self then
+        Result := 'ACCUM_BITS' else
+      if ACCUM_RED_BITS = self then
+        Result := 'ACCUM_RED_BITS' else
+      if ACCUM_GREEN_BITS = self then
+        Result := 'ACCUM_GREEN_BITS' else
+      if ACCUM_BLUE_BITS = self then
+        Result := 'ACCUM_BLUE_BITS' else
+      if ACCUM_ALPHA_BITS = self then
+        Result := 'ACCUM_ALPHA_BITS' else
+      if DEPTH_BITS = self then
+        Result := 'DEPTH_BITS' else
+      if STENCIL_BITS = self then
+        Result := 'STENCIL_BITS' else
+      if AUX_BUFFERS = self then
+        Result := 'AUX_BUFFERS' else
+      if DRAW_TO_PBUFFER = self then
+        Result := 'DRAW_TO_PBUFFER' else
+      if TRANSPARENT_RED_VALUE = self then
+        Result := 'TRANSPARENT_RED_VALUE' else
+      if TRANSPARENT_GREEN_VALUE = self then
+        Result := 'TRANSPARENT_GREEN_VALUE' else
+      if TRANSPARENT_BLUE_VALUE = self then
+        Result := 'TRANSPARENT_BLUE_VALUE' else
+      if TRANSPARENT_ALPHA_VALUE = self then
+        Result := 'TRANSPARENT_ALPHA_VALUE' else
+      if TRANSPARENT_INDEX_VALUE = self then
+        Result := 'TRANSPARENT_INDEX_VALUE' else
+        Result := $'wglPixelFormatAttribute[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  wglStereoEmitterState = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property STEREO_EMITTER_ENABLE:  wglStereoEmitterState read new wglStereoEmitterState($2055);
+    public static property STEREO_EMITTER_DISABLE: wglStereoEmitterState read new wglStereoEmitterState($2056);
+    public static property STEREO_POLARITY_NORMAL: wglStereoEmitterState read new wglStereoEmitterState($2057);
+    public static property STEREO_POLARITY_INVERT: wglStereoEmitterState read new wglStereoEmitterState($2058);
+    
+    public function ToString: string; override;
+    begin
+      if STEREO_EMITTER_ENABLE = self then
+        Result := 'STEREO_EMITTER_ENABLE' else
+      if STEREO_EMITTER_DISABLE = self then
+        Result := 'STEREO_EMITTER_DISABLE' else
+      if STEREO_POLARITY_NORMAL = self then
+        Result := 'STEREO_POLARITY_NORMAL' else
+      if STEREO_POLARITY_INVERT = self then
+        Result := 'STEREO_POLARITY_INVERT' else
+        Result := $'wglStereoEmitterState[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  wglVideoCaptureDeviceAttribute = record
+    public val: Int32;
+    public constructor(val: Int32) := self.val := val;
+    
+    public static property UNIQUE_ID: wglVideoCaptureDeviceAttribute read new wglVideoCaptureDeviceAttribute($20CE);
+    
+    public function ToString: string; override;
+    begin
+      if UNIQUE_ID = self then
+        Result := 'UNIQUE_ID' else
+        Result := $'wglVideoCaptureDeviceAttribute[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  wglVideoOutputBuffer = record
+    public val: Int32;
+    public constructor(val: Int32) := self.val := val;
+    
+    public static property VIDEO_OUT_COLOR:           wglVideoOutputBuffer read new wglVideoOutputBuffer($20C3);
+    public static property VIDEO_OUT_ALPHA:           wglVideoOutputBuffer read new wglVideoOutputBuffer($20C4);
+    public static property VIDEO_OUT_DEPTH:           wglVideoOutputBuffer read new wglVideoOutputBuffer($20C5);
+    public static property VIDEO_OUT_COLOR_AND_ALPHA: wglVideoOutputBuffer read new wglVideoOutputBuffer($20C6);
+    public static property VIDEO_OUT_COLOR_AND_DEPTH: wglVideoOutputBuffer read new wglVideoOutputBuffer($20C7);
+    
+    public function ToString: string; override;
+    begin
+      if VIDEO_OUT_COLOR = self then
+        Result := 'VIDEO_OUT_COLOR' else
+      if VIDEO_OUT_ALPHA = self then
+        Result := 'VIDEO_OUT_ALPHA' else
+      if VIDEO_OUT_DEPTH = self then
+        Result := 'VIDEO_OUT_DEPTH' else
+      if VIDEO_OUT_COLOR_AND_ALPHA = self then
+        Result := 'VIDEO_OUT_COLOR_AND_ALPHA' else
+      if VIDEO_OUT_COLOR_AND_DEPTH = self then
+        Result := 'VIDEO_OUT_COLOR_AND_DEPTH' else
+        Result := $'wglVideoOutputBuffer[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  wglVideoOutputBufferType = record
+    public val: Int32;
+    public constructor(val: Int32) := self.val := val;
+    
+    public static property VIDEO_OUT_FRAME:              wglVideoOutputBufferType read new wglVideoOutputBufferType($20C8);
+    public static property VIDEO_OUT_FIELD_1:            wglVideoOutputBufferType read new wglVideoOutputBufferType($20C9);
+    public static property VIDEO_OUT_FIELD_2:            wglVideoOutputBufferType read new wglVideoOutputBufferType($20CA);
+    public static property VIDEO_OUT_STACKED_FIELDS_1_2: wglVideoOutputBufferType read new wglVideoOutputBufferType($20CB);
+    public static property VIDEO_OUT_STACKED_FIELDS_2_1: wglVideoOutputBufferType read new wglVideoOutputBufferType($20CC);
+    
+    public function ToString: string; override;
+    begin
+      if VIDEO_OUT_FRAME = self then
+        Result := 'VIDEO_OUT_FRAME' else
+      if VIDEO_OUT_FIELD_1 = self then
+        Result := 'VIDEO_OUT_FIELD_1' else
+      if VIDEO_OUT_FIELD_2 = self then
+        Result := 'VIDEO_OUT_FIELD_2' else
+      if VIDEO_OUT_STACKED_FIELDS_1_2 = self then
+        Result := 'VIDEO_OUT_STACKED_FIELDS_1_2' else
+      if VIDEO_OUT_STACKED_FIELDS_2_1 = self then
+        Result := 'VIDEO_OUT_STACKED_FIELDS_2_1' else
+        Result := $'wglVideoOutputBufferType[{self.val}]';
     end;
     
   end;

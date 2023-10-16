@@ -1743,6 +1743,7 @@ Enum [gl::RESAMPLE_ZERO_FILL + OML] was not grouped
 Enum [gl::TEXTURE_DEPTH + QCOM] was not grouped
 Enum [gl::TEXTURE_HEIGHT + QCOM] was not grouped
 Enum [gl::TEXTURE_INTERNAL_FORMAT + QCOM] was not grouped
+Enum [gl::TEXTURE_LOD_BIAS + QCOM] was not grouped
 Enum [gl::TEXTURE_TARGET + QCOM] was not grouped
 Enum [gl::TEXTURE_WIDTH + QCOM] was not grouped
 Enum [gl::RGB + S3TC] was not grouped
@@ -2088,12 +2089,11 @@ LoadedBasicType [Screen] was not referenced
 LoadedBasicType [XID] was not referenced
 Group [gl::TraceMask] was not referenced
 Group [wgl::AccelerationType] was not referenced
+Group [wgl::ContextFlagsMask] was not referenced
+Group [wgl::ContextProfileMask] was not referenced
 Group [wgl::PBufferCubeMapFace] was not referenced
 Group [wgl::PBufferTextureFormat] was not referenced
 Group [wgl::PBufferTextureTarget] was not referenced
-Group [wgl::PixelFormatAttribute] was not referenced
 Group [wgl::PixelType] was not referenced
 Group [wgl::SwapMethod] was not referenced
-Group [wgl::WGLContextFlagsMask] was not referenced
-Group [wgl::WGLContextProfileMask] was not referenced
 Func [wgl::GetDefaultProcAddress] was not referenced

@@ -35,6 +35,7 @@ Unable to merge items: Enum [gl::RESAMPLE_REPLICATE + SGIX] Enum [gl::RESAMPLE_R
 Unable to merge items: Enum [gl::RESAMPLE_ZERO_FILL + SGIX] Enum [gl::RESAMPLE_ZERO_FILL + OML]
 Unable to merge Enum [gl::DEPTH_STENCIL + MESA] => Enum [gl::DEPTH_STENCIL + /core\]
 Unable to merge Enum [gl::UNSIGNED_INT_24_8 + MESA] => Enum [gl::UNSIGNED_INT_24_8 + /core\]
+Unable to merge Enum [gl::TEXTURE_LOD_BIAS + QCOM] => Enum [gl::TEXTURE_LOD_BIAS + /core\]
 Unable to merge Enum [gl::PRIMARY_COLOR + NV] => Enum [gl::PRIMARY_COLOR + /core\]
 Unable to merge items: Enum [gl::DISCARD + NV] Enum [gl::DISCARD + ATI]
 Unable to merge Enum [gl::PRIMITIVE_RESTART + NV] => Enum [gl::PRIMITIVE_RESTART + /core\]

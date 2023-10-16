@@ -243,7 +243,6 @@
 	Enum [cl::ME_CHROMA_PREDICTOR_MODE_DC]
 	Enum [cl::ME_VERSION_ADVANCED_VER_1]
 	Enum [cl::ME_CHROMA_INTRA_PREDICT_ENABLED]
-	Enum [cl::ME_SKIP_BLOCK_TYPE_8x8]
 	Enum [cl::ME_COST_PENALTY_LOW]
 	Enum [cl::ME_COST_PRECISION_HPEL]
 	Enum [cl::ME_LUMA_PREDICTOR_MODE_HORIZONTAL]
@@ -261,6 +260,7 @@
 	Enum [cl::ME_LUMA_PREDICTOR_MODE_DIAGONAL_DOWN_LEFT]
 	Enum [cl::ME_CHROMA_PREDICTOR_MODE_PLANE]
 	Enum [cl::ME_BIDIRECTION_INPUT_MODE]
+	Enum [cl::ME_SKIP_BLOCK_TYPE_8x8]
 	Enum [cl::ME_LUMA_PREDICTOR_MODE_DIAGONAL_DOWN_RIGHT]
 	Enum [cl::ME_LUMA_PREDICTOR_MODE_PLANE]
 	Enum [cl::ME_LUMA_PREDICTOR_MODE_VERTICAL_RIGHT]
@@ -631,6 +631,8 @@
 	Func [cl::CommandFillBuffer + KHR]
 	Func [cl::CommandFillImage + KHR]
 	Func [cl::CommandNDRangeKernel + KHR]
+	Func [cl::CommandSVMMemcpy + KHR]
+	Func [cl::CommandSVMMemFill + KHR]
 	Func [cl::GetCommandBufferInfo + KHR]
 
 # clCommandBufferMultiDeviceKHR (cl_khr_command_buffer_multi_device)
@@ -784,6 +786,7 @@
 	Enum [cl::COMMAND_RELEASE_EXTERNAL_MEM_OBJECTS]
 	Enum [cl::DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES]
 	Enum [cl::MEM_DEVICE_HANDLE_LIST]
+	Enum [cl::DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES]
 	Func [cl::EnqueueAcquireExternalMemObjects + KHR]
 	Func [cl::EnqueueReleaseExternalMemObjects + KHR]
 

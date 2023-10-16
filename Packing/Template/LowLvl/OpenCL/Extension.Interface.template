@@ -3120,6 +3120,112 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandNDRangeKernelKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; properties: IntPtr; kernel: cl_kernel; work_dim: UInt32; global_work_offset: IntPtr; global_work_size: IntPtr; local_work_size: IntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): clErrorCode :=
       ntv_CommandNDRangeKernelKHR_8(command_buffer, command_queue, properties, kernel, work_dim, global_work_offset, global_work_size, local_work_size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
     
+    private static function ntv_CommandSVMMemcpyKHR_1(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemcpyKHR';
+    private static function ntv_CommandSVMMemcpyKHR_2(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemcpyKHR';
+    private static function ntv_CommandSVMMemcpyKHR_3(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemcpyKHR';
+    private static function ntv_CommandSVMMemcpyKHR_4(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemcpyKHR';
+    private static function ntv_CommandSVMMemcpyKHR_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemcpyKHR';
+    private static function ntv_CommandSVMMemcpyKHR_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemcpyKHR';
+    private static function ntv_CommandSVMMemcpyKHR_7(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemcpyKHR';
+    private static function ntv_CommandSVMMemcpyKHR_8(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemcpyKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemcpyKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: array of UInt32; mutable_handle: array of cl_mutable_command): clErrorCode;
+    type PUInt32 = ^UInt32;
+    type PCl_mutable_command = ^cl_mutable_command;
+    begin
+      Result := if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+          if (sync_point<>nil) and (sync_point.Length<>0) then
+            ntv_CommandSVMMemcpyKHR_1(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], mutable_handle[0]) else
+            ntv_CommandSVMMemcpyKHR_1(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, sync_point_wait_list[0], PUInt32(nil)^, mutable_handle[0]) else
+          if (sync_point<>nil) and (sync_point.Length<>0) then
+            ntv_CommandSVMMemcpyKHR_1(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, PUInt32(nil)^, sync_point[0], mutable_handle[0]) else
+            ntv_CommandSVMMemcpyKHR_1(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, PUInt32(nil)^, PUInt32(nil)^, mutable_handle[0]) else
+        if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+          if (sync_point<>nil) and (sync_point.Length<>0) then
+            ntv_CommandSVMMemcpyKHR_1(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], PCl_mutable_command(nil)^) else
+            ntv_CommandSVMMemcpyKHR_1(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, sync_point_wait_list[0], PUInt32(nil)^, PCl_mutable_command(nil)^) else
+          if (sync_point<>nil) and (sync_point.Length<>0) then
+            ntv_CommandSVMMemcpyKHR_1(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, PUInt32(nil)^, sync_point[0], PCl_mutable_command(nil)^) else
+            ntv_CommandSVMMemcpyKHR_1(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, PUInt32(nil)^, PUInt32(nil)^, PCl_mutable_command(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemcpyKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): clErrorCode :=
+      ntv_CommandSVMMemcpyKHR_1(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemcpyKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): clErrorCode :=
+      ntv_CommandSVMMemcpyKHR_2(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemcpyKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): clErrorCode :=
+      ntv_CommandSVMMemcpyKHR_3(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemcpyKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): clErrorCode :=
+      ntv_CommandSVMMemcpyKHR_4(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemcpyKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): clErrorCode :=
+      ntv_CommandSVMMemcpyKHR_5(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemcpyKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): clErrorCode :=
+      ntv_CommandSVMMemcpyKHR_6(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemcpyKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): clErrorCode :=
+      ntv_CommandSVMMemcpyKHR_7(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemcpyKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; dst_ptr: IntPtr; src_ptr: IntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): clErrorCode :=
+      ntv_CommandSVMMemcpyKHR_8(command_buffer, command_queue, dst_ptr, src_ptr, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    
+    private static function ntv_CommandSVMMemFillKHR_1(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemFillKHR';
+    private static function ntv_CommandSVMMemFillKHR_2(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemFillKHR';
+    private static function ntv_CommandSVMMemFillKHR_3(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemFillKHR';
+    private static function ntv_CommandSVMMemFillKHR_4(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemFillKHR';
+    private static function ntv_CommandSVMMemFillKHR_5(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemFillKHR';
+    private static function ntv_CommandSVMMemFillKHR_6(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemFillKHR';
+    private static function ntv_CommandSVMMemFillKHR_7(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemFillKHR';
+    private static function ntv_CommandSVMMemFillKHR_8(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): clErrorCode;
+    external 'OpenCL' name 'clCommandSVMMemFillKHR';
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemFillKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: array of UInt32; sync_point: array of UInt32; mutable_handle: array of cl_mutable_command): clErrorCode;
+    type PUInt32 = ^UInt32;
+    type PCl_mutable_command = ^cl_mutable_command;
+    begin
+      Result := if (mutable_handle<>nil) and (mutable_handle.Length<>0) then
+        if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+          if (sync_point<>nil) and (sync_point.Length<>0) then
+            ntv_CommandSVMMemFillKHR_1(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], mutable_handle[0]) else
+            ntv_CommandSVMMemFillKHR_1(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, sync_point_wait_list[0], PUInt32(nil)^, mutable_handle[0]) else
+          if (sync_point<>nil) and (sync_point.Length<>0) then
+            ntv_CommandSVMMemFillKHR_1(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, PUInt32(nil)^, sync_point[0], mutable_handle[0]) else
+            ntv_CommandSVMMemFillKHR_1(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, PUInt32(nil)^, PUInt32(nil)^, mutable_handle[0]) else
+        if (sync_point_wait_list<>nil) and (sync_point_wait_list.Length<>0) then
+          if (sync_point<>nil) and (sync_point.Length<>0) then
+            ntv_CommandSVMMemFillKHR_1(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, sync_point_wait_list[0], sync_point[0], PCl_mutable_command(nil)^) else
+            ntv_CommandSVMMemFillKHR_1(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, sync_point_wait_list[0], PUInt32(nil)^, PCl_mutable_command(nil)^) else
+          if (sync_point<>nil) and (sync_point.Length<>0) then
+            ntv_CommandSVMMemFillKHR_1(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, PUInt32(nil)^, sync_point[0], PCl_mutable_command(nil)^) else
+            ntv_CommandSVMMemFillKHR_1(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, PUInt32(nil)^, PUInt32(nil)^, PCl_mutable_command(nil)^);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemFillKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; var mutable_handle: cl_mutable_command): clErrorCode :=
+      ntv_CommandSVMMemFillKHR_1(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemFillKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; var sync_point: UInt32; mutable_handle: IntPtr): clErrorCode :=
+      ntv_CommandSVMMemFillKHR_2(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemFillKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; var mutable_handle: cl_mutable_command): clErrorCode :=
+      ntv_CommandSVMMemFillKHR_3(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemFillKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; var sync_point_wait_list: UInt32; sync_point: IntPtr; mutable_handle: IntPtr): clErrorCode :=
+      ntv_CommandSVMMemFillKHR_4(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemFillKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; var mutable_handle: cl_mutable_command): clErrorCode :=
+      ntv_CommandSVMMemFillKHR_5(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemFillKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; var sync_point: UInt32; mutable_handle: IntPtr): clErrorCode :=
+      ntv_CommandSVMMemFillKHR_6(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemFillKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; var mutable_handle: cl_mutable_command): clErrorCode :=
+      ntv_CommandSVMMemFillKHR_7(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function CommandSVMMemFillKHR(command_buffer: cl_command_buffer; command_queue: cl_command_queue; svm_ptr: IntPtr; pattern: IntPtr; pattern_size: UIntPtr; size: UIntPtr; num_sync_points_in_wait_list: UInt32; sync_point_wait_list: IntPtr; sync_point: IntPtr; mutable_handle: IntPtr): clErrorCode :=
+      ntv_CommandSVMMemFillKHR_8(command_buffer, command_queue, svm_ptr, pattern, pattern_size, size, num_sync_points_in_wait_list, sync_point_wait_list, sync_point, mutable_handle);
+    
     private static function ntv_GetCommandBufferInfoKHR_1(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
     external 'OpenCL' name 'clGetCommandBufferInfoKHR';
     private static function ntv_GetCommandBufferInfoKHR_2(command_buffer: cl_command_buffer; param_name: clCommandBufferInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode;

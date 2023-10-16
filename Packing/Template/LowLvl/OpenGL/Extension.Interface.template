@@ -32360,8 +32360,8 @@
       ntv_GetGPUIDsAMD_2(maxCount, ids);
     
     private GetGPUInfoAMD_adr := GetProcAddress('wglGetGPUInfoAMD');
-    private ntv_GetGPUInfoAMD_1 := GetProcOrNil&<function(id: UInt32; &property: wglGPUProperty; dataType: DummyEnum; size: UInt32; data: IntPtr): Int32>(GetGPUInfoAMD_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetGPUInfoAMD(id: UInt32; &property: wglGPUProperty; dataType: DummyEnum; size: UInt32; data: IntPtr): Int32 :=
+    private ntv_GetGPUInfoAMD_1 := GetProcOrNil&<function(id: UInt32; &property: wglGPUProperty; dataType: glScalarType; size: UInt32; data: IntPtr): Int32>(GetGPUInfoAMD_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetGPUInfoAMD(id: UInt32; &property: wglGPUProperty; dataType: glScalarType; size: UInt32; data: IntPtr): Int32 :=
       ntv_GetGPUInfoAMD_1(id, &property, dataType, size, data);
     
     private GetContextGPUIDAMD_adr := GetProcAddress('wglGetContextGPUIDAMD');
@@ -32422,8 +32422,8 @@
     public const _ExtStr = 'WGL_ARB_buffer_region';
     
     private CreateBufferRegionARB_adr := GetProcAddress('wglCreateBufferRegionARB');
-    private ntv_CreateBufferRegionARB_1 := GetProcOrNil&<function(hDC: gdi_device_context; iLayerPlane: Int32; uType: wglWGLColorBufferMask): IntPtr>(CreateBufferRegionARB_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateBufferRegionARB(hDC: gdi_device_context; iLayerPlane: Int32; uType: wglWGLColorBufferMask): IntPtr :=
+    private ntv_CreateBufferRegionARB_1 := GetProcOrNil&<function(hDC: gdi_device_context; iLayerPlane: Int32; uType: wglColorBufferMask): IntPtr>(CreateBufferRegionARB_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateBufferRegionARB(hDC: gdi_device_context; iLayerPlane: Int32; uType: wglColorBufferMask): IntPtr :=
       ntv_CreateBufferRegionARB_1(hDC, iLayerPlane, uType);
     
     private DeleteBufferRegionARB_adr := GetProcAddress('wglDeleteBufferRegionARB');
@@ -32607,27 +32607,27 @@
     public const _ExtStr = 'WGL_ARB_pixel_format';
     
     private GetPixelFormatAttribivARB_adr := GetProcAddress('wglGetPixelFormatAttribivARB');
-    private ntv_GetPixelFormatAttribivARB_1 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var piValues: Int32): glBool32>(GetPixelFormatAttribivARB_adr);
-    private ntv_GetPixelFormatAttribivARB_2 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; piValues: IntPtr): glBool32>(GetPixelFormatAttribivARB_adr);
+    private ntv_GetPixelFormatAttribivARB_1 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; var piValues: Int32): glBool32>(GetPixelFormatAttribivARB_adr);
+    private ntv_GetPixelFormatAttribivARB_2 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; piValues: IntPtr): glBool32>(GetPixelFormatAttribivARB_adr);
     private ntv_GetPixelFormatAttribivARB_3 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; var piValues: Int32): glBool32>(GetPixelFormatAttribivARB_adr);
     private ntv_GetPixelFormatAttribivARB_4 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; piValues: IntPtr): glBool32>(GetPixelFormatAttribivARB_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: array of Int32; var piValues: Int32): glBool32;
-    type PInt32 = ^Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: array of wglPixelFormatAttribute; var piValues: Int32): glBool32;
+    type PWglPixelFormatAttribute = ^wglPixelFormatAttribute;
     begin
       Result := if (piAttributes<>nil) and (piAttributes.Length<>0) then
         ntv_GetPixelFormatAttribivARB_1(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes[0], piValues) else
-        ntv_GetPixelFormatAttribivARB_1(hdc, iPixelFormat, iLayerPlane, nAttributes, PInt32(nil)^, piValues);
+        ntv_GetPixelFormatAttribivARB_1(hdc, iPixelFormat, iLayerPlane, nAttributes, PWglPixelFormatAttribute(nil)^, piValues);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: array of Int32; piValues: IntPtr): glBool32;
-    type PInt32 = ^Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: array of wglPixelFormatAttribute; piValues: IntPtr): glBool32;
+    type PWglPixelFormatAttribute = ^wglPixelFormatAttribute;
     begin
       Result := if (piAttributes<>nil) and (piAttributes.Length<>0) then
         ntv_GetPixelFormatAttribivARB_2(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes[0], piValues) else
-        ntv_GetPixelFormatAttribivARB_2(hdc, iPixelFormat, iLayerPlane, nAttributes, PInt32(nil)^, piValues);
+        ntv_GetPixelFormatAttribivARB_2(hdc, iPixelFormat, iLayerPlane, nAttributes, PWglPixelFormatAttribute(nil)^, piValues);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var piValues: Int32): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; var piValues: Int32): glBool32 :=
       ntv_GetPixelFormatAttribivARB_1(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, piValues);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; piValues: IntPtr): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; piValues: IntPtr): glBool32 :=
       ntv_GetPixelFormatAttribivARB_2(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, piValues);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; var piValues: Int32): glBool32 :=
       ntv_GetPixelFormatAttribivARB_3(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, piValues);
@@ -32635,27 +32635,27 @@
       ntv_GetPixelFormatAttribivARB_4(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, piValues);
     
     private GetPixelFormatAttribfvARB_adr := GetProcAddress('wglGetPixelFormatAttribfvARB');
-    private ntv_GetPixelFormatAttribfvARB_1 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var pfValues: single): glBool32>(GetPixelFormatAttribfvARB_adr);
-    private ntv_GetPixelFormatAttribfvARB_2 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; pfValues: IntPtr): glBool32>(GetPixelFormatAttribfvARB_adr);
+    private ntv_GetPixelFormatAttribfvARB_1 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; var pfValues: single): glBool32>(GetPixelFormatAttribfvARB_adr);
+    private ntv_GetPixelFormatAttribfvARB_2 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; pfValues: IntPtr): glBool32>(GetPixelFormatAttribfvARB_adr);
     private ntv_GetPixelFormatAttribfvARB_3 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; var pfValues: single): glBool32>(GetPixelFormatAttribfvARB_adr);
     private ntv_GetPixelFormatAttribfvARB_4 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; pfValues: IntPtr): glBool32>(GetPixelFormatAttribfvARB_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: array of Int32; var pfValues: single): glBool32;
-    type PInt32 = ^Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: array of wglPixelFormatAttribute; var pfValues: single): glBool32;
+    type PWglPixelFormatAttribute = ^wglPixelFormatAttribute;
     begin
       Result := if (piAttributes<>nil) and (piAttributes.Length<>0) then
         ntv_GetPixelFormatAttribfvARB_1(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes[0], pfValues) else
-        ntv_GetPixelFormatAttribfvARB_1(hdc, iPixelFormat, iLayerPlane, nAttributes, PInt32(nil)^, pfValues);
+        ntv_GetPixelFormatAttribfvARB_1(hdc, iPixelFormat, iLayerPlane, nAttributes, PWglPixelFormatAttribute(nil)^, pfValues);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: array of Int32; pfValues: IntPtr): glBool32;
-    type PInt32 = ^Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: array of wglPixelFormatAttribute; pfValues: IntPtr): glBool32;
+    type PWglPixelFormatAttribute = ^wglPixelFormatAttribute;
     begin
       Result := if (piAttributes<>nil) and (piAttributes.Length<>0) then
         ntv_GetPixelFormatAttribfvARB_2(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes[0], pfValues) else
-        ntv_GetPixelFormatAttribfvARB_2(hdc, iPixelFormat, iLayerPlane, nAttributes, PInt32(nil)^, pfValues);
+        ntv_GetPixelFormatAttribfvARB_2(hdc, iPixelFormat, iLayerPlane, nAttributes, PWglPixelFormatAttribute(nil)^, pfValues);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var pfValues: single): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; var pfValues: single): glBool32 :=
       ntv_GetPixelFormatAttribfvARB_1(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, pfValues);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; pfValues: IntPtr): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; pfValues: IntPtr): glBool32 :=
       ntv_GetPixelFormatAttribfvARB_2(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, pfValues);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvARB(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; var pfValues: single): glBool32 :=
       ntv_GetPixelFormatAttribfvARB_3(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, pfValues);
@@ -32992,13 +32992,13 @@
     public const _ExtStr = 'WGL_EXT_pixel_format';
     
     private GetPixelFormatAttribivEXT_adr := GetProcAddress('wglGetPixelFormatAttribivEXT');
-    private ntv_GetPixelFormatAttribivEXT_1 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var piValues: Int32): glBool32>(GetPixelFormatAttribivEXT_adr);
-    private ntv_GetPixelFormatAttribivEXT_2 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; piValues: IntPtr): glBool32>(GetPixelFormatAttribivEXT_adr);
+    private ntv_GetPixelFormatAttribivEXT_1 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; var piValues: Int32): glBool32>(GetPixelFormatAttribivEXT_adr);
+    private ntv_GetPixelFormatAttribivEXT_2 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; piValues: IntPtr): glBool32>(GetPixelFormatAttribivEXT_adr);
     private ntv_GetPixelFormatAttribivEXT_3 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; var piValues: Int32): glBool32>(GetPixelFormatAttribivEXT_adr);
     private ntv_GetPixelFormatAttribivEXT_4 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; piValues: IntPtr): glBool32>(GetPixelFormatAttribivEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivEXT(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var piValues: Int32): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivEXT(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; var piValues: Int32): glBool32 :=
       ntv_GetPixelFormatAttribivEXT_1(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, piValues);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivEXT(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; piValues: IntPtr): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivEXT(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; piValues: IntPtr): glBool32 :=
       ntv_GetPixelFormatAttribivEXT_2(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, piValues);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribivEXT(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; var piValues: Int32): glBool32 :=
       ntv_GetPixelFormatAttribivEXT_3(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, piValues);
@@ -33006,13 +33006,13 @@
       ntv_GetPixelFormatAttribivEXT_4(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, piValues);
     
     private GetPixelFormatAttribfvEXT_adr := GetProcAddress('wglGetPixelFormatAttribfvEXT');
-    private ntv_GetPixelFormatAttribfvEXT_1 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var pfValues: single): glBool32>(GetPixelFormatAttribfvEXT_adr);
-    private ntv_GetPixelFormatAttribfvEXT_2 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; pfValues: IntPtr): glBool32>(GetPixelFormatAttribfvEXT_adr);
+    private ntv_GetPixelFormatAttribfvEXT_1 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; var pfValues: single): glBool32>(GetPixelFormatAttribfvEXT_adr);
+    private ntv_GetPixelFormatAttribfvEXT_2 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; pfValues: IntPtr): glBool32>(GetPixelFormatAttribfvEXT_adr);
     private ntv_GetPixelFormatAttribfvEXT_3 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; var pfValues: single): glBool32>(GetPixelFormatAttribfvEXT_adr);
     private ntv_GetPixelFormatAttribfvEXT_4 := GetProcOrNil&<function(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; pfValues: IntPtr): glBool32>(GetPixelFormatAttribfvEXT_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvEXT(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; var pfValues: single): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvEXT(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; var pfValues: single): glBool32 :=
       ntv_GetPixelFormatAttribfvEXT_1(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, pfValues);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvEXT(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: Int32; pfValues: IntPtr): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvEXT(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; var piAttributes: wglPixelFormatAttribute; pfValues: IntPtr): glBool32 :=
       ntv_GetPixelFormatAttribfvEXT_2(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, pfValues);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPixelFormatAttribfvEXT(hdc: gdi_device_context; iPixelFormat: Int32; iLayerPlane: Int32; nAttributes: UInt32; piAttributes: IntPtr; var pfValues: single): glBool32 :=
       ntv_GetPixelFormatAttribfvEXT_3(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, pfValues);
@@ -33406,8 +33406,8 @@
     public const _ExtStr = 'WGL_I3D_image_buffer';
     
     private CreateImageBufferI3D_adr := GetProcAddress('wglCreateImageBufferI3D');
-    private ntv_CreateImageBufferI3D_1 := GetProcOrNil&<function(hDC: gdi_device_context; dwSize: UInt32; uFlags: wglWGLImageBufferMask): IntPtr>(CreateImageBufferI3D_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateImageBufferI3D(hDC: gdi_device_context; dwSize: UInt32; uFlags: wglWGLImageBufferMask): IntPtr :=
+    private ntv_CreateImageBufferI3D_1 := GetProcOrNil&<function(hDC: gdi_device_context; dwSize: UInt32; uFlags: wglImageBufferMask): IntPtr>(CreateImageBufferI3D_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateImageBufferI3D(hDC: gdi_device_context; dwSize: UInt32; uFlags: wglImageBufferMask): IntPtr :=
       ntv_CreateImageBufferI3D_1(hDC, dwSize, uFlags);
     
     private DestroyImageBufferI3D_adr := GetProcAddress('wglDestroyImageBufferI3D');
@@ -33666,8 +33666,8 @@
       ntv_DXCloseDeviceNV_1(hDevice);
     
     private DXRegisterObjectNV_adr := GetProcAddress('wglDXRegisterObjectNV');
-    private ntv_DXRegisterObjectNV_1 := GetProcOrNil&<function(hDevice: IntPtr; dxObject: IntPtr; name: UInt32; &type: wglObjectTypeDX; access: wglWGLDXInteropMask): IntPtr>(DXRegisterObjectNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DXRegisterObjectNV(hDevice: IntPtr; dxObject: IntPtr; name: UInt32; &type: wglObjectTypeDX; access: wglWGLDXInteropMask): IntPtr :=
+    private ntv_DXRegisterObjectNV_1 := GetProcOrNil&<function(hDevice: IntPtr; dxObject: IntPtr; name: UInt32; &type: wglObjectTypeDX; access: wglDXInteropMask): IntPtr>(DXRegisterObjectNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DXRegisterObjectNV(hDevice: IntPtr; dxObject: IntPtr; name: UInt32; &type: wglObjectTypeDX; access: wglDXInteropMask): IntPtr :=
       ntv_DXRegisterObjectNV_1(hDevice, dxObject, name, &type, access);
     
     private DXUnregisterObjectNV_adr := GetProcAddress('wglDXUnregisterObjectNV');
@@ -33676,8 +33676,8 @@
       ntv_DXUnregisterObjectNV_1(hDevice, hObject);
     
     private DXObjectAccessNV_adr := GetProcAddress('wglDXObjectAccessNV');
-    private ntv_DXObjectAccessNV_1 := GetProcOrNil&<function(hObject: IntPtr; access: wglWGLDXInteropMask): glBool32>(DXObjectAccessNV_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DXObjectAccessNV(hObject: IntPtr; access: wglWGLDXInteropMask): glBool32 :=
+    private ntv_DXObjectAccessNV_1 := GetProcOrNil&<function(hObject: IntPtr; access: wglDXInteropMask): glBool32>(DXObjectAccessNV_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DXObjectAccessNV(hObject: IntPtr; access: wglDXInteropMask): glBool32 :=
       ntv_DXObjectAccessNV_1(hObject, access);
     
     private DXLockObjectsNV_adr := GetProcAddress('wglDXLockObjectsNV');
@@ -34167,8 +34167,8 @@
       ntv_SwapBuffersMscOML_1(hdc, target_msc, divisor, remainder);
     
     private SwapLayerBuffersMscOML_adr := GetProcAddress('wglSwapLayerBuffersMscOML');
-    private ntv_SwapLayerBuffersMscOML_1 := GetProcOrNil&<function(hdc: gdi_device_context; fuPlanes: wglWGLLayerPlaneMask; target_msc: Int64; divisor: Int64; remainder: Int64): Int64>(SwapLayerBuffersMscOML_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SwapLayerBuffersMscOML(hdc: gdi_device_context; fuPlanes: wglWGLLayerPlaneMask; target_msc: Int64; divisor: Int64; remainder: Int64): Int64 :=
+    private ntv_SwapLayerBuffersMscOML_1 := GetProcOrNil&<function(hdc: gdi_device_context; fuPlanes: wglLayerPlaneMask; target_msc: Int64; divisor: Int64; remainder: Int64): Int64>(SwapLayerBuffersMscOML_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SwapLayerBuffersMscOML(hdc: gdi_device_context; fuPlanes: wglLayerPlaneMask; target_msc: Int64; divisor: Int64; remainder: Int64): Int64 :=
       ntv_SwapLayerBuffersMscOML_1(hdc, fuPlanes, target_msc, divisor, remainder);
     
     private WaitForMscOML_adr := GetProcAddress('wglWaitForMscOML');

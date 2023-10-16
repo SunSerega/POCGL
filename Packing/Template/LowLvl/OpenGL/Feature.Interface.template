@@ -12260,9 +12260,9 @@
       ntv_ShareLists_1(hrcSrvShare, hrcSrvSource);
     
     // added in wgl1.0
-    private static function ntv_SwapLayerBuffers_1(hdc: gdi_device_context; fuFlags: wglWGLLayerPlaneMask): glBool32;
+    private static function ntv_SwapLayerBuffers_1(hdc: gdi_device_context; fuFlags: wglLayerPlaneMask): glBool32;
     external 'opengl32.dll' name 'wglSwapLayerBuffers';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SwapLayerBuffers(hdc: gdi_device_context; fuFlags: wglWGLLayerPlaneMask): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SwapLayerBuffers(hdc: gdi_device_context; fuFlags: wglLayerPlaneMask): glBool32 :=
       ntv_SwapLayerBuffers_1(hdc, fuFlags);
     
     // added in wgl1.0

@@ -1759,6 +1759,7 @@
     public static property DEVICE_SEMAPHORE_IMPORT_HANDLE_TYPES:                             clDeviceInfo read new clDeviceInfo($204D);
     public static property DEVICE_SEMAPHORE_EXPORT_HANDLE_TYPES:                             clDeviceInfo read new clDeviceInfo($204E);
     public static property DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES:                       clDeviceInfo read new clDeviceInfo($204F);
+    public static property DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES:  clDeviceInfo read new clDeviceInfo($2052);
     public static property DEVICE_COMPUTE_CAPABILITY_MAJOR:                                  clDeviceInfo read new clDeviceInfo($4000);
     public static property DEVICE_COMPUTE_CAPABILITY_MINOR:                                  clDeviceInfo read new clDeviceInfo($4001);
     public static property DEVICE_REGISTERS_PER_BLOCK:                                       clDeviceInfo read new clDeviceInfo($4002);
@@ -2090,6 +2091,8 @@
         Result := 'DEVICE_SEMAPHORE_EXPORT_HANDLE_TYPES' else
       if DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES = self then
         Result := 'DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES' else
+      if DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES = self then
+        Result := 'DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES' else
       if DEVICE_COMPUTE_CAPABILITY_MAJOR = self then
         Result := 'DEVICE_COMPUTE_CAPABILITY_MAJOR' else
       if DEVICE_COMPUTE_CAPABILITY_MINOR = self then

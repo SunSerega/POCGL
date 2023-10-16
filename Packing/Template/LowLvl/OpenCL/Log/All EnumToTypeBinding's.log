@@ -459,6 +459,9 @@ array of clExternalSemaphoreHandleType
 --- DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES
 !output
 array of clExternalMemoryHandleType
+--- DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES
+!output
+array of clExternalMemoryHandleType
 --- DEVICE_COMPUTE_CAPABILITY_MAJOR
 !output
 UInt32

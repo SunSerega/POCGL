@@ -42532,12 +42532,12 @@ hrcSrvSource: gdi_rendering_context
 !ppt
 Result:  glBool32
 hdc:     gdi_device_context
-fuFlags: wglWGLLayerPlaneMask
+fuFlags: wglLayerPlaneMask
 !ffo
 1
-	glBool32 | gdi_device_context | wglWGLLayerPlaneMask |
-	-------- | ------------------ | -------------------- |
-	         | hdc                | fuFlags              |
+	glBool32 | gdi_device_context | wglLayerPlaneMask |
+	-------- | ------------------ | ----------------- |
+	         | hdc                | fuFlags           |
 
 # wgl::UseFontBitmaps
 !ppt
@@ -42733,14 +42733,14 @@ ids:      var UInt32 / IntPtr
 Result:   Int32
 id:       UInt32
 property: wglGPUProperty
-dataType: DummyEnum
+dataType: glScalarType
 size:     UInt32
 data:     IntPtr
 !ffo
 1
-	Int32 | UInt32 | wglGPUProperty | DummyEnum | UInt32 | IntPtr |
-	----- | ------ | -------------- | --------- | ------ | ------ |
-	      | id     | property       | dataType  | size   | data   |
+	Int32 | UInt32 | wglGPUProperty | glScalarType | UInt32 | IntPtr |
+	----- | ------ | -------------- | ------------ | ------ | ------ |
+	      | id     | property       | dataType     | size   | data   |
 
 # wgl::MakeAssociatedContextCurrent + AMD
 !ppt
@@ -42799,12 +42799,12 @@ nNumFormats:   array of UInt32 / var UInt32 / IntPtr
 Result:      IntPtr
 hDC:         gdi_device_context
 iLayerPlane: Int32
-uType:       wglWGLColorBufferMask
+uType:       wglColorBufferMask
 !ffo
 1
-	IntPtr | gdi_device_context | Int32       | wglWGLColorBufferMask |
-	------ | ------------------ | ----------- | --------------------- |
-	       | hDC                | iLayerPlane | uType                 |
+	IntPtr | gdi_device_context | Int32       | wglColorBufferMask |
+	------ | ------------------ | ----------- | ------------------ |
+	       | hDC                | iLayerPlane | uType              |
 
 # wgl::CreateContextAttribs + ARB
 !ppt
@@ -42889,18 +42889,18 @@ hdc:          gdi_device_context
 iPixelFormat: Int32
 iLayerPlane:  Int32
 nAttributes:  UInt32
-piAttributes: array of Int32 const / var Int32 const / IntPtr const
+piAttributes: array of wglPixelFormatAttribute const / var wglPixelFormatAttribute const / IntPtr const
 pfValues:     var single / IntPtr
 !ffo
 6
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | array of Int32 const | var single |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | array of Int32 const | IntPtr     |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var Int32 const      | var single |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var Int32 const      | IntPtr     |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr const         | var single |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr const         | IntPtr     |
-	-------- | ------------------ | ------------ | ----------- | ----------- | -------------------- | ---------- |
-	         | hdc                | iPixelFormat | iLayerPlane | nAttributes | piAttributes         | pfValues   |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | array of wglPixelFormatAttribute const | var single |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | array of wglPixelFormatAttribute const | IntPtr     |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var wglPixelFormatAttribute const      | var single |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var wglPixelFormatAttribute const      | IntPtr     |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr const                           | var single |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr const                           | IntPtr     |
+	-------- | ------------------ | ------------ | ----------- | ----------- | -------------------------------------- | ---------- |
+	         | hdc                | iPixelFormat | iLayerPlane | nAttributes | piAttributes                           | pfValues   |
 
 # wgl::GetPixelFormatAttribiv + ARB
 !ppt
@@ -42909,18 +42909,18 @@ hdc:          gdi_device_context
 iPixelFormat: Int32
 iLayerPlane:  Int32
 nAttributes:  UInt32
-piAttributes: array of Int32 const / var Int32 const / IntPtr const
+piAttributes: array of wglPixelFormatAttribute const / var wglPixelFormatAttribute const / IntPtr const
 piValues:     var Int32 / IntPtr
 !ffo
 6
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | array of Int32 const | var Int32 |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | array of Int32 const | IntPtr    |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var Int32 const      | var Int32 |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var Int32 const      | IntPtr    |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr const         | var Int32 |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr const         | IntPtr    |
-	-------- | ------------------ | ------------ | ----------- | ----------- | -------------------- | --------- |
-	         | hdc                | iPixelFormat | iLayerPlane | nAttributes | piAttributes         | piValues  |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | array of wglPixelFormatAttribute const | var Int32 |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | array of wglPixelFormatAttribute const | IntPtr    |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var wglPixelFormatAttribute const      | var Int32 |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var wglPixelFormatAttribute const      | IntPtr    |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr const                           | var Int32 |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr const                           | IntPtr    |
+	-------- | ------------------ | ------------ | ----------- | ----------- | -------------------------------------- | --------- |
+	         | hdc                | iPixelFormat | iLayerPlane | nAttributes | piAttributes                           | piValues  |
 
 # wgl::MakeContextCurrent + ARB
 !ppt
@@ -43130,16 +43130,16 @@ hdc:          gdi_device_context
 iPixelFormat: Int32
 iLayerPlane:  Int32
 nAttributes:  UInt32
-piAttributes: var Int32 / IntPtr
+piAttributes: var wglPixelFormatAttribute / IntPtr
 pfValues:     var single / IntPtr
 !ffo
 4
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var Int32    | var single |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var Int32    | IntPtr     |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr       | var single |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr       | IntPtr     |
-	-------- | ------------------ | ------------ | ----------- | ----------- | ------------ | ---------- |
-	         | hdc                | iPixelFormat | iLayerPlane | nAttributes | piAttributes | pfValues   |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var wglPixelFormatAttribute | var single |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var wglPixelFormatAttribute | IntPtr     |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr                      | var single |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr                      | IntPtr     |
+	-------- | ------------------ | ------------ | ----------- | ----------- | --------------------------- | ---------- |
+	         | hdc                | iPixelFormat | iLayerPlane | nAttributes | piAttributes                | pfValues   |
 
 # wgl::GetPixelFormatAttribiv + EXT
 !ppt
@@ -43148,16 +43148,16 @@ hdc:          gdi_device_context
 iPixelFormat: Int32
 iLayerPlane:  Int32
 nAttributes:  UInt32
-piAttributes: var Int32 / IntPtr
+piAttributes: var wglPixelFormatAttribute / IntPtr
 piValues:     var Int32 / IntPtr
 !ffo
 4
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var Int32    | var Int32 |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var Int32    | IntPtr    |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr       | var Int32 |
-	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr       | IntPtr    |
-	-------- | ------------------ | ------------ | ----------- | ----------- | ------------ | --------- |
-	         | hdc                | iPixelFormat | iLayerPlane | nAttributes | piAttributes | piValues  |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var wglPixelFormatAttribute | var Int32 |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | var wglPixelFormatAttribute | IntPtr    |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr                      | var Int32 |
+	glBool32 | gdi_device_context | Int32        | Int32       | UInt32      | IntPtr                      | IntPtr    |
+	-------- | ------------------ | ------------ | ----------- | ----------- | --------------------------- | --------- |
+	         | hdc                | iPixelFormat | iLayerPlane | nAttributes | piAttributes                | piValues  |
 
 # wgl::GetSwapInterval + EXT
 !ppt
@@ -43260,12 +43260,12 @@ Result: glBool32
 Result: IntPtr
 hDC:    gdi_device_context
 dwSize: UInt32
-uFlags: wglWGLImageBufferMask
+uFlags: wglImageBufferMask
 !ffo
 1
-	IntPtr | gdi_device_context | UInt32 | wglWGLImageBufferMask |
-	------ | ------------------ | ------ | --------------------- |
-	       | hDC                | dwSize | uFlags                |
+	IntPtr | gdi_device_context | UInt32 | wglImageBufferMask |
+	------ | ------------------ | ------ | ------------------ |
+	       | hDC                | dwSize | uFlags             |
 
 # wgl::DestroyImageBuffer + I3D
 !ppt
@@ -43755,12 +43755,12 @@ hObjects: array of IntPtr / var IntPtr / pointer
 !ppt
 Result:  glBool32
 hObject: IntPtr
-access:  wglWGLDXInteropMask
+access:  wglDXInteropMask
 !ffo
 1
-	glBool32 | IntPtr  | wglWGLDXInteropMask |
-	-------- | ------- | ------------------- |
-	         | hObject | access              |
+	glBool32 | IntPtr  | wglDXInteropMask |
+	-------- | ------- | ---------------- |
+	         | hObject | access           |
 
 # wgl::DXOpenDevice + NV
 !ppt
@@ -43779,12 +43779,12 @@ hDevice:  IntPtr
 dxObject: IntPtr
 name:     UInt32
 type:     wglObjectTypeDX
-access:   wglWGLDXInteropMask
+access:   wglDXInteropMask
 !ffo
 1
-	IntPtr | IntPtr  | IntPtr   | UInt32 | wglObjectTypeDX | wglWGLDXInteropMask |
-	------ | ------- | -------- | ------ | --------------- | ------------------- |
-	       | hDevice | dxObject | name   | type            | access              |
+	IntPtr | IntPtr  | IntPtr   | UInt32 | wglObjectTypeDX | wglDXInteropMask |
+	------ | ------- | -------- | ------ | --------------- | ---------------- |
+	       | hDevice | dxObject | name   | type            | access           |
 
 # wgl::DXSetResourceShareHandle + NV
 !ppt
@@ -44130,15 +44130,15 @@ remainder:  Int64
 !ppt
 Result:     Int64
 hdc:        gdi_device_context
-fuPlanes:   wglWGLLayerPlaneMask
+fuPlanes:   wglLayerPlaneMask
 target_msc: Int64
 divisor:    Int64
 remainder:  Int64
 !ffo
 1
-	Int64 | gdi_device_context | wglWGLLayerPlaneMask | Int64      | Int64   | Int64     |
-	----- | ------------------ | -------------------- | ---------- | ------- | --------- |
-	      | hdc                | fuPlanes             | target_msc | divisor | remainder |
+	Int64 | gdi_device_context | wglLayerPlaneMask | Int64      | Int64   | Int64     |
+	----- | ------------------ | ----------------- | ---------- | ------- | --------- |
+	      | hdc                | fuPlanes          | target_msc | divisor | remainder |
 
 # wgl::WaitForMsc + OML
 !ppt

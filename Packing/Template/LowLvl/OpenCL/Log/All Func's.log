@@ -1551,7 +1551,7 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-202
+204
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | var T                                                     | var UIntPtr          |
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | var T                                                     | IntPtr               |
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | pointer                                                   | var UIntPtr          |
@@ -1702,6 +1702,8 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_SEMAPHORE_EXPORT_HANDLE_TYPES                             | UInt32           | var clExternalSemaphoreHandleType                         | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES                       | *                | var array of clExternalMemoryHandleType                   | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES                       | UInt32           | var clExternalMemoryHandleType                            | *                    |
+	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES  | *                | var array of clExternalMemoryHandleType                   | *                    |
+	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES  | UInt32           | var clExternalMemoryHandleType                            | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_COMPUTE_CAPABILITY_MAJOR                                  | *                | var UInt32                                                | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_COMPUTE_CAPABILITY_MINOR                                  | *                | var UInt32                                                | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_REGISTERS_PER_BLOCK                                       | *                | var UInt32                                                | *                    |
@@ -3999,6 +4001,59 @@ mutable_handle:               var cl_mutable_command / IntPtr
 	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr const                               | cl_kernel | UInt32   | IntPtr const       | IntPtr const      | IntPtr const      | UInt32                       | IntPtr const         | var UInt32 | IntPtr                 |
 	----------- | ----------------- | ---------------- | ------------------------------------------ | --------- | -------- | ------------------ | ----------------- | ----------------- | ---------------------------- | -------------------- | ---------- | ---------------------- |
 	            | command_buffer    | command_queue    | properties                                 | kernel    | work_dim | global_work_offset | global_work_size  | local_work_size   | num_sync_points_in_wait_list | sync_point_wait_list | sync_point | mutable_handle         |
+
+# cl::CommandSVMMemcpy + KHR
+!ppt
+Result:                       clErrorCode
+command_buffer:               cl_command_buffer
+command_queue:                cl_command_queue
+dst_ptr:                      IntPtr
+src_ptr:                      IntPtr const
+size:                         UIntPtr
+num_sync_points_in_wait_list: UInt32
+sync_point_wait_list:         array of UInt32 const / var UInt32 const / IntPtr const
+sync_point:                   array of UInt32 / var UInt32 / IntPtr
+mutable_handle:               array of cl_mutable_command / var cl_mutable_command / IntPtr
+!ffo
+9
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr | UInt32                       | array of UInt32 const | array of UInt32 | array of cl_mutable_command |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr | UInt32                       | var UInt32 const      | var UInt32      | var cl_mutable_command      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr | UInt32                       | var UInt32 const      | var UInt32      | IntPtr                      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr | UInt32                       | var UInt32 const      | IntPtr          | var cl_mutable_command      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr | UInt32                       | var UInt32 const      | IntPtr          | IntPtr                      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr | UInt32                       | IntPtr const          | var UInt32      | var cl_mutable_command      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr | UInt32                       | IntPtr const          | var UInt32      | IntPtr                      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr | UInt32                       | IntPtr const          | IntPtr          | var cl_mutable_command      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr | UInt32                       | IntPtr const          | IntPtr          | IntPtr                      |
+	----------- | ----------------- | ---------------- | ------- | ------------ | ------- | ---------------------------- | --------------------- | --------------- | --------------------------- |
+	            | command_buffer    | command_queue    | dst_ptr | src_ptr      | size    | num_sync_points_in_wait_list | sync_point_wait_list  | sync_point      | mutable_handle              |
+
+# cl::CommandSVMMemFill + KHR
+!ppt
+Result:                       clErrorCode
+command_buffer:               cl_command_buffer
+command_queue:                cl_command_queue
+svm_ptr:                      IntPtr
+pattern:                      IntPtr const
+pattern_size:                 UIntPtr
+size:                         UIntPtr
+num_sync_points_in_wait_list: UInt32
+sync_point_wait_list:         array of UInt32 const / var UInt32 const / IntPtr const
+sync_point:                   array of UInt32 / var UInt32 / IntPtr
+mutable_handle:               array of cl_mutable_command / var cl_mutable_command / IntPtr
+!ffo
+9
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr      | UIntPtr | UInt32                       | array of UInt32 const | array of UInt32 | array of cl_mutable_command |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr      | UIntPtr | UInt32                       | var UInt32 const      | var UInt32      | var cl_mutable_command      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr      | UIntPtr | UInt32                       | var UInt32 const      | var UInt32      | IntPtr                      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr      | UIntPtr | UInt32                       | var UInt32 const      | IntPtr          | var cl_mutable_command      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr      | UIntPtr | UInt32                       | var UInt32 const      | IntPtr          | IntPtr                      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr      | UIntPtr | UInt32                       | IntPtr const          | var UInt32      | var cl_mutable_command      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr      | UIntPtr | UInt32                       | IntPtr const          | var UInt32      | IntPtr                      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr      | UIntPtr | UInt32                       | IntPtr const          | IntPtr          | var cl_mutable_command      |
+	clErrorCode | cl_command_buffer | cl_command_queue | IntPtr  | IntPtr const | UIntPtr      | UIntPtr | UInt32                       | IntPtr const          | IntPtr          | IntPtr                      |
+	----------- | ----------------- | ---------------- | ------- | ------------ | ------------ | ------- | ---------------------------- | --------------------- | --------------- | --------------------------- |
+	            | command_buffer    | command_queue    | svm_ptr | pattern      | pattern_size | size    | num_sync_points_in_wait_list | sync_point_wait_list  | sync_point      | mutable_handle              |
 
 # cl::CreateCommandBuffer + KHR
 !ppt

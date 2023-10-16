@@ -56,13 +56,13 @@ ScrapXML[OpenCL]: Parsing "cl"
 ScrapXML[OpenCL]: Constructing named items
 ScrapXML[OpenCL]: Saving as binary
 ScrapXML[OpenCL]: VendorSuffix: Saved 11 items
-ScrapXML[OpenCL]: Enum: Saved 1117 items
+ScrapXML[OpenCL]: Enum: Saved 1118 items
 ScrapXML[OpenCL]: BasicType: Saved 30 items
 ScrapXML[OpenCL]: Group: Saved 119 items
 ScrapXML[OpenCL]: IdClass: Saved 18 items
 ScrapXML[OpenCL]: Struct: Saved 16 items
 ScrapXML[OpenCL]: Delegate: Saved 8 items
-ScrapXML[OpenCL]: Func: Saved 237 items
+ScrapXML[OpenCL]: Func: Saved 239 items
 ScrapXML[OpenCL]: Feature: Saved 7 items
 ScrapXML[OpenCL]: Extension: Saved 104 items
 ScrapXML[OpenCL]: Done
@@ -76,14 +76,14 @@ ScrapXML[OpenGL]: Parsing "glx"
 ScrapXML[OpenGL]: Constructing named items
 ScrapXML[OpenGL]: Saving as binary
 ScrapXML[OpenGL]: VendorSuffix: Saved 35 items
-ScrapXML[OpenGL]: Enum: Saved 4762 items
+ScrapXML[OpenGL]: Enum: Saved 4763 items
 ScrapXML[OpenGL]: BasicType: Saved 116 items
 ScrapXML[OpenGL]: Group: Saved 323 items
 ScrapXML[OpenGL]: IdClass: Saved 15 items
 ScrapXML[OpenGL]: Delegate: Saved 5 items
 ScrapXML[OpenGL]: Func: Saved 3573 items
 ScrapXML[OpenGL]: Feature: Saved 32 items
-ScrapXML[OpenGL]: Extension: Saved 1140 items
+ScrapXML[OpenGL]: Extension: Saved 1142 items
 ScrapXML[OpenGL]: Done
 Finished runing ScrapXML[OpenGL]
 =================================== References ===================================
@@ -251,7 +251,7 @@ Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Group: Pac
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: IdClass: Packed 28 items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Struct: Packed 17 items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Delegate: Packed 7 items
-Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Func: Packed 237 items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Func: Packed 239 items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Feature: Packed 1 items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Extension: Packed 104 items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Cleanup
@@ -363,7 +363,7 @@ Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Dumping Id
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Dumping Struct items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Dumping Delegate items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: PascalBasicType: Packed 17 items
-Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Group: Packed 313 items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Group: Packed 314 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: IdClass: Packed 51 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Struct: Packed 4 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Delegate: Packed 4 items

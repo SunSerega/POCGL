@@ -642,6 +642,10 @@
     begin
       cl.GetDeviceInfo_DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
     end;
+    private function GetExternalMemoryImportAssumeLinearImagesHandleTypes: array of clExternalMemoryHandleType;
+    begin
+      cl.GetDeviceInfo_DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES(self.ntv, Result).RaiseIfError;
+    end;
     private function GetComputeCapabilityMajor: UInt32;
     begin
       cl.GetDeviceInfo_DEVICE_COMPUTE_CAPABILITY_MAJOR(self.ntv, Result).RaiseIfError;
@@ -960,6 +964,7 @@
     public property SemaphoreImportHandleTypes:                          array of clExternalSemaphoreHandleType                read GetSemaphoreImportHandleTypes;
     public property SemaphoreExportHandleTypes:                          array of clExternalSemaphoreHandleType                read GetSemaphoreExportHandleTypes;
     public property ExternalMemoryImportHandleTypes:                     array of clExternalMemoryHandleType                   read GetExternalMemoryImportHandleTypes;
+    public property ExternalMemoryImportAssumeLinearImagesHandleTypes:   array of clExternalMemoryHandleType                   read GetExternalMemoryImportAssumeLinearImagesHandleTypes;
     public property ComputeCapabilityMajor:                              UInt32                                                read GetComputeCapabilityMajor;
     public property ComputeCapabilityMinor:                              UInt32                                                read GetComputeCapabilityMinor;
     public property RegistersPerBlock:                                   UInt32                                                read GetRegistersPerBlock;
@@ -1146,6 +1151,7 @@
       res += 'SemaphoreImportHandleTypes                          = '; AddProp(res, GetSemaphoreImportHandleTypes                         ); res += #10;
       res += 'SemaphoreExportHandleTypes                          = '; AddProp(res, GetSemaphoreExportHandleTypes                         ); res += #10;
       res += 'ExternalMemoryImportHandleTypes                     = '; AddProp(res, GetExternalMemoryImportHandleTypes                    ); res += #10;
+      res += 'ExternalMemoryImportAssumeLinearImagesHandleTypes   = '; AddProp(res, GetExternalMemoryImportAssumeLinearImagesHandleTypes  ); res += #10;
       res += 'ComputeCapabilityMajor                              = '; AddProp(res, GetComputeCapabilityMajor                             ); res += #10;
       res += 'ComputeCapabilityMinor                              = '; AddProp(res, GetComputeCapabilityMinor                             ); res += #10;
       res += 'RegistersPerBlock                                   = '; AddProp(res, GetRegistersPerBlock                                  ); res += #10;

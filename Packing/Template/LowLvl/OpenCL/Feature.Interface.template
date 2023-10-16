@@ -4761,6 +4761,25 @@
       var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<clExternalMemoryHandleType>);
       Result := GetDeviceInfo(device, clDeviceInfo.DEVICE_EXTERNAL_MEMORY_IMPORT_HANDLE_TYPES, param_value_sz,param_value,IntPtr.Zero);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES(device: cl_device_id; var param_value: array of clExternalMemoryHandleType): clErrorCode;
+    begin
+      var param_value_sz: UIntPtr;
+      Result := ntv_GetDeviceInfo_3(device, clDeviceInfo.DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES, UIntPtr.Zero,nil,param_value_sz);
+      if Result.IS_ERROR then exit;
+      if param_value_sz = UIntPtr.Zero then
+      begin
+        param_value := nil;
+        exit;
+      end;
+      var param_value_temp_res := new clExternalMemoryHandleType[param_value_sz.ToUInt64 div Marshal.SizeOf&<clExternalMemoryHandleType>];
+      Result := GetDeviceInfo(device, clDeviceInfo.DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES, param_value_sz,param_value_temp_res[0],IntPtr.Zero);
+      param_value := param_value_temp_res;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES(device: cl_device_id; param_value_count: UInt32; var param_value: clExternalMemoryHandleType): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<clExternalMemoryHandleType>);
+      Result := GetDeviceInfo(device, clDeviceInfo.DEVICE_EXTERNAL_MEMORY_IMPORT_ASSUME_LINEAR_IMAGES_HANDLE_TYPES, param_value_sz,param_value,IntPtr.Zero);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_COMPUTE_CAPABILITY_MAJOR(device: cl_device_id; var param_value: UInt32; param_value_validate_size: boolean := false): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<UInt32>);
