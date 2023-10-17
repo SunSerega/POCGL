@@ -14,5 +14,3 @@ CLContext.Default.SyncInvoke(
     Result := true;
   end)
 );
-
-;

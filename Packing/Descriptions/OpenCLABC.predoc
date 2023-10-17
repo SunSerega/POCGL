@@ -7903,27 +7903,22 @@ type
     
     {$region Event status}
     
-    {$ifdef DEBUG}
-    public static function GetStatus(ev: cl_event): clCommandExecutionStatus;
+    private static function GetStatus(ev: cl_event): clCommandExecutionStatus;
     begin
-      {$ifdef EventDebug}
-      EventDebug.VerifyExists(ev, $'checking event status');
-      {$endif EventDebug}
       OpenCLABCInternalException.RaiseIfError(
         cl.GetEventInfo_EVENT_COMMAND_EXECUTION_STATUS(ev, Result, false)
       );
     end;
-    {$endif DEBUG}
     
     {$ifdef DEBUG}
     public static function HasCompleted(ev: cl_event): boolean;
     begin
+      {$ifdef EventDebug}
+      EventDebug.VerifyExists(ev, $'checking event status');
+      {$endif EventDebug}
       var st := GetStatus(ev);
-      Result := (st=clCommandExecutionStatus.COMPLETE) or (st.val<0);
+      Result := (st=clCommandExecutionStatus.COMPLETE) or st.IS_ERROR;
     end;
-    {$endif DEBUG}
-    
-    {$ifdef DEBUG}
     public function HasCompleted: boolean;
     begin
       Result := false;
@@ -7933,6 +7928,16 @@ type
       Result := true;
     end;
     {$endif DEBUG}
+    
+    public static function HasError(ev: cl_event) := GetStatus(ev).IS_ERROR;
+    public function HasError: boolean;
+    begin
+      Result := true;
+      for var i := 0 to count-1 do
+        if HasError(evs[i]) then
+          exit;
+      Result := false;
+    end;
     
     {$endregion Event status}
     
@@ -16634,14 +16639,24 @@ type
       end;
       
       var (enq_ev, act) := direct_enq_res;
+      Result.Item2 := act;
+      
+      // NVidia implementation doesn't create event if ev_l2.HasError
       if enq_ev=cl_event.Zero then exit;
+      // Optimize the same way for the rest of implementations
+      // Also makes sure the debug event count is the same for all vendors
+      if EventList.HasError(enq_ev) or ev_l2.HasError then
+      begin
+        cl.ReleaseEvent(enq_ev).RaiseIfError;
+        exit;
+      end;
       
       {$ifdef EventDebug}
-      EventDebug.RegisterEventRetain(enq_ev, $'Enq by {TypeName(q)}, waiting on [{ev_l2.evs?.JoinToString}]');
+      EventDebug.RegisterEventRetain(enq_ev, $'Enq by {TypeName(q)}, waiting on: {ev_l2.evs?.JoinToString}');
       {$endif EventDebug}
       // 1. ev_l2 can only be released after executing dependant command
       // 2. If event in ev_l2 would complete with error, enq_ev would have non-descriptive error code
-      Result := new EnqRes(ev_l2+enq_ev, act);
+      Result.Item1 := ev_l2 + enq_ev;
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -16700,11 +16715,11 @@ type
         
         ev_l1.MultiAttachCallback(()->
         begin
-          var (enq_ev, enq_act) := ExecuteEnqFunc(get_o(), cq, ev_l2, enq_f, l1_err_handler,l2_err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}{$ifdef EventDebug}, q{$endif});
+          var (enq_ev, post_enq_act) := ExecuteEnqFunc(get_o(), cq, ev_l2, enq_f, l1_err_handler,l2_err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}{$ifdef EventDebug}, q{$endif});
           OpenCLABCInternalException.RaiseIfError( cl.Flush(cq) );
           enq_ev.MultiAttachCallback(()->
           begin
-            if enq_act<>nil then enq_act(g.c);
+            if post_enq_act<>nil then post_enq_act(g.c);
             g.ReturnCQ(cq);
             res_ev.SetComplete(l2_err_handler.HadError);
           end{$ifdef EventDebug}, $'propagating Enq ev of {TypeName(q)} to res_ev: {res_ev.uev}'{$endif});
@@ -16750,14 +16765,14 @@ type
         o_const := prev_qr.IsConst;
       end;
       
-      var (enq_ev, enq_act) := EnqueueableCore.Invoke(
+      var (enq_ev, post_enq_act) := EnqueueableCore.Invoke(
         self.ExpectedEnqCount, o_const, get_o, g, l,
         InvokeParams, ProcessError
         {$ifdef DEBUG},self{$endif}
       );
       
       Result := new QueueResNil(enq_ev);
-      if enq_act<>nil then Result.AddAction(enq_act);
+      if post_enq_act<>nil then Result.AddAction(post_enq_act);
     end;
     
   end;
@@ -16962,7 +16977,7 @@ type
       //TODO Надо ли "()->" перед arg_cache? Разница в том что:
       // - Без "()->" его будет читать прямо перед вызовом InvokeParams
       // - А сейчас его считает аж в EnqFunc<cl_kernel>
-      var (enq_ev, enq_act) := EnqueueableCore.Invoke(
+      var (enq_ev, post_enq_act) := EnqueueableCore.Invoke(
         self.ExpectedEnqCount+args_non_const_c, k_const, get_k_ntv, g, l,
         (enq_c, o_const, g, enq_evs)->
           InvokeParams(enq_c, o_const, g, enq_evs, ()->arg_cache),
@@ -16971,7 +16986,7 @@ type
       );
       
       Result := new QueueResNil(enq_ev);
-      if enq_act<>nil then Result.AddAction(enq_act);
+      if post_enq_act<>nil then Result.AddAction(post_enq_act);
     end;
     
     protected procedure Finalize; override :=
@@ -17007,7 +17022,7 @@ type
         var inp_const := prev_qr.IsConst;
         l := prev_qr.TakeBaseOut;
         
-        var (enq_ev, enq_act) := EnqueueableCore.Invoke(
+        var (enq_ev, post_enq_act) := EnqueueableCore.Invoke(
           self.ExpectedEnqCount, inp_const, prev_qr.GetResDirect, g, l,
           (enq_c, o_const, g, enq_evs)->
             InvokeParams(enq_c, o_const, g, enq_evs, qr),
@@ -17016,7 +17031,7 @@ type
         );
         
         Result := new CLTaskLocalData(enq_ev);
-        if enq_act<>nil then Result.prev_delegate.AddAction(enq_act);
+        if post_enq_act<>nil then Result.prev_delegate.AddAction(post_enq_act);
       end);
     end;
     
