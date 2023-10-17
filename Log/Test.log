@@ -97,8 +97,6 @@ Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/0.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/ThrCount.pas"
-Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/0.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1Q.pas"
@@ -304,8 +302,6 @@ Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~08#HostExec/QuickParOrder]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/0]
-Tester: Done executing
-Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/ThrCount]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/0]
 Tester: Done executing
