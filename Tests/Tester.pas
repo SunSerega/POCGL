@@ -543,7 +543,7 @@ type
       Otp($'Running Tests/CLContextGen.exe');
       RunFile('Tests/CLContextGen.exe', nil,
         new_timer->(core_timer.cl_context_gen_exec := SimpleTimer(new_timer)),
-        l->exit(), nil
+        l->Otp($'CLContextGen: {l}', lk_console_only), nil
       );
       Otp($'Finished running Tests/CLContextGen.exe');
       

@@ -9,10 +9,14 @@ foreach var c in CLContext.GenerateAndCheckAllPossible.OrderBy(\(c,time)->time).
 begin
   var bw := new System.IO.BinaryWriter(System.IO.File.Create($'{dir}/{i}.dat'));
   
-  bw.Write(c.MainDevice.BaseCLPlatform.Properties.Name);
+  $'Platform:'.Print;
+  bw.Write(c.MainDevice.BaseCLPlatform.Properties.Name.Println);
   bw.Write(c.AllDevices.Count);
   foreach var dvc in c.AllDevices do
-    bw.Write(dvc.Properties.Name);
+  begin
+    $'Device:'.Print;
+    bw.Write(dvc.Properties.Name.Println);
+  end;
   
   bw.Close;
 end;
