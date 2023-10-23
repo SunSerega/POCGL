@@ -27,8 +27,9 @@ Packing sample file "Samples/OpenGLABC/Точки на поле/Empty.vert"
 Packing sample file "Samples/OpenGLABC/Точки на поле/Mandelbrot.frag"
 Packing sample file "Samples/OpenGLABC/Точки на поле/SinglePointToScreen.geom"
 Packing sample file "Samples/OpenGLABC/Точки на поле/Волны.frag"
+Packing sample file "Samples/OpenGLABC/Точки на поле/Закраска по функции.frag"
 Packing sample file "Samples/OpenGLABC/Точки на поле/Минимум расстояний.frag"
 Packing sample file "Samples/OpenGLABC/Точки на поле/Спирали.frag"
 Packing sample file "Samples/OpenGLABC/Точки на поле/Сумма расстояний.frag"
 Packing sample file "Samples/OpenGLABC/Точки на поле/Точки.pas"
-Packed 26 sample files
+Packed 27 sample files

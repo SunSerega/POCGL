@@ -9,7 +9,9 @@
 // ПКМ: Схватить и тащить ближайшую точку
 // Колёсико мыши: Маштаб
 // Пробел: Вернуть камеру
-// Цифры от 1 до 5: Переключение шейдеров
+// Цифры от 1 до 9: Переключение шейдеров (выбирает из all_shaders)
+
+{$apptype windows}
 
 uses System.Windows.Forms;
 uses System;
@@ -18,7 +20,14 @@ uses OpenGLABC;
 
 uses '../Common';
 
-{$apptype windows}
+var all_shaders := |
+  'Минимум расстояний.frag',
+  'Сумма расстояний.frag',
+  'Волны.frag',
+  'Спирали.frag',
+  'Закраска по функции.frag',
+  'Mandelbrot.frag'
+|;
 
 type
   CameraData = record
@@ -104,7 +113,12 @@ begin
         camera.scale := n_camera.scale;
         camera.pos := n_camera.pos;
       end;
-      Keys.D1..Keys.D5: curr_fragment_shader := integer(e.KeyCode)-integer(Keys.D1);
+      Keys.D1..Keys.D9:
+      begin
+        var k := integer(e.KeyCode)-integer(Keys.D1);
+        if k<all_shaders.Length then
+          curr_fragment_shader := k;
+      end;
     end;
     
     var grabbed_point_ind := default(integer?);
@@ -113,8 +127,8 @@ begin
       MouseButtons.Left:
       begin
         if point_count=points.Length then
-          // По хорошему буфер OpenGL тоже надо ресайзить
-          // Но сейчас он полностью пересоздаётся
+          // По хорошему буфер OpenGL тоже надо увеличивать/уменьшать только по необходимости
+          // Сейчас он полностью пересоздаётся
           SetLength(points, points.Length*2);
         points[point_count] := CoordsFromScreen(e.X,e.Y);
         point_count += 1;
@@ -211,17 +225,10 @@ begin
         
         gl.DeleteProgram(sprog);
         sprog := InitProgram(
-          InitShader('Empty.vert',                glShaderType.VERTEX_SHADER),
-          InitShader('SinglePointToScreen.geom',  glShaderType.GEOMETRY_SHADER),
-          InitShader(|
-            'Минимум расстояний.frag',
-            'Сумма расстояний.frag',
-            'Волны.frag',
-            'Спирали.frag',
-            'Mandelbrot.frag'
-          |[last_fragment_shader], glShaderType.FRAGMENT_SHADER)
+          InitShader('Empty.vert',                      glShaderType.VERTEX_SHADER),
+          InitShader('SinglePointToScreen.geom',        glShaderType.GEOMETRY_SHADER),
+          InitShader(all_shaders[last_fragment_shader], glShaderType.FRAGMENT_SHADER)
         );
-        // Применяем вне цикла, потому что это единственная шейдерная программа
         gl.UseProgram(sprog);
         points_updated := 1;
       end;
@@ -229,11 +236,12 @@ begin
       if System.Threading.Interlocked.Exchange(points_updated, 0)<>0 then
       begin
         gl.Uniform1i(uniform_point_count, point_count);
-        // Плохо - пересоздаём всё тело буфера при каждой перерисовке
+        // Плохо - пересоздаём всё тело буфера при каждом изменении точек
         // Но по сравнению с фрагментным шейдером - это капля в море
         gl.NamedBufferData(buffer_points, new UIntPtr(point_count*sizeof(vec2d)), points, glVertexBufferObjectUsage.DYNAMIC_READ);
         // Записать point_count точек из массива можно так:
 //        gl.NamedBufferSubData(buffer_points, IntPtr.Zero, new IntPtr(point_count * sizeof(Vec2d)), points);
+        // Но это сломается когда размера буфера не хватит
       end;
       
       sw.Restart;
@@ -245,12 +253,17 @@ begin
       gl.Uniform1d(uniform_scale,   camera.scale);
       gl.Uniform2dv(uniform_pos, 1, camera.pos);
       
+      // Для дебага
 //      gl.NamedBufferSubData(buffer_temp, new IntPtr(0*sizeof(real)), new IntPtr(2*sizeof(real)), mouse_pos);
       
-      // Вызываем шейдерную программу один раз, не передавая данные
-      // Геометричейский шейдер сделает из этого прямоугольник, покрывающий все пиксели экрана
+      // Вызываем шейдерную программу один раз, не передавая локальные данные
+      // Вместо этого будем использовать только юниформы (общие для всех точек данные)
+      // Геометричейский шейдер сделает из этой точки прямоугольник, покрывающий все пиксели экрана
+      // А фрагментный шейдер уже будет использовать юниформы чтобы покрасить каждую точку отдельно
+      // Обычно это неэффективно, но тут только простая демонстация
       gl.DrawArrays(glPrimitiveType.POINTS, 0,1);
       
+      // Для дебага
 //      var temp_data := new real[1];
 //      gl.GetNamedBufferSubData(buffer_temp, new IntPtr(2*sizeof(real)), new IntPtr(1*sizeof(real)), temp_data);
       

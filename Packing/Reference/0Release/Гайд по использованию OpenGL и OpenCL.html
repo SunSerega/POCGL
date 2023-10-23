@@ -410,11 +410,20 @@ v2.SqrLength.Sqrt.Println; // Обязательно будет 1
 <p>В математике произведение векторов может вернуть один из двух противоположных друг-другу векторов,
 в зависимости от ориентации системы координат. В модуле <code>OpenGL</code> это решено следующим образом:</p>
 <ul>
-<li><p><code>Vec3d.CrossCW(new Vec3d(1,0,0), new Vec3d(0,1,0)) = new Vec3d(0,0,1)</code>.</p>
+<li><p>CW (Clockwise - по часовой стрелке):
+<code>Vec3d.CrossCW(new Vec3d(1,0,0), new Vec3d(0,1,0)) = new Vec3d(0,0,1)</code>.</p>
 </li>
-<li><p><code>Vec3d.CrossCCW(a,b) = -Vec3d.CrossCW(a,b)</code>;</p>
+<li><p>CСW (Counter-Clockwise - против часовой стрелки):
+<code>Vec3d.CrossCCW(a,b) = -Vec3d.CrossCW(a,b) = Vec3d.CrossCW(b,a)</code>;</p>
 </li>
 </ul>
+<p>Кроме этого, статические методы <code>.Cross[CW,CCW]</code> так же объявленны для 2D векторов.<br />
+Для них результат является z-компонентом соответствующего метода для 3D векторов:</p>
+<pre><code>Vec2d.CrossCW(a,b) = new Vec3d(0,0,1) * Vec3d.CrossCW(Vec3d(a),Vec3d(b))
+</code></pre>
+<p>С другом стороны, 2D векторное произведение это определитель матрицы (не важно, по строкам или столбцам):</p>
+<pre><code>Vec2d.CrossCW(a,b) = Mtr2d.FromCols(a,b).Determinant
+</code></pre>
 <h3>Генерация случайных значений</h3>
 <p>Статичный метод <code>.Random</code> создаёт новый вектор из случайных значений в заданном диапазоне:</p>
 <pre><code>// Вектор будет иметь значения из [0;1)

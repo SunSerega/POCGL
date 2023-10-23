@@ -102,6 +102,10 @@
     public function SqrLength := self*self;
     public function Length := Sqrt(SqrLength);
     
+    public static function CrossCW(v1, v2: Vec2b) :=
+      v1.val0*v2.val1 - v2.val0*v1.val1;
+    public static function CrossCCW(v1, v2: Vec2b) := CrossCW(v2, v1);
+    
   end;
   ///
   PVec2b = ^Vec2b;
@@ -208,6 +212,10 @@
     public function Length := Sqrt(SqrLength);
     
     public function Normalized := self / Length;
+    
+    public static function CrossCW(v1, v2: Vec2d) :=
+      v1.val0*v2.val1 - v2.val0*v1.val1;
+    public static function CrossCCW(v1, v2: Vec2d) := CrossCW(v2, v1);
     
   end;
   ///
@@ -324,6 +332,10 @@
     
     public function Normalized := self / single(Length);
     
+    public static function CrossCW(v1, v2: Vec2f) :=
+      v1.val0*v2.val1 - v2.val0*v1.val1;
+    public static function CrossCCW(v1, v2: Vec2f) := CrossCW(v2, v1);
+    
   end;
   ///
   PVec2f = ^Vec2f;
@@ -437,6 +449,10 @@
     public function SqrLength := self*self;
     public function Length := Sqrt(SqrLength);
     
+    public static function CrossCW(v1, v2: Vec2i) :=
+      v1.val0*v2.val1 - v2.val0*v1.val1;
+    public static function CrossCCW(v1, v2: Vec2i) := CrossCW(v2, v1);
+    
   end;
   ///
   PVec2i = ^Vec2i;
@@ -542,6 +558,10 @@
     public function SqrLength := self*self;
     public function Length := Sqrt(SqrLength);
     
+    public static function CrossCW(v1, v2: Vec2i64) :=
+      v1.val0*v2.val1 - v2.val0*v1.val1;
+    public static function CrossCCW(v1, v2: Vec2i64) := CrossCW(v2, v1);
+    
   end;
   ///
   PVec2i64 = ^Vec2i64;
@@ -646,6 +666,10 @@
     
     public function SqrLength := self*self;
     public function Length := Sqrt(SqrLength);
+    
+    public static function CrossCW(v1, v2: Vec2s) :=
+      v1.val0*v2.val1 - v2.val0*v1.val1;
+    public static function CrossCCW(v1, v2: Vec2s) := CrossCW(v2, v1);
     
   end;
   ///

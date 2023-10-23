@@ -1662,32 +1662,37 @@ type
       {$endregion Normalized}
       
       {$region Cross}
-      if (sz=3) and not Name.IsUnsigned then
+      if (sz in 2..3) and not Name.IsUnsigned then
       begin
         
         wr += '    public static function CrossCW(v1, v2: ';
         wr += own_tname;
         wr += ') :='#10;
         
-        wr += '      new ';
-        wr += own_tname;
-        wr += '(';
-        wr.WriteNumbered(sz,
-          (wr,i)->
-          begin
-            wr += 'v1.val';
-            wr += (i+1) mod sz;
-            wr += '*v2.val';
-            wr += (i+2) mod sz;
-            wr += ' - v2.val';
-            wr += (i+1) mod sz;
-            wr += '*v1.val';
-            wr += (i+2) mod sz;
-          end,
-          (wr,i)->(wr += ', '),
-          0
-        );
-        wr += ');'#10;
+        if sz=2 then
+          // Vec2d.CrossCW(v1,v2) = new Vec3d(0,0,1) * Vec3d.CrossCW(Vec3d(v1),Vec3d(v2))
+          wr += '      v1.val0*v2.val1 - v2.val0*v1.val1;'#10 else
+        begin
+          wr += '      new ';
+          wr += own_tname;
+          wr += '(';
+          wr.WriteNumbered(sz,
+            (wr,i)->
+            begin
+              wr += 'v1.val';
+              wr += (i+1) mod sz;
+              wr += '*v2.val';
+              wr += (i+2) mod sz;
+              wr += ' - v2.val';
+              wr += (i+1) mod sz;
+              wr += '*v1.val';
+              wr += (i+2) mod sz;
+            end,
+            (wr,i)->(wr += ', '),
+            0
+          );
+          wr += ');'#10;
+        end;
         
         wr += '    public static function CrossCCW(v1, v2: ';
         wr += own_tname;
@@ -1858,7 +1863,6 @@ type
         
         foreach var dir in c.Permutations do
         begin
-          var (d1,d2,d3) := dir;
           
           wr += '    public static function RotatePrefix';
           foreach var d in dir do
@@ -1871,7 +1875,7 @@ type
           if not dir.SequenceEqual(c) and not dir.Reverse.SequenceEqual(c) then
           begin
             wr += ' := RotatePrefix';
-            var is_only_rotated := c.Cycle.ElementAt(c.IndexOf(d1)+1) = d2;
+            var is_only_rotated := c.Cycle.ElementAt(c.IndexOf(dir[0])+1) = dir[1];
             foreach var d in is_only_rotated?c:c.Reverse do
               wr += 'XYZW'[d];
             wr += '(radians, u);'#10;
@@ -1951,7 +1955,6 @@ type
         
         foreach var dir in c.Permutations do
         begin
-          var (d1,d2,d3) := dir;
           
           wr += '    public static function RotatePostfix';
           foreach var d in dir do
