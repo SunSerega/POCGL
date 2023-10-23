@@ -11,9 +11,11 @@ Tester: Compiling "Tests/DebugPCU/OpenCLABC.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/DebugPCU/OpenGLABC.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests/Exec/CL/ToString.pas"
+Tester: Compiling "Tests/CLContextGen.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests/Exec/CLABC/gen def context.pas"
+Tester: Running Tests/CLContextGen.exe
+Tester: Finished running Tests/CLContextGen.exe
+Tester: Compiling "Tests/Exec/CL/ToString.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/01#Wrap/01#CLPlatform/1.pas"
 Tester: Compiling: OK
@@ -220,8 +222,6 @@ Tester: Compiling: OK
 Tester: Compiling "Samples/OpenGLABC/Точки на поле/Точки.pas"
 Tester: Compiling: OK
 Tester: Executing Test[Tests/Exec/CL/ToString]
-Tester: Done executing
-Tester: Executing Test[Tests/Exec/CLABC/gen def context]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/01#CLPlatform/1]
 Tester: Done executing

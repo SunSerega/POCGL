@@ -30,6 +30,7 @@ type
       
       {$resource TestExecutor.exe}
       executor := System.IO.Path.ChangeExtension(executable, '.Executor.exe');
+      if not FileExists(executor) then
       begin
         var executor_f := System.IO.File.Create(executor);
         GetResourceStream('TestExecutor.exe').CopyTo(executor_f);

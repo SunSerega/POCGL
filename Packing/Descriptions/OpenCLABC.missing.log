@@ -796,5 +796,3 @@
 
 # Err:Blittable:Source:CLMemory:FillNativeArrayArea
 
-# CLContext:GenerateAndCheckDefault:NotFirst
-

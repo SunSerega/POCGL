@@ -22,6 +22,11 @@ type DialogResult             = System.Windows.Forms.DialogResult;
 
 const MaxExecTime = 15000;
 
+var valid_modules := HSet('Dummy', 'OpenCL','OpenCLABC', 'OpenGL','OpenGLABC');
+var allowed_modules := new HashSet<string>(valid_modules.Count);
+
+var auto_update := false;
+
 type
   TestCanceledException = sealed class(Exception) end;
   
@@ -332,6 +337,11 @@ type
     private total_debug_pcu_time: TimeSpan;
     private debug_pcu := new List<(string, SimpleTimer)>;
     
+    private cl_context_gen_time: TimeSpan;
+    private cl_context_gen_comp: SimpleTimer;
+    private cl_context_gen_exec: SimpleTimer;
+    private function get_cl_context_gen_time_sum := cl_context_gen_comp.OuterTime+cl_context_gen_exec.OuterTime;
+    
     private actual_comp_time: TimeSpan;
     private body := new TestingFolderTimer;
     
@@ -357,6 +367,13 @@ type
       foreach var (name,t) in debug_pcu do
         yield t.MakeLogLines(lvl+2, name).Single;
       
+      if 'OpenCLABC' in allowed_modules then
+      begin
+        yield (lvl+1, 'CLContext', $'{cl_context_gen_time} ({TimeToText(get_cl_context_gen_time_sum)})');
+        yield cl_context_gen_comp.MakeLogLines(lvl+2, 'Comp').Single;
+        yield cl_context_gen_exec.MakeLogLines(lvl+2, 'Exec').Single;
+      end;
+      
       var (total_comp_time, total_exec_time) := body.TotalCompExecTime;
       yield (lvl+1, 'All comp', $'{TimeToText(total_comp_time)} ({actual_comp_time.TotalSeconds:N4})');
       yield (lvl+1, 'All exec', TimeToText(total_exec_time));
@@ -376,10 +393,7 @@ type
     static lk_console_only := new OtpKind('console only');
     static lk_pack_stage_unspecific := new OtpKind('pack stage unspecific');
     
-    static valid_modules := HSet('Dummy', 'OpenCL','OpenCLABC', 'OpenGL','OpenGLABC');
-    static allowed_modules := new HashSet<string>(valid_modules.Count);
-    
-    static auto_update := false;
+    static cl_contexts: array of string := nil;
     
     static all_loaded := new List<TestInfo>;
     static unused_test_files := new HashSet<string>;
@@ -393,7 +407,12 @@ type
     own_timer: TestingItemTimer;
     pas_fname, test_dir, td_fname: string;
     stop_test := false;
-    loaded_test: ExecutingTest;
+    loaded_tests: array of ExecutingTest := nil;
+    first_test_exec := true;
+    
+    multitest_prop_ids := new List<object>;
+    multitest_prop_sizes := new Dictionary<object, integer>;
+    multitest_prop_values := new Dictionary<object, integer>;
     
     {$endregion core test info}
     
@@ -408,6 +427,8 @@ type
     {$region typed settings}
     
     test_comp: boolean;
+    
+    static exec_multitest_id := new object;
     test_exec: integer;
     
     req_modules: IList<string>;
@@ -419,6 +440,47 @@ type
     delete_before_exec: array of string;
     
     {$endregion typed settings}
+    
+    {$region Multitest}
+    
+    procedure DefineMultitestProp(id: object; size: integer);
+    begin
+      if loaded_tests<>nil then raise new InvalidOperationException;
+      if multitest_prop_values.Any then raise new InvalidOperationException;
+      
+      multitest_prop_ids += id;
+      multitest_prop_sizes.Add(id, size);
+      
+    end;
+    
+    procedure RunWithMultitestValue(id: object; v: integer; act: Action);
+    begin
+      if id not in multitest_prop_sizes then raise new InvalidOperationException;
+      multitest_prop_values.Add(id, v);
+      
+      act();
+      
+      if not multitest_prop_values.Remove(id) then
+        raise new InvalidOperationException;
+    end;
+    
+    function TakeOutMultitestExecution: ExecutingTest;
+    begin
+      if multitest_prop_values.Count <> multitest_prop_ids.Count then raise new InvalidOperationException;
+      
+      var i := 0;
+      foreach var id in multitest_prop_ids do
+      begin
+        i *= multitest_prop_sizes[id];
+        i += multitest_prop_values[id];
+      end;
+      
+      Result := loaded_tests[i];
+      if Result=nil then raise new InvalidOperationException;
+      loaded_tests[i] := nil;
+    end;
+    
+    {$endregion Multitest}
     
     {$region Load}
     
@@ -467,6 +529,29 @@ type
         System.IO.File.Delete($'Tests/DebugPCU/{mn}.pas');
       
       core_timer.total_debug_pcu_time := sw.Elapsed;
+    end;
+    static procedure GenCLContext;
+    begin
+      if 'OpenCLABC' not in allowed_modules then exit;
+      
+      var sw := Stopwatch.StartNew;
+      CompilePasFile('Tests/CLContextGen.pas',
+        new_timer->(core_timer.cl_context_gen_comp := new_timer),
+        nil, nil,
+        OtpKind.Empty, '/Debug:1', GetFullPath('Tests/DebugPCU')
+      );
+      Otp($'Running Tests/CLContextGen.exe');
+      RunFile('Tests/CLContextGen.exe', nil,
+        new_timer->(core_timer.cl_context_gen_exec := SimpleTimer(new_timer)),
+        l->exit(), nil
+      );
+      Otp($'Finished running Tests/CLContextGen.exe');
+      
+      cl_contexts := EnumerateFiles('Tests/CLContext').ToArray;
+      if cl_contexts.Count=0 then
+        Otp($'WARNING: Valid OpenCLABC context was not found in system', lk_console_only);
+      
+      core_timer.cl_context_gen_time := sw.Elapsed;
     end;
     
     procedure LoadSettingsDict;
@@ -617,7 +702,11 @@ type
           end;
           
           t.delete_before_exec := t.ExtractSettingStr('#DeleteBeforeExec', '').ToWords(#10).ConvertAll(fname->GetFullPath(fname, t.test_dir));
+          t.DefineMultitestProp(exec_multitest_id, t.test_exec);
         end;
+        
+        if cl_contexts<>nil then
+          t.DefineMultitestProp(cl_contexts, cl_contexts.Count);
         
         {$endregion Settings}
         
@@ -638,8 +727,7 @@ type
     begin
       var sw := Stopwatch.StartNew;
       
-      // req_modules становится nil если не подошло
-      all_loaded.Where(t->(t.req_modules<>nil) and t.test_comp)
+      all_loaded.Where(t->t.test_comp)
       .TaskForEach(t->
       try
         var fwoe := GetRelativePath(
@@ -742,8 +830,6 @@ type
             
           end;
           
-          if t.test_exec<>0 then
-            t.loaded_test := new ExecutingTest(System.IO.Path.ChangeExtension(t.pas_fname, '.exe'), MaxExecTime, true);
         end;
         
       except
@@ -753,6 +839,7 @@ type
       
       core_timer.actual_comp_time := sw.Elapsed;
     end;
+    
     {$endregion Comp}
     
     {$region Exec}
@@ -813,9 +900,14 @@ type
       
       if stop_test then
       begin
-        Otp($'WARNING: Test[{fwoe}] wasn''t executed because of prior errоrs');
+        Otp($'WARNING: Test[{fwoe}] wasn''t executed because of prior errоrs or changes to .td');
         exit;
       end;
+      
+      var exec_lk := if first_test_exec then
+        OtpKind.Empty else
+        lk_pack_stage_unspecific;
+      first_test_exec := false;
       
       foreach var fname in delete_before_exec do
         if FileExists(fname) then
@@ -823,119 +915,168 @@ type
           Otp($'WARNING: [{GetRelativePath(fname)}] did not exist, but Test[{GetRelativePath(fwoe)}] asked to delete it', lk_console_only);
       
       for var test_i := 0 to self.test_exec-1 do
-      begin
-        
-        Otp($'Executing Test[{GetRelativePath(fwoe)}]');
-        var res, err: string;
-        own_timer.AddExec(new SimpleTimer(()->
-        begin
-          (res, err) := loaded_test.FinishExecution;
-        end));
-        if test_i<>self.test_exec-1 then loaded_test := new ExecutingTest(loaded_test);
-        Otp($'Done executing');
-        
-        var sn := '';
-        if self.test_exec<>1 then sn += test_i;
-        
-        if not string.IsNullOrWhiteSpace(err) then
+        self.RunWithMultitestValue(exec_multitest_id, test_i, ()->
         begin
           
-          if exec_expected[test_i].err.parts=nil then
-            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe":{#10*2}{err}{#10*2}Add this to expected errors?', 'Unexpected exec error', MessageBoxButtons.YesNoCancel) of
-              
-              DialogResult.Yes:
-              begin
-                all_settings['#ExpExecErr'+sn] := InsertAnyTextParts(err);
-                used_settings += '#ExpExecErr'+sn;
-                resave_settings := true;
-                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
+          Otp($'Executing Test[{GetRelativePath(fwoe)}]', exec_lk);
+          var res, err: string;
+          own_timer.AddExec(new SimpleTimer(()->
+          begin
+            (res, err) := self.TakeOutMultitestExecution.FinishExecution;
+          end));
+          Otp($'Done executing', exec_lk);
+          
+          var sn := '';
+          if self.test_exec<>1 then sn += test_i;
+          
+          if not string.IsNullOrWhiteSpace(err) then
+          begin
+            if exec_expected[test_i].err.parts=nil then
+            begin
+              case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe":{#10*2}{err}{#10*2}Add this to expected errors?', 'Unexpected exec error', MessageBoxButtons.YesNoCancel) of
+                
+                DialogResult.Yes:
+                begin
+                  all_settings['#ExpExecErr'+sn] := InsertAnyTextParts(err);
+                  used_settings += '#ExpExecErr'+sn;
+                  resave_settings := true;
+                  Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
+                end;
+                
+                DialogResult.No: ;
+                
+                DialogResult.Cancel: Halt(-1);
               end;
-              
-              DialogResult.No: ;
-              
-              DialogResult.Cancel: Halt(-1);
+              stop_test := true;
             end else
+              
+            if not exec_expected[test_i].err.Matches(err) then
+            begin
+              case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{exec_expected[test_i].err}{#10*2}Current error:{#10*2}{err}{#10*2}Replace expected error?', 'Wrong exec error', MessageBoxButtons.YesNoCancel) of
+                
+                DialogResult.Yes:
+                begin
+                  all_settings['#ExpExecErr'+sn] := InsertAnyTextParts(err);
+                  used_settings += '#ExpExecErr'+sn;
+                  resave_settings := true;
+                  Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
+                end;
+                
+                DialogResult.No: ;
+                
+                DialogResult.Cancel: Halt(-1);
+              end;
+              stop_test := true;
+            end;
             
-          if not exec_expected[test_i].err.Matches(err) then
-            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{exec_expected[test_i].err}{#10*2}Current error:{#10*2}{err}{#10*2}Replace expected error?', 'Wrong exec error', MessageBoxButtons.YesNoCancel) of
-              
-              DialogResult.Yes:
-              begin
-                all_settings['#ExpExecErr'+sn] := InsertAnyTextParts(err);
-                used_settings += '#ExpExecErr'+sn;
-                resave_settings := true;
-                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
-              end;
-              
-              DialogResult.No: ;
-              
-              DialogResult.Cancel: Halt(-1);
+            if exec_expected[test_i].otp.parts<>nil then
+            begin
+              if not all_settings.Remove('#ExpExecOtp'+sn) then raise new System.InvalidOperationException;
+              resave_settings := true;
             end;
-          
-          if exec_expected[test_i].otp.parts<>nil then
-          begin
-            if not all_settings.Remove('#ExpExecOtp'+sn) then raise new System.InvalidOperationException;
-            resave_settings := true;
-          end;
-          
-        end else
-        begin
-          
-          if exec_expected[test_i].err.parts<>nil then
-            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{exec_expected[test_i].err}{#10*2}Remove error from expected?', 'Missing exec error', MessageBoxButtons.YesNoCancel) of
-              
-              DialogResult.Yes:
-              begin
-                if not all_settings.Remove('#ExpExecErr'+sn) then raise new System.InvalidOperationException;
-                resave_settings := true;
-                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
-              end;
-              
-              DialogResult.No: ;
-              
-              DialogResult.Cancel: Halt(-1);
-            end;
-          
-          if exec_expected[test_i].otp.parts=nil then
-          begin
-            all_settings['#ExpExecOtp'+sn] := InsertAnyTextParts(res);
-            used_settings += '#ExpExecOtp'+sn;
-            resave_settings := true;
-            Otp($'WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
+            
           end else
-          if not exec_expected[test_i].otp.Matches(res) then
           begin
             
-            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{exec_expected[test_i].otp}{#10*2}Current output:{#10*2}{res}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
-              
-              DialogResult.Yes:
-              begin
-                all_settings['#ExpExecOtp'+sn] := InsertAnyTextParts(res);
-                used_settings += '#ExpExecOtp'+sn;
-                resave_settings := true;
-                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
+            if exec_expected[test_i].err.parts<>nil then
+            begin
+              case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{exec_expected[test_i].err}{#10*2}Remove error from expected?', 'Missing exec error', MessageBoxButtons.YesNoCancel) of
+                
+                DialogResult.Yes:
+                begin
+                  if not all_settings.Remove('#ExpExecErr'+sn) then raise new System.InvalidOperationException;
+                  resave_settings := true;
+                  Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
+                end;
+                
+                DialogResult.No: ;
+                
+                DialogResult.Cancel: Halt(-1);
               end;
-              
-              DialogResult.No: ;
-              
-              DialogResult.Cancel: Halt(-1);
-              
+              stop_test := true;
             end;
+            
+            if exec_expected[test_i].otp.parts=nil then
+            begin
+              all_settings['#ExpExecOtp'+sn] := InsertAnyTextParts(res);
+              used_settings += '#ExpExecOtp'+sn;
+              resave_settings := true;
+              Otp($'WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
+              stop_test := true;
+            end else
+            if not exec_expected[test_i].otp.Matches(res) then
+            begin
+              case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{exec_expected[test_i].otp}{#10*2}Current output:{#10*2}{res}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
+                
+                DialogResult.Yes:
+                begin
+                  all_settings['#ExpExecOtp'+sn] := InsertAnyTextParts(res);
+                  used_settings += '#ExpExecOtp'+sn;
+                  resave_settings := true;
+                  Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
+                end;
+                
+                DialogResult.No: ;
+                
+                DialogResult.Cancel: Halt(-1);
+                
+              end;
+              stop_test := true;
+            end;
+            
           end;
           
-        end;
-        
-      end;
+        end);
       
     except
       on e: FatalTestingException do
         Otp(e.ToString);
     end;
     
-    static procedure ExecAll :=
-    foreach var t in all_loaded do
-      if (t.req_modules<>nil) and (t.test_exec<>0) then
-        t.Execute;
+    static procedure ExecAll;
+    begin
+      var to_exec := all_loaded.ToList;
+      to_exec.RemoveAll(t->t.test_exec=0);
+      
+      foreach var t in to_exec do
+      begin
+        var exe_fname := System.IO.Path.ChangeExtension(t.pas_fname, '.exe');
+        t.loaded_tests := ArrGen(t.multitest_prop_sizes.Values.Product, i->
+          new ExecutingTest(exe_fname, MaxExecTime, true)
+        );
+      end;
+      
+      if cl_contexts=nil then
+      begin
+        foreach var t in to_exec do
+          t.Execute;
+      end else
+      foreach var c_fname in cl_contexts index cl_context_i do
+      begin
+        var test_context_fname := 'TestContext.dat';
+        System.IO.File.Copy(c_fname, test_context_fname, true);
+        
+        var br := new System.IO.BinaryReader(System.IO.File.OpenRead(test_context_fname));
+        try
+          var pl_name := br.ReadString.Trim;
+          var dvc_count := br.ReadInt32;
+          Otp($'Switched to platform "{pl_name}" and using {dvc_count} devices', lk_pack_stage_unspecific);
+          loop dvc_count do
+          begin
+            var dvc_name := br.ReadString.Trim;
+            Otp($'Device "{dvc_name}"', lk_console_only);
+          end;
+        finally
+          br.Close;
+        end;
+        
+        foreach var t in to_exec do
+          t.RunWithMultitestValue(cl_contexts, cl_context_i, t.Execute);
+        
+        System.IO.File.Delete(test_context_fname);
+      end;
+      
+    end;
     
     {$endregion Exec}
     
@@ -946,6 +1087,9 @@ type
       Otp('Cleanup');
       if System.IO.Directory.Exists('Tests/DebugPCU') then
         System.IO.Directory.Delete('Tests/DebugPCU', true);
+      
+      if all_loaded.Any(t->(t.loaded_tests<>nil) and t.loaded_tests.Any(t->t<>nil)) then
+        Otp($'WARNING: Not all loaded tests were executed');
       
       foreach var t in all_loaded do
         if t.resave_settings then
@@ -994,6 +1138,7 @@ begin
     (**)
     TestInfo.LoadCLA;
     TestInfo.MakeDebugPCU;
+    TestInfo.GenCLContext;
     
 //    TestInfo.LoadAll('Tests/Comp',  'Comp');
     TestInfo.LoadAll('Tests/Exec',  'Comp','Exec');

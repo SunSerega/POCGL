@@ -3157,7 +3157,9 @@ type
       
     end;
     
-    public static procedure GenerateAndCheckDefault(test_size: integer := 1024*24; test_max_seconds: real := 0.5);
+    public function TestSanity(test_size: integer := 1024*24): TimeSpan?;
+    
+    public static function GenerateAndCheckAllPossible(test_size: integer := 1024*24; test_max_seconds: real := 0.5): List<ValueTuple<CLContext,TimeSpan>>;
     
     private static function LoadTestContext: CLContext;
     
@@ -34295,86 +34297,84 @@ end;
 
 {$region CLContext}
 
-static procedure CLContext.GenerateAndCheckDefault(test_size: integer; test_max_seconds: real);
-begin
-  if Interlocked.CompareExchange(default_was_inited, 1, 0)<>0 then
-    raise new System.InvalidOperationException($'%CLContext:GenerateAndCheckDefault:NotFirst%');
-  
-  var test_prog := 'kernel void k(global int* v) { v[get_global_id(0)]++; }';
-  var test_max_time := TimeSpan.FromSeconds(test_max_seconds);
-  
-  var Q_Test: CommandQueue<boolean>;
-  var P_Arr := new ParameterQueue<CLArray<integer>>('A');
-  var P_Prog := new ParameterQueue<CLProgramCode>('Prog');
-  begin
-    var rng := new Random;
-    var test_arr := ArrGen(test_size, i->rng.Next);
-     Q_Test :=
-       CLKernelCCQ.Create(P_Prog.ThenConvert(p->p['k'], false, true))
-         .ThenExec1(test_size, P_Arr.MakeCCQ
-           .ThenWriteArray(test_arr)
-         ) +
-       P_Arr.MakeCCQ
-         .ThenGetArray
-         .ThenConvert(test_res->
-           test_res.Zip(test_arr, (a,b)->a=b+1).All(r->r), false
-         );
+type
+  CLContextTestData = static class
+    
+    private const test_prog = 'kernel void k(global int* v) { v[get_global_id(0)]++; }';
+    
+    public static function MakeTestQueue(test_size: integer): CommandQueue<boolean>;
+    begin
+      // Без кеширования, чтобы у всех
+      // запусков .TestSanity были равные условия
+      // что касается внутренних оптимизаций очереди
+      var rng := new Random;
+      var test_arr := ArrGen(test_size, i->rng.Next);
+       var Q_Arr := HFQ(c->new CLArray<integer>(c, test_size), false).Multiusable;
+       Result :=
+         HFQ(c->CLProgramCode.Create(test_prog, c)['k'], false).MakeCCQ
+           .ThenExec1(test_size, Q_Arr.MakeCCQ
+             .ThenWriteArray(test_arr)
+           ) +
+         Q_Arr.MakeCCQ
+           .ThenGetArray
+           .ThenConvert(test_res->
+             test_res.Zip(test_arr, (a,b)->a=b+1).All(r->r), false
+           );
+    end;
+    
   end;
   
-  var c := CLPlatform.All.SelectMany(pl->
+function CLContext.TestSanity(test_size: integer): TimeSpan?;
+begin
+  var Q := CLContextTestData.MakeTestQueue(test_size);
+  var sw := Stopwatch.StartNew;
+  
+  Result := nil;
+  if not self.SyncInvoke(Q) then exit;
+  
+  Result := sw.Elapsed;
+end;
+
+static function CLContext.GenerateAndCheckAllPossible(test_size: integer; test_max_seconds: real): List<ValueTuple<CLContext,TimeSpan>>;
+begin
+  var test_max_time := TimeSpan.FromSeconds(test_max_seconds);
+  Result := new List<ValueTuple<CLContext, TimeSpan>>;
+  
+  foreach var pl in CLPlatform.All do
   begin
     var dvcs := CLDevice.GetAllFor(pl, clDeviceType.DEVICE_TYPE_ALL).ToList;
     
-    System.Threading.Tasks.Parallel.For(0,dvcs.Count, i->
+    var keep := new boolean[dvcs.Count];
+    var thrs := ArrGen(dvcs.Count, i->new Thread(()->
     begin
-      var del := true;
-      
-      var c := new CLContext(dvcs[i]);
-      var S_Arr := P_Arr.NewSetter(new CLArray<integer>(c, test_size));
-      var S_Prog := P_Prog.NewSetter(new CLProgramCode(test_prog, c));
-      
-      var thr := new Thread(()->
-      begin
-        del := not c.SyncInvoke(Q_Test, S_Arr, S_Prog);
-      end);
-      thr.IsBackground := true;
-      thr.Start;
-      
-      if not thr.Join(test_max_time) then
-        thr.Abort;
-      
-      if del then dvcs[i] := nil;
-    end);
+      keep[i] := nil <> CLContext.Create(dvcs[i]).TestSanity(test_size)
+    end));
+    foreach var thr in thrs do thr.IsBackground := true;
+    foreach var thr in thrs do thr.Start;
+    Thread.Sleep(test_max_time);
+    foreach var thr in thrs do thr.Abort;
+    
+    for var i := 0 to dvcs.Count-1 do
+      if not keep[i] then dvcs[i] := nil;
     dvcs.RemoveAll(d->d=nil);
     
-    Result := if dvcs.Count=0 then
-      System.Linq.Enumerable.Empty&<(CLContext,TimeSpan)> else
-      |true,false|.Cartesian(dvcs.Count)
-      .Select(choise->
-      begin
-        Result := new List<CLDevice>(dvcs.Count);
-        for var i := 0 to dvcs.Count-1 do
-          if choise[i] then Result += dvcs[i];
-      end)
-      .Where(l_dvcs->l_dvcs.Count<>0)
-      .Select(l_dvcs->
-      begin
-        var c := new CLContext(l_dvcs, l_dvcs[0]);
-        
-        var sw := Stopwatch.StartNew;
-        c.SyncInvoke(Q_Test.DiscardResult,
-          P_Arr.NewSetter(new CLArray<integer>(c, test_size)),
-          P_Prog.NewSetter(new CLProgramCode(test_prog, c))
-        );
-        sw.Stop;
-        
-        Result := (c, sw.Elapsed);
-      end);
-  end)
-  .DefaultIfEmpty((default(CLContext),TimeSpan.Zero))
-  .MinBy(t->t[1])[0];
+    var chosen := new List<CLDevice>(dvcs.Count);
+    foreach var choise in |true,false|.CartesianPower(dvcs.Count) do
+    begin
+      chosen.Clear;
+      for var i := 0 to dvcs.Count-1 do
+        if choise[i] then chosen += dvcs[i];
+      if chosen.Count=0 then continue;
+      
+      var c := new CLContext(chosen, chosen[0]);
+      var time := c.TestSanity(test_size);
+      if time=nil then continue;
+      
+      Result.Add(ValueTuple.Create(c, time.Value));
+    end;
+    
+  end;
   
-  Interlocked.CompareExchange(_default, c, nil);
 end;
 
 static function CLContext.LoadTestContext: CLContext;
@@ -34394,11 +34394,6 @@ begin
   var br := new System.IO.BinaryReader(System.IO.File.OpenRead(fname));
   try
     var pl_name := br.ReadString;
-    if pl_name.Length=0 then
-    begin
-      $'Pregenerated context was empty'.Println;
-      exit;
-    end;
     
     var pl := CLPlatform.All.SingleOrDefault(pl->pl.Properties.Name=pl_name);
     if pl=nil then

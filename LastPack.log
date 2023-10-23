@@ -1,91 +1,6 @@
-﻿Executing selected stages:
-FirstPack + Reference + Dummy + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
+﻿Executing default stages:
+Reference + Dummy + OpenCL + OpenCLABC + OpenGL + OpenGLABC + Compile + Test + Release
 Start packing
-=================================== First Pack ===================================
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping/Reps/PullReps.pas"
-Compiling: OK
-Runing SubReps Update
-SubReps Update: Pulling OpenCL
-SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull] && git pull 0_official main & echo [pull-own]: && git pull SunSerega custom)"
-SubReps Update: OpenCL[OUT] : [checkout]
-SubReps Update: OpenCL[OUT] : Your branch is up to date with 'SunSerega/custom'.
-SubReps Update: OpenCL[OUT] : Already on 'custom'
-SubReps Update: OpenCL[OUT] : [pull]
-SubReps Update: OpenCL[ERR] : From KhronosGroup/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch main -> FETCH_HEAD
-SubReps Update: OpenCL[OUT] : Already up to date.
-SubReps Update: OpenCL[OUT] : [pull-own]:
-SubReps Update: OpenCL[ERR] : From SunSerega/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch custom -> FETCH_HEAD
-SubReps Update: OpenCL[OUT] : Already up to date.
-SubReps Update: Done pulling OpenCL
-SubReps Update: Pulling OpenGL
-SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull] && git pull 0_official main & echo [pull-own]: && git pull SunSerega custom)"
-SubReps Update: OpenGL[OUT] : [checkout]
-SubReps Update: OpenGL[OUT] : Your branch is up to date with 'SunSerega/custom'.
-SubReps Update: OpenGL[OUT] : Already on 'custom'
-SubReps Update: OpenGL[OUT] : [pull]
-SubReps Update: OpenGL[ERR] : From KhronosGroup/OpenGL-Registry
-SubReps Update: OpenGL[ERR] : * branch main -> FETCH_HEAD
-SubReps Update: OpenGL[OUT] : Already up to date.
-SubReps Update: OpenGL[OUT] : [pull-own]:
-SubReps Update: OpenGL[ERR] : From SunSerega/OpenGL-Registry
-SubReps Update: OpenGL[ERR] : * branch custom -> FETCH_HEAD
-SubReps Update: OpenGL[OUT] : Already up to date.
-SubReps Update: Done pulling OpenGL
-Finished runing SubReps Update
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Scrap XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiling "DataScraping/XML/Dummy/ScrapXML.pas"
-Compiling: OK
-Runing ScrapXML[Dummy]
-ScrapXML[Dummy]: Parsing XML
-ScrapXML[Dummy]: Constructing named items
-ScrapXML[Dummy]: Saving as binary
-ScrapXML[Dummy]: Enum: Saved 8 items
-ScrapXML[Dummy]: BasicType: Saved 6 items
-ScrapXML[Dummy]: Group: Saved 2 items
-ScrapXML[Dummy]: Func: Saved 16 items
-ScrapXML[Dummy]: Feature: Saved 2 items
-ScrapXML[Dummy]: Done
-Finished runing ScrapXML[Dummy]
-Compiling "DataScraping/XML/OpenCL/ScrapXML.pas"
-Compiling: OK
-Runing ScrapXML[OpenCL]
-ScrapXML[OpenCL]: Parsing "cl"
-ScrapXML[OpenCL]: Constructing named items
-ScrapXML[OpenCL]: Saving as binary
-ScrapXML[OpenCL]: VendorSuffix: Saved 11 items
-ScrapXML[OpenCL]: Enum: Saved 1118 items
-ScrapXML[OpenCL]: BasicType: Saved 30 items
-ScrapXML[OpenCL]: Group: Saved 119 items
-ScrapXML[OpenCL]: IdClass: Saved 18 items
-ScrapXML[OpenCL]: Struct: Saved 16 items
-ScrapXML[OpenCL]: Delegate: Saved 8 items
-ScrapXML[OpenCL]: Func: Saved 239 items
-ScrapXML[OpenCL]: Feature: Saved 7 items
-ScrapXML[OpenCL]: Extension: Saved 104 items
-ScrapXML[OpenCL]: Done
-Finished runing ScrapXML[OpenCL]
-Compiling "DataScraping/XML/OpenGL/ScrapXML.pas"
-Compiling: OK
-Runing ScrapXML[OpenGL]
-ScrapXML[OpenGL]: Parsing "gl"
-ScrapXML[OpenGL]: Parsing "wgl"
-ScrapXML[OpenGL]: Parsing "glx"
-ScrapXML[OpenGL]: Constructing named items
-ScrapXML[OpenGL]: Saving as binary
-ScrapXML[OpenGL]: VendorSuffix: Saved 35 items
-ScrapXML[OpenGL]: Enum: Saved 4763 items
-ScrapXML[OpenGL]: BasicType: Saved 116 items
-ScrapXML[OpenGL]: Group: Saved 323 items
-ScrapXML[OpenGL]: IdClass: Saved 15 items
-ScrapXML[OpenGL]: Delegate: Saved 5 items
-ScrapXML[OpenGL]: Func: Saved 3573 items
-ScrapXML[OpenGL]: Feature: Saved 32 items
-ScrapXML[OpenGL]: Extension: Saved 1142 items
-ScrapXML[OpenGL]: Done
-Finished runing ScrapXML[OpenGL]
 =================================== References ===================================
 Compiling "Packing/Reference/ReferencePacker.pas"
 Compiling: OK
@@ -401,9 +316,11 @@ Tester: Compiling "Tests/DebugPCU/OpenCLABC.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/DebugPCU/OpenGLABC.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests/Exec/CL/ToString.pas"
+Tester: Compiling "Tests/CLContextGen.pas"
 Tester: Compiling: OK
-Tester: Compiling "Tests/Exec/CLABC/gen def context.pas"
+Tester: Running Tests/CLContextGen.exe
+Tester: Finished running Tests/CLContextGen.exe
+Tester: Compiling "Tests/Exec/CL/ToString.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/01#Wrap/01#CLPlatform/1.pas"
 Tester: Compiling: OK
@@ -609,9 +526,207 @@ Tester: Compiling "Samples/OpenGLABC/!Крутящийся треугольни�
 Tester: Compiling: OK
 Tester: Compiling "Samples/OpenGLABC/Точки на поле/Точки.pas"
 Tester: Compiling: OK
+Tester: Switched to platform "NVIDIA CUDA" and using 1 devices
 Tester: Executing Test[Tests/Exec/CL/ToString]
 Tester: Done executing
-Tester: Executing Test[Tests/Exec/CLABC/gen def context]
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/01#CLPlatform/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/02#CLDevice/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/03#CLContext/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/04#Memory/1#CLMemory/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/04#Memory/1#CLMemory/SubSegment1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/04#Memory/2#CLValue/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/04#Memory/3#CLArray/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/04#Memory/3#CLArray/err1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/05#CLKernel/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/06#CLCode/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/06#CLCode/deserialize]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/00#Err/CCQ-Cancel]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/00#Err/ExecutionCancel]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/01#Const/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/02#Parameter/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/02#Parameter/realistic use]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/03#Cast/~00#Err/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/03#Cast/~01#Const/0]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/ThenConvUse_ConstDelayedFunc]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~00#Err/0]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~00#Err/0c]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~01#Const/0]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~02#Cast/0]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~00#Err/errоr multiuse]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~00#Err/multi errоr multiuse]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~02#Cast/0]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~05#Wait/marker.mu]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~05#Wait/multiusable instead of ThenMarkerSignal]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~07#HostExec/Quick+MU]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/06#Wait/ThenWait]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/06#Wait/WaitOrder]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/ExecCache]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/OldClone.Add]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/ThenQueue(self)]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~00#Err/AddProc]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~00#Err/AddQueue]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~00#Err/LazyQuickErr]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~00#Err/QuickErr]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~02#Cast/0]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/~08#HostExec/QuickParOrder]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/0]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/0]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1Q]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1T]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~05#Wait/QuickUse.ThenWait]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/09#CombineQueues/0]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/09#CombineQueues/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/09#CombineQueues/q count]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/09#CombineQueues/~00#Err/err while async]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/10#WaitMarker/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/10#WaitMarker/combine stress]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/10#WaitMarker/~00#Err/invoke WaitAll]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/10#WaitMarker/~00#Err/marker after err]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/BranchCancel]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/BranchUnCancel]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/~00#Err/finally order]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/~00#Err/handle only branch]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/~00#Err/Handle only local]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/11#Finally+Handle/~00#Err/marker in finally]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/01#Const/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/02#Parameter/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/03#Cast/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/03#Cast/typed nil]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/04#ThenConvert/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/05#Multiusable/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/06#Wait/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/07#GPUCommandContainer/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/08#HostExec/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/09#CombineQueues/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/09#CombineQueues/conv1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/09#CombineQueues/inline]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/09#CombineQueues/optimize]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/09#CombineQueues/remove last const]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/10#WaitMarker/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/11#Finally+Handle/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/12#CLKernelArg/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/01#CLPlatform/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/02#CLDevice/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/03#CLContext/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/1#CLMemory/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/1#CLMemory/SubSegment1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/2#CLValue/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/3#CLArray/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/05#CLKernel/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/06#CLCode/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/04#Samples/Игра жизнь/Игра жизнь]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/GL/Determinant]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/GL/Mtr.Rotate3D]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/GL/Mtr.Translate]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/GL/Random]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/GL/Vec2d.Cross]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/GL/Vec3d.Cross]
+Tester: Done executing
+Tester: Executing Test[Samples/OpenCL/MatrMlt]
+Tester: Done executing
+Tester: Executing Test[Samples/OpenCL/SimpleAddition]
+Tester: Done executing
+Tester: Executing Test[Samples/OpenCLABC/0Простейшие примеры/MatrMlt]
+Tester: Done executing
+Tester: Executing Test[Samples/OpenCLABC/0Простейшие примеры/SimpleAddition]
+Tester: Done executing
+Tester: Executing Test[Samples/OpenCLABC/Кеширование CLProgramCode/SimpleAddition но с кешем]
+Tester: Done executing
+Tester: Executing Test[Samples/OpenCLABC/Кеширование CLProgramCode/SimpleAddition но с кешем]
+Tester: Done executing
+Tester: Switched to platform "Intel(R) OpenCL" and using 1 devices
+Tester: Executing Test[Tests/Exec/CL/ToString]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/01#Wrap/01#CLPlatform/1]
 Tester: Done executing
