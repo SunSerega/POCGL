@@ -1,4 +1,4 @@
-*.pcu
+﻿*.pcu
 *.pdb
 *.exe
 *.compile_lock
