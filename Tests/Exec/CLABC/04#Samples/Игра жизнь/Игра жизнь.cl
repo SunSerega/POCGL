@@ -1,4 +1,4 @@
-
+﻿
 
 
 #define ValAt(B,X,Y) (B)[((X)+W)%W + ((Y)+W)%W * W]

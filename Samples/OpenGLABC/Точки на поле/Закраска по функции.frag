@@ -1,4 +1,4 @@
-#version 460 core
+﻿#version 460 core
 
 noperspective in vec2 logic_pos;
 

@@ -1,4 +1,4 @@
-## uses OpenCLABC;
+﻿## uses OpenCLABC;
 
 var P := new ParameterQueue<integer>('P');
 

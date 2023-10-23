@@ -1,3 +1,3 @@
-## uses OpenCLABC;
+﻿## uses OpenCLABC;
 
 HPQ(()->begin end).Cast&<Exception>.Print;

@@ -1,4 +1,4 @@
-## uses OpenCLABC;
+﻿## uses OpenCLABC;
 
 var Q := HFQ(()->1);
 

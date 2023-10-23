@@ -1,4 +1,4 @@
-
+﻿
 Genral syntax of `.dat` files:
 ```
 # ItemName

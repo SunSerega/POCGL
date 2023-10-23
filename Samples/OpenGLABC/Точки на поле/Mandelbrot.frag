@@ -1,4 +1,4 @@
-#version 460 core
+﻿#version 460 core
 
 // Подсматривал сюда:
 // https://stackoverflow.com/questions/44354589/optimizing-mandelbrot-fractal

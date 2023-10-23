@@ -1,4 +1,4 @@
-## uses OpenCLABC;
+﻿## uses OpenCLABC;
 
 var C := CQ(5);
 

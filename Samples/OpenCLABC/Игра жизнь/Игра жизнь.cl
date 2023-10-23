@@ -1,4 +1,4 @@
-
+﻿
 
 
 #define ValAt(B,X,Y) (B)[((X)+W)%W + ((Y)+W)%W * W]
@@ -18,9 +18,6 @@ __kernel void CalcStep(__global uchar* B, __global uchar* B_temp, int W)
 		for (int dy = -1; dy<2; ++dy)
 			c += ValAt(B, X+dx, Y+dy);
 	uchar prev_alive = ValAt(B, X, Y);
-	
-	// Пока не смог заставить работать, поэтому нужен отдельный буфер B_temp...
-	//work_group_barrier(CLK_LOCAL_MEM_FENCE);
 	
 	ValAt(B_temp, X, Y) = min_max_neighbours[prev_alive][0]<=c && c<=min_max_neighbours[prev_alive][1];
 	

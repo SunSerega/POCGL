@@ -1,4 +1,4 @@
-uses OpenCLABC;
+﻿uses OpenCLABC;
 
 type
   MyQueueContainer = sealed class

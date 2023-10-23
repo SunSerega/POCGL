@@ -1,4 +1,4 @@
-## uses OpenCLABC;
+﻿## uses OpenCLABC;
 
 CLContext.Default.SyncInvoke(
   CLMemory.Create(1).MakeCCQ.ThenWriteArray1(HFQ(()->

@@ -1,4 +1,4 @@
-#version 460
+﻿#version 460
 
 in vec2 position;
 in vec3 color;

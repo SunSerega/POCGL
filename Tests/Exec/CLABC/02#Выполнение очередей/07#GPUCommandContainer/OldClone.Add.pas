@@ -1,4 +1,4 @@
-## uses OpenCLABC;
+﻿## uses OpenCLABC;
 
 var q: CLMemoryCCQ := CLMemory.Create(1).MakeCCQ.ThenProc(mem->Println(1), false);
 
