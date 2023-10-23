@@ -73,7 +73,7 @@ jobs:
                     Write-Host "Old changes branch not found"
                 }
                 
-                if ((git diff --name-only) -or (git ls-files --others --exclude-standard)) {
+                if ((git diff --name-only | Where-Object { $_ -ne 'LastPack.log' }) -or (git ls-files --others --exclude-standard)) {
                     Write-Host "Changes detected"
                     git checkout -B "win-pack-changes/$(git rev-parse --abbrev-ref HEAD)"
                     
@@ -150,7 +150,7 @@ jobs:
                     echo "Old changes branch not found"
                 fi
                 
-                if [[ $(git diff --name-only) || $(git ls-files --others --exclude-standard) ]]; then
+                if [[ $(git diff --name-only | grep -v 'LastPack.log') || $(git ls-files --others --exclude-standard) ]]; then
                     echo "Changes detected"
                     git checkout -B "ubuntu-pack-changes/$(git rev-parse --abbrev-ref HEAD)"
                     
