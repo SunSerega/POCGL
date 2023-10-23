@@ -1430,7 +1430,7 @@ type
     
     public function TestSanity(test_size: integer := 1024*24): TimeSpan?;
     
-    public static function GenerateAndCheckAllPossible(test_size: integer := 1024*24; test_max_seconds: real := 0.5): List<ValueTuple<CLContext,TimeSpan>>;
+    public static function GenerateAndCheckAllPossible(test_size: integer := 1024*24; test_max_seconds: real := 5): List<ValueTuple<CLContext,TimeSpan>>;
     
     private static function LoadTestContext: CLContext;
     
@@ -10030,6 +10030,7 @@ begin
     for var i := 0 to dvcs.Count-1 do
       if not keep[i] then dvcs[i] := nil;
     dvcs.RemoveAll(d->d=nil);
+    if dvcs.Count=0 then continue;
     
     var chosen := new List<CLDevice>(dvcs.Count);
     foreach var choise in |true,false|.CartesianPower(dvcs.Count) do
