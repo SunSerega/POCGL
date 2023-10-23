@@ -48,6 +48,7 @@ jobs:
                 Write-Host "Compile: " -NoNewline
                 Start-Process -FilePath 'D:\PABCNETC\pabcnetcclear.exe' -ArgumentList '"PackAll.pas"' -Wait -NoNewWindow
                 
+                git config --global core.autocrlf false
                 git config --global user.name "sun pack bot"
                 git config --global user.email "sunserega2@gmail.com"
                 git config --global --add url.https://github.com/.insteadOf "git@github.com:"
@@ -126,6 +127,9 @@ jobs:
                 
                 mono "../PABCNETC/pabcnetcclear.exe" "PackAll.pas"
                 
+                git config --global core.autocrlf false
+                git config --global user.name "sun pack bot"
+                git config --global user.email "sunserega2@gmail.com"
                 git config --global --add url.https://github.com/.insteadOf "git@github.com:"
                 
                 # TODO need mono anon pipes workaround
@@ -145,8 +149,6 @@ jobs:
                     git checkout -B "ubuntu-pack-changes/$(git rev-parse --abbrev-ref HEAD)"
                     
                     git add -A
-                    git config --global user.name 'pack bot'
-                    git config --global user.email 'sunserega2@gmail.com'
                     git commit -m "ubuntu changes"
                     git push -f --set-upstream origin "$(git rev-parse --abbrev-ref HEAD)"
                     
