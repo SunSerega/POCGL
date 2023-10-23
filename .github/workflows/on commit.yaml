@@ -48,6 +48,8 @@ jobs:
                 Write-Host "Compile: " -NoNewline
                 Start-Process -FilePath 'D:\PABCNETC\pabcnetcclear.exe' -ArgumentList '"PackAll.pas"' -Wait -NoNewWindow
                 
+                git config --global user.name "sun pack bot"
+                git config --global user.email "sunserega2@gmail.com"
                 git config --global --add url.https://github.com/.insteadOf "git@github.com:"
                 
                 $process = Start-Process -FilePath 'PackAll.exe' -ArgumentList '"Stages= FirstPack + Reference + Dummy + OpenCL+OpenCLABC + OpenGL+OpenGLABC + Compile + Test + Release" "PasCompPath=D:\PABCNETC\pabcnetcclear.exe" SkipFinishedPause' -NoNewWindow -PassThru -Wait
@@ -72,8 +74,6 @@ jobs:
                     git checkout -B "win-pack-changes/$(git rev-parse --abbrev-ref HEAD)"
                     
                     git add -A
-                    git config --global user.name "sun pack bot"
-                    git config --global user.email "sunserega2@gmail.com"
                     git commit -m "win changes"
                     git push -f --set-upstream origin "$(git rev-parse --abbrev-ref HEAD)"
                 } else {
