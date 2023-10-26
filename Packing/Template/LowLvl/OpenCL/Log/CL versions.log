@@ -2,7 +2,7 @@
 
 
 # 1.0
-	Enum [cl::KERNEL_ILLEGAL_BUFFER_READ_WRITE]
+	Enum [cl::KERNEL_EXECUTION_ERROR]
 	Enum [cl::INVALID_GLOBAL_WORK_SIZE]
 	Enum [cl::INVALID_MIP_LEVEL]
 	Enum [cl::INVALID_BUFFER_SIZE]
@@ -319,7 +319,7 @@
 	Func [cl::EnqueueTask]
 
 # 1.1
-	Enum [cl::KERNEL_ILLEGAL_BUFFER_READ_WRITE]
+	Enum [cl::KERNEL_EXECUTION_ERROR]
 	Enum [cl::INVALID_GLOBAL_WORK_SIZE]
 	Enum [cl::INVALID_MIP_LEVEL]
 	Enum [cl::INVALID_BUFFER_SIZE]
@@ -671,7 +671,7 @@
 	Func [cl::EnqueueCopyBufferRect]
 
 # 1.2
-	Enum [cl::KERNEL_ILLEGAL_BUFFER_READ_WRITE]
+	Enum [cl::KERNEL_EXECUTION_ERROR]
 	Enum [cl::INVALID_GLOBAL_WORK_SIZE]
 	Enum [cl::INVALID_MIP_LEVEL]
 	Enum [cl::INVALID_BUFFER_SIZE]
@@ -1119,7 +1119,7 @@
 	Func [cl::GetExtensionFunctionAddressForPlatform]
 
 # 2.0
-	Enum [cl::KERNEL_ILLEGAL_BUFFER_READ_WRITE]
+	Enum [cl::KERNEL_EXECUTION_ERROR]
 	Enum [cl::INVALID_GLOBAL_WORK_SIZE]
 	Enum [cl::INVALID_MIP_LEVEL]
 	Enum [cl::INVALID_BUFFER_SIZE]
@@ -1633,7 +1633,7 @@
 	Func [cl::EnqueueSVMUnmap]
 
 # 2.1
-	Enum [cl::KERNEL_ILLEGAL_BUFFER_READ_WRITE]
+	Enum [cl::KERNEL_EXECUTION_ERROR]
 	Enum [cl::INVALID_GLOBAL_WORK_SIZE]
 	Enum [cl::INVALID_MIP_LEVEL]
 	Enum [cl::INVALID_BUFFER_SIZE]
@@ -2166,7 +2166,7 @@
 	Func [cl::EnqueueSVMMigrateMem]
 
 # 2.2
-	Enum [cl::KERNEL_ILLEGAL_BUFFER_READ_WRITE]
+	Enum [cl::KERNEL_EXECUTION_ERROR]
 	Enum [cl::INVALID_GLOBAL_WORK_SIZE]
 	Enum [cl::INVALID_MIP_LEVEL]
 	Enum [cl::INVALID_BUFFER_SIZE]
@@ -2705,7 +2705,7 @@
 	Func [cl::SetProgramReleaseCallback]
 
 # 3.0
-	Enum [cl::KERNEL_ILLEGAL_BUFFER_READ_WRITE]
+	Enum [cl::KERNEL_EXECUTION_ERROR]
 	Enum [cl::INVALID_GLOBAL_WORK_SIZE]
 	Enum [cl::INVALID_MIP_LEVEL]
 	Enum [cl::INVALID_BUFFER_SIZE]

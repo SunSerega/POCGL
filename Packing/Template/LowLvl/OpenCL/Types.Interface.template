@@ -2940,7 +2940,7 @@
     public static property INCOMPATIBLE_COMMAND_QUEUE:                clErrorCode read new clErrorCode(-1140);
     public static property INVALID_MUTABLE_COMMAND:                   clErrorCode read new clErrorCode(-1141);
     public static property INVALID_SEMAPHORE:                         clErrorCode read new clErrorCode(-1142);
-    public static property KERNEL_ILLEGAL_BUFFER_READ_WRITE:          clErrorCode read new clErrorCode(-9999);
+    public static property KERNEL_EXECUTION_ERROR:                    clErrorCode read new clErrorCode(-9999);
     public static property GRALLOC_RESOURCE_NOT_ACQUIRED:             clErrorCode read new clErrorCode($40D4);
     public static property INVALID_GRALLOC_OBJECT:                    clErrorCode read new clErrorCode($40D5);
     
@@ -3140,8 +3140,8 @@
         Result := 'INVALID_MUTABLE_COMMAND' else
       if INVALID_SEMAPHORE = self then
         Result := 'INVALID_SEMAPHORE' else
-      if KERNEL_ILLEGAL_BUFFER_READ_WRITE = self then
-        Result := 'KERNEL_ILLEGAL_BUFFER_READ_WRITE' else
+      if KERNEL_EXECUTION_ERROR = self then
+        Result := 'KERNEL_EXECUTION_ERROR' else
       if GRALLOC_RESOURCE_NOT_ACQUIRED = self then
         Result := 'GRALLOC_RESOURCE_NOT_ACQUIRED' else
       if INVALID_GRALLOC_OBJECT = self then
