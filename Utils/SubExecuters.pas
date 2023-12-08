@@ -121,11 +121,11 @@ begin
     yield fname;
   
   var dir := System.IO.Path.GetDirectoryName(fname);
-  foreach var uses_m in text.Matches('(?<!(//|'').*)uses\s([^;]*);') do
+  foreach var uses_m in text.Matches('(?<!(//|'').*)(?<!\w)uses\s([^;]*);') do
   begin
     var uses_s := uses_m.Groups[2].Value.Trim;
 //    Console.WriteLine($'<{prev.JoinToString('';'')}> Looking at file [{fname}]: "{uses_m}" ({uses_s})');
-    foreach var unit_m in uses_s.Matches('''([^'']+)''|([\w\.]+)') do
+    foreach var unit_m in uses_s.Matches('(?:\w+\s+in\s+)?''([^'']+)''|([\w\.]+)') do
     begin
       var unit_s := unit_m.Groups[1].Value+unit_m.Groups[2].Value;
       unit_s := unit_s.Trim;
@@ -169,7 +169,7 @@ begin
   if nick<>nil then AOtp.Otp($'Runing {nick}');
   if l_otp=nil then l_otp := l->
   begin
-    if nick<>nil then l := l.ConvStr(s->$'{nick}: {s}');
+    if nick<>nil then l := l.ConvStr(s->nick+': '+s.Replace(#9, ' '*8));
     AOtp.Otp(l);
   end;
   if l_err=nil then l_err := e->

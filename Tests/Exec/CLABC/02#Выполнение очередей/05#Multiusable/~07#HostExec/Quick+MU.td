@@ -8,7 +8,7 @@ OpenCL.clProgramCallback = procedure(program: cl_program; user_data: System.IntP
 OpenCLABC.$delegate? = function(ntv: cl_program; var data: clBool; validate: boolean): clErrorCode
 OpenCLABC._GetPropValueFunc<T> = function(ntv: cl_program; var data: T): clErrorCode
 OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): ValueTuple<cl_event,CLContext -> ()>
-OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ValueTuple<CLTaskErrHandler,EnqFunc<T>>
+OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
 CommandQueueQuickArray<integer,array of integer,QueueArraySyncInvoker,SimpleFuncContainer<array of integer,array of integer>,QueueArrayWorkConvert<integer,array of integer,SimpleFuncContainer<array of integer,array of integer>>>#0
@@ -19,11 +19,16 @@ CommandQueueQuickArray<integer,array of integer,QueueArraySyncInvoker,SimpleFunc
 CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>#2: function lambda: integer
 
 1 
+final = ErrHandlerMURepeater#0: MU repeater for CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>
+	victim = ErrHandlerInitial#1: Initial MU invoke
+origin = ErrHandlerFlattener#2: MU repeater for CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>
+victim = ErrHandlerInitial#1: Initial MU invoke
+(total 3 handlers)
 2 2
-[QueueRes<T>]: 4 
-	QueueResValDirect<array of integer>: 1 
-	QueueResValDirect<integer>: 1 
-	QueueResValWrap<integer>: 2 
+[QueueRes<T>]: 4
+	QueueResValDirect<array of integer>: 1
+	QueueResValDirect<integer>: 1
+	QueueResValWrap<integer>: 2
 
 #ReqModules
 OpenCLABC

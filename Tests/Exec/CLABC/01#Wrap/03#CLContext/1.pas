@@ -3,7 +3,7 @@
 var c := CLContext.Default;
 Println(c.GetType);
 Println(c.Properties.GetType);
-var c2 := new CLContext(c.Native);
+var c2 := new CLContext(c.Native, true);
 (c=c2).Println;
 c.AllDevices.SequenceEqual(c2.AllDevices).Println;
 Arr(c).Contains(c2).Println;

@@ -87,7 +87,7 @@
     
     function PreInvoke(d: TDelegate; inp1: TInp1; inp2: TInp2): TRes;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
+    function Invoke(d: TDelegate; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
     
   end;
   
@@ -136,7 +136,7 @@
     f.Invoke(inp1,inp2, nil);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
+    function Invoke(f: TFunc; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): TRes;
     begin
       if not err_handler.HadError then
       try
@@ -201,7 +201,7 @@
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): ValueTuple<TInp1,TInp2>;
+    function Invoke(p: TProc; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; c: CLContext): ValueTuple<TInp1,TInp2>;
     begin
       if not err_handler.HadError then
       try
@@ -303,7 +303,7 @@
       
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
@@ -339,14 +339,14 @@
   
   {$region Threaded}
   
-  DCommandQueueThreadedArray2MakeBody<TInp1,TInp2, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
+  DCommandQueueThreadedArray2MakeBody<TInp1,TInp2, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: ErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
   CommandQueueThreadedArray2<TInp1,TInp2,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray2WithWork<TInp1,TInp2,TRes, TInv, TDelegate, TWork>)
   where TInv: IQueueArray2Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray2Work<TInp1,TInp2,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: ErrHandler; c: CLContext; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
     begin
       Result := ()->
       begin
@@ -356,7 +356,7 @@
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; err_handler: ErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin
@@ -374,7 +374,7 @@
       
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';

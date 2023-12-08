@@ -30,17 +30,23 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var ind_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        ind_qr := invoker.InvokeBranch(ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        ind_qr := invoker.InvokeBranch(ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        ind_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -108,19 +114,26 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var val_qr: QueueResPtr<&T>;
       var ind_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        ind_qr := invoker.InvokeBranch(ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
-        val_qr := invoker.InvokeBranch(val.InvokeToPtr).AddToEvLst(g, enq_evs, False);
+        ind_qr := invoker.InvokeBranch(ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        val_qr := invoker.InvokeBranch(val.InvokeToPtr, par_err_handlers, False).AddToEvLst(g, enq_evs, False);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        val_qr.CancelStatusCheck('enq cancel');
+        ind_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -189,17 +202,23 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array of &T>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        a_qr := invoker.InvokeBranch(a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        a_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -265,17 +284,23 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array[,] of &T>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        a_qr := invoker.InvokeBranch(a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        a_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -341,17 +366,23 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array[,,] of &T>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        a_qr := invoker.InvokeBranch(a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        a_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -417,17 +448,23 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array of &T>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        a_qr := invoker.InvokeBranch(a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        a_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -493,17 +530,23 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array[,] of &T>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        a_qr := invoker.InvokeBranch(a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        a_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -569,17 +612,23 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array[,,] of &T>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        a_qr := invoker.InvokeBranch(a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        a_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -654,23 +703,32 @@ type
         ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var     a_qr: QueueRes<array of &T>;
       var a_ind_qr: QueueRes<integer>;
       var   len_qr: QueueRes<integer>;
       var   ind_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-            a_qr := invoker.InvokeBranch(    a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        a_ind_qr := invoker.InvokeBranch(a_ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-          len_qr := invoker.InvokeBranch(  len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-          ind_qr := invoker.InvokeBranch(  ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+            a_qr := invoker.InvokeBranch(    a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        a_ind_qr := invoker.InvokeBranch(a_ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+          len_qr := invoker.InvokeBranch(  len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+          ind_qr := invoker.InvokeBranch(  ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+            a_qr.CancelStatusCheck('enq cancel');
+        a_ind_qr.CancelStatusCheck('enq cancel');
+          len_qr.CancelStatusCheck('enq cancel');
+          ind_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -765,7 +823,7 @@ type
          ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var      a_qr: QueueRes<array[,] of &T>;
       var a_ind1_qr: QueueRes<integer>;
@@ -773,17 +831,27 @@ type
       var    len_qr: QueueRes<integer>;
       var    ind_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-             a_qr := invoker.InvokeBranch(     a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        a_ind1_qr := invoker.InvokeBranch(a_ind1.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        a_ind2_qr := invoker.InvokeBranch(a_ind2.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           len_qr := invoker.InvokeBranch(   len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           ind_qr := invoker.InvokeBranch(   ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+             a_qr := invoker.InvokeBranch(     a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        a_ind1_qr := invoker.InvokeBranch(a_ind1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        a_ind2_qr := invoker.InvokeBranch(a_ind2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           len_qr := invoker.InvokeBranch(   len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           ind_qr := invoker.InvokeBranch(   ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+             a_qr.CancelStatusCheck('enq cancel');
+        a_ind1_qr.CancelStatusCheck('enq cancel');
+        a_ind2_qr.CancelStatusCheck('enq cancel');
+           len_qr.CancelStatusCheck('enq cancel');
+           ind_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -887,7 +955,7 @@ type
          ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var      a_qr: QueueRes<array[,,] of &T>;
       var a_ind1_qr: QueueRes<integer>;
@@ -896,18 +964,29 @@ type
       var    len_qr: QueueRes<integer>;
       var    ind_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-             a_qr := invoker.InvokeBranch(     a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        a_ind1_qr := invoker.InvokeBranch(a_ind1.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        a_ind2_qr := invoker.InvokeBranch(a_ind2.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        a_ind3_qr := invoker.InvokeBranch(a_ind3.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           len_qr := invoker.InvokeBranch(   len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           ind_qr := invoker.InvokeBranch(   ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+             a_qr := invoker.InvokeBranch(     a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        a_ind1_qr := invoker.InvokeBranch(a_ind1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        a_ind2_qr := invoker.InvokeBranch(a_ind2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        a_ind3_qr := invoker.InvokeBranch(a_ind3.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           len_qr := invoker.InvokeBranch(   len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           ind_qr := invoker.InvokeBranch(   ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+             a_qr.CancelStatusCheck('enq cancel');
+        a_ind1_qr.CancelStatusCheck('enq cancel');
+        a_ind2_qr.CancelStatusCheck('enq cancel');
+        a_ind3_qr.CancelStatusCheck('enq cancel');
+           len_qr.CancelStatusCheck('enq cancel');
+           ind_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -1011,23 +1090,32 @@ type
         ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var     a_qr: QueueRes<array of &T>;
       var a_ind_qr: QueueRes<integer>;
       var   len_qr: QueueRes<integer>;
       var   ind_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-            a_qr := invoker.InvokeBranch(    a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        a_ind_qr := invoker.InvokeBranch(a_ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-          len_qr := invoker.InvokeBranch(  len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-          ind_qr := invoker.InvokeBranch(  ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+            a_qr := invoker.InvokeBranch(    a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        a_ind_qr := invoker.InvokeBranch(a_ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+          len_qr := invoker.InvokeBranch(  len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+          ind_qr := invoker.InvokeBranch(  ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+            a_qr.CancelStatusCheck('enq cancel');
+        a_ind_qr.CancelStatusCheck('enq cancel');
+          len_qr.CancelStatusCheck('enq cancel');
+          ind_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -1122,7 +1210,7 @@ type
          ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var      a_qr: QueueRes<array[,] of &T>;
       var a_ind1_qr: QueueRes<integer>;
@@ -1130,17 +1218,27 @@ type
       var    len_qr: QueueRes<integer>;
       var    ind_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-             a_qr := invoker.InvokeBranch(     a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        a_ind1_qr := invoker.InvokeBranch(a_ind1.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        a_ind2_qr := invoker.InvokeBranch(a_ind2.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           len_qr := invoker.InvokeBranch(   len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           ind_qr := invoker.InvokeBranch(   ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+             a_qr := invoker.InvokeBranch(     a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        a_ind1_qr := invoker.InvokeBranch(a_ind1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        a_ind2_qr := invoker.InvokeBranch(a_ind2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           len_qr := invoker.InvokeBranch(   len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           ind_qr := invoker.InvokeBranch(   ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+             a_qr.CancelStatusCheck('enq cancel');
+        a_ind1_qr.CancelStatusCheck('enq cancel');
+        a_ind2_qr.CancelStatusCheck('enq cancel');
+           len_qr.CancelStatusCheck('enq cancel');
+           ind_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -1244,7 +1342,7 @@ type
          ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var      a_qr: QueueRes<array[,,] of &T>;
       var a_ind1_qr: QueueRes<integer>;
@@ -1253,18 +1351,29 @@ type
       var    len_qr: QueueRes<integer>;
       var    ind_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-             a_qr := invoker.InvokeBranch(     a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        a_ind1_qr := invoker.InvokeBranch(a_ind1.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        a_ind2_qr := invoker.InvokeBranch(a_ind2.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        a_ind3_qr := invoker.InvokeBranch(a_ind3.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           len_qr := invoker.InvokeBranch(   len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           ind_qr := invoker.InvokeBranch(   ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+             a_qr := invoker.InvokeBranch(     a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        a_ind1_qr := invoker.InvokeBranch(a_ind1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        a_ind2_qr := invoker.InvokeBranch(a_ind2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        a_ind3_qr := invoker.InvokeBranch(a_ind3.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           len_qr := invoker.InvokeBranch(   len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           ind_qr := invoker.InvokeBranch(   ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+             a_qr.CancelStatusCheck('enq cancel');
+        a_ind1_qr.CancelStatusCheck('enq cancel');
+        a_ind2_qr.CancelStatusCheck('enq cancel');
+        a_ind3_qr.CancelStatusCheck('enq cancel');
+           len_qr.CancelStatusCheck('enq cancel');
+           ind_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -1380,19 +1489,26 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var   a_qr: QueueRes<ArraySegment<&T>>;
       var ind_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-          a_qr := invoker.InvokeBranch(  a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        ind_qr := invoker.InvokeBranch(ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+          a_qr := invoker.InvokeBranch(  a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        ind_qr := invoker.InvokeBranch(ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+          a_qr.CancelStatusCheck('enq cancel');
+        ind_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -1467,19 +1583,26 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var   a_qr: QueueRes<ArraySegment<&T>>;
       var ind_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-          a_qr := invoker.InvokeBranch(  a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        ind_qr := invoker.InvokeBranch(ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+          a_qr := invoker.InvokeBranch(  a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        ind_qr := invoker.InvokeBranch(ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+          a_qr.CancelStatusCheck('enq cancel');
+        ind_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -1551,17 +1674,23 @@ type
       ptr.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch(ptr.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        ptr_qr := invoker.InvokeBranch(ptr.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        ptr_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -1628,21 +1757,29 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch(ptr.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        ind_qr := invoker.InvokeBranch(ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        len_qr := invoker.InvokeBranch(len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        ptr_qr := invoker.InvokeBranch(ptr.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        ind_qr := invoker.InvokeBranch(ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        len_qr := invoker.InvokeBranch(len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        ptr_qr.CancelStatusCheck('enq cancel');
+        ind_qr.CancelStatusCheck('enq cancel');
+        len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -1715,17 +1852,23 @@ type
       ptr.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch(ptr.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        ptr_qr := invoker.InvokeBranch(ptr.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        ptr_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -1792,21 +1935,29 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var ptr_qr: QueueRes<IntPtr>;
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        ptr_qr := invoker.InvokeBranch(ptr.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        ind_qr := invoker.InvokeBranch(ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        len_qr := invoker.InvokeBranch(len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        ptr_qr := invoker.InvokeBranch(ptr.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        ind_qr := invoker.InvokeBranch(ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        len_qr := invoker.InvokeBranch(len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        ptr_qr.CancelStatusCheck('enq cancel');
+        ind_qr.CancelStatusCheck('enq cancel');
+        len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -2026,19 +2177,26 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeMemoryArea>;
       var  mem_offset_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+         mem_offset_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -2107,19 +2265,26 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeMemory>;
       var  mem_offset_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+         mem_offset_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -2188,19 +2353,26 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeValueArea<&T>>;
       var  mem_offset_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+         mem_offset_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -2269,19 +2441,26 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeValue<&T>>;
       var  mem_offset_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+         mem_offset_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -2350,19 +2529,26 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeArrayArea<&T>>;
       var  mem_offset_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+         mem_offset_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -2431,19 +2617,26 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeArray<&T>>;
       var  mem_offset_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+         mem_offset_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -2512,19 +2705,26 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeMemoryArea>;
       var  mem_offset_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+         mem_offset_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -2593,19 +2793,26 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeMemory>;
       var  mem_offset_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+         mem_offset_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -2674,19 +2881,26 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeValueArea<&T>>;
       var  mem_offset_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+         mem_offset_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -2755,19 +2969,26 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeValue<&T>>;
       var  mem_offset_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+         mem_offset_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -2836,19 +3057,26 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeArrayArea<&T>>;
       var  mem_offset_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+         mem_offset_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -2917,19 +3145,26 @@ type
        mem_offset.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeArray<&T>>;
       var  mem_offset_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+         mem_offset_qr := invoker.InvokeBranch( mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+         mem_offset_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -3003,9 +3238,16 @@ type
     begin
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
-      Result.Item1 := new CLTaskErrHandlerEmpty;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -3064,15 +3306,23 @@ type
       val.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
-      Result.Item1 := new CLTaskErrHandlerEmpty;
       var val_qr: QueueResPtr<&T>;
       
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        val_qr := invoker.InvokeBranch(val.InvokeToPtr).AddToEvLst(g, enq_evs, False);
+        val_qr := invoker.InvokeBranch(val.InvokeToPtr, par_err_handlers, False).AddToEvLst(g, enq_evs, False);
       end);
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        val_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -3145,19 +3395,26 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        ind_qr := invoker.InvokeBranch(ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        len_qr := invoker.InvokeBranch(len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        ind_qr := invoker.InvokeBranch(ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        len_qr := invoker.InvokeBranch(len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        ind_qr.CancelStatusCheck('enq cancel');
+        len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -3234,21 +3491,29 @@ type
       len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var val_qr: QueueResPtr<&T>;
       var ind_qr: QueueRes<integer>;
       var len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        ind_qr := invoker.InvokeBranch(ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        len_qr := invoker.InvokeBranch(len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
-        val_qr := invoker.InvokeBranch(val.InvokeToPtr).AddToEvLst(g, enq_evs, False);
+        ind_qr := invoker.InvokeBranch(ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        len_qr := invoker.InvokeBranch(len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        val_qr := invoker.InvokeBranch(val.InvokeToPtr, par_err_handlers, False).AddToEvLst(g, enq_evs, False);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        val_qr.CancelStatusCheck('enq cancel');
+        ind_qr.CancelStatusCheck('enq cancel');
+        len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -3323,17 +3588,23 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array of &T>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        a_qr := invoker.InvokeBranch(a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        a_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -3398,17 +3669,23 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array[,] of &T>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        a_qr := invoker.InvokeBranch(a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        a_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -3473,17 +3750,23 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<array[,,] of &T>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        a_qr := invoker.InvokeBranch(a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        a_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -3560,7 +3843,7 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var           a_qr: QueueRes<array of &T>;
       var       a_ind_qr: QueueRes<integer>;
@@ -3568,17 +3851,27 @@ type
       var         ind_qr: QueueRes<integer>;
       var    fill_len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-                  a_qr := invoker.InvokeBranch(          a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-              a_ind_qr := invoker.InvokeBranch(      a_ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        pattern_len_qr := invoker.InvokeBranch(pattern_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+                  a_qr := invoker.InvokeBranch(          a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+              a_ind_qr := invoker.InvokeBranch(      a_ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        pattern_len_qr := invoker.InvokeBranch(pattern_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+                  a_qr.CancelStatusCheck('enq cancel');
+              a_ind_qr.CancelStatusCheck('enq cancel');
+        pattern_len_qr.CancelStatusCheck('enq cancel');
+                ind_qr.CancelStatusCheck('enq cancel');
+           fill_len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -3682,7 +3975,7 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var           a_qr: QueueRes<array[,] of &T>;
       var      a_ind1_qr: QueueRes<integer>;
@@ -3691,18 +3984,29 @@ type
       var         ind_qr: QueueRes<integer>;
       var    fill_len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-                  a_qr := invoker.InvokeBranch(          a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-             a_ind1_qr := invoker.InvokeBranch(     a_ind1.InvokeToAny).AddToEvLst(g, enq_evs, True);
-             a_ind2_qr := invoker.InvokeBranch(     a_ind2.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        pattern_len_qr := invoker.InvokeBranch(pattern_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+                  a_qr := invoker.InvokeBranch(          a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+             a_ind1_qr := invoker.InvokeBranch(     a_ind1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+             a_ind2_qr := invoker.InvokeBranch(     a_ind2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        pattern_len_qr := invoker.InvokeBranch(pattern_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+                  a_qr.CancelStatusCheck('enq cancel');
+             a_ind1_qr.CancelStatusCheck('enq cancel');
+             a_ind2_qr.CancelStatusCheck('enq cancel');
+        pattern_len_qr.CancelStatusCheck('enq cancel');
+                ind_qr.CancelStatusCheck('enq cancel');
+           fill_len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -3815,7 +4119,7 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var           a_qr: QueueRes<array[,,] of &T>;
       var      a_ind1_qr: QueueRes<integer>;
@@ -3825,19 +4129,31 @@ type
       var         ind_qr: QueueRes<integer>;
       var    fill_len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-                  a_qr := invoker.InvokeBranch(          a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-             a_ind1_qr := invoker.InvokeBranch(     a_ind1.InvokeToAny).AddToEvLst(g, enq_evs, True);
-             a_ind2_qr := invoker.InvokeBranch(     a_ind2.InvokeToAny).AddToEvLst(g, enq_evs, True);
-             a_ind3_qr := invoker.InvokeBranch(     a_ind3.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        pattern_len_qr := invoker.InvokeBranch(pattern_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+                  a_qr := invoker.InvokeBranch(          a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+             a_ind1_qr := invoker.InvokeBranch(     a_ind1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+             a_ind2_qr := invoker.InvokeBranch(     a_ind2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+             a_ind3_qr := invoker.InvokeBranch(     a_ind3.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        pattern_len_qr := invoker.InvokeBranch(pattern_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+                  a_qr.CancelStatusCheck('enq cancel');
+             a_ind1_qr.CancelStatusCheck('enq cancel');
+             a_ind2_qr.CancelStatusCheck('enq cancel');
+             a_ind3_qr.CancelStatusCheck('enq cancel');
+        pattern_len_qr.CancelStatusCheck('enq cancel');
+                ind_qr.CancelStatusCheck('enq cancel');
+           fill_len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -3938,17 +4254,23 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<ArraySegment<&T>>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        a_qr := invoker.InvokeBranch(a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        a_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -4019,21 +4341,29 @@ type
       fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var        a_qr: QueueRes<ArraySegment<&T>>;
       var      ind_qr: QueueRes<integer>;
       var fill_len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-               a_qr := invoker.InvokeBranch(       a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-             ind_qr := invoker.InvokeBranch(     ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        fill_len_qr := invoker.InvokeBranch(fill_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+               a_qr := invoker.InvokeBranch(       a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+             ind_qr := invoker.InvokeBranch(     ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        fill_len_qr := invoker.InvokeBranch(fill_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+               a_qr.CancelStatusCheck('enq cancel');
+             ind_qr.CancelStatusCheck('enq cancel');
+        fill_len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -4113,19 +4443,26 @@ type
       pattern_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var         ptr_qr: QueueRes<IntPtr>;
       var pattern_len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch(        ptr.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        pattern_len_qr := invoker.InvokeBranch(pattern_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+                ptr_qr := invoker.InvokeBranch(        ptr.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        pattern_len_qr := invoker.InvokeBranch(pattern_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+                ptr_qr.CancelStatusCheck('enq cancel');
+        pattern_len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -4200,23 +4537,32 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var         ptr_qr: QueueRes<IntPtr>;
       var pattern_len_qr: QueueRes<integer>;
       var         ind_qr: QueueRes<integer>;
       var    fill_len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-                ptr_qr := invoker.InvokeBranch(        ptr.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        pattern_len_qr := invoker.InvokeBranch(pattern_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+                ptr_qr := invoker.InvokeBranch(        ptr.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        pattern_len_qr := invoker.InvokeBranch(pattern_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+                ptr_qr.CancelStatusCheck('enq cancel');
+        pattern_len_qr.CancelStatusCheck('enq cancel');
+                ind_qr.CancelStatusCheck('enq cancel');
+           fill_len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -4420,17 +4766,23 @@ type
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeMemoryArea>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -4497,21 +4849,29 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeMemoryArea>;
       var         ind_qr: QueueRes<integer>;
       var    fill_len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+                ind_qr.CancelStatusCheck('enq cancel');
+           fill_len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -4584,17 +4944,23 @@ type
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeMemory>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -4661,21 +5027,29 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeMemory>;
       var         ind_qr: QueueRes<integer>;
       var    fill_len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+                ind_qr.CancelStatusCheck('enq cancel');
+           fill_len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -4748,17 +5122,23 @@ type
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeValueArea<&T>>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -4825,21 +5205,29 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeValueArea<&T>>;
       var         ind_qr: QueueRes<integer>;
       var    fill_len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+                ind_qr.CancelStatusCheck('enq cancel');
+           fill_len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -4912,17 +5300,23 @@ type
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeValue<&T>>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -4989,21 +5383,29 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeValue<&T>>;
       var         ind_qr: QueueRes<integer>;
       var    fill_len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+                ind_qr.CancelStatusCheck('enq cancel');
+           fill_len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -5076,17 +5478,23 @@ type
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeArrayArea<&T>>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -5153,21 +5561,29 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeArrayArea<&T>>;
       var         ind_qr: QueueRes<integer>;
       var    fill_len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+                ind_qr.CancelStatusCheck('enq cancel');
+           fill_len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -5240,17 +5656,23 @@ type
       native_data.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeArray<&T>>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -5317,21 +5739,29 @@ type
          fill_len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var native_data_qr: QueueRes<NativeArray<&T>>;
       var         ind_qr: QueueRes<integer>;
       var    fill_len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny).AddToEvLst(g, enq_evs, True);
-                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        native_data_qr := invoker.InvokeBranch(native_data.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+                ind_qr := invoker.InvokeBranch(        ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+           fill_len_qr := invoker.InvokeBranch(   fill_len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        native_data_qr.CancelStatusCheck('enq cancel');
+                ind_qr.CancelStatusCheck('enq cancel');
+           fill_len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -5408,17 +5838,23 @@ type
       mem.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var mem_qr: QueueRes<CLMemory>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        mem_qr := invoker.InvokeBranch(mem.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        mem_qr := invoker.InvokeBranch(mem.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        mem_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -5489,23 +5925,32 @@ type
              len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var        mem_qr: QueueRes<CLMemory>;
       var mem_offset_qr: QueueRes<integer>;
       var        ind_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-               mem_qr := invoker.InvokeBranch(       mem.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        mem_offset_qr := invoker.InvokeBranch(mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-               ind_qr := invoker.InvokeBranch(       ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-               len_qr := invoker.InvokeBranch(       len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+               mem_qr := invoker.InvokeBranch(       mem.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        mem_offset_qr := invoker.InvokeBranch(mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+               ind_qr := invoker.InvokeBranch(       ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+               len_qr := invoker.InvokeBranch(       len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+               mem_qr.CancelStatusCheck('enq cancel');
+        mem_offset_qr.CancelStatusCheck('enq cancel');
+               ind_qr.CancelStatusCheck('enq cancel');
+               len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -5585,17 +6030,23 @@ type
       mem.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var mem_qr: QueueRes<CLMemory>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        mem_qr := invoker.InvokeBranch(mem.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        mem_qr := invoker.InvokeBranch(mem.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        mem_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -5666,23 +6117,32 @@ type
              len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var        mem_qr: QueueRes<CLMemory>;
       var mem_offset_qr: QueueRes<integer>;
       var        ind_qr: QueueRes<integer>;
       var        len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-               mem_qr := invoker.InvokeBranch(       mem.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        mem_offset_qr := invoker.InvokeBranch(mem_offset.InvokeToAny).AddToEvLst(g, enq_evs, True);
-               ind_qr := invoker.InvokeBranch(       ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-               len_qr := invoker.InvokeBranch(       len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+               mem_qr := invoker.InvokeBranch(       mem.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        mem_offset_qr := invoker.InvokeBranch(mem_offset.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+               ind_qr := invoker.InvokeBranch(       ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+               len_qr := invoker.InvokeBranch(       len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+               mem_qr.CancelStatusCheck('enq cancel');
+        mem_offset_qr.CancelStatusCheck('enq cancel');
+               ind_qr.CancelStatusCheck('enq cancel');
+               len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -5765,19 +6225,26 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var val_qr: QueueRes<CLValue<&T>>;
       var ind_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        val_qr := invoker.InvokeBranch(val.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        ind_qr := invoker.InvokeBranch(ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        val_qr := invoker.InvokeBranch(val.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        ind_qr := invoker.InvokeBranch(ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        val_qr.CancelStatusCheck('enq cancel');
+        ind_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -5846,19 +6313,26 @@ type
       ind.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var val_qr: QueueRes<CLValue<&T>>;
       var ind_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        val_qr := invoker.InvokeBranch(val.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        ind_qr := invoker.InvokeBranch(ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        val_qr := invoker.InvokeBranch(val.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        ind_qr := invoker.InvokeBranch(ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        val_qr.CancelStatusCheck('enq cancel');
+        ind_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -5924,17 +6398,23 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<CLArray<&T>>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        a_qr := invoker.InvokeBranch(a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        a_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -6003,23 +6483,32 @@ type
            len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var        a_qr: QueueRes<CLArray<&T>>;
       var from_ind_qr: QueueRes<integer>;
       var   to_ind_qr: QueueRes<integer>;
       var      len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-               a_qr := invoker.InvokeBranch(       a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        from_ind_qr := invoker.InvokeBranch(from_ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-          to_ind_qr := invoker.InvokeBranch(  to_ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-             len_qr := invoker.InvokeBranch(     len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+               a_qr := invoker.InvokeBranch(       a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        from_ind_qr := invoker.InvokeBranch(from_ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+          to_ind_qr := invoker.InvokeBranch(  to_ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+             len_qr := invoker.InvokeBranch(     len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+               a_qr.CancelStatusCheck('enq cancel');
+        from_ind_qr.CancelStatusCheck('enq cancel');
+          to_ind_qr.CancelStatusCheck('enq cancel');
+             len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -6097,17 +6586,23 @@ type
       a.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var a_qr: QueueRes<CLArray<&T>>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-        a_qr := invoker.InvokeBranch(a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+        a_qr := invoker.InvokeBranch(a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+        a_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin
@@ -6176,23 +6671,32 @@ type
            len.InitBeforeInvoke(g, prev_hubs);
     end;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<CLArray<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<CLArray<T>>; override;
     begin
       var        a_qr: QueueRes<CLArray<&T>>;
       var from_ind_qr: QueueRes<integer>;
       var   to_ind_qr: QueueRes<integer>;
       var      len_qr: QueueRes<integer>;
       
-      var l1_err_handler: CLTaskErrHandler;
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-               a_qr := invoker.InvokeBranch(       a.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        from_ind_qr := invoker.InvokeBranch(from_ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-          to_ind_qr := invoker.InvokeBranch(  to_ind.InvokeToAny).AddToEvLst(g, enq_evs, True);
-             len_qr := invoker.InvokeBranch(     len.InvokeToAny).AddToEvLst(g, enq_evs, True);
-        l1_err_handler := invoker.GroupHandlers;
+               a_qr := invoker.InvokeBranch(       a.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        from_ind_qr := invoker.InvokeBranch(from_ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+          to_ind_qr := invoker.InvokeBranch(  to_ind.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+             len_qr := invoker.InvokeBranch(     len.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
       end);
-      Result.Item1 := l1_err_handler;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+               a_qr.CancelStatusCheck('enq cancel');
+        from_ind_qr.CancelStatusCheck('enq cancel');
+          to_ind_qr.CancelStatusCheck('enq cancel');
+             len_qr.CancelStatusCheck('enq cancel');
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin

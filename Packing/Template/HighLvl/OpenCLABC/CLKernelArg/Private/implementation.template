@@ -29,8 +29,8 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterArray<T>(o), ()->new CLKernelArgPrivateSetterArray<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterArray<T>(o), ()->new CLKernelArgPrivateSetterArray<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -68,8 +68,8 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterArray2<T>(o), ()->new CLKernelArgPrivateSetterArray2<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterArray2<T>(o), ()->new CLKernelArgPrivateSetterArray2<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -107,8 +107,8 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterArray3<T>(o), ()->new CLKernelArgPrivateSetterArray3<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterArray3<T>(o), ()->new CLKernelArgPrivateSetterArray3<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -146,8 +146,8 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterArraySegment<T>(o), ()->new CLKernelArgPrivateSetterArraySegment<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterArraySegment<T>(o), ()->new CLKernelArgPrivateSetterArraySegment<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -185,8 +185,8 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeMemoryArea(o), ()->new CLKernelArgPrivateSetterNativeMemoryArea);
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeMemoryArea(o), ()->new CLKernelArgPrivateSetterNativeMemoryArea, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -224,8 +224,8 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeValueArea<T>(o), ()->new CLKernelArgPrivateSetterNativeValueArea<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeValueArea<T>(o), ()->new CLKernelArgPrivateSetterNativeValueArea<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -263,8 +263,8 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeArrayArea<T>(o), ()->new CLKernelArgPrivateSetterNativeArrayArea<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeArrayArea<T>(o), ()->new CLKernelArgPrivateSetterNativeArrayArea<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -302,8 +302,8 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeMemory(o), ()->new CLKernelArgPrivateSetterNativeMemory);
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeMemory(o), ()->new CLKernelArgPrivateSetterNativeMemory, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -341,8 +341,8 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeValue<T>(o), ()->new CLKernelArgPrivateSetterNativeValue<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeValue<T>(o), ()->new CLKernelArgPrivateSetterNativeValue<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -380,8 +380,8 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeArray<T>(o), ()->new CLKernelArgPrivateSetterNativeArray<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeArray<T>(o), ()->new CLKernelArgPrivateSetterNativeArray<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -421,8 +421,8 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
     data.q.InitBeforeInvoke(g, inited_hubs);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterValue<T>(o), ()->new CLKernelArgPrivateSetterValue<T>);
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
+    data.Invoke(inv, o->new CLKernelArgPrivateSetterValue<T>(o), ()->new CLKernelArgPrivateSetterValue<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);

@@ -27,3 +27,4 @@ var mem := new CLMemory(1);
 Test( mem.MakeCCQ.ThenWait(M1) );
 Test( M1+mem.MakeCCQ.ThenWait(M1) );
 Test( mem.MakeCCQ.ThenWait(M1)+M1 );
+mem.Dispose;

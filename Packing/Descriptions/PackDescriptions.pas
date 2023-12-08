@@ -11,34 +11,32 @@ uses DescriptionsData;
 
 type
   CommentData = sealed class
-    private used := default(boolean?);
+    private used := false;
     private directly_used := false;
     private source: string;
     private comment: string;
     
-    public constructor(source: string; comment: string; require_use: boolean);
+    public constructor(source: string; comment: string);
     begin
       self.source := source;
       self.comment := comment;
-      if require_use then
-        used := false;
     end;
     
     public static all := new Dictionary<string, CommentData>;
-    public static procedure LoadFile(fname: string; require_use: boolean) :=
+    public static procedure LoadFile(fname: string) :=
     foreach var (bl_name, bl_lns) in FixerUtils.ReadBlocks(fname, true) do
       if bl_name=nil then
         continue else // Комментарий в начале файла
       if all.ContainsKey(bl_name) then
         Otp($'ERROR: key %{bl_name}% found in "{all[bl_name].source}" and "{GetRelativePathRTA(fname)}"') else
-        all[bl_name] := new CommentData(GetRelativePathRTA(fname), bl_lns.JoinToString(#10).Trim, require_use);
-    public static procedure LoadAll(nick: string; require_use: boolean);
+        all[bl_name] := new CommentData(GetRelativePathRTA(fname), bl_lns.JoinToString(#10).Trim);
+    public static procedure LoadAll(nick: string);
     begin
       var path := GetFullPathRTA(nick);
       if not System.IO.Directory.Exists(path) then
         System.IO.Directory.CreateDirectory(path) else
       foreach var fname in System.IO.Directory.EnumerateFiles(path, '*.dat', System.IO.SearchOption.AllDirectories) do
-        LoadFile(fname, require_use);
+        LoadFile(fname);
       
 //      foreach var bl_name in all.Keys do
 //      begin
@@ -173,8 +171,7 @@ begin
       
     end;
     
-    CommentData.LoadAll('0Common', false);
-    CommentData.LoadAll(nick, true);
+    CommentData.LoadAll(nick);
     
     var all_log_data := new Dictionary<string, FileLogData>;
     foreach var fname in fls do all_log_data[fname] := new FileLogData;
@@ -192,11 +189,11 @@ begin
           log_data.Write(ignored_types, wr_missing);
         
         foreach var key in CommentData.all.Keys do
-          if CommentData.all[key].used=false then
-          begin
-            wr_unused += key;
-            wr_unused += #10;
-          end;
+        begin
+          if CommentData.all[key].used then continue;
+          wr_unused += key;
+          wr_unused += #10;
+        end;
         
         CommentData.all
           .Select(kvp->(kvp.Key,kvp.Value))

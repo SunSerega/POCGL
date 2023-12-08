@@ -1,3 +1,5 @@
 ﻿## uses OpenCLABC;
 
-Println(new CLArray<byte>(1));
+var a := new CLArray<byte>(1);
+Println(a);
+a.Dispose;

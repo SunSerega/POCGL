@@ -1,6 +1,6 @@
 ﻿unit Common;
 
-//TODO Костыль чтобы получать одинаковые .exe
+//TODO Костыль чтобы получать одинаковые .exe при каждой компиляции
 // - Сейчас компилятор загружает все перегрузки методов вроде gl.GetProgramInfoLog
 // - Но только при первой компиляции (когда Common.pcu не существует)
 // - Ему это нужно чтобы проверить, какая перегрузка подходит
@@ -14,16 +14,11 @@ var gl: OpenGL.gl;
 
 {$region Shader}
 
-function InitShader(fname: string; st: glShaderType): gl_shader;
+function InitShaderText(sources: array of string; source_name: string; st: glShaderType): gl_shader;
 begin
   Result := gl.CreateShader(st);
   
-  var source := ReadAllText(fname);
-  
-  gl.ShaderSource(Result, 1,
-    new string[](source),
-    nil
-  );
+  gl.ShaderSource(Result, 1, sources, nil);
   
   gl.CompileShader(Result);
   // Получаем состояние успешности компиляции
@@ -34,7 +29,7 @@ begin
   if comp_ok = 0 then
   begin
     
-    // Узнаём нужную длинную строки
+    // Узнаём нужную длинну строки
     var l: integer;
     gl.GetShaderiv(Result, glShaderParameterName.INFO_LOG_LENGTH, l);
     
@@ -48,13 +43,21 @@ begin
     var log := System.Runtime.InteropServices.Marshal.PtrToStringAnsi(ptr);
     
     // И в конце обязательно освобождаем, чтобы не было утечек памяти
+    // Вообще освобождать лучше бы или в finally, или в override метода Finalize
+    // Но тут это только усложнит всё
     System.Runtime.InteropServices.Marshal.FreeHGlobal(ptr);
     gl.DeleteShader(Result);
     
-    raise new System.ArgumentException($'{fname}:{#10}{log}');
+    raise new System.ArgumentException($'{source_name}:{#10}{log}');
   end;
   
 end;
+function InitShaderFile(fname: string; st: glShaderType) := InitShaderText(|ReadAllText(fname)|, fname, st);
+function InitShaderResource(sname: string; st: glShaderType) := InitShaderText(|
+  System.IO.StreamReader.Create(
+    System.Reflection.Assembly.GetCallingAssembly.GetManifestResourceStream(sname)
+  ).ReadToEnd
+|, sname, st);
 
 {$endregion Shader}
 

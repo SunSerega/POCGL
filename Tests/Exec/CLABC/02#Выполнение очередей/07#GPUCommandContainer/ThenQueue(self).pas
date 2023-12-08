@@ -1,6 +1,7 @@
 ﻿## uses OpenCLABC;
 
-var q := CLMemory.Create(1).MakeCCQ
+var m := new CLMemory(1);
+var q := m.MakeCCQ
   .ThenProc(mem->Println(1), false)
   .ThenProc(mem->Println(2), false)
 ;
@@ -8,3 +9,5 @@ var q := CLMemory.Create(1).MakeCCQ
 CLContext.Default.SyncInvoke(
   q.ThenQueue(q)
 );
+
+m.Dispose;

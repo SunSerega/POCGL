@@ -28,12 +28,16 @@ unit OpenCLABC;
 // Регистрация попыток .Exec команд кешировать свой CLKernel
 { $define ExecDebug}
 
+// Регистрация всех уровней ловли ошибок выполнения очередей
+{ $define ErrHandlerDebug}
+
 { $define ForceMaxDebug}
 {$ifdef ForceMaxDebug}
   {$define EventDebug}
   {$define QueueDebug}
   {$define WaitDebug}
   {$define ExecDebug}
+  {$define ErrHandlerDebug}
 {$endif ForceMaxDebug}
 
 {$endif DEBUG}{$endregion DEBUG}
@@ -42,6 +46,75 @@ unit OpenCLABC;
 
 //===================================
 // Обязательно сделать до следующей стабильной версии:
+
+//TODO Если кинуло AggEx, возвращать из тестов его внутренний массив исключений
+// - TestExecutor сейчас возвращает исключение текстом... Ужас
+//TODO Устечка памяти в виде ивентов после исключения в очереди
+// - Поидее стоит тестировать состояние ивентов в тесте и после ошибки
+// - Вызывать рефлекцией в try-finally метод Check каждого класса FinalDebugChecks
+// - Нет, стоп, это затрёт предыдущие ошибки. Надо и в Main и в Check ловить отдельно
+
+//TODO Как я сейчас реализовал memory_report:
+// - M := CLMemory(CLValue<byte>(M))
+// - Оригинальный M тут удалит и скажет что память освобождена
+// - Но при этом эта память останется использована новым M
+// - Поидее надо метод .MoveOwnership(ICLMemory) всем типам, реализующим ICLMemory
+
+//TODO cl_mem и т.п. должны реализовывать .GetHashCode и т.п.
+
+//TODO CLKernelCommandExec и т.п. хранят 2 поля args (в базовом типе и в себе)
+
+//TODO EndMaybeError($'.AccessErrors[{self.GetHashCode}]');
+// - А .AddMaybeError для него где???
+
+//TODO Временно созданные ICLMemory стоит освобождать в конце очереди. Но что если очередь что-то возвращает?
+// - Получается надо "Q_ResultMU + Q_Dispose + Q_ResultMU"
+// - Поидее можно добавить метод чтобы обойтись без MU
+// - Сейчас приходится костылить MU в CLContext.TestSanity
+// - Вообще, это сразу надо и в finally
+// - Тогда может .FinallyKeepResult
+// - Или CQUsing
+//TODO Сейчас эта же необходимость просвечивается в CCQ
+// - Тоже приходится использовать костылировать MU
+
+//TODO CQ.SyncInvoke
+//TODO CQ.BeginInvoke
+// - В виде методов, чтобы избавится от скобок и чтобы действия были в том же порядке что их описание в программе
+
+//TODO .DiscardResult не показывает в анализаторе кода для CCQ
+
+//TODO Всё же сделать чтобы .SyncInvoke работало без создания потока, когда возможно
+
+//TODO Добавлять информацию о расширении в константы энумов и ett перегрузки
+// - Сам только вспоткнулся: "cl.GetMemObjectInfo_MEM_ALLOC_DEVICE" работает только с расширением для общей памяти RAM+OpenCL
+
+//TODO Документация ICLMemory
+
+//TODO CQAcquireGL и CQReleaseGL
+// - Документация
+// - Тесты (это надо создавать спрятанное окно)
+// - Мож привести к более однородному виду
+// - Есть смысл разрешать CQ<ICLMemory> вместо ICLMemory?
+
+//TODO Написать в справке про clGLSharingKHR.PlatformLess
+// - И сразу про wglSwapControlEXT.Instance
+
+//TODO Кодогенераторы всё ещё много где делают старое форматирование, где содержимое 1-строчной функции имеет ту же идентацию что и заголовок
+// - Пройтись сначала по этому файлу, а потом уже по Modules.Packed
+
+//TODO MathDenormsAreZero не заставляет а разрешает делать (flush to) денормы нулями после операций
+// - Проверить остальные опции так же...
+
+//TODO CombineSyncQueue(array of CCQ) не работает - не хватает перегрузки
+// - Поидее для массива классов достаточно "as array of CQ<>"
+
+//TODO .WithParameter(p: ParameterQueue<T>; val: T)
+// - Q := Q0.WithParameter(p, 1) * Q0.WithParameter(p, 2);
+// - Не всегда можно отложить применение параметра до .BeginInvoke
+// - А без этого метода, чтобы достичь такого же результата - надо создать 2 разные Q0
+
+//TODO CLProgramCode: Свойства, возвращающие контекст и под-множество устройств на которых уже откомпилировано
+// - При чём компилировать можно именно на под-множестве устройств... Как то учитывать это
 
 //TODO Использовать StringPattern в тестере
 
@@ -145,7 +218,7 @@ unit OpenCLABC;
 // - Это будет интуитивнее:
 // --- НЕ работать между CLContext.BeginInvoke
 // --- Порядок выполнения: q выполняет уже не при запуске очереди
-//TODO CLTaskErrHandlerThiefRepeater.FillErrLstWithPrev не берёт ошибки mu, если пришла ошибка с prev_ev
+//TODO ErrHandlerThiefRepeater.FillErrLstWithPrev не берёт ошибки mu, если пришла ошибка с prev_ev
 // - По моему это плохо, потому что mu всегда выполняется как в finally
 // - Подумать как относится к .ThenMU, сделать тесты
 //TODO Защита от дурака, чтобы q-параметр нельзя было использовать вне .ThenMultiuse
@@ -384,9 +457,17 @@ uses System.Collections.Concurrent;
 
 uses OpenCL{%!!} in '../Modules.Packed/OpenCL'{%};
 
+{$ifdef ForceMaxDebug}
+var gen_debug_otp: System.IO.TextWriter := Console.Out;
+{$endif ForceMaxDebug}
+{$ifdef ErrHandlerDebug}
+var eh_debug_otp: System.IO.TextWriter := Console.Out;
+{$endif ErrHandlerDebug}
+
 type
   
   {$region TODO MOVE}
+  //TODO Сделать общим для OpenCLABC, OpenGLABC и т.п.
   
   {$region NativeArea}
   
@@ -946,6 +1027,92 @@ type
   
   {$endregion Native}
   
+  {$region MemoryObserver}
+  
+  //TODO NativeMemoryObserver?
+  MemoryObserver = abstract class
+    
+    public procedure AddMemoryUse(size: int64; mem_obj: object); abstract;
+    
+    public procedure RemoveMemoryUse(size: int64; mem_obj: object); abstract;
+    
+    public property CurrentlyUsedAmount: int64 read; abstract;
+    
+  end;
+  
+  SimpleMemoryObserver = sealed class(MemoryObserver)
+    private total_size: int64;
+    
+    public procedure AddMemoryUse(size: int64; mem_obj: object); override;
+    begin
+      Interlocked.Add(total_size, +size);
+    end;
+    
+    public procedure RemoveMemoryUse(size: int64; mem_obj: object); override;
+    begin
+      Interlocked.Add(total_size, -size);
+    end;
+    
+    public property CurrentlyUsedAmount: int64 read total_size; override;
+    
+  end;
+  
+  TrackingMemoryObserver = sealed class(MemoryObserver)
+    private mem_uses := new ConcurrentDictionary<object, int64>;
+    private total_size: int64;
+    
+    public procedure AddMemoryUse(size: int64; mem_obj: object); override;
+    begin
+      if size<0 then raise new ArgumentOutOfRangeException;
+      if not mem_uses.TryAdd(mem_obj, size) then
+        raise new InvalidOperationException;
+      Interlocked.Add(total_size, size);
+    end;
+    
+    public procedure RemoveMemoryUse(size: int64; mem_obj: object); override;
+    begin
+      var old_size: int64;
+      if not mem_uses.TryRemove(mem_obj, old_size) then
+        raise new InvalidOperationException($'{_ObjectToString(mem_obj)} is not one of {_ObjectToString(mem_uses.Keys)}');
+      Interlocked.Add(total_size, -old_size);
+      if old_size <> size then
+        raise new InvalidOperationException($'Expected {_ObjectToString(mem_obj)} to have a size of {old_size}, got {size}');
+    end;
+    
+    public property CurrentlyUsedAmount: int64 read total_size; override;
+    
+  end;
+  
+  EmptyMemoryObserver = sealed class(MemoryObserver)
+    {$ifdef DEBUG}
+    private impl := new TrackingMemoryObserver;
+    {$endif DEBUG}
+    
+    public procedure AddMemoryUse(size: int64; mem_obj: object); override;
+    begin
+      {$ifdef DEBUG}
+      impl.AddMemoryUse(size, mem_obj);
+      {$endif DEBUG}
+    end;
+    
+    public procedure RemoveMemoryUse(size: int64; mem_obj: object); override;
+    begin
+      {$ifdef DEBUG}
+      impl.RemoveMemoryUse(size, mem_obj);
+      {$endif DEBUG}
+    end;
+    
+    private static function raise_int64: int64;
+    begin
+      Result := 0;
+      raise new NotImplementedException;
+    end;
+    public property CurrentlyUsedAmount: int64 read raise_int64; override;
+    
+  end;
+  
+  {$endregion MemoryObserver}
+  
   {$endregion TODO MOVE}
   
   {$region Re-definition's}
@@ -1103,7 +1270,7 @@ type
         if LogFor(ev).ref_c<>0 then ReportProblem($'Event {ev} was not released');
       
       var total_ev_count := Logs.Values.Sum(l->l.log_lines.Select(act->act.is_release ? -1 : +1).PartialSum.CountOf(0));
-      $'[EventDebug]: {total_ev_count} event''s created'.Println;
+      gen_debug_otp.WriteLine($'[EventDebug]: {total_ev_count} event''s created');
     end;
     
   end;
@@ -1153,7 +1320,7 @@ type
         Sleep(1000);
         raise new OpenCLABCInternalException(q.ToString);
       end);
-      $'[QueueDebug]: {total_q_count} queue''s created'.Println;
+      gen_debug_otp.WriteLine($'[QueueDebug]: {total_q_count} queue''s created');
     end;
     
   end;
@@ -1188,7 +1355,7 @@ type
     end;
     
     public static procedure FinallyReport := if WaitActions.Count<>0 then
-    $'[WaitDebug]: {WaitActions.Count} wait handler''s created'.Println;
+      gen_debug_otp.WriteLine($'[WaitDebug]: {WaitActions.Count} wait handler''s created');
     
   end;
   
@@ -1231,13 +1398,48 @@ type
     end;
     
     public static procedure FinallyReport := if ExecCacheTries.Count<>0 then
-    $'[ExecDebug]: {ExecCacheTries.Values.Sum(q->q.Count(t->t[0]))} cache entries created'.Println;
+      gen_debug_otp.WriteLine($'[ExecDebug]: {ExecCacheTries.Values.Sum(q->q.Count(t->t[0]))} cache entries created');
     
   end;
   
   {$endif ExecDebug}{$endregion ExecDebug}
   
   {$endregion DEBUG}
+  
+  {$region CLMemoryObserver}
+  
+  CLMemoryObserver = static class
+    
+    public static auto property &Default: MemoryObserver := new EmptyMemoryObserver;
+    
+    private static procedure ReportFree(ntv: cl_mem{$ifdef DEBUG}; mem_obj: object{$endif});
+    begin
+      var sz: UIntPtr;
+      OpenCLABCInternalException.RaiseIfError(
+        cl.GetMemObjectInfo_MEM_SIZE(ntv, sz)
+      );
+      &Default.RemoveMemoryUse(sz.ToUInt64, {$ifdef DEBUG}mem_obj{$else}ntv{$endif});
+    end;
+    
+  end;
+  
+  {$ifdef DEBUG}
+  CLMemoryAlloc = sealed auto class(IEquatable<CLMemoryAlloc>)
+    public abc_mem: object;
+    public ntv_mem: cl_mem;
+    
+    public function Equals(other: CLMemoryAlloc) := self.ntv_mem = other.ntv_mem;
+    public function Equals(o: object): boolean; override :=
+      (o is CLMemoryAlloc(var other)) and Equals(other);
+    public function GetHashCode: integer; override := ntv_mem.GetHashCode;
+    
+    public function ToString: string; override :=
+      $'{abc_mem} (org={ntv_mem})';
+    
+  end;
+  {$endif DEBUG}
+  
+  {$endregion CLMemoryObserver}
   
   {$region WrapperProperties}
   
@@ -1348,7 +1550,6 @@ type
       inherited Create(ntv);
       self._parent := parent;
     end;
-    
     private constructor := inherited;
     
     protected procedure Finalize; override :=
@@ -1367,7 +1568,7 @@ type
     public property AllDevices: IList<CLDevice> read dvcs;
     
     private main_dvc: CLDevice;
-    public property MainDevice: CLDevice        read main_dvc;
+    public property MainDevice: CLDevice read main_dvc;
     
     private function GetAllNtvDevices: array of cl_device_id;
     begin
@@ -1383,7 +1584,7 @@ type
     
     private static function GetDefault: CLContext;
     begin
-      if Interlocked.CompareExchange(default_was_inited, 1, 0)=0 then
+      if default_was_inited=0 then
       begin
         var c :=
           {$ifdef ForceMaxDebug}
@@ -1391,8 +1592,9 @@ type
           LoadTestContext() ??
           {$endif ForceMaxDebug}
           MakeNewDefaultContext;
-        // Another exchange, because Default could be explicitly set
-        Interlocked.CompareExchange(_default, c, nil);
+        // Extra checks, in case .Default was explicitly set while generating new context
+        if Interlocked.CompareExchange(default_was_inited, 1, 0)=0 then
+          Interlocked.CompareExchange(_default, c, nil);
       end;
       Result := _default;
     end;
@@ -1464,35 +1666,37 @@ type
       );
       Result := res.ConvertAll(dvc->new CLDevice(dvc));
     end;
-    private procedure InitFromNtv(ntv: cl_context; dvcs: IList<CLDevice>; main_dvc: CLDevice);
+    private procedure InitFromNtv(ntv: cl_context; dvcs: IList<CLDevice>; main_dvc: CLDevice; need_retain: boolean);
     begin
       CheckMainDevice(main_dvc, dvcs);
-      OpenCLABCInternalException.RaiseIfError( cl.RetainContext(ntv) );
+      if need_retain then OpenCLABCInternalException.RaiseIfError( cl.RetainContext(ntv) );
       self.ntv := ntv;
       // Копирование должно происходить в вызывающих методах
       self.dvcs := if dvcs.IsReadOnly then dvcs else new ReadOnlyCollection<CLDevice>(dvcs);
       self.main_dvc := main_dvc;
     end;
-    public constructor(ntv: cl_context; main_dvc: CLDevice) :=
-    InitFromNtv(ntv, GetContextDevices(ntv), main_dvc);
+    public constructor(ntv: cl_context; main_dvc: CLDevice; need_retain: boolean) :=
+      InitFromNtv(ntv, GetContextDevices(ntv), main_dvc, need_retain);
     
-    public constructor(ntv: cl_context);
+    public constructor(ntv: cl_context; need_retain: boolean);
     begin
       var dvcs := GetContextDevices(ntv);
-      InitFromNtv(ntv, dvcs, dvcs[0]);
+      InitFromNtv(ntv, dvcs, dvcs[0], need_retain);
     end;
     
     private constructor(c: CLContext; main_dvc: CLDevice) :=
-    InitFromNtv(c.ntv, c.dvcs, main_dvc);
+      InitFromNtv(c.ntv, c.dvcs, main_dvc, true);
     public function MakeSibling(new_main_dvc: CLDevice) := new CLContext(self, new_main_dvc);
     
     private constructor := raise new OpenCLABCInternalException;
     
     public procedure Dispose;
     begin
-      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
-      if prev=IntPtr.Zero then exit;
-      OpenCLABCInternalException.RaiseIfError( cl.ReleaseContext(new cl_context(prev)) );
+      var prev_ntv := new cl_context(Interlocked.Exchange(self.ntv.val, IntPtr.Zero));
+      if prev_ntv=cl_context.Zero then exit;
+      OpenCLABCInternalException.RaiseIfError(
+        cl.ReleaseContext(prev_ntv)
+      );
     end;
     protected procedure Finalize; override := Dispose;
     
@@ -1774,9 +1978,9 @@ type
     
     public procedure Dispose;
     begin
-      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
-      if prev=IntPtr.Zero then exit;
-      OpenCLABCInternalException.RaiseIfError( cl.ReleaseProgram(new cl_program(prev)) );
+      var prev_ntv := new cl_program( Interlocked.Exchange(self.ntv.val, IntPtr.Zero) );
+      if prev_ntv=cl_program.Zero then exit;
+      OpenCLABCInternalException.RaiseIfError( cl.ReleaseProgram(prev_ntv) );
     end;
     protected procedure Finalize; override := Dispose;
     
@@ -1926,7 +2130,7 @@ type
   
   BinCLCode = abstract partial class(CLCode)
     
-    private function link_ntv(bins: IList<LinkableCLCode>; opt: CLCodeOptions): cl_program;
+    private static function link_ntv(bins: IList<LinkableCLCode>; opt: CLCodeOptions): cl_program;
     begin
       var bin_ntvs := new cl_program[bins.Count];
       for var i := 0 to bin_ntvs.Length-1 do
@@ -2222,6 +2426,16 @@ type
   
   {$region CLMemory}
   
+  {$region ICLMemory}
+  
+  ICLMemory = interface(IDisposable)
+    
+    property Native: cl_mem read;
+    
+  end;
+  
+  {$endregion ICLMemory}
+  
   {$region CLMemoryUsage}
   
   CLMemoryUsage = record
@@ -2247,7 +2461,7 @@ type
     public property CanRead: boolean read data and can_read_bit <> 0;
     public property CanWrite: boolean read data and can_write_bit <> 0;
     
-    private static function MakeCLFlags(kernel_use, map_use: CLMemoryUsage): clMemFlags;
+    public static function MakeCLFlags(kernel_use, map_use: CLMemoryUsage): clMemFlags;
     begin
       
       case kernel_use.data of
@@ -2297,6 +2511,7 @@ type
   
   CLMemory = partial class(IDisposable)
     private ntv: cl_mem;
+    private memory_report := true;
     
     {$region constructor's}
     
@@ -2306,6 +2521,8 @@ type
       var ec: clErrorCode;
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), size, nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
+      
+      CLMemoryObserver.Default.AddMemoryUse(size.ToUInt64, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
       
     end;
     public constructor(size: integer; c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
@@ -2320,12 +2537,14 @@ type
     public constructor(size: int64;   kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(new UIntPtr(size), kernel_use, map_use);
     
-    private constructor(ntv: cl_mem);
+    private constructor(ntv: cl_mem; memory_report, need_retain: boolean);
     begin
       self.ntv := ntv;
-      cl.RetainMemObject(ntv);
+      self.memory_report := memory_report;
+      if need_retain then
+        cl.RetainMemObject(ntv);
     end;
-    public static function FromNative(ntv: cl_mem): CLMemory;
+    public static function FromNative(ntv: cl_mem; memory_report, need_retain: boolean): CLMemory;
     
     private constructor := raise new OpenCLABCInternalException;
     
@@ -2347,10 +2566,13 @@ type
     
     {$region IDisposable}
     
+    public procedure ReportMemoryFree(prev_ntv: cl_mem); virtual :=
+      CLMemoryObserver.ReportFree(prev_ntv{$ifdef DEBUG}, new CLMemoryAlloc(self, prev_ntv){$endif});
     public procedure Dispose;
     begin
       var prev_ntv := new cl_mem( Interlocked.Exchange(self.ntv.val, IntPtr.Zero) );
       if prev_ntv=cl_mem.Zero then exit;
+      if memory_report then ReportMemoryFree(prev_ntv);
       OpenCLABCInternalException.RaiseIfError( cl.ReleaseMemObject(prev_ntv) );
       GC.SuppressFinalize(self);
     end;
@@ -2382,7 +2604,7 @@ type
     
     public constructor(parent: CLMemory; origin, size: UIntPtr; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
-      inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size), CLMemoryUsage.MakeCLFlags(kernel_use, map_use)) );
+      inherited Create( MakeSubNtv(parent.ntv, new cl_buffer_region(origin, size), CLMemoryUsage.MakeCLFlags(kernel_use, map_use)), false, false );
       self._parent := parent.ntv;
     end;
     public constructor(parent: CLMemory; origin, size: UInt32; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
@@ -2391,9 +2613,9 @@ type
     Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
     
     // For the CLMemory.FromNative
-    private constructor(parent, ntv: cl_mem);
+    private constructor(parent, ntv: cl_mem; memory_report, need_retain: boolean);
     begin
-      inherited Create(ntv);
+      inherited Create(ntv, memory_report, need_retain);
       self._parent := parent;
     end;
     private constructor := raise new OpenCLABCInternalException;
@@ -2402,9 +2624,11 @@ type
     
     {$region property's}
     
-    public property Parent: CLMemory read CLMemory.FromNative(_parent);
+    public property Parent: CLMemory read CLMemory.FromNative(_parent, false, true);
     
     {$endregion property's}
+    
+    public procedure ReportMemoryFree(prev_ntv: cl_mem); override := exit;
     
   end;
   
@@ -2415,6 +2639,7 @@ type
   CLValue<T> = partial class(IDisposable)
   where T: record;
     private ntv: cl_mem;
+    private memory_report := true;
     
     {$region constructor's}
     
@@ -2425,6 +2650,8 @@ type
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ValueSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
+      CLMemoryObserver.Default.AddMemoryUse(ValueSize, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
+      
     end;
     public constructor(c: CLContext; val: T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
     begin
@@ -2433,6 +2660,8 @@ type
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + clMemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
+      CLMemoryObserver.Default.AddMemoryUse(ValueSize, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
+      
     end;
     
     public constructor(kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
@@ -2440,14 +2669,16 @@ type
     public constructor(val: T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
     Create(CLContext.Default, val, kernel_use, map_use);
     
-    public constructor(ntv: cl_mem);
+    public constructor(ntv: cl_mem; memory_report, need_retain: boolean);
     begin
       self.ntv := ntv;
-      OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
+      self.memory_report := memory_report;
+      if need_retain then
+        OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
     end;
     
-    public static function operator implicit(mem: CLValue<T>): CLMemory := new CLMemory(mem.ntv);
-    public constructor(mem: CLMemory) := Create(mem.ntv);
+    public static function operator implicit(mem: CLValue<T>): CLMemory := new CLMemory(mem.ntv, false, true);
+    public constructor(mem: CLMemory) := Create(mem.ntv, false, true);
     
     {$endregion constructor's}
     
@@ -2462,9 +2693,10 @@ type
     
     public procedure Dispose;
     begin
-      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
-      if prev=IntPtr.Zero then exit;
-      OpenCLABCInternalException.RaiseIfError( cl.ReleaseMemObject(new cl_mem(prev)) );
+      var prev_ntv := new cl_mem(Interlocked.Exchange(self.ntv.val, IntPtr.Zero));
+      if prev_ntv=cl_mem.Zero then exit;
+      if memory_report then CLMemoryObserver.ReportFree(prev_ntv{$ifdef DEBUG}, new CLMemoryAlloc(self, prev_ntv){$endif});
+      OpenCLABCInternalException.RaiseIfError( cl.ReleaseMemObject(prev_ntv) );
       GC.SuppressFinalize(self);
     end;
     protected procedure Finalize; override := Dispose;
@@ -2484,6 +2716,7 @@ type
   CLArray<T> = partial class(IDisposable)
   where T: record;
     private ntv: cl_mem;
+    private memory_report := true;
     
     {$region constructor's}
     
@@ -2494,6 +2727,8 @@ type
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ByteSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
+      CLMemoryObserver.Default.AddMemoryUse(ByteSize, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
+      
     end;
     private procedure InitByVal(c: CLContext; var els: T; kernel_use, map_use: CLMemoryUsage);
     begin
@@ -2501,6 +2736,8 @@ type
       var ec: clErrorCode;
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + clMemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
+      
+      CLMemoryObserver.Default.AddMemoryUse(ByteSize, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
       
     end;
     
@@ -2528,7 +2765,7 @@ type
     public constructor(els_from, len: integer; els: array of T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
       Create(CLContext.Default, els_from, len, els, kernel_use, map_use);
     
-    public constructor(ntv: cl_mem);
+    public constructor(ntv: cl_mem; memory_report, need_retain: boolean);
     begin
       
       var byte_size: UIntPtr;
@@ -2537,13 +2774,15 @@ type
       );
       self.len := byte_size.ToUInt64 div item_size;
       
-      OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
+      if need_retain then
+        OpenCLABCInternalException.RaiseIfError( cl.RetainMemObject(ntv) );
       self.ntv := ntv;
+      self.memory_report := memory_report;
       
     end;
     
-    public static function operator implicit(mem: CLArray<T>): CLMemory := new CLMemory(mem.ntv);
-    public constructor(mem: CLMemory) := Create(mem.ntv);
+    public static function operator implicit(mem: CLArray<T>): CLMemory := new CLMemory(mem.ntv, false, true);
+    public constructor(mem: CLMemory) := Create(mem.ntv, false, true);
     
     private constructor := raise new OpenCLABCInternalException;
     
@@ -2572,9 +2811,10 @@ type
     
     public procedure Dispose;
     begin
-      var prev := Interlocked.Exchange(self.ntv.val, IntPtr.Zero);
-      if prev=IntPtr.Zero then exit;
-      OpenCLABCInternalException.RaiseIfError( cl.ReleaseMemObject(new cl_mem(prev)) );
+      var prev_ntv := new cl_mem(Interlocked.Exchange(self.ntv.val, IntPtr.Zero));
+      if prev_ntv=cl_mem.Zero then exit;
+      if memory_report then CLMemoryObserver.ReportFree(prev_ntv{$ifdef DEBUG}, new CLMemoryAlloc(self, prev_ntv){$endif});
+      OpenCLABCInternalException.RaiseIfError( cl.ReleaseMemObject(prev_ntv) );
       GC.SuppressFinalize(self);
     end;
     protected procedure Finalize; override := Dispose;
@@ -3243,7 +3483,7 @@ type
   
   CLTaskBase = abstract partial class
     private org_c: CLContext;
-    private wh := new ManualResetEventSlim(false);
+    private wh := new ManualResetEvent(false);
     private err_lst: List<Exception>;
     
     private function OrgQueueBase: CommandQueueBase; abstract;
@@ -3251,11 +3491,26 @@ type
     
     public property OrgCLContext: CLContext read org_c;
     
+    {$ifdef ErrHandlerDebug}
+    private procedure OutputErrHandlers;
+    {$endif ErrHandlerDebug}
+    
+    //TODO Дать пользователю это решать
+    private static max_spin_wait := TimeSpan.FromMilliseconds(50);
     public procedure Wait;
     begin
-      wh.Wait;
-      if err_lst.Count=0 then exit;
-      raise new AggregateException($'%Err:CLTask:%', err_lst.ToArray);
+      var sw := Stopwatch.StartNew;
+      while true do
+      begin
+        if wh.WaitOne(0) then break;
+        if sw.Elapsed > max_spin_wait then break;
+      end;
+      wh.WaitOne;
+      {$ifdef ErrHandlerDebug}
+      self.OutputErrHandlers;
+      {$endif ErrHandlerDebug}
+      if err_lst.Count<>0 then
+        raise new AggregateException($'%Err:CLTask:%', err_lst.ToArray);
     end;
     
   end;
@@ -3435,15 +3690,15 @@ function CQ<T>(o: T): CommandQueue<T>;
 
 {$endregion ConstQueue}
 
-{$region HFQ/HPQ}
-
-function HFQ<T>(f: ()->T; need_own_thread: boolean := true): CommandQueue<T>;
-function HFQ<T>(f: CLContext->T; need_own_thread: boolean := true): CommandQueue<T>;
+{$region HPQ/HFQ}
 
 function HPQ(p: ()->(); need_own_thread: boolean := true): CommandQueueNil;
 function HPQ(p: CLContext->(); need_own_thread: boolean := true): CommandQueueNil;
 
-{$endregion HFQ/HPQ}
+function HFQ<T>(f: ()->T; need_own_thread: boolean := true): CommandQueue<T>;
+function HFQ<T>(f: CLContext->T; need_own_thread: boolean := true): CommandQueue<T>;
+
+{$endregion HPQ/HFQ}
 
 {$region Wait}
 
@@ -3462,6 +3717,13 @@ function WaitFor(marker: WaitMarker): CommandQueueNil;
 {%CombineQueues/Interface!CombineQueues.pas%}
 
 {$endregion CombineQueue's}
+
+{$region GLIterop}
+
+function CQAcquireGL(params mem_objs: array of ICLMemory): CommandQueueNil;
+function CQReleaseGL(params mem_objs: array of ICLMemory): CommandQueueNil;
+
+{$endregion GLIterop}
 
 {$endregion Global subprograms}
 
@@ -3711,6 +3973,90 @@ type
   
   {$endregion Common}
   
+  {$region NoInp}
+  
+  {$region Proc}
+  
+  ISimpleProc0Container = interface(ISimpleDelegateContainer)
+    
+    procedure Invoke(c: CLContext);
+    
+  end;
+  
+  SimpleProc0Container = record(ISimpleProc0Container)
+    private d: ()->();
+    
+    public static function operator implicit(d: ()->()): SimpleProc0Container;
+    begin
+      Result.d := d;
+    end;
+    
+    public procedure Invoke(c: CLContext) := d();
+    
+    public procedure ToStringB(sb: StringBuilder) :=
+    CommandQueueBase.ToStringWriteDelegate(sb, d);
+    
+  end;
+  SimpleProc0ContainerC = record(ISimpleProc0Container)
+    private d: CLContext->();
+    
+    public static function operator implicit(d: CLContext->()): SimpleProc0ContainerC;
+    begin
+      Result.d := d;
+    end;
+    
+    public procedure Invoke(c: CLContext) := d(c);
+    
+    public procedure ToStringB(sb: StringBuilder) :=
+    CommandQueueBase.ToStringWriteDelegate(sb, d);
+    
+  end;
+  
+  {$endregion Proc}
+  
+  {$region Func}
+  
+  ISimpleFunc0Container<T> = interface(ISimpleDelegateContainer)
+    
+    function Invoke(c: CLContext): T;
+    
+  end;
+  
+  SimpleFunc0Container<T> = record(ISimpleFunc0Container<T>)
+    private d: ()->T;
+    
+    public static function operator implicit(d: ()->T): SimpleFunc0Container<T>;
+    begin
+      Result.d := d;
+    end;
+    
+    public function Invoke(c: CLContext) := d();
+    
+    public procedure ToStringB(sb: StringBuilder) :=
+    CommandQueueBase.ToStringWriteDelegate(sb, d);
+    
+  end;
+  SimpleFunc0ContainerC<T> = record(ISimpleFunc0Container<T>)
+    private d: CLContext->T;
+    
+    public static function operator implicit(d: CLContext->T): SimpleFunc0ContainerC<T>;
+    begin
+      Result.d := d;
+    end;
+    
+    public function Invoke(c: CLContext) := d(c);
+    
+    public procedure ToStringB(sb: StringBuilder) :=
+    CommandQueueBase.ToStringWriteDelegate(sb, d);
+    
+  end;
+  
+  {$endregion Func}
+  
+  {$endregion NoInp}
+  
+  {$region Inp}
+  
   {$region Proc}
   
   ISimpleProcContainer<TInp> = interface(ISimpleDelegateContainer)
@@ -3788,6 +4134,8 @@ type
   end;
   
   {$endregion Func}
+  
+  {$endregion Inp}
   
 function PreInvoke<TInp,TRes>(self: ISimpleDelegateContainer; inp: TInp): TRes; extensionmethod;
 begin
@@ -4086,88 +4434,148 @@ type
   
 {$endregion EventList}
 
-{$region DoubleEventListList}
+{$region DoubleList}
 
 type
-  DoubleEventListList = sealed class
-    private evs: array of EventList;
+  DoubleList<T> = sealed class
+    private items: array of T;
     private c1 := 0;
-    private c2 := 0;
     {$ifdef DEBUG}
-    private skipped := 0;
+    private skipped_c1 := 0;
+    private skipped_c2 := 0;
     {$endif DEBUG}
+    private c2 := 0;
     
-    public constructor(cap: integer) :=
-    evs := new EventList[cap];
+    public constructor(cap: integer) := items := new T[cap];
     private constructor := raise new OpenCLABCInternalException;
     
-    public property Capacity: integer read evs.Length;
+    public property Capacity: integer read items.Length;
     
     {$ifdef DEBUG}
     private procedure CheckFill(exp_done: boolean);
     begin
-      var done_c := c1+c2+skipped;
+      var done_c := c1+skipped_c1+skipped_c2+c2;
       if (done_c=Capacity) <> exp_done then raise new OpenCLABCInternalException(
         if exp_done then
-          $'Too much EnqEv capacity: {done_c}/{evs.Length} used' else
+          $'Too much EnqEv capacity: {done_c}/{items.Length} used' else
           $'Not enough EnqEv capacity'
       );
     end;
+    public procedure CheckSameSize<T2>(other: DoubleList<T2>);
+    begin
+      if (self.c1+self.skipped_c1<>other.c1+other.skipped_c1) or (self.skipped_c2+self.c2<>other.skipped_c2+other.c2) then
+        raise new OpenCLABCInternalException($'{#10}{self.c1}+{self.skipped_c1}+{self.skipped_c2}+{self.c2}=>{self.items.Length} vs{#10}{other.c1}+{other.skipped_c1}+{other.skipped_c2}+{other.c2}=>{other.items.Length}');
+    end;
     {$endif DEBUG}
     
-    public procedure AddL1(ev: EventList);
+    public function L1Empty := c1=0;
+    
+    public procedure AddL1(item: T);
     begin
       {$ifdef DEBUG}
       CheckFill(false);
-      if ev.count=0 then raise new OpenCLABCInternalException($'Empty event');
+      // is-var would call "new EventList()", which was disabled...
+      if (item is EventList) and (EventList(item as object).count=0) then
+        raise new OpenCLABCInternalException($'Empty event');
       {$endif DEBUG}
-      evs[c1] := ev;
+      items[c1] := item;
       c1 += 1;
     end;
-    public procedure AddL2(ev: EventList);
+    public procedure AddL2(item: T);
     begin
       {$ifdef DEBUG}
       CheckFill(false);
-      if ev.count=0 then raise new OpenCLABCInternalException($'Empty event');
+      // is-var would call "new EventList()", which was disabled...
+      if (item is EventList) and (EventList(item as object).count=0) then
+        raise new OpenCLABCInternalException($'Empty event');
       {$endif DEBUG}
       c2 += 1;
-      evs[evs.Length-c2] := ev;
+      items[items.Length-c2] := item;
     end;
-    {$ifdef DEBUG}
-    private procedure FakeAdd := skipped += 1;
-    {$endif DEBUG}
     
-    public function MakeLists: ValueTuple<EventList, EventList>;
+    {$ifdef DEBUG}
+    private procedure FakeAdd(to_l1: boolean);
+    begin
+      CheckFill(false);
+      if to_l1 then
+        skipped_c1 += 1 else
+        skipped_c2 += 1;
+    end;
+    {$endif DEBUG}
+    public procedure Add(item: T; to_l1: boolean) :=
+      if to_l1 then
+        AddL1(item) else
+        AddL2(item);
+    
+    public function GetL1: ArraySegment<T>;
     begin
       {$ifdef DEBUG}
       CheckFill(true);
       {$endif DEBUG}
-      Result := ValueTuple.Create(
-        EventList.Combine(new ArraySegment<EventList>(evs,0,c1)),
-        EventList.Combine(new ArraySegment<EventList>(evs,evs.Length-c2,c2))
-      );
+      Result := new ArraySegment<T>(items,0,c1);
     end;
+    public function GetL2: ArraySegment<T>;
+    begin
+      {$ifdef DEBUG}
+      CheckFill(true);
+      {$endif DEBUG}
+      Result := new ArraySegment<T>(items,items.Length-c2,c2);
+    end;
+    //TODO Вместо выделения .ToArray, лучше бы реализовать IList<T>...
+    // - Получится избежать пере-выделений при создании ErrHandlerBranchCombinator
+    public function GetAll: array of T;
+    begin
+      {$ifdef DEBUG}
+      CheckFill(true);
+      {$endif DEBUG}
+      var c := c1+c2;
+      Result := self.items;
+      if c=Result.Length then exit;
+      Result := new T[c];
+      for var i := 0 to c1-1 do
+        Result[i] := items[i];
+      var shift := c-items.Length;
+      for var i := items.Length-c2 to items.Length-1 do
+        Result[i+shift] := items[i];
+    end;
+    
+    public function L1Any(pred: T->boolean): boolean;
+    begin
+      {$ifdef DEBUG}
+      CheckFill(true);
+      {$endif DEBUG}
+      Result := true;
+      for var i := 0 to c1-1 do
+        if pred(items[i]) then exit;
+      Result := false;
+    end;
+    
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function Combine<TRes>(conv: ArraySegment<T>->TRes) :=
+      ValueTuple.Create( conv(GetL1), conv(GetL2) );
     
   end;
   
-{$endregion DoubleEventListList}
+{$endregion DoubleList}
 
-{$region CLTaskErrHandler}
+{$region ErrHandler}
 
 {$region Def}
 
 type
-  CLTaskErrHandler = abstract class
+  {$region Base}
+  
+  /// Contains errors for current CQ invoke stage,
+  /// as well as references to handlers of prev stages
+  ErrHandler = abstract class
     private local_err_lst := new List<Exception>;
     
-    public function AccessErrors: List<Exception>;
-    begin
-      {$ifdef DEBUG}
-      EndMaybeError($'.AccessErrors[{self.GetHashCode}]');
-      {$endif DEBUG}
-      had_error_cache := nil;
-      Result := local_err_lst;
-    end;
+    {$ifdef DEBUG}
+    private stage_reason: string;
+    public constructor(stage_reason: string) :=
+      self.stage_reason := stage_reason;
+    private constructor := raise new OpenCLABCInternalException;
+    {$endif DEBUG}
     
     {$region AddErr}
     
@@ -4177,7 +4585,7 @@ type
         // Inner exceptions should not get handled
         System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(e).Throw;
       {$ifdef DEBUG}
-      VerifyDoneInPrev(new HashSet<CLTaskErrHandler>);
+      VerifyDoneInPrev(new HashSet<ErrHandler>);
       if test_reason not in tests_exp then raise new OpenCLABCInternalException($'AddMaybeError was not called');
       {$endif DEBUG}
       
@@ -4197,7 +4605,7 @@ type
     public function HadError: boolean;
     begin
       {$ifdef DEBUG}
-      VerifyDoneInPrev(new HashSet<CLTaskErrHandler>);
+      VerifyDoneInPrev(new HashSet<ErrHandler>);
       {$endif DEBUG}
       
       if had_error_cache<>nil then
@@ -4214,8 +4622,8 @@ type
     
     {$region Error transfer}
     
-    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; abstract;
-    protected function TryRemoveErrors(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean;
+    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<ErrHandler, boolean>; handler: Exception->boolean): boolean; abstract;
+    protected function TryRemoveErrors(origin_cache: Dictionary<ErrHandler, boolean>; handler: Exception->boolean): boolean;
     begin
       Result := false;
       if had_error_cache=false then exit;
@@ -4226,12 +4634,13 @@ type
       if Result then had_error_cache := nil;
     end;
     public procedure TryRemoveErrors(handler: Exception->boolean) :=
-    TryRemoveErrors(new Dictionary<CLTaskErrHandler, boolean>, handler);
+    TryRemoveErrors(new Dictionary<ErrHandler, boolean>, handler);
     
-    protected procedure FillErrLstWithPrev(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>); abstract;
-    protected procedure FillErrLst(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>);
+    protected procedure FillErrLstWithPrev(origin_cache: HashSet<ErrHandler>; lst: List<Exception>); abstract;
+    protected procedure FillErrLst(origin_cache: HashSet<ErrHandler>; lst: List<Exception>);
     begin
       {$ifdef DEBUG}
+      VerifyDoneInPrev(new HashSet<ErrHandler>);
       {$else DEBUG}
       if not HadError then exit;
       {$endif DEBUG}
@@ -4241,11 +4650,11 @@ type
       lst.AddRange(local_err_lst);
     end;
     public procedure FillErrLst(lst: List<Exception>) :=
-    FillErrLst(new HashSet<CLTaskErrHandler>, lst);
+    FillErrLst(new HashSet<ErrHandler>, lst);
     
     {$endregion Error transfer}
     
-    {$region Done checks} {$ifdef DEBUG}
+    {$region Done checks}{$ifdef DEBUG}
     
     private tests_exp := new List<string>;
     private tests_done := new HashSet<string>;
@@ -4281,17 +4690,18 @@ type
       tests_done += reason;
     end;
     
-    protected procedure VerifyDoneInPrev(origin_cache: HashSet<CLTaskErrHandler>); abstract;
-    protected procedure VerifyDone(origin_cache: HashSet<CLTaskErrHandler>);
+    protected procedure VerifyDoneInPrev(origin_cache: HashSet<ErrHandler>); abstract;
+    protected procedure VerifyDone(origin_cache: HashSet<ErrHandler>);
     begin
       VerifyDoneInPrev(origin_cache);
       if tests_exp.Count<>0 then
-        raise new OpenCLABCInternalException($'Not all tests done; {TestsReport}');
+        PABCSystem.Println( new OpenCLABCInternalException($'Not all tests done for [{stage_reason}]; {TestsReport}') );
+//        raise new OpenCLABCInternalException($'Not all tests done for [{stage_reason}]; {TestsReport}');
     end;
     
     public procedure SanityCheck(err_lst: List<Exception>);
     begin
-      VerifyDone(new HashSet<CLTaskErrHandler>);
+      VerifyDone(new HashSet<ErrHandler>);
       
       // QErr*QErr - second cache wouldn't be calculated
 //      if had_error_cache=nil then
@@ -4305,71 +4715,290 @@ type
       
     end;
     
-    {$endif DEBUG} {$endregion Done checks}
+    {$endif DEBUG}{$endregion Done checks}
+    
+    {$region Println}{$ifdef ErrHandlerDebug}
+    
+    public procedure PrintlnPrev(tab: integer; cache: Dictionary<ErrHandler, integer>); abstract;
+    public procedure Println(tab: integer; cache: Dictionary<ErrHandler, integer>; prefix: string);
+    begin
+      
+      var need_prev := false;
+      var ind: integer;
+      if not cache.TryGetValue(self, ind) then
+      begin
+        need_prev := true;
+        ind := cache.Count;
+        cache.Add(self, ind);
+      end;
+      
+      loop tab do eh_debug_otp.Write(#9);
+      
+      if prefix<>nil then
+      begin
+        eh_debug_otp.Write(prefix);
+        eh_debug_otp.Write(' = ');
+      end;
+      
+      eh_debug_otp.Write(TypeName(self));
+      eh_debug_otp.Write('#');
+      eh_debug_otp.Write(ind);
+      eh_debug_otp.Write(': ');
+      eh_debug_otp.Write(self.stage_reason);
+      eh_debug_otp.WriteLine;
+      
+      if need_prev then PrintlnPrev(tab, cache);
+    end;
+    public procedure Println;
+    begin
+      var cache := new Dictionary<ErrHandler,integer>;
+      self.Println(0, cache, 'final');
+      eh_debug_otp.WriteLine($'(total {cache.Count} handlers)');
+    end;
+    
+    {$endif ErrHandlerDebug}{$endregion Println}
     
   end;
   
-  CLTaskErrHandlerEmpty = sealed class(CLTaskErrHandler)
+  // One of the states:
+  // - [Initial]: "f" with "can_skip_f=true"
+  // --- Task/Branch start with NO prev handlers
+  // - [Bud]: "f" with "can_skip_f=false"
+  // --- Branch started with prev handlers
+  // --- Next handlers would need to call "f", instead of creating own [Initial] LazyErrHandler
+  // --- But the creator of [Bud] will ".ForceSkipFunc"
+  // - [Value]: "v" and nothing else
+  // --- De-abstracted handler, for every other case
+  LazyErrHandler = record
+    //TODO For a sanity check, rename to _f and _v, then back
+    // - Should not be used directly, but is for now
+    private f: ()->ErrHandler := nil;
+    private can_skip_f: boolean
+    private v: ErrHandler := nil;
     
-    public constructor := exit;
+    public static function FromFunc(can_skip_f: boolean; f: ()->ErrHandler): LazyErrHandler;
+    begin
+      {$ifdef DEBUG}
+      if f=nil then raise nil;
+      {$endif DEBUG}
+      Result.can_skip_f := can_skip_f;
+      Result.f := f;
+    end;
+    public static function FromValue(v: ErrHandler): LazyErrHandler;
+    begin
+      {$ifdef DEBUG}
+      if v=nil then raise nil;
+      {$endif DEBUG}
+      Result.v := v;
+    end;
+    
+    private static function RaiseInvalidHandler: ErrHandler;
+    begin
+      Result := nil;
+      raise new OpenCLABCInternalException($'');
+    end;
+    public static InvalidFunc := FromFunc(true, RaiseInvalidHandler);
+    
+    // Returns de-abstracted error handler
+    //
+    // "expect_existing":
+    // - .StartWorkThread and .AttachInvokeTo expect "f" to have already been called
+    // - Then they check if an error was added or not, knowing "try" block was executed
+    public function Extract({$ifdef DEBUG}expect_existing: boolean{$endif}): ErrHandler;
+    begin
+      {$ifdef DEBUG}
+      if (f<>nil) = (v<>nil) then
+        raise new OpenCLABCInternalException($'Invalid state of curr_err_handler');
+      if expect_existing and (f<>nil) then
+        raise new OpenCLABCInternalException($'Expected curr_err_handler to already exist');
+      {$endif DEBUG}
+      if f<>nil then
+      begin
+        v := f();
+        f := nil;
+      end;
+      {$ifdef DEBUG}
+      if v=nil then raise nil;
+      {$endif DEBUG}
+      Result := v;
+    end;
+    
+    public function HasValue := v<>nil;
+    public function TrySkipFunc :=
+      if can_skip_f then self.v else
+        self.Extract({$ifdef DEBUG}false{$endif});
+    public function ForceSkipFunc({$ifdef DEBUG}origin: LazyErrHandler{$endif}): ErrHandler;
+    begin
+      Result := v;
+      {$ifdef DEBUG}
+      if (Result=nil) and (self <> origin) then
+        raise new OpenCLABCInternalException($'');
+      {$endif DEBUG}
+    end;
+    
+    //TODO Is this used?
+    // - Instead, it seems ForceSkipFunc always need to add itself to some list
+    public procedure AddTo(l: List<ErrHandler>);
+    begin
+      var raw_v := self.TrySkipFunc;
+      if raw_v=nil then exit;
+      l += raw_v;
+    end;
+    
+  end;
+  
+  {$endregion Base}
+  
+  {$region Initial}
+  
+  /// Handler with no prev stages
+  ErrHandlerInitial = sealed class(ErrHandler)
     
     protected function HadErrorInPrev: boolean; override := false;
     
-    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override := false;
+    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<ErrHandler, boolean>; handler: Exception->boolean): boolean; override := false;
     
-    protected procedure FillErrLstWithPrev(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>); override := exit;
+    protected procedure FillErrLstWithPrev(origin_cache: HashSet<ErrHandler>; lst: List<Exception>); override := exit;
     
     {$ifdef DEBUG}
-    protected procedure VerifyDoneInPrev(origin_cache: HashSet<CLTaskErrHandler>); override := exit;
+    protected procedure VerifyDoneInPrev(origin_cache: HashSet<ErrHandler>); override := exit;
     {$endif DEBUG}
+    
+    {$ifdef ErrHandlerDebug}
+    public procedure PrintlnPrev(tab: integer; cache: Dictionary<ErrHandler, integer>); override := exit;
+    {$endif ErrHandlerDebug}
     
   end;
   
-  CLTaskErrHandlerBranchBud = sealed class(CLTaskErrHandler)
-    private origin: CLTaskErrHandler;
+  {$endregion Initial}
+  
+  {$region Branch}
+  // These types are for error handling branches, not just invoke branches
+  // A>=B (try-finally) forms 2 independant error branches
+  // And so does invoke branching in case of A*B
+  //
+  // In case of A+B*C:
+  // - Handler of A is the branching origin
+  // - B and C create their own BrunchBud-s
+  // - B*C creates BranchCombinator
+  // - Combinator and both Bud's refer to the origin
+  
+  /// Initial handler for a branch that had origin
+  /// Checks for errors in the origin
+  /// But can only handles own errors
+  ErrHandlerBranchBud = sealed class(ErrHandler)
+    private origin: ErrHandler;
     
-    public constructor(origin: CLTaskErrHandler) := self.origin := origin;
+    public constructor(origin: ErrHandler{$ifdef DEBUG}; stage_reason: string{$endif});
+    begin
+      inherited Create({$ifdef DEBUG}stage_reason{$endif});
+      self.origin := origin;
+      {$ifdef DEBUG}
+      if origin=nil then raise nil;
+      {$endif DEBUG}
+    end;
     private constructor := raise new OpenCLABCInternalException;
+    
+    public static function Wrap(origin: LazyErrHandler{$ifdef DEBUG}; stage_reason: string{$endif}): LazyErrHandler;
+    begin
+      var origin_v := origin.TrySkipFunc;
+      if origin_v=nil then
+      begin
+        {$ifdef DEBUG}
+        if origin=LazyErrHandler.InvalidFunc then else
+        if origin.f() is ErrHandlerInitial then else
+          raise new OpenCLABCInternalException($'');
+        {$endif DEBUG}
+        Result := LazyErrHandler.FromFunc(true, ()->new ErrHandlerInitial({$ifdef DEBUG}$'(origin-less) {stage_reason}'{$endif}));
+        exit;
+      end;
+      Result := LazyErrHandler.FromFunc(false, ()->new ErrHandlerBranchBud(origin_v{$ifdef DEBUG}, stage_reason{$endif}));
+    end;
     
     protected function HadErrorInPrev: boolean; override := origin.HadError;
     
-    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override;
+    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<ErrHandler, boolean>; handler: Exception->boolean): boolean; override;
     begin
       if origin_cache.TryGetValue(origin, Result) then exit;
-      // Can't remove from here, because "A + B*C.Handle" would otherwise consume error in A
-      // Instead CLTaskErrHandlerBranchCombinator handles origin
-//      Result := origin.TryRemoveErrors(origin_cache, handler);
     end;
     
-    protected procedure FillErrLstWithPrev(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>); override;
+    protected procedure FillErrLstWithPrev(origin_cache: HashSet<ErrHandler>; lst: List<Exception>); override;
     begin
       if origin in origin_cache then exit;
       origin.FillErrLst(origin_cache, lst);
     end;
     
     {$ifdef DEBUG}
-    protected procedure VerifyDoneInPrev(origin_cache: HashSet<CLTaskErrHandler>); override;
+    protected procedure VerifyDoneInPrev(origin_cache: HashSet<ErrHandler>); override;
     begin
       if origin in origin_cache then exit;
       origin.VerifyDone(origin_cache);
     end;
     {$endif DEBUG}
     
-  end;
-  CLTaskErrHandlerBranchCombinator = sealed class(CLTaskErrHandler)
-    private origin: CLTaskErrHandler;
-    private branches: array of CLTaskErrHandler;
-    
-    public constructor(origin: CLTaskErrHandler; branches: array of CLTaskErrHandler);
+    {$ifdef ErrHandlerDebug}
+    public procedure PrintlnPrev(tab: integer; cache: Dictionary<ErrHandler, integer>); override;
     begin
+      if origin not in cache then
+//        raise new OpenCLABCInternalException($'bud origin not in cache');
+        PABCSystem.Println( new OpenCLABCInternalException($'bud origin not in cache') );
+      origin.Println(tab, cache, 'origin');
+    end;
+    {$endif ErrHandlerDebug}
+    
+  end;
+  
+  /// Common handler for all branches
+  /// Unifies errors and makes sure origin is only checked once
+  ErrHandlerBranchCombinator = sealed class(ErrHandler)
+    private origin: ErrHandler;
+    private branches: array of ErrHandler;
+    
+    public constructor(origin: ErrHandler; branches: array of ErrHandler{$ifdef DEBUG}; stage_reason: string{$endif});
+    begin
+      inherited Create({$ifdef DEBUG}stage_reason{$endif});
       self.origin := origin;
       self.branches := branches;
+      {$ifdef DEBUG}
+      if (origin=nil) and (branches.Length<2) then raise nil;
+      if branches.Any(b->b=nil) then raise nil;
+      {$endif DEBUG}
     end;
     private constructor := raise new OpenCLABCInternalException;
     
+    //TODO Принимать TList:IList?
+    public static function Wrap(origin: LazyErrHandler; branches: array of ErrHandler{$ifdef DEBUG}; stage_reason: string{$endif}): LazyErrHandler;
+    begin
+      Result := origin;
+      if branches.Length=0 then exit;
+      var origin_v := origin.TrySkipFunc;
+      Result := LazyErrHandler.FromValue(
+        if (branches.Length=1) and (origin_v=nil) then
+          branches.Single else
+          new ErrHandlerBranchCombinator(
+            origin_v, branches
+            {$ifdef DEBUG}, stage_reason{$endif}
+          )
+      );
+    end;
+    public static function Wrap(origin: LazyErrHandler; single_branch: ErrHandler{$ifdef DEBUG}; stage_reason: string{$endif}): LazyErrHandler;
+    begin
+      Result := origin;
+      if single_branch=nil then exit;
+      var origin_v := origin.TrySkipFunc;
+      Result := LazyErrHandler.FromValue(
+        if origin_v=nil then
+          single_branch else
+          new ErrHandlerBranchCombinator(
+            origin_v, |single_branch|
+            {$ifdef DEBUG}, stage_reason{$endif}
+          )
+      );
+    end;
+    
     protected function HadErrorInPrev: boolean; override;
     begin
-      Result := origin.HadError;
+      Result := (origin<>nil) and origin.HadError;
       if Result then exit;
       foreach var h in branches do
       begin
@@ -4378,125 +5007,228 @@ type
       end;
     end;
     
-    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override;
+    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<ErrHandler, boolean>; handler: Exception->boolean): boolean; override;
     begin
-      Result := origin.TryRemoveErrors(origin_cache, handler);
-      origin_cache.Add(origin, Result);
+      Result := false;
+      if origin<>nil then
+      begin
+        Result := origin.TryRemoveErrors(origin_cache, handler);
+        origin_cache.Add(origin, Result);
+      end;
       foreach var h in branches do
         Result := h.TryRemoveErrors(origin_cache, handler) or Result;
-      origin_cache.Remove(origin);
+      if (origin<>nil) and not origin_cache.Remove(origin) then
+        raise new OpenCLABCInternalException($'');
     end;
     
-    protected procedure FillErrLstWithPrev(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>); override;
+    protected procedure FillErrLstWithPrev(origin_cache: HashSet<ErrHandler>; lst: List<Exception>); override;
     begin
-      origin.FillErrLst(origin_cache, lst);
-      {$ifdef DEBUG}if not{$endif}origin_cache.Add(origin)
-      {$ifdef DEBUG}then
-        raise new OpenCLABCInternalException($'Origin added multiple times');
-      {$endif DEBUG};
+      if origin<>nil then
+      begin
+        origin.FillErrLst(origin_cache, lst);
+        origin_cache += origin;
+      end;
       foreach var h in branches do
         h.FillErrLst(origin_cache, lst);
-      origin_cache.Remove(origin);
+      if (origin<>nil) and not origin_cache.Remove(origin) then
+        raise new OpenCLABCInternalException($'');
     end;
     
     {$ifdef DEBUG}
-    protected procedure VerifyDoneInPrev(origin_cache: HashSet<CLTaskErrHandler>); override;
+    protected procedure VerifyDoneInPrev(origin_cache: HashSet<ErrHandler>); override;
     begin
-      origin.VerifyDone(origin_cache);
-      origin_cache += origin;
+      if origin<>nil then
+      begin
+        origin.VerifyDone(origin_cache);
+        origin_cache += origin;
+      end;
       foreach var h in branches do
         h.VerifyDone(origin_cache);
-      origin_cache -= origin;
+      if (origin<>nil) and not origin_cache.Remove(origin) then
+        raise new OpenCLABCInternalException($'');
     end;
     {$endif DEBUG}
     
+    {$ifdef ErrHandlerDebug}
+    public procedure PrintlnPrev(tab: integer; cache: Dictionary<ErrHandler, integer>); override;
+    begin
+      if origin<>nil then
+        origin.Println(tab+1, cache, 'origin');
+      foreach var branch in branches index i do
+        branch.Println(tab+1, cache, $'branch#{i}/{branches.Length}');
+    end;
+    {$endif ErrHandlerDebug}
+    
   end;
   
-  CLTaskErrHandlerThiefBase = abstract class(CLTaskErrHandler)
-    protected victim: CLTaskErrHandler;
+  {$endregion Branch}
+  
+  {$region Thief}
+  
+  /// Thief-s copy errors from their victim into their
+  /// own local list during the first time they are read
+  ErrHandlerThiefBase = abstract class(ErrHandler)
+    protected victim: ErrHandler;
+    {$ifdef ErrHandlerDebug}
+    protected org_victim: ErrHandler;
+    {$endif ErrHandlerDebug}
     
-    public constructor(victim: CLTaskErrHandler) := self.victim := victim;
+    public constructor(victim: ErrHandler{$ifdef DEBUG}; stage_reason: string{$endif});
+    begin
+      inherited Create({$ifdef DEBUG}stage_reason{$endif});
+      self.victim := victim;
+      {$ifdef ErrHandlerDebug}
+      self.org_victim := victim;
+      {$endif ErrHandlerDebug}
+      {$ifdef DEBUG}
+      // But will be set to nil in StealPrevErrors
+      if victim=nil then raise nil;
+      {$endif DEBUG}
+    end;
     private constructor := raise new OpenCLABCInternalException;
     
     protected function CanSteal: boolean; abstract;
     public procedure StealPrevErrors;
     begin
       if victim=nil then exit;
-      if CanSteal then
+      if CanSteal then lock self do
         victim.FillErrLst(self.local_err_lst);
       victim := nil;
     end;
     
     protected function HadErrorInVictim: boolean :=
-    (victim<>nil) and victim.HadError;
+      (victim<>nil) and victim.HadError;
+    
+    public function AccessErrors: List<Exception>;
+    begin
+      {$ifdef DEBUG}
+      EndMaybeError($'.AccessErrors[{self.GetHashCode}]');
+      {$endif DEBUG}
+      had_error_cache := nil;
+      Result := local_err_lst;
+    end;
     
   end;
-  CLTaskErrHandlerThief = sealed class(CLTaskErrHandlerThiefBase)
+  
+  /// Allows to combine all errors from the whole tree of handlers into a single list
+  /// Used for passing this list to the user function of .HandleReplaceRes
+  ErrHandlerFlattener = sealed class(ErrHandlerThiefBase)
+    
+    public static function Wrap(victim: ErrHandler{$ifdef DEBUG}; stage_reason: string{$endif}): ErrHandlerThiefBase :=
+      if victim is ErrHandlerThiefBase(var thief) then thief else
+        new ErrHandlerFlattener(victim{$ifdef DEBUG}, stage_reason{$endif});
     
     protected function CanSteal: boolean; override := true;
     
     protected function HadErrorInPrev: boolean; override := HadErrorInVictim;
     
-    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override;
+    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<ErrHandler, boolean>; handler: Exception->boolean): boolean; override;
     begin
       StealPrevErrors;
       Result := false;
     end;
     
-    protected procedure FillErrLstWithPrev(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>); override;
+    protected procedure FillErrLstWithPrev(origin_cache: HashSet<ErrHandler>; lst: List<Exception>); override;
     begin
       StealPrevErrors;
     end;
     
     {$ifdef DEBUG}
-    protected procedure VerifyDoneInPrev(origin_cache: HashSet<CLTaskErrHandler>); override;
+    protected procedure VerifyDoneInPrev(origin_cache: HashSet<ErrHandler>); override;
     begin
+      if victim=nil then exit;
       victim.VerifyDone(origin_cache);
     end;
     {$endif DEBUG}
     
-  end;
-  /// Repeats first handler, but also steals errors from second, if first is OK
-  CLTaskErrHandlerThiefRepeater = sealed class(CLTaskErrHandlerThiefBase)
-    private prev_handler: CLTaskErrHandler;
-    
-    public constructor(prev_handler, victim: CLTaskErrHandler);
+    {$ifdef ErrHandlerDebug}
+    public procedure PrintlnPrev(tab: integer; cache: Dictionary<ErrHandler, integer>); override;
     begin
-      inherited Create(victim);
-      self.prev_handler := prev_handler;
+      org_victim.Println(tab, cache, 'victim');
+    end;
+    {$endif ErrHandlerDebug}
+    
+  end;
+  
+  /// Works like BranchCombinator, but with origin+1 branch (victim) and steals errors from that branch
+  /// Used by .Multiusable to avoid walking victim handler tree multiple times
+  ErrHandlerMURepeater = sealed class(ErrHandlerThiefBase)
+    private origin: ErrHandler;
+    
+    public constructor(origin, victim: ErrHandler{$ifdef DEBUG}; stage_reason: string{$endif});
+    begin
+      inherited Create(victim{$ifdef DEBUG}, stage_reason{$endif});
+      self.origin := origin;
+      {$ifdef DEBUG}
+      if origin=nil then raise nil;
+      // But will be set to nil in StealPrevErrors
+      if victim=nil then raise nil;
+      {$endif DEBUG}
     end;
     private constructor := raise new OpenCLABCInternalException;
     
+    public static function Wrap(origin: LazyErrHandler; victim: ErrHandler{$ifdef DEBUG}; stage_reason: string{$endif}): LazyErrHandler;
+    begin
+      Result := origin;
+      if victim=nil then exit;
+      var origin_v := origin.TrySkipFunc;
+      //TODO Пока что проверки оконченности падают из за этого
+      // - Но это скорее вопрос настройки тех проверок
+//      if (origin_v is ErrHandlerMURepeater(var thief)) and (thief.victim=victim) then exit;
+      Result := LazyErrHandler.FromValue(
+        if origin_v=nil then
+          ErrHandlerFlattener.Wrap(victim{$ifdef DEBUG}, stage_reason{$endif}) else
+          new ErrHandlerMURepeater(origin_v, victim{$ifdef DEBUG}, stage_reason{$endif})
+      );
+    end;
+    
     protected function CanSteal: boolean; override :=
-    not prev_handler.HadError;
+      not origin.HadError;
     
     protected function HadErrorInPrev: boolean; override :=
-    // mu_handler.HadError would be called more often,
-    // so it's more likely to already have cache
-    HadErrorInVictim or prev_handler.HadError;
+      // mu_handler.HadError would be called more often,
+      // so it's more likely to already have cache
+      HadErrorInVictim or origin.HadError;
     
-    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<CLTaskErrHandler, boolean>; handler: Exception->boolean): boolean; override;
+    protected function TryRemoveErrorsInPrev(origin_cache: Dictionary<ErrHandler, boolean>; handler: Exception->boolean): boolean; override;
     begin
-      Result := prev_handler.TryRemoveErrors(origin_cache, handler);
+      // No need to check origin in cache
+      // victim is the one being accessed multiple times from MURepeater
+      Result := origin.TryRemoveErrors(origin_cache, handler);
       if CanSteal then StealPrevErrors;
     end;
     
-    protected procedure FillErrLstWithPrev(origin_cache: HashSet<CLTaskErrHandler>; lst: List<Exception>); override;
+    protected procedure FillErrLstWithPrev(origin_cache: HashSet<ErrHandler>; lst: List<Exception>); override;
     begin
       var prev_c := lst.Count;
-      prev_handler.FillErrLst(lst);
+      origin.FillErrLst(lst);
+      {$ifdef DEBUG}
+      if (prev_c=lst.Count) <> not origin.HadError then
+        raise new OpenCLABCInternalException($'');
+      {$endif DEBUG}
       if prev_c=lst.Count then StealPrevErrors;
     end;
     
     {$ifdef DEBUG}
-    protected procedure VerifyDoneInPrev(origin_cache: HashSet<CLTaskErrHandler>); override;
+    protected procedure VerifyDoneInPrev(origin_cache: HashSet<ErrHandler>); override;
     begin
-      if victim<>nil then victim.VerifyDone(origin_cache);
-      prev_handler.VerifyDone(origin_cache);
+      if victim<>nil then
+        victim.VerifyDone(origin_cache);
+      origin.VerifyDone(origin_cache);
     end;
     {$endif DEBUG}
     
+    {$ifdef ErrHandlerDebug}
+    public procedure PrintlnPrev(tab: integer; cache: Dictionary<ErrHandler, integer>); override;
+    begin
+      org_victim.Println(tab+1, cache, 'victim');
+      origin.Println(tab, cache, 'origin');
+    end;
+    {$endif ErrHandlerDebug}
+    
   end;
+  
+  {$endregion Thief}
   
 {$endregion Def}
 
@@ -4505,43 +5237,127 @@ type
 type
   CLTaskGlobalData = sealed partial class
     
-    public curr_err_handler: CLTaskErrHandler := new CLTaskErrHandlerEmpty;
+    // Error in insta-called HPQ/HFQ, etc.
+    public had_insta_err: boolean;
+    
+    private static function MakeInitialErrHandler := new ErrHandlerInitial({$ifdef DEBUG}$'Initial CLTask invoke'{$endif});
+    public curr_err_handler := LazyErrHandler.FromFunc(true, MakeInitialErrHandler);
     
   end;
   
 procedure TODO_2036_1 := exit; //TODO #2036
 
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-procedure Invoke<TInp>(self: ISimpleProcContainer<TInp>; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp: TInp; c: CLContext); extensionmethod;
+procedure Invoke<TInp>(self: ISimpleProcContainer<TInp>; insta_call_g: CLTaskGlobalData; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp: TInp; c: CLContext); extensionmethod;
 begin
-  if not err_handler.HadError then
-  try
-    self.Invoke(inp, c);
-  except
-    on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
-  end;
   {$ifdef DEBUG}
-  err_handler.EndMaybeError(err_test_reason);
+  try
+  {$endif DEBUG}
+    
+    if (insta_call_g<>nil) and insta_call_g.had_insta_err then exit;
+    if err_handler.HadError then exit;
+    
+    try
+      self.Invoke(inp, c);
+    except
+      on e: Exception do
+      begin
+        if insta_call_g<>nil then insta_call_g.had_insta_err := true;
+        err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
+      end;
+    end;
+    
+  {$ifdef DEBUG}
+  finally
+    err_handler.EndMaybeError(err_test_reason);
+  end;
   {$endif DEBUG}
 end;
 
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-function Invoke<TInp,TRes>(self: ISimpleFuncContainer<TInp,TRes>; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp: TInp; c: CLContext): TRes; extensionmethod;
+function Invoke<TInp,TRes>(self: ISimpleFuncContainer<TInp,TRes>; insta_call_g: CLTaskGlobalData; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp: TInp; c: CLContext): TRes; extensionmethod;
 begin
-  if not err_handler.HadError then
-  try
-    Result := self.Invoke(inp, c);
-  except
-    on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
-  end;
   {$ifdef DEBUG}
-  err_handler.EndMaybeError(err_test_reason);
+  try
+  {$endif DEBUG}
+    
+    if (insta_call_g<>nil) and insta_call_g.had_insta_err then exit;
+    if err_handler.HadError then exit;
+    
+    try
+      Result := self.Invoke(inp, c);
+    except
+      on e: Exception do
+      begin
+        if insta_call_g<>nil then insta_call_g.had_insta_err := true;
+        err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
+      end;
+    end;
+    
+  {$ifdef DEBUG}
+  finally
+    err_handler.EndMaybeError(err_test_reason);
+  end;
+  {$endif DEBUG}
+end;
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)]
+procedure Invoke(self: ISimpleProc0Container; insta_call_g: CLTaskGlobalData; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; c: CLContext); extensionmethod;
+begin
+  {$ifdef DEBUG}
+  try
+  {$endif DEBUG}
+    
+    if (insta_call_g<>nil) and insta_call_g.had_insta_err then exit;
+    if err_handler.HadError then exit;
+    
+    try
+      self.Invoke(c);
+    except
+      on e: Exception do
+      begin
+        if insta_call_g<>nil then insta_call_g.had_insta_err := true;
+        err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
+      end;
+    end;
+    
+  {$ifdef DEBUG}
+  finally
+    err_handler.EndMaybeError(err_test_reason);
+  end;
+  {$endif DEBUG}
+end;
+
+[MethodImpl(MethodImplOptions.AggressiveInlining)]
+function Invoke<TRes>(self: ISimpleFunc0Container<TRes>; insta_call_g: CLTaskGlobalData; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; c: CLContext): TRes; extensionmethod;
+begin
+  {$ifdef DEBUG}
+  try
+  {$endif DEBUG}
+    
+    if (insta_call_g<>nil) and insta_call_g.had_insta_err then exit;
+    if err_handler.HadError then exit;
+    
+    try
+      Result := self.Invoke(c);
+    except
+      on e: Exception do
+      begin
+        if insta_call_g<>nil then insta_call_g.had_insta_err := true;
+        err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
+      end;
+    end;
+    
+  {$ifdef DEBUG}
+  finally
+    err_handler.EndMaybeError(err_test_reason);
+  end;
   {$endif DEBUG}
 end;
 
 {$endregion Use}
 
-{$endregion CLTaskErrHandler}
+{$endregion ErrHandler}
 
 {$region UserEvent}
 
@@ -4570,7 +5386,7 @@ type
       );
       
       var mre := after.ToMRE({$ifdef EventDebug}$'Threaded work with res_ev={res}'{$endif});
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}true{$endif});
       var thr := new Thread(()->
       try
         if mre<>nil then mre.Wait;
@@ -4730,7 +5546,7 @@ type
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AttachInvokeTo(ev: EventList; g: CLTaskGlobalData{$ifdef EventDebug}; qr: object{$endif}): EventList;
+    function AttachInvokeTo(ev: EventList; g: CLTaskGlobalData{$ifdef EventDebug}; attach_after: object{$endif}): EventList;
     begin
       var acts := self.TakeOut;
       
@@ -4747,14 +5563,14 @@ type
       {$endif DEBUG}
         ;
       
-      var uev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {TypeName(qr)}.AttachInvokeActions, after: {ev.evs?.JoinToString}'{$endif});
+      var uev := new UserEvent(g.cl_c{$ifdef EventDebug}, $'res_ev for {TypeName(attach_after)}.AttachInvokeActions, after: {ev.evs?.JoinToString}'{$endif});
       var c := g.c;
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}true{$endif});
       ev.MultiAttachCallback(()->
       begin
         acts.Invoke(c);
         uev.SetComplete(err_handler.HadError);
-      end{$ifdef EventDebug}, $'body of {TypeName(qr)}.AttachInvokeActions with res_ev={uev}'{$endif});
+      end{$ifdef EventDebug}, $'body of {TypeName(attach_after)}.AttachInvokeActions with res_ev={uev}'{$endif});
       
       Result := uev;
     end;
@@ -4799,8 +5615,8 @@ type
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AttachInvokeActions(g: CLTaskGlobalData) :=
-    prev_delegate.AttachInvokeTo(prev_ev, g{$ifdef EventDebug}, self{$endif});
+    function AttachInvokeActions(g: CLTaskGlobalData{$ifdef EventDebug}; attach_after: object{$endif}) :=
+    prev_delegate.AttachInvokeTo(prev_ev, g{$ifdef EventDebug}, attach_after{$endif});
     
   end;
   
@@ -4816,6 +5632,9 @@ type
   IQueueRes = interface
     
     property ResEv: EventList read;
+    
+    // Whether res can be read before event completes
+    property IsConst: boolean read;
     
     function ShouldInstaCallAction: boolean;
     procedure AddAction(d: QueueResAction);
@@ -4913,6 +5732,13 @@ type
     
     public property ResEv: EventList read base.ResEv;
     
+    private function raise_is_const: boolean;
+    begin
+      Result := false;
+      raise new OpenCLABCInternalException($'');
+    end;
+    public property IsConst: boolean read raise_is_const;
+    
     public function ShouldInstaCallAction := base.ShouldInstaCallAction;
     public procedure AddAction(d: QueueResAction) := base.AddAction(d);
     public procedure AddActions(d: QueueResComplDelegateData) := base.AddActions(d);
@@ -4991,8 +5817,36 @@ type
     public function MakeWrapWithImpl(new_ev: EventList): IQueueRes; abstract;
     
     {$ifdef DEBUG}
+    private status_checked := new InterlockedBoolean;
+    protected procedure ExpectCheckStatus :=
+    ResEv.Retain({$ifdef EventDebug}$'for status check of {TypeName(self)}[{self.GetHashCode}]'{$endif});
+    protected procedure CheckStatus :=
+    //TODO В каких случаях надо это проверять?
+    // - И на всяк вставил в CancelStatusCheck, потому что его в конце выполнения вызывает
+    // - В случае MU наверное - но это поидее правильнее как то обходить
+    // - К примеру выделять несколько проверок оконченности специально для размноженной очереди
+    if status_checked.TrySet(true) then
+    begin
+      if not IsConst and not ResEv.HasCompleted then
+      begin
+        var err := new StringBuilder($'Result read before {ResEv.count} events completed:');
+        for var i := 0 to ResEv.count-1 do
+        begin
+          err += #10#9;
+          err += ResEv[i].ToString;
+          err += ': ';
+          err += EventList.GetStatus(ResEv[i]).ToString;
+        end;
+        {$ifdef EventDebug}
+        EventDebug.ReportEventLogs(Console.Error);
+        {$endif EventDebug}
+        raise new OpenCLABCInternalException(err.ToString);
+      end;
+      ResEv.Release({$ifdef EventDebug}$'after status check of {TypeName(self)}[{self.GetHashCode}]'{$endif});
+    end;
     private procedure CancelStatusCheck(reason: string) :=
-    ResEv.Release({$ifdef EventDebug}$'cancel status check of {TypeName(self)}[{self.GetHashCode}], because {reason}'{$endif});
+      if status_checked.TrySet(true) then
+        ResEv.Release({$ifdef EventDebug}$'cancel status check of {TypeName(self)}[{self.GetHashCode}], because {reason}'{$endif});
     {$endif DEBUG}
     public function TakeBaseOut: QueueResData;
     begin
@@ -5055,32 +5909,6 @@ type
       if res_const then raise new OpenCLABCInternalException($'Result set on const qr');
       if res_last_set<>nil then raise new OpenCLABCInternalException($'Result set twice: {#10}{res_last_set}{#10+''-''*30+#10}{System.Environment.StackTrace}');
       res_last_set := Environment.StackTrace;
-    end;
-    {$endif DEBUG}
-    
-    {$ifdef DEBUG}
-    private status_checked := new InterlockedBoolean;
-    protected procedure ExpectCheckStatus :=
-    ResEv.Retain({$ifdef EventDebug}$'for status check of {TypeName(self)}[{self.GetHashCode}]'{$endif});
-    protected procedure CheckStatus :=
-    if status_checked.TrySet(true) then
-    begin
-      if not IsConst and not ResEv.HasCompleted then
-      begin
-        var err := new StringBuilder($'Result read before {ResEv.count} events completed:');
-        for var i := 0 to ResEv.count-1 do
-        begin
-          err += #10#9;
-          err += ResEv[i].ToString;
-          err += ': ';
-          err += EventList.GetStatus(ResEv[i]).ToString;
-        end;
-        {$ifdef EventDebug}
-        EventDebug.ReportEventLogs(Console.Error);
-        {$endif EventDebug}
-        raise new OpenCLABCInternalException(err.ToString);
-      end;
-      ResEv.Release({$ifdef EventDebug}$'after status check of {TypeName(self)}[{self.GetHashCode}]'{$endif});
     end;
     {$endif DEBUG}
     
@@ -5361,25 +6189,25 @@ type
   QueueRes<T> = abstract partial class
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    static function AddToEvLst<TR>(qr: TR; g: CLTaskGlobalData; evs: DoubleEventListList; to_l1: boolean): TR; where TR: QueueRes<T>;
+    static function AddToEvLst<TR>(qr: TR; g: CLTaskGlobalData; evs: DoubleList<EventList>; to_l1: boolean): TR; where TR: QueueRes<T>;
     begin
       var ev := qr.AttachInvokeActions(g);
+      if qr.IsConst then to_l1 := false;
       if ev.count=0 then
-        {$ifdef DEBUG}evs.FakeAdd{$endif} else
-      if to_l1 and not qr.IsConst then
-        evs.AddL1(ev) else
-        evs.AddL2(ev);
+        {$ifdef DEBUG}evs.FakeAdd(to_l1){$endif} else
+        evs.Add(ev, to_l1);
       Result := qr;
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AddToEvLst(g: CLTaskGlobalData; evs: DoubleEventListList; to_l1: boolean) := AddToEvLst(self, g, evs, to_l1);
+    function AddToEvLst(g: CLTaskGlobalData; evs: DoubleList<EventList>; to_l1: boolean) := AddToEvLst(self, g, evs, to_l1);
     
   end;
   QueueResPtr<T> = sealed partial class
     
+    // Another method to retain the type of self
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function AddToEvLst(g: CLTaskGlobalData; evs: DoubleEventListList; to_l1: boolean) := AddToEvLst(self, g, evs, to_l1);
+    function AddToEvLst(g: CLTaskGlobalData; evs: DoubleList<EventList>; to_l1: boolean) := AddToEvLst(self, g, evs, to_l1);
     
   end;
   
@@ -5396,18 +6224,26 @@ type
 {$region MultiuseableResultData}
 
 type
-  IMultiusableCommandQueue = interface end;
+  IMultiusableCommandQueue = interface
+    
+    {$ifdef DEBUG}
+    property Victim: CommandQueueBase read;
+    {$endif DEBUG}
+    
+  end;
   [StructLayout(LayoutKind.Auto)]
   MultiuseableResultData = record
     public qres: IQueueRes;
     public ev: EventList;
-    public err_handler: CLTaskErrHandler;
+    public victim_err_handler: ErrHandler;
+    public had_insta_err: boolean;
     
-    public constructor(qres: IQueueRes; ev: EventList; err_handler: CLTaskErrHandler);
+    public constructor(qres: IQueueRes; ev: EventList; victim_err_handler: ErrHandler; had_insta_err: boolean);
     begin
       self.qres := qres;
       self.ev := ev;
-      self.err_handler := err_handler;
+      self.victim_err_handler := victim_err_handler;
+      self.had_insta_err := had_insta_err;
     end;
     
   end;
@@ -5428,10 +6264,12 @@ type
     private g: CLTaskGlobalData;
     private prev_ev: EventList?;
     private prev_cq := cl_command_queue.Zero;
-    private prev_mu: HashSet<IMultiusableCommandQueue>;
+    private prev_mu: array of IMultiusableCommandQueue;
+    private total_mu: HashSet<IMultiusableCommandQueue>;
     
-    private make_base_err_handler: ()->CLTaskErrHandler;
-    private branch_handlers := new List<CLTaskErrHandler>;
+    private prev_had_insta_err: boolean;
+    private base_err_handler: LazyErrHandler;
+    private branch_handlers := new List<ErrHandler>;
     
     {$ifdef DEBUG}
     private missing_handler_c: integer;
@@ -5466,25 +6304,29 @@ type
         g.curr_inv_cq := cl_command_queue.Zero;
       end;
       
-      self.prev_mu := g.prev_mu;
+      self.prev_mu := g.prev_mu.ToArray;
+      self.total_mu := g.prev_mu.ToHashSet;
       {$ifdef DEBUG}
       g.prev_mu := nil;
       {$endif DEBUG}
       
-      if prev_ev=nil then
-        self.make_base_err_handler := ()->new CLTaskErrHandlerEmpty else
-      begin
-        var origin_handler := g.curr_err_handler;
-        self.make_base_err_handler := ()->new CLTaskErrHandlerBranchBud(origin_handler);
-      end;
+      self.prev_had_insta_err := g.had_insta_err;
+      var origin_handler := g.curr_err_handler;
+      {$ifdef DEBUG}
+      if (prev_ev=nil) and origin_handler.HasValue then
+        raise new OpenCLABCInternalException($'');
+      {$endif DEBUG}
+      self.base_err_handler := ErrHandlerBranchBud.Wrap(origin_handler{$ifdef DEBUG}, $'branch invoke'{$endif});
       self.branch_handlers.Capacity := capacity;
     end;
     private constructor := raise new OpenCLABCInternalException;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function InvokeBranch<TR>(branch: CommandQueueInvoker<TR>): TR; where TR: IQueueRes;
+    function InvokeBranch<TR>(branch: CommandQueueInvoker<TR>; par_err_handlers: DoubleList<ErrHandler>; to_l1: boolean): TR; where TR: IQueueRes;
     begin
-      g.curr_err_handler := make_base_err_handler();
+      g.had_insta_err := self.prev_had_insta_err;
+      g.curr_err_handler := self.base_err_handler;
+      
       var l := if self.prev_ev=nil then
         new CLTaskLocalData else
         new CLTaskLocalData(self.prev_ev.Value);
@@ -5493,9 +6335,15 @@ type
         self.prev_mu.ToHashSet else
         new HashSet<IMultiusableCommandQueue>;
       
-      Result := branch(g, l);
+      Result := branch(g, l); // INVOKE
       
-      self.prev_mu.UnionWith(g.prev_mu);
+      if g.had_insta_err then
+        self.prev_had_insta_err := true;
+      
+      if (par_err_handlers<>nil) and Result.IsConst then
+        to_l1 := false;
+      
+      self.total_mu.UnionWith(g.prev_mu);
       {$ifdef DEBUG}
       g.prev_mu := nil;
       {$endif DEBUG}
@@ -5512,23 +6360,28 @@ type
         end;
       end;
       
-      branch_handlers += g.curr_err_handler;
+      var br_err_handler := g.curr_err_handler.ForceSkipFunc({$ifdef DEBUG}self.base_err_handler{$endif});
+      if br_err_handler<>nil then
+      begin
+        if par_err_handlers<>nil then
+          par_err_handlers.Add(br_err_handler, to_l1) else
+          branch_handlers += br_err_handler;
+      end else
+      begin
+        {$ifdef DEBUG}
+        if par_err_handlers<>nil then
+          par_err_handlers.FakeAdd(to_l1);
+        {$endif DEBUG}
+      end;
       {$ifdef DEBUG}
       missing_handler_c -= 1;
       {$endif DEBUG}
     end;
     
-    function GroupHandlers: CLTaskErrHandler;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    function InvokeBranch<TR>(branch: CommandQueueInvoker<TR>): TR; where TR: IQueueRes;
     begin
-      {$ifdef DEBUG}
-      if prev_ev<>nil then
-        raise new OpenCLABCInternalException($'Only expected to be used for l1/l2 separation');
-      if branch_handlers.Count=0 then
-        raise new OpenCLABCInternalException($'Optimization possible');
-      {$endif DEBUG}
-      Result := new CLTaskErrHandlerBranchCombinator(new CLTaskErrHandlerEmpty, branch_handlers.ToArray);
-      branch_handlers.Clear;
-      branch_handlers += Result;
+      Result := InvokeBranch(branch, nil, false);
     end;
     
   end;
@@ -5539,15 +6392,16 @@ type
     procedure ParallelInvoke(l: CLTaskLocalData?; capacity: integer; use: CLTaskBranchInvoker->());
     begin
       var prev_ev := default(EventList?);
+      // nil for GPUCommand parameters
       if l<>nil then
       begin
-        var ev := l.Value.AttachInvokeActions(self);
+        var ev := l.Value.AttachInvokeActions(self{$ifdef EventDebug}, l{$endif});
         if ev.count<>0 then loop capacity-1 do
           ev.Retain({$ifdef EventDebug}$'for all async branches'{$endif});
         prev_ev := ev;
       end;
       
-      var origin_handler := self.curr_err_handler;
+      var origin_err_handler := self.curr_err_handler;
       var invoker := new CLTaskBranchInvoker(self, prev_ev, capacity);
       use(invoker);
       
@@ -5555,12 +6409,17 @@ type
       if invoker.missing_handler_c<>0 then
         raise new OpenCLABCInternalException($'Missing {invoker.missing_handler_c} parallel branches of {capacity}');
       {$endif DEBUG}
-      self.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_handler, invoker.branch_handlers.ToArray);
+      self.curr_err_handler := ErrHandlerBranchCombinator.Wrap(
+        origin_err_handler, invoker.branch_handlers.ToArray
+        {$ifdef DEBUG}, $'{TypeName(self)}.ParallelInvoke branches union'{$endif}
+      );
       
       self.curr_inv_cq := invoker.prev_cq;
       if outer_cq<>cl_command_queue.Zero then self.GetCQ(false);
       
-      self.prev_mu := invoker.prev_mu;
+      self.prev_mu := invoker.total_mu;
+      
+      self.had_insta_err := invoker.prev_had_insta_err;
     end;
     
   end;
@@ -5587,7 +6446,10 @@ type
       // mu выполняют лишний .Retain, чтобы ивент не удалился пока очередь ещё запускается
       foreach var mrd in mu_res.Values do
         mrd.ev.Release({$ifdef EventDebug}$'excessive mu ev'{$endif});
+      {$ifdef DEBUG}
+      {$else DEBUG}
       mu_res := nil;
+      {$endif DEBUG}
       
       if curr_inv_cq<>cl_command_queue.Zero then
       begin
@@ -5600,14 +6462,27 @@ type
     public procedure FinishExecution(var err_lst: List<Exception>);
     begin
       
+      {$ifdef DEBUG}
+      foreach var mrd in mu_res.Values do
+      begin
+        var qr := mrd.qres as QueueResT;
+        if qr=nil then continue;
+        qr.CancelStatusCheck($'CQ<T>.MU result ({TypeName(qr)}) was not used');
+      end;
+      {$endif DEBUG}
+      
       foreach var cq in free_cqs do
         OpenCLABCInternalException.RaiseIfError( cl.ReleaseCommandQueue(cq) );
       
       err_lst := new List<Exception>;
-      curr_err_handler.FillErrLst(err_lst);
-      {$ifdef DEBUG}
-      curr_err_handler.SanityCheck(err_lst);
-      {$endif DEBUG}
+      var err_handler := self.curr_err_handler.v;
+      if err_handler<>nil then
+      begin
+        err_handler.FillErrLst(err_lst);
+        {$ifdef DEBUG}
+        err_handler.SanityCheck(err_lst);
+        {$endif DEBUG}
+      end;
     end;
     
   end;
@@ -5705,6 +6580,10 @@ type
 type
   CLTaskBase = abstract partial class
     
+    {$ifdef ErrHandlerDebug}
+    private g: CLTaskGlobalData;
+    {$endif ErrHandlerDebug}
+    
   end;
   
   CLTaskNil = sealed partial class(CLTaskBase)
@@ -5715,6 +6594,9 @@ type
       self.org_c := c;
       
       var g := new CLTaskGlobalData(c);
+      {$ifdef ErrHandlerDebug}
+      self.g := g;
+      {$endif ErrHandlerDebug}
       
       q.InitBeforeInvoke(g, new HashSet<IMultiusableCommandQueue>);
       g.ApplyParameters(pars);
@@ -5735,6 +6617,7 @@ type
     end;
     
   end;
+  
   CLTask<T> = sealed partial class(CLTaskBase)
     private res: T;
     
@@ -5744,6 +6627,9 @@ type
       self.org_c := c;
       
       var g := new CLTaskGlobalData(c);
+      {$ifdef ErrHandlerDebug}
+      self.g := g;
+      {$endif ErrHandlerDebug}
       
       q.InitBeforeInvoke(g, new HashSet<IMultiusableCommandQueue>);
       g.ApplyParameters(pars);
@@ -5780,6 +6666,15 @@ type
     
   end;
   
+{$ifdef ErrHandlerDebug}
+procedure CLTaskBase.OutputErrHandlers;
+begin
+  var err_handler := self.g.curr_err_handler.TrySkipFunc;
+  if err_handler=nil then exit;
+  err_handler.Println;
+end;
+{$endif ErrHandlerDebug}
+
 function CLContext.BeginInvoke(q: CommandQueueBase; params parameters: array of ParameterQueueSetter) := q.ConvertTyped(new CLTaskFactory(self, parameters));
 function CLContext.BeginInvoke(q: CommandQueueNil; params parameters: array of ParameterQueueSetter) := new CLTaskNil(q, self, parameters);
 function CLContext.BeginInvoke<T>(q: CommandQueue<T>; params parameters: array of ParameterQueueSetter) := new CLTask<T>(q, self, parameters);
@@ -5835,8 +6730,8 @@ type
       begin
         for var i := 0 to qs.Length-1 do
           //TODO #2610
-          evs[i] := invoker.InvokeBranch&<IQueueRes>((g,l)->
-            qs[i].InvokeToNil(g, l)
+          evs[i] := invoker.InvokeBranch&<IQueueRes>(
+            (g,l)->qs[i].InvokeToNil(g, l)
           ).AttachInvokeActions(g);
         var l_res := invoker.InvokeBranch(invoke_last);
         res := l_res;
@@ -6206,7 +7101,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
   IQueueArrayWork<TInp,TRes, TDelegate> = interface
   where TDelegate: ISimpleDelegateContainer;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp: array of TInp; c: CLContext): TRes;
+    function Invoke(d: TDelegate; insta_call_g: CLTaskGlobalData; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp: array of TInp; c: CLContext): TRes;
     
   end;
   
@@ -6214,8 +7109,8 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
   where TFunc: ISimpleFuncContainer<array of TInp,TRes>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp: array of TInp; c: CLContext) :=
-    f.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, inp, c);
+    function Invoke(f: TFunc; insta_call_g: CLTaskGlobalData; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp: array of TInp; c: CLContext) :=
+      f.Invoke(insta_call_g, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, inp, c);
     
   end;
   
@@ -6223,9 +7118,9 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
   where TProc: ISimpleProcContainer<array of T>;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp: array of T; c: CLContext): array of T; 
+    function Invoke(p: TProc; insta_call_g: CLTaskGlobalData; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp: array of T; c: CLContext): array of T; 
     begin
-      p.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, inp, c);
+      p.Invoke(insta_call_g, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, inp, c);
       Result := inp;
     end;
     
@@ -6255,7 +7150,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
         
         var c := qs.Sum(q->q.const_res_dep.Length);
         {$ifdef DEBUG}
-        if c=0 then raise new OpenCLABCInternalException($'0dep version is CQ/HFQ/HPQ');
+        if c=0 then raise new OpenCLABCInternalException($'0dep version is CQ/HPQ/HFQ');
         {$endif DEBUG}
         
         self.const_res_dep := new CommandQueueBase[c];
@@ -6325,7 +7220,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
         l.ShouldInstaCallAction;
       
       var qrs := inv_data.qrs;
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
@@ -6334,10 +7229,10 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
       
       if should_make_const then
         Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), g.c
+          g, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), g.c
         )) else
         Result := qr_factory.MakeDelayed(l, qr->c->qr.SetRes(TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), c
+          nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), c
         )));
       
     end;
@@ -6364,30 +7259,30 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
   where TWork: IQueueArrayWork<TInp,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qrs: array of QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qrs: array of QueueRes<TInp>; err_handler: ErrHandler; c: CLContext; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
     begin
       Result := ()->
       begin
         acts.Invoke(c);
-        TWork.Create.Invoke(d, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), c)
+        TWork.Create.Invoke(d, nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), c)
       end;
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qrs: array of QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qrs: array of QueueRes<TInp>; err_handler: ErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin
         acts.Invoke(c);
         own_qr.SetRes(
-          TWork.Create.Invoke(d, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), c)
+          TWork.Create.Invoke(d, nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), c)
         );
       end;
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>;
-      make_body: (QueueResComplDelegateData, QueueResArr<TInp>,CLTaskErrHandler,CLContext,TR{$ifdef DEBUG},string{$endif})->Action
+      make_body: (QueueResComplDelegateData, QueueResArr<TInp>,ErrHandler,CLContext,TR{$ifdef DEBUG},string{$endif})->Action
     ): TR; where TR: IQueueRes;
     begin
       if TrySkipInvoke(g,l, qr_factory, Result) then exit;
@@ -6395,7 +7290,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
       l := inv_data.next_l;
       
       var qrs := inv_data.qrs;
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
@@ -6404,7 +7299,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
       
       if can_pre_call and inv_data.all_qrs_const then
         Result := qr_factory.MakeConst(l, TWork.Create.Invoke(d,
-          err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), g.c)
+          g, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, GetAllResDirect(qrs), g.c)
         ) else
       begin
         var prev_ev := l.prev_ev;
@@ -6504,7 +7399,7 @@ type
     begin
       if qr_factory.TrySkipInvoke(g,l, self,q.InvokeToNil, Result) then exit;
       var prev_qr := q.InvokeToAny(g,l);
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}';
       err_handler.AddMaybeError(err_test_reason);
@@ -6569,29 +7464,7 @@ function CommandQueueNil.Cast<T> := new TypedNilQueue<T>(self);
 
 {$region DiscardResult}
 
-type
-  CommandQueueDiscardResult<T> = sealed class(CommandQueueNil)
-    private q: CommandQueue<T>;
-    
-    public constructor(q: CommandQueue<T>) := self.q := q;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    q.InitBeforeInvoke(g, inited_mu);
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := q.InvokeToNil(g, l);
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += #10;
-      q.ToString(sb, tabs, index, delayed);
-    end;
-    
-  end;
-  
-function CommandQueue<T>.DiscardResult :=
-if (self is ConstQueue<T>) or (self is ParameterQueue<T>) then
-  CQNil else new CommandQueueDiscardResult<T>(self);
+function CommandQueue<T>.DiscardResult := self + CQNil;
 
 {$endregion DiscardResult}
 
@@ -6660,17 +7533,17 @@ type
         prev_qr.ShouldInstaCallAction;
       l := prev_qr.TakeBaseOut;
       
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
       err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
       Result := if should_make_const then
         qr_factory.MakeConst(l,
-          d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, g.c)
+          d.Invoke(g, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, g.c)
         ) else
         qr_factory.MakeDelayed(l, qr->c->qr.SetRes(
-          d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c)
+          d.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c)
         ));
       
     end;
@@ -6685,37 +7558,38 @@ type
   where TFunc: ISimpleFuncContainer<TInp,TRes>;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
+    function MakeNilBody    (prev_qr: QueueRes<TInp>; err_handler: ErrHandler; c: CLContext; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
     begin
       Result := ()->
-        d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetRes(c), c)
+        d.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetRes(c), c)
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(prev_qr: QueueRes<TInp>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(prev_qr: QueueRes<TInp>; err_handler: ErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->own_qr.SetRes(
-        d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetRes(c), c)
+        d.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetRes(c), c)
       );
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; make_body: (QueueRes<TInp>,CLTaskErrHandler,CLContext,TR{$ifdef DEBUG},string{$endif})->Action): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; make_body: (QueueRes<TInp>,ErrHandler,CLContext,TR{$ifdef DEBUG},string{$endif})->Action): TR; where TR: IQueueRes;
     begin
       if qr_factory.TrySkipInvoke(g,l, self,q.InvokeToNil, Result) then exit;
       var prev_qr := q.InvokeToAny(g, l);
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
+      err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
       
       Result := if can_pre_call and prev_qr.IsConst then
         qr_factory.MakeConst(l,
-          d.Invoke(g.curr_err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, nil)
+          d.Invoke(g, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, nil)
         ) else
         qr_factory.MakeDelayed(qr->new CLTaskLocalData(UserEvent.StartWorkThread(
-          prev_qr.ResEv, make_body(prev_qr, g.curr_err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
+          prev_qr.ResEv, make_body(prev_qr, err_handler, g.c, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
           {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
         )));
       
@@ -6774,15 +7648,15 @@ type
         prev_is_const else
         Result.ShouldInstaCallAction;
       
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
       err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
       if should_insta_call then
-        d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, g.c) else
+        d.Invoke(g, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, g.c) else
         //TODO #????: self.
-        Result.AddAction(c->self.d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c));
+        Result.AddAction(c->self.d.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c));
       
     end;
     
@@ -6828,12 +7702,13 @@ type
       begin
         //TODO И тут тоже (как и ниже) лишний объект во всех случаях кроме TR2=QueueResNil
         Result := qr_factory.MakeConst(prev_qr.TakeBaseOut, prev_qr.GetResDirect);
+        //TODO А разве не надо тут делать self.d.Invoke(g, ...), как в ThenQuickConvert?
         exit;
       end;
       
       var acts := prev_qr.base.complition_delegate.TakeOut;
       
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
       err_handler.AddMaybeError(err_test_reason);
@@ -6844,7 +7719,7 @@ type
         begin
           acts.Invoke(c);
           //TODO #????: self.
-          self.d.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c);
+          self.d.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c);
         end, g
         {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
       );
@@ -6919,29 +7794,36 @@ type
       var res_data: MultiuseableResultData;
       var qr: TR1;
       
+      var origin_err_handler := g.curr_err_handler;
       // Потоко-безопасно, потому что все .Invoke выполняются синхронно
       //TODO А что будет когда .ThenIf и т.п.?
       if g.mu_res.TryGetValue(self, res_data) then
-        qr := TR1(res_data.qres) else
       begin
-        var prev_err_handler := g.curr_err_handler;
-        g.curr_err_handler := new CLTaskErrHandlerEmpty;
+        qr := TR1(res_data.qres);
+        if res_data.had_insta_err then
+          g.had_insta_err := true;
+      end else
+      begin
+        var prev_had_insta_err := g.had_insta_err;
+        g.had_insta_err := false;
+        g.curr_err_handler := LazyErrHandler.FromFunc(true, ()->new ErrHandlerInitial({$ifdef DEBUG}$'Initial MU invoke'{$endif}));
         
         qr := invoke_q(g, new CLTaskLocalData);
         var ev := qr.AttachInvokeActions(g);
         
-        res_data := new MultiuseableResultData(qr, ev, g.curr_err_handler);
-        g.mu_res[self] := res_data;
+        res_data := new MultiuseableResultData(qr, ev, g.curr_err_handler.TrySkipFunc, g.had_insta_err);
+        g.mu_res.Add(self, res_data);
         
-        g.curr_err_handler := prev_err_handler;
+        if prev_had_insta_err then
+          g.had_insta_err := true;
       end;
-      g.curr_err_handler := new CLTaskErrHandlerThiefRepeater(g.curr_err_handler, res_data.err_handler);
+      g.curr_err_handler := ErrHandlerMURepeater.Wrap(origin_err_handler, res_data.victim_err_handler{$ifdef DEBUG}, $'MU repeater for {TypeName(self.Victim)}'{$endif});
       
       if g.prev_mu.Add(self) then
       begin
         // "all", except Q+Q, because q's in g.prev_mu are already waited upon
         res_data.ev.Retain({$ifdef EventDebug}$'for all mu branches'{$endif});
-        Result := make_wrap(qr, res_data.ev + l.AttachInvokeActions(g));
+        Result := make_wrap(qr, res_data.ev + l.AttachInvokeActions(g{$ifdef EventDebug}, qr{$endif}));
       end else
       begin
         Result := make_wrap(qr, l.prev_ev);
@@ -6971,6 +7853,10 @@ type
     public constructor(q: CommandQueueNil) := self.q := q;
     private constructor := raise new OpenCLABCInternalException;
     
+    {$ifdef DEBUG}
+    public property Victim: CommandQueueBase read q as CommandQueueBase;
+    {$endif DEBUG}
+    
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
     MultiusableCommandQueueCommon.InitBeforeInvoke(self,q, g,inited_mu);
     
@@ -6991,6 +7877,10 @@ type
       self.q := q;
     end;
     private constructor := raise new OpenCLABCInternalException;
+    
+    {$ifdef DEBUG}
+    public property Victim: CommandQueueBase read q as CommandQueueBase;
+    {$endif DEBUG}
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
     MultiusableCommandQueueCommon.InitBeforeInvoke(self,q, g,inited_mu);
@@ -7039,7 +7929,7 @@ type
     public procedure InitInnerHandles(g: CLTaskGlobalData); abstract;
     
     public function MakeWaitEv(g: CLTaskGlobalData; prev_ev: EventList): EventList; abstract;
-    public function MakeWaitEv(g: CLTaskGlobalData; l: CLTaskLocalData) := MakeWaitEv(g, l.AttachInvokeActions(g));
+    public function MakeWaitEv(g: CLTaskGlobalData; l: CLTaskLocalData) := MakeWaitEv(g, l.AttachInvokeActions(g{$ifdef EventDebug}, l{$endif}));
     
   end;
   
@@ -7066,10 +7956,10 @@ type
       // Code of .ThenFinallyWaitFor expects
       // g.curr_err_handler to not change
       // and no new errors to be added
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.TrySkipFunc;
       prev_ev.MultiAttachCallback(()->
       begin
-        if err_handler.HadError then
+        if (err_handler<>nil) and err_handler.HadError then
         begin
           {$ifdef WaitDebug}
           WaitDebug.RegisterAction(self, $'Aborted');
@@ -7231,8 +8121,8 @@ type
     
     public procedure Comsume(c: integer);
     begin
-      var new_act := Interlocked.Add(activations, -c);
-      var new_res := Interlocked.Add(reserved, -c);
+      {$ifdef DEBUG}var new_act:={$endif} Interlocked.Add(activations, -c);
+      {$ifdef DEBUG}var new_res:={$endif} Interlocked.Add(reserved, -c);
       {$ifdef DEBUG}
       if (new_act<0) or (new_res<0) then
         raise new OpenCLABCInternalException($'new_act={new_act}, new_res={new_res}');
@@ -7772,15 +8662,18 @@ type
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
       Result := new QueueResNil(l);
+      var err_handler := g.curr_err_handler.TrySkipFunc;
       
       if Result.ShouldInstaCallAction then
       begin
-        if not g.curr_err_handler.HadError then
+        if (err_handler=nil) or not err_handler.HadError then
           m.SendSignal;
       end else
+      if err_handler=nil then
+        Result.AddAction(c->m.SendSignal()) else
       begin
-        var err_handler := g.curr_err_handler;
-        Result.AddAction(c->if not err_handler.HadError then m.SendSignal);
+        var l_err_handler := err_handler;
+        Result.AddAction(c->if not l_err_handler.HadError then m.SendSignal);
       end;
       
     end;
@@ -7848,22 +8741,26 @@ type
     procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>) := q.InitBeforeInvoke(g, inited_mu);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(prev_qr: TR; err_handler: CLTaskErrHandler): TR; where TR: IQueueRes;
+    function Invoke<TR>(prev_qr: TR; err_handler: ErrHandler): TR; where TR: IQueueRes;
     begin
+      var just_send_it := signal_in_finally or (err_handler=nil);
       if prev_qr.ShouldInstaCallAction then
       begin
-        if signal_in_finally or not err_handler.HadError then
+        if just_send_it or not err_handler.HadError then
           wrap.SendSignal;
       end else
-      if signal_in_finally then
+      if just_send_it then
         prev_qr.AddAction(c->wrap.SendSignal()) else
-        prev_qr.AddAction(c->if not err_handler.HadError then wrap.SendSignal);
+      begin
+        var l_err_handler := err_handler;
+        prev_qr.AddAction(c->if not l_err_handler.HadError then wrap.SendSignal);
+      end;
       Result := prev_qr;
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; invoke_q: CommandQueueInvoker<TR>): TR; where TR: IQueueRes;
     begin
-      Result := Invoke(invoke_q(g,l), g.curr_err_handler);
+      Result := Invoke(invoke_q(g,l), g.curr_err_handler.TrySkipFunc);
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -7885,7 +8782,8 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := data.InitBeforeInvoke(g, inited_mu);
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := data.Invoke(data.q.InvokeToNil(g,l), g.curr_err_handler);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
+      data.Invoke(data.q.InvokeToNil(g,l), g.curr_err_handler.TrySkipFunc);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -8014,7 +8912,7 @@ type
       {$ifdef DEBUG}
       if g.curr_err_handler <> pre_q_err_handler then
         raise new OpenCLABCInternalException($'MakeWaitEv should not change g.curr_err_handler');
-      // Otherwise, CLTaskErrHandlerBranchBud (like in >=) would be needed
+      // Otherwise, ErrHandlerBranchBud (like in >=) would be needed
       {$endif DEBUG}
       g.curr_err_handler := post_q_err_handler;
       
@@ -8050,27 +8948,39 @@ type
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; invoke_finally: CommandQueueInvoker<TR>): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; invoke_finally: CommandQueueInvoker<TR>{$ifdef DEBUG}; q: CommandQueueBase{$endif}): TR; where TR: IQueueRes;
     begin
       var origin_err_handler := g.curr_err_handler;
+      var branch_handlers := new List<ErrHandler>(2);
       
       {$region try_do}
       
-      g.curr_err_handler := new CLTaskErrHandlerBranchBud(origin_err_handler);
+      g.curr_err_handler := ErrHandlerBranchBud.Wrap(origin_err_handler{$ifdef DEBUG}, $'{TypeName(q)}: try_do'{$endif});
+      {$ifdef DEBUG}
+      var initial_try_handler := g.curr_err_handler;
+      {$endif DEBUG}
       l := try_do.InvokeToNil(g, l).base;
-      var try_handler := g.curr_err_handler;
+      var try_handler := g.curr_err_handler.ForceSkipFunc({$ifdef DEBUG}initial_try_handler{$endif});
+      if try_handler<>nil then branch_handlers += try_handler;
       
       {$endregion try_do}
       
       {$region do_finally}
       
-      g.curr_err_handler := new CLTaskErrHandlerBranchBud(origin_err_handler);
+      g.curr_err_handler := ErrHandlerBranchBud.Wrap(origin_err_handler{$ifdef DEBUG}, $'{TypeName(q)}: do_finally'{$endif});
+      {$ifdef DEBUG}
+      var initial_finally_handler := g.curr_err_handler;
+      {$endif DEBUG}
       Result := invoke_finally(g, l);
-      var fin_handler := g.curr_err_handler;
+      var finally_handler := g.curr_err_handler.ForceSkipFunc({$ifdef DEBUG}initial_finally_handler{$endif});
+      if finally_handler<>nil then branch_handlers += finally_handler;
       
       {$endregion do_finally}
       
-      g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(origin_err_handler, |try_handler, fin_handler|);
+      g.curr_err_handler := ErrHandlerBranchCombinator.Wrap(
+        origin_err_handler, branch_handlers.ToArray
+        {$ifdef DEBUG}, $'{TypeName(self)} origin+try+finally union'{$endif}
+      );
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -8096,7 +9006,7 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
     data.InitBeforeInvoke(g, inited_mu);
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := data.Invoke(g, l, data.do_finally.InvokeToNil);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := data.Invoke(g, l, data.do_finally.InvokeToNil{$ifdef DEBUG}, self{$endif});
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -8117,9 +9027,9 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
     data.InitBeforeInvoke(g, inited_mu);
     
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := data.Invoke(g, l, data.do_finally.InvokeToNil);
-    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := data.Invoke(g, l, data.do_finally.InvokeToAny);
-    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := data.Invoke(g, l, data.do_finally.InvokeToPtr);
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := data.Invoke(g, l, data.do_finally.InvokeToNil{$ifdef DEBUG}, self{$endif});
+    protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := data.Invoke(g, l, data.do_finally.InvokeToAny{$ifdef DEBUG}, self{$endif});
+    protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := data.Invoke(g, l, data.do_finally.InvokeToPtr{$ifdef DEBUG}, self{$endif});
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
     data.ToString(sb, tabs, index, delayed);
@@ -8166,12 +9076,12 @@ type
     try_do.InitBeforeInvoke(g, inited_mu);
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure ApplyTo(err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG});
+    procedure ApplyTo(err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif});
     begin
       try
         err_handler.TryRemoveErrors(self.handler);
       except
-        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
+        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
       end;
       {$ifdef DEBUG}
       err_handler.EndMaybeError(err_test_reason);
@@ -8180,21 +9090,24 @@ type
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
-      var pre_inv_handler := g.curr_err_handler;
+      var origin_err_handler := g.curr_err_handler;
       
-      g.curr_err_handler := new CLTaskErrHandlerBranchBud(pre_inv_handler);
+      g.curr_err_handler := ErrHandlerBranchBud.Wrap(origin_err_handler{$ifdef DEBUG}, $'{TypeName(self)}: try_do'{$endif});
       Result := try_do.InvokeToNil(g, l);
-      var post_inv_handler := g.curr_err_handler;
-      g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(pre_inv_handler, |post_inv_handler|);
+      var try_err_handler := g.curr_err_handler.TrySkipFunc;
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.Apply';
-      post_inv_handler.AddMaybeError(err_test_reason);
+      try_err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
       if Result.ShouldInstaCallAction then
-        self.ApplyTo(post_inv_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}) else
-        Result.AddAction(c->self.ApplyTo(post_inv_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}));
+        self.ApplyTo(try_err_handler{$ifdef DEBUG}, err_test_reason{$endif}) else
+        Result.AddAction(c->self.ApplyTo(try_err_handler{$ifdef DEBUG}, err_test_reason{$endif}));
       
+      g.curr_err_handler := ErrHandlerBranchCombinator.Wrap(
+        origin_err_handler, try_err_handler
+        {$ifdef DEBUG}, $'{TypeName(self)} origin+try union'{$endif}
+      );
     end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
@@ -8242,12 +9155,12 @@ type
     try_do.InitBeforeInvoke(g, inited_mu);
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure ApplyTo(err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG});
+    procedure ApplyTo(err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif});
     begin
       try
         err_handler.TryRemoveErrors(self.handler);
       except
-        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
+        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
       end;
       {$ifdef DEBUG}
       err_handler.EndMaybeError(err_test_reason);
@@ -8256,52 +9169,58 @@ type
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
-      var pre_inv_handler := g.curr_err_handler;
+      var origin_err_handler := g.curr_err_handler;
       
-      g.curr_err_handler := new CLTaskErrHandlerBranchBud(pre_inv_handler);
+      g.curr_err_handler := ErrHandlerBranchBud.Wrap(origin_err_handler{$ifdef DEBUG}, $'{TypeName(self)}: try_do'{$endif});
       Result := try_do.InvokeToNil(g, l);
-      var post_inv_handler := g.curr_err_handler;
-      g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(pre_inv_handler, |post_inv_handler|);
+      var try_err_handler := g.curr_err_handler.TrySkipFunc;
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.Apply';
-      post_inv_handler.AddMaybeError(err_test_reason);
+      try_err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
       if Result.ShouldInstaCallAction then
-        self.ApplyTo(post_inv_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}) else
-        Result.AddAction(c->self.ApplyTo(post_inv_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}));
+        self.ApplyTo(try_err_handler{$ifdef DEBUG}, err_test_reason{$endif}) else
+        Result.AddAction(c->self.ApplyTo(try_err_handler{$ifdef DEBUG}, err_test_reason{$endif}));
       
+      g.curr_err_handler := ErrHandlerBranchCombinator.Wrap(
+        origin_err_handler, try_err_handler
+        {$ifdef DEBUG}, $'{TypeName(self)} origin+try union'{$endif}
+      );
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<T,TR>): TR; where TR: QueueRes<T>;
     begin
-      var pre_inv_handler := g.curr_err_handler;
+      var origin_err_handler := g.curr_err_handler;
       
-      g.curr_err_handler := new CLTaskErrHandlerBranchBud(pre_inv_handler);
+      g.curr_err_handler := ErrHandlerBranchBud.Wrap(origin_err_handler{$ifdef DEBUG}, $'{TypeName(self)}: try_do'{$endif});
       var prev_qr := try_do.InvokeToAny(g, l);
-      var post_inv_handler := g.curr_err_handler;
-      g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(pre_inv_handler, |post_inv_handler|);
+      var try_err_handler := g.curr_err_handler.TrySkipFunc;
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.Apply';
-      post_inv_handler.AddMaybeError(err_test_reason);
+      try_err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
       Result := prev_qr.TransformResult(qr_factory, true, prev_res->
       begin
-        if not post_inv_handler.HadError then
+        if not try_err_handler.HadError then
         begin
           Result := prev_res;
           {$ifdef DEBUG}
-          post_inv_handler.EndMaybeError(err_test_reason);
+          try_err_handler.EndMaybeError(err_test_reason);
           {$endif DEBUG}
         end else
         begin
-          self.ApplyTo(post_inv_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
+          self.ApplyTo(try_err_handler{$ifdef DEBUG}, err_test_reason{$endif});
           Result := self.def;
         end;
       end);
       
+      g.curr_err_handler := ErrHandlerBranchCombinator.Wrap(
+        origin_err_handler, try_err_handler
+        {$ifdef DEBUG}, $'{TypeName(self)} origin+try union'{$endif}
+      );
     end;
     protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := Invoke(g, l, qr_val_factory);
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := Invoke(g, l, qr_ptr_factory);
@@ -8342,7 +9261,7 @@ type
     try_do.InitBeforeInvoke(g, inited_mu);
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function ApplyTo(err_handler: CLTaskErrHandlerThiefBase{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG}): ValueTuple<boolean,T>;
+    function ApplyTo(err_handler: ErrHandlerThiefBase{$ifdef DEBUG}; err_test_reason: string{$endif}): ValueTuple<boolean,T>;
     begin
       Result.Item1 := err_handler.HadError;
       if Result.Item1 then
@@ -8351,7 +9270,7 @@ type
         try
           Result.Item2 := self.handler(err_handler.AccessErrors);
         except
-          on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
+          on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
         end;
       end;
       {$ifdef DEBUG}
@@ -8361,43 +9280,65 @@ type
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
-      var pre_inv_handler := g.curr_err_handler;
+      var origin_err_handler := g.curr_err_handler;
       
-      g.curr_err_handler := new CLTaskErrHandlerBranchBud(pre_inv_handler);
+      g.curr_err_handler := ErrHandlerBranchBud.Wrap(origin_err_handler{$ifdef DEBUG}, $'{TypeName(self)}: try_do'{$endif});
       Result := try_do.InvokeToNil(g, l);
-      var post_inv_handler := new CLTaskErrHandlerThief(g.curr_err_handler);
-      g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(pre_inv_handler, new CLTaskErrHandler[](post_inv_handler));
+      var try_err_handler := g.curr_err_handler.TrySkipFunc;
+      if try_err_handler=nil then
+      begin
+        g.curr_err_handler := origin_err_handler;
+        exit;
+      end;
+      var handle_err_handler := ErrHandlerFlattener.Wrap(try_err_handler{$ifdef DEBUG}, $'{TypeName(self)} wrap'{$endif});
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.Apply';
-      post_inv_handler.AddMaybeError(err_test_reason);
+      handle_err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
       if Result.ShouldInstaCallAction then
-        self.ApplyTo(post_inv_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}) else
-        Result.AddAction(c->self.ApplyTo(post_inv_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}));
+        self.ApplyTo(handle_err_handler{$ifdef DEBUG}, err_test_reason{$endif}) else
+      begin
+        var l_handle_err_handler := handle_err_handler;
+        Result.AddAction(c->self.ApplyTo(l_handle_err_handler{$ifdef DEBUG}, err_test_reason{$endif}));
+      end;
       
+      g.curr_err_handler := ErrHandlerBranchCombinator.Wrap(
+        origin_err_handler, handle_err_handler
+        {$ifdef DEBUG}, $'{TypeName(self)} origin+handle union'{$endif}
+      );
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<T,TR>): TR; where TR: QueueRes<T>;
     begin
-      var pre_inv_handler := g.curr_err_handler;
+      var origin_err_handler := g.curr_err_handler;
       
-      g.curr_err_handler := new CLTaskErrHandlerBranchBud(pre_inv_handler);
+      g.curr_err_handler := ErrHandlerBranchBud.Wrap(origin_err_handler{$ifdef DEBUG}, $'{TypeName(self)}: try_do'{$endif});
       var prev_qr := try_do.InvokeToAny(g, l);
-      var post_inv_handler := new CLTaskErrHandlerThief(g.curr_err_handler);
-      g.curr_err_handler := new CLTaskErrHandlerBranchCombinator(pre_inv_handler, new CLTaskErrHandler[](post_inv_handler));
+      var try_err_handler := g.curr_err_handler.TrySkipFunc;
+      if try_err_handler=nil then
+      begin
+        g.curr_err_handler := origin_err_handler;
+        exit;
+      end;
+      var handle_err_handler := ErrHandlerFlattener.Wrap(try_err_handler{$ifdef DEBUG}, $'{TypeName(self)} wrap'{$endif});
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.Apply';
-      post_inv_handler.AddMaybeError(err_test_reason);
+      handle_err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
+      var l_handle_err_handler := handle_err_handler;
       Result := prev_qr.TransformResult(qr_factory, true, prev_res->
       begin
-        var (appl, res) := self.ApplyTo(post_inv_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
+        var (appl, res) := self.ApplyTo(l_handle_err_handler{$ifdef DEBUG}, err_test_reason{$endif});
         Result := if appl then res else prev_res;
       end);
       
+      g.curr_err_handler := ErrHandlerBranchCombinator.Wrap(
+        origin_err_handler, handle_err_handler
+        {$ifdef DEBUG}, $'{TypeName(self)} origin+handle union'{$endif}
+      );
     end;
     protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := Invoke(g, l, qr_val_factory);
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := Invoke(g, l, qr_ptr_factory);
@@ -8549,15 +9490,15 @@ type
         prev_qr.IsConst else
         prev_qr.ShouldInstaCallAction;
       
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.p.Invoke';
       err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
       if should_insta_call then
-        p.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}, prev_qr.GetResDirect, g.c) else
+        p.Invoke(g, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, g.c) else
         //TODO #????: self.
-        Result.AddAction(c->self.p.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}, prev_qr.GetResDirect, c));
+        Result.AddAction(c->self.p.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c));
       
     end;
     
@@ -8582,7 +9523,7 @@ type
       l := prev_qr.TakeBaseOut;
       var acts := l.prev_delegate;
       var c := g.c;
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.p.Invoke';
       err_handler.AddMaybeError(err_test_reason);
@@ -8591,7 +9532,7 @@ type
       var work_ev := UserEvent.StartWorkThread(l.prev_ev, ()->
       begin
         acts.Invoke(c);
-        p.Invoke(err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}, prev_qr.GetResDirect, c);
+        p.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c);
       end, g
       {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif});
       
@@ -8918,7 +9859,7 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); abstract;
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; abstract;
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; abstract;
     
   end;
   
@@ -8968,9 +9909,9 @@ type
       new CLKernelArgSetterGlobal<TWrap>(c_q.Value, get_ntv(c_q.Value)) else nil;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(inv: CLTaskBranchInvoker; get_ntv: TWrap->cl_mem): ValueTuple<CLKernelArgSetter, EventList>;
+    function Invoke(inv: CLTaskBranchInvoker; get_ntv: TWrap->cl_mem; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>;
     begin
-      var wrap_qr := inv.InvokeBranch(q.InvokeToAny);
+      var wrap_qr := inv.InvokeBranch(q.InvokeToAny, par_err_handlers, true);
       var arg_setter: CLKernelArgSetter;
       if wrap_qr.IsConst then
       begin
@@ -9027,9 +9968,9 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
     bytes.InitBeforeInvoke(g, inited_mu);
     
-    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override;
+    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override;
     begin
-      var bytes_qr := inv.InvokeBranch(bytes.InvokeToAny);
+      var bytes_qr := inv.InvokeBranch(bytes.InvokeToAny, par_err_handlers, true);
       var arg_setter: CLKernelArgSetter;
       if bytes_qr.IsConst then
         arg_setter := new CLKernelArgSetterLocalBytes(bytes_qr.GetResDirect) else
@@ -9063,9 +10004,9 @@ type
     public constructor := raise new OpenCLABCInternalException;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(inv: CLTaskBranchInvoker; make_const: TInp->CLKernelArgSetterTyped<TInp>; make_delayed: ()->CLKernelArgSetterTyped<TInp>): ValueTuple<CLKernelArgSetter, EventList>;
+    function Invoke(inv: CLTaskBranchInvoker; make_const: TInp->CLKernelArgSetterTyped<TInp>; make_delayed: ()->CLKernelArgSetterTyped<TInp>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>;
     begin
-      var prev_qr := inv.InvokeBranch(q.InvokeToAny);
+      var prev_qr := inv.InvokeBranch(q.InvokeToAny, par_err_handlers, true);
       var arg_setter: CLKernelArgSetter;
       if prev_qr.IsConst then
         arg_setter := make_const(prev_qr.GetResDirect) else
@@ -9105,17 +10046,28 @@ type
   EnqRes = ValueTuple<EventList, QueueResAction>;
   EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): DirectEnqRes;
   
-  ParamInvRes<T> = ValueTuple<CLTaskErrHandler, EnqFunc<T>>;
-  InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<T>;
+  ParamInvRes<T> = ValueTuple<Action, EnqFunc<T>>;
+  InvokeParamsFunc<T> = function(
+    enq_c: integer;
+    o_const: boolean;
+    g: CLTaskGlobalData;
+    enq_evs: DoubleList<EventList>;
+    par_err_handlers: DoubleList<ErrHandler>
+  ): ParamInvRes<T>;
   
   EnqueueableCore = static class
     
-    private static function ExecuteEnqFunc<T>(
+    //TODO Положить после Invoke, потому что оно в таком порядке вызывается...
+    // - При поиске будет интуитивнее
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static function ExecuteEnqFunc<T>(
       prev_res: T;
       cq: cl_command_queue;
       ev_l2: EventList;
+      {$ifdef DEBUG}cancel_p: Action;{$endif}
       enq_f: EnqFunc<T>;
-      l1_err_handler,l2_err_handler: CLTaskErrHandler
+      had_l1_err: boolean;
+      enq_err_handler: ErrHandler
       {$ifdef DEBUG}; err_test_reason: string{$endif}
       {$ifdef EventDebug}; q: object{$endif}
     ): EnqRes;
@@ -9127,20 +10079,26 @@ type
           raise new OpenCLABCInternalException($'NULL Native');
         {$endif DEBUG}
         Result := new EnqRes(ev_l2, nil);
-        if l1_err_handler.HadError then exit;
+        if had_l1_err then
+        begin
+          {$ifdef DEBUG}
+          cancel_p;
+          {$endif DEBUG}
+          exit;
+        end;
         
         try
           direct_enq_res := enq_f(prev_res, cq, ev_l2);
         except
           on e: Exception do
           begin
-            l1_err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
+            enq_err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
             exit;
           end;
         end;
       finally
         {$ifdef DEBUG}
-        l1_err_handler.EndMaybeError(err_test_reason);
+        enq_err_handler.EndMaybeError(err_test_reason);
         {$endif DEBUG}
       end;
       
@@ -9148,7 +10106,12 @@ type
       Result.Item2 := act;
       
       // NVidia implementation doesn't create event if ev_l2.HasError
-      if enq_ev=cl_event.Zero then exit;
+      if enq_ev=cl_event.Zero then
+      begin
+        if not ev_l2.HasError then
+          raise new OpenCLABCInternalException($'');
+        exit;
+      end;
       // Optimize the same way for the rest of implementations
       // Also makes sure the debug event count is the same for all vendors
       if EventList.HasError(enq_ev) or ev_l2.HasError then
@@ -9169,65 +10132,129 @@ type
     static function Invoke<T>(
       enq_c: integer;
       o_const: boolean; get_o: ()->T;
+      {$ifdef DEBUG}cancel_o_qr: Action;{$endif}
       g: CLTaskGlobalData; l: CLTaskLocalData;
       invoke_params: InvokeParamsFunc<T>;
       on_err: clErrorCode->()
       {$ifdef DEBUG}; q: object{$endif}
     ): EnqRes;
     begin
+      var pre_enq_had_insta_err := g.had_insta_err;
+      g.had_insta_err := false;
       
-      var enq_evs := new DoubleEventListList(enq_c+1);
-      var (l1_err_handler, enq_f) := invoke_params(enq_c, o_const, g, enq_evs);
-      var l2_err_handler := g.curr_err_handler;
+      // Can extract or skip
+      // For now skipping, as extracting known handler doesn't seem to help
+      var origin_err_handler := g.curr_err_handler.TrySkipFunc;//.Extract({$ifdef DEBUG}false{$endif});
+      g.curr_err_handler := LazyErrHandler.InvalidFunc;
       
-      var need_async_inv := (enq_evs.c1<>0) or not o_const;
-      begin
-        // If ExecuteEnqFunc (and so prev_qr.GetRes) is insta called
-        // There is no point in creating another event for actions
-        var start_ev := if not need_async_inv then
-          l.prev_ev else l.AttachInvokeActions(g);
-        
-        if start_ev.count=0 then
-          {$ifdef DEBUG}enq_evs.FakeAdd{$endif} else
-        if not o_const then
-          enq_evs.AddL1(start_ev) else
-          enq_evs.AddL2(start_ev);
-        
-      end;
-      var (ev_l1, ev_l2) := enq_evs.MakeLists;
+      // L1 events need to be waited before running enq_f
+      // L2 events need to be waited before executing what enq_f has enqueued
+      var enq_evs := new DoubleList<EventList>(enq_c+1);
+      // L1 handlers will be checked in case of can_sync_enq=true
+      // Also the .CheckSameSize sanity check...
+      // Otherwise, all handlers are combined with origin and enq
+      var par_err_handlers := new DoubleList<ErrHandler>(enq_c+2);
+      var (cancel_p, enq_f) := invoke_params(enq_c, o_const, g, enq_evs, par_err_handlers);
+      {$ifdef DEBUG}
+      cancel_p += cancel_o_qr;
+      {$endif DEBUG}
+      
+      if g.had_insta_err then
+        pre_enq_had_insta_err := true;
+      g.had_insta_err := pre_enq_had_insta_err;
+      
+      var can_sync_enq := enq_evs.L1Empty and o_const;
+      
+      // If ExecuteEnqFunc (and so prev_qr.GetRes) is insta-called,
+      // there is no point in creating another event for actions
+      var start_ev := if can_sync_enq then l.prev_ev else
+        l.AttachInvokeActions(g{$ifdef EventDebug}, l{$endif});
+      
+      // If o_const=true, no point in waiting for start_ev,
+      // enq as fast as possible, even if can_sync_enq=false
+      // If o_const=false, need to wait for start_ev before calling get_o
+      if start_ev.count=0 then
+        {$ifdef DEBUG}enq_evs.FakeAdd(not o_const){$endif} else
+        enq_evs.Add(start_ev, not o_const);
+      
+      // Only check for origin errors during async enq, if start_ev was waited for in ev_l1
+      // In other words: (HPQ + CQ(M)).MakeCCQ
+      // Here enq may be sync, but HPQ completes and sets event after enq
+      // Thread-less HPQ can add error before enq, but that error will be in g.had_insta_err
+      // Threaded HPQ can only add error in origin_err_handler, which doesn't need to be checked before const get_o
+      if origin_err_handler=nil then
+        {$ifdef DEBUG}par_err_handlers.FakeAdd(not o_const){$endif} else
+        par_err_handlers.Add(origin_err_handler, not o_const);
+      {$ifdef DEBUG}
+      enq_evs.CheckSameSize(par_err_handlers);
+      {$endif DEBUG}
+      
+      // Can only use origin_err_handler if origin has no prev handlers
+      // Otherwise, need separate eh from origin, because origin can have unfinished nested errors
+      // (HPQ(wh.Wait) + CQ(a)).MakeCCQ.ThenWriteArray(HFQQ(()->nil, false))
+      var enq_err_handler := (origin_err_handler as ErrHandlerInitial) ??
+        new ErrHandlerInitial({$ifdef DEBUG}'ExecuteEnqFunc container'{$endif});
+      if enq_err_handler=origin_err_handler then
+        {$ifdef DEBUG}par_err_handlers.FakeAdd(false){$endif} else
+        par_err_handlers.AddL2(enq_err_handler);
+      
+      //TODO #2976
+      var (ev_l1, ev_l2) := enq_evs.Combine(EventList.Combine&<ArraySegment<EventList>>);
       
       // When need_async_inv, cq needs to be secured for thread safety
       // Otherwise, next command can be written before current one
-      //TODO Created even if l1_err_handler had errors
-      var cq := g.GetCQ(need_async_inv);
+      //TODO Created even if par_err_handlers.l1 had errors
+      var cq := g.GetCQ(not can_sync_enq);
       {$ifdef QueueDebug}
       QueueDebug.Add(cq, TypeName(q));
       {$endif QueueDebug}
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{q.GetHashCode}]:{TypeName(q)}.ExecuteEnqFunc';
-      l1_err_handler.AddMaybeError(err_test_reason);
+      enq_err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
       
-      if not need_async_inv then
+      g.curr_err_handler :=
+        ErrHandlerBranchCombinator.Wrap(
+          LazyErrHandler.InvalidFunc, par_err_handlers.GetAll
+          {$ifdef DEBUG}, $'{TypeName(q)} origin+par+enq union'{$endif}
+        );
+      var final_err_handler := g.curr_err_handler.TrySkipFunc;
+      
+      if can_sync_enq then
       begin
+        {$ifdef DEBUG}
+        if ev_l1.count<>0 then
+          raise new OpenCLABCInternalException($'');
+        if par_err_handlers.L1Any(h->true) then
+          raise new OpenCLABCInternalException($'');
+        {$endif DEBUG}
         l.prev_delegate.Invoke(g.c);
-        Result := ExecuteEnqFunc(get_o(), cq, ev_l2, enq_f, l1_err_handler,l2_err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}{$ifdef EventDebug}, q{$endif});
+        Result := ExecuteEnqFunc(
+          get_o(), cq, ev_l2, {$ifdef DEBUG}cancel_p, {$endif}enq_f, pre_enq_had_insta_err, enq_err_handler
+          {$ifdef DEBUG}, err_test_reason{$endif}{$ifdef EventDebug}, q{$endif}
+        );
       end else
       begin
         var res_ev := new UserEvent(g.cl_c
-          {$ifdef EventDebug}, $'{TypeName(q)}, temp for nested AttachCallback: [{ev_l1.evs.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
+          {$ifdef EventDebug}, $'{TypeName(q)}, temp for nested AttachCallback: [{ev_l1.evs?.JoinToString}], then [{ev_l2.evs?.JoinToString}]'{$endif}
         );
+        var l1_had_err := pre_enq_had_insta_err;
         
         ev_l1.MultiAttachCallback(()->
         begin
-          var (enq_ev, post_enq_act) := ExecuteEnqFunc(get_o(), cq, ev_l2, enq_f, l1_err_handler,l2_err_handler{$ifdef DEBUG}, err_test_reason{$endif DEBUG}{$ifdef EventDebug}, q{$endif});
+          if par_err_handlers.L1Any(h->h.HadError) then
+            l1_had_err := true;
+          var (enq_ev, post_enq_act) := ExecuteEnqFunc(
+            get_o(), cq, ev_l2, {$ifdef DEBUG}cancel_p, {$endif}enq_f, l1_had_err, enq_err_handler
+            {$ifdef DEBUG}, err_test_reason{$endif}{$ifdef EventDebug}, q{$endif}
+          );
           OpenCLABCInternalException.RaiseIfError( cl.Flush(cq) );
           enq_ev.MultiAttachCallback(()->
           begin
             if post_enq_act<>nil then post_enq_act(g.c);
             g.ReturnCQ(cq);
-            res_ev.SetComplete(l2_err_handler.HadError);
+            res_ev.SetComplete((final_err_handler<>nil) and final_err_handler.HadError);
           end{$ifdef EventDebug}, $'propagating Enq ev of {TypeName(q)} to res_ev: {res_ev.uev}'{$endif});
         end{$ifdef EventDebug}, $'calling async Enq of {TypeName(q)}'{$endif});
         
@@ -9249,7 +10276,7 @@ type
     
     protected function ExpectedEnqCount: integer; abstract;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<T>; abstract;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<T>; abstract;
     protected procedure ProcessError(ec: clErrorCode);
     begin
       var TODO := 0; //TODO abstract
@@ -9259,6 +10286,9 @@ type
     begin
       var get_o: ()->T;
       var o_const: boolean;
+      {$ifdef DEBUG}
+      var cancel_o_qr := default(Action);
+      {$endif DEBUG}
       if dep_ok then
       begin
         get_o := ()->inp.expected_const_res;
@@ -9269,10 +10299,13 @@ type
         l := prev_qr.TakeBaseOut;
         get_o := prev_qr.GetResDirect;
         o_const := prev_qr.IsConst;
+        {$ifdef DEBUG}
+        cancel_o_qr := ()->prev_qr.CancelStatusCheck('enq o cancel');
+        {$endif DEBUG}
       end;
       
       var (enq_ev, post_enq_act) := EnqueueableCore.Invoke(
-        self.ExpectedEnqCount, o_const, get_o, g, l,
+        self.ExpectedEnqCount, o_const, get_o, {$ifdef DEBUG}cancel_o_qr, {$endif}g, l,
         InvokeParams, ProcessError
         {$ifdef DEBUG},self{$endif}
       );
@@ -9408,7 +10441,7 @@ type
     
     protected function ExpectedEnqCount: integer; abstract;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; get_arg_cache: ()->CLKernelArgCache): ParamInvRes<cl_kernel>; abstract;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>; get_arg_cache: ()->CLKernelArgCache): ParamInvRes<cl_kernel>; abstract;
     protected procedure ProcessError(ec: clErrorCode);
     begin
       var TODO := 0; //TODO abstract
@@ -9417,21 +10450,20 @@ type
     {$region DerCommon}
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function InvokeArgs(inv: CLTaskBranchInvoker; enq_evs: DoubleEventListList): array of CLKernelArgSetter;
+    function InvokeArgs(inv: CLTaskBranchInvoker; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): array of CLKernelArgSetter;
     begin
       if args=nil then exit;
       Result := new CLKernelArgSetter[self.args_c];
       for var i := 0 to self.args_c-1 do
       begin
         if args[i]=nil then continue;
-        var (arg_setter, arg_ev) := self.args[i].Invoke(inv);
+        var (arg_setter, arg_ev) := self.args[i].Invoke(inv, par_err_handlers);
         Result[i] := arg_setter;
         
+        var to_l1 := not arg_setter.IsConst;
         if arg_ev.count=0 then
-          {$ifdef DEBUG}enq_evs.FakeAdd{$endif} else
-        if not arg_setter.IsConst then
-          enq_evs.AddL1(arg_ev) else
-          enq_evs.AddL2(arg_ev);
+          {$ifdef DEBUG}enq_evs.FakeAdd(to_l1){$endif} else
+          enq_evs.Add(arg_ev, to_l1);
       end;
     end;
     
@@ -9453,18 +10485,24 @@ type
     
     protected function Invoke(dep_ok: boolean; inp: CommandQueue<CLKernel>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
     begin
-      var get_k: ()->CLKernel;
       var k_const: boolean;
+      var get_k: ()->CLKernel;
+      {$ifdef DEBUG}
+      var cancel_k_qr := default(Action);
+      {$endif DEBUG}
       if dep_ok then
       begin
-        get_k := ()->inp.expected_const_res;
         k_const := true;
+        get_k := ()->inp.expected_const_res;
       end else
       begin
         var prev_qr := inp.InvokeToAny(g, l);
         l := prev_qr.TakeBaseOut;
-        get_k := prev_qr.GetResDirect;
         k_const := prev_qr.IsConst;
+        get_k := prev_qr.GetResDirect;
+        {$ifdef DEBUG}
+        cancel_k_qr := ()->prev_qr.CancelStatusCheck('enq k cancel');
+        {$endif DEBUG}
       end;
       
       var get_k_ntv: ()->cl_kernel;
@@ -9484,9 +10522,9 @@ type
       // - Без "()->" его будет читать прямо перед вызовом InvokeParams
       // - А сейчас его считает аж в EnqFunc<cl_kernel>
       var (enq_ev, post_enq_act) := EnqueueableCore.Invoke(
-        self.ExpectedEnqCount+args_non_const_c, k_const, get_k_ntv, g, l,
-        (enq_c, o_const, g, enq_evs)->
-          InvokeParams(enq_c, o_const, g, enq_evs, ()->arg_cache),
+        self.ExpectedEnqCount+args_non_const_c, k_const, get_k_ntv, {$ifdef DEBUG}cancel_k_qr, {$endif}g, l,
+        (enq_c, o_const, g, enq_evs, par_err_handlers)->
+          InvokeParams(enq_c, o_const, g, enq_evs, par_err_handlers, ()->arg_cache),
         ProcessError
         {$ifdef DEBUG},self{$endif}
       );
@@ -9513,7 +10551,7 @@ type
     
     protected function ExpectedEnqCount: integer; abstract;
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<TRes>): ParamInvRes<TObj>; abstract;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>; own_qr: QueueRes<TRes>): ParamInvRes<TObj>; abstract;
     protected procedure ProcessError(ec: clErrorCode);
     begin
       var TODO := 0; //TODO abstract
@@ -9529,9 +10567,9 @@ type
         l := prev_qr.TakeBaseOut;
         
         var (enq_ev, post_enq_act) := EnqueueableCore.Invoke(
-          self.ExpectedEnqCount, inp_const, prev_qr.GetResDirect, g, l,
-          (enq_c, o_const, g, enq_evs)->
-            InvokeParams(enq_c, o_const, g, enq_evs, qr),
+          self.ExpectedEnqCount, inp_const, prev_qr.GetResDirect, {$ifdef DEBUG}()->prev_qr.CancelStatusCheck('enq prev cancel'), {$endif}g, l,
+          (enq_c, o_const, g, enq_evs, par_err_handlers)->
+            InvokeParams(enq_c, o_const, g, enq_evs, par_err_handlers, qr),
           ProcessError
           {$ifdef DEBUG},self{$endif}
         );
@@ -9645,117 +10683,11 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
 
 {$endregion CQ}
 
-{$region HFQ/HPQ}
+{$region HPQ/HFQ}
 
 {$region Common} type
   
-  {$region Func}
-  
-  ISimpleFunc0Container<T> = interface(ISimpleDelegateContainer)
-    
-    function Invoke(c: CLContext): T;
-    
-  end;
-  
-  SimpleFunc0Container<T> = record(ISimpleFunc0Container<T>)
-    private d: ()->T;
-    
-    public static function operator implicit(d: ()->T): SimpleFunc0Container<T>;
-    begin
-      Result.d := d;
-    end;
-    
-    public function Invoke(c: CLContext) := d();
-    
-    public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
-    
-  end;
-  SimpleFunc0ContainerC<T> = record(ISimpleFunc0Container<T>)
-    private d: CLContext->T;
-    
-    public static function operator implicit(d: CLContext->T): SimpleFunc0ContainerC<T>;
-    begin
-      Result.d := d;
-    end;
-    
-    public function Invoke(c: CLContext) := d(c);
-    
-    public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
-    
-  end;
-  
-  CommandQueueHostFuncBase<T, TFunc> = abstract class(CommandQueue<T>)
-  where TFunc: ISimpleFunc0Container<T>;
-    protected f: TFunc;
-    
-    public constructor(f: TFunc) := self.f := f;
-    private constructor := raise new OpenCLABCInternalException;
-    
-    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := exit;
-    
-    protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function InvokeFunc(err_handler: CLTaskErrHandler; c: CLContext{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG}): T;
-    begin
-      if not err_handler.HadError then
-      try
-        Result := f.Invoke(c);
-      except
-        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
-      end;
-      {$ifdef DEBUG}
-      err_handler.EndMaybeError(err_test_reason);
-      {$endif DEBUG}
-    end;
-    
-    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
-    begin
-      sb += ': ';
-      f.ToStringB(sb);
-      sb += #10;
-    end;
-    
-  end;
-  
-  {$endregion Func}
-  
   {$region Proc}
-  
-  ISimpleProc0Container = interface(ISimpleDelegateContainer)
-    
-    procedure Invoke(c: CLContext);
-    
-  end;
-  
-  SimpleProc0Container = record(ISimpleProc0Container)
-    private d: ()->();
-    
-    public static function operator implicit(d: ()->()): SimpleProc0Container;
-    begin
-      Result.d := d;
-    end;
-    
-    public procedure Invoke(c: CLContext) := d();
-    
-    public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
-    
-  end;
-  SimpleProc0ContainerC = record(ISimpleProc0Container)
-    private d: CLContext->();
-    
-    public static function operator implicit(d: CLContext->()): SimpleProc0ContainerC;
-    begin
-      Result.d := d;
-    end;
-    
-    public procedure Invoke(c: CLContext) := d(c);
-    
-    public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
-    
-  end;
   
   CommandQueueHostProcBase<TProc> = abstract class(CommandQueueNil)
   where TProc: ISimpleProc0Container;
@@ -9765,20 +10697,6 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
     private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := exit;
-    
-    protected [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    procedure InvokeProc(err_handler: CLTaskErrHandler; c: CLContext{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG});
-    begin
-      if not err_handler.HadError then
-      try
-        p.Invoke(c);
-      except
-        on e: Exception do err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
-      end;
-      {$ifdef DEBUG}
-      err_handler.EndMaybeError(err_test_reason);
-      {$endif DEBUG}
-    end;
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -9791,7 +10709,94 @@ function CQ<T>(o: T) := CommandQueue&<T>(o);
   
   {$endregion Proc}
   
+  {$region Func}
+  
+  CommandQueueHostFuncBase<T, TFunc> = abstract class(CommandQueue<T>)
+  where TFunc: ISimpleFunc0Container<T>;
+    protected f: TFunc;
+    
+    public constructor(f: TFunc) := self.f := f;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := exit;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ': ';
+      f.ToStringB(sb);
+      sb += #10;
+    end;
+    
+  end;
+  
+  {$endregion Func}
+  
 {$endregion Common}
+
+{$region Proc}
+
+type
+  CommandQueueHostQuickProc<TProc> = sealed class(CommandQueueHostProcBase<TProc>)
+  where TProc: ISimpleProc0Container;
+    
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
+    begin
+      Result := new QueueResNil(l);
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.InvokeProc';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      if l.ShouldInstaCallAction then
+        p.Invoke(g, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, g.c) else
+        Result.AddAction(c->self.p.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, c));
+      
+    end;
+    
+  end;
+  
+  CommandQueueHostThreadedProc<TProc> = sealed class(CommandQueueHostProcBase<TProc>)
+  where TProc: ISimpleProc0Container;
+    
+    private function MakeBody(prev_d: QueueResComplDelegateData; err_handler: ErrHandler; c: CLContext{$ifdef DEBUG}; err_test_reason: string{$endif}): Action := ()->
+    begin
+      prev_d.Invoke(c);
+      self.p.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, c);
+    end;
+    
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
+    begin
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
+      
+      {$ifdef DEBUG}
+      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.InvokeProc';
+      err_handler.AddMaybeError(err_test_reason);
+      {$endif DEBUG}
+      
+      Result := new QueueResNil(UserEvent.StartWorkThread(
+        l.prev_ev, MakeBody(l.prev_delegate, err_handler, g.c{$ifdef DEBUG}, err_test_reason{$endif}), g
+        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
+      ));
+      
+    end;
+    
+  end;
+  
+function HPQ<TProc>(p: TProc; need_own_thread: boolean): CommandQueueNil; where TProc: ISimpleProc0Container;
+begin
+  if need_own_thread then
+    Result := new CommandQueueHostThreadedProc<TProc>(p) else
+    Result := new CommandQueueHostQuickProc   <TProc>(p);
+end;
+
+function HPQ(p: ()->(); need_own_thread: boolean) :=
+HPQ&<SimpleProc0Container >(p, need_own_thread);
+function HPQ(p: CLContext->(); need_own_thread: boolean) :=
+HPQ&<SimpleProc0ContainerC>(p, need_own_thread);
+
+{$endregion Proc}
 
 {$region Func}
 
@@ -9802,7 +10807,7 @@ type
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<T,TR>): TR; where TR: IQueueRes;
     begin
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.InvokeFunc';
       err_handler.AddMaybeError(err_test_reason);
@@ -9810,10 +10815,10 @@ type
       
       Result := if l.ShouldInstaCallAction then
         qr_factory.MakeConst(l,
-          InvokeFunc(err_handler, g.c{$ifdef DEBUG}, err_test_reason{$endif DEBUG})
+          f.Invoke(g, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, g.c)
         ) else
         qr_factory.MakeDelayed(l, qr->c->qr.SetRes(
-          InvokeFunc(err_handler, g.c{$ifdef DEBUG}, err_test_reason{$endif DEBUG})
+          f.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, g.c)
         ));
       
     end;
@@ -9827,35 +10832,39 @@ type
   CommandQueueHostThreadedFunc<T, TFunc> = sealed class(CommandQueueHostFuncBase<T, TFunc>)
   where TFunc: ISimpleFunc0Container<T>;
     
-    private function MakeNilBody    (prev_d: QueueResComplDelegateData; c: CLContext; err_handler: CLTaskErrHandler; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG}): Action := ()->
+    private function MakeNilBody    (prev_d: QueueResComplDelegateData; c: CLContext; err_handler: ErrHandler; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif}): Action := ()->
     begin
       prev_d.Invoke(c);
-      InvokeFunc(err_handler, c{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
+      f.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, c);
     end;
-    private function MakeResBody<TR>(prev_d: QueueResComplDelegateData; c: CLContext; err_handler: CLTaskErrHandler; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG}): Action; where TR: QueueRes<T>;
+    private function MakeResBody<TR>(prev_d: QueueResComplDelegateData; c: CLContext; err_handler: ErrHandler; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action; where TR: QueueRes<T>;
     begin
       Result := ()->
       begin
         prev_d.Invoke(c);
         own_qr.SetRes(
-          InvokeFunc(err_handler, c{$ifdef DEBUG}, err_test_reason{$endif DEBUG})
+          f.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, c)
         );
       end;
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<T,TR>; make_body: (QueueResComplDelegateData,CLContext,CLTaskErrHandler,TR{$ifdef DEBUG},string{$endif DEBUG})->Action): TR; where TR: IQueueRes;
+    function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<T,TR>; make_body: (QueueResComplDelegateData,CLContext,ErrHandler,TR{$ifdef DEBUG},string{$endif})->Action): TR; where TR: IQueueRes;
     begin
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
+      
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.InvokeFunc';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
+      err_handler.AddMaybeError(err_test_reason);
       {$endif DEBUG}
+      
       Result := qr_factory.MakeDelayed(qr->new CLTaskLocalData(
         UserEvent.StartWorkThread(l.prev_ev,
-          make_body(l.prev_delegate, g.c, g.curr_err_handler, qr{$ifdef DEBUG}, err_test_reason{$endif DEBUG}), g
+          make_body(l.prev_delegate, g.c, err_handler, qr{$ifdef DEBUG}, err_test_reason{$endif}), g
           {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
         )
       ));
+      
     end;
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := Invoke(g, l, qr_nil_factory, MakeNilBody);
@@ -9878,73 +10887,113 @@ HFQ&<T, SimpleFunc0ContainerC<T>>(f, need_own_thread);
 
 {$endregion Func}
 
-{$region Proc}
-
-type
-  CommandQueueHostQuickProc<TProc> = sealed class(CommandQueueHostProcBase<TProc>)
-  where TProc: ISimpleProc0Container;
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
-    begin
-      Result := new QueueResNil(l);
-      var err_handler := g.curr_err_handler;
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.InvokeProc';
-      err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
-      
-      if l.ShouldInstaCallAction then
-        InvokeProc(err_handler, g.c{$ifdef DEBUG}, err_test_reason{$endif DEBUG}) else
-        Result.AddAction(c->InvokeProc(err_handler, c{$ifdef DEBUG}, err_test_reason{$endif DEBUG}));
-      
-    end;
-    
-  end;
-  
-  CommandQueueHostThreadedProc<TProc> = sealed class(CommandQueueHostProcBase<TProc>)
-  where TProc: ISimpleProc0Container;
-    
-    private function MakeBody(prev_d: QueueResComplDelegateData; err_handler: CLTaskErrHandler; c: CLContext{$ifdef DEBUG}; err_test_reason: string{$endif DEBUG}): Action := ()->
-    begin
-      prev_d.Invoke(c);
-      InvokeProc(err_handler, c{$ifdef DEBUG}, err_test_reason{$endif DEBUG});
-    end;
-    
-    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
-    begin
-      {$ifdef DEBUG}
-      var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.InvokeProc';
-      g.curr_err_handler.AddMaybeError(err_test_reason);
-      {$endif DEBUG}
-      Result := new QueueResNil(UserEvent.StartWorkThread(
-        l.prev_ev, MakeBody(l.prev_delegate, g.curr_err_handler, g.c{$ifdef DEBUG}, err_test_reason{$endif DEBUG}), g
-        {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
-      ));
-    end;
-    
-  end;
-  
-function HPQ<TProc>(p: TProc; need_own_thread: boolean): CommandQueueNil; where TProc: ISimpleProc0Container;
-begin
-  if need_own_thread then
-    Result := new CommandQueueHostThreadedProc<TProc>(p) else
-    Result := new CommandQueueHostQuickProc   <TProc>(p);
-end;
-
-function HPQ(p: ()->(); need_own_thread: boolean) :=
-HPQ&<SimpleProc0Container >(p, need_own_thread);
-function HPQ(p: CLContext->(); need_own_thread: boolean) :=
-HPQ&<SimpleProc0ContainerC>(p, need_own_thread);
-
-{$endregion Proc}
-
-{$endregion HFQ/HPQ}
+{$endregion HPQ/HFQ}
 
 {$region CombineQueue's}
 
 {%CombineQueues/Implementation!CombineQueues.pas%}
 
 {$endregion CombineQueue's}
+
+{$region GLIterop}
+
+{$region Common} type
+  
+  GLIteropApiBlock = record
+    public clGLSharingKHR: OpenCL.clGLSharingKHR;
+  end;
+  
+  GLIterop = static class
+    
+    private [ThreadStatic] static api_block_cache := new Dictionary<CLPlatform, GLIteropApiBlock>;
+    public static function ApiBlockForPlatform(pl: CLPlatform): GLIteropApiBlock;
+    begin
+      if api_block_cache.TryGetValue(pl, Result) then exit;
+      Result.clGLSharingKHR := new OpenCL.clGLSharingKHR(pl.ntv);
+      api_block_cache.Add(pl, Result);
+    end;
+    
+  end;
+  
+  CommandQueueAcquireRelease = abstract class(CommandQueueNil)
+    private mem_objs: array of ICLMemory;
+    private ntv_mem_objs: array of cl_mem;
+    private api_block: clGLSharingKHR;
+    
+    public constructor(mem_objs: array of ICLMemory);
+    begin
+      self.mem_objs := mem_objs;
+      self.ntv_mem_objs := mem_objs.ConvertAll(m->m.Native);
+      if mem_objs.Length=0 then
+        raise new ArgumentException($'%Err:GLIterop:0MemObjects%');
+      
+      var ntv_contexts := ntv_mem_objs.Select(m->
+      begin
+        Result := default(cl_context);
+        OpenCLABCInternalException.RaiseIfError(
+          cl.GetMemObjectInfo_MEM_CONTEXT(m, Result)
+        );
+      end).Distinct.ToArray;
+      if ntv_contexts.Length>1 then
+        raise new ArgumentException($'%Err:GLIterop:MultipleContexts%');
+      
+      self.api_block := GLIterop.ApiBlockForPlatform(CLContext.Create(ntv_contexts[0], true).MainDevice.BaseCLPlatform).clGLSharingKHR;
+    end;
+    private constructor := raise new OpenCLABCInternalException;
+    
+    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := exit;
+    
+    protected procedure InvokeImpl(clGLSharingKHR: OpenCL.clGLSharingKHR; q: cl_command_queue; a: array of cl_mem; prev_ev: EventList; var res_ev: cl_event); abstract;
+    protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override;
+    begin
+      var prev_ev := l.AttachInvokeActions(g{$ifdef EventDebug}, l{$endif});
+      var res_ev: cl_event;
+      InvokeImpl(api_block, g.GetCQ(false), ntv_mem_objs, prev_ev, res_ev);
+      Result := new QueueResNil(prev_ev + res_ev);
+    end;
+    
+    private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
+    begin
+      sb += ':';
+      foreach var m in mem_objs do
+      begin
+        sb += ' ';
+        sb += m.ToString;
+      end;
+      sb += #10;
+    end;
+    
+  end;
+  
+{$endregion Common}
+
+{$region Acquire} type
+  
+  CommandQueueAcquire = sealed class(CommandQueueAcquireRelease)
+    
+    protected procedure InvokeImpl(clGLSharingKHR: OpenCL.clGLSharingKHR; q: cl_command_queue; a: array of cl_mem; prev_ev: EventList; var res_ev: cl_event); override :=
+      OpenCLABCInternalException.RaiseIfError(clGLSharingKHR.EnqueueAcquireGLObjects(q, a.Length,a, prev_ev.count,prev_ev.evs, res_ev));
+    
+  end;
+  
+function CQAcquireGL(params mem_objs: array of ICLMemory) := new CommandQueueAcquire(mem_objs);
+
+{$endregion Acquire}
+
+{$region Release} type
+  
+  CommandQueueRelease = sealed class(CommandQueueAcquireRelease)
+    
+    protected procedure InvokeImpl(clGLSharingKHR: OpenCL.clGLSharingKHR; q: cl_command_queue; a: array of cl_mem; prev_ev: EventList; var res_ev: cl_event); override :=
+      OpenCLABCInternalException.RaiseIfError(clGLSharingKHR.EnqueueReleaseGLObjects(q, a.Length,a, prev_ev.count,prev_ev.evs, res_ev));
+    
+  end;
+  
+function CQReleaseGL(params mem_objs: array of ICLMemory) := new CommandQueueRelease(mem_objs);
+
+{$endregion Release}
+
+{$endregion GLIterop}
 
 {$endregion Global subprograms}
 
@@ -9982,17 +11031,19 @@ type
       // что касается внутренних оптимизаций очереди
       var rng := new Random;
       var test_arr := ArrGen(test_size, i->rng.Next);
-      {%> var Q_Arr := HFQ(c->new CLArray<integer>(c, test_size), false).Multiusable;%}
-      {%> Result :=%}
-      {%>   HFQ(c->CLProgramCode.Create(test_prog, c)['k'], false).MakeCCQ%}
-      {%>     .ThenExec1(test_size, Q_Arr.MakeCCQ%}
-      {%>       .ThenWriteArray(test_arr)%}
-      {%>     ) +%}
-      {%>   Q_Arr.MakeCCQ%}
-      {%>     .ThenGetArray%}
-      {%>     .ThenConvert(test_res->%}
-      {%>       test_res.Zip(test_arr, (a,b)->a=b+1).All(r->r), false%}
-      {%>     )!!}test_arr := test_arr; Result := nil{%};
+      {%>var Q_Arr := HFQ(c->new CLArray<integer>(c, test_size), false).Multiusable;%}
+      {%>Result :=%}
+      {%>  HFQ(c->CLProgramCode.Create(test_prog, c)['k'], false).MakeCCQ%}
+      {%>    .ThenExec1(test_size, Q_Arr.MakeCCQ%}
+      {%>      .ThenWriteArray(test_arr)%}
+      {%>    ) +%}
+      {%>  Q_Arr.MakeCCQ%}
+      {%>    .ThenGetArray%}
+      {%>    .ThenConvert(test_res->%}
+      {%>      test_res.Zip(test_arr, (a,b)->a=b+1).All(r->r), false%}
+      {%>    )!!}test_arr := test_arr; Result := nil{%};
+      {%>Result := Result.Multiusable;%}
+      {%>Result := Result+Q_Arr.ThenUse(a->a.Dispose(), false)+Result;%}
     end;
     
   end;
@@ -10152,7 +11203,7 @@ type
     
     private procedure AddExisting(k: cl_kernel; used: boolean; mask: integer);
     begin
-      var search_shift := k.val.ToInt32;
+      var search_shift := k.val.GetHashCode;
       for var i := 0 to mask do
       begin
         var ind := (i+search_shift) and mask;
@@ -10235,7 +11286,7 @@ type
     lock ntvs_lock do
     begin
       var mask := MakeMask;
-      var search_shift := k.val.ToInt32;
+      var search_shift := k.val.GetHashCode;
       for var i := 0 to mask do
       begin
         var ind := (i+search_shift) and mask;
@@ -10281,7 +11332,7 @@ procedure CLKernel.AddExistingNative(ntv: cl_kernel) := ntvs.AddExisting(ntv);
 
 {$region CLMemory}
 
-static function CLMemory.FromNative(ntv: cl_mem): CLMemory;
+static function CLMemory.FromNative(ntv: cl_mem; memory_report, need_retain: boolean): CLMemory;
 begin
   var t: clMemObjectType;
   OpenCLABCInternalException.RaiseIfError(
@@ -10297,8 +11348,8 @@ begin
   );
   
   if parent=cl_mem.Zero then
-    Result := new CLMemory(ntv) else
-    Result := new CLMemorySubSegment(parent, ntv);
+    Result := new CLMemory(ntv, memory_report, need_retain) else
+    Result := new CLMemorySubSegment(parent, ntv, memory_report, need_retain);
   
 end;
 
@@ -10324,36 +11375,55 @@ procedure CLArray<T>.SetSliceProp(range: IntRange; value: array of T) :=
 {$endregion Wrappers}
 
 {$ifdef ForceMaxDebug}
-initialization
-finalization
-  
-  {$ifdef EventDebug}
-  EventDebug.FinallyReport;
-  {$endif EventDebug}
-  
-  {$ifdef QueueDebug}
-  QueueDebug.FinallyReport;
-  {$endif QueueDebug}
-  
-  {$ifdef WaitDebug}
-  foreach var whd: WaitHandlerDirect in WaitDebug.WaitActions.Keys.OfType&<WaitHandlerDirect> do
-    if whd.reserved<>0 then
-      raise new OpenCLABCInternalException($'WaitHandler.reserved in finalization was <>0');
-  WaitDebug.FinallyReport;
-  {$endif WaitDebug}
-  
-  {$ifdef ExecDebug}
-  ExecDebug.FinallyReport;
-  {$endif ExecDebug}
-  
-  if QueueResNil.created_count<>0 then
-    $'[QueueResNil]: {QueueResNil.created_count}'.Println;
-  if QueueResT.created_count.Count<>0 then
-  begin
-    $'[QueueRes<T>]: {QueueResT.created_count.Values.Sum}'.Println;
-    foreach var t in QueueResT.created_count.Keys.Order do
-      $'{#9}{t}: {QueueResT.created_count[t]}'.Println;
+type
+  FinalDebugChecks = static class
+    private static checked := false;
+    public static procedure Check;
+    begin
+      if checked then exit;
+      checked := true;
+      
+      {$ifdef EventDebug}
+      EventDebug.FinallyReport;
+      {$endif EventDebug}
+      
+      {$ifdef QueueDebug}
+      QueueDebug.FinallyReport;
+      {$endif QueueDebug}
+      
+      {$ifdef WaitDebug}
+      foreach var whd: WaitHandlerDirect in WaitDebug.WaitActions.Keys.OfType&<WaitHandlerDirect> do
+        if whd.reserved<>0 then
+          raise new OpenCLABCInternalException($'WaitHandler.reserved in finalization was <>0');
+      WaitDebug.FinallyReport;
+      {$endif WaitDebug}
+      
+      {$ifdef ExecDebug}
+      ExecDebug.FinallyReport;
+      {$endif ExecDebug}
+      
+      if QueueResNil.created_count<>0 then
+        gen_debug_otp.WriteLine($'[QueueResNil]: {QueueResNil.created_count}');
+      if QueueResT.created_count.Count<>0 then
+      begin
+        gen_debug_otp.WriteLine($'[QueueRes<T>]: {QueueResT.created_count.Values.Sum}');
+        foreach var t in QueueResT.created_count.Keys.Order do
+          gen_debug_otp.WriteLine($'{#9}{t}: {QueueResT.created_count[t]}');
+      end;
+      
+      begin
+        var left_mem_objs := EmptyMemoryObserver(CLMemoryObserver.Default).impl.mem_uses.Keys;
+        if left_mem_objs.Any then
+          raise new OpenCLABCInternalException($'Not all memory objects were disposed: ' + left_mem_objs.JoinToString);
+      end;
+      
+      gen_debug_otp.Close;
+      eh_debug_otp.Close;
+    end;
   end;
   
+initialization
+finalization
+  FinalDebugChecks.Check;
 {$endif ForceMaxDebug}
 end.

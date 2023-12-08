@@ -1,3 +1,5 @@
 ﻿## uses OpenCLABC;
 
-Println(new CLValue<byte>);
+var v := new CLValue<byte>;
+Println(v);
+v.Dispose;

@@ -47,4 +47,7 @@ begin
   
   {$include All}
   
+  cl_mem.Dispose;
+  cl_val.Dispose;
+  cl_arr.Dispose;
 end.

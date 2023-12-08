@@ -8,15 +8,17 @@ OpenCL.clProgramCallback = procedure(program: cl_program; user_data: System.IntP
 OpenCLABC.$delegate? = function(ntv: cl_program; var data: clBool; validate: boolean): clErrorCode
 OpenCLABC._GetPropValueFunc<T> = function(ntv: cl_program; var data: T): clErrorCode
 OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): ValueTuple<cl_event,CLContext -> ()>
-OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ValueTuple<CLTaskErrHandler,EnqFunc<T>>
+OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
+final = ErrHandlerInitial#0: Initial CLTask invoke
+(total 1 handlers)
 5 
-[EventDebug]: 2 event's created 
-[WaitDebug]: 2 wait handler's created 
-[QueueRes<T>]: 2 
-	QueueResValDirect<integer>: 1 
-	QueueResValWrap<integer>: 1 
+[EventDebug]: 2 event's created
+[WaitDebug]: 2 wait handler's created
+[QueueRes<T>]: 2
+	QueueResValDirect<integer>: 1
+	QueueResValWrap<integer>: 1
 
 #ReqModules
 OpenCLABC

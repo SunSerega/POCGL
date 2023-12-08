@@ -36,7 +36,7 @@ OpenGL.$delegate? = procedure(shader: gl_shader; count: integer; var string: Sys
 OpenGL.$delegate? = procedure(shader: gl_shader; count: integer; var string: System.IntPtr; var length: integer)
 OpenGL.$delegate? = procedure(shader: gl_shader; pname: glShaderParameterName; params: System.IntPtr)
 OpenGL.$delegate? = procedure(shader: gl_shader; pname: glShaderParameterName; var params: integer)
-OpenGLABC.RedrawThreadProc = procedure(pl: PlatformLoader; EndFrame: procedure)
+OpenGLABC.RedrawThreadProc = procedure(pl: IGLPlatformLoader; EndFrame: procedure)
 
 #ReqModules
 OpenGL+OpenGLABC

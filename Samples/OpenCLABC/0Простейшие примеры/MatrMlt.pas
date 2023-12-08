@@ -13,7 +13,7 @@ try
   // А полученный бинарник уже подключать через $resource
   var code := new CLProgramCode(
     System.IO.StreamReader.Create(
-      System.Reflection.Assembly.GetExecutingAssembly.GetManifestResourceStream('MatrMlt.cl')
+      System.Reflection.Assembly.GetCallingAssembly.GetManifestResourceStream('MatrMlt.cl')
     ).ReadToEnd
   );
   
@@ -93,6 +93,13 @@ try
     
   );
   
+  // Освобождение памяти
+  
+  A.Dispose;
+  B.Dispose;
+  C.Dispose;
+  V1.Dispose;
+  V2.Dispose;
 except
   // except позволяет получать список ошибку,
   // возникшую при выполнении SyncInvoke

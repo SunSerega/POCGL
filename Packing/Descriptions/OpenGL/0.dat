@@ -1,14 +1,23 @@
 ﻿
 
 
-# PlWin
+# IGLPlatformLoader
+Базовый класс платформы
+Можно наследовать чтобы описать свой загрузчик динамических функций
+
+# IGLPlatformLoader.GetProcAddress(string)
+Этот метод вызывается для каждой динамически загружаемой функции
+
+
+
+# glPlWin
 Платформа Windows
 
-# PlX
+# glPlX
 Платформа XWindow (используется в UNIX-подобных системах)
 
-# PlWin.GetProcAddress(string)
-# PlX.GetProcAddress(string)
+# glPlWin.GetProcAddress(string)
+# glPlX.GetProcAddress(string)
 Получает адрес динамически загружаемой функции
 
 

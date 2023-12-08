@@ -458,11 +458,6 @@
 	Enum [gl::BUFFER_STORAGE_FLAGS]
 	Func [gl::BufferStorage]
 
-# glClEventARB (GL_ARB_cl_event)
-	Enum [gl::SYNC_CL_EVENT]
-	Enum [gl::SYNC_CL_EVENT_COMPLETE]
-	Func [gl::CreateSyncFromCLevent + ARB]
-
 # glClearBufferObjectARB (GL_ARB_clear_buffer_object)
 	Func [gl::ClearBufferData]
 	Func [gl::ClearBufferSubData]
@@ -471,6 +466,11 @@
 	Enum [gl::CLEAR_TEXTURE]
 	Func [gl::ClearTexImage]
 	Func [gl::ClearTexSubImage]
+
+# glClEventARB (GL_ARB_cl_event)
+	Enum [gl::SYNC_CL_EVENT]
+	Enum [gl::SYNC_CL_EVENT_COMPLETE]
+	Func [gl::CreateSyncFromCLevent + ARB]
 
 # glClipControlARB (GL_ARB_clip_control)
 	Enum [gl::LOWER_LEFT]
@@ -1075,6 +1075,14 @@
 	Enum [gl::SPIR_V_BINARY]
 	Func [gl::SpecializeShader + ARB]
 
+# glGpuShader5ARB (GL_ARB_gpu_shader5)
+	Enum [gl::GEOMETRY_SHADER_INVOCATIONS]
+	Enum [gl::MAX_GEOMETRY_SHADER_INVOCATIONS]
+	Enum [gl::MIN_FRAGMENT_INTERPOLATION_OFFSET]
+	Enum [gl::MAX_FRAGMENT_INTERPOLATION_OFFSET]
+	Enum [gl::FRAGMENT_INTERPOLATION_OFFSET_BITS]
+	Enum [gl::MAX_VERTEX_STREAMS]
+
 # glGpuShaderFp64ARB (GL_ARB_gpu_shader_fp64)
 	Enum [gl::DOUBLE]
 	Enum [gl::DOUBLE_MAT2]
@@ -1153,14 +1161,6 @@
 	Func [gl::ProgramUniform2ui64v + ARB]
 	Func [gl::ProgramUniform3ui64v + ARB]
 	Func [gl::ProgramUniform4ui64v + ARB]
-
-# glGpuShader5ARB (GL_ARB_gpu_shader5)
-	Enum [gl::GEOMETRY_SHADER_INVOCATIONS]
-	Enum [gl::MAX_GEOMETRY_SHADER_INVOCATIONS]
-	Enum [gl::MIN_FRAGMENT_INTERPOLATION_OFFSET]
-	Enum [gl::MAX_FRAGMENT_INTERPOLATION_OFFSET]
-	Enum [gl::FRAGMENT_INTERPOLATION_OFFSET_BITS]
-	Enum [gl::MAX_VERTEX_STREAMS]
 
 # glHalfFloatPixelARB (GL_ARB_half_float_pixel)
 	Enum [gl::HALF_FLOAT]
@@ -1741,11 +1741,6 @@
 	Func [gl::NamedFramebufferSampleLocationsfv + ARB]
 	Func [gl::EvaluateDepthValues + ARB]
 
-# glSampleShadingARB (GL_ARB_sample_shading)
-	Enum [gl::SAMPLE_SHADING]
-	Enum [gl::MIN_SAMPLE_SHADING_VALUE]
-	Func [gl::MinSampleShading + ARB]
-
 # glSamplerObjectsARB (GL_ARB_sampler_objects)
 	Enum [gl::SAMPLER_BINDING]
 	Func [gl::GenSamplers]
@@ -1762,6 +1757,11 @@
 	Func [gl::GetSamplerParameterIiv]
 	Func [gl::GetSamplerParameterfv]
 	Func [gl::GetSamplerParameterIuiv]
+
+# glSampleShadingARB (GL_ARB_sample_shading)
+	Enum [gl::SAMPLE_SHADING]
+	Enum [gl::MIN_SAMPLE_SHADING_VALUE]
+	Func [gl::MinSampleShading + ARB]
 
 # glSeamlessCubeMapARB (GL_ARB_seamless_cube_map)
 	Enum [gl::TEXTURE_CUBE_MAP_SEAMLESS]
@@ -2128,9 +2128,9 @@
 	Enum [gl::NUM_SPARSE_LEVELS]
 	Func [gl::TexPageCommitment + ARB]
 
-# glSparseTextureClampARB (GL_ARB_sparse_texture_clamp)
-
 # glSparseTexture2ARB (GL_ARB_sparse_texture2)
+
+# glSparseTextureClampARB (GL_ARB_sparse_texture_clamp)
 
 # glSpirvExtensionsARB (GL_ARB_spirv_extensions)
 	Enum [gl::SPIR_V_EXTENSIONS]
@@ -2459,14 +2459,6 @@
 	Func [gl::GetQueryObjecti64v]
 	Func [gl::GetQueryObjectui64v]
 
-# glTransformFeedbackInstancedARB (GL_ARB_transform_feedback_instanced)
-	Func [gl::DrawTransformFeedbackInstanced]
-	Func [gl::DrawTransformFeedbackStreamInstanced]
-
-# glTransformFeedbackOverflowQueryARB (GL_ARB_transform_feedback_overflow_query)
-	Enum [gl::TRANSFORM_FEEDBACK_OVERFLOW]
-	Enum [gl::TRANSFORM_FEEDBACK_STREAM_OVERFLOW]
-
 # glTransformFeedback2ARB (GL_ARB_transform_feedback2)
 	Enum [gl::TRANSFORM_FEEDBACK]
 	Enum [gl::TRANSFORM_FEEDBACK_BUFFER_PAUSED]
@@ -2487,6 +2479,14 @@
 	Func [gl::BeginQueryIndexed]
 	Func [gl::EndQueryIndexed]
 	Func [gl::GetQueryIndexediv]
+
+# glTransformFeedbackInstancedARB (GL_ARB_transform_feedback_instanced)
+	Func [gl::DrawTransformFeedbackInstanced]
+	Func [gl::DrawTransformFeedbackStreamInstanced]
+
+# glTransformFeedbackOverflowQueryARB (GL_ARB_transform_feedback_overflow_query)
+	Enum [gl::TRANSFORM_FEEDBACK_OVERFLOW]
+	Enum [gl::TRANSFORM_FEEDBACK_STREAM_OVERFLOW]
 
 # glTransposeMatrixARB (GL_ARB_transpose_matrix)
 	Enum [gl::TRANSPOSE_MODELVIEW_MATRIX]
@@ -4437,6 +4437,19 @@
 	Enum [gl::PROXY_TEXTURE_2D]
 	Enum [gl::TEXTURE_TOO_LARGE]
 
+# glTexture3DEXT (GL_EXT_texture3D)
+	Enum [gl::PACK_SKIP_IMAGES]
+	Enum [gl::PACK_IMAGE_HEIGHT]
+	Enum [gl::UNPACK_SKIP_IMAGES]
+	Enum [gl::UNPACK_IMAGE_HEIGHT]
+	Enum [gl::TEXTURE_3D]
+	Enum [gl::PROXY_TEXTURE_3D]
+	Enum [gl::TEXTURE_DEPTH]
+	Enum [gl::TEXTURE_WRAP_R]
+	Enum [gl::MAX_3D_TEXTURE_SIZE]
+	Func [gl::TexImage3D + EXT]
+	Func [gl::TexSubImage3D + EXT]
+
 # glTextureArrayEXT (GL_EXT_texture_array)
 	Enum [gl::COMPARE_REF_DEPTH_TO_TEXTURE]
 	Enum [gl::MAX_ARRAY_TEXTURE_LAYERS]
@@ -4709,19 +4722,6 @@
 	Enum [gl::TEXTURE_SWIZZLE_B]
 	Enum [gl::TEXTURE_SWIZZLE_A]
 	Enum [gl::TEXTURE_SWIZZLE_RGBA]
-
-# glTexture3DEXT (GL_EXT_texture3D)
-	Enum [gl::PACK_SKIP_IMAGES]
-	Enum [gl::PACK_IMAGE_HEIGHT]
-	Enum [gl::UNPACK_SKIP_IMAGES]
-	Enum [gl::UNPACK_IMAGE_HEIGHT]
-	Enum [gl::TEXTURE_3D]
-	Enum [gl::PROXY_TEXTURE_3D]
-	Enum [gl::TEXTURE_DEPTH]
-	Enum [gl::TEXTURE_WRAP_R]
-	Enum [gl::MAX_3D_TEXTURE_SIZE]
-	Func [gl::TexImage3D + EXT]
-	Func [gl::TexSubImage3D + EXT]
 
 # glTimerQueryEXT (GL_EXT_timer_query)
 	Enum [gl::TIME_ELAPSED]
@@ -5743,8 +5743,6 @@
 	Func [gl::GetProgramNamedParameterfv + NV]
 	Func [gl::GetProgramNamedParameterdv + NV]
 
-# glFragmentProgramOptionNV (GL_NV_fragment_program_option)
-
 # glFragmentProgram2NV (GL_NV_fragment_program2)
 	Enum [gl::MAX_PROGRAM_EXEC_INSTRUCTIONS]
 	Enum [gl::MAX_PROGRAM_CALL_DEPTH]
@@ -5753,6 +5751,8 @@
 	Enum [gl::MAX_PROGRAM_LOOP_COUNT]
 
 # glFragmentProgram4NV (GL_NV_fragment_program4)
+
+# glFragmentProgramOptionNV (GL_NV_fragment_program_option)
 
 # glFragmentShaderBarycentricNV (GL_NV_fragment_shader_barycentric)
 
@@ -5807,9 +5807,9 @@
 	Func [gl::FramebufferTextureLayer + EXT]
 	Func [gl::FramebufferTextureFace + EXT]
 
-# glGeometryShaderPassthroughNV (GL_NV_geometry_shader_passthrough)
-
 # glGeometryShader4NV (GL_NV_geometry_shader4)
+
+# glGeometryShaderPassthroughNV (GL_NV_geometry_shader_passthrough)
 
 # glGpuMulticastNV (GL_NV_gpu_multicast)
 	Enum [gl::PER_GPU_STORAGE_BIT]
@@ -7561,6 +7561,20 @@
 	Func [gl::SharpenTexFunc + SGIS]
 	Func [gl::GetSharpenTexFunc + SGIS]
 
+# glTexture4DSGIS (GL_SGIS_texture4D)
+	Enum [gl::PACK_SKIP_VOLUMES]
+	Enum [gl::PACK_IMAGE_DEPTH]
+	Enum [gl::UNPACK_SKIP_VOLUMES]
+	Enum [gl::UNPACK_IMAGE_DEPTH]
+	Enum [gl::TEXTURE_4D]
+	Enum [gl::PROXY_TEXTURE_4D]
+	Enum [gl::TEXTURE_4DSIZE]
+	Enum [gl::TEXTURE_WRAP_Q]
+	Enum [gl::MAX_4D_TEXTURE_SIZE]
+	Enum [gl::TEXTURE_4D_BINDING]
+	Func [gl::TexImage4D + SGIS]
+	Func [gl::TexSubImage4D + SGIS]
+
 # glTextureBorderClampSGIS (GL_SGIS_texture_border_clamp)
 	Enum [gl::CLAMP_TO_BORDER]
 
@@ -7606,20 +7620,6 @@
 	Enum [gl::QUAD_INTENSITY8]
 	Enum [gl::DUAL_TEXTURE_SELECT]
 	Enum [gl::QUAD_TEXTURE_SELECT]
-
-# glTexture4DSGIS (GL_SGIS_texture4D)
-	Enum [gl::PACK_SKIP_VOLUMES]
-	Enum [gl::PACK_IMAGE_DEPTH]
-	Enum [gl::UNPACK_SKIP_VOLUMES]
-	Enum [gl::UNPACK_IMAGE_DEPTH]
-	Enum [gl::TEXTURE_4D]
-	Enum [gl::PROXY_TEXTURE_4D]
-	Enum [gl::TEXTURE_4DSIZE]
-	Enum [gl::TEXTURE_WRAP_Q]
-	Enum [gl::MAX_4D_TEXTURE_SIZE]
-	Enum [gl::TEXTURE_4D_BINDING]
-	Func [gl::TexImage4D + SGIS]
-	Func [gl::TexSubImage4D + SGIS]
 
 # glAsyncSGIX (GL_SGIX_async)
 	Enum [gl::ASYNC_MARKER]
@@ -7858,11 +7858,11 @@
 	Enum [gl::YCRCB_422]
 	Enum [gl::YCRCB_444]
 
-# glYcrcbSubsampleSGIX (GL_SGIX_ycrcb_subsample)
-
 # glYcrcbaSGIX (GL_SGIX_ycrcba)
 	Enum [gl::YCRCB]
 	Enum [gl::YCRCBA]
+
+# glYcrcbSubsampleSGIX (GL_SGIX_ycrcb_subsample)
 
 # glConvolutionBorderModesSUN (GL_SUN_convolution_border_modes)
 	Enum [gl::WRAP_BORDER]
@@ -8051,11 +8051,11 @@
 	Enum [glx::CONTEXT_PRIORITY_MEDIUM]
 	Enum [glx::CONTEXT_PRIORITY_LOW]
 
-# glxCreateContextEsProfileEXT (GLX_EXT_create_context_es_profile)
-	Enum [glx::CONTEXT_ES_PROFILE_BIT]
-
 # glxCreateContextEs2ProfileEXT (GLX_EXT_create_context_es2_profile)
 	Enum [glx::CONTEXT_ES2_PROFILE_BIT]
+
+# glxCreateContextEsProfileEXT (GLX_EXT_create_context_es_profile)
+	Enum [glx::CONTEXT_ES_PROFILE_BIT]
 
 # glxFbconfigPackedFloatEXT (GLX_EXT_fbconfig_packed_float)
 	Enum [glx::RGBA_UNSIGNED_FLOAT_BIT]
@@ -8622,11 +8622,11 @@
 	Enum [wgl::COLORSPACE_LINEAR]
 	Enum [wgl::COLORSPACE]
 
-# wglCreateContextEsProfileEXT (WGL_EXT_create_context_es_profile)
-	Enum [wgl::CONTEXT_ES_PROFILE_BIT]
-
 # wglCreateContextEs2ProfileEXT (WGL_EXT_create_context_es2_profile)
 	Enum [wgl::CONTEXT_ES2_PROFILE_BIT]
+
+# wglCreateContextEsProfileEXT (WGL_EXT_create_context_es_profile)
+	Enum [wgl::CONTEXT_ES_PROFILE_BIT]
 
 # wglDepthFloatEXT (WGL_EXT_depth_float)
 	Enum [wgl::DEPTH_FLOAT]
@@ -9379,10 +9379,6 @@
 	Func [gl::GetClipPlanef + OES]
 	Func [gl::Orthof + OES]
 
-# gles1StencilWrapOES (GL_OES_stencil_wrap)
-	Enum [gl::INCR_WRAP]
-	Enum [gl::DECR_WRAP]
-
 # gles1Stencil1OES (GL_OES_stencil1)
 	Enum [gl::STENCIL_INDEX1]
 
@@ -9391,6 +9387,10 @@
 
 # gles1Stencil8OES (GL_OES_stencil8)
 	Enum [gl::STENCIL_INDEX8]
+
+# gles1StencilWrapOES (GL_OES_stencil_wrap)
+	Enum [gl::INCR_WRAP]
+	Enum [gl::DECR_WRAP]
 
 # gles1SurfacelessContextOES (GL_OES_surfaceless_context)
 	Enum [gl::FRAMEBUFFER_UNDEFINED]
@@ -11757,16 +11757,16 @@
 # gles2CopyImageOES (GL_OES_copy_image)
 	Func [gl::CopyImageSubData + OES]
 
-# gles2DepthTextureOES (GL_OES_depth_texture)
-	Enum [gl::UNSIGNED_SHORT]
-	Enum [gl::UNSIGNED_INT]
-	Enum [gl::DEPTH_COMPONENT]
-
 # gles2Depth24OES (GL_OES_depth24)
 	Enum [gl::DEPTH_COMPONENT24]
 
 # gles2Depth32OES (GL_OES_depth32)
 	Enum [gl::DEPTH_COMPONENT32]
+
+# gles2DepthTextureOES (GL_OES_depth_texture)
+	Enum [gl::UNSIGNED_SHORT]
+	Enum [gl::UNSIGNED_INT]
+	Enum [gl::DEPTH_COMPONENT]
 
 # gles2DrawBuffersIndexedOES (GL_OES_draw_buffers_indexed)
 	Enum [gl::ZERO]
@@ -12177,10 +12177,10 @@
 	Enum [gl::FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS]
 	Func [gl::FramebufferTextureMultiview + OVR]
 
+# gles2Multiview2OVR (GL_OVR_multiview2)
+
 # gles2MultiviewMultisampledRenderToTextureOVR (GL_OVR_multiview_multisampled_render_to_texture)
 	Func [gl::FramebufferTextureMultisampleMultiview + OVR]
-
-# gles2Multiview2OVR (GL_OVR_multiview2)
 
 # gles2AlphaTestQCOM (GL_QCOM_alpha_test)
 	Enum [gl::ALPHA_TEST]
@@ -12227,14 +12227,14 @@
 	Func [gl::ExtIsProgramBinary + QCOM]
 	Func [gl::ExtGetProgramBinarySource + QCOM]
 
-# gles2FrameExtrapolationQCOM (GL_QCOM_frame_extrapolation)
-	Func [gl::ExtrapolateTex2D + QCOM]
-
 # gles2FramebufferFoveatedQCOM (GL_QCOM_framebuffer_foveated)
 	Enum [gl::FOVEATION_ENABLE_BIT]
 	Enum [gl::FOVEATION_SCALED_BIN_METHOD_BIT]
 	Func [gl::FramebufferFoveationConfig + QCOM]
 	Func [gl::FramebufferFoveationParameters + QCOM]
+
+# gles2FrameExtrapolationQCOM (GL_QCOM_frame_extrapolation)
+	Func [gl::ExtrapolateTex2D + QCOM]
 
 # gles2MotionEstimationQCOM (GL_QCOM_motion_estimation)
 	Enum [gl::FOVEATION_SCALED_BIN_METHOD_BIT]
@@ -12277,12 +12277,12 @@
 	Enum [gl::FRAMEBUFFER_INCOMPLETE_FOVEATION]
 	Func [gl::TextureFoveationParameters + QCOM]
 
+# gles2TextureFoveated2QCOM (GL_QCOM_texture_foveated2)
+	Enum [gl::TEXTURE_FOVEATED_CUTOFF_DENSITY]
+
 # gles2TextureFoveatedSubsampledLayoutQCOM (GL_QCOM_texture_foveated_subsampled_layout)
 	Enum [gl::FOVEATION_SUBSAMPLED_LAYOUT_METHOD_BIT]
 	Enum [gl::MAX_SHADER_SUBSAMPLED_IMAGE_UNITS]
-
-# gles2TextureFoveated2QCOM (GL_QCOM_texture_foveated2)
-	Enum [gl::TEXTURE_FOVEATED_CUTOFF_DENSITY]
 
 # gles2TextureLodBiasQCOM (GL_QCOM_texture_lod_bias)
 	Enum [gl::TEXTURE_LOD_BIAS + QCOM]

@@ -18,7 +18,7 @@ uses System;
 uses OpenGL;
 uses OpenGLABC;
 
-uses '../Common';
+uses Common in '../Common';
 
 var all_shaders := |
   'Минимум расстояний.frag',
@@ -67,6 +67,9 @@ begin
   var curr_fragment_shader := 0;
   var point_count := 0;
   var points := new Vec2d[4];
+  //TODO Не используется сейчас
+  // - https://registry.khronos.org/OpenGL-Refpages/gl4/html/gl_FragCoord.xhtml
+  // - Использовать чтобы возвращать какую-то уникальную инфу из функции
   var mouse_pos := new Vec2d(real.NaN, real.NaN);
   {$region Управление}
   var points_updated := 0;
@@ -225,9 +228,9 @@ begin
         
         gl.DeleteProgram(sprog);
         sprog := InitProgram(
-          InitShader('Empty.vert',                      glShaderType.VERTEX_SHADER),
-          InitShader('SinglePointToScreen.geom',        glShaderType.GEOMETRY_SHADER),
-          InitShader(all_shaders[last_fragment_shader], glShaderType.FRAGMENT_SHADER)
+          InitShaderFile('Empty.vert',                      glShaderType.VERTEX_SHADER),
+          InitShaderFile('SinglePointToScreen.geom',        glShaderType.GEOMETRY_SHADER),
+          InitShaderFile(all_shaders[last_fragment_shader], glShaderType.FRAGMENT_SHADER)
         );
         gl.UseProgram(sprog);
         points_updated := 1;

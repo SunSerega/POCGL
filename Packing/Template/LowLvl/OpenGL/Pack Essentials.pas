@@ -7,6 +7,15 @@ begin
     
     SetMaxUnfixedOverloads(12);
     
+    ApiManager.EnableDynamicApis(new DynamicLoadInfo(
+      'loader', 'IGLPlatformLoader',
+      'api_with_loader',
+      nil, false
+    ));
+    ApiManager.EnableLoadableExtensions(new DynamicLoadInfo(
+      nil, nil, nil, 'Instance', false
+    ));
+    
     ApiManager.MarkKeep('gl', true);
     ApiManager.MarkKeep('wgl', true);
     ApiManager.MarkKeep('gdi', true);

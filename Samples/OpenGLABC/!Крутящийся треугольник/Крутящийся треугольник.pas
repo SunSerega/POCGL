@@ -15,7 +15,7 @@ uses '../Common';
 
 {$apptype windows} // Убираем консоль
 
-procedure RedrawProc(pl: PlatformLoader; EndFrame: ()->());
+procedure RedrawProc(pl: IGLPlatformLoader; EndFrame: ()->());
 const dy = -Sin(Pi / 6) / 2;
 begin
   
@@ -31,7 +31,7 @@ begin
   {$region Инициализация переменных}
   
   var sprog := InitProgram(
-    InitShader('Крутящийся треугольник.vert', glShaderType.VERTEX_SHADER)
+    InitShaderFile('Крутящийся треугольник.vert', glShaderType.VERTEX_SHADER)
   {, другие_шейдеры});
   gl.UseProgram(sprog);
   

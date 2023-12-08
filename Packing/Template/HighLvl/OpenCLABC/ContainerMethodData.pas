@@ -456,10 +456,6 @@ type
         .Concat(GetSpecialInvokeResVars(settings)).ToArray
       ?? System.Array.Empty&<MethodArg>;
       
-      var any_val := invokeable_args.Any(arg->(settings as MethodSettings).arg_usage[arg.name]<>'ptr');
-      if not any_val then
-        res_EIm += '      Result.Item1 := new CLTaskErrHandlerEmpty;'#10;
-      
       if invokeable_args.Length=0 then exit;
       
       {$region var *_qr: ...}
@@ -544,6 +540,8 @@ type
         res_EIm += if arg.t.ArrLvl<>0 then arg_name else arg_name.PadLeft(max_arg_w);
         res_EIm += '.Invoke';
         res_EIm += to_ptr ? 'ToPtr' : 'ToAny';
+        res_EIm += ', par_err_handlers, ';
+        res_EIm += (not to_ptr).ToString;
         res_EIm += ').AddToEvLst(g, enq_evs, ';
         res_EIm += (not to_ptr).ToString;
         res_EIm += ')';
@@ -554,8 +552,7 @@ type
       
       {$endregion WriteArgInvoke}
       
-      if any_val then
-        res_EIm += '      var l1_err_handler: CLTaskErrHandler;'#10;
+      {$region ParallelInvoke}
       
       // At least one branch, all full separated
       res_EIm += '      g.ParallelInvoke(nil, enq_c, invoker->'#10;
@@ -564,16 +561,12 @@ type
       foreach var arg in invokeable_args do
         WriteArgInvoke(arg, false);
       
-      if any_val then
-        res_EIm += '        l1_err_handler := invoker.GroupHandlers;'#10;
-      
       foreach var arg in invokeable_args do
         WriteArgInvoke(arg, true);
       
       res_EIm += '      end);'#10;
       
-      if any_val then
-        res_EIm += '      Result.Item1 := l1_err_handler;'#10;
+      {$endregion ParallelInvoke}
       
     end;
     
@@ -588,6 +581,44 @@ type
             Otp($'WARNING: arg [{arg.name}] is defined for {fn}({settings.args_str}), but never used');
       
       WriteParamInvokes(fn, max_arg_w, settings);
+      
+      res_EIm += '      '#10;
+      
+      {$region Enq cancel}
+      
+      res_EIm += '      {$ifdef DEBUG}'#10;
+      res_EIm += '      Result.Item1 := ()->'#10;
+      res_EIm += '      begin'#10;
+      if settings.args <> nil then
+        foreach var arg in settings.args do
+          if settings.arg_usage.ContainsKey(arg.name) then
+          begin
+            if not arg.t.IsCQ then continue;
+            
+            res_EIm += '        ';
+            res_EIm += arg.name.PadLeft(max_arg_w);
+            res_EIm += '_qr';
+            
+            for var i := 1 to arg.t.ArrLvl do
+            begin
+              res_EIm += '.ForEach(temp';
+              res_EIm += i.ToString;
+              res_EIm += '->temp';
+              res_EIm += i.ToString;
+            end;
+            
+            res_EIm += '.CancelStatusCheck(''enq cancel'')';
+            
+            loop arg.t.ArrLvl do res_EIm += ')';
+            res_EIm += ';'#10;
+            
+          end;
+      res_EIm += '      end;'#10;
+      res_EIm += '      {$else DEBUG}'#10;
+      res_EIm += '      Result.Item1 := nil;'#10;
+      res_EIm += '      {$endif DEBUG}'#10;
+      
+      {$endregion Enq cancel}
       
       res_EIm += '      '#10;
       

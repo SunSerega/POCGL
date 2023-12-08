@@ -12,3 +12,5 @@ Println(mem1.Size);
 Println(mem1.Properties.GetType);
 Println(mem2.Size64/align);
 Println(mem2.Properties.GetType);
+
+mem.Dispose;

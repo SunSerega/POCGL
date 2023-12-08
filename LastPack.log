@@ -80,11 +80,13 @@ Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: F
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::CreateAccelerator+INTEL] fixer comments
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Feature items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Extension items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Loading Extension fixers
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing Group items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing IdClass items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing Struct items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing Delegate items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing Func items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Fixing Extension items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_WORK_GROUP_SIZE]
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_MAX_WORK_GROUP_SIZE + AMD]
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_CONSTANT_BUFFER_SIZE]
@@ -368,6 +370,10 @@ Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/04#
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~02#Cast/0.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/discard single res.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/prev mu check.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~00#Err/errоr multiuse.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~00#Err/multi errоr multiuse.pas"
@@ -383,6 +389,10 @@ Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/06#Wait/ThenWait.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/06#Wait/WaitOrder.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/enq cancel.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/enq err storage.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/ExecCache.pas"
 Tester: Compiling: OK
@@ -409,6 +419,8 @@ Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1Q.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1T.pas"
+Tester: Compiling: OK
+Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/insta err.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~05#Wait/QuickUse.ThenWait.pas"
 Tester: Compiling: OK
@@ -575,6 +587,10 @@ Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~02#Cast/0]
 Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/discard single res]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/prev mu check]
+Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~00#Err/errоr multiuse]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~00#Err/multi errоr multiuse]
@@ -590,6 +606,10 @@ Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/06#Wait/ThenWait]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/06#Wait/WaitOrder]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/enq cancel]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/enq err storage]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/ExecCache]
 Tester: Done executing
@@ -616,6 +636,8 @@ Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1Q]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1T]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/insta err]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~05#Wait/QuickUse.ThenWait]
 Tester: Done executing
@@ -774,6 +796,10 @@ Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/04#ThenConvert/~02#Cast/0]
 Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/discard single res]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/prev mu check]
+Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~00#Err/errоr multiuse]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/05#Multiusable/~00#Err/multi errоr multiuse]
@@ -789,6 +815,10 @@ Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/06#Wait/ThenWait]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/06#Wait/WaitOrder]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/enq cancel]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/enq err storage]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/07#GPUCommandContainer/ExecCache]
 Tester: Done executing
@@ -815,6 +845,8 @@ Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1Q]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/1T]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~00#Err/insta err]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/02#Выполнение очередей/08#HostExec/~05#Wait/QuickUse.ThenWait]
 Tester: Done executing

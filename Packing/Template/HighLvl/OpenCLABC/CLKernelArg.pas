@@ -333,7 +333,7 @@ type
         m += '    data.q.InitBeforeInvoke(g, inited_hubs);'#10;
         m += '    '#10;
         
-        m += '    protected function Invoke(inv: CLTaskBranchInvoker): ValueTuple<CLKernelArgSetter, EventList>; override :='#10;
+        m += '    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :='#10;
         m += '    data.Invoke(';
         if s.IsGlobalOrConst then
           m += 'inv, WrapToNative' else
@@ -345,7 +345,7 @@ type
           write_setter_name;
         end else
           raise new System.NotImplementedException;
-        m += ');'#10;
+        m += ', par_err_handlers);'#10;
         m += '    '#10;
         
         m += '    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :='#10;

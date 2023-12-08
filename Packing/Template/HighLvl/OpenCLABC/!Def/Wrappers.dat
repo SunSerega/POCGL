@@ -42,6 +42,8 @@ Name.GetHashCode xor CodeContainer.GetHashCode
 
 # CLMemory
 cl_mem
+!Interfaces
+ICLMemory
 !ToString
 {TypeName(self)}[{ntv.val}] of size {Size}
 
@@ -55,6 +57,8 @@ CLMemory
 # CLValue
 # CLArray
 cl_mem
+!Interfaces
+ICLMemory
 !Generic
 T
 

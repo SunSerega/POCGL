@@ -13,7 +13,7 @@ type
     
     protected procedure WriteInvokeHeader(settings: MethodSettings); override;
     begin
-      res_EIm += '    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ParamInvRes<';
+      res_EIm += '    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ParamInvRes<';
       res_EIm += t;
       if generics.Count <> 0 then
       begin

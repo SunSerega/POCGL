@@ -742,7 +742,7 @@ type
       last_wr_block_func_lnames.Add(display_name, self);
       
       if is_dynamic then
-        wr += $'    private {display_name}_adr := GetProcAddress(''{entry_point_name}'');' + #10;
+        wr += $'    public {display_name}_adr := GetProcAddress(''{entry_point_name}'');' + #10;
       
       {$endregion MiscInit}
       
@@ -2361,9 +2361,20 @@ type
           
           if is_dynamic then
           begin
+            var dyn_apis_info := ApiManager.DynamicApisInfo;
+            if dyn_apis_info=nil then raise nil;
+            if dyn_apis_info.par_name=nil then raise new NotImplementedException;
+            if dyn_apis_info.par_type=nil then raise new NotImplementedException;
+            if dyn_apis_info.base_type=nil then raise new NotImplementedException;
+            if dyn_apis_info.default_inst_name<>nil then raise new NotImplementedException;
+            if dyn_apis_info.allow_loaderless_default then raise new NotImplementedException;
             
-            intr_wr += '    public constructor(loader: PlatformLoader);'#10;
-            intr_wr += '    private constructor := raise new System.NotSupportedException;'#10;
+            intr_wr += '    public constructor(';
+            intr_wr += dyn_apis_info.par_name;
+            intr_wr += ': ';
+            intr_wr += dyn_apis_info.par_type;
+            intr_wr += ');'#10;
+            intr_wr += '    private constructor := raise new NotSupportedException;'#10;
             intr_wr += '    private function GetProcAddress(name: string): IntPtr;'#10;
             intr_wr += '    private static function GetProcOrNil<T>(fadr: IntPtr) :='#10;
             intr_wr += '      if fadr=IntPtr.Zero then default(T) else'#10;
@@ -2374,15 +2385,25 @@ type
             if depr_ver<>nil then impl_wr += 'D';
             impl_wr += ' = ';
             impl_wr += class_type;
-            impl_wr += ' class(api_with_loader) end;'#10;
+            impl_wr += ' class(';
+            impl_wr += dyn_apis_info.base_type;
+            impl_wr += ') end;'#10;
             impl_wr += 'constructor ';
             impl_wr += api;
             if depr_ver<>nil then impl_wr += 'D';
-            impl_wr += '.Create(loader: PlatformLoader) := inherited Create(loader);'#10;
+            impl_wr += '.Create(';
+            impl_wr += dyn_apis_info.par_name;
+            impl_wr += ': ';
+            impl_wr += dyn_apis_info.par_type;
+            impl_wr += ') := inherited Create(';
+            impl_wr += dyn_apis_info.par_name;
+            impl_wr += ');'#10;
             impl_wr += 'function ';
             impl_wr += api;
             if depr_ver<>nil then impl_wr += 'D';
-            impl_wr += '.GetProcAddress(name: string) := loader.GetProcAddress(name);'#10;
+            impl_wr += '.GetProcAddress(name: string) := ';
+            impl_wr += dyn_apis_info.par_name;
+            impl_wr += '.GetProcAddress(name);'#10;
             impl_wr += #10;
             
           end;
@@ -2443,7 +2464,7 @@ type
     
     static constructor := RegisterLoader(br->
     begin
-      Result := new Extension(new ApiVendorLName(br), false);
+      Result := new Extension(ApiVendorLName.Create(br).SnakeToCamelCase, false);
       Result.ext_str := br.ReadString;
       Result.add := RequiredList.Load(br);
       Result.dep_inds := br.ReadInt32Arr;
@@ -2459,14 +2480,9 @@ type
       add.MarkReferenced;
     end;
     
-    public function MakeWriteableName: string;
+    private function MakeWriteableName: string;
     begin
-      Result := self.Name.api + self.Name.l_name.Split('_').Select(w->
-      begin
-        if w.Length<>0 then w[0] := w[0].ToUpper else
-          raise new System.InvalidOperationException(self.ToString);
-        Result := w;
-      end).JoinToString('') + self.Name.vendor_suffix?.ToUpper;
+      Result := self.Name.api + self.Name.l_name + self.Name.vendor_suffix;
     end;
     
     private static intr_wr := new FileWriter(GetFullPathRTA(ItemSmallName+'.Interface.template'));
@@ -2486,23 +2502,33 @@ type
       foreach var dep in Dependencies.AsEnumerable do //TODO #2852
         dep.Save;
       
-      var is_dynamic := ApiManager.NeedDynamicLoad(api, true);
-      // wgl and glx load from their api.GetProcAddress
-      // in that case need_loader=false, is_dynamic=true
-      var need_loader := ApiManager.NeedDynamicLoad(api, false);
-      if need_loader and not is_dynamic then
-        raise new InvalidOperationException(api);
-      
       var any_funcs := add.Funcs.Any;
-      if not any_funcs then
+      
+      var is_dynamic := any_funcs and ApiManager.NeedDynamicLoad(api, true);
+      // wgl and glx extensions load from their api.GetProcAddress
+      // cl extensions load from clGetExtensionFunctionAddressForPlatform
+      // In these cases need_loader=false, is_dynamic=true
+      var need_api_loader := any_funcs and ApiManager.NeedDynamicLoad(api, false);
+      if need_api_loader and not is_dynamic then
+        raise new InvalidOperationException(api);
+      var dyn_info := if need_api_loader then
+        ApiManager.DynamicApisInfo else
+        ApiManager.LoadableExtensionsInfo;
+      
+      if is_dynamic then
       begin
-        is_dynamic := false;
-        need_loader := false;
+        if dyn_info=nil then raise nil;
+        if (dyn_info.par_name=nil) <> (dyn_info.par_type=nil) then
+          raise new InvalidOperationException;
       end;
       
       var lib_name := if is_dynamic or not any_funcs then nil else ApiManager.LibForApi(api);
-      var class_type := if is_dynamic then 'sealed partial' else 'static';
-      
+      var class_type :=
+        if not is_dynamic then
+          'static' else
+        if dyn_info.par_name=nil then
+          'sealed' else
+          'sealed partial';
       var display_name := MakeWriteableName;
       
       if any_funcs then
@@ -2521,28 +2547,64 @@ type
       
       if is_dynamic then
       begin
-        if need_loader then
+        var need_default_inst := (dyn_info.par_name=nil) or dyn_info.allow_loaderless_default;
+        
+        if dyn_info.par_name <> nil then
         begin
-          intr_wr += '    public constructor(loader: PlatformLoader);'#10;
+          if dyn_info.base_type=nil then raise nil;
+          
+          intr_wr += '    public constructor(';
+          intr_wr += dyn_info.par_name;
+          intr_wr += ': ';
+          intr_wr += dyn_info.par_type;
+          intr_wr += ');'#10;
           intr_wr += '    private constructor := raise new System.NotSupportedException;'#10;
           
           impl_wr += 'type ';
           impl_wr += display_name;
           impl_wr += ' = ';
           impl_wr += class_type;
-          impl_wr += ' class(api_with_loader) end;'#10;
+          impl_wr += ' class(';
+          impl_wr += dyn_info.base_type;
+          impl_wr += ') end;'#10;
           impl_wr += 'constructor ';
           impl_wr += display_name;
-          impl_wr += '.Create(loader: PlatformLoader) := inherited Create(loader);'#10;
+          impl_wr += '.Create(';
+          impl_wr += dyn_info.par_name;
+          impl_wr += ': ';
+          impl_wr += dyn_info.par_type;
+          impl_wr += ') := inherited Create(';
+          impl_wr += dyn_info.par_name;
+          impl_wr += ');'#10;
           impl_wr += 'function ';
           impl_wr += display_name;
-          impl_wr += '.GetProcAddress(name: string) := loader.GetProcAddress(name);'#10;
+          impl_wr += '.GetProcAddress(name: string) := ';
+          impl_wr += dyn_info.par_name;
+          impl_wr += '.GetProcAddress(name);'#10;
           impl_wr += #10;
           
+        end else
+        if need_default_inst then
+          intr_wr += '    public constructor := exit;'#10;
+        
+        if need_default_inst then
+        begin
+          if dyn_info.default_inst_name=nil then raise nil;
+          intr_wr += '    public static ';
+          intr_wr += dyn_info.default_inst_name;
+          intr_wr += ' := new ';
+          intr_wr += display_name;
+          if dyn_info.par_name <> nil then
+          begin
+            intr_wr += '(default(';
+            intr_wr += dyn_info.par_type;
+            intr_wr += '))';
+          end;
+          intr_wr += ';'#10;
         end;
         
         intr_wr += '    private function GetProcAddress(name: string)';
-        if need_loader then
+        if dyn_info.par_name <> nil then
           intr_wr += ': IntPtr' else
         begin
           intr_wr += ' := ';
@@ -2556,7 +2618,7 @@ type
         intr_wr += '        Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
       end;
       
-      intr_wr += '    public const _ExtStr = ''';
+      intr_wr += '    public const ExtensionString = ''';
       intr_wr += ext_str;
       intr_wr += ''';'+#10;
       if any_funcs then
@@ -2583,8 +2645,7 @@ type
         all_wr += #10;
       end;
       
-      foreach var ext in AllExtensions do
-        ext.Save;
+      ForEachDefined(ext->ext.Save());
       
       intr_wr += '  '#10'  ';
       impl_wr += #10;
@@ -2615,6 +2676,8 @@ type
 implementation
 
 {$region Fixers} type
+  
+  {$region Func}
   
   {$region PPT}
   
@@ -2843,6 +2906,34 @@ implementation
   
   {$endregion LimitOvrs}
   
+  {$endregion Func}
+  
+  {$region Extension}
+  
+  ExtensionNameFixer = sealed class(ExtensionFixer)
+    public new_name: ApiVendorLName;
+    
+    static constructor := RegisterLoader('rename',
+      (name, data)->new ExtensionNameFixer(name, data)
+    );
+    public constructor(name: ApiVendorLName; data: sequence of string);
+    begin
+      inherited Create(name, false);
+      var name_l := data.Single(l->not string.IsNullOrWhiteSpace(l));
+      self.new_name := ApiVendorLName.Parse( name_l );
+    end;
+    
+    public function Apply(e: Extension): boolean; override;
+    begin
+      e.Rename(new_name);
+      self.ReportUsed;
+      Result := false;
+    end;
+    
+  end;
+  
+  {$endregion Extension}
+  
 {$endregion Fixers}
 
 procedure Func.AddAutoFixerPPT(per_par: array of ()->sequence of ValueTuple<boolean,FuncParamT>);
@@ -2862,6 +2953,8 @@ begin
   
   if nil=default(FuncPPTFixer) then;
   if nil=default(FuncLimitOvrsFixer) then;
+  
+  if nil=default(ExtensionNameFixer) then;
   
   {$endregion TODO#2844}
 end.

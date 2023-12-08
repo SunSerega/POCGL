@@ -210,7 +210,7 @@ type
       WriteNumbered('; inp%: TInp%');
       wr += '): TRes;'#10;
       wr += '    '#10;
-      wr += '    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}';
+      wr += '    function Invoke(d: TDelegate; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}';
       WriteNumbered('; inp%: TInp%');
       wr += '; c: CLContext): TRes;'#10;
       wr += '    '#10;
@@ -374,7 +374,7 @@ type
         wr += d_word.First.ToLower;
         wr += ': T';
         wr += d_word;
-        wr += '; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; ';
+        wr += '; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; ';
         WriteNumbered('inp%: TInp%; ');
         wr += 'c: CLContext): ';
         if is_conv then
@@ -551,7 +551,7 @@ type
         WriteDMakeBody;
         wr += ' = function(acts: QueueResComplDelegateData; ';
         WriteNumbered('qr%: QueueRes<TInp%>; ');
-        wr += 'err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;'#10;
+        wr += 'err_handler: ErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;'#10;
       end;
       
       wr += '  CommandQueue';
@@ -591,7 +591,7 @@ type
           wr += if need_res then '<TR>' else '    ';
           wr += '(acts: QueueResComplDelegateData; ';
           WriteNumbered('qr%: QueueRes<TInp%>; ');
-          wr += 'err_handler: CLTaskErrHandler; c: CLContext; own_qr: ';
+          wr += 'err_handler: ErrHandler; c: CLContext; own_qr: ';
           wr += if need_res then 'TR' else 'QueueResNil';
           wr += '{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;';
           if need_res then
@@ -633,7 +633,7 @@ type
       wr += '      l := inv_data.next_l;'#10;
       wr += '      '#10;
       WriteNumbered('      var qr% := inv_data.qr%;'#10);
-      wr += '      var err_handler := g.curr_err_handler;'#10;
+      wr += '      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});'#10;
       wr += '      '#10;
       
       wr += '      {$ifdef DEBUG}'#10;

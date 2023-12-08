@@ -1,3 +1,5 @@
 ﻿## uses OpenCLABC;
 
-Println(new CLMemory(1));
+var m := new CLMemory(1);
+Println(m);
+m.Dispose;

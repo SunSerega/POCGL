@@ -1,5 +1,7 @@
 ﻿unit ItemNames;
 
+{$zerobasedstrings}
+
 uses System;
 
 uses BinUtils;
@@ -291,6 +293,18 @@ type
     
     public function GetHashCode: integer; override :=
       ValueTuple.Create(api, vendor_suffix?.ToUpper, l_name).GetHashCode;
+    
+    public function SnakeToCamelCase: ApiVendorLName;
+    begin
+      Result.api := self.api;
+      Result.l_name := self.l_name.Split('_').Select(w->
+      begin
+        if w.Length<>0 then w[0] := w[0].ToUpper else
+          raise new System.InvalidOperationException(self.ToString);
+        Result := w;
+      end).JoinToString('');
+      Result.vendor_suffix := self.vendor_suffix?.ToUpper;
+    end;
     
     public function ToString(outer_api: string; add_core_suffix: boolean): string;
     begin

@@ -124,10 +124,14 @@ ProgramCode.Native
 Kernel.Native
 Platform.(cl_platform_id)
 Device.FromNative(cl_device_id)
+Wrap:NtvCtor
 Context.(cl_context, Device)
 Context.(cl_context)
 ProgramCode.(cl_program)
 Kernel.(cl_kernel, boolean)
+CLMemory.FromNative(cl_mem)
+CLValue<T>.(cl_mem)
+CLArray<T>.(cl_mem)
 Kernel.NewQueue
 CLMemory.NewQueue
 CLValue<T>.NewQueue

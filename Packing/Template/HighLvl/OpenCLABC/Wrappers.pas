@@ -8,6 +8,7 @@ type
   TypeDescr = sealed class
     private name: string;
     private base := default(string);
+    private interfaces := new List<string>;
     private generics := new List<string>;
     private need_native := true;
     private operator_equ := default(string);
@@ -43,6 +44,9 @@ begin
             if t.base<>nil then
               raise new System.InvalidOperationException else
               t.base := setting_lines.Single;
+          
+          'Interfaces':
+            t.interfaces.AddRange(setting_lines);
           
           'Generic':
             t.generics.AddRange(setting_lines);
@@ -103,10 +107,22 @@ begin
       if t.is_abstract then
         res += 'abstract ';
       res += 'partial class';
-      if not is_direct_wrap then
+      if t.interfaces.Any or not is_direct_wrap then
       begin
         res += '(';
-        res += t.base;
+        var first_base := true;
+        if not is_direct_wrap then
+        begin
+          res += t.base;
+          first_base := false;
+        end;
+        foreach var intr in t.interfaces do
+        begin
+          if not first_base then
+            res += ', ';
+          first_base := false;
+          res += intr;
+        end;
         res += ')';
       end;
       res += #10;
@@ -202,7 +218,7 @@ begin
       begin
         res += '    public function GetHashCode: integer; override :='#10;
         res += '    ';
-        res += t.get_hash_code_def ?? 'ntv.val.ToInt32';
+        res += t.get_hash_code_def ?? 'ntv.val.GetHashCode';
         res += ';'#10;
         
         res += '    '#10;

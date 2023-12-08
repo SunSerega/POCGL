@@ -32,9 +32,21 @@
 
 # NativeArray<T>.ItemArea[integer]
 
+# MemoryObserver
+
+# SimpleMemoryObserver
+
+# TrackingMemoryObserver
+
+# EmptyMemoryObserver
+
 # clDeviceType
 
 # clDeviceAffinityDomain
+
+# CLMemoryObserver
+
+# CLMemoryAlloc
 
 # CLKernelArg
 
@@ -76,6 +88,8 @@
 
 # CLKernel
 
+# ICLMemory
+
 # CLMemoryUsage
 
 # CLMemory.(UIntPtr, CLContext, CLMemoryUsage, CLMemoryUsage)
@@ -89,6 +103,10 @@
 # CLMemory.(integer, CLMemoryUsage, CLMemoryUsage)
 
 # CLMemory.(int64, CLMemoryUsage, CLMemoryUsage)
+
+# CLMemory.FromNative(cl_mem, boolean, boolean)
+
+# CLMemory.ReportMemoryFree(cl_mem)
 
 # CLMemory.WriteNativeMemoryArea(NativeMemoryArea)
 
@@ -208,6 +226,8 @@
 
 # CLMemorySubSegment.(CLMemory, UInt64, UInt64, CLMemoryUsage, CLMemoryUsage)
 
+# CLMemorySubSegment.ReportMemoryFree(cl_mem)
+
 # CLValue<T>.(CLContext, CLMemoryUsage, CLMemoryUsage)
 
 # CLValue<T>.(CLContext, T, CLMemoryUsage, CLMemoryUsage)
@@ -215,6 +235,8 @@
 # CLValue<T>.(CLMemoryUsage, CLMemoryUsage)
 
 # CLValue<T>.(T, CLMemoryUsage, CLMemoryUsage)
+
+# CLValue<T>.(cl_mem, boolean, boolean)
 
 # CLValue<T>.(CLMemory)
 
@@ -233,6 +255,8 @@
 # CLArray<T>.(CLContext, integer, integer, array of T, CLMemoryUsage, CLMemoryUsage)
 
 # CLArray<T>.(integer, integer, array of T, CLMemoryUsage, CLMemoryUsage)
+
+# CLArray<T>.(cl_mem, boolean, boolean)
 
 # CLArray<T>.(CLMemory)
 
@@ -570,13 +594,13 @@
 
 # CQNil
 
-# HFQ<T>(()->T, boolean)
-
-# HFQ<T>(CLContext->T, boolean)
-
 # HPQ(()->(), boolean)
 
 # HPQ(CLContext->(), boolean)
+
+# HFQ<T>(()->T, boolean)
+
+# HFQ<T>(CLContext->T, boolean)
 
 # CombineWaitAll(array of WaitMarker)
 
@@ -718,6 +742,10 @@
 
 # CombineUseAsyncQueueN7<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>(Action<TInp1, TInp2, TInp3, TInp4, TInp5, TInp6, TInp7, CLContext>, CommandQueue<TInp1>, CommandQueue<TInp2>, CommandQueue<TInp3>, CommandQueue<TInp4>, CommandQueue<TInp5>, CommandQueue<TInp6>, CommandQueue<TInp7>, boolean, boolean)
 
+# CQAcquireGL(array of ICLMemory)
+
+# CQReleaseGL(array of ICLMemory)
+
 # Err:NativeArrayArea:ManagedCopy:WriteSize
 
 # Err:CLContext:WrongMainDvc
@@ -795,4 +823,8 @@
 # Err:Blittable:Source:CLMemory:FillNativeArrayAreaAutoSize
 
 # Err:Blittable:Source:CLMemory:FillNativeArrayArea
+
+# Err:GLIterop:0MemObjects
+
+# Err:GLIterop:MultipleContexts
 

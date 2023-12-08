@@ -120,7 +120,32 @@ type
   
   {$region ApiManager}
   
+  DynamicLoadInfo = auto class
+    par_name, par_type: string;
+    base_type: string;
+    default_inst_name: string; allow_loaderless_default: boolean;
+  end;
   ApiManager = static class
+    
+    private static dyn_apis_info: DynamicLoadInfo;
+    public static procedure EnableDynamicApis(info: DynamicLoadInfo);
+    begin
+      if info=nil then raise nil;
+      if dyn_apis_info<>nil then
+        raise new System.InvalidOperationException;
+      dyn_apis_info := info;
+    end;
+    public static property DynamicApisInfo: DynamicLoadInfo read dyn_apis_info;
+    
+    private static loadable_ext_info: DynamicLoadInfo;
+    public static procedure EnableLoadableExtensions(info: DynamicLoadInfo);
+    begin
+      if info=nil then raise nil;
+      if loadable_ext_info<>nil then
+        raise new System.InvalidOperationException;
+      loadable_ext_info := info;
+    end;
+    public static property LoadableExtensionsInfo: DynamicLoadInfo read loadable_ext_info;
     
     private static api_keep := new Dictionary<string, boolean>;
     public static procedure MarkKeep(api: string; keep: boolean);

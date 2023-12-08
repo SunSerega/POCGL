@@ -50,8 +50,11 @@ type
     
   end;
   
-  RedrawThreadProc = procedure(pl: PlatformLoader; EndFrame: ()->());
+  RedrawThreadProc = procedure(pl: IGLPlatformLoader; EndFrame: ()->());
   RedrawHelper = static class
+    
+    private [ThreadStatic] static curr_context: gdi_rendering_context;
+    public static property CurrentThreadContext: gdi_rendering_context read curr_context;
     
     ///Создаёт новый поток выполнения, который:
     ///1. Создаёт контекст OpenGL из контекста устройства GDI (hdc)
@@ -59,13 +62,14 @@ type
     public static procedure SetupRedrawThread(hdc: gdi_device_context; RedrawThreadProc: OpenGLABC.RedrawThreadProc; vsync_fps: integer := 65);
     begin
       
-      System.Threading.Thread.Create(()->
+      var thr := new System.Threading.Thread(()->
       begin
-        
-        var pl := new PlWin;
+        //TODO Поддержка glPlX
+        var pl := new glPlWin;
         
         var context := wgl.CreateContext(hdc);
         if not wgl.MakeCurrent(hdc, context) then raise new InvalidOperationException('Не удалось применить контекст');
+        RedrawHelper.curr_context := context;
         
         var EndFrame: ()->();
         if vsync_fps<=0 then
@@ -92,7 +96,9 @@ type
         end;
         
         RedrawThreadProc(pl, EndFrame);
-      end).Start;
+      end);
+      thr.SetApartmentState(System.Threading.ApartmentState.STA);
+      thr.Start;
       
     end;
     

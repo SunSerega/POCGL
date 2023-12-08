@@ -96,7 +96,7 @@
     
     function PreInvoke(d: TDelegate; inp1: TInp1; inp2: TInp2; inp3: TInp3): TRes;
     
-    function Invoke(d: TDelegate; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): TRes;
+    function Invoke(d: TDelegate; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): TRes;
     
   end;
   
@@ -145,7 +145,7 @@
     f.Invoke(inp1,inp2,inp3, nil);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(f: TFunc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): TRes;
+    function Invoke(f: TFunc; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): TRes;
     begin
       if not err_handler.HadError then
       try
@@ -210,7 +210,7 @@
     end;
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function Invoke(p: TProc; err_handler: CLTaskErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): ValueTuple<TInp1,TInp2,TInp3>;
+    function Invoke(p: TProc; err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif}; inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext): ValueTuple<TInp1,TInp2,TInp3>;
     begin
       if not err_handler.HadError then
       try
@@ -319,7 +319,7 @@
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';
@@ -355,14 +355,14 @@
   
   {$region Threaded}
   
-  DCommandQueueThreadedArray3MakeBody<TInp1,TInp2,TInp3, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
+  DCommandQueueThreadedArray3MakeBody<TInp1,TInp2,TInp3, TR> = function(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: ErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
   CommandQueueThreadedArray3<TInp1,TInp2,TInp3,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArray3WithWork<TInp1,TInp2,TInp3,TRes, TInv, TDelegate, TWork>)
   where TInv: IQueueArray3Invoker, constructor;
   where TDelegate: ISimpleDelegateContainer;
   where TWork: IQueueArray3Work<TInp1,TInp2,TInp3,TRes, TDelegate>, constructor;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
+    function MakeNilBody    (acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: ErrHandler; c: CLContext; own_qr: QueueResNil{$ifdef DEBUG}; err_test_reason: string{$endif}): Action;
     begin
       Result := ()->
       begin
@@ -372,7 +372,7 @@
     end;
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: CLTaskErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action; where TR: QueueRes<TRes>;
+    function MakeResBody<TR>(acts: QueueResComplDelegateData; qr1: QueueRes<TInp1>; qr2: QueueRes<TInp2>; qr3: QueueRes<TInp3>; err_handler: ErrHandler; c: CLContext; own_qr: TR{$ifdef DEBUG}; err_test_reason: string{$endif}): Action; where TR: QueueRes<TRes>;
     begin
       Result := ()->
       begin
@@ -391,7 +391,7 @@
       var qr1 := inv_data.qr1;
       var qr2 := inv_data.qr2;
       var qr3 := inv_data.qr3;
-      var err_handler := g.curr_err_handler;
+      var err_handler := g.curr_err_handler.Extract({$ifdef DEBUG}false{$endif});
       
       {$ifdef DEBUG}
       var err_test_reason := $'[{self.GetHashCode}]:{TypeName(self)}.d.Invoke';

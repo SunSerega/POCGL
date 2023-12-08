@@ -1,4 +1,176 @@
 ﻿
 
 
+type clLoaderInfo = sealed partial class(cl_extension_base) end;
+constructor clLoaderInfo.Create(pl: cl_platform_id) := inherited Create(pl);
+function clLoaderInfo.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clLoaderLayers = sealed partial class(cl_extension_base) end;
+constructor clLoaderLayers.Create(pl: cl_platform_id) := inherited Create(pl);
+function clLoaderLayers.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clContextLoggingFunctionsAPPLE = sealed partial class(cl_extension_base) end;
+constructor clContextLoggingFunctionsAPPLE.Create(pl: cl_platform_id) := inherited Create(pl);
+function clContextLoggingFunctionsAPPLE.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clSetMemObjectDestructorAPPLE = sealed partial class(cl_extension_base) end;
+constructor clSetMemObjectDestructorAPPLE.Create(pl: cl_platform_id) := inherited Create(pl);
+function clSetMemObjectDestructorAPPLE.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clImportMemoryARM = sealed partial class(cl_extension_base) end;
+constructor clImportMemoryARM.Create(pl: cl_platform_id) := inherited Create(pl);
+function clImportMemoryARM.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clSharedVirtualMemoryARM = sealed partial class(cl_extension_base) end;
+constructor clSharedVirtualMemoryARM.Create(pl: cl_platform_id) := inherited Create(pl);
+function clSharedVirtualMemoryARM.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clDeviceFissionEXT = sealed partial class(cl_extension_base) end;
+constructor clDeviceFissionEXT.Create(pl: cl_platform_id) := inherited Create(pl);
+function clDeviceFissionEXT.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clImageRequirementsInfoEXT = sealed partial class(cl_extension_base) end;
+constructor clImageRequirementsInfoEXT.Create(pl: cl_platform_id) := inherited Create(pl);
+function clImageRequirementsInfoEXT.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clMigrateMemobjectEXT = sealed partial class(cl_extension_base) end;
+constructor clMigrateMemobjectEXT.Create(pl: cl_platform_id) := inherited Create(pl);
+function clMigrateMemobjectEXT.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clGenerateMipmapIMG = sealed partial class(cl_extension_base) end;
+constructor clGenerateMipmapIMG.Create(pl: cl_platform_id) := inherited Create(pl);
+function clGenerateMipmapIMG.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clUseGrallocPtrIMG = sealed partial class(cl_extension_base) end;
+constructor clUseGrallocPtrIMG.Create(pl: cl_platform_id) := inherited Create(pl);
+function clUseGrallocPtrIMG.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clAcceleratorINTEL = sealed partial class(cl_extension_base) end;
+constructor clAcceleratorINTEL.Create(pl: cl_platform_id) := inherited Create(pl);
+function clAcceleratorINTEL.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clCreateBufferWithPropertiesINTEL = sealed partial class(cl_extension_base) end;
+constructor clCreateBufferWithPropertiesINTEL.Create(pl: cl_platform_id) := inherited Create(pl);
+function clCreateBufferWithPropertiesINTEL.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clDx9MediaSharingINTEL = sealed partial class(cl_extension_base) end;
+constructor clDx9MediaSharingINTEL.Create(pl: cl_platform_id) := inherited Create(pl);
+function clDx9MediaSharingINTEL.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clProgramScopeHostPipeINTEL = sealed partial class(cl_extension_base) end;
+constructor clProgramScopeHostPipeINTEL.Create(pl: cl_platform_id) := inherited Create(pl);
+function clProgramScopeHostPipeINTEL.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clSharingFormatQueryD3d10INTEL = sealed partial class(cl_extension_base) end;
+constructor clSharingFormatQueryD3d10INTEL.Create(pl: cl_platform_id) := inherited Create(pl);
+function clSharingFormatQueryD3d10INTEL.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clSharingFormatQueryD3d11INTEL = sealed partial class(cl_extension_base) end;
+constructor clSharingFormatQueryD3d11INTEL.Create(pl: cl_platform_id) := inherited Create(pl);
+function clSharingFormatQueryD3d11INTEL.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clSharingFormatQueryDx9INTEL = sealed partial class(cl_extension_base) end;
+constructor clSharingFormatQueryDx9INTEL.Create(pl: cl_platform_id) := inherited Create(pl);
+function clSharingFormatQueryDx9INTEL.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clSharingFormatQueryGlINTEL = sealed partial class(cl_extension_base) end;
+constructor clSharingFormatQueryGlINTEL.Create(pl: cl_platform_id) := inherited Create(pl);
+function clSharingFormatQueryGlINTEL.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clSharingFormatQueryVaApiINTEL = sealed partial class(cl_extension_base) end;
+constructor clSharingFormatQueryVaApiINTEL.Create(pl: cl_platform_id) := inherited Create(pl);
+function clSharingFormatQueryVaApiINTEL.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clUnifiedSharedMemoryINTEL = sealed partial class(cl_extension_base) end;
+constructor clUnifiedSharedMemoryINTEL.Create(pl: cl_platform_id) := inherited Create(pl);
+function clUnifiedSharedMemoryINTEL.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clVaApiMediaSharingINTEL = sealed partial class(cl_extension_base) end;
+constructor clVaApiMediaSharingINTEL.Create(pl: cl_platform_id) := inherited Create(pl);
+function clVaApiMediaSharingINTEL.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clCommandBufferKHR = sealed partial class(cl_extension_base) end;
+constructor clCommandBufferKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clCommandBufferKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clCommandBufferMultiDeviceKHR = sealed partial class(cl_extension_base) end;
+constructor clCommandBufferMultiDeviceKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clCommandBufferMultiDeviceKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clCommandBufferMutableDispatchKHR = sealed partial class(cl_extension_base) end;
+constructor clCommandBufferMutableDispatchKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clCommandBufferMutableDispatchKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clCreateCommandQueueKHR = sealed partial class(cl_extension_base) end;
+constructor clCreateCommandQueueKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clCreateCommandQueueKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clD3d10SharingKHR = sealed partial class(cl_extension_base) end;
+constructor clD3d10SharingKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clD3d10SharingKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clD3d11SharingKHR = sealed partial class(cl_extension_base) end;
+constructor clD3d11SharingKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clD3d11SharingKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clDx9MediaSharingKHR = sealed partial class(cl_extension_base) end;
+constructor clDx9MediaSharingKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clDx9MediaSharingKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clEglEventKHR = sealed partial class(cl_extension_base) end;
+constructor clEglEventKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clEglEventKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clEglImageKHR = sealed partial class(cl_extension_base) end;
+constructor clEglImageKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clEglImageKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clExternalMemoryKHR = sealed partial class(cl_extension_base) end;
+constructor clExternalMemoryKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clExternalMemoryKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clExternalSemaphoreKHR = sealed partial class(cl_extension_base) end;
+constructor clExternalSemaphoreKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clExternalSemaphoreKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clGLSharingKHR = sealed partial class(cl_extension_base) end;
+constructor clGLSharingKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clGLSharingKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clGLEventKHR = sealed partial class(cl_extension_base) end;
+constructor clGLEventKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clGLEventKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clIcdKHR = sealed partial class(cl_extension_base) end;
+constructor clIcdKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clIcdKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clIlProgramKHR = sealed partial class(cl_extension_base) end;
+constructor clIlProgramKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clIlProgramKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clSemaphoreKHR = sealed partial class(cl_extension_base) end;
+constructor clSemaphoreKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clSemaphoreKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clSubgroupsKHR = sealed partial class(cl_extension_base) end;
+constructor clSubgroupsKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clSubgroupsKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clSuggestedLocalWorkSizeKHR = sealed partial class(cl_extension_base) end;
+constructor clSuggestedLocalWorkSizeKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clSuggestedLocalWorkSizeKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clTerminateContextKHR = sealed partial class(cl_extension_base) end;
+constructor clTerminateContextKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clTerminateContextKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clContentSizePOCL = sealed partial class(cl_extension_base) end;
+constructor clContentSizePOCL.Create(pl: cl_platform_id) := inherited Create(pl);
+function clContentSizePOCL.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clExtHostPtrQCOM = sealed partial class(cl_extension_base) end;
+constructor clExtHostPtrQCOM.Create(pl: cl_platform_id) := inherited Create(pl);
+function clExtHostPtrQCOM.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
 

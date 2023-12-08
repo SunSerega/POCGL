@@ -23,6 +23,7 @@ uses CodeContainerItems;
 
 type
   ApiManager = LLPackingUtils.ApiManager;
+  DynamicLoadInfo = LLPackingUtils.DynamicLoadInfo;
   
 procedure SetMaxUnfixedOverloads(c: integer);
 
@@ -131,11 +132,12 @@ type NamedItemLoader = sealed class(NamedItemConsumer)
       Otp($'Loading {item_t_name} items');
       NamedLoadedItem&<TItem, TName>.LoadAll(self.br);
       
-      if item_t_name not in fixer_dirs then
+      var fixer_dir: string;
+      if not fixer_dirs.TryGetValue(item_t_name, fixer_dir) then
         log.Otp($'Loading {item_t_name} fixers canceled: No folder') else
       begin
         Otp($'Loading {item_t_name} fixers');
-        TFixer.LoadAll(fixer_dirs[item_t_name]);
+        TFixer.LoadAll(fixer_dir);
         fixer_dirs.Remove(item_t_name);
       end;
       

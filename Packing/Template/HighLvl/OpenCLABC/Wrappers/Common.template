@@ -22,7 +22,7 @@
     (obj is CLPlatform(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.ToInt32;
+    ntv.val.GetHashCode;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
@@ -50,7 +50,7 @@
     (obj is CLDevice(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.ToInt32;
+    ntv.val.GetHashCode;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
@@ -93,7 +93,7 @@
     (obj is CLContext(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.ToInt32;
+    ntv.val.GetHashCode;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}] on devices: {AllDevices.JoinToString('', '')}; Main device: {MainDevice}';
@@ -113,7 +113,7 @@
     (obj is CLCode(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.ToInt32;
+    ntv.val.GetHashCode;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
@@ -138,7 +138,7 @@
     
   end;
   
-  CLMemory = partial class
+  CLMemory = partial class(ICLMemory)
     
     public property Native: cl_mem read ntv;
     
@@ -159,7 +159,7 @@
     (obj is CLMemory(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.ToInt32;
+    ntv.val.GetHashCode;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}] of size {Size}';
@@ -181,7 +181,7 @@
     
   end;
   
-  CLValue<T> = partial class
+  CLValue<T> = partial class(ICLMemory)
     
     public property Native: cl_mem read ntv;
     
@@ -202,14 +202,14 @@
     (obj is CLValue<T>(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.ToInt32;
+    ntv.val.GetHashCode;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
-  CLArray<T> = partial class
+  CLArray<T> = partial class(ICLMemory)
     
     public property Native: cl_mem read ntv;
     
@@ -230,7 +230,7 @@
     (obj is CLArray<T>(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.ToInt32;
+    ntv.val.GetHashCode;
     
     public function ToString: string; override :=
     $'{TypeName(self)}[{ntv.val}] of length {Length}';

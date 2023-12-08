@@ -7,6 +7,12 @@ begin
     
     SetMaxUnfixedOverloads(integer.MaxValue);
     
+    ApiManager.EnableDynamicApis(new DynamicLoadInfo(
+      'loader', 'DummyLoader',
+      'api_with_loader',
+      nil, false
+    ));
+    
     ApiManager.MarkKeep('dum', true);
     ApiManager.MarkKeep('dyn', true);
     

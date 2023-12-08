@@ -834,18 +834,18 @@
 # clFp64KHR (cl_khr_fp64)
 	Enum [cl::DEVICE_DOUBLE_FP_CONFIG]
 
-# clGlDepthImagesKHR (cl_khr_gl_depth_images)
+# clGLDepthImagesKHR (cl_khr_gl_depth_images)
 	Enum [cl::DEPTH_STENCIL]
 	Enum [cl::UNORM_INT24]
 
-# clGlEventKHR (cl_khr_gl_event)
+# clGLEventKHR (cl_khr_gl_event)
 	Enum [cl::COMMAND_GL_FENCE_SYNC_OBJECT]
 	Func [cl::CreateEventFromGLsync + KHR]
 
 # clGlMsaaSharingKHR (cl_khr_gl_msaa_sharing)
 	Enum [cl::GL_NUM_SAMPLES]
 
-# clGlSharingKHR (cl_khr_gl_sharing)
+# clGLSharingKHR (cl_khr_gl_sharing)
 	Enum [cl::INVALID_GL_SHAREGROUP_REFERENCE]
 	Enum [cl::GL_OBJECT_BUFFER]
 	Enum [cl::GL_OBJECT_TEXTURE2D]

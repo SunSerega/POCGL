@@ -2,32 +2,48 @@
 
 var mre := new System.Threading.ManualResetEventSlim(false);
 
-var fast_id := 0;
-var Q_fast := HFQ(()->
+var first_id := 0;
+var Q_first := HFQ(()->
 begin
   lock output do
   begin
-    fast_id += 1;
-    $'Fast#{fast_id}'.Println;
+    first_id += 1;
+    $'First#{first_id}'.Println;
   end;
-  if fast_id=2 then mre.Set;
+  if first_id=2 then mre.Set;
   Result := 0;
 end);
+//  Q_first.GetHashCode.Println;
 
-var slow_id := 0;
-var Q_slow := HFQ(()->
+var second_id := 0;
+var Q_second := HFQ(()->
 begin
+//    Sleep(100);
   mre.Wait;
   lock output do
   begin
-    slow_id += 1;
-    $'Slow#{slow_id}'.Println;
+    second_id += 1;
+    $'Second#{second_id}'.Println;
   end;
   Result := 0;
 end);
+//  Q_second.GetHashCode.Println;
 
 var a := new CLArray<integer>(1);
 CLContext.Default.SyncInvoke(
-  a.MakeCCQ.ThenWriteValue(Q_slow, Q_fast) +
-  (Q_slow+CQ(a)).MakeCCQ.ThenWriteValue(Q_fast, 0)
+  a.MakeCCQ.ThenWriteValue(
+    
+//      HPQ(()->Sleep(100))+
+    Q_second
+//      .ThenConvert(x->begin Sleep(100); Result := x end)
+    
+    ,
+    
+//      HPQ(()->Sleep(100))+
+    Q_first
+//      .ThenConvert(x->begin Sleep(100); Result := x end)
+    
+  ) +
+  (Q_second+CQ(a)).MakeCCQ.ThenWriteValue(Q_first, 0)
 );
+a.Dispose;

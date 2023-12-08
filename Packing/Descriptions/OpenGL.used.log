@@ -58,26 +58,26 @@
 # x_window
 
 
+# glPlWin
+Платформа Windows
+
+# glPlWin.GetProcAddress(string)
+# glPlX.GetProcAddress(string)
+Получает адрес динамически загружаемой функции
+
+# glPlX
+Платформа XWindow (используется в UNIX-подобных системах)
+
+# IGLPlatformLoader
+Базовый класс платформы
+Можно наследовать чтобы описать свой загрузчик динамических функций
+
+# IGLPlatformLoader.GetProcAddress(string)
+Этот метод вызывается для каждой динамически загружаемой функции
+
 # OpenGLException
 Исключение, которое кидает glErrorCode.RaiseIfError
 
 # OpenGLException.Code
 Код ошибки
-
-# PlatformLoader
-Базовый класс платформы
-Можно наследовать чтобы описать свой загрузчик динамических функций
-
-# PlatformLoader.GetProcAddress(string)
-Этот метод вызывается для каждой динамически загружаемой функции
-
-# PlWin
-Платформа Windows
-
-# PlWin.GetProcAddress(string)
-# PlX.GetProcAddress(string)
-Получает адрес динамически загружаемой функции
-
-# PlX
-Платформа XWindow (используется в UNIX-подобных системах)
 

@@ -8,14 +8,18 @@ OpenCL.clProgramCallback = procedure(program: cl_program; user_data: System.IntP
 OpenCLABC.$delegate? = function(ntv: cl_program; var data: clBool; validate: boolean): clErrorCode
 OpenCLABC._GetPropValueFunc<T> = function(ntv: cl_program; var data: T): clErrorCode
 OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): ValueTuple<cl_event,CLContext -> ()>
-OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ValueTuple<CLTaskErrHandler,EnqFunc<T>>
+OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
 1 
 2 
-[EventDebug]: 4 event's created 
-[WaitDebug]: 4 wait handler's created 
-[QueueResNil]: 6 
+final = ErrHandlerBranchCombinator#0: CLTaskGlobalData.ParallelInvoke branches union
+	branch#0/2 = ErrHandlerInitial#1: (origin-less) branch invoke
+	branch#1/2 = ErrHandlerInitial#2: (origin-less) branch invoke
+(total 3 handlers)
+[EventDebug]: 4 event's created
+[WaitDebug]: 4 wait handler's created
+[QueueResNil]: 6
 
 #ReqModules
 OpenCLABC

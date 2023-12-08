@@ -2,7 +2,7 @@
 
 
 type dyn = sealed partial class(api_with_loader) end;
-constructor dyn.Create(loader: PlatformLoader) := inherited Create(loader);
+constructor dyn.Create(loader: DummyLoader) := inherited Create(loader);
 function dyn.GetProcAddress(name: string) := loader.GetProcAddress(name);
 
 

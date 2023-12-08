@@ -19,9 +19,16 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override := prev_commands.InitBeforeInvoke(g, prev_hubs);
     
-    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList; own_qr: QueueRes<&T>): ParamInvRes<CLValue<T>>; override;
+    protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>; own_qr: QueueRes<&T>): ParamInvRes<CLValue<T>>; override;
     begin
-      Result.Item1 := new CLTaskErrHandlerEmpty;
+      
+      {$ifdef DEBUG}
+      Result.Item1 := ()->
+      begin
+      end;
+      {$else DEBUG}
+      Result.Item1 := nil;
+      {$endif DEBUG}
       
       Result.Item2 := (o, cq, evs)->
       begin

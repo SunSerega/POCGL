@@ -44,3 +44,4 @@ code['TEST'].Exec1(len,
 );
 
 A.GetArray.Println;
+A.Dispose;

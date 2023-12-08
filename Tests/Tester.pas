@@ -303,6 +303,25 @@ type
       Result := ValueTuple.Create(total_comp_time, total_exec_time);
     end;
     
+    private has_files_cache := default(boolean?);
+    private function HasFilesUncached: boolean;
+    begin
+      Result := true;
+      foreach var (name,t) in sub_dirs do
+        if t.HasFiles then exit;
+      Result := files.Count<>0;
+    end;
+    private function HasFiles: boolean;
+    begin
+      if has_files_cache<>nil then
+      begin
+        Result := has_files_cache.Value;
+        exit;
+      end;
+      Result := HasFilesUncached;
+      has_files_cache := Result;
+    end;
+    
     private outer_time_cache := default(TimeSpan?);
     protected function OuterTime: TimeSpan; override;
     begin
@@ -323,6 +342,7 @@ type
     private static function TimeToText(t: TimeSpan) := inherited TimeToText(t);
     public function MakeLogLines(lvl: integer; header: string): sequence of (integer,string,string); override;
     begin
+      if not self.HasFiles then exit;
       yield (lvl, header, TimeToText(self.OuterTime));
       foreach var (name,t) in sub_dirs do
         yield sequence t.MakeLogLines(lvl+1, name);
@@ -538,7 +558,7 @@ type
       CompilePasFile('Tests/CLContextGen.pas',
         new_timer->(core_timer.cl_context_gen_comp := new_timer),
         nil, nil,
-        OtpKind.Empty, '/Debug:1', GetFullPath('Tests/DebugPCU')
+        OtpKind.Empty, '/Debug:1 /Define:ForceMaxDebug', GetFullPath('Tests/DebugPCU')
       );
       Otp($'Running Tests/CLContextGen.exe');
       RunFile('Tests/CLContextGen.exe', nil,
@@ -556,6 +576,7 @@ type
     
     procedure LoadSettingsDict;
     begin
+      //TODO Use fixer utils
       all_settings := new Dictionary<string, string>;
       
       var lns := ReadAllLines(td_fname, enc);
@@ -612,7 +633,7 @@ type
     end;
     
     static procedure LoadAll(dir_path: string; params test_modes: array of string) :=
-      LoadAll(GetFullPath(dir_path), core_timer.body, test_modes);
+      LoadAll(GetFullPath(dir_path), new TestingFolderTimer(dir_path, core_timer.body), test_modes);
     static procedure LoadAll(dir_path: string; dir_timer: TestingFolderTimer; test_modes: array of string);
     begin
       if not System.IO.Directory.Exists(dir_path) then
@@ -739,7 +760,7 @@ type
           t.own_timer.AddComp,
           l->Otp(l.ConvStr(s->s.Replace('error','errоr'))),
           err->(comp_err := err),
-          OtpKind.Empty, '/Debug:1', GetFullPath('Tests/DebugPCU')
+          OtpKind.Empty, '/Debug:1 /Define:ForceMaxDebug', GetFullPath('Tests/DebugPCU')
         );
         
         if comp_err<>nil then
@@ -1030,7 +1051,10 @@ type
       
     except
       on e: FatalTestingException do
+      begin
+        stop_test := true;
         Otp(e.ToString);
+      end;
     end;
     
     static procedure ExecAll;

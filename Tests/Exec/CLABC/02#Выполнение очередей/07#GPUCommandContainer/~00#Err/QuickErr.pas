@@ -1,9 +1,12 @@
 ﻿## uses OpenCLABC;
 
+var m := new CLMemory(1);
 CLContext.Default.SyncInvoke(
-  CLMemory.Create(1).MakeCCQ.ThenWriteArray1(HFQ(()->
+  m.MakeCCQ
+  .ThenWriteArray1(HFQ(()->
   begin
     Result := new byte[0];
     raise new Exception('TestOK');
   end, false))
 );
+m.Dispose;

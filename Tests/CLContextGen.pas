@@ -1,5 +1,10 @@
 ﻿## uses OpenCLABC;
 
+{$ifdef ForceMaxDebug}
+OpenCLABC.gen_debug_otp := new System.IO.StreamWriter('CLContextGen.log', false, new System.Text.UTF8Encoding(true));
+OpenCLABC.eh_debug_otp := new System.IO.StreamWriter('CLContextGen.EH.log', false, new System.Text.UTF8Encoding(true));
+{$endif ForceMaxDebug}
+
 var dir := 'CLContext';
 if System.IO.Directory.Exists(dir) then
   System.IO.Directory.Delete(dir, true);

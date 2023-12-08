@@ -19,12 +19,13 @@ WARNING: Func [cl::CreateAccelerator+INTEL] fixer comments
 Loading Feature items
 Loading Feature fixers canceled: No folder
 Loading Extension items
-Loading Extension fixers canceled: No folder
+Loading Extension fixers
 Fixing Group items
 Fixing IdClass items
 Fixing Struct items
 Fixing Delegate items
 Fixing Func items
+Fixing Extension items
 WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_WORK_GROUP_SIZE]
 WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_MAX_WORK_GROUP_SIZE + AMD]
 WARNING: Func [cl::GetDeviceInfo] could not generate overload: no output type info for Group [cl::DeviceInfo] Enum [cl::DEVICE_PREFERRED_CONSTANT_BUFFER_SIZE]

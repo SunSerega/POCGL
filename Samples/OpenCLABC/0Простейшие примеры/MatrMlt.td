@@ -8,7 +8,7 @@ OpenCL.clProgramCallback = procedure(program: cl_program; user_data: System.IntP
 OpenCLABC.$delegate? = function(ntv: cl_program; var data: clBool; validate: boolean): clErrorCode
 OpenCLABC._GetPropValueFunc<T> = function(ntv: cl_program; var data: T): clErrorCode
 OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): ValueTuple<cl_event,CLContext -> ()>
-OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ValueTuple<CLTaskErrHandler,EnqFunc<T>>
+OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
 Матрица A: 
@@ -35,15 +35,32 @@ OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_
 Вектор V2 = C*V1: 
 43.642978 38.329481 44.548663 23.561954
 
-[EventDebug]: 13 event's created 
-[QueueDebug]: 3 queue's created 
-[ExecDebug]: 2 cache entries created 
-[QueueResNil]: 17 
-[QueueRes<T>]: 15 
-	QueueResValDirect<array [,] of real>: 3 
-	QueueResValDirect<array of real>: 2 
-	QueueResValDirect<CLArray<real>>: 5 
-	QueueResValDirect<integer>: 5 
+final = ErrHandlerBranchCombinator#0: CLArrayCommandGetArrayAutoSize<real> origin+par+enq union
+	branch#0/2 = ErrHandlerInitial#1: ExecuteEnqFunc container
+	branch#1/2 = ErrHandlerBranchCombinator#2: CLTaskGlobalData.ParallelInvoke branches union
+		origin = ErrHandlerBranchCombinator#3: CLKernelCommandExec2 origin+par+enq union
+			branch#0/3 = ErrHandlerInitial#4: ExecuteEnqFunc container
+			branch#1/3 = ErrHandlerInitial#5: ExecuteEnqFunc container
+			branch#2/3 = ErrHandlerInitial#6: ExecuteEnqFunc container
+		branch#0/2 = ErrHandlerBranchCombinator#7: CLKernelCommandExec1 origin+par+enq union
+			branch#0/3 = ErrHandlerInitial#8: ExecuteEnqFunc container
+			branch#1/3 = ErrHandlerBranchBud#9: branch invoke
+			origin = ErrHandlerBranchCombinator#3: CLKernelCommandExec2 origin+par+enq union
+			branch#2/3 = ErrHandlerInitial#10: ExecuteEnqFunc container
+		branch#1/2 = ErrHandlerBranchCombinator#11: CLArrayCommandGetArray2<real> origin+par+enq union
+			branch#0/2 = ErrHandlerInitial#12: ExecuteEnqFunc container
+			branch#1/2 = ErrHandlerBranchBud#13: branch invoke
+			origin = ErrHandlerBranchCombinator#3: CLKernelCommandExec2 origin+par+enq union
+(total 14 handlers)
+[EventDebug]: 13 event's created
+[QueueDebug]: 3 queue's created
+[ExecDebug]: 2 cache entries created
+[QueueResNil]: 20
+[QueueRes<T>]: 15
+	QueueResValDirect<array [,] of real>: 3
+	QueueResValDirect<array of real>: 2
+	QueueResValDirect<CLArray<real>>: 5
+	QueueResValDirect<integer>: 5
 
 #ReqModules
 OpenCLABC

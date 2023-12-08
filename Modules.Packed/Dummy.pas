@@ -26,14 +26,13 @@ type
   
   {$region Особые типы}
   
-  ///Базовый тип перечислений этого модуля
+  ///Базовый тип перечислений
   EnumBase = UInt32;
   
-  ///Базовый класс платформы
-  ///Можно наследовать чтобы описать свой загрузчик динамических функций
-  PlatformLoader = abstract class
+  ///Абстрактное понятие загрузчика адресов функций api
+  DummyLoader = abstract class
     
-    ///Этот метод вызывается для каждой динамически загружаемой функции
+    ///Фунция получения адреса функции api
     public function GetProcAddress(name: string): IntPtr; abstract;
     
   end;
@@ -1132,33 +1131,33 @@ type
   [System.Security.SuppressUnmanagedCodeSecurity]
   ///
   dyn = sealed partial class
-    public constructor(loader: PlatformLoader);
-    private constructor := raise new System.NotSupportedException;
+    public constructor(loader: DummyLoader);
+    private constructor := raise new NotSupportedException;
     private function GetProcAddress(name: string): IntPtr;
     private static function GetProcOrNil<T>(fadr: IntPtr) :=
       if fadr=IntPtr.Zero then default(T) else
         Marshal.GetDelegateForFunctionPointer&<T>(fadr);
     
     // added in dyn1.0
-    private f1NoParam_adr := GetProcAddress('f1NoParam');
+    public f1NoParam_adr := GetProcAddress('f1NoParam');
     private ntv_f1NoParam_1 := GetProcOrNil&<procedure>(f1NoParam_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f1NoParam :=
       ntv_f1NoParam_1;
     
     // added in dyn1.0
-    private f1NoParamResult_adr := GetProcAddress('f1NoParamResult');
+    public f1NoParamResult_adr := GetProcAddress('f1NoParamResult');
     private ntv_f1NoParamResult_1 := GetProcOrNil&<function: UIntPtr>(f1NoParamResult_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f1NoParamResult: UIntPtr :=
       ntv_f1NoParamResult_1;
     
     // added in dyn1.0
-    private f2ParamString_adr := GetProcAddress('f2ParamString');
+    public f2ParamString_adr := GetProcAddress('f2ParamString');
     private ntv_f2ParamString_1 := GetProcOrNil&<procedure(s: IntPtr)>(f2ParamString_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f2ParamString(s: IntPtr) :=
       ntv_f2ParamString_1(s);
     
     // added in dyn1.0
-    private f2ParamStringRO_adr := GetProcAddress('f2ParamStringRO');
+    public f2ParamStringRO_adr := GetProcAddress('f2ParamStringRO');
     private ntv_f2ParamStringRO_1 := GetProcOrNil&<procedure(s: IntPtr)>(f2ParamStringRO_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f2ParamStringRO(s: string);
     begin
@@ -1173,7 +1172,7 @@ type
       ntv_f2ParamStringRO_1(s);
     
     // added in dyn1.0
-    private f3ResultString_adr := GetProcAddress('f3ResultString');
+    public f3ResultString_adr := GetProcAddress('f3ResultString');
     private ntv_f3ResultString_1 := GetProcOrNil&<function: IntPtr>(f3ResultString_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f3ResultString: string;
     begin
@@ -1186,13 +1185,13 @@ type
     end;
     
     // added in dyn1.0
-    private f3ResultStringRO_adr := GetProcAddress('f3ResultStringRO');
+    public f3ResultStringRO_adr := GetProcAddress('f3ResultStringRO');
     private ntv_f3ResultStringRO_1 := GetProcOrNil&<function: IntPtr>(f3ResultStringRO_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f3ResultStringRO: string :=
       Marshal.PtrToStringAnsi(ntv_f3ResultStringRO_1);
     
     // added in dyn1.0
-    private f4Generic_adr := GetProcAddress('f4Generic');
+    public f4Generic_adr := GetProcAddress('f4Generic');
     private ntv_f4Generic_1 := GetProcOrNil&<procedure(var data: Byte)>(f4Generic_adr);
     private ntv_f4Generic_2 := GetProcOrNil&<procedure(data: pointer)>(f4Generic_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4Generic<T>(data: array of T); where T: record;
@@ -1210,7 +1209,7 @@ type
       ntv_f4Generic_2(data);
     
     // added in dyn1.0
-    private f4GenericRO_adr := GetProcAddress('f4GenericRO');
+    public f4GenericRO_adr := GetProcAddress('f4GenericRO');
     private ntv_f4GenericRO_1 := GetProcOrNil&<procedure(var data: Byte)>(f4GenericRO_adr);
     private ntv_f4GenericRO_2 := GetProcOrNil&<procedure(data: pointer)>(f4GenericRO_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericRO<T>(data: array of T); where T: record;
@@ -1228,7 +1227,7 @@ type
       ntv_f4GenericRO_2(data);
     
     // added in dyn1.0
-    private f4GenericWOVarArg_adr := GetProcAddress('f4GenericWOVarArg');
+    public f4GenericWOVarArg_adr := GetProcAddress('f4GenericWOVarArg');
     private ntv_f4GenericWOVarArg_1 := GetProcOrNil&<procedure(var data: Byte)>(f4GenericWOVarArg_adr);
     private ntv_f4GenericWOVarArg_2 := GetProcOrNil&<procedure(data: pointer)>(f4GenericWOVarArg_adr);
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure temp_f4GenericWOVarArg_1<T>(var data: T); where T: record;
@@ -1246,7 +1245,7 @@ type
       ntv_f4GenericWOVarArg_2(data);
     
     // added in dyn1.0
-    private f4GenericWOVarArgRO_adr := GetProcAddress('f4GenericWOVarArgRO');
+    public f4GenericWOVarArgRO_adr := GetProcAddress('f4GenericWOVarArgRO');
     private ntv_f4GenericWOVarArgRO_1 := GetProcOrNil&<procedure(var data: Byte)>(f4GenericWOVarArgRO_adr);
     private ntv_f4GenericWOVarArgRO_2 := GetProcOrNil&<procedure(data: pointer)>(f4GenericWOVarArgRO_adr);
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure temp_f4GenericWOVarArgRO_1<T>(var data: T); where T: record;
@@ -1264,7 +1263,7 @@ type
       ntv_f4GenericWOVarArgRO_2(data);
     
     // added in dyn1.0
-    private f5Arrrrrray_adr := GetProcAddress('f5Arrrrrray');
+    public f5Arrrrrray_adr := GetProcAddress('f5Arrrrrray');
     private ntv_f5Arrrrrray_1 := GetProcOrNil&<procedure(a: pointer)>(f5Arrrrrray_adr);
     private ntv_f5Arrrrrray_2 := GetProcOrNil&<procedure(var a: IntPtr)>(f5Arrrrrray_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5Arrrrrray(a: array of array of array of array of array of UIntPtr);
@@ -1467,7 +1466,7 @@ type
       ntv_f5Arrrrrray_1(a);
     
     // added in dyn1.0
-    private f5ArrrrrrayOfGeneric_adr := GetProcAddress('f5ArrrrrrayOfGeneric');
+    public f5ArrrrrrayOfGeneric_adr := GetProcAddress('f5ArrrrrrayOfGeneric');
     private ntv_f5ArrrrrrayOfGeneric_1 := GetProcOrNil&<procedure(a: pointer)>(f5ArrrrrrayOfGeneric_adr);
     private ntv_f5ArrrrrrayOfGeneric_2 := GetProcOrNil&<procedure(var a: IntPtr)>(f5ArrrrrrayOfGeneric_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfGeneric<T>(a: array of array of array of array of array of T); where T: record;
@@ -1670,7 +1669,7 @@ type
       ntv_f5ArrrrrrayOfGeneric_1(a);
     
     // added in dyn1.0
-    private f5ArrrrrrayOfString_adr := GetProcAddress('f5ArrrrrrayOfString');
+    public f5ArrrrrrayOfString_adr := GetProcAddress('f5ArrrrrrayOfString');
     private ntv_f5ArrrrrrayOfString_1 := GetProcOrNil&<procedure(s: pointer)>(f5ArrrrrrayOfString_adr);
     private ntv_f5ArrrrrrayOfString_2 := GetProcOrNil&<procedure(var s: IntPtr)>(f5ArrrrrrayOfString_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfString(s: array of array of array of array of string);
@@ -1864,7 +1863,7 @@ type
       ntv_f5ArrrrrrayOfString_1(s);
     
     // added in dyn1.0
-    private f6Mix_adr := GetProcAddress('f6Mix');
+    public f6Mix_adr := GetProcAddress('f6Mix');
     private ntv_f6Mix_1 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; var gen: Byte; var gen_ro: Byte): IntPtr>(f6Mix_adr);
     private ntv_f6Mix_2 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; var gen: Byte; gen_ro: pointer): IntPtr>(f6Mix_adr);
     private ntv_f6Mix_3 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; gen: pointer; var gen_ro: Byte): IntPtr>(f6Mix_adr);
@@ -1967,7 +1966,7 @@ type
     end;
     
     // added in dyn1.0
-    private f7EnumToType_adr := GetProcAddress('f7EnumToType');
+    public f7EnumToType_adr := GetProcAddress('f7EnumToType');
     private ntv_f7EnumToType_1 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr)>(f7EnumToType_adr);
     private ntv_f7EnumToType_2 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; var otp_value: Byte; otp_value_size_ret: IntPtr)>(f7EnumToType_adr);
     private ntv_f7EnumToType_3 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr)>(f7EnumToType_adr);
@@ -2121,7 +2120,7 @@ type
     end;
     
     // added in dyn1.0
-    private f7EnumToTypeInputOnly_adr := GetProcAddress('f7EnumToTypeInputOnly');
+    public f7EnumToTypeInputOnly_adr := GetProcAddress('f7EnumToTypeInputOnly');
     private ntv_f7EnumToTypeInputOnly_1 := GetProcOrNil&<procedure(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: Byte)>(f7EnumToTypeInputOnly_adr);
     private ntv_f7EnumToTypeInputOnly_2 := GetProcOrNil&<procedure(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: pointer)>(f7EnumToTypeInputOnly_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToTypeInputOnly<TInp>(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: TInp); where TInp: record;
@@ -2168,9 +2167,9 @@ implementation
 
 type
   api_with_loader = abstract class
-    public loader: PlatformLoader;
+    public loader: DummyLoader;
     
-    public constructor(loader: PlatformLoader) := self.loader := loader;
+    public constructor(loader: DummyLoader) := self.loader := loader;
     private constructor := raise new NotSupportedException;
     
   end;
@@ -2180,7 +2179,7 @@ type
 {$region Подпрограммы ядра}
 
 type dyn = sealed partial class(api_with_loader) end;
-constructor dyn.Create(loader: PlatformLoader) := inherited Create(loader);
+constructor dyn.Create(loader: DummyLoader) := inherited Create(loader);
 function dyn.GetProcAddress(name: string) := loader.GetProcAddress(name);
 
 {$endregion Подпрограммы ядра}

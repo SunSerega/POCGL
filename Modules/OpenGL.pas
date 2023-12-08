@@ -49,7 +49,7 @@ type
     
   end;
   
-  PlatformLoader = abstract class
+  IGLPlatformLoader = abstract class
     
     public function GetProcAddress(name: string): IntPtr; abstract;
     
@@ -71,7 +71,7 @@ type
   
   {$region Загрузчики известных платформ}
   
-  PlWin = sealed class(PlatformLoader)
+  glPlWin = sealed class(IGLPlatformLoader)
     
     private static function LoadLibrary(name: string): IntPtr;
     external 'kernel32.dll';
@@ -87,7 +87,7 @@ type
     
   end;
   
-  PlX = sealed class(PlatformLoader)
+  glPlX = sealed class(IGLPlatformLoader)
     
     public function GetProcAddress(name: string): IntPtr; override;
     begin
@@ -111,9 +111,9 @@ implementation
 
 type
   api_with_loader = abstract class
-    public loader: PlatformLoader;
+    public loader: IGLPlatformLoader;
     
-    public constructor(loader: PlatformLoader) := self.loader := loader;
+    public constructor(loader: IGLPlatformLoader) := self.loader := loader;
     private constructor := raise new NotSupportedException;
     
   end;
@@ -123,16 +123,16 @@ procedure glErrorCode.RaiseIfError :=
 
 {$endregion Особые типы}
 
-{$region Подпрограммы ядра}
+{$region Инициализаторы ядра}
 
 {%Feature.Implementation!Pack Essentials.pas%}
 
-{$endregion Подпрограммы ядра}
+{$endregion Инициализаторы ядра}
 
-{$region Подпрограммы расширений}
+{$region Инициализаторы расширений}
 
 {%Extension.Implementation!Pack Essentials.pas%}
 
-{$endregion Подпрограммы расширений}
+{$endregion Инициализаторы расширений}
 
 end.

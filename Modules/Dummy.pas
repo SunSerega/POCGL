@@ -18,7 +18,7 @@ type
   
   EnumBase = UInt32;
   
-  PlatformLoader = abstract class
+  DummyLoader = abstract class
     
     public function GetProcAddress(name: string): IntPtr; abstract;
     
@@ -56,9 +56,9 @@ implementation
 
 type
   api_with_loader = abstract class
-    public loader: PlatformLoader;
+    public loader: DummyLoader;
     
-    public constructor(loader: PlatformLoader) := self.loader := loader;
+    public constructor(loader: DummyLoader) := self.loader := loader;
     private constructor := raise new NotSupportedException;
     
   end;

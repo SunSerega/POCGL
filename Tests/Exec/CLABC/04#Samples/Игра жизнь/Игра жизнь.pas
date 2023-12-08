@@ -69,6 +69,9 @@ try
   CLContext.Default.SyncInvoke(CombineSyncQueue(ArrFill&<CommandQueueBase>(50, Q_1Step)) + Q_Otp);
   field_states_q.Single.ConvertAll(b->b<>0?#9608:' ').Println(0);
   
+  B.Dispose;
+  B_temp.Dispose;
+  
 except
   on ae: System.AggregateException do
     foreach var e in ae.InnerExceptions do

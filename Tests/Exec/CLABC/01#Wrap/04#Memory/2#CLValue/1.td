@@ -8,17 +8,23 @@ OpenCL.clProgramCallback = procedure(program: cl_program; user_data: System.IntP
 OpenCLABC.$delegate? = function(ntv: cl_program; var data: clBool; validate: boolean): clErrorCode
 OpenCLABC._GetPropValueFunc<T> = function(ntv: cl_program; var data: T): clErrorCode
 OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): ValueTuple<cl_event,CLContext -> ()>
-OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleEventListList): ValueTuple<CLTaskErrHandler,EnqFunc<T>>
+OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
+final = ErrHandlerInitial#0: ExecuteEnqFunc container
+(total 1 handlers)
 5 
+final = ErrHandlerInitial#0: ExecuteEnqFunc container
+(total 1 handlers)
+final = ErrHandlerInitial#0: ExecuteEnqFunc container
+(total 1 handlers)
 7 
-[EventDebug]: 3 event's created 
-[QueueDebug]: 3 queue's created 
-[QueueResNil]: 4 
-[QueueRes<T>]: 5 
-	QueueResPtr<byte>: 2 
-	QueueResValDirect<CLValue<byte>>: 3 
+[EventDebug]: 3 event's created
+[QueueDebug]: 3 queue's created
+[QueueResNil]: 4
+[QueueRes<T>]: 5
+	QueueResPtr<byte>: 2
+	QueueResValDirect<CLValue<byte>>: 3
 
 #ReqModules
 OpenCLABC
