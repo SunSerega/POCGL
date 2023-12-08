@@ -1492,9 +1492,12 @@ type
     private static procedure RegisterExecCacheTry(command: object; is_new: boolean; descr: string) :=
     ExecCacheTries.GetOrAdd(MakeName(command), name->new ConcurrentQueue<(boolean,string)>).Enqueue((is_new,descr));
     
+    private static procedure DisposeAllCommands;
     public static procedure ReportExecCache(otp: System.IO.TextWriter := Console.Out) :=
     lock otp do
     begin
+      DisposeAllCommands;
+      
       otp.WriteLine(System.Environment.StackTrace);
       
       foreach var kvp in ExecCacheTries.OrderBy(kvp->kvp.Key) do
@@ -18886,9 +18889,10 @@ type
   ExecCommandCLKernelCacheEntry = record
     k: CLKernel;
     cache: CLKernelArgCache;
-    last_use: DateTime;
+    last_use: TimeSpan;
+    static last_use_timer := Stopwatch.StartNew;
     
-    procedure Bump := last_use := DateTime.Now;
+    procedure Bump := last_use := last_use_timer.Elapsed;
     
     procedure TryRelease({$ifdef ExecDebug}command: object{$endif}) := if k<>nil then
     begin
@@ -18943,19 +18947,30 @@ type
       end;
     end;
     
-    public procedure Release({$ifdef ExecDebug}command: object{$endif}) :=
-    for var i := 0 to cache_size-1 do
-      data[i].TryRelease({$ifdef ExecDebug}command{$endif});
+    public procedure Release({$ifdef ExecDebug}command: object{$endif});
+    begin
+      if data=nil then raise new OpenCLABCInternalException($'');
+      for var i := 0 to cache_size-1 do
+        data[i].TryRelease({$ifdef ExecDebug}command{$endif});
+      data := nil;
+      data_ind := nil;
+    end;
     
   end;
   
-  EnqueueableExecCommand = abstract class(GPUCommand<CLKernel>)
+  EnqueueableExecCommand = abstract class(GPUCommand<CLKernel>, IDisposable)
     private args: array of CLKernelArg;
     private const_args_setters: array of CLKernelArgSetter;
     private args_c, args_non_const_c: integer;
+    {$ifdef ExecDebug}
+    private static All := new ConcurrentBag<EnqueueableExecCommand>;
+    {$endif ExecDebug}
     
     protected constructor(args: array of CLKernelArg);
     begin
+      {$ifdef ExecDebug}
+      All.Add(self);
+      {$endif ExecDebug}
       args := args.ToArray;
       self.args := args;
       self.const_args_setters := new CLKernelArgSetter[args.Length];
@@ -19095,11 +19110,26 @@ type
       if post_enq_act<>nil then Result.AddAction(post_enq_act);
     end;
     
-    protected procedure Finalize; override :=
-    k_cache.Release({$ifdef ExecDebug}self{$endif});
+    public procedure Dispose;
+    begin
+      if k_cache.data=nil then exit;
+      k_cache.Release({$ifdef ExecDebug}self{$endif});
+      GC.SuppressFinalize(self);
+    end;
+    protected procedure Finalize; override := Dispose;
     
   end;
   
+{$ifdef ExecDebug}
+static procedure ExecDebug.DisposeAllCommands :=
+  while true do
+  begin
+    var c: EnqueueableExecCommand;
+    if not EnqueueableExecCommand.All.TryTake(c) then break;
+    c.Dispose;
+  end;
+{$endif ExecDebug}
+
 {$endregion ExecCommand}
 
 {$region GetCommand}

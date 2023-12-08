@@ -2,7 +2,7 @@
 
 procedure Test(inp: CommandQueue<CLKernel>);
 begin
-  var Q := CLKernelCCQ.Create(inp).ThenExec1(1, 0).DiscardResult;
+  var Q := inp.MakeCCQ.ThenExec1(1, 0).DiscardResult;
   CLContext.Default.SyncInvoke(Q);
   CLContext.Default.SyncInvoke(Q);
 end;
@@ -15,4 +15,6 @@ Test(code['k1']);
 Test(new ParameterQueue<CLKernel>('k2', code['k2']));
 Test(HFQ(()->code['k3'], false));
 
+{$ifdef ForceMaxDebug}
 ExecDebug.ReportExecCache;
+{$endif ForceMaxDebug}
