@@ -18604,6 +18604,15 @@ v: array of Int16 const / var Vec3s const / var Int16 const / IntPtr const
 	-------------------- |
 	v                    |
 
+# gl::MaxActiveShaderCores + ARM
+!ppt
+count: UInt32
+!ffo
+1
+	UInt32 |
+	------ |
+	count  |
+
 # gl::AlphaFragmentOp1 + ATI
 !ppt
 op:      glFragmentOp1

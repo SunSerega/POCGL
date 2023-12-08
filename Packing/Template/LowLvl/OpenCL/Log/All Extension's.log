@@ -813,6 +813,7 @@
 	Enum [cl::SEMAPHORE_EXPORT_HANDLE_TYPES]
 	Enum [cl::DEVICE_SEMAPHORE_IMPORT_HANDLE_TYPES]
 	Enum [cl::DEVICE_SEMAPHORE_EXPORT_HANDLE_TYPES]
+	Enum [cl::SEMAPHORE_EXPORTABLE]
 	Func [cl::GetSemaphoreHandleForType + KHR]
 
 # clExternalSemaphoreDxFenceKHR (cl_khr_external_semaphore_dx_fence)
@@ -823,6 +824,7 @@
 
 # clExternalSemaphoreSyncFdKHR (cl_khr_external_semaphore_sync_fd)
 	Enum [cl::SEMAPHORE_HANDLE_SYNC_FD]
+	Func [cl::ReImportSemaphoreSyncFd + KHR]
 
 # clExternalSemaphoreWin32KHR (cl_khr_external_semaphore_win32)
 	Enum [cl::SEMAPHORE_HANDLE_OPAQUE_WIN32]

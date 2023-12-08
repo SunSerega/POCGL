@@ -133,6 +133,10 @@ type clExternalSemaphoreKHR = sealed partial class(cl_extension_base) end;
 constructor clExternalSemaphoreKHR.Create(pl: cl_platform_id) := inherited Create(pl);
 function clExternalSemaphoreKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
 
+type clExternalSemaphoreSyncFdKHR = sealed partial class(cl_extension_base) end;
+constructor clExternalSemaphoreSyncFdKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clExternalSemaphoreSyncFdKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
 type clGLSharingKHR = sealed partial class(cl_extension_base) end;
 constructor clGLSharingKHR.Create(pl: cl_platform_id) := inherited Create(pl);
 function clGLSharingKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);

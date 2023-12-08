@@ -4930,7 +4930,7 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-13
+14
 	clErrorCode | cl_semaphore | clSemaphoreInfo                               | UIntPtr          | var T                                      | var UIntPtr          |
 	clErrorCode | cl_semaphore | clSemaphoreInfo                               | UIntPtr          | var T                                      | IntPtr               |
 	clErrorCode | cl_semaphore | clSemaphoreInfo                               | UIntPtr          | pointer                                    | var UIntPtr          |
@@ -4944,6 +4944,7 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_EXPORT_HANDLE_TYPES | UInt32           | var clExternalSemaphoreHandleType          | *                    |
 	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_DEVICE_HANDLE_LIST  | *                | var array of cl_device_id                  | *                    |
 	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_DEVICE_HANDLE_LIST  | UInt32           | var cl_device_id                           | *                    |
+	clErrorCode | cl_semaphore | clSemaphoreInfo.SEMAPHORE_EXPORTABLE          | *                | var clBool                                 | *                    |
 	----------- | ------------ | --------------------------------------------- | ---------------- | ------------------------------------------ | -------------------- |
 	            | sema_object  | param_name                                    | param_value_size | param_value                                | param_value_size_ret |
 
@@ -4962,6 +4963,20 @@ num_platforms: array of UInt32 / var UInt32 / IntPtr
 	clErrorCode | UInt32      | IntPtr                  | IntPtr          |
 	----------- | ----------- | ----------------------- | --------------- |
 	            | num_entries | platforms               | num_platforms   |
+
+# cl::ReImportSemaphoreSyncFd + KHR
+!ppt
+Result:         clErrorCode
+sema_object:    cl_semaphore
+reimport_props: array of UInt64 / var UInt64 / IntPtr
+fd:             Int32
+!ffo
+3
+	clErrorCode | cl_semaphore | array of UInt64 | Int32 |
+	clErrorCode | cl_semaphore | var UInt64      | Int32 |
+	clErrorCode | cl_semaphore | IntPtr          | Int32 |
+	----------- | ------------ | --------------- | ----- |
+	            | sema_object  | reimport_props  | fd    |
 
 # cl::ReleaseCommandBuffer + KHR
 !ppt

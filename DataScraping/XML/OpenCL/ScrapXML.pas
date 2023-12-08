@@ -785,7 +785,10 @@ begin
     else raise new NotImplementedException(etype);
   end;
   
-  var val_type := BasicTypeSource.FromName(org_name).GetItem;
+  var val_type_s := BasicTypeSource.FromName(org_name);
+  if val_type_s=nil then
+    raise nil;
+  var val_type := val_type_s.GetItem;
   
   var res_name := new GroupName(self.Name.ApiName, self.Name.VendorSuffix,
     self.Name.LocalName.Split('_').SelectMany(w->w.First.ToUpper+w.Skip(1)).JoinToString

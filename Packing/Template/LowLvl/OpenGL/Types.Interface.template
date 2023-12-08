@@ -14975,6 +14975,13 @@
     public static property FRAGMENT_SHADING_RATE_WITH_SHADER_DEPTH_STENCIL_WRITES_SUPPORTED:    glGetPName read new glGetPName($96DD);
     public static property FRAGMENT_SHADING_RATE_WITH_SAMPLE_MASK_SUPPORTED:                    glGetPName read new glGetPName($96DE);
     public static property FRAGMENT_SHADING_RATE_ATTACHMENT_WITH_DEFAULT_FRAMEBUFFER_SUPPORTED: glGetPName read new glGetPName($96DF);
+    public static property SHADER_CORE_COUNT:                                                   glGetPName read new glGetPName($96F0);
+    public static property SHADER_CORE_ACTIVE_COUNT:                                            glGetPName read new glGetPName($96F1);
+    public static property SHADER_CORE_PRESENT_MASK:                                            glGetPName read new glGetPName($96F2);
+    public static property SHADER_CORE_MAX_WARP_COUNT:                                          glGetPName read new glGetPName($96F3);
+    public static property SHADER_CORE_PIXEL_RATE:                                              glGetPName read new glGetPName($96F4);
+    public static property SHADER_CORE_TEXEL_RATE:                                              glGetPName read new glGetPName($96F5);
+    public static property SHADER_CORE_FMA_RATE:                                                glGetPName read new glGetPName($96F6);
     
     public function ToString: string; override;
     begin
@@ -16080,6 +16087,20 @@
         Result := 'FRAGMENT_SHADING_RATE_WITH_SAMPLE_MASK_SUPPORTED' else
       if FRAGMENT_SHADING_RATE_ATTACHMENT_WITH_DEFAULT_FRAMEBUFFER_SUPPORTED = self then
         Result := 'FRAGMENT_SHADING_RATE_ATTACHMENT_WITH_DEFAULT_FRAMEBUFFER_SUPPORTED' else
+      if SHADER_CORE_COUNT = self then
+        Result := 'SHADER_CORE_COUNT' else
+      if SHADER_CORE_ACTIVE_COUNT = self then
+        Result := 'SHADER_CORE_ACTIVE_COUNT' else
+      if SHADER_CORE_PRESENT_MASK = self then
+        Result := 'SHADER_CORE_PRESENT_MASK' else
+      if SHADER_CORE_MAX_WARP_COUNT = self then
+        Result := 'SHADER_CORE_MAX_WARP_COUNT' else
+      if SHADER_CORE_PIXEL_RATE = self then
+        Result := 'SHADER_CORE_PIXEL_RATE' else
+      if SHADER_CORE_TEXEL_RATE = self then
+        Result := 'SHADER_CORE_TEXEL_RATE' else
+      if SHADER_CORE_FMA_RATE = self then
+        Result := 'SHADER_CORE_FMA_RATE' else
         Result := $'glGetPName[{self.val}]';
     end;
     

@@ -4896,6 +4896,7 @@ type
     public static property SEMAPHORE_TYPE:                clSemaphoreInfo read new clSemaphoreInfo($203D);
     public static property SEMAPHORE_EXPORT_HANDLE_TYPES: clSemaphoreInfo read new clSemaphoreInfo($203F);
     public static property SEMAPHORE_DEVICE_HANDLE_LIST:  clSemaphoreInfo read new clSemaphoreInfo($2053);
+    public static property SEMAPHORE_EXPORTABLE:          clSemaphoreInfo read new clSemaphoreInfo($2054);
     
     public function ToString: string; override;
     begin
@@ -4913,6 +4914,8 @@ type
         Result := 'SEMAPHORE_EXPORT_HANDLE_TYPES' else
       if SEMAPHORE_DEVICE_HANDLE_LIST = self then
         Result := 'SEMAPHORE_DEVICE_HANDLE_LIST' else
+      if SEMAPHORE_EXPORTABLE = self then
+        Result := 'SEMAPHORE_EXPORTABLE' else
         Result := $'clSemaphoreInfo[{self.val}]';
     end;
     
@@ -18167,9 +18170,34 @@ type
     public const ExtensionString = 'cl_khr_external_semaphore_opaque_fd';
   end;
   
+  [PCUNotRestore]
+  [System.Security.SuppressUnmanagedCodeSecurity]
   ///
-  clExternalSemaphoreSyncFdKHR = static class
+  clExternalSemaphoreSyncFdKHR = sealed partial class
+    public constructor(pl: cl_platform_id);
+    private constructor := raise new System.NotSupportedException;
+    public static PlatformLess := new clExternalSemaphoreSyncFdKHR(default(cl_platform_id));
+    private function GetProcAddress(name: string): IntPtr;
+    private static function GetProcOrNil<T>(fadr: IntPtr) :=
+      fadr=IntPtr.Zero ? default(T) :
+        Marshal.GetDelegateForFunctionPointer&<T>(fadr);
     public const ExtensionString = 'cl_khr_external_semaphore_sync_fd';
+    
+    public ReImportSemaphoreSyncFdKHR_adr := GetProcAddress('clReImportSemaphoreSyncFdKHR');
+    private ntv_ReImportSemaphoreSyncFdKHR_1 := GetProcOrNil&<function(sema_object: cl_semaphore; var reimport_props: UInt64; fd: Int32): clErrorCode>(ReImportSemaphoreSyncFdKHR_adr);
+    private ntv_ReImportSemaphoreSyncFdKHR_2 := GetProcOrNil&<function(sema_object: cl_semaphore; reimport_props: IntPtr; fd: Int32): clErrorCode>(ReImportSemaphoreSyncFdKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ReImportSemaphoreSyncFdKHR(sema_object: cl_semaphore; reimport_props: array of UInt64; fd: Int32): clErrorCode;
+    type PUInt64 = ^UInt64;
+    begin
+      Result := if (reimport_props<>nil) and (reimport_props.Length<>0) then
+        ntv_ReImportSemaphoreSyncFdKHR_1(sema_object, reimport_props[0], fd) else
+        ntv_ReImportSemaphoreSyncFdKHR_1(sema_object, PUInt64(nil)^, fd);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ReImportSemaphoreSyncFdKHR(sema_object: cl_semaphore; var reimport_props: UInt64; fd: Int32): clErrorCode :=
+      ntv_ReImportSemaphoreSyncFdKHR_1(sema_object, reimport_props, fd);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ReImportSemaphoreSyncFdKHR(sema_object: cl_semaphore; reimport_props: IntPtr; fd: Int32): clErrorCode :=
+      ntv_ReImportSemaphoreSyncFdKHR_2(sema_object, reimport_props, fd);
+    
   end;
   
   ///
@@ -19130,6 +19158,14 @@ type
       var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<cl_device_id>);
       Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.SEMAPHORE_DEVICE_HANDLE_LIST, param_value_sz,param_value,IntPtr.Zero);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSemaphoreInfoKHR_SEMAPHORE_EXPORTABLE(sema_object: cl_semaphore; var param_value: clBool; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clBool>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetSemaphoreInfoKHR(sema_object, clSemaphoreInfo.SEMAPHORE_EXPORTABLE, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
     
     public ReleaseSemaphoreKHR_adr := GetProcAddress('clReleaseSemaphoreKHR');
     private ntv_ReleaseSemaphoreKHR_1 := GetProcOrNil&<function(sema_object: cl_semaphore): clErrorCode>(ReleaseSemaphoreKHR_adr);
@@ -19660,6 +19696,10 @@ function clExternalMemoryKHR.GetProcAddress(name: string) := pl.GetProcAddress(n
 type clExternalSemaphoreKHR = sealed partial class(cl_extension_base) end;
 constructor clExternalSemaphoreKHR.Create(pl: cl_platform_id) := inherited Create(pl);
 function clExternalSemaphoreKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clExternalSemaphoreSyncFdKHR = sealed partial class(cl_extension_base) end;
+constructor clExternalSemaphoreSyncFdKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clExternalSemaphoreSyncFdKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
 
 type clGLSharingKHR = sealed partial class(cl_extension_base) end;
 constructor clGLSharingKHR.Create(pl: cl_platform_id) := inherited Create(pl);

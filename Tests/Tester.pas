@@ -389,7 +389,7 @@ type
       
       if 'OpenCLABC' in allowed_modules then
       begin
-        yield (lvl+1, 'CLContext', $'{cl_context_gen_time} ({TimeToText(get_cl_context_gen_time_sum)})');
+        yield (lvl+1, 'CLContext', $'{TimeToText(cl_context_gen_time)} ({TimeToText(get_cl_context_gen_time_sum)})');
         yield cl_context_gen_comp.MakeLogLines(lvl+2, 'Comp').Single;
         yield cl_context_gen_exec.MakeLogLines(lvl+2, 'Exec').Single;
       end;

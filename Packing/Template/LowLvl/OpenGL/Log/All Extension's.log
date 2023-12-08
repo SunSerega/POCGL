@@ -9694,6 +9694,16 @@
 
 # gles2Rgba8ARM (GL_ARM_rgba8)
 
+# gles2ShaderCorePropertiesARM (GL_ARM_shader_core_properties)
+	Enum [gl::SHADER_CORE_COUNT]
+	Enum [gl::SHADER_CORE_ACTIVE_COUNT]
+	Enum [gl::SHADER_CORE_PRESENT_MASK]
+	Enum [gl::SHADER_CORE_MAX_WARP_COUNT]
+	Enum [gl::SHADER_CORE_PIXEL_RATE]
+	Enum [gl::SHADER_CORE_TEXEL_RATE]
+	Enum [gl::SHADER_CORE_FMA_RATE]
+	Func [gl::MaxActiveShaderCores + ARM]
+
 # gles2ShaderFramebufferFetchARM (GL_ARM_shader_framebuffer_fetch)
 	Enum [gl::FETCH_PER_SAMPLE]
 	Enum [gl::FRAGMENT_SHADER_FRAMEBUFFER_FETCH_MRT]
@@ -10891,6 +10901,19 @@
 
 # gles2ProgramBinaryFormatsMESA (GL_MESA_program_binary_formats)
 	Enum [gl::PROGRAM_BINARY_FORMAT]
+
+# gles2SamplerObjectsMESA (GL_MESA_sampler_objects)
+	Enum [gl::SAMPLER_BINDING]
+	Func [gl::GenSamplers]
+	Func [gl::DeleteSamplers]
+	Func [gl::IsSampler]
+	Func [gl::BindSampler]
+	Func [gl::SamplerParameteri]
+	Func [gl::SamplerParameteriv]
+	Func [gl::SamplerParameterf]
+	Func [gl::SamplerParameterfv]
+	Func [gl::GetSamplerParameteriv]
+	Func [gl::GetSamplerParameterfv]
 
 # gles2ShaderIntegerFunctionsMESA (GL_MESA_shader_integer_functions)
 

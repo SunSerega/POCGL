@@ -1337,6 +1337,9 @@ array of clExternalSemaphoreHandleType
 --- SEMAPHORE_DEVICE_HANDLE_LIST
 !output
 array of cl_device_id
+--- SEMAPHORE_EXPORTABLE
+!output
+clBool
 
 # cl.GetICDLoaderInfoOCLICD
 1

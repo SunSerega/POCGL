@@ -4862,6 +4862,7 @@
     public static property SEMAPHORE_TYPE:                clSemaphoreInfo read new clSemaphoreInfo($203D);
     public static property SEMAPHORE_EXPORT_HANDLE_TYPES: clSemaphoreInfo read new clSemaphoreInfo($203F);
     public static property SEMAPHORE_DEVICE_HANDLE_LIST:  clSemaphoreInfo read new clSemaphoreInfo($2053);
+    public static property SEMAPHORE_EXPORTABLE:          clSemaphoreInfo read new clSemaphoreInfo($2054);
     
     public function ToString: string; override;
     begin
@@ -4879,6 +4880,8 @@
         Result := 'SEMAPHORE_EXPORT_HANDLE_TYPES' else
       if SEMAPHORE_DEVICE_HANDLE_LIST = self then
         Result := 'SEMAPHORE_DEVICE_HANDLE_LIST' else
+      if SEMAPHORE_EXPORTABLE = self then
+        Result := 'SEMAPHORE_EXPORTABLE' else
         Result := $'clSemaphoreInfo[{self.val}]';
     end;
     
