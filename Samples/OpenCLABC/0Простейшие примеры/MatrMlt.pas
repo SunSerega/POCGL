@@ -44,13 +44,15 @@ try
   // Подготовка очередей выполнения
   
   var Calc_C_Q :=
+    // Можно передавать результаты .ThenWriteArray2
+    // вместо "A" и "B" в "MatrMltMatr", но тогда
+    // они будут тратить лишние ресурсы на параллельность
+    A.MakeCCQ.ThenWriteArray2(A_Matr) +
+    B.MakeCCQ.ThenWriteArray2(B_Mart) +
     // Выделяем ядра в форме квадрата, всего W*W ядер
     code['MatrMltMatr'].MakeCCQ.ThenExec2(W, W,
-      A.MakeCCQ.ThenWriteArray2(A_Matr),
-      B.MakeCCQ.ThenWriteArray2(B_Mart),
-      C,
-      W
-    // DiscardResult не обязательно, но желательно
+      A, B, C, W
+    // .DiscardResult не обязателен, но желателен
     // чтобы не использовать результат случайно
     ).DiscardResult;
   
@@ -64,11 +66,9 @@ try
     end, false).DiscardResult;
   
   var Calc_V2_Q :=
+    V1.MakeCCQ.ThenWriteArray(V1_Arr) +
     code['MatrMltVec'].MakeCCQ.ThenExec1(W,
-      C,
-      V1.MakeCCQ.ThenWriteArray(V1_Arr),
-      V2,
-      W
+      C, V1, V2, W
     ).DiscardResult;
   
   var Otp_V2_Q :=
@@ -78,9 +78,9 @@ try
       'Вектор V2 = C*V1:'.Println;
       V2_Arr.Println;
       Println;
-    // Единственный DiscardResult, меняющий поведение очереди:
-    // С ним не выделяются ресурсы на то, чтобы передать V2_Arr
-    // Из результата ThenGetArray1 в результат SyncInvoke
+    // Единственный .DiscardResult, меняющий поведение очереди:
+    // С ним не выделяются ресурсы на передачу V2_Arr
+    // Из результата .ThenGetArray1 в результат SyncInvoke
     end, false).DiscardResult;
   
   // Выполнение всего и сразу асинхронный вывод
@@ -88,7 +88,9 @@ try
   CLContext.Default.SyncInvoke(
     
     Calc_C_Q +
-    Calc_V2_Q * Otp_C_Q + // Считать V2 и выводить C можно одновременно, поэтому тут *, т.е. параллельное выполнение
+    // Считать V2 и выводить C можно одновременно,
+    // поэтому тут *, т.е. параллельное выполнение
+    Calc_V2_Q * Otp_C_Q +
     Otp_V2_Q
     
   );
@@ -101,8 +103,8 @@ try
   V1.Dispose;
   V2.Dispose;
 except
-  // except позволяет получать список ошибку,
-  // возникшую при выполнении SyncInvoke
+  // except позволяет получать список ошибок,
+  // возникших при выполнении SyncInvoke
   on ae: System.AggregateException do
     foreach var e in ae.InnerExceptions do
       Println(e);

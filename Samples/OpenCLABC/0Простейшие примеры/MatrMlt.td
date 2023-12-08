@@ -38,28 +38,26 @@ OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_
 final = ErrHandlerBranchCombinator#0: CLArrayCommandGetArrayAutoSize<real> origin+par+enq union
 	branch#0/2 = ErrHandlerInitial#1: ExecuteEnqFunc container
 	branch#1/2 = ErrHandlerBranchCombinator#2: CLTaskGlobalData.ParallelInvoke branches union
-		origin = ErrHandlerBranchCombinator#3: CLKernelCommandExec2 origin+par+enq union
-			branch#0/3 = ErrHandlerInitial#4: ExecuteEnqFunc container
-			branch#1/3 = ErrHandlerInitial#5: ExecuteEnqFunc container
-			branch#2/3 = ErrHandlerInitial#6: ExecuteEnqFunc container
-		branch#0/2 = ErrHandlerBranchCombinator#7: CLKernelCommandExec1 origin+par+enq union
-			branch#0/3 = ErrHandlerInitial#8: ExecuteEnqFunc container
-			branch#1/3 = ErrHandlerBranchBud#9: branch invoke
-			origin = ErrHandlerBranchCombinator#3: CLKernelCommandExec2 origin+par+enq union
-			branch#2/3 = ErrHandlerInitial#10: ExecuteEnqFunc container
-		branch#1/2 = ErrHandlerBranchCombinator#11: CLArrayCommandGetArray2<real> origin+par+enq union
-			branch#0/2 = ErrHandlerInitial#12: ExecuteEnqFunc container
-			branch#1/2 = ErrHandlerBranchBud#13: branch invoke
-			origin = ErrHandlerBranchCombinator#3: CLKernelCommandExec2 origin+par+enq union
-(total 14 handlers)
-[EventDebug]: 13 event's created
-[QueueDebug]: 3 queue's created
+		origin = ErrHandlerInitial#3: ExecuteEnqFunc container
+		branch#0/2 = ErrHandlerBranchCombinator#4: CLKernelCommandExec1 origin+par+enq union
+			branch#0/2 = ErrHandlerInitial#5: ExecuteEnqFunc container
+			branch#1/2 = ErrHandlerBranchCombinator#6: CLArrayCommandWriteArrayAutoSize<real> origin+par+enq union
+				branch#0/2 = ErrHandlerInitial#7: ExecuteEnqFunc container
+				branch#1/2 = ErrHandlerBranchBud#8: branch invoke
+				origin = ErrHandlerInitial#3: ExecuteEnqFunc container
+		branch#1/2 = ErrHandlerBranchCombinator#9: CLArrayCommandGetArray2<real> origin+par+enq union
+			branch#0/2 = ErrHandlerInitial#10: ExecuteEnqFunc container
+			branch#1/2 = ErrHandlerBranchBud#11: branch invoke
+			origin = ErrHandlerInitial#3: ExecuteEnqFunc container
+(total 12 handlers)
+[EventDebug]: 10 event's created
+[QueueDebug]: 2 queue's created
 [ExecDebug]: 2 cache entries created
-[QueueResNil]: 20
-[QueueRes<T>]: 15
+[QueueResNil]: 23
+[QueueRes<T>]: 12
 	QueueResValDirect<array [,] of real>: 3
 	QueueResValDirect<array of real>: 2
-	QueueResValDirect<CLArray<real>>: 5
+	QueueResValDirect<CLArray<real>>: 2
 	QueueResValDirect<integer>: 5
 
 #ReqModules
