@@ -106,7 +106,7 @@ jobs:
               
                 (
                     cd ../
-                    curl -L -O https://github.com/SunSerega/pascalabcnet/releases/download/unstable/PABCNETC.zip
+                    curl -L -O https://github.com/SunSerega/pascalabcnet/releases/download/custom-build-tag/PABCNETC.zip
                     #file -i PABCNETC.zip
                 )
                 
