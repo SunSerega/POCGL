@@ -162,20 +162,3 @@ jobs:
                     echo "No changes detected"
                 fi
                 
-    Trigger-dependant-rep-actions:
-        runs-on: ubuntu-latest
-        needs: [pack-win, pack-ubuntu]
-        
-        steps:
-            - uses: actions/github-script@main
-              with:
-                github-token: ${{ secrets.PAT_TOKEN }}
-                script: |
-                
-                    await github.rest.actions.createWorkflowDispatch({
-                        owner: 'SunSerega',
-                        repo: 'OpenCL-test',
-                        workflow_id: 'on commit.yaml',
-                        ref: 'main',
-                    });
-                    
