@@ -13,15 +13,14 @@
 // - Ctrl+C:      Скопировать положение камеры (+Shift чтобы добавить комментарий)
 // - Ctrl+V:      Вставить положение камеры
 // - Win+V:       Вставить положение камеры из истории буфера обмена
+// - Q:           Сбросить визуальную информацию предыдущих кадров
 //TODO:
-// - Alt:         Вид без копирования информации предыдущих кадров
-// - Alt+Enter:   Полноэкранный режим
 // - B:           Телепортировать камеру к курсору (Blink)
 // --- Пока держат - выводить точку в начале заголовка, а телепортировать когда отпускают
 
 // В модуле Settings находятся все основных константы
 // + объяснение логики программы, чтобы понимать зачем эти константы
-// Ctrl+тыкните на название модуля в uses чтобы открыть его
+// Ctrl+тыкните на название модуля тут, в uses, чтобы открыть его
 uses Settings;
 
 //TODO Вывод шагов под курсором чтобы норм дебажить
@@ -30,17 +29,11 @@ uses Settings;
 //TODO Выводить отдельно для sheet и для блоков
 // - Для этого надо находить номер блока и точки в нём и кидать (x;y) точки в CQ_GetData
 
-//TODO Alt-режим почему то не работает...
-// - Точнее, если масштабировать с ним - начинаются глюки
-// - Вообще, он уже и не полезен. Зато полезна была бы возможность сбрасывать sheet вручную
-
-//TODO Отдельная программа для полной прорисовки кардров с движением камеры от 1 точки (и масштаба) к другой
-
 //TODO При очень большом приближении край рисунка ведёт себя криво
 // - Потому что FirstWordToReal
 // - Надо в виде PointComponent считать разницу сначала
 
-//TODO mouse_grab_move ведёт себя не стабильно (точка которую держат может потихоньку сдвигаться)
+//TODO mouse_grab_move ведёт себя не стабильно: точка которую держат может потихоньку сдвигаться
 // - Надо запоминать camera.pos в начале движения мышкой
 // - И затем пересчитывать на каждом кадре относительно него
 
@@ -48,6 +41,13 @@ uses Settings;
 // - Загруженность памяти (VRAM,RAM,Drive)
 // - Скорость обработки блоков (ну и текущее кол-во слов там же)
 // - Для начала выводить сколько памяти тратится на sheet-ы
+
+//TODO Всё ещё наблюдаются редкие глюки CQ_CopySheet, особенно при больших прыжках масштаба
+//TODO Так же заметил с горизонтальным движением, когда не хватает оперативки
+// - Может это скорее потому что что-то не обнуляется?
+// - Сложно тестировать потому что начинаются ещё и всякие INVALID_KERNEL_ARGS вдруг...
+
+//TODO Отдельная программа для полной прорисовки кардров с движением камеры от 1 точки (и масштаба) к другой
 
 uses System;
 uses System.Windows.Forms;
@@ -216,19 +216,6 @@ begin
   
   {$endregion Закрытие}
   
-  var need_resize := false;
-  f.Shown += (o,e)->
-  begin
-    need_resize := true;
-    f.Resize += (o,e)->
-    begin
-      need_resize := true;
-      // Чтобы не мигало - ждём завершения одной перерисовки
-      // в потоке формы, то есть блокируя отсыл информации системе
-      while need_resize do ;
-    end;
-  end;
-  
   {$region speak}
   
   var speak: string->();
@@ -341,10 +328,11 @@ begin
   
   {$endregion speak}
   
+  var need_resize := false;
   var copy_camera_pos := default(Tuple<string>);
   var paste_camera_pos := default(Tuple<CameraPos>);
   var mouse_captured := true;
-  var draw_alt_mode := false;
+  var sheet_less_mode := false;
   var mouse_pos := default(Vec2i);
   var mouse_grab_move := default(Vec2i);
   var scale_speed_add := 0;
@@ -354,6 +342,22 @@ begin
   var slow_scale_dir2 := 0;
   {$region Управление}
   begin
+    
+    {$region resize}
+    
+    f.Shown += (o,e)->
+    begin
+      need_resize := true;
+      f.Resize += (o,e)->
+      begin
+        need_resize := true;
+        // Чтобы не мигало - ждём завершения одной перерисовки
+        // в потоке формы, то есть блокируя отсыл информации системе
+        while need_resize do ;
+      end;
+    end;
+    
+    {$endregion resize}
     
     {$region copy/paste}
     
@@ -441,12 +445,12 @@ begin
     
     {$endregion mouse_captured}
     
-    {$region draw_alt_mode}
+    {$region sheet_less_mode}
     
-    f.KeyDown += (o,e)->(draw_alt_mode := e.Alt);
-    f.KeyUp += (o,e)->(draw_alt_mode := e.Alt);
+    f.KeyDown += (o,e)->if e.KeyCode=Keys.Q then sheet_less_mode := true;
+    f.KeyUp   += (o,e)->if e.KeyCode=Keys.Q then sheet_less_mode := false;
     
-    {$endregion draw_alt_mode}
+    {$endregion sheet_less_mode}
     
     {$region camera reset}
     
@@ -578,8 +582,8 @@ begin
 //    gl.NamedBufferData(buffer_temp, new IntPtr(3*sizeof(real)), IntPtr.Zero, VertexBufferObjectUsage.DYNAMIC_READ);
 //    gl.BindBufferBase(BufferTarget.SHADER_STORAGE_BUFFER, 1, buffer_temp);
     
-    var t_full := new UpdateTimingQueue(120);
-    var t_body := new UpdateTimingQueue(120);
+    var t_full := new UpdateTimingQueue(30);
+    var t_body := new UpdateTimingQueue(30);
     
     var camera := new CameraPos(f.ClientSize.Width, f.ClientSize.Height);
     var scale_speed := 0.0;
@@ -664,20 +668,21 @@ begin
       var render_sheet_w := b_cx * block_w;
       var render_sheet_h := b_cy * block_w;
       
-      var need_back_sheet := not draw_alt_mode
+      var l_sheet_less_mode := sheet_less_mode;
+      var need_back_sheet := not l_sheet_less_mode
         and (render_info.last_sheet_diff<>nil)
         and not render_info.last_sheet_diff.Value.IsNoChange;
       
       var Q_Acquire := CQNil;
       var Q_Release := CQNil;
       var Q_Init := CQNil;
-      if need_back_sheet then
+      if need_back_sheet and not l_sheet_less_mode then
       begin
         Q_Acquire += CQAcquireGL(sheet_draw.b_cl);
         Q_Release += CQReleaseGL(sheet_draw.b_cl);
         Swap(sheet_back, sheet_draw);
       end;
-      var need_zero_out := sheet_draw.EnsureLen(render_sheet_w * render_sheet_h);
+      var need_zero_out := l_sheet_less_mode or sheet_draw.EnsureLen(render_sheet_w * render_sheet_h);
       Q_Acquire += CQAcquireGL(sheet_draw.b_cl);
       Q_Release += CQReleaseGL(sheet_draw.b_cl);
       if need_back_sheet or need_zero_out then
@@ -728,8 +733,9 @@ begin
       
 //      gl.BindBufferBase(glBufferTarget.SHADER_STORAGE_BUFFER, ssb_sheet, gl_buffer.Zero);
       
-      {$endregion Кадр}
       gl.Finish; //TODO Использовать обмент ивентами OpenCL/OpenGL
+      {$endregion Кадр}
+      
       var err := gl.GetError;
       if err.IS_ERROR then MessageBox.Show(err.ToString);
       
@@ -766,13 +772,16 @@ begin
       if BlockUpdater.LackingVRAM then
         title_parts += $'LACKING VRAM!!!';
       
-      f.BeginInvoke(()->
-      try
-        f.Text := title_parts.JoinToString(', ');
-      except
-        on e: Exception do
-          MessageBox.Show(e.ToString);
-      end);
+      System.Threading.Tasks.Task.Run(()->
+        f.Invoke(()->
+        try
+          f.Text := title_parts.JoinToString(', ');
+        except
+          on e: Exception do
+            MessageBox.Show(e.ToString);
+        end)
+      );
+      
       EndFrame;
     except
       on e: Exception do

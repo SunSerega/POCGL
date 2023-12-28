@@ -395,7 +395,7 @@ var AllStages := HSet(
           );
           var DisallowedExtensions := HSet(
             '.gitignore', '.td',
-            '.cache',
+            '.cache', '.dat',
             '.exe', '.pdb', '.pcu'
           );
           
