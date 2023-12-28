@@ -97,6 +97,107 @@ type
       FixScalePow;
     end;
     
+    public function ToString(comment: string): string;
+    begin
+      var sb := new StringBuilder;
+      
+      if comment<>nil then
+      begin
+        sb += 'c=';
+        sb += comment.Replace('\','\\').Replace(#13#10,#10).Replace(#10,'\'#10);
+        sb += #10;
+      end;
+      
+      sb += 'pos.r=';
+      sb += self.pos.r.ToString;
+      sb += #10;
+      
+      sb += 'pos.i=';
+      sb += self.pos.i.ToString;
+      sb += #10;
+      
+      sb += 'scale=';
+      sb += self.scale_fine.ToString;
+      sb += '*2^';
+      sb += self.scale_pow.ToString;
+      
+      Result := sb.ToString;
+    end;
+    public function ToString: string; override := ToString(nil);
+    
+    public static function Parse(text: string; on_comment: string->()): CameraPos;
+    begin
+      Result := default(CameraPos);
+      var scale_is_set := false;
+      
+      var l_enmr := text.Replace(#13#10,#10).Split(#10).AsEnumerable.GetEnumerator;
+      while l_enmr.MoveNext do
+      begin
+        var l := l_enmr.Current;
+        if string.IsNullOrWhiteSpace(l) then continue;
+        var spl := l.Split(|'='|,2);
+        if spl.Length<>2 then
+          raise new System.FormatException(l);
+        case spl[0] of
+          
+          'pos.r':
+            if Result.pos.r.Words=nil then
+              Result.pos.r := PointComponent.Parse(spl[1]) else
+              raise new System.FormatException($'pos.r is already set: [{#10}{text}{#10}]');
+          'pos.i':
+            if Result.pos.i.Words=nil then
+              Result.pos.i := PointComponent.Parse(spl[1]) else
+              raise new System.FormatException($'pos.i is already set: [{#10}{text}{#10}]');
+          
+          'scale':
+          begin
+            if scale_is_set then
+              raise new System.FormatException($'scale is already set: [{#10}{text}{#10}]');
+            spl := spl[1].Split(|'*2^'|,2,System.StringSplitOptions.None);
+            Result.scale_fine := single.Parse(spl[0]);
+            Result.scale_pow := integer.Parse(spl[1]);
+            scale_is_set := true;
+          end;
+          
+          'c':
+          begin
+            var sb := new StringBuilder(spl[1]);
+            while true do
+            begin
+              
+              begin
+                var last_bs_c := 0;
+                while last_bs_c < sb.Length do
+                begin
+                  if sb[sb.Length-1-last_bs_c] <> '\' then break;
+                  last_bs_c += 1;
+                end;
+                if last_bs_c.IsEven then break;
+              end;
+              
+              sb.Length -= 1;
+              if not l_enmr.MoveNext then
+                raise new System.FormatException('Unfinished comment');
+              sb += #10;
+              sb += l_enmr.Current;
+              
+            end;
+            
+            if on_comment<>nil then on_comment(sb.ToString.Replace('\\','\'));
+          end;
+          
+        end;
+      end;
+      
+      if Result.pos.r.Words=nil then
+        raise new System.FormatException($'pos.r not set: [{#10}{text}{#10}]');
+      if Result.pos.i.Words=nil then
+        raise new System.FormatException($'pos.i not set: [{#10}{text}{#10}]');
+      if not scale_is_set then
+        raise new System.FormatException($'scale not set: [{#10}{text}{#10}]');
+      
+    end;
+    
   end;
 
 end.

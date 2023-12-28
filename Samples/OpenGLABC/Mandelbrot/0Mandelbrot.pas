@@ -5,14 +5,15 @@
 
 // Управление:
 // - Escape:      Завершение программы (дважды или +Ctrl чтобы отменить сохранение)
-// - Space:       Сбросить положение камеры
 // - Mouse Drag:  Быстрое движение камеры
 // - Arrows:      Гладкое движение камеры
 // - Scroll:      Быстрое изменение масштаба
 // - "+" и "-":   Гладкое изменение масштаба
-//TODO:
+// - Space:       Сбросить положение камеры
 // - Ctrl+C:      Скопировать положение камеры (+Shift чтобы добавить комментарий)
 // - Ctrl+V:      Вставить положение камеры
+// - Win+V:       Вставить положение камеры из истории буфера обмена
+//TODO:
 // - Alt:         Вид без копирования информации предыдущих кадров
 // - Alt+Enter:   Полноэкранный режим
 // - B:           Телепортировать камеру к курсору (Blink)
@@ -161,12 +162,16 @@ begin
 //  f.ClientSize := new System.Drawing.Size(1206,603); // 603p, 2:1
   f.StartPosition := FormStartPosition.CenterScreen;
   
+  var camera_saved_pos_fname := 'camera.dat';
+  var camera_saved_pos_enc := new System.Text.UTF8Encoding(true);
+  
   {$region Закрытие}
   
   f.KeyUp += (o,e)->
   case e.KeyCode of
     Keys.Escape: f.Close;
   end;
+  var wait_for_last_frame := true;
   f.Closing += (o,e)->
   begin
     if Control.ModifierKeys.HasFlag(Keys.Control) then Halt;
@@ -174,7 +179,11 @@ begin
     var shutdown_progress_form := new Form;
     shutdown_progress_form.StartPosition := FormStartPosition.CenterScreen;
     shutdown_progress_form.FormBorderStyle := FormBorderStyle.None;
-    shutdown_progress_form.Closing += (o,e)->Halt();
+    shutdown_progress_form.Closing += (o,e)->
+    begin
+      while wait_for_last_frame do ;
+      Halt;
+    end;
     shutdown_progress_form.KeyUp += (o,e)->
     case e.KeyCode of
       Keys.Escape: shutdown_progress_form.Close;
@@ -220,9 +229,123 @@ begin
     end;
   end;
   
+  {$region speak}
+  
+  var speak: string->();
+  try
+    {$reference System.Speech.dll}
+    
+    var all_voices := System.Speech.Synthesis.SpeechSynthesizer.Create.GetInstalledVoices;
+    if all_voices.Count=0 then raise new System.Exception('No installed voices');
+    
+    var speaker_per_voice := all_voices.ToDictionary(v->v, v->
+    begin
+      Result := new System.Speech.Synthesis.SpeechSynthesizer;
+      Result.SetOutputToDefaultAudioDevice;
+      Result.SelectVoice(v.VoiceInfo.Name);
+      if Result.Voice<>v.VoiceInfo then
+        raise new System.InvalidOperationException;
+    end);
+    
+    var speaker_per_letter := new Dictionary<char, System.Speech.Synthesis.SpeechSynthesizer>;
+    var add_letter_voice := procedure(ch: char; v: System.Speech.Synthesis.InstalledVoice)->
+    begin
+      var ll := ch.ToLower;
+      var lu := ch.ToUpper;
+      if ll=lu then raise new System.InvalidOperationException;
+      var speaker := speaker_per_voice[v];
+      speaker_per_letter.Add(ll, speaker);
+      speaker_per_letter.Add(lu, speaker);
+    end;
+    
+    var en_voice := all_voices.FirstOrDefault(v->'en' in v.VoiceInfo.Culture.Name);
+    if en_voice=nil then
+      $'No en voice!'.Println else
+      for var ch := 'a' to 'z' do
+        add_letter_voice(ch, en_voice);
+    
+    var ru_voice := all_voices.FirstOrDefault(v->'ru' in v.VoiceInfo.Culture.Name);
+    if ru_voice=nil then
+      $'No ru voice!'.Println else
+    begin
+      for var ch := 'а' to 'я' do
+        add_letter_voice(ch, ru_voice);
+      add_letter_voice('ё', ru_voice);
+    end;
+    
+    var def_voice := en_voice ?? ru_voice ?? all_voices.First;
+    var def_speaker := speaker_per_voice[def_voice];
+    
+    speak := s->System.Threading.Tasks.Task.Run(()->
+    try
+      foreach var sp in speaker_per_voice.Values do
+        sp.SpeakAsyncCancelAll;
+      
+      var sb := new StringBuilder(s.Length);
+      var speaker := default(System.Speech.Synthesis.SpeechSynthesizer);
+      var dump := ()->
+      begin
+        if sb.Length=0 then exit;
+//        $'{speaker.Voice.Culture.Name} says [{sb}]'.Println;
+        speaker.Speak(sb.ToString);
+        sb.Clear;
+      end;
+      var add_char := procedure(ch: char; new_speaker: System.Speech.Synthesis.SpeechSynthesizer)->
+      begin
+        if speaker<>new_speaker then dump;
+        speaker := new_speaker;
+        sb += ch;
+      end;
+      
+      var sb_neutral := new StringBuilder(s.Length);
+      foreach var ch in s do
+      begin
+        var new_speaker := speaker_per_letter.Get(ch);
+//        $'[{ch}: {new_speaker?.Voice.Culture.Name??''nil''}]'.Println;
+        if new_speaker=nil then
+        begin
+          sb_neutral.Append(ch);
+          continue;
+        end;
+        
+        if speaker in |nil,new_speaker| then
+        begin
+          speaker := new_speaker;
+          sb.Append(sb_neutral);
+          sb_neutral.Clear;
+        end else
+        begin
+          for var i := 0 to sb_neutral.Length-1 do
+            add_char(sb_neutral[i], def_speaker);
+          sb_neutral.Clear;
+        end;
+        
+        add_char(ch, new_speaker);
+      end;
+      if speaker=nil then
+        speaker := def_speaker;
+      sb.Append(sb_neutral);
+      
+      dump;
+    except
+      on System.OperationCanceledException do
+        ;
+      on e: Exception do
+        MessageBox.Show(e.ToString, 'Error speaking');
+    end);
+    
+  except
+    on e: Exception do
+      Println('Failed to init TTS:', e);
+  end;
+  
+  {$endregion speak}
+  
+  var copy_camera_pos := default(Tuple<string>);
+  var paste_camera_pos := default(Tuple<CameraPos>);
+  var mouse_captured := true;
   var draw_alt_mode := false;
   var mouse_pos := default(Vec2i);
-  var mouse_captured := true;
   var mouse_grab_move := default(Vec2i);
   var scale_speed_add := 0;
   var camera_reset := false;
@@ -232,11 +355,100 @@ begin
   {$region Управление}
   begin
     
+    {$region copy/paste}
+    
+    if FileExists(camera_saved_pos_fname) then
+    try
+      paste_camera_pos := Tuple.Create(CameraPos.Parse(ReadAllText(camera_saved_pos_fname), speak));
+    except
+      on e: Exception do
+        MessageBox.Show(e.ToString, $'Failed to load camera position');
+    end;
+    
+    f.KeyUp += (o,e)->if e.Modifiers.HasFlag(Keys.Control) then
+    case e.KeyCode of
+      
+      Keys.C:
+      begin
+        var copy_comment := default(string);
+        if e.Modifiers.HasFlag(Keys.Shift) then
+        begin
+          var comment_inp_form := new Form;
+          comment_inp_form.Text := 'Comment';
+          comment_inp_form.FormBorderStyle := FormBorderStyle.FixedSingle;
+          comment_inp_form.StartPosition := FormStartPosition.CenterParent;
+          
+          var comment_inp_tb := new RichTextBox;
+          comment_inp_form.Controls.Add(comment_inp_tb);
+          comment_inp_tb.Dock := DockStyle.Fill;
+          
+          var reset_form_size := ()->
+          begin
+            var text_size := comment_inp_form.CreateGraphics.MeasureString(comment_inp_tb.Text+'a', comment_inp_tb.Font);
+            comment_inp_form.ClientSize := new System.Drawing.Size(
+              Ceil(text_size.Width+10).ClampBottom(250),
+              Ceil(text_size.Height+10).ClampBottom(30)
+            );
+            var screen_size := Screen.FromControl(comment_inp_form).WorkingArea.Size;
+            comment_inp_form.Location := new System.Drawing.Point(
+              (screen_size.Width-comment_inp_form.Width) div 2,
+              (screen_size.Height-comment_inp_form.Height) div 2
+            );
+          end;
+          reset_form_size;
+          comment_inp_tb.TextChanged += (o,e)->reset_form_size();
+          
+          comment_inp_tb.KeyUp += (o,e)->
+          case e.KeyCode of
+            
+            Keys.Escape:
+              comment_inp_form.Close;
+            
+            Keys.Enter:
+            if not e.Modifiers.HasFlag(Keys.Shift) then
+            begin
+              copy_comment := comment_inp_tb.Text.Replace(#13#10,#10);
+              copy_comment := copy_comment.Remove(copy_comment.Length-1);
+              comment_inp_form.Close;
+            end;
+            
+          end;
+          
+          comment_inp_form.ShowDialog;
+          if copy_comment=nil then exit;
+        end;
+        copy_camera_pos := Tuple.Create(copy_comment);
+      end;
+      
+      Keys.V:
+      try
+        paste_camera_pos := Tuple.Create(
+          CameraPos.Parse(Clipboard.GetText, speak)
+        );
+      except
+        on ex: Exception do
+          MessageBox.Show(ex.ToString, 'Failed to parse camera position');
+      end;
+      
+    end;
+    
+    {$endregion copy/paste}
+    
+    {$region mouse_captured}
+    
     f.MouseEnter += (o,e)->(mouse_captured := true);
     f.MouseLeave += (o,e)->(mouse_captured := false);
     
+    {$endregion mouse_captured}
+    
+    {$region draw_alt_mode}
+    
     f.KeyDown += (o,e)->(draw_alt_mode := e.Alt);
     f.KeyUp += (o,e)->(draw_alt_mode := e.Alt);
+    
+    {$endregion draw_alt_mode}
+    
+    {$region camera reset}
     
     f.KeyDown += (o,e)->
     case e.KeyCode of
@@ -246,6 +458,10 @@ begin
         scale_speed_add := 0;
       end;
     end;
+    
+    {$endregion camera reset}
+    
+    {$region camera drag}
     
     var mouse_grabbed := false;
     f.MouseDown += (o,e)->
@@ -257,7 +473,6 @@ begin
       MouseButtons.Left: mouse_grabbed := false;
     end;
     
-    f.MouseWheel += (o,e)->System.Threading.Interlocked.Add(scale_speed_add, e.Delta);
     f.MouseMove += (o,e)->
     begin
       var n_mouse_pos := new Vec2i(e.X,e.Y);
@@ -269,6 +484,16 @@ begin
       end;
       mouse_pos := n_mouse_pos;
     end;
+    
+    {$endregion camera drag}
+    
+    {$region camera scroll}
+    
+    f.MouseWheel += (o,e)->System.Threading.Interlocked.Add(scale_speed_add, e.Delta);
+    
+    {$endregion camera scroll}
+    
+    {$region camera slow control}
     
     var define_slow_control := procedure(key_low, key_high, modifiers: Keys; on_change: integer->())->
     begin
@@ -298,6 +523,8 @@ begin
     
     define_slow_control(Keys.Left, Keys.Right, Keys.None, x->(slow_move_dir.val0:=x));
     define_slow_control(Keys.Down, Keys.Up, Keys.None, x->(slow_move_dir.val1:=x));
+    
+    {$endregion camera slow control}
     
   end;
   {$endregion Управление}
@@ -381,6 +608,28 @@ begin
         end;
       end;
       t_body.Start;
+      
+      begin
+        var l_copy_camera_pos := System.Threading.Interlocked.Exchange(copy_camera_pos, nil);
+        var n_camera := camera;
+        if l_copy_camera_pos<>nil then f.BeginInvoke(()->
+        begin
+          Clipboard.SetText(n_camera.ToString(l_copy_camera_pos.Item1));
+          Console.Beep;
+        end);
+      end;
+      
+      begin
+        var l_paste_camera_pos := System.Threading.Interlocked.Exchange(paste_camera_pos, nil);
+        if l_paste_camera_pos<>nil then
+        begin
+          var n_camera := l_paste_camera_pos.Item1;
+          n_camera.dw := camera.dw;
+          n_camera.dh := camera.dh;
+          camera := n_camera;
+          scale_speed := 0;
+        end;
+      end;
       
       begin
         var next_frame_time := frame_time_sw.Elapsed;
@@ -530,6 +779,8 @@ begin
         Println(e);
     end;
     
+    WriteAllText(camera_saved_pos_fname, camera.ToString, camera_saved_pos_enc);
+    wait_for_last_frame := false;
   except
     on e: Exception do
     begin

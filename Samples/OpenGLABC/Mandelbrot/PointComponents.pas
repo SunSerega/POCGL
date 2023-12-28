@@ -1,5 +1,7 @@
 ﻿unit PointComponents;
 
+{$zerobasedstrings}
+
 {$savepcu false} //TODO
 
 uses Settings;
@@ -173,6 +175,44 @@ type
         raise new System.InvalidOperationException;
       {$endif DEBUG}
       Result := sb.ToString;
+    end;
+    public static function Parse(s: string): PointComponent;
+    begin
+      Result._words := s.Split('|').ConvertAll((w,i)->
+      begin
+        var raise_format := procedure(m: string)->
+          raise new System.FormatException($'{m} in word#{i} [{w}] of [{s}]');
+        
+        if i=0 then
+        begin
+          
+          case w[0] of
+            '+': w[0] := '0';
+            '-': w[0] := '1';
+            else raise_format($'First char of first word must be a sign');
+          end;
+          
+          if w[Settings.z_int_bits]<>'.' then
+            raise_format($'Char#{Settings.z_int_bits} of first word must be a decimal point');
+          w := w.Remove(Settings.z_int_bits,1);
+          
+        end;
+        
+        if w.Length<>32 then
+          raise_format($'Word must be 32 chars long, got {w.Length}');
+        
+        Result := cardinal(0);
+        foreach var ch in w index ch_ind do
+        begin
+          Result *= 2;
+          case ch of
+            '0': ;
+            '1': Result += 1;
+            else raise_format($'Char#{ch_ind} was [{ch}]');
+          end;
+        end;
+        
+      end);
     end;
     
     public procedure Save(bw: System.IO.BinaryWriter) :=
