@@ -5,10 +5,10 @@ uniform float view_skip_x_last, view_skip_y_last;
 
 layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;
-out vec2 logic_pos;
+out vec2 screen_pos;
 
 void SendVertex(float coord1, float dx, float coord2, float dy) {
-	logic_pos = vec2(coord1, coord2);
+	screen_pos = vec2(coord1, coord2);
 	gl_Position = vec4(coord1+dx, coord2+dy, 0, 1);
 	EmitVertex();
 }

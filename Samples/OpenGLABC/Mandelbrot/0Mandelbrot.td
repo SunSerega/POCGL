@@ -1,9 +1,72 @@
 ﻿
 
 
-#ExpErr
-Compile errors:
-[225,27] Blocks.pas: The type 'PointComponent' does not contain a definition for 'FirstWordToReal'
+#Delegates
+0Mandelbrot.$delegate? = procedure
+0Mandelbrot.$delegate? = procedure
+0Mandelbrot.$delegate? = procedure
+0Mandelbrot.$delegate? = procedure
+0Mandelbrot.$delegate? = procedure
+0Mandelbrot.$delegate? = procedure
+0Mandelbrot.$delegate? = procedure
+0Mandelbrot.$delegate? = procedure
+0Mandelbrot.$delegate? = procedure
+0Mandelbrot.$delegate? = procedure(<>key_low: Keys; <>key_high: Keys; <>modifiers: Keys; <>on_change: integer -> ())
+0Mandelbrot.$delegate? = procedure(<>key_low: Keys; <>key_high: Keys; <>modifiers: Keys; <>on_change: integer -> ())
+0Mandelbrot.$delegate? = procedure(<>s_frag: gl_shader)
+0Mandelbrot.$delegate? = procedure(<>s_frag: gl_shader)
+0Mandelbrot.$delegate? = procedure(key_low: Keys; key_high: Keys; modifiers: Keys; on_change: integer -> ())
+0Mandelbrot.$delegate? = procedure(s_frag: gl_shader)
+Blocks.$delegate? = procedure(<>ml: MemoryLayer<PointBlock>)
+Blocks.$delegate? = procedure(<>ml: MemoryLayer<PointBlock>)
+Blocks.$delegate? = procedure(e: Exception)
+Blocks.$delegate? = procedure(ml: MemoryLayer<PointBlock>)
+OpenCL.$delegate? = function(command_queue: cl_command_queue; num_objects: longword; var mem_objects: cl_mem; num_events_in_wait_list: longword; var event_wait_list: cl_event; var event: cl_event): clErrorCode
+OpenCL.$delegate? = function(command_queue: cl_command_queue; num_objects: longword; var mem_objects: cl_mem; num_events_in_wait_list: longword; var event_wait_list: cl_event; var event: cl_event): clErrorCode
+OpenCL.$delegate? = function(context: cl_context; flags: clMemFlags; bufobj: longword; var errcode_ret: clErrorCode): cl_mem
+OpenCL.clCreateContextCallback = procedure(errinfo: string; private_info: System.IntPtr; cb: System.UIntPtr; user_data: System.IntPtr)
+OpenCL.clEventCallback = procedure(event: cl_event; event_command_status: clCommandExecutionStatus; user_data: System.IntPtr)
+OpenCL.clProgramCallback = procedure(program: cl_program; user_data: System.IntPtr)
+OpenCLABC.$delegate? = function(ntv: cl_program; var data: clBool; validate: boolean): clErrorCode
+OpenCLABC._GetPropValueFunc<T> = function(ntv: cl_program; var data: T): clErrorCode
+OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): ValueTuple<cl_event,CLContext -> ()>
+OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
+OpenGL.$delegate? = function(interval: integer): glBool32
+OpenGL.$delegate? = function(program: gl_program; name: System.IntPtr): integer
+OpenGL.$delegate? = function(program: gl_program; programInterface: glProgramInterface; name: System.IntPtr): longword
+OpenGL.$delegate? = function(type: glShaderType): gl_shader
+OpenGL.$delegate? = function: gl_program
+OpenGL.$delegate? = function: glErrorCode
+OpenGL.$delegate? = procedure
+OpenGL.$delegate? = procedure(buffer: gl_buffer; size: System.UIntPtr; data: System.IntPtr; usage: glVertexBufferObjectUsage)
+OpenGL.$delegate? = procedure(buffer: gl_buffer; size: System.UIntPtr; var data: byte; usage: glVertexBufferObjectUsage)
+OpenGL.$delegate? = procedure(location: integer; v0: integer; v1: integer)
+OpenGL.$delegate? = procedure(location: integer; v0: single)
+OpenGL.$delegate? = procedure(mask: glClearBufferMask)
+OpenGL.$delegate? = procedure(mode: glPrimitiveType; first: integer; count: integer)
+OpenGL.$delegate? = procedure(n: integer; buffers: System.IntPtr)
+OpenGL.$delegate? = procedure(n: integer; var buffers: gl_buffer)
+OpenGL.$delegate? = procedure(program: gl_program)
+OpenGL.$delegate? = procedure(program: gl_program)
+OpenGL.$delegate? = procedure(program: gl_program)
+OpenGL.$delegate? = procedure(program: gl_program; bufSize: integer; length: System.IntPtr; infoLog: System.IntPtr)
+OpenGL.$delegate? = procedure(program: gl_program; bufSize: integer; var length: integer; infoLog: System.IntPtr)
+OpenGL.$delegate? = procedure(program: gl_program; pname: glProgramProperty; params: System.IntPtr)
+OpenGL.$delegate? = procedure(program: gl_program; pname: glProgramProperty; var params: integer)
+OpenGL.$delegate? = procedure(program: gl_program; shader: gl_shader)
+OpenGL.$delegate? = procedure(shader: gl_shader)
+OpenGL.$delegate? = procedure(shader: gl_shader)
+OpenGL.$delegate? = procedure(shader: gl_shader; bufSize: integer; length: System.IntPtr; infoLog: System.IntPtr)
+OpenGL.$delegate? = procedure(shader: gl_shader; bufSize: integer; var length: integer; infoLog: System.IntPtr)
+OpenGL.$delegate? = procedure(shader: gl_shader; count: integer; string: Void*; length: System.IntPtr)
+OpenGL.$delegate? = procedure(shader: gl_shader; count: integer; string: Void*; var length: integer)
+OpenGL.$delegate? = procedure(shader: gl_shader; count: integer; var string: System.IntPtr; length: System.IntPtr)
+OpenGL.$delegate? = procedure(shader: gl_shader; count: integer; var string: System.IntPtr; var length: integer)
+OpenGL.$delegate? = procedure(shader: gl_shader; pname: glShaderParameterName; params: System.IntPtr)
+OpenGL.$delegate? = procedure(shader: gl_shader; pname: glShaderParameterName; var params: integer)
+OpenGL.$delegate? = procedure(target: glBufferTarget; index: longword; buffer: gl_buffer)
+OpenGL.$delegate? = procedure(x: integer; y: integer; width: integer; height: integer)
+OpenGLABC.RedrawThreadProc = procedure(pl: IGLPlatformLoader; EndFrame: procedure)
 
 #ReqModules
 OpenGL+OpenGLABC

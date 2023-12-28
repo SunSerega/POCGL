@@ -3,6 +3,8 @@
 
 
 
+//TODO Попробовать менять x и y местами, для более эффективного доступа к памяти
+
 //TODO Minimize code dupe, using this:
 // - https://registry.khronos.org/OpenCL/specs/3.0-unified/html/OpenCL_C.html#declaring-and-using-a-block
 
@@ -252,7 +254,7 @@ void point_component_sqr(point_component* x, uint* err) {
 	
 }
 
-// add bit at "bit_pos" to "x" multiple ("mlt"+0.5) times
+// Add bit at "bit_pos" to "x" multiple ("mlt"+0.5) times
 // x += (1/2)^(bit_pos-Z_INT_BITS+1) * (mlt+0.5)
 void point_component_add_bit_mlt(point_component* x, uint bit_pos, uint mlt, uint* err) {
 	err_cond(mlt>=BLOCK_W, CCEE_OVERFLOW, err);
@@ -287,7 +289,7 @@ void point_component_add_bit_mlt(point_component* x, uint bit_pos, uint mlt, uin
 
 
 typedef struct {
-	// real and imaginary components of complex number
+	// Real and imaginary components of complex number
 	point_component r, i;
 } point_pos;
 
@@ -303,6 +305,7 @@ void point_sqr(point_pos* x, uint* err) {
 	// = (x.r + x.i*i)*(x.r + x.i*i) =
 	// = (sqr(x.r) - sqr(x.i)) + 2*(x.r*x.i)*i
 	
+	// x_i_sqr = sqr(x.i)
 	point_component x_i_sqr = x->i;
 	point_component_sqr(&x_i_sqr, err);
 	
@@ -312,7 +315,7 @@ void point_sqr(point_pos* x, uint* err) {
 	// x.r = sqr(x.r)
 	point_component_sqr(&x->r, err);
 	
-	// x.r -= sqr(x.i)
+	// x.r -= x_i_sqr
 	x_i_sqr.words[0] ^= SIGN_BIT_MASK;
 	point_component_add(&x->r, x_i_sqr, err);
 	
@@ -339,7 +342,7 @@ bool point_too_big(const point_pos x, uint* err) {
 	// Should be >4 instead of >=4
 	// But we don't account here for bits in lower words
 	// And exactly =4 is a point, impossible to see in an image
-	// Also checking for =4 would require adding +1 to Z_INT_BITS
+	// While checking for =4 would require adding +1 to Z_INT_BITS
 	if (r2.words[0] >= Z_V_4) return true;
 	
 	return false;
@@ -356,7 +359,6 @@ typedef struct {
 // block				- current block of BLOCK_W*BLOCK_W points
 // pos00				- the "c" value of block[0,0] point
 // point_size_bit_pos	- index of bit, which, when set alone, results in size of 1 point
-// mipmap_need_update	- will write 1's where mipmap would need to get recalculated
 // step_count			- number of steps to try at once
 // update_count			- will add 1 every time next z value is computed
 // err					- will set !0 if there was an error during calculation
@@ -364,7 +366,6 @@ kernel void MandelbrotBlockSteps(
 	global point_info* block,
 	constant point_pos* pos00,
 	int point_size_bit_pos,
-	global uchar* mipmap_need_update,
 	int step_count,
 	global volatile uint* update_count,
 	global uint* err
@@ -399,159 +400,35 @@ kernel void MandelbrotBlockSteps(
 	}
 	if (!any_step_done) return;
 	point->last_z = z;
+}
+
+
+
+kernel void ExtractSteps(
+	global point_info* block,
+	global uint* result_data, uint result_shift, uint result_row_len,
+	global volatile uint* extracted_count
+) {
+	uint x = get_global_id(0);
+	uint y = get_global_id(1);
 	
-	uint dx = x;
-	uint dy = y;
-	uint w = BLOCK_W;
-	for (uint w = BLOCK_W>>1; w > 0; w >>= 1) {
-		dx >>= 1;
-		dy >>= 1;
-		mipmap_need_update[dx + dy*w] = 1;
-		mipmap_need_update += w*w;
+	bool new_done = block[x + y*BLOCK_W].state != 0;
+	uint new_steps = block[x + y*BLOCK_W].steps & SIGN_BIT_ANTI_MASK;
+	uint new_data = (new_done ? SIGN_BIT_MASK : 0) ^ new_steps;
+	
+	global uint* p_result_data = &result_data[result_shift + x + y*result_row_len];
+	uint old_data = *p_result_data;
+	bool old_done = old_data>>31;
+	uint old_steps = old_data & SIGN_BIT_ANTI_MASK;
+	
+	// Попробовал быстрее избавится от артефактов на границе белой области, но pow значительно замедляет кадр
+	//old_steps *= pow(0.9, frames_since_sheet_transfer);
+	
+	//if (new_data > old_data)
+	if (new_done>=old_done || new_steps>=old_steps) {
+		atomic_inc(extracted_count);
+		*p_result_data = new_data;
 	}
-	
-}
-
-
-
-kernel void ExtractHighScaleSteps(
-	global point_info* block, uint scale_pow,
-	global uchar* result_state, uint result_state_shift, uint result_state_row_len,
-	global  uint* result_steps, uint result_steps_shift, uint result_steps_row_len
-) {
-	//TODO
-}
-
-void ExtractSteps(
-	global uchar* source_state, uint source_state_item_len, uint source_state_row_len,
-	global  uint* source_steps, uint source_steps_item_len, uint source_steps_row_len,
-	global uchar* result_state, uint result_state_item_len, uint result_state_row_len,
-	global  uint* result_steps, uint result_steps_item_len, uint result_steps_row_len
-) {
-	uint x = get_global_id(0);
-	uint y = get_global_id(1);
-	
-	uchar state = source_state[x*source_state_item_len + y*source_state_row_len];
-	global uchar* p_result_state = &result_state[x*result_state_item_len + y*result_state_row_len];
-	if (state < *p_result_state) return;
-	*p_result_state = state;
-	
-	uint steps = source_steps[x*source_steps_item_len + y*source_steps_row_len];
-	//TODO Некоторые state не установлены, хотя должны быть
-	// - Пока что закомментировал проверку в FixMipMapLvl - но это плохо конечно...
-	// - Впрочем не похоже чтобы влияло на производительность
-	// - Может тогда нафиг мипмапы вообще?
-	// - С мипмапами или без, это слишком медленно...
-	// - Надо таки использовать только блоки текущего уровня, но вместо этого ещё брать данные из предыдущего кадра
-	steps |= SIGN_BIT_MASK * (uint)state;
-	global uint* p_result_steps = &result_steps[x*result_steps_item_len + y*result_steps_row_len];
-	if (steps < *p_result_steps) return;
-	*p_result_steps = steps;
-	
-}
-
-kernel void ExtractRawSteps(
-	global point_info* block,
-	global uchar* result_state, uint result_state_shift, uint result_state_row_len,
-	global  uint* result_steps, uint result_steps_shift, uint result_steps_row_len
-) {
-	
-	global uint* p_i_state = &block->state;
-	global uchar* p_state = (global uchar*)p_i_state;
-	global uint* p_steps = &block->steps;
-	
-	ExtractSteps(
-		p_state,							sizeof(point_info)/sizeof(uchar),	sizeof(point_info)/sizeof(uchar) * BLOCK_W,
-		p_steps,							sizeof(point_info)/sizeof( uint),	sizeof(point_info)/sizeof( uint) * BLOCK_W,
-		&result_state[result_state_shift],	1,									result_state_row_len,
-		&result_steps[result_steps_shift],	1,									result_steps_row_len
-	);
-	
-}
-
-kernel void ExtractMipMapSteps(
-	global uchar* mip_map_state, global uint* mip_map_steps, uint mip_map_shift,
-	global uchar* result_state, uint result_state_shift, uint result_state_row_len,
-	global  uint* result_steps, uint result_steps_shift, uint result_steps_row_len,
-	uint mip_map_lvl
-) {
-	
-	ExtractSteps(
-		&mip_map_state[mip_map_shift],		1,	BLOCK_W>>mip_map_lvl,
-		&mip_map_steps[mip_map_shift],		1,	BLOCK_W>>mip_map_lvl,
-		&result_state[result_state_shift],	1,	result_state_row_len,
-		&result_steps[result_steps_shift],	1,	result_steps_row_len
-	);
-	
-}
-
-
-
-void FixMipMapLvl(
-	global uchar* source_state, uint source_state_item_len, uint source_state_row_len,
-	global  uint* source_steps, uint source_steps_item_len, uint source_steps_row_len,
-	global uchar* result_state, uint result_state_item_len, uint result_state_row_len,
-	global  uint* result_steps, uint result_steps_item_len, uint result_steps_row_len,
-	global uchar* need_update, uint need_update_row_len
-) {
-	uint x = get_global_id(0);
-	uint y = get_global_id(1);
-	
-	uchar* p_need_update = &need_update[x + y*need_update_row_len];
-	if (!*p_need_update) return;
-	*p_need_update = false;
-	
-	global uchar* p_source_state = &source_state[2*source_state_item_len*x + 2*source_state_row_len*y];
-	global uchar* p_result_state = &result_state[1*result_state_item_len*x + 1*result_state_row_len*y];
-	*p_result_state = p_source_state[0] & p_source_state[source_state_item_len] & p_source_state[source_state_row_len] & p_source_state[source_state_item_len+source_state_row_len];
-	
-	global uint* p_source_steps = &source_steps[2*source_steps_item_len*x + 2*source_steps_row_len*y];
-	global uint* p_result_steps = &result_steps[1*result_steps_item_len*x + 1*result_steps_row_len*y];
-	//*p_result_steps = max(max(p_source_steps[0], p_source_steps[source_steps_item_len]), max(p_source_steps[source_steps_row_len], p_source_steps[source_steps_item_len+source_steps_row_len]));
-	*p_result_steps = (p_source_steps[0] + p_source_steps[source_steps_item_len] + p_source_steps[source_steps_row_len] + p_source_steps[source_steps_item_len+source_steps_row_len] + 2) / 4;
-	
-}
-
-kernel void FixFirstMipMap(
-	global point_info* block,
-	global uchar* mip_map_state,
-	global  uint* mip_map_steps,
-	global uchar* need_update
-) {
-	
-	global uint* p_i_state = &block->state;
-	global uchar* p_state = (global uchar*)p_i_state;
-	global uint* p_steps = &block->steps;
-	
-	FixMipMapLvl(
-		p_state,		sizeof(point_info)/sizeof(uchar),	sizeof(point_info)/sizeof(uchar) * BLOCK_W,
-		p_steps,		sizeof(point_info)/sizeof( uint),	sizeof(point_info)/sizeof( uint) * BLOCK_W,
-		mip_map_state,	1,									BLOCK_W>>1,
-		mip_map_steps,	1,									BLOCK_W>>1,
-		need_update, BLOCK_W>>1
-	);
-	
-}
-
-kernel void FixMipMap(
-	global uchar* mip_map_state,
-	global  uint* mip_map_steps,
-	global uchar* need_update,
-	uint next_mip_map_shift,
-	uint next_mip_map_lvl
-) {
-	
-	uint prev_w = BLOCK_W >> (next_mip_map_lvl-1);
-	uint next_w = BLOCK_W >> next_mip_map_lvl;
-	uint prev_mip_map_shift = next_mip_map_shift - prev_w*prev_w;
-	
-	FixMipMapLvl(
-		&mip_map_state[prev_mip_map_shift],	1,	prev_w,
-		&mip_map_steps[prev_mip_map_shift],	1,	prev_w,
-		&mip_map_state[next_mip_map_shift],	1,	next_w,
-		&mip_map_steps[next_mip_map_shift],	1,	next_w,
-		&need_update[next_mip_map_shift], next_w
-	);
 	
 }
 

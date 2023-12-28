@@ -39,7 +39,7 @@ begin
   var cl_c := cl.CreateContext(cl_c_props, cl_dvcs.Length, cl_dvcs, nil, IntPtr.Zero, ec);
   ec.RaiseIfError;
   
-  OpenCLABC.CLContext.Default := new CLContext(cl_c);
+  OpenCLABC.CLContext.Default := new CLContext(cl_c, false);
 end;
 
 procedure WrapBuffer<T>(gl_b: gl_buffer; var cl_a: CLArray<T>); where T: record;
@@ -52,7 +52,7 @@ begin
   
   if cl_a<>nil then
     cl_a.Dispose;
-  cl_a := new CLArray<T>(cl_b);
+  cl_a := new CLArray<T>(cl_b, false, false);
 end;
 
 end.

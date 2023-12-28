@@ -31,38 +31,31 @@ type
       // By default fit 4x4 of logical space around (0;0) inside the window
       // Logical space Y is -2..+2, scale=2
       self.scale_fine := 2;
-      // But if dw<dh then scale=2*(dw/dh)
-      if dw<dh then scale_fine *= AspectRatio;
+      // But if dw<dh then scale=2/(dw/dh)
+      if dw<dh then scale_fine /= AspectRatio;
       self.scale_pow := 0;
       
       FixScalePow;
     end;
     public procedure Resize(w,h: integer);
     begin
+      if w<1 then w := 1;
+      if h<1 then h := 1;
       self.dw := single(w)/2;
       self.dh := single(h)/2;
     end;
     
     public function AspectRatio := real(dw)/real(dh);
     
-    public function GetPointScaleAndMainMipMapLvl: System.ValueTuple<integer, integer>;
-    const max_point_scale = Settings.max_block_scale-Settings.block_w_pow;
-    begin
-      var point_scale := self.scale_pow + Settings.scale_shift + Floor(Log2(self.scale_fine/dh));
-      var main_mipmap_lvl := -scale_shift;
-      if point_scale > max_point_scale then
-      begin
-        main_mipmap_lvl += point_scale-max_point_scale;
-        point_scale := max_point_scale;
-      end;
-      Result := System.ValueTuple.Create(point_scale, main_mipmap_lvl.Clamp(0,block_w));
-    end;
-    private function GetBitCount := Settings.z_int_bits + -GetPointScaleAndMainMipMapLvl.Item1 + Settings.z_extra_precision_bits;
+    public function GetPointScalePow :=
+      (self.scale_pow + Settings.scale_pow_shift + Floor(Log2(self.scale_fine/dh)))
+      .ClampTop(Settings.max_block_scale_pow - Settings.block_w_pow);
+    private function GetBitCount := Settings.z_int_bits + -GetPointScalePow + Settings.z_extra_precision_bits;
     private function GetWordCount := Ceil(GetBitCount/32).ClampBottom(1);
 //    public function GetPosBitCount := Settings.z_int_bits - (self.scale_pow + Floor(Log2(self.scale_fine/dh)));
 //    public function GetBlockBitCount := Settings.z_int_bits - (self.scale_pow + Settings.scale_shift - Settings.block_w_pow) + Settings.z_extra_precision_bits;
     
-    public procedure FixScalePow;
+    private procedure FixScalePow;
     begin
       if (scale_fine>=1) and (scale_fine<2) then exit;
       
@@ -75,10 +68,33 @@ type
           raise new System.InvalidOperationException;
       end;
       
+    end;
+    
+    public procedure FixWordCount;
+    begin
       var pos_word_count := GetWordCount;
       if pos.Size = pos_word_count then exit;
       pos := pos.WithSize(pos_word_count);
+    end;
+    
+    public procedure Move(move_x,move_y, mouse_x,mouse_y, scale_speed: real; mouse_captured: boolean);
+    begin
+      var scale_mlt := 0.9 ** scale_speed;
       
+      begin
+        var shift_mlt := scale_fine * (1 - scale_mlt) * Ord(mouse_captured);
+        var dx := mouse_x-dw;
+        var dy := mouse_y-dh;
+        dx *= +shift_mlt/dw * AspectRatio;
+        dy *= -shift_mlt/dh;
+        var word_count := self.pos.Size;
+        var dr := new PointComponentShift(word_count, self.scale_pow, dx + move_x*scale_fine/dh);
+        var di := new PointComponentShift(word_count, self.scale_pow, dy + move_y*scale_fine/dh);
+        self.pos := self.pos.WithShiftClamp2(dr,di, true);
+      end;
+      
+      self.scale_fine *= scale_mlt;
+      FixScalePow;
     end;
     
   end;
