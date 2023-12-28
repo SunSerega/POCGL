@@ -47,6 +47,12 @@ unit OpenCLABC;
 //===================================
 // Обязательно сделать до следующей стабильной версии:
 
+//TODO Сеттеры параметров не всегда известно, нужны ли
+// - Добавить параметр "unuse_is_error := true"
+
+//TODO При создании CLArray и т.п. указывается map_use, но влияет он и на .ReadArray и т.п.
+// - Перетестить и переименовать... host_use?
+
 //TODO Если кинуло AggEx, возвращать из тестов его внутренний массив исключений
 // - TestExecutor сейчас возвращает исключение текстом... Ужас
 //TODO Устечка памяти в виде ивентов после исключения в очереди
@@ -1413,7 +1419,7 @@ type
   
   CLMemoryObserver = static class
     
-    public static auto property &Default: MemoryObserver := new EmptyMemoryObserver;
+    public static auto property Current: MemoryObserver := new EmptyMemoryObserver;
     
     private static procedure ReportFree(ntv: cl_mem{$ifdef DEBUG}; mem_obj: object{$endif});
     begin
@@ -1421,7 +1427,7 @@ type
       OpenCLABCInternalException.RaiseIfError(
         cl.GetMemObjectInfo_MEM_SIZE(ntv, sz)
       );
-      &Default.RemoveMemoryUse(sz.ToUInt64, {$ifdef DEBUG}mem_obj{$else}ntv{$endif});
+      Current.RemoveMemoryUse(sz.ToUInt64, {$ifdef DEBUG}mem_obj{$else}ntv{$endif});
     end;
     
   end;
@@ -2380,6 +2386,25 @@ type
     begin
       self.code := code;
       self.k_name := k_name;
+      
+      // Create one instance, to check if everything is valid
+      var ec: clErrorCode;
+      var k := cl.CreateKernel(code.ntv, k_name, ec);
+      
+      if ec.IS_ERROR then
+      begin
+        if ec=clErrorCode.INVALID_KERNEL_NAME then
+        begin
+          var names: string;
+          OpenCLABCInternalException.RaiseIfError(
+            cl.GetProgramInfo_PROGRAM_KERNEL_NAMES(code.ntv, names)
+          );
+          raise new OpenCLABCInternalException($'Kernel [{k_name}] is not defined in {code}. Existing kernel names: {names}');
+        end;
+        OpenCLABCInternalException.RaiseIfError(ec);
+      end;
+      
+      AddExistingNative(k);
     end;
     
     public constructor(ntv: cl_kernel);
@@ -2525,7 +2550,7 @@ type
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), size, nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      CLMemoryObserver.Default.AddMemoryUse(size.ToUInt64, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
+      CLMemoryObserver.Current.AddMemoryUse(size.ToUInt64, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
       
     end;
     public constructor(size: integer; c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
@@ -2653,7 +2678,7 @@ type
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ValueSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      CLMemoryObserver.Default.AddMemoryUse(ValueSize, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
+      CLMemoryObserver.Current.AddMemoryUse(ValueSize, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
       
     end;
     public constructor(c: CLContext; val: T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits);
@@ -2663,7 +2688,7 @@ type
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + clMemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ValueSize), val, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      CLMemoryObserver.Default.AddMemoryUse(ValueSize, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
+      CLMemoryObserver.Current.AddMemoryUse(ValueSize, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
       
     end;
     
@@ -2730,7 +2755,7 @@ type
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use), new UIntPtr(ByteSize), nil, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      CLMemoryObserver.Default.AddMemoryUse(ByteSize, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
+      CLMemoryObserver.Current.AddMemoryUse(ByteSize, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
       
     end;
     private procedure InitByVal(c: CLContext; var els: T; kernel_use, map_use: CLMemoryUsage);
@@ -2740,7 +2765,7 @@ type
       self.ntv := cl.CreateBuffer(c.ntv, CLMemoryUsage.MakeCLFlags(kernel_use,map_use) + clMemFlags.MEM_COPY_HOST_PTR, new UIntPtr(ByteSize), els, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
-      CLMemoryObserver.Default.AddMemoryUse(ByteSize, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
+      CLMemoryObserver.Current.AddMemoryUse(ByteSize, {$ifdef DEBUG}new CLMemoryAlloc(self, ntv){$else}ntv{$endif});
       
     end;
     
@@ -10979,6 +11004,12 @@ HFQ&<T, SimpleFunc0ContainerC<T>>(f, need_own_thread);
       var prev_ev := l.AttachInvokeActions(g{$ifdef EventDebug}, l{$endif});
       var res_ev: cl_event;
       InvokeImpl(api_block, g.GetCQ(false), ntv_mem_objs, prev_ev, res_ev);
+	  //TODO Проверить и сделать всё релевантное из EnqueueableCore
+	  // - В частности что если enq_ev=0 из за предыдущих ошибок? Может ли тут NV тоже отказываться давать ивент?
+	  // - И сделать issue в OpenCL-Docs об этом, типа кто прав (или оба?)
+      {$ifdef EventDebug}
+      EventDebug.RegisterEventRetain(res_ev, $'Enq by {TypeName(self)}, waiting on: {prev_ev.evs?.Take(prev_ev.count).JoinToString}');
+      {$endif EventDebug}
       Result := new QueueResNil(prev_ev + res_ev);
     end;
     
@@ -11442,7 +11473,9 @@ type
       end;
       
       begin
-        var left_mem_objs := EmptyMemoryObserver(CLMemoryObserver.Default).impl.mem_uses.Keys;
+        var obs := CLMemoryObserver.Current as TrackingMemoryObserver;
+        if obs=nil then obs := EmptyMemoryObserver(CLMemoryObserver.Current).impl;
+        var left_mem_objs := obs.mem_uses.Keys;
         if left_mem_objs.Any then
           raise new OpenCLABCInternalException($'Not all memory objects were disposed: ' + left_mem_objs.JoinToString);
       end;

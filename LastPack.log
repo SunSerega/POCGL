@@ -56,7 +56,7 @@ ScrapXML[OpenCL]: Parsing "cl"
 ScrapXML[OpenCL]: Constructing named items
 ScrapXML[OpenCL]: Saving as binary
 ScrapXML[OpenCL]: VendorSuffix: Saved 11 items
-ScrapXML[OpenCL]: Enum: Saved 1119 items
+ScrapXML[OpenCL]: Enum: Saved 1125 items
 ScrapXML[OpenCL]: BasicType: Saved 30 items
 ScrapXML[OpenCL]: Group: Saved 119 items
 ScrapXML[OpenCL]: IdClass: Saved 18 items
@@ -249,7 +249,7 @@ Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Dumping Id
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Dumping Struct items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Dumping Delegate items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: PascalBasicType: Packed 12 items
-Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Group: Packed 111 items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Group: Packed 112 items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: IdClass: Packed 28 items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Struct: Packed 17 items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Delegate: Packed 7 items

@@ -834,6 +834,10 @@
     begin
       cl.GetDeviceInfo_DEVICE_FEATURE_CAPABILITIES(self.ntv, Result).RaiseIfError;
     end;
+    private function GetMemoryCapabilities: clMemAllocFlagsIMG;
+    begin
+      cl.GetDeviceInfo_DEVICE_MEMORY_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
     
     public property &Type:                                               clDeviceType                                          read GetType;
     public property VendorId:                                            clKhronosVendorId                                     read GetVendorId;
@@ -1012,6 +1016,7 @@
     public property NumEusPerSubSlice:                                   UInt32                                                read GetNumEusPerSubSlice;
     public property NumThreadsPerEu:                                     UInt32                                                read GetNumThreadsPerEu;
     public property FeatureCapabilities:                                 clDeviceFeatureCapabilities                           read GetFeatureCapabilities;
+    public property MemoryCapabilities:                                  clMemAllocFlagsIMG                                    read GetMemoryCapabilities;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -1198,7 +1203,8 @@
       res += 'NumSubSlicesPerSlice                                = '; AddProp(res, GetNumSubSlicesPerSlice                               ); res += #10;
       res += 'NumEusPerSubSlice                                   = '; AddProp(res, GetNumEusPerSubSlice                                  ); res += #10;
       res += 'NumThreadsPerEu                                     = '; AddProp(res, GetNumThreadsPerEu                                    ); res += #10;
-      res += 'FeatureCapabilities                                 = '; AddProp(res, GetFeatureCapabilities                                );
+      res += 'FeatureCapabilities                                 = '; AddProp(res, GetFeatureCapabilities                                ); res += #10;
+      res += 'MemoryCapabilities                                  = '; AddProp(res, GetMemoryCapabilities                                 );
     end;
     public function ToString: string; override;
     begin

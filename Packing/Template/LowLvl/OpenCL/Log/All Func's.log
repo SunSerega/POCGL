@@ -1551,7 +1551,7 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-204
+205
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | var T                                                     | var UIntPtr          |
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | var T                                                     | IntPtr               |
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | pointer                                                   | var UIntPtr          |
@@ -1720,6 +1720,7 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_ME_VERSION                                                | *                | var clDeviceMeVersion                                     | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_SVM_CAPABILITIES_ARM                                      | *                | var clDeviceSVMCapabilities                               | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_COMPUTE_UNITS_BITFIELD                                    | *                | var UInt64                                                | *                    |
+	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_MEMORY_CAPABILITIES                                       | *                | var clMemAllocFlagsIMG                                    | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_SPIR_VERSIONS                                             | *                | var string                                                | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_SIMULTANEOUS_INTEROPS                                     | *                | var array of UInt32                                       | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_SIMULTANEOUS_INTEROPS                                     | UInt32           | var UInt32                                                | *                    |

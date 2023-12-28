@@ -205,7 +205,13 @@
 
 # clMemPropertiesIMG (cl_img_mem_properties)
 	Enum [cl::MEM_ALLOC_RELAX_REQUIREMENTS]
+	Enum [cl::MEM_ALLOC_GPU_WRITE_COMBINE]
+	Enum [cl::MEM_ALLOC_GPU_CACHED]
+	Enum [cl::MEM_ALLOC_CPU_LOCAL]
+	Enum [cl::MEM_ALLOC_GPU_LOCAL]
+	Enum [cl::MEM_ALLOC_GPU_PRIVATE]
 	Enum [cl::MEM_ALLOC_FLAGS + IMG]
+	Enum [cl::DEVICE_MEMORY_CAPABILITIES]
 
 # clUseGrallocPtrIMG (cl_img_use_gralloc_ptr)
 	Enum [cl::COMMAND_ACQUIRE_GRALLOC_OBJECTS]

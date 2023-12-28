@@ -1832,6 +1832,7 @@ type
     public static property DEVICE_PAGE_SIZE:                                                 clDeviceInfo read new clDeviceInfo($40A1);
     public static property DEVICE_SVM_CAPABILITIES_ARM:                                      clDeviceInfo read new clDeviceInfo($40B6);
     public static property DEVICE_COMPUTE_UNITS_BITFIELD:                                    clDeviceInfo read new clDeviceInfo($40BF);
+    public static property DEVICE_MEMORY_CAPABILITIES:                                       clDeviceInfo read new clDeviceInfo($40D8);
     public static property DEVICE_SPIR_VERSIONS:                                             clDeviceInfo read new clDeviceInfo($40E0);
     public static property DEVICE_SIMULTANEOUS_INTEROPS:                                     clDeviceInfo read new clDeviceInfo($4104);
     public static property DEVICE_NUM_SIMULTANEOUS_INTEROPS:                                 clDeviceInfo read new clDeviceInfo($4105);
@@ -2203,6 +2204,8 @@ type
         Result := 'DEVICE_SVM_CAPABILITIES_ARM' else
       if DEVICE_COMPUTE_UNITS_BITFIELD = self then
         Result := 'DEVICE_COMPUTE_UNITS_BITFIELD' else
+      if DEVICE_MEMORY_CAPABILITIES = self then
+        Result := 'DEVICE_MEMORY_CAPABILITIES' else
       if DEVICE_SPIR_VERSIONS = self then
         Result := 'DEVICE_SPIR_VERSIONS' else
       if DEVICE_SIMULTANEOUS_INTEROPS = self then
@@ -5198,6 +5201,76 @@ type
       if DEVICE_PARTITION_BY_AFFINITY_DOMAIN_EXT = self then
         Result := 'DEVICE_PARTITION_BY_AFFINITY_DOMAIN_EXT' else
         Result := $'clDevicePartitionPropertyEXT[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  clMemAllocFlagsIMG = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property MEM_ALLOC_RELAX_REQUIREMENTS: clMemAllocFlagsIMG read new clMemAllocFlagsIMG(1 shl 0);
+    public static property MEM_ALLOC_GPU_WRITE_COMBINE:  clMemAllocFlagsIMG read new clMemAllocFlagsIMG(1 shl 1);
+    public static property MEM_ALLOC_GPU_CACHED:         clMemAllocFlagsIMG read new clMemAllocFlagsIMG(1 shl 2);
+    public static property MEM_ALLOC_CPU_LOCAL:          clMemAllocFlagsIMG read new clMemAllocFlagsIMG(1 shl 3);
+    public static property MEM_ALLOC_GPU_LOCAL:          clMemAllocFlagsIMG read new clMemAllocFlagsIMG(1 shl 4);
+    public static property MEM_ALLOC_GPU_PRIVATE:        clMemAllocFlagsIMG read new clMemAllocFlagsIMG(1 shl 5);
+    
+    public static function operator+(v1, v2: clMemAllocFlagsIMG) := new clMemAllocFlagsIMG(v1.val or v2.val);
+    public static function operator or(v1, v2: clMemAllocFlagsIMG) := new clMemAllocFlagsIMG(v1.val or v2.val);
+    
+    public static procedure operator+=(var v1: clMemAllocFlagsIMG; v2: clMemAllocFlagsIMG) := v1 := v1+v2;
+    
+    public static function operator in(v1, v2: clMemAllocFlagsIMG) := v1.val and v2.val = v1.val;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      var left_val := self.val;
+      if left_val=0 then
+      begin
+        Result := 'clMemAllocFlagsIMG[0]';
+        exit;
+      end;
+      if MEM_ALLOC_RELAX_REQUIREMENTS in self then
+      begin
+        res += 'MEM_ALLOC_RELAX_REQUIREMENTS+';
+        left_val := left_val and not MEM_ALLOC_RELAX_REQUIREMENTS.val;
+      end;
+      if MEM_ALLOC_GPU_WRITE_COMBINE in self then
+      begin
+        res += 'MEM_ALLOC_GPU_WRITE_COMBINE+';
+        left_val := left_val and not MEM_ALLOC_GPU_WRITE_COMBINE.val;
+      end;
+      if MEM_ALLOC_GPU_CACHED in self then
+      begin
+        res += 'MEM_ALLOC_GPU_CACHED+';
+        left_val := left_val and not MEM_ALLOC_GPU_CACHED.val;
+      end;
+      if MEM_ALLOC_CPU_LOCAL in self then
+      begin
+        res += 'MEM_ALLOC_CPU_LOCAL+';
+        left_val := left_val and not MEM_ALLOC_CPU_LOCAL.val;
+      end;
+      if MEM_ALLOC_GPU_LOCAL in self then
+      begin
+        res += 'MEM_ALLOC_GPU_LOCAL+';
+        left_val := left_val and not MEM_ALLOC_GPU_LOCAL.val;
+      end;
+      if MEM_ALLOC_GPU_PRIVATE in self then
+      begin
+        res += 'MEM_ALLOC_GPU_PRIVATE+';
+        left_val := left_val and not MEM_ALLOC_GPU_PRIVATE.val;
+      end;
+      if left_val<>0 then
+      begin
+        res += 'clMemAllocFlagsIMG[';
+        res += self.val.ToString;
+        res += ']+';
+      end;
+      res.Length -= 1;
+      Result := res.ToString;
     end;
     
   end;
@@ -11092,6 +11165,14 @@ type
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<UInt64>);
       var param_value_ret_size: UIntPtr;
       Result := GetDeviceInfo(device, clDeviceInfo.DEVICE_COMPUTE_UNITS_BITFIELD, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_MEMORY_CAPABILITIES(device: cl_device_id; var param_value: clMemAllocFlagsIMG; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clMemAllocFlagsIMG>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetDeviceInfo(device, clDeviceInfo.DEVICE_MEMORY_CAPABILITIES, param_value_sz,param_value,param_value_ret_size);
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;

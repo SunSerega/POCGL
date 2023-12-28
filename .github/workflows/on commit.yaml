@@ -43,7 +43,7 @@ jobs:
             - name: Download and unpack Pascal compiler
               run: |
               
-                Invoke-WebRequest -Uri 'https://github.com/SunSerega/pascalabcnet/releases/download/unstable/PABCNETC.zip' -OutFile 'D:\PABCNETC.zip'
+                Invoke-WebRequest -Uri 'https://github.com/SunSerega/pascalabcnet/releases/download/custom-build-tag/PABCNETC.zip' -OutFile 'D:\PABCNETC.zip'
                 
                 Expand-Archive -Path 'D:\PABCNETC.zip' -DestinationPath 'D:\PABCNETC' -Force
                 

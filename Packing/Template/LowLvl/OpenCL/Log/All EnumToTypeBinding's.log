@@ -507,6 +507,9 @@ clDeviceSVMCapabilities
 --- DEVICE_COMPUTE_UNITS_BITFIELD
 !output
 UInt64
+--- DEVICE_MEMORY_CAPABILITIES
+!output
+clMemAllocFlagsIMG
 --- DEVICE_SPIR_VERSIONS
 !output
 string
