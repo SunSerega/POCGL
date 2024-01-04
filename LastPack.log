@@ -607,6 +607,8 @@ Tester: Compiling "Samples/OpenCL/MatrMlt.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples/OpenCL/SimpleAddition.pas"
 Tester: Compiling: OK
+Tester: Compiling "Samples/OpenCLABC/All OpenCL info.pas"
+Tester: Compiling: OK
 Tester: Compiling "Samples/OpenCLABC/0Простейшие примеры/MatrMlt.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples/OpenCLABC/0Простейшие примеры/SimpleAddition.pas"
@@ -1056,6 +1058,7 @@ Packing sample file "Samples/OpenCL/MatrMlt.cl"
 Packing sample file "Samples/OpenCL/MatrMlt.pas"
 Packing sample file "Samples/OpenCL/SimpleAddition.cl"
 Packing sample file "Samples/OpenCL/SimpleAddition.pas"
+Packing sample file "Samples/OpenCLABC/All OpenCL info.pas"
 Packing sample file "Samples/OpenCLABC/0Простейшие примеры/MatrMlt.cl"
 Packing sample file "Samples/OpenCLABC/0Простейшие примеры/MatrMlt.pas"
 Packing sample file "Samples/OpenCLABC/0Простейшие примеры/SimpleAddition.cl"
@@ -1079,5 +1082,5 @@ Packing sample file "Samples/OpenGLABC/Точки на поле/Минимум �
 Packing sample file "Samples/OpenGLABC/Точки на поле/Спирали.frag"
 Packing sample file "Samples/OpenGLABC/Точки на поле/Сумма расстояний.frag"
 Packing sample file "Samples/OpenGLABC/Точки на поле/Точки.pas"
-Packed 27 sample files
+Packed 28 sample files
 Done packing

@@ -215,6 +215,8 @@ Tester: Compiling "Samples/OpenCL/MatrMlt.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples/OpenCL/SimpleAddition.pas"
 Tester: Compiling: OK
+Tester: Compiling "Samples/OpenCLABC/All OpenCL info.pas"
+Tester: Compiling: OK
 Tester: Compiling "Samples/OpenCLABC/0Простейшие примеры/MatrMlt.pas"
 Tester: Compiling: OK
 Tester: Compiling "Samples/OpenCLABC/0Простейшие примеры/SimpleAddition.pas"
