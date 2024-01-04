@@ -20,6 +20,7 @@ type
     
   end;
   
+  [PCUAlwaysRestore]
   ParArrSizeNotArray = sealed class(ParArrSize)
     
     private constructor := exit;
@@ -31,6 +32,7 @@ type
     
   end;
   
+  [PCUAlwaysRestore]
   ParArrSizeArbitrary = sealed class(ParArrSize)
     
     private constructor := exit;
@@ -42,6 +44,7 @@ type
     
   end;
   
+  [PCUAlwaysRestore]
   ParArrSizeConst = sealed class(ParArrSize)
     
     private sz: integer;
@@ -55,6 +58,7 @@ type
     
   end;
   
+  [PCUAlwaysRestore]
   ParArrSizeParRef = sealed class(ParArrSize)
     
     private ind: integer;
@@ -68,6 +72,7 @@ type
     
   end;
   
+  [PCUAlwaysRestore]
   ParArrSizeMlt = sealed class(ParArrSize)
     
     private sub_sizes: array of ParArrSize;
@@ -81,6 +86,7 @@ type
     
   end;
   
+  [PCUAlwaysRestore]
   ParArrSizeDiv = sealed class(ParArrSize)
     
     private n, d: ParArrSize;
@@ -107,6 +113,7 @@ type
     
   end;
   
+  [PCUAlwaysRestore]
   ParValComboVector = sealed class(ParValCombo)
     
     private sz: integer;
@@ -120,6 +127,7 @@ type
     
   end;
   
+  [PCUAlwaysRestore]
   ParValComboMatrix = sealed class(ParValCombo)
     
     private sz1, sz2: integer;
@@ -396,19 +404,4 @@ begin
     raise new System.InvalidOperationException($'{context_descr()}');
 end;
 
-begin
-  {$region TODO#2844}
-  //TODO #2844: These types are deleted from .exe, if not used
-  
-  if nil=default(ParArrSizeNotArray) then;
-  if nil=default(ParArrSizeArbitrary) then;
-  if nil=default(ParArrSizeConst) then;
-  if nil=default(ParArrSizeParRef) then;
-  if nil=default(ParArrSizeMlt) then;
-  if nil=default(ParArrSizeDiv) then;
-  
-  if nil=default(ParValComboVector) then;
-  if nil=default(ParValComboMatrix) then;
-  
-  {$endregion TODO#2844}
 end.

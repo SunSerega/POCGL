@@ -2541,6 +2541,7 @@ type
     
   end;
   
+  [PCUAlwaysRestore]
   SimpleEnumsInGroup = sealed class(EnumsInGroup)
     
     private is_bitfield: boolean;
@@ -2596,6 +2597,7 @@ type
     public property OutputT: LoadedParData read otp_t.Value;
     
   end;
+  [PCUAlwaysRestore]
   ObjInfoEnumsInGroup = sealed class(EnumsInGroup)
     private _enums: array of EnumWithObjInfo;
     
@@ -2691,6 +2693,7 @@ type
     end;
     
   end;
+  [PCUAlwaysRestore]
   PropListEnumsInGroup = sealed class(EnumsInGroup)
     private _enums: array of EnumWithPropList;
     private global_list_end_inds: array of integer;
@@ -3744,6 +3747,7 @@ uses EnumItems;
   
   {$region New}
   
+  [PCUAlwaysRestore]
   GroupAdder = sealed class(GroupFixer)
     private castable_to_name: string;
     private is_bitfield: boolean;
@@ -3819,6 +3823,7 @@ uses EnumItems;
   
   {$region Name}
   
+  [PCUAlwaysRestore]
   GroupNameFixer = sealed class(GroupFixer)
     public new_name: ApiVendorLName;
     
@@ -3845,6 +3850,7 @@ uses EnumItems;
   
   {$region Base}
   
+  [PCUAlwaysRestore]
   GroupBaseFixer = sealed class(GroupFixer)
     public new_base_name: string;
     
@@ -3872,6 +3878,7 @@ uses EnumItems;
   
   {$region CustopMember}
   
+  [PCUAlwaysRestore]
   GroupCustopMemberFixer = sealed class(GroupFixer)
     public member_lns: array of string;
     
@@ -3915,6 +3922,7 @@ uses EnumItems;
   
   {$region New}
   
+  [PCUAlwaysRestore]
   IdClassAdder = sealed class(IdClassFixer)
     private tname: string;
     
@@ -3952,6 +3960,7 @@ uses EnumItems;
   
   {$region New}
   
+  [PCUAlwaysRestore]
   StructAdder = sealed class(StructFixer)
     private fields: sequence of StructField?;
     
@@ -4020,6 +4029,7 @@ uses EnumItems;
   
   {$region CustopMember}
   
+  [PCUAlwaysRestore]
   StructCustopMemberFixer = sealed class(StructFixer)
     public member_lns: array of string;
     
@@ -4063,6 +4073,7 @@ uses EnumItems;
   
   {$region Name}
   
+  [PCUAlwaysRestore]
   DelegateNameFixer = sealed class(DelegateFixer)
     public new_name: ApiVendorLName;
     
@@ -4095,28 +4106,6 @@ begin
   try
     TypeInitHelper.InitType(typeof(PascalBasicType));
     TypeInitHelper.InitType(typeof(TypeCombo));
-    
-    {$region TODO#2844}
-    //TODO #2844: These types are deleted from .exe, if not used
-    
-    if nil=default(SimpleEnumsInGroup) then;
-    if nil=default(ObjInfoEnumsInGroup) then;
-    if nil=default(PropListEnumsInGroup) then;
-    
-    if nil=default(GroupAdder) then;
-    if nil=default(GroupNameFixer) then;
-    if nil=default(GroupBaseFixer) then;
-    if nil=default(GroupCustopMemberFixer) then;
-    
-    if nil=default(IdClassAdder) then;
-    
-    if nil=default(StructAdder) then;
-    if nil=default(StructCustopMemberFixer) then;
-    
-    if nil=default(DelegateNameFixer) then;
-    
-    {$endregion TODO#2844}
-    
   except
     on e: Exception do
       ErrOtp(e);

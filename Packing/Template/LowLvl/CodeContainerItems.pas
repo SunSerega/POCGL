@@ -2681,6 +2681,7 @@ implementation
   
   {$region PPT}
   
+  [PCUAlwaysRestore]
   FuncParamTChanges = record
     private changes_maker: ()->sequence of ValueTuple<boolean, FuncParamT>;
     
@@ -2723,6 +2724,7 @@ implementation
     
   end;
   
+  [PCUAlwaysRestore]
   FuncPPTFixer = sealed class(FuncFixer)
     public changes: array of FuncParamTChanges;
     private is_auto_fixer: boolean;
@@ -2819,6 +2821,7 @@ implementation
   
   {$region LimitOvrs}
   
+  [PCUAlwaysRestore]
   FuncLimitOvrsFixer = sealed class(FuncFixer)
     public ovrs: sequence of FuncOverload;
     
@@ -2910,6 +2913,7 @@ implementation
   
   {$region Extension}
   
+  [PCUAlwaysRestore]
   ExtensionNameFixer = sealed class(ExtensionFixer)
     public new_name: ApiVendorLName;
     
@@ -2947,14 +2951,4 @@ begin
   end), true);
 end;
 
-begin
-  {$region TODO#2844}
-  //TODO #2844: These types are deleted from .exe, if not used
-  
-  if nil=default(FuncPPTFixer) then;
-  if nil=default(FuncLimitOvrsFixer) then;
-  
-  if nil=default(ExtensionNameFixer) then;
-  
-  {$endregion TODO#2844}
 end.

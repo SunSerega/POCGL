@@ -4,7 +4,6 @@
 
 interface
 
-//TODO #2844
 //TODO #2852
 
 uses System;
