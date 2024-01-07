@@ -56,7 +56,7 @@ jobs:
                 Write-Host "Compile: " -NoNewline
                 Start-Process -FilePath 'D:\PABCNETC\pabcnetcclear.exe' -ArgumentList '"PackAll.pas"' -Wait -NoNewWindow
                 
-                $process = Start-Process -FilePath 'PackAll.exe' -ArgumentList '"Stages= FirstPack + Reference + Dummy + OpenCL+OpenCLABC + OpenGL+OpenGLABC + Compile + Test + Release" "PasCompPath=D:\PABCNETC\pabcnetcclear.exe" SkipFinishedPause' -NoNewWindow -PassThru -Wait
+                $process = Start-Process -FilePath 'PackAll.exe' -ArgumentList '"Stages= PullUpstream + Reference + Dummy + OpenCL+OpenCLABC + OpenGL+OpenGLABC + Compile + Test + Release" "PasCompPath=D:\PABCNETC\pabcnetcclear.exe" SkipFinishedPause' -NoNewWindow -PassThru -Wait
                 $exitCode = $process.ExitCode
                 if ($exitCode -ne 0) {
                     Write-Host "Exit code is not 0: $exitCode"
@@ -139,7 +139,7 @@ jobs:
                 mono "../PABCNETC/pabcnetcclear.exe" "PackAll.pas"
                 
                 # TODO need mono anon pipes workaround
-#                mono "PackAll.exe" "Stages= FirstPack + Reference + Dummy + OpenCL+OpenCLABC + OpenGL+OpenGLABC + Compile + Test + Release" "PasCompPath=../PABCNETC/pabcnetcclear.exe" SkipFinishedPause
+#                mono "PackAll.exe" "Stages= PullUpstream + Reference + Dummy + OpenCL+OpenCLABC + OpenGL+OpenGLABC + Compile + Test + Release" "PasCompPath=../PABCNETC/pabcnetcclear.exe" SkipFinishedPause
                 
             - name: Check for changes
               run: |

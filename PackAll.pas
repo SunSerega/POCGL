@@ -8,16 +8,16 @@
 // 
 // - "Stages=...+...+..."
 // === Запускает только указанные стадии упаковки
-//   - "FirstPack"  | Датаскрапинг данных об исходных библиотеках. Единственная по-умолчанию выключенная стадия
-//   - "Reference"  | Упаковка справок
-//   - "Dummy"      | Упаковка модуля Dummy.pas (тест кодогенерации)
-//   - "OpenCL"     | Упаковка модуля OpenCL.pas
-//   - "OpenCLABC"  | Упаковка модуля OpenCLABC.pas
-//   - "OpenGL"     | Упаковка модуля OpenGL.pas
-//   - "OpenGLABC"  | Упаковка модуля OpenGLABC.pas
-//   - "Compile"    | Компиляция всех упакованных модулей
-//   - "Test"       | Тестирование (то же что запуск "Tests\Tester.exe" напрямую, но с указанными модулями)
-//   - "Release"    | Создание и наполнение папки Release, а так же копирование чего надо в ProgramFiles
+//   - "PullUpstream" | Датаскрапинг данных об исходных библиотеках. Единственная по-умолчанию выключенная стадия
+//   - "Reference"    | Упаковка справок
+//   - "Dummy"        | Упаковка модуля Dummy.pas (тест кодогенерации)
+//   - "OpenCL"       | Упаковка модуля OpenCL.pas
+//   - "OpenCLABC"    | Упаковка модуля OpenCLABC.pas
+//   - "OpenGL"       | Упаковка модуля OpenGL.pas
+//   - "OpenGLABC"    | Упаковка модуля OpenGLABC.pas
+//   - "Compile"      | Компиляция всех упакованных модулей
+//   - "Test"         | Тестирование (то же что запуск "Tests\Tester.exe" напрямую, но с указанными модулями)
+//   - "Release"      | Создание и наполнение папки Release, а так же копирование чего надо в ProgramFiles
 // === К примеру: "Stages= OpenCLABC + Compile + Test + Release"
 // === Лишние пробелы по краям имён стадий допускаются, но "Stages=" должно быть слитно
 // 
@@ -33,16 +33,16 @@ uses 'Utils/PathUtils';
 
 {$region SpecialNames}
 
-const FirstPackStr  = 'FirstPack';
-const ReferenceStr  = 'Reference';
-const DummyStr      = 'Dummy';
-const OpenCLStr     = 'OpenCL';
-const OpenCLABCStr  = 'OpenCLABC';
-const OpenGLStr     = 'OpenGL';
-const OpenGLABCStr  = 'OpenGLABC';
-const CompileStr    = 'Compile';
-const TestStr       = 'Test';
-const ReleaseStr    = 'Release';
+const PullUpstreamStr = 'PullUpstream';
+const ReferenceStr    = 'Reference';
+const DummyStr        = 'Dummy';
+const OpenCLStr       = 'OpenCL';
+const OpenCLABCStr    = 'OpenCLABC';
+const OpenGLStr       = 'OpenGL';
+const OpenGLABCStr    = 'OpenGLABC';
+const CompileStr      = 'Compile';
+const TestStr         = 'Test';
+const ReleaseStr      = 'Release';
 
 var AllLLModules := HSet(
   DummyStr,OpenCLStr,OpenGLStr
@@ -53,7 +53,7 @@ var AllModules := HSet(
   OpenGLStr,OpenGLABCStr
 );
 var AllStages := HSet(
-  FirstPackStr,
+  PullUpstreamStr,
   ReferenceStr,
   DummyStr,
   OpenCLStr,OpenCLABCStr,
@@ -132,13 +132,13 @@ var AllStages := HSet(
   
   {$endregion Base}
   
-  {$region FirstPack}
+  {$region PullUpstream}
   
-  FirstPackStage = sealed class(PackingStage)
+  PullUpstreamStage = sealed class(PackingStage)
     
     public constructor;
     begin
-      inherited Create(FirstPackStr);
+      inherited Create(PullUpstreamStr);
       self.description := 'First Pack';
     end;
     
@@ -178,7 +178,7 @@ var AllStages := HSet(
     
   end;
   
-  {$endregion FirstPack}
+  {$endregion PullUpstream}
   
   {$region Reference}
   
@@ -472,12 +472,12 @@ begin
       if not |'[REDIRECTIOMODE]','[RUNMODE]'|.Any(m->m in System.Environment.GetCommandLineArgs) then
       begin
         PackingStage.CurrentStages := AllStages.ToHashSet;
-        PackingStage.CurrentStages.ExceptWith(|FirstPackStr|);
+        PackingStage.CurrentStages.ExceptWith(|PullUpstreamStr|);
         Otp($'Executing default stages:');
       end else
       begin
         PackingStage.CurrentStages := AllStages.ToHashSet;
-//        PackingStage.CurrentStages := HSet(FirstPackStr);
+//        PackingStage.CurrentStages := HSet(PullUpstreamStr);
 //        PackingStage.CurrentStages := HSet(DummyStr, OpenCLStr, OpenGLStr, CompileStr);
 //        PackingStage.CurrentStages := HSet(OpenCLABCStr, OpenGLABCStr, CompileStr);
 //        PackingStage.CurrentStages := HSet(DummyStr, OpenCLStr,OpenCLABCStr, OpenGLStr,OpenGLABCStr, CompileStr);
@@ -507,21 +507,21 @@ begin
     
     {$endregion MiscClear}
     
-    var T_FirstPack := FirstPackStage .Create               .MakeTask;
-    var T_Reference := ReferenceStage .Create               .MakeTask;
-    var T_Dummy     := LLModuleStage  .Create(DummyStr)     .MakeTask;
-    var T_OpenCL    := LLModuleStage  .Create(OpenCLStr)    .MakeTask;
-    var T_OpenCLABC := HLModuleStage  .Create(OpenCLABCStr) .MakeTask;
-    var T_OpenGL    := LLModuleStage  .Create(OpenGLStr)    .MakeTask;
-    var T_OpenGLABC := HLModuleStage  .Create(OpenGLABCStr) .MakeTask;
-    var T_Compile   := CompileStage   .Create               .MakeTask;
-    var T_Test      := TestStage      .Create               .MakeTask;
-    var T_Release   := ReleaseStage   .Create               .MakeTask;
+    var T_PullUpstream  := PullUpstreamStage.Create               .MakeTask;
+    var T_Reference     := ReferenceStage   .Create               .MakeTask;
+    var T_Dummy         := LLModuleStage    .Create(DummyStr)     .MakeTask;
+    var T_OpenCL        := LLModuleStage    .Create(OpenCLStr)    .MakeTask;
+    var T_OpenCLABC     := HLModuleStage    .Create(OpenCLABCStr) .MakeTask;
+    var T_OpenGL        := LLModuleStage    .Create(OpenGLStr)    .MakeTask;
+    var T_OpenGLABC     := HLModuleStage    .Create(OpenGLABCStr) .MakeTask;
+    var T_Compile       := CompileStage     .Create               .MakeTask;
+    var T_Test          := TestStage        .Create               .MakeTask;
+    var T_Release       := ReleaseStage     .Create               .MakeTask;
     
     Otp('Start packing');
     
     (
-      T_FirstPack +
+      T_PullUpstream +
       
       T_Reference *
       ( T_Dummy ) *
