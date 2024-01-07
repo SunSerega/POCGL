@@ -779,6 +779,9 @@ type
       if stored_as_ptr then
         res_EIm += '.Value';
       res_EIm += ');'#10;
+      
+      res_EIm += tab;
+      res_EIm += 'sb += #10;'#10;
     end;
     protected procedure WriteCommandType(fn, tn: string; settings: TSettings);
     begin

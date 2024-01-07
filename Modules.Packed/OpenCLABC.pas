@@ -20524,6 +20524,7 @@ type
       sb += 'val:';
       sb += ' ';
       sb.Append(val.Value);
+      sb += #10;
       
       sb.Append(#9, tabs);
       sb += 'mem_offset:';
@@ -23936,6 +23937,7 @@ type
       sb += 'val:';
       sb += ' ';
       sb.Append(val.Value);
+      sb += #10;
       
     end;
     
@@ -24113,6 +24115,7 @@ type
       sb += 'val:';
       sb += ' ';
       sb.Append(val.Value);
+      sb += #10;
       
       sb.Append(#9, tabs);
       sb += 'mem_offset:';
@@ -27614,6 +27617,7 @@ type
       sb += 'val:';
       sb += ' ';
       sb.Append(val.Value);
+      sb += #10;
       
     end;
     
@@ -29049,6 +29053,7 @@ type
       sb += 'val:';
       sb += ' ';
       sb.Append(val.Value);
+      sb += #10;
       
       sb.Append(#9, tabs);
       sb += 'ind:';
@@ -32249,6 +32254,7 @@ type
       sb += 'val:';
       sb += ' ';
       sb.Append(val.Value);
+      sb += #10;
       
     end;
     
@@ -32418,6 +32424,7 @@ type
       sb += 'val:';
       sb += ' ';
       sb.Append(val.Value);
+      sb += #10;
       
       sb.Append(#9, tabs);
       sb += 'ind:';
