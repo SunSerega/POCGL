@@ -161,6 +161,8 @@ Tester: Compiling "Tests/Exec/CLABC/03#ToString/06#Wait/1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/03#ToString/07#GPUCommandContainer/1.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/07#GPUCommandContainer/2.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/03#ToString/08#HostExec/1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/03#ToString/09#CombineQueues/1.pas"
@@ -378,6 +380,8 @@ Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/03#ToString/06#Wait/1]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/03#ToString/07#GPUCommandContainer/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/07#GPUCommandContainer/2]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/03#ToString/08#HostExec/1]
 Tester: Done executing
