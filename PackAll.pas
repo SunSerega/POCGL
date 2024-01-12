@@ -257,16 +257,19 @@ var AllStages := HSet(
       if mn       in CurrentStages then Result += EventTask(ModulePackingStage.GetModulePackEv(mn));
       if mn+'ABC' in CurrentStages then Result += EventTask(ModulePackingStage.GetModulePackEv(mn+'ABC'));
       
+      if IsPackingAllModules then
+      begin
+        if FileExists($'Modules/{mn}ABC.pas') then
+          Result += CompTask($'Modules.Packed/{mn}ABC.pas') else
+          Result += CompTask($'Modules.Packed/{mn}.pas');
+        exit;
+      end;
+      
       if mn+'ABC' in CurrentStages then
         Result += CompTask($'Modules.Packed/{mn}ABC.pas') else
       if mn in CurrentStages then
         Result += CompTask($'Modules.Packed/{mn}.pas') else
-      if not IsPackingAllModules then
-        exit;
-      
-      if FileExists($'Modules/{mn}ABC.pas') then
-        Result += CompTask($'Modules.Packed/{mn}ABC.pas') else
-        Result += CompTask($'Modules.Packed/{mn}.pas');
+        ;
       
     end;
     
