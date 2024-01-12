@@ -95,8 +95,10 @@ type
   
   {$region Подпрограммы ядра}
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   dum = static class
     
@@ -1127,8 +1129,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   dyn = sealed partial class
     public constructor(loader: DummyLoader);

@@ -1,8 +1,10 @@
 ﻿  
   
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   cl = static class
     

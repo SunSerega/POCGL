@@ -6262,8 +6262,10 @@ type
   
   {$region Подпрограммы ядра}
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   cl = static class
     
@@ -13543,8 +13545,10 @@ type
   
   {$region Подпрограммы расширений}
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clLoaderInfo = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -13648,8 +13652,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clLoaderLayers = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -13726,8 +13732,10 @@ type
     public const ExtensionString = 'cl_amd_device_attribute_query';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clContextLoggingFunctionsAPPLE = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -13783,8 +13791,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clSetMemObjectDestructorAPPLE = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -13813,8 +13823,10 @@ type
     public const ExtensionString = 'cl_arm_get_core_id';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clImportMemoryARM = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -13863,8 +13875,10 @@ type
     public const ExtensionString = 'cl_arm_scheduling_controls';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clSharedVirtualMemoryARM = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -14207,8 +14221,10 @@ type
     public const ExtensionString = 'cl_ext_cxx_for_opencl';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clDeviceFissionEXT = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -14297,8 +14313,10 @@ type
     public const ExtensionString = 'cl_ext_image_raw10_raw12';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clImageRequirementsInfoEXT = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -14414,8 +14432,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clMigrateMemobjectEXT = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -14530,8 +14550,10 @@ type
     public const ExtensionString = 'cl_img_cached_allocations';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clGenerateMipmapIMG = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -14714,8 +14736,10 @@ type
     public const ExtensionString = 'cl_img_mem_properties';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clUseGrallocPtrIMG = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -14926,8 +14950,10 @@ type
     public const ExtensionString = 'cl_img_yuv_image';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clAcceleratorINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -15011,8 +15037,10 @@ type
     public const ExtensionString = 'cl_intel_command_queue_families';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clCreateBufferWithPropertiesINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -15066,8 +15094,10 @@ type
     public const ExtensionString = 'cl_intel_driver_diagnostics';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clDx9MediaSharingINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -15332,8 +15362,10 @@ type
     public const ExtensionString = 'cl_intel_planar_yuv';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clProgramScopeHostPipeINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -15518,8 +15550,10 @@ type
     public const ExtensionString = 'cl_intel_sharing_format_query';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clSharingFormatQueryD3d10INTEL = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -15547,8 +15581,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clSharingFormatQueryD3d11INTEL = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -15576,8 +15612,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clSharingFormatQueryDx9INTEL = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -15605,8 +15643,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clSharingFormatQueryGlINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -15634,8 +15674,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clSharingFormatQueryVaApiINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -15668,8 +15710,10 @@ type
     public const ExtensionString = 'cl_intel_simultaneous_sharing';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clUnifiedSharedMemoryINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -15909,8 +15953,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clVaApiMediaSharingINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -16135,8 +16181,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clCommandBufferKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -16769,8 +16817,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clCommandBufferMultiDeviceKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -16834,8 +16884,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clCommandBufferMutableDispatchKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -16998,8 +17050,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clCreateCommandQueueKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -17028,8 +17082,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clD3d10SharingKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -17264,8 +17320,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clD3d11SharingKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -17510,8 +17568,10 @@ type
     public const ExtensionString = 'cl_khr_device_uuid';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clDx9MediaSharingKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -17748,8 +17808,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clEglEventKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -17768,8 +17830,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clEglImageKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -17995,8 +18059,10 @@ type
     public const ExtensionString = 'cl_khr_extended_versioning';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clExternalMemoryKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -18222,8 +18288,10 @@ type
     public const ExtensionString = 'cl_khr_external_memory_win32';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clExternalSemaphoreKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -18255,8 +18323,10 @@ type
     public const ExtensionString = 'cl_khr_external_semaphore_opaque_fd';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clExternalSemaphoreSyncFdKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -18300,8 +18370,10 @@ type
     public const ExtensionString = 'cl_khr_fp64';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clGLSharingKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -18658,8 +18730,10 @@ type
     public const ExtensionString = 'cl_khr_gl_depth_images';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clGLEventKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -18683,8 +18757,10 @@ type
     public const ExtensionString = 'cl_khr_gl_msaa_sharing';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clIcdKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -18724,8 +18800,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clIlProgramKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -18784,8 +18862,10 @@ type
     public const ExtensionString = 'cl_khr_priority_hints';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clSemaphoreKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -19274,8 +19354,10 @@ type
     public const ExtensionString = 'cl_khr_subgroup_named_barrier';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clSubgroupsKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -19408,8 +19490,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clSuggestedLocalWorkSizeKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -19471,8 +19555,10 @@ type
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clTerminateContextKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -19501,8 +19587,10 @@ type
     public const ExtensionString = 'cl_nv_device_attribute_query';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clContentSizePOCL = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -19526,8 +19614,10 @@ type
     public const ExtensionString = 'cl_qcom_android_native_buffer_host_ptr';
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   clExtHostPtrQCOM = sealed partial class
     public constructor(pl: cl_platform_id);

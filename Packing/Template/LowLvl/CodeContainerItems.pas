@@ -2349,8 +2349,10 @@ type
         {$region WriteAPI}
         var WriteAPI := procedure(api_funcs: sequence of Func; add_ver, depr_ver: Func->string)->
         begin
-          intr_wr += '  [PCUNotRestore]'#10;
+          intr_wr += '  {$ifndef DEBUG}'#10;
           intr_wr += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
+          intr_wr += '  {$endif DEBUG}'#10;
+          intr_wr += '  [PCUNotRestore]'#10;
           intr_wr += '  ///'#10;
           intr_wr += '  ';
           intr_wr += api;
@@ -2533,8 +2535,10 @@ type
       
       if any_funcs then
       begin
-        intr_wr += '  [PCUNotRestore]'#10;
+        intr_wr += '  {$ifndef DEBUG}'#10;
         intr_wr += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
+        intr_wr += '  {$endif DEBUG}'#10;
+        intr_wr += '  [PCUNotRestore]'#10;
       end;
       
       intr_wr += '  ///'#10;

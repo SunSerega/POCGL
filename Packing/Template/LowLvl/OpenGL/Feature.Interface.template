@@ -1,8 +1,10 @@
 ﻿  
   
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   gl = sealed partial class
     public constructor(loader: IGLPlatformLoader);
@@ -7661,8 +7663,10 @@
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   glD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
@@ -11660,8 +11664,10 @@
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   gdi = static class
     
@@ -11740,8 +11746,10 @@
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   glx = static class
     
@@ -12141,8 +12149,10 @@
     
   end;
   
-  [PCUNotRestore]
+  {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
   ///
   wgl = static class
     
