@@ -462,6 +462,20 @@ begin
     // ====================================================
     
     begin
+      var exe_fname := GetEXEFileName;
+      var pas_fname := System.IO.Path.ChangeExtension(exe_fname, '.pas');
+      if FileExists(pas_fname) then
+      begin
+        var exe_mod_time := System.IO.FileInfo.Create(exe_fname).LastWriteTime;
+        var pas_mod_time := System.IO.FileInfo.Create(pas_fname).LastWriteTime;
+        if exe_mod_time < pas_mod_time then
+          Otp('WARNING: PackAll.pas was modified. Please recompile it');
+      end;
+    end;
+    
+    // ====================================================
+    
+    begin
       var arg := CommandLineArgs.SingleOrDefault(arg->arg.StartsWith('Stages='));
       
       if arg<>nil then
