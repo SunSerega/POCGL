@@ -169,17 +169,24 @@ type
         //TODO #2896
         yield (lvl+1, $'♦ {nick} x{l.Count}', Timer.TimeToText(time_per_nick[nick]));
         
-        var common_name_parts := l.First[0].Split('/');
+        var common_name_parts := l.First[0].Split('/')[:^1];
         foreach var (full_name, t) in l.Skip(1) do
         begin
-          var c := common_name_parts.ZipTuple(full_name.Split('/')).TakeWhile(\(p1,p2)->p1=p2).Count;
+          var c := common_name_parts.ZipTuple(full_name.Split('/')[:^1]).TakeWhile(\(p1,p2)->p1=p2).Count;
           if c<common_name_parts.Length then
             common_name_parts := common_name_parts[:c];
         end;
         var common_skip_len := common_name_parts.Sum(p->p.Length+1);
         
         foreach var (full_name, t) in l.OrderBy(t->t[0]) do
-          yield sequence t.MakeLogLines(lvl+2, full_name.SubString(common_skip_len));
+        begin
+          if full_name.Length<=common_skip_len then
+          begin
+            Otp($'ERROR: [{full_name}] does not have {common_skip_len} chars');
+            continue;
+          end;
+          yield sequence t.MakeLogLines(lvl+2, full_name.Substring(common_skip_len));
+        end;
         
       end;
       
