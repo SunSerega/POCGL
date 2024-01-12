@@ -252,9 +252,15 @@ var AllStages := HSet(
     
     private function MakeModuleCompileTask(mn: string): AsyncTask;
     begin
+      Result := nil;
+      
       if mn       in CurrentStages then Result += EventTask(ModulePackingStage.GetModulePackEv(mn));
       if mn+'ABC' in CurrentStages then Result += EventTask(ModulePackingStage.GetModulePackEv(mn+'ABC'));
       
+      // If no modules are selected, but compile stage is:
+      // - Compile everything except for Dummy
+      if not ModuleStages.Any and FileExists($'Modules/{mn}ABC.pas') then
+        Result += CompTask($'Modules.Packed/{mn}ABC.pas') else
       if mn+'ABC' in CurrentStages then
         Result += CompTask($'Modules.Packed/{mn}ABC.pas') else
       if mn in CurrentStages then
