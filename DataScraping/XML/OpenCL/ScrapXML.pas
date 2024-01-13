@@ -1,11 +1,11 @@
 ﻿uses System;
 
+uses '../../../Utils/ThoroughXML';
 uses '../../../Utils/AOtp';
 
 uses '../../../POCGL_Utils';
 
 uses '../ScrapUtils';
-uses '../XMLUtils';
 //
 uses '../XMLItems';
 uses '../ItemSources';
@@ -70,7 +70,7 @@ type
     private constructor(allow_bitpos: boolean; n: XmlNode);
     begin
       inherited Create(MakeName(n['name'], false));
-      n.DiscardAttribute('comment');
+      n.TryDiscardAttrib('comment');
 //      self.allow_bitpos := allow_bitpos;
       
       var val_s := n['value'];
@@ -89,10 +89,16 @@ type
       
       foreach var enums_n in enums_ns do
       begin
-        enums_n.DiscardAttribute('start');
-        enums_n.DiscardAttribute('end');
-        enums_n.DiscardNodes('comment');
-        enums_n.DiscardNodes('unused');
+        enums_n.TryDiscardAttrib('start');
+        enums_n.TryDiscardAttrib('end');
+        enums_n.TryDiscardSubNodes('comment');
+        
+        foreach var unused_n in enums_n.SubNodes['unused'] do
+        begin
+          unused_n.TryDiscardAttrib('comment');
+          unused_n.DiscardAttrib('start');
+          unused_n.TryDiscardAttrib('end');
+        end;
         
         if enums_n['vendor'] is string(var vendor) then
           VendorSuffixSource.RequireName(vendor);
@@ -101,16 +107,16 @@ type
         begin
           if enums_n['name'] <> 'Constants' then raise new System.InvalidOperationException;
           
-          foreach var enum_n in enums_n.Nodes['enum'] do
+          foreach var enum_n in enums_n.SubNodes['enum'] do
           begin
-            enum_n.DiscardAttribute('value');
+            enum_n.DiscardAttrib('value');
             if not external_enum_names.Add(enum_n['name']) then
               raise new System.InvalidOperationException;
           end;
           
         end else
         begin
-          enums_n.DiscardAttribute('name');
+          enums_n.DiscardAttrib('name');
           
           var allow_bitpos := false;
           if enums_n['type'] is string(var enums_type) then
@@ -119,7 +125,7 @@ type
             else Otp($'WARNING: Unknown enums type [{enums_type}]');
           end;
           
-          foreach var enum_n in enums_n.Nodes['enum'] do
+          foreach var enum_n in enums_n.SubNodes['enum'] do
             new EnumSource(allow_bitpos, enum_n);
         end;
         
@@ -206,7 +212,7 @@ type
         else raise new System.NotImplementedException(etype);
       end;
       
-      foreach var enum_n in n.Nodes['enum'] do
+      foreach var enum_n in n.SubNodes['enum'] do
       begin
         var ename := EnumSource.MakeName(enum_n['name'], false);
         var esource := EnumSource.FindOrMakeSource(ename, nil);
@@ -288,7 +294,7 @@ type
     public constructor(n: XmlNode);
     begin
       inherited Create(MakeName(n['name'], false));
-      self.member_ns := n.Nodes['member'].ToArray;
+      self.member_ns := n.SubNodes['member'].ToArray;
     end;
     
     protected function MakeNewItem: Struct; override;
@@ -309,8 +315,8 @@ type
     begin
       inherited Create(MakeName(n['name'], false));
       self.par_ns := (
-        n.Nodes['proto'].Single +
-        n.Nodes['param']
+        n.SubNodes['proto'].Single +
+        n.SubNodes['param']
       ).ToArray;
     end;
     
@@ -339,16 +345,16 @@ type
     public static procedure InitAll(commands_n: XmlNode);
     begin
       
-      foreach var command_n in commands_n.Nodes['command'] do
+      foreach var command_n in commands_n.SubNodes['command'] do
       begin
-        command_n.DiscardAttribute('comment');
-        command_n.DiscardAttribute('prefix');
-        command_n.DiscardAttribute('suffix');
-        var name := command_n.Nodes['proto'].Single.Nodes['name'].Single.Text;
+        command_n.TryDiscardAttrib('comment');
+        command_n.TryDiscardAttrib('prefix');
+        command_n.TryDiscardAttrib('suffix');
+        var name := command_n.SubNodes['proto'].Single.SubNodes['name'].Single.Text;
         
         new FuncSource(MakeName(name, false), name,
-          command_n.Nodes['proto'] +
-          command_n.Nodes['param']
+          command_n.SubNodes['proto'] +
+          command_n.SubNodes['param']
         );
         
       end;
@@ -382,7 +388,7 @@ type
         if feature_n['name'] <> $'CL_VERSION_{name.Major}_{name.Minor}' then
           raise new System.InvalidOperationException;
         
-        new FeatureSource(name, feature_n.Nodes['require']);
+        new FeatureSource(name, feature_n.SubNodes['require']);
       end;
     
     protected function MakeNewItem: Feature; override;
@@ -412,14 +418,14 @@ type
     end;
     
     public static procedure InitAll(extensions_n: XmlNode) :=
-      foreach var extension_n in extensions_n.Nodes['extension'] do
+      foreach var extension_n in extensions_n.SubNodes['extension'] do
       begin
-        extension_n.DiscardAttribute('comment');
-        extension_n.DiscardAttribute('condition');
+        extension_n.TryDiscardAttrib('comment');
+        extension_n.TryDiscardAttrib('condition');
         if extension_n['supported'] <> 'opencl' then raise new System.NotImplementedException;
         var name := extension_n['name'];
         
-        new ExtensionSource(MakeName(name, false), name, extension_n.Nodes['require'], extension_n['requires']);
+        new ExtensionSource(MakeName(name, false), name, extension_n.SubNodes['require'], extension_n['requires']);
       end;
     
     protected function MakeNewItem: Extension; override;
@@ -559,7 +565,7 @@ end;
     
     public static procedure InitNode(type_n: XmlNode);
     begin
-      type_n.DiscardAttribute('comment');
+      type_n.TryDiscardAttrib('comment');
       var category := type_n['category'];
       
       case category of
@@ -571,7 +577,7 @@ end;
           if type_n.Text.StartsWith('#include ') then exit;
           if type_n.Text<>'' then
             raise new System.InvalidOperationException($'[{type_n.Text}]');
-          type_n.DiscardAttribute('requires');
+          type_n.TryDiscardAttrib('requires');
           
           new BasicTypeSource(name);
         end;
@@ -591,8 +597,8 @@ end;
           if 'const' in type_n.Text then
             raise new System.NotImplementedException(type_n.Text);
           
-          var base_t := type_n.Nodes['type'].SingleOrDefault?.Text;
-          var name := type_n.Nodes['name'].Single.Text;
+          var base_t := type_n.SubNodes['type'].SingleOrDefault?.Text;
+          var name := type_n.SubNodes['name'].Single.Text;
           unreq_type_names += name;
           var base_ptr := type_n.Text.CountOf('*');
           
@@ -619,7 +625,7 @@ end;
         end else
         if type_n.Text.StartsWith('#define ') then
         begin
-          var tname := type_n.Nodes['name'].Single.Text;
+          var tname := type_n.SubNodes['name'].Single.Text;
           unreq_type_names += tname;
           if not BasicTypeSource.enum_abusing_type_tag.Add(tname) then
             raise new System.InvalidOperationException;
@@ -645,10 +651,10 @@ end;
     
     public static procedure InitAll(types_n: XmlNode);
     begin
-      types_n.DiscardAttribute('comment');
-      types_n.DiscardNodes('comment');
+      types_n.DiscardAttrib('comment');
+      types_n.TryDiscardSubNodes('comment');
       
-      foreach var type_n in types_n.Nodes['type'] do
+      foreach var type_n in types_n.SubNodes['type'] do
         InitNode(type_n);
       
     end;
@@ -666,7 +672,7 @@ begin
   foreach var rn in self.definitions do
   begin
     var new_enums := new HashSet<Enum>;
-    foreach var enum_n in rn.Nodes['enum'] do
+    foreach var enum_n in rn.SubNodes['enum'] do
     begin
       var ename := enum_n['name'];
       if ename in EnumSource.external_enum_names then
@@ -813,8 +819,8 @@ begin
   var fields := member_ns.ConvertAll(member_n->
   begin
     var text := member_n.Text;
-    var name := member_n.Nodes['name'].SingleOrDefault?.Text;
-    var tname := member_n.Nodes['type'].SingleOrDefault?.Text;
+    var name := member_n.SubNodes['name'].SingleOrDefault?.Text;
+    var tname := member_n.SubNodes['type'].SingleOrDefault?.Text;
     
     if (name=nil) and (tname=nil) then
     begin
@@ -832,7 +838,7 @@ begin
     end;
     
     var len := default(ParArrSize);
-    if member_n.Nodes['enum'].SingleOrDefault?.Text is string(var static_len_enum_name) then
+    if member_n.SubNodes['enum'].SingleOrDefault?.Text is string(var static_len_enum_name) then
     begin
       var text_end := $'[{static_len_enum_name}]';
       if not text.EndsWith(text_end) then raise new System.InvalidOperationException;
@@ -860,7 +866,7 @@ begin
   var pars := par_ns.ConvertAll((par_n,par_i)->
   begin
     var par_name := if par_i=0 then nil else
-      par_n.Nodes['name'].Single.Text;
+      par_n.SubNodes['name'].Single.Text;
     var text := par_n.Text;
     
     var len := default(ParArrSize);
@@ -878,7 +884,7 @@ begin
         text := text.RemoveEnd(par_name).TrimEnd;
     end;
     
-    Result := TypeHelper.MakePar(par_name, par_n.Nodes['type'].Single.Text, text, len);
+    Result := TypeHelper.MakePar(par_name, par_n.SubNodes['type'].Single.Text, text, len);
   end);
   
   var res_name := new DelegateName(self.Name.ApiName, self.Name.VendorSuffix,
@@ -896,7 +902,7 @@ begin
   
   var pars := par_ns.ConvertAll((par_n,par_i)->
   begin
-    var par_name := par_n.Nodes['name'].Single.Text;
+    var par_name := par_n.SubNodes['name'].Single.Text;
     var text := par_n.Text;
     
     var len := default(ParArrSize);
@@ -910,7 +916,7 @@ begin
     
     text := text.RemoveEnd(par_name).TrimEnd;
     if par_i=0 then par_name := nil;
-    Result := TypeHelper.MakePar(par_name, par_n.Nodes['type'].Single.Text, text, len);
+    Result := TypeHelper.MakePar(par_name, par_n.SubNodes['type'].Single.Text, text, len);
   end);
   
   Result := new Func(self.Name, self.entry_point_name, pars, nil);
@@ -957,10 +963,10 @@ end;
         var processed_node_types := new HashSet<string>;
         
         {$region type}
-        foreach var type_n in rn.Nodes['type'] do
+        foreach var type_n in rn.SubNodes['type'] do
         begin
           processed_node_types += 'type';
-          type_n.DiscardAttribute('comment');
+          type_n.TryDiscardAttrib('comment');
           
           var name := type_n['name'];
           if name.EndsWith('.h') then continue;
@@ -975,10 +981,10 @@ end;
         {$region enum}
         if rn['group'] is string(var group) then
           used_type_names += group;
-        foreach var enum_n in rn.Nodes['enum'] do
+        foreach var enum_n in rn.SubNodes['enum'] do
         begin
           processed_node_types += 'enum';
-          enum_n.DiscardAttribute('comment');
+          enum_n.TryDiscardAttrib('comment');
           var ename := enum_n['name'];
           if ename in EnumSource.external_enum_names then
             continue;
@@ -988,15 +994,15 @@ end;
           used_type_names += |enum_n['followed'],enum_n['info_type'],enum_n['input_type']|.Where(tname->tname<>nil).Select(tname->tname.TrimEnd('[]*'.ToCharArray));
         end;
         if ('enum' in processed_node_types) <> (rn in GroupSource.group_nodes) then
-          raise new System.InvalidOperationException($'{rn in GroupSource.group_nodes}: '+rn.Nodes['enum'].Select(n->n['name']).JoinToString);
+          raise new System.InvalidOperationException($'{rn in GroupSource.group_nodes}: '+rn.SubNodes['enum'].Select(n->n['name']).JoinToString);
         {$endregion enum}
         
         {$region func}
-        foreach var func_n in rn.Nodes['command'] do
+        foreach var func_n in rn.SubNodes['command'] do
         begin
           processed_node_types += 'func';
-          func_n.DiscardAttribute('comment');
-          func_n.DiscardAttribute('requires');
+          func_n.TryDiscardAttrib('comment');
+          func_n.TryDiscardAttrib('requires');
           
           var name := func_n['name'];
           Result.funcs += FuncSource.FindOrMakeItem(FuncSource.MakeName(name, false));
@@ -1005,14 +1011,14 @@ end;
         {$endregion func}
         
         case processed_node_types.Count of
-          0: raise new System.InvalidOperationException(rn['comment'] ?? rn.Nodes['enum'].Select(n->n['name']).JoinToString ?? 'no comment');
+          0: raise new System.InvalidOperationException(rn['comment'] ?? rn.SubNodes['enum'].Select(n->n['name']).JoinToString ?? 'no comment');
           1: ;
           else raise new System.NotImplementedException(processed_node_types.JoinToString);
         end;
         
-        rn.DiscardAttribute('comment');
-        rn.DiscardAttribute('condition');
-        rn.DiscardNodes('comment');
+        rn.TryDiscardAttrib('comment');
+        rn.TryDiscardAttrib('condition');
+        rn.TryDiscardSubNodes('comment');
       end;
       
       //TODO Uncomment
@@ -1062,31 +1068,31 @@ function ExtensionSource.MakeNewItem :=
 procedure ScrapXmlFile(api_name: string);
 begin
   Otp($'Parsing "{api_name}"');
-  var root := new XmlNode(GetFullPathRTA($'../../Reps/OpenCL-Docs/xml/{api_name}.xml'));
-  root.DiscardNodes('comment');
+  var root := ScrapUtils.GetXml(api_name);
+  root.TryDiscardSubNodes('comment');
   
   VendorSuffixSource.InitAll;
   
-  EnumSource.InitAll(root.Nodes['enums']);
+  EnumSource.InitAll(root.SubNodes['enums']);
   
-  TypeHelper.InitAll(root.Nodes['types'].Single);
+  TypeHelper.InitAll(root.SubNodes['types'].Single);
   
   GroupSource.InitAll(
-    (root.Nodes['feature'] + root.Nodes['extensions'].Single.Nodes['extension'])
-    .SelectMany(n->n.Nodes['require'])
+    (root.SubNodes['feature'] + root.SubNodes['extensions'].Single.SubNodes['extension'])
+    .SelectMany(n->n.SubNodes['require'])
   );
   
-  FuncSource.InitAll(root.Nodes['commands'].Single);
+  FuncSource.InitAll(root.SubNodes['commands'].Single);
   
-  FeatureSource.InitAll(root.Nodes['feature']);
+  FeatureSource.InitAll(root.SubNodes['feature']);
   
-  ExtensionSource.InitAll(root.Nodes['extensions'].Single);
+  ExtensionSource.InitAll(root.SubNodes['extensions'].Single);
   
 end;
 
 begin
   try
-    XMLUtils.Init('OpenCL-Docs');
+    ScrapUtils.Init('OpenCL-Docs');
     
     ScrapXmlFile(api);
     

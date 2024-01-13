@@ -1,9 +1,9 @@
 ﻿uses System;
 
+uses '../../../Utils/ThoroughXML';
 uses '../../../POCGL_Utils';
 
 uses '../ScrapUtils';
-uses '../XMLUtils';
 //
 uses '../XMLItems';
 uses '../ItemSources';
@@ -20,7 +20,7 @@ type
       inherited Create(name);
     
     public static procedure InitAll(types_n: XmlNode) :=
-      foreach var type_n in types_n.Nodes['type'] do
+      foreach var type_n in types_n.SubNodes['type'] do
         new BasicTypeSource(type_n['name']);
     
     protected function MakeNewItem: BasicType; override :=
@@ -46,8 +46,8 @@ type
     end;
     
     public static procedure InitAll(groups_n: XmlNode) :=
-      foreach var group_n in groups_n.Nodes['group'] do
-        new GroupSource(group_n['name'], group_n['etype'], group_n.Nodes['enum']);
+      foreach var group_n in groups_n.SubNodes['group'] do
+        new GroupSource(group_n['name'], group_n['etype'], group_n.SubNodes['enum']);
     
     protected function MakeNewItem: Group; override;
     
@@ -70,10 +70,10 @@ type
     end;
     
     public static procedure InitAll(commands_n: XmlNode) :=
-      foreach var command_n in commands_n.Nodes['command'] do
+      foreach var command_n in commands_n.SubNodes['command'] do
         new FuncSource(
-          command_n.Nodes['proto'].Single.Nodes['name'].Single.Text,
-          command_n.Nodes['proto'] + command_n.Nodes['param']
+          command_n.SubNodes['proto'].Single.SubNodes['name'].Single.Text,
+          command_n.SubNodes['proto'] + command_n.SubNodes['param']
         );
     
     protected function MakeNewItem: Func; override;
@@ -87,7 +87,7 @@ type
   FeatureSource = sealed class(ItemSource<FeatureSource, string, Feature>)
     
     public static procedure InitAll(features_n: XmlNode) :=
-      foreach var feature_n in features_n.Nodes['feature'] do
+      foreach var feature_n in features_n.SubNodes['feature'] do
         new FeatureSource(feature_n['name']);
     
     protected function MakeNewItem: Feature; override;
@@ -196,7 +196,7 @@ begin
   
   var pars := par_ns.Select((par_n,par_i)->
   begin
-    var par_name := par_n.Nodes['name'].Single.Text;
+    var par_name := par_n.SubNodes['name'].Single.Text;
     var text := par_n.Text;
     
     var sz := default(ParArrSize);
@@ -210,7 +210,7 @@ begin
     
     text := text.RemoveEnd(par_name).TrimEnd;
     if par_i=0 then par_name := nil;
-    Result := TypeHelper.MakePar(par_name, par_n.Nodes['type'].Single.Text, text, sz);
+    Result := TypeHelper.MakePar(par_name, par_n.SubNodes['type'].Single.Text, text, sz);
   end).ToArray;
   
   Result := new Func(new FuncName('', nil, self.Name), self.Name, pars, nil);
@@ -239,21 +239,21 @@ end;
 procedure ScrapXmlFile;
 begin
   Otp($'Parsing XML');
-  var root := new XmlNode(GetFullPathRTA('xml/Dummy.xml'));
+  var root := ScrapUtils.GetXml('Dummy');
   
-  BasicTypeSource.InitAll(root.Nodes['types'].Single);
+  BasicTypeSource.InitAll(root.SubNodes['types'].Single);
   
-  GroupSource.InitAll(root.Nodes['groups'].Single);
+  GroupSource.InitAll(root.SubNodes['groups'].Single);
   
-  FuncSource.InitAll(root.Nodes['commands'].Single);
+  FuncSource.InitAll(root.SubNodes['commands'].Single);
   
-  FeatureSource.InitAll(root.Nodes['features'].Single);
+  FeatureSource.InitAll(root.SubNodes['features'].Single);
   
 end;
 
 begin
   try
-    XMLUtils.Init('../XML/Dummy');
+    ScrapUtils.Init('../XML/Dummy');
     
     ScrapXmlFile;
     

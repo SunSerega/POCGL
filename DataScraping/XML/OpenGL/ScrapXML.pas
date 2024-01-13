@@ -1,11 +1,11 @@
 ﻿uses System;
 
+uses '../../../Utils/ThoroughXML';
 uses '../../../Utils/AOtp';
 
 uses '../../../POCGL_Utils';
 
 uses '../ScrapUtils';
-uses '../XMLUtils';
 //
 uses '../XMLItems';
 uses '../ItemSources';
@@ -137,7 +137,7 @@ type
     private static mentioned := new HashSet<string>;
     
     public static procedure InitAll(kinds_n: XmlNode) :=
-      foreach var kind_n in kinds_n.Nodes['kind'] do
+      foreach var kind_n in kinds_n.SubNodes['kind'] do
       begin
         var name := kind_n['name'];
         var desc := kind_n['desc'];
@@ -245,21 +245,21 @@ type
     public static procedure InitAll(api: string; enums_ns: sequence of XmlNode) :=
       foreach var enums_n in enums_ns do
       begin
-        enums_n.DiscardAttribute('namespace');
-        enums_n.DiscardAttribute('comment');
-        enums_n.DiscardAttribute('group');
-        enums_n.DiscardAttribute('start');
-        enums_n.DiscardAttribute('end');
+        enums_n.DiscardAttrib('namespace');
+        enums_n.TryDiscardAttrib('comment');
+        enums_n.TryDiscardAttrib('group');
+        enums_n.TryDiscardAttrib('start');
+        enums_n.TryDiscardAttrib('end');
         
         if enums_n['vendor'] is string(var vendors_s) then
           foreach var vendor_s in vendors_s.Split('/') do
             VendorSuffixSource.RequireName(vendor_s);
         
-        foreach var unused_n in enums_n.Nodes['unused'] do
+        foreach var unused_n in enums_n.SubNodes['unused'] do
         begin
-          unused_n.DiscardAttribute('comment');
-          unused_n.DiscardAttribute('start');
-          unused_n.DiscardAttribute('end');
+          unused_n.TryDiscardAttrib('comment');
+          unused_n.DiscardAttrib('start');
+          unused_n.TryDiscardAttrib('end');
           if unused_n['vendor'] is string(var vendor_s) then
             VendorSuffixSource.RequireName(vendor_s);
         end;
@@ -271,14 +271,15 @@ type
             else raise new System.NotImplementedException(etype);
           end;
           
-        foreach var enum_n in enums_n.Nodes['enum'] do
+        foreach var enum_n in enums_n.SubNodes['enum'] do
         begin
-          enum_n.DiscardAttribute('comment');
+          enum_n.TryDiscardAttrib('comment');
           
           var flat_ename := enum_n['name'];
           if flat_ename='GLX_EXTENSION_NAME' then
           begin
-            enum_n.DiscardAttribute('value');
+            if enum_n['value'] <> '"GLX"' then
+              raise new System.NotSupportedException;
             continue; // #define GLX_EXTENSION_NAME "GLX"
           end;
           var ename := EnumSource.MakeName(enum_n['api'], flat_ename, api, false);
@@ -354,7 +355,7 @@ type
     
     public constructor(api, func_descr: string; n: XmlNode);
     begin
-      self.name := n.Nodes['name'].Single.Text;
+      self.name := n.SubNodes['name'].Single.Text;
       self.context_api := api;
       self.func_descr := func_descr;
       
@@ -363,7 +364,7 @@ type
       
       (tname, ptr, readonly_lvls) := ParData.ParsePtrLvls(n.Text.RemoveEnd(name));
       
-      if n.Nodes['ptype'].SingleOrDefault?.Text is string(var ptype) then
+      if n.SubNodes['ptype'].SingleOrDefault?.Text is string(var ptype) then
       begin
         if ptype <> tname then
           raise new System.InvalidOperationException;
@@ -417,18 +418,18 @@ type
     end;
     private constructor(api: string; n: XmlNode);
     begin
-      inherited Create(MakeName(api, n.Nodes['proto'].Single.Nodes['name'].Single.Text, false));
-      n.DiscardAttribute('comment');
-      n.DiscardNodes('glx'); // GLX protocol
+      inherited Create(MakeName(api, n.SubNodes['proto'].Single.SubNodes['name'].Single.Text, false));
+      n.TryDiscardAttrib('comment');
+      n.TryDiscardSubNodes('glx'); // GLX protocol
       
-      self.entry_point_name := n.Nodes['proto'].Single.Nodes['name'].Single.Text;
+      self.entry_point_name := n.SubNodes['proto'].Single.SubNodes['name'].Single.Text;
       
-      foreach var par_n in n.Nodes['proto']+n.Nodes['param'] do
+      foreach var par_n in n.SubNodes['proto']+n.SubNodes['param'] do
         self.pars_source += new FuncParamSource(api, self.ToString, par_n);
       
-      self.alias_name := MakeName(api, n.Nodes['alias'].SingleOrDefault?.Attribute['name'], true);
+      self.alias_name := MakeName(api, n.SubNodes['alias'].SingleOrDefault?.AttribData['name'], true);
       
-      var vec_equiv_n := n.Nodes['vecequiv'].SingleOrDefault;
+      var vec_equiv_n := n.SubNodes['vecequiv'].SingleOrDefault;
       if vec_equiv_n<>nil then vec_equiv_n.Discard; // Not useful
       
     end;
@@ -438,7 +439,7 @@ type
       if commands_n['namespace'] <> api.ToUpper then
         raise new InvalidOperationException;
       
-      foreach var command_n in commands_n.Nodes['command'] do
+      foreach var command_n in commands_n.SubNodes['command'] do
         new FuncSource(api, command_n);
       
     end;
@@ -465,14 +466,14 @@ type
           else raise new InvalidOperationException(rn['profile']);
         end;
         
-        foreach var type_n in rn.Nodes['type'] do
+        foreach var type_n in rn.SubNodes['type'] do
         begin
           var tname := type_n['name'];
           if BasicTypeSource.FindOrMakeSource(tname, nil) = nil then
             raise new InvalidOperationException(tname);
         end;
         
-        foreach var enum_n in rn.Nodes['enum'] do
+        foreach var enum_n in rn.SubNodes['enum'] do
         begin
           var ename := enum_n['name'];
           // #define GLX_EXTENSION_NAME "GLX"
@@ -480,7 +481,7 @@ type
           enum_names += EnumSource.MakeName(rn['api'], ename, file_api, true);
         end;
         
-        foreach var func_n in rn.Nodes['command'] do
+        foreach var func_n in rn.SubNodes['command'] do
         begin
           var fname := func_n['name'];
           func_names += FuncSource.MakeName(file_api, fname, false);
@@ -518,14 +519,14 @@ type
         if feature_n['name'] <> expected_verb_name then
           raise new InvalidOperationException;
         
-        var add_ns := feature_n.Nodes['require'];
-        var rem_ns := feature_n.Nodes['remove'];
+        var add_ns := feature_n.SubNodes['require'];
+        var rem_ns := feature_n.SubNodes['remove'];
         
         foreach var rn in add_ns+rem_ns do
         begin
-          rn.DiscardAttribute('comment');
-          foreach var type_n in rn.Nodes['type']+rn.Nodes['enum'] do
-            type_n.DiscardAttribute('comment');
+          rn.TryDiscardAttrib('comment');
+          foreach var type_n in rn.SubNodes['type']+rn.SubNodes['enum'] do
+            type_n.TryDiscardAttrib('comment');
         end;
         
         var f := new FeatureSource(name);
@@ -549,27 +550,27 @@ type
       inherited MakeName&<ExtensionName>(own_api, name, context_api, allow_nil, true, VendorSuffixSource.known_suffixes, 'e_*','E_*');
     
     public static procedure InitAll(file_api: string; extensions_n: XmlNode) :=
-      foreach var extension_n in extensions_n.Nodes['extension'] do
+      foreach var extension_n in extensions_n.SubNodes['extension'] do
       begin
-        extension_n.DiscardAttribute('comment');
-        extension_n.DiscardAttribute('protect');
+        extension_n.TryDiscardAttrib('comment');
+        extension_n.TryDiscardAttrib('protect');
         var name := extension_n['name'];
-        
-        var add_ns := extension_n.Nodes['require'];
-        
-        foreach var rn in add_ns do
-        begin
-          rn.DiscardAttribute('comment');
-          foreach var type_n in rn.Nodes['command']+rn.Nodes['enum'] do
-            type_n.DiscardAttribute('comment');
-        end;
         
         var apis := extension_n['supported'].ToWords('|').ToList;
         if apis.SequenceEqual(|'disabled'|) then
         begin
-          extension_n.DiscardNodes('require');
+          extension_n.TryDiscardSubNodes('require');
           continue;
         end;
+        
+        var add_ns := extension_n.SubNodes['require'];
+        foreach var rn in add_ns do
+        begin
+          rn.TryDiscardAttrib('comment');
+          foreach var type_n in rn.SubNodes['command']+rn.SubNodes['enum'] do
+            type_n.TryDiscardAttrib('comment');
+        end;
+        
         if apis.Remove('glcore') and ('gl' not in apis) then
           raise new System.InvalidOperationException(name);
         if apis.Count=0 then raise new System.InvalidOperationException(name);
@@ -603,32 +604,30 @@ function VendorSuffixSource.MakeNewItem :=
   TypeHelper = static class
     
     public static procedure InitAll(api: string; types_n: XmlNode) :=
-      foreach var type_n in types_n.Nodes['type'] do
+      foreach var type_n in types_n.SubNodes['type'] do
         if type_n['name'] is string(var tname) then
         begin
           if type_n.Text.StartsWith('#include') then continue;
-          if type_n.Text.StartsWith('#ifndef GLEXT_64_TYPES_DEFINED') then
-          begin
-            type_n.Discard;
-            continue;
-          end;
-          type_n.DiscardAttribute('comment');
-          type_n.DiscardAttribute('requires');
+          if type_n.Text.StartsWith('#ifndef GLEXT_64_TYPES_DEFINED') then continue;
+          type_n.TryDiscardAttrib('comment');
+          type_n.TryDiscardAttrib('requires');
           BasicTypeSource.TryDefine(api, tname);
         end else
         begin
-          type_n.DiscardAttribute('comment');
-          type_n.DiscardAttribute('requires');
-          var tname := type_n.Nodes['name'].Single.Text;
+          type_n.TryDiscardAttrib('comment');
+          type_n.TryDiscardAttrib('requires');
+          var tname := type_n.SubNodes['name'].Single.Text;
           
           //TODO Struct and IdClass
           // - Use IdClassSource.extra_defined, for MakeTypeRef type lookup
           
-          case type_n.Nodes['apientry'].Count - Ord(tname='__GLXextFuncPtr') of
-            0: BasicTypeSource.TryDefine(api, tname);
-            1: new DelegateSource(api, tname, type_n.Text);
-            else raise new NotSupportedException;
-          end;
+          var n_apientry := type_n.SubNodes['apientry'].SingleOrDefault;
+          if n_apientry<>nil then n_apientry.Discard;
+          if tname='__GLXextFuncPtr' then n_apientry := nil;
+          
+          if n_apientry=nil then
+            BasicTypeSource.TryDefine(api, tname) else
+            new DelegateSource(api, tname, type_n.Text);
           
         end;
     
@@ -1071,21 +1070,21 @@ begin
   foreach var api in api_names do
   begin
     Otp($'Parsing "{api}"');
-    var root := new XmlNode(GetFullPathRTA($'../../Reps/OpenGL-Registry/xml/{api}.xml'));
-    root.Nodes['comment'].Single.Discard;
+    var root := ScrapUtils.GetXml(api);
+    root.SubNodes['comment'].Single.Discard;
     
-    TypeHelper.InitAll(api, root.Nodes['types'].Single);
+    TypeHelper.InitAll(api, root.SubNodes['types'].Single);
     
-    if root.Nodes['kinds'].SingleOrDefault is XmlNode(var kinds_n) then
+    if root.SubNodes['kinds'].SingleOrDefault is XmlNode(var kinds_n) then
       Kind.InitAll(kinds_n);
     
-    EnumSource.InitAll(api, root.Nodes['enums']);
+    EnumSource.InitAll(api, root.SubNodes['enums']);
     
-    FuncSource.InitAll(api, root.Nodes['commands'].Single);
+    FuncSource.InitAll(api, root.SubNodes['commands'].Single);
     
-    FeatureSource.InitAll(api, root.Nodes['feature']);
+    FeatureSource.InitAll(api, root.SubNodes['feature']);
     
-    ExtensionSource.InitAll(api, root.Nodes['extensions'].Single);
+    ExtensionSource.InitAll(api, root.SubNodes['extensions'].Single);
     
   end;
   
@@ -1093,7 +1092,7 @@ end;
 
 begin
   try
-    XMLUtils.Init('OpenGL-Registry');
+    ScrapUtils.Init('OpenGL-Registry');
     
     ScrapXmlFiles('gl', 'wgl', 'glx');
     
