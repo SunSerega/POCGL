@@ -37,6 +37,10 @@ type clMigrateMemobjectEXT = sealed partial class(cl_extension_base) end;
 constructor clMigrateMemobjectEXT.Create(pl: cl_platform_id) := inherited Create(pl);
 function clMigrateMemobjectEXT.GetProcAddress(name: string) := pl.GetProcAddress(name);
 
+type clCancelCommandIMG = sealed partial class(cl_extension_base) end;
+constructor clCancelCommandIMG.Create(pl: cl_platform_id) := inherited Create(pl);
+function clCancelCommandIMG.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
 type clGenerateMipmapIMG = sealed partial class(cl_extension_base) end;
 constructor clGenerateMipmapIMG.Create(pl: cl_platform_id) := inherited Create(pl);
 function clGenerateMipmapIMG.GetProcAddress(name: string) := pl.GetProcAddress(name);

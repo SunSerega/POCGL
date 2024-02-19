@@ -46,15 +46,15 @@ ScrapXML[OpenCL]: Parsing "cl"
 ScrapXML[OpenCL]: Constructing named items
 ScrapXML[OpenCL]: Saving as binary
 ScrapXML[OpenCL]: VendorSuffix: Saved 11 items
-ScrapXML[OpenCL]: Enum: Saved 1125 items
+ScrapXML[OpenCL]: Enum: Saved 1129 items
 ScrapXML[OpenCL]: BasicType: Saved 30 items
-ScrapXML[OpenCL]: Group: Saved 119 items
+ScrapXML[OpenCL]: Group: Saved 120 items
 ScrapXML[OpenCL]: IdClass: Saved 18 items
 ScrapXML[OpenCL]: Struct: Saved 16 items
 ScrapXML[OpenCL]: Delegate: Saved 8 items
-ScrapXML[OpenCL]: Func: Saved 240 items
+ScrapXML[OpenCL]: Func: Saved 241 items
 ScrapXML[OpenCL]: Feature: Saved 7 items
-ScrapXML[OpenCL]: Extension: Saved 104 items
+ScrapXML[OpenCL]: Extension: Saved 105 items
 ScrapXML[OpenCL]: Done
 Finished runing ScrapXML[OpenCL]
 Runing ScrapXML[OpenGL]

@@ -356,12 +356,15 @@
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    public static property COMMAND_BUFFER_FLAGS: clCommandBufferProperties read new clCommandBufferProperties($1293);
+    public static property COMMAND_BUFFER_FLAGS:                    clCommandBufferProperties read new clCommandBufferProperties($1293);
+    public static property COMMAND_BUFFER_MUTABLE_DISPATCH_ASSERTS: clCommandBufferProperties read new clCommandBufferProperties($12B7);
     
     public function ToString: string; override;
     begin
       if COMMAND_BUFFER_FLAGS = self then
         Result := 'COMMAND_BUFFER_FLAGS' else
+      if COMMAND_BUFFER_MUTABLE_DISPATCH_ASSERTS = self then
+        Result := 'COMMAND_BUFFER_MUTABLE_DISPATCH_ASSERTS' else
         Result := $'clCommandBufferProperties[{self.val}]';
     end;
     
@@ -2938,6 +2941,7 @@
     public static property VA_API_MEDIA_SURFACE_NOT_ACQUIRED:         clErrorCode read new clErrorCode(-1101);
     public static property COMMAND_TERMINATED_ITSELF_WITH_FAILURE:    clErrorCode read new clErrorCode(-1108);
     public static property CONTEXT_TERMINATED:                        clErrorCode read new clErrorCode(-1121);
+    public static property CANCELLED:                                 clErrorCode read new clErrorCode(-1126);
     public static property INVALID_COMMAND_BUFFER:                    clErrorCode read new clErrorCode(-1138);
     public static property INVALID_SYNC_POINT_WAIT_LIST:              clErrorCode read new clErrorCode(-1139);
     public static property INCOMPATIBLE_COMMAND_QUEUE:                clErrorCode read new clErrorCode(-1140);
@@ -3133,6 +3137,8 @@
         Result := 'COMMAND_TERMINATED_ITSELF_WITH_FAILURE' else
       if CONTEXT_TERMINATED = self then
         Result := 'CONTEXT_TERMINATED' else
+      if CANCELLED = self then
+        Result := 'CANCELLED' else
       if INVALID_COMMAND_BUFFER = self then
         Result := 'INVALID_COMMAND_BUFFER' else
       if INVALID_SYNC_POINT_WAIT_LIST = self then
@@ -4435,11 +4441,14 @@
     public constructor(val: UInt64) := self.val := val;
     
     public static property MUTABLE_DISPATCH_UPDATABLE_FIELDS: clNDRangeKernelCommandProperties read new clNDRangeKernelCommandProperties($12B1);
+    public static property MUTABLE_DISPATCH_ASSERTS:          clNDRangeKernelCommandProperties read new clNDRangeKernelCommandProperties($12B8);
     
     public function ToString: string; override;
     begin
       if MUTABLE_DISPATCH_UPDATABLE_FIELDS = self then
         Result := 'MUTABLE_DISPATCH_UPDATABLE_FIELDS' else
+      if MUTABLE_DISPATCH_ASSERTS = self then
+        Result := 'MUTABLE_DISPATCH_ASSERTS' else
         Result := $'clNDRangeKernelCommandProperties[{self.val}]';
     end;
     

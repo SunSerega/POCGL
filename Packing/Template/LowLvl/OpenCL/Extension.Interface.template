@@ -1011,6 +1011,38 @@
   {$endif DEBUG}
   [PCUNotRestore]
   ///
+  clCancelCommandIMG = sealed partial class
+    public constructor(pl: cl_platform_id);
+    private constructor := raise new System.NotSupportedException;
+    public static PlatformLess := new clCancelCommandIMG(default(cl_platform_id));
+    private function GetProcAddress(name: string): IntPtr;
+    private static function GetProcOrNil<T>(fadr: IntPtr) :=
+      fadr=IntPtr.Zero ? default(T) :
+        Marshal.GetDelegateForFunctionPointer&<T>(fadr);
+    public const ExtensionString = 'cl_img_cancel_command';
+    
+    public CancelCommandsIMG_adr := GetProcAddress('clCancelCommandsIMG');
+    private ntv_CancelCommandsIMG_1 := GetProcOrNil&<function(var event_list: cl_event; num_events_in_list: UIntPtr): clErrorCode>(CancelCommandsIMG_adr);
+    private ntv_CancelCommandsIMG_2 := GetProcOrNil&<function(event_list: IntPtr; num_events_in_list: UIntPtr): clErrorCode>(CancelCommandsIMG_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CancelCommandsIMG(event_list: array of cl_event; num_events_in_list: UIntPtr): clErrorCode;
+    type PCl_event = ^cl_event;
+    begin
+      Result := if (event_list<>nil) and (event_list.Length<>0) then
+        ntv_CancelCommandsIMG_1(event_list[0], num_events_in_list) else
+        ntv_CancelCommandsIMG_1(PCl_event(nil)^, num_events_in_list);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CancelCommandsIMG(var event_list: cl_event; num_events_in_list: UIntPtr): clErrorCode :=
+      ntv_CancelCommandsIMG_1(event_list, num_events_in_list);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CancelCommandsIMG(event_list: IntPtr; num_events_in_list: UIntPtr): clErrorCode :=
+      ntv_CancelCommandsIMG_2(event_list, num_events_in_list);
+    
+  end;
+  
+  {$ifndef DEBUG}
+  [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
+  ///
   clGenerateMipmapIMG = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;

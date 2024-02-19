@@ -390,12 +390,15 @@ type
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
     
-    public static property COMMAND_BUFFER_FLAGS: clCommandBufferProperties read new clCommandBufferProperties($1293);
+    public static property COMMAND_BUFFER_FLAGS:                    clCommandBufferProperties read new clCommandBufferProperties($1293);
+    public static property COMMAND_BUFFER_MUTABLE_DISPATCH_ASSERTS: clCommandBufferProperties read new clCommandBufferProperties($12B7);
     
     public function ToString: string; override;
     begin
       if COMMAND_BUFFER_FLAGS = self then
         Result := 'COMMAND_BUFFER_FLAGS' else
+      if COMMAND_BUFFER_MUTABLE_DISPATCH_ASSERTS = self then
+        Result := 'COMMAND_BUFFER_MUTABLE_DISPATCH_ASSERTS' else
         Result := $'clCommandBufferProperties[{self.val}]';
     end;
     
@@ -2972,6 +2975,7 @@ type
     public static property VA_API_MEDIA_SURFACE_NOT_ACQUIRED:         clErrorCode read new clErrorCode(-1101);
     public static property COMMAND_TERMINATED_ITSELF_WITH_FAILURE:    clErrorCode read new clErrorCode(-1108);
     public static property CONTEXT_TERMINATED:                        clErrorCode read new clErrorCode(-1121);
+    public static property CANCELLED:                                 clErrorCode read new clErrorCode(-1126);
     public static property INVALID_COMMAND_BUFFER:                    clErrorCode read new clErrorCode(-1138);
     public static property INVALID_SYNC_POINT_WAIT_LIST:              clErrorCode read new clErrorCode(-1139);
     public static property INCOMPATIBLE_COMMAND_QUEUE:                clErrorCode read new clErrorCode(-1140);
@@ -3167,6 +3171,8 @@ type
         Result := 'COMMAND_TERMINATED_ITSELF_WITH_FAILURE' else
       if CONTEXT_TERMINATED = self then
         Result := 'CONTEXT_TERMINATED' else
+      if CANCELLED = self then
+        Result := 'CANCELLED' else
       if INVALID_COMMAND_BUFFER = self then
         Result := 'INVALID_COMMAND_BUFFER' else
       if INVALID_SYNC_POINT_WAIT_LIST = self then
@@ -4469,11 +4475,14 @@ type
     public constructor(val: UInt64) := self.val := val;
     
     public static property MUTABLE_DISPATCH_UPDATABLE_FIELDS: clNDRangeKernelCommandProperties read new clNDRangeKernelCommandProperties($12B1);
+    public static property MUTABLE_DISPATCH_ASSERTS:          clNDRangeKernelCommandProperties read new clNDRangeKernelCommandProperties($12B8);
     
     public function ToString: string; override;
     begin
       if MUTABLE_DISPATCH_UPDATABLE_FIELDS = self then
         Result := 'MUTABLE_DISPATCH_UPDATABLE_FIELDS' else
+      if MUTABLE_DISPATCH_ASSERTS = self then
+        Result := 'MUTABLE_DISPATCH_ASSERTS' else
         Result := $'clNDRangeKernelCommandProperties[{self.val}]';
     end;
     
@@ -14555,6 +14564,38 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   ///
+  clCancelCommandIMG = sealed partial class
+    public constructor(pl: cl_platform_id);
+    private constructor := raise new System.NotSupportedException;
+    public static PlatformLess := new clCancelCommandIMG(default(cl_platform_id));
+    private function GetProcAddress(name: string): IntPtr;
+    private static function GetProcOrNil<T>(fadr: IntPtr) :=
+      fadr=IntPtr.Zero ? default(T) :
+        Marshal.GetDelegateForFunctionPointer&<T>(fadr);
+    public const ExtensionString = 'cl_img_cancel_command';
+    
+    public CancelCommandsIMG_adr := GetProcAddress('clCancelCommandsIMG');
+    private ntv_CancelCommandsIMG_1 := GetProcOrNil&<function(var event_list: cl_event; num_events_in_list: UIntPtr): clErrorCode>(CancelCommandsIMG_adr);
+    private ntv_CancelCommandsIMG_2 := GetProcOrNil&<function(event_list: IntPtr; num_events_in_list: UIntPtr): clErrorCode>(CancelCommandsIMG_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CancelCommandsIMG(event_list: array of cl_event; num_events_in_list: UIntPtr): clErrorCode;
+    type PCl_event = ^cl_event;
+    begin
+      Result := if (event_list<>nil) and (event_list.Length<>0) then
+        ntv_CancelCommandsIMG_1(event_list[0], num_events_in_list) else
+        ntv_CancelCommandsIMG_1(PCl_event(nil)^, num_events_in_list);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CancelCommandsIMG(var event_list: cl_event; num_events_in_list: UIntPtr): clErrorCode :=
+      ntv_CancelCommandsIMG_1(event_list, num_events_in_list);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CancelCommandsIMG(event_list: IntPtr; num_events_in_list: UIntPtr): clErrorCode :=
+      ntv_CancelCommandsIMG_2(event_list, num_events_in_list);
+    
+  end;
+  
+  {$ifndef DEBUG}
+  [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
+  ///
   clGenerateMipmapIMG = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -19775,6 +19816,10 @@ function clImageRequirementsInfoEXT.GetProcAddress(name: string) := pl.GetProcAd
 type clMigrateMemobjectEXT = sealed partial class(cl_extension_base) end;
 constructor clMigrateMemobjectEXT.Create(pl: cl_platform_id) := inherited Create(pl);
 function clMigrateMemobjectEXT.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clCancelCommandIMG = sealed partial class(cl_extension_base) end;
+constructor clCancelCommandIMG.Create(pl: cl_platform_id) := inherited Create(pl);
+function clCancelCommandIMG.GetProcAddress(name: string) := pl.GetProcAddress(name);
 
 type clGenerateMipmapIMG = sealed partial class(cl_extension_base) end;
 constructor clGenerateMipmapIMG.Create(pl: cl_platform_id) := inherited Create(pl);

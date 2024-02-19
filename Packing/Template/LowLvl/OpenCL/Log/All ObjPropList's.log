@@ -5,6 +5,9 @@
 --- COMMAND_BUFFER_FLAGS
 !type
 clCommandBufferFlags
+--- COMMAND_BUFFER_MUTABLE_DISPATCH_ASSERTS
+!type
+clMutableDispatchAsserts
 
 # clContextProperties
 --- CONTEXT_PLATFORM
@@ -128,6 +131,9 @@ IntPtr
 --- MUTABLE_DISPATCH_UPDATABLE_FIELDS
 !type
 clMutableDispatchFields
+--- MUTABLE_DISPATCH_ASSERTS
+!type
+clMutableDispatchAsserts
 
 # clQueueProperties
 --- QUEUE_PRIORITY

@@ -3019,6 +3019,19 @@ device: cl_device_id
 	----------- | ------------ |
 	            | device       |
 
+# cl::CancelCommands + IMG
+!ppt
+Result:             clErrorCode
+event_list:         array of cl_event const / var cl_event const / IntPtr const
+num_events_in_list: UIntPtr
+!ffo
+3
+	clErrorCode | array of cl_event const | UIntPtr            |
+	clErrorCode | var cl_event const      | UIntPtr            |
+	clErrorCode | IntPtr const            | UIntPtr            |
+	----------- | ----------------------- | ------------------ |
+	            | event_list              | num_events_in_list |
+
 # cl::EnqueueAcquireGrallocObjects + IMG
 !ppt
 Result:                  clErrorCode
