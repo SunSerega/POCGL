@@ -85,10 +85,10 @@ WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireEGLObjects + KHR]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseEGLObjects + KHR]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireExternalMemObjects + KHR]
 WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseExternalMemObjects + KHR]
-WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGLObjects]
-WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGLObjects]
 WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueWaitSemaphores + KHR]
 WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueSignalSemaphores + KHR]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGLObjects]
+WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGLObjects]
 Logging PascalBasicType items
 Logging TypeCombo items
 Logging Group items
@@ -110,5 +110,5 @@ Struct: Packed 17 items
 Delegate: Packed 7 items
 Func: Packed 241 items
 Feature: Packed 1 items
-Extension: Packed 105 items
+Extension: Packed 130 items
 Cleanup

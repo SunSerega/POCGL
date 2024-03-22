@@ -18,7 +18,7 @@ SimpleSyncQueueArray<integer>#0
 		MultiusableCommandQueue<integer>#3 => CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#1
 
 ------------------------------
- 
+
 SimpleSyncQueueArray<integer>#0
 	SimpleAsyncQueueArray<integer>#1
 		MultiusableCommandQueue<integer>#2 => CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#3
@@ -26,7 +26,7 @@ SimpleSyncQueueArray<integer>#0
 	CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#3: function lambda: integer
 
 ------------------------------
- 
+
 SimpleAsyncQueueArray<integer>#0
 	MultiusableCommandQueue<integer>#1 => CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#2
 	MultiusableCommandQueue<integer>#1 => CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#2
@@ -34,7 +34,6 @@ SimpleAsyncQueueArray<integer>#0
 CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#2: function lambda: integer
 
 ------------------------------
- 
 
 #ReqModules
 OpenCLABC

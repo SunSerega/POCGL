@@ -11,7 +11,7 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
-TestOK 
+TestOK
 final = ErrHandlerBranchCombinator#0: CLTaskGlobalData.ParallelInvoke branches union
 	origin = ErrHandlerInitial#1: (origin-less) CommandQueueHandleWithoutRes: try_do
 	branch#0/2 = ErrHandlerBranchBud#2: branch invoke

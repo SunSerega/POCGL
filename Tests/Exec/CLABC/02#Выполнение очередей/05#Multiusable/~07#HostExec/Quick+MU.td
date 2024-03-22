@@ -18,7 +18,7 @@ CommandQueueQuickArray<integer,array of integer,QueueArraySyncInvoker,SimpleFunc
 
 CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>#2: function lambda: integer
 
-1 
+1
 final = ErrHandlerMURepeater#0: MU repeater for CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>
 	victim = ErrHandlerInitial#1: Initial MU invoke
 origin = ErrHandlerFlattener#2: MU repeater for CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>

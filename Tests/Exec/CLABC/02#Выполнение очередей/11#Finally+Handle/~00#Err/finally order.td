@@ -11,14 +11,14 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
-1 
-2 
+1
+2
 final = ErrHandlerBranchCombinator#0: CommandQueueTryFinallyCommon<CommandQueueNil> origin+try+finally union
 	branch#0/2 = ErrHandlerInitial#1: (origin-less) CommandQueueTryFinallyNil: try_do
 	branch#1/2 = ErrHandlerInitial#2: (origin-less) CommandQueueTryFinallyNil: do_finally
 (total 3 handlers)
-4 
-5 
+4
+5
 final = ErrHandlerBranchCombinator#0: CommandQueueTryFinallyCommon<CommandQueueNil> origin+try+finally union
 	branch#0/2 = ErrHandlerInitial#1: (origin-less) CommandQueueTryFinallyNil: try_do
 	branch#1/2 = ErrHandlerInitial#2: (origin-less) CommandQueueTryFinallyNil: do_finally

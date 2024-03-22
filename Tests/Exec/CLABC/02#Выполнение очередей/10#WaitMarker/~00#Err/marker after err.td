@@ -13,8 +13,8 @@ OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_
 #ExpExecOtp
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
-1 
-2 
+1
+2
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
 [EventDebug]: 1 event's created

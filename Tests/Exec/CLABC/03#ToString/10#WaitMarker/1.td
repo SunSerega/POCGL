@@ -12,26 +12,26 @@ OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_
 
 #ExpExecOtp
 WaitMarkerDummy#0
- 
+
 ------------------------------
- 
+
 CommandQueueMarkedCap<integer>#0
 	CommandQueueMarkedCapWrapper<CommandQueue<integer>>#1
 	CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#2: function lambda: integer
- 
+
 ------------------------------
- 
+
 CommandQueueMarkedCapWrapper<CommandQueue<integer>>#0
 	CommandQueueMarkedCap<integer>#1
- 
+
 ------------------------------
- 
+
 CommandQueueMarkedCap<integer>#0
 	CommandQueueMarkedCapWrapper<CommandQueue<integer>>#1
 	CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#2: function lambda: integer
- 
+
 ------------------------------
- 
+
 SimpleAsyncQueueArray<integer>#0
 	CommandQueueWaitFor#1
 		CommandQueueMarkedCapWrapper<CommandQueue<integer>>#2
@@ -39,20 +39,19 @@ SimpleAsyncQueueArray<integer>#0
 	CommandQueueMarkedCap<integer>#3
 		CommandQueueMarkedCapWrapper<CommandQueue<integer>>#2
 		CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#4: function lambda: integer
- 
+
 ------------------------------
- 
+
 WaitMarkerAll#0
 	CommandQueueMarkedCapWrapper<CommandQueue<integer>>#1
 		CommandQueueMarkedCap<integer>#2 * 2
- 
+
 ------------------------------
- 
+
 CommandQueueMarkedCapWrapper<CommandQueue<integer>>#0
 	CommandQueueMarkedCap<integer>#1
- 
+
 ------------------------------
- 
 
 #ReqModules
 OpenCLABC

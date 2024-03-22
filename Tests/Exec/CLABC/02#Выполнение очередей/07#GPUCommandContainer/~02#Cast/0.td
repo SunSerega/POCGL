@@ -17,15 +17,15 @@ final = ErrHandlerBranchCombinator#0: CLMemoryCommandWriteValueQ<integer> origin
 (total 3 handlers)
 final = ErrHandlerInitial#0: ExecuteEnqFunc container
 (total 1 handlers)
-5 
+5
 [EventDebug]: 2 event's created
 [QueueDebug]: 2 queue's created
 [QueueResNil]: 3
 [QueueRes<T>]: 7
 	QueueResPtr<integer>: 2
 	QueueResValDirect<CLMemory>: 2
-	QueueResValDirect<integer>: 2
 	QueueResValDirect<Object>: 1
+	QueueResValDirect<integer>: 2
 
 #ReqModules
 OpenCLABC

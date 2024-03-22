@@ -37,6 +37,12 @@ begin
   if not self.ReadBoolean then exit;
   Result := read_val(self);
 end;
+function ReadIndexOrNil(self: BinReader): integer?; extensionmethod;
+begin
+  Result := self.ReadInt32;
+  if Result=-1 then
+    Result := nil;
+end;
 
 function ReadEnum<T>(self: BinReader): T; extensionmethod;
   where T: System.Enum, record;

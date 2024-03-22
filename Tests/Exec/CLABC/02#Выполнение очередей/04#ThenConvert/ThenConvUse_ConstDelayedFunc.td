@@ -12,53 +12,53 @@ OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_
 
 #ExpExecOtp
 ConstQueue<integer>#0: 2
------------------------------- 
-2 
-4 
-4 
+------------------------------
+2
+4
+4
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
------------------------------- 
-2 
-4 
-5 
+------------------------------
+2
+4
+5
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
-============================== 
+==============================
 CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#0: function lambda: integer
------------------------------- 
-3 
-9 
-9 
+------------------------------
+3
+9
+9
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
------------------------------- 
-3 
-9 
-10 
+------------------------------
+3
+9
+10
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
-============================== 
+==============================
 CastQueue<Object,integer>#0
 	CommandQueueHostThreadedFunc<Object,SimpleFunc0Container<Object>>#1: function lambda: Object
------------------------------- 
-4 
-16 
-16 
+------------------------------
+4
+16
+16
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
------------------------------- 
-4 
-16 
-17 
+------------------------------
+4
+16
+17
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
-============================== 
+==============================
 [EventDebug]: 13 event's created
 [QueueResNil]: 2
 [QueueRes<T>]: 17
-	QueueResValDirect<integer>: 10
 	QueueResValDirect<Object>: 2
+	QueueResValDirect<integer>: 10
 	QueueResValWrap<integer>: 5
 
 #ReqModules

@@ -11,7 +11,7 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
-123 
+123
 final = ErrHandlerBranchCombinator#0: CLTaskGlobalData.ParallelInvoke branches union
 	branch#0/2 = ErrHandlerFlattener#1: MU repeater for SimpleSyncQueueArray<integer>
 	victim = ErrHandlerInitial#2: Initial MU invoke

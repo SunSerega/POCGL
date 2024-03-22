@@ -118,8 +118,8 @@ final = ErrHandlerInitial#0: ExecuteEnqFunc container
 [ExecDebug]: 1 cache entries created
 [QueueResNil]: 301
 [QueueRes<T>]: 155
-	QueueResValDirect<array [,] of byte>: 1
 	QueueResValDirect<CLArray<byte>>: 51
+	QueueResValDirect<array [,] of byte>: 1
 	QueueResValDirect<integer>: 102
 	QueueResValWrap<array [,] of byte>: 1
 

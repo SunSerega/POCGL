@@ -133,6 +133,10 @@ type clExternalMemoryKHR = sealed partial class(cl_extension_base) end;
 constructor clExternalMemoryKHR.Create(pl: cl_platform_id) := inherited Create(pl);
 function clExternalMemoryKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
 
+type clSemaphoreKHR = sealed partial class(cl_extension_base) end;
+constructor clSemaphoreKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clSemaphoreKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
 type clExternalSemaphoreKHR = sealed partial class(cl_extension_base) end;
 constructor clExternalSemaphoreKHR.Create(pl: cl_platform_id) := inherited Create(pl);
 function clExternalSemaphoreKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
@@ -156,10 +160,6 @@ function clIcdKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
 type clIlProgramKHR = sealed partial class(cl_extension_base) end;
 constructor clIlProgramKHR.Create(pl: cl_platform_id) := inherited Create(pl);
 function clIlProgramKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
-
-type clSemaphoreKHR = sealed partial class(cl_extension_base) end;
-constructor clSemaphoreKHR.Create(pl: cl_platform_id) := inherited Create(pl);
-function clSemaphoreKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
 
 type clSubgroupsKHR = sealed partial class(cl_extension_base) end;
 constructor clSubgroupsKHR.Create(pl: cl_platform_id) := inherited Create(pl);

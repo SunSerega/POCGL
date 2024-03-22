@@ -5,8 +5,8 @@
 OpenGL.$delegate? = function(program: gl_program; name: System.IntPtr): integer
 OpenGL.$delegate? = function(program: gl_program; name: System.IntPtr): integer
 OpenGL.$delegate? = function(type: glShaderType): gl_shader
-OpenGL.$delegate? = function: gl_program
 OpenGL.$delegate? = function: glErrorCode
+OpenGL.$delegate? = function: gl_program
 OpenGL.$delegate? = procedure
 OpenGL.$delegate? = procedure(attribindex: longword; size: integer; type: glVertexAttribType; normalized: glBool8; relativeoffset: longword)
 OpenGL.$delegate? = procedure(bindingindex: longword; buffer: gl_buffer; offset: System.IntPtr; stride: integer)

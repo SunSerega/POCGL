@@ -2669,13 +2669,13 @@ type
   EnumWithPropList = record
     private e_ind: integer;
     private prop_t: LoadedParData;
-    private list_end_ind: integer?; // if nil then not a list (single value)
+    private list_end_ind: integer?; // if "nil" then not a list (single value)
     
     public static function Load(br: BinReader): EnumWithPropList;
     begin
       Result.e_ind := br.ReadInt32;
       Result.prop_t := LoadedParData.Load(br, false);
-      Result.list_end_ind := br.ReadNullable(br->br.ReadInt32);
+      Result.list_end_ind := br.ReadIndexOrNil;
     end;
     
     public property Enum: EnumItems.Enum read EnumItems.Enum.ByIndex(e_ind);

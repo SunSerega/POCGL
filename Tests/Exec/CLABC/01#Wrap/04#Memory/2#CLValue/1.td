@@ -13,12 +13,12 @@ OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_
 #ExpExecOtp
 final = ErrHandlerInitial#0: ExecuteEnqFunc container
 (total 1 handlers)
-5 
+5
 final = ErrHandlerInitial#0: ExecuteEnqFunc container
 (total 1 handlers)
 final = ErrHandlerInitial#0: ExecuteEnqFunc container
 (total 1 handlers)
-7 
+7
 [EventDebug]: 3 event's created
 [QueueDebug]: 3 queue's created
 [QueueResNil]: 4

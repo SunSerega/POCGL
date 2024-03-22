@@ -1,7 +1,7 @@
 ﻿  
   
   
-  ///
+  /// id: GL_3DFX_multisample
   glMultisample3DFX = static class
     public const ExtensionString = 'GL_3DFX_multisample';
   end;
@@ -10,7 +10,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_3DFX_tbuffer
   glTbuffer3DFX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -27,17 +27,17 @@
     
   end;
   
-  ///
+  /// id: GL_3DFX_texture_compression_FXT1
   glTextureCompressionFXT13DFX = static class
     public const ExtensionString = 'GL_3DFX_texture_compression_FXT1';
   end;
   
-  ///
+  /// id: GL_AMD_blend_minmax_factor
   glBlendMinmaxFactorAMD = static class
     public const ExtensionString = 'GL_AMD_blend_minmax_factor';
   end;
   
-  ///
+  /// id: GL_AMD_conservative_depth
   glConservativeDepthAMD = static class
     public const ExtensionString = 'GL_AMD_conservative_depth';
   end;
@@ -46,7 +46,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_debug_output
   glDebugOutputAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -100,7 +100,7 @@
     
   end;
   
-  ///
+  /// id: GL_AMD_depth_clamp_separate
   glDepthClampSeparateAMD = static class
     public const ExtensionString = 'GL_AMD_depth_clamp_separate';
   end;
@@ -109,7 +109,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_draw_buffers_blend
   glDrawBuffersBlendAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -145,7 +145,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_framebuffer_multisample_advanced
   glFramebufferMultisampleAdvancedAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -171,7 +171,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_framebuffer_sample_positions
   glFramebufferSamplePositionsAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -229,17 +229,17 @@
     
   end;
   
-  ///
+  /// id: GL_AMD_gcn_shader
   glGcnShaderAMD = static class
     public const ExtensionString = 'GL_AMD_gcn_shader';
   end;
   
-  ///
+  /// id: GL_AMD_gpu_shader_half_float
   glGpuShaderHalfFloatAMD = static class
     public const ExtensionString = 'GL_AMD_gpu_shader_half_float';
   end;
   
-  ///
+  /// id: GL_AMD_gpu_shader_int16
   glGpuShaderInt16AMD = static class
     public const ExtensionString = 'GL_AMD_gpu_shader_int16';
   end;
@@ -248,7 +248,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_gpu_shader_int64
   glGpuShaderInt64AMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -636,7 +636,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_interleaved_elements
   glInterleavedElementsAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -657,7 +657,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_multi_draw_indirect
   glMultiDrawIndirectAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -683,7 +683,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_name_gen_delete
   glNameGenDeleteAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -734,7 +734,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_occlusion_query_event
   glOcclusionQueryEventAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -755,7 +755,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_performance_monitor
   glPerformanceMonitorAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -897,12 +897,12 @@
     
   end;
   
-  ///
+  /// id: GL_AMD_pinned_memory
   glPinnedMemoryAMD = static class
     public const ExtensionString = 'GL_AMD_pinned_memory';
   end;
   
-  ///
+  /// id: GL_AMD_query_buffer_object
   glQueryBufferObjectAMD = static class
     public const ExtensionString = 'GL_AMD_query_buffer_object';
   end;
@@ -911,7 +911,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_sample_positions
   glSamplePositionsAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -938,42 +938,42 @@
     
   end;
   
-  ///
+  /// id: GL_AMD_seamless_cubemap_per_texture
   glSeamlessCubemapPerTextureAMD = static class
     public const ExtensionString = 'GL_AMD_seamless_cubemap_per_texture';
   end;
   
-  ///
+  /// id: GL_AMD_shader_atomic_counter_ops
   glShaderAtomicCounterOpsAMD = static class
     public const ExtensionString = 'GL_AMD_shader_atomic_counter_ops';
   end;
   
-  ///
+  /// id: GL_AMD_shader_ballot
   glShaderBallotAMD = static class
     public const ExtensionString = 'GL_AMD_shader_ballot';
   end;
   
-  ///
+  /// id: GL_AMD_shader_explicit_vertex_parameter
   glShaderExplicitVertexParameterAMD = static class
     public const ExtensionString = 'GL_AMD_shader_explicit_vertex_parameter';
   end;
   
-  ///
+  /// id: GL_AMD_shader_gpu_shader_half_float_fetch
   glShaderGpuShaderHalfFloatFetchAMD = static class
     public const ExtensionString = 'GL_AMD_shader_gpu_shader_half_float_fetch';
   end;
   
-  ///
+  /// id: GL_AMD_shader_image_load_store_lod
   glShaderImageLoadStoreLodAMD = static class
     public const ExtensionString = 'GL_AMD_shader_image_load_store_lod';
   end;
   
-  ///
+  /// id: GL_AMD_shader_stencil_export
   glShaderStencilExportAMD = static class
     public const ExtensionString = 'GL_AMD_shader_stencil_export';
   end;
   
-  ///
+  /// id: GL_AMD_shader_trinary_minmax
   glShaderTrinaryMinmaxAMD = static class
     public const ExtensionString = 'GL_AMD_shader_trinary_minmax';
   end;
@@ -982,7 +982,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_sparse_texture
   glSparseTextureAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1008,7 +1008,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_stencil_operation_extended
   glStencilOperationExtendedAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1025,27 +1025,27 @@
     
   end;
   
-  ///
+  /// id: GL_AMD_texture_gather_bias_lod
   glTextureGatherBiasLodAMD = static class
     public const ExtensionString = 'GL_AMD_texture_gather_bias_lod';
   end;
   
-  ///
+  /// id: GL_AMD_texture_texture4
   glTextureTexture4AMD = static class
     public const ExtensionString = 'GL_AMD_texture_texture4';
   end;
   
-  ///
+  /// id: GL_AMD_transform_feedback3_lines_triangles
   glTransformFeedback3LinesTrianglesAMD = static class
     public const ExtensionString = 'GL_AMD_transform_feedback3_lines_triangles';
   end;
   
-  ///
+  /// id: GL_AMD_transform_feedback4
   glTransformFeedback4AMD = static class
     public const ExtensionString = 'GL_AMD_transform_feedback4';
   end;
   
-  ///
+  /// id: GL_AMD_vertex_shader_layer
   glVertexShaderLayerAMD = static class
     public const ExtensionString = 'GL_AMD_vertex_shader_layer';
   end;
@@ -1054,7 +1054,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_AMD_vertex_shader_tessellator
   glVertexShaderTessellatorAMD = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1076,17 +1076,17 @@
     
   end;
   
-  ///
+  /// id: GL_AMD_vertex_shader_viewport_index
   glVertexShaderViewportIndexAMD = static class
     public const ExtensionString = 'GL_AMD_vertex_shader_viewport_index';
   end;
   
-  ///
+  /// id: GL_APPLE_aux_depth_stencil
   glAuxDepthStencilAPPLE = static class
     public const ExtensionString = 'GL_APPLE_aux_depth_stencil';
   end;
   
-  ///
+  /// id: GL_APPLE_client_storage
   glClientStorageAPPLE = static class
     public const ExtensionString = 'GL_APPLE_client_storage';
   end;
@@ -1095,7 +1095,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_APPLE_element_array
   glElementArrayAPPLE = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1176,7 +1176,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_APPLE_fence
   glFenceAPPLE = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1248,7 +1248,7 @@
     
   end;
   
-  ///
+  /// id: GL_APPLE_float_pixels
   glFloatPixelsAPPLE = static class
     public const ExtensionString = 'GL_APPLE_float_pixels';
   end;
@@ -1257,7 +1257,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_APPLE_flush_buffer_range
   glFlushBufferRangeAPPLE = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1283,7 +1283,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_APPLE_object_purgeable
   glObjectPurgeableAPPLE = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1313,17 +1313,17 @@
     
   end;
   
-  ///
+  /// id: GL_APPLE_rgb_422
   glRgb422APPLE = static class
     public const ExtensionString = 'GL_APPLE_rgb_422';
   end;
   
-  ///
+  /// id: GL_APPLE_row_bytes
   glRowBytesAPPLE = static class
     public const ExtensionString = 'GL_APPLE_row_bytes';
   end;
   
-  ///
+  /// id: GL_APPLE_specular_vector
   glSpecularVectorAPPLE = static class
     public const ExtensionString = 'GL_APPLE_specular_vector';
   end;
@@ -1332,7 +1332,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_APPLE_texture_range
   glTextureRangeAPPLE = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1357,7 +1357,7 @@
     
   end;
   
-  ///
+  /// id: GL_APPLE_transform_hint
   glTransformHintAPPLE = static class
     public const ExtensionString = 'GL_APPLE_transform_hint';
   end;
@@ -1366,7 +1366,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_APPLE_vertex_array_object
   glVertexArrayObjectAPPLE = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1422,7 +1422,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_APPLE_vertex_array_range
   glVertexArrayRangeAPPLE = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1453,7 +1453,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_APPLE_vertex_program_evaluators
   glVertexProgramEvaluatorsAPPLE = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1540,12 +1540,12 @@
     
   end;
   
-  ///
+  /// id: GL_APPLE_ycbcr_422
   glYcbcr422APPLE = static class
     public const ExtensionString = 'GL_APPLE_ycbcr_422';
   end;
   
-  ///
+  /// id: GL_ARB_arrays_of_arrays
   glArraysOfArraysARB = static class
     public const ExtensionString = 'GL_ARB_arrays_of_arrays';
   end;
@@ -1554,7 +1554,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_base_instance
   glBaseInstanceARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1585,7 +1585,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_bindless_texture
   glBindlessTextureARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1714,7 +1714,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_blend_func_extended
   glBlendFuncExtendedARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1758,7 +1758,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_buffer_storage
   glBufferStorageARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1791,7 +1791,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_clear_buffer_object
   glClearBufferObjectARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1841,7 +1841,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_clear_texture
   glClearTextureARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1867,7 +1867,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_cl_event
   glClEventARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1908,7 +1908,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_clip_control
   glClipControlARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1929,7 +1929,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_color_buffer_float
   glColorBufferFloatARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1946,12 +1946,12 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_compatibility
   glCompatibilityARB = static class
     public const ExtensionString = 'GL_ARB_compatibility';
   end;
   
-  ///
+  /// id: GL_ARB_compressed_texture_pixel_storage
   glCompressedTexturePixelStorageARB = static class
     public const ExtensionString = 'GL_ARB_compressed_texture_pixel_storage';
   end;
@@ -1960,7 +1960,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_compute_shader
   glComputeShaderARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -1986,7 +1986,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_compute_variable_group_size
   glComputeVariableGroupSizeARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -2003,12 +2003,12 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_conditional_render_inverted
   glConditionalRenderInvertedARB = static class
     public const ExtensionString = 'GL_ARB_conditional_render_inverted';
   end;
   
-  ///
+  /// id: GL_ARB_conservative_depth
   glConservativeDepthARB = static class
     public const ExtensionString = 'GL_ARB_conservative_depth';
   end;
@@ -2017,7 +2017,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_copy_buffer
   glCopyBufferARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -2038,7 +2038,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_copy_image
   glCopyImageARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -2055,7 +2055,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_cull_distance
   glCullDistanceARB = static class
     public const ExtensionString = 'GL_ARB_cull_distance';
   end;
@@ -2064,7 +2064,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_debug_output
   glDebugOutputARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -2118,22 +2118,22 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_depth_buffer_float
   glDepthBufferFloatARB = static class
     public const ExtensionString = 'GL_ARB_depth_buffer_float';
   end;
   
-  ///
+  /// id: GL_ARB_depth_clamp
   glDepthClampARB = static class
     public const ExtensionString = 'GL_ARB_depth_clamp';
   end;
   
-  ///
+  /// id: GL_ARB_depth_texture
   glDepthTextureARB = static class
     public const ExtensionString = 'GL_ARB_depth_texture';
   end;
   
-  ///
+  /// id: GL_ARB_derivative_control
   glDerivativeControlARB = static class
     public const ExtensionString = 'GL_ARB_derivative_control';
   end;
@@ -2142,7 +2142,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_direct_state_access
   glDirectStateAccessARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3028,7 +3028,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_draw_buffers
   glDrawBuffersARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3059,7 +3059,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_draw_buffers_blend
   glDrawBuffersBlendARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3095,7 +3095,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_draw_elements_base_vertex
   glDrawElementsBaseVertexARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3172,7 +3172,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_draw_indirect
   glDrawIndirectARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3198,7 +3198,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_draw_instanced
   glDrawInstancedARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3220,7 +3220,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_enhanced_layouts
   glEnhancedLayoutsARB = static class
     public const ExtensionString = 'GL_ARB_enhanced_layouts';
   end;
@@ -3229,7 +3229,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_ES2_compatibility
   glES2CompatibilityARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3289,7 +3289,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_ES3_1_compatibility
   glES31CompatibilityARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3310,7 +3310,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_ES3_2_compatibility
   glES32CompatibilityARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3327,27 +3327,27 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_ES3_compatibility
   glES3CompatibilityARB = static class
     public const ExtensionString = 'GL_ARB_ES3_compatibility';
   end;
   
-  ///
+  /// id: GL_ARB_explicit_attrib_location
   glExplicitAttribLocationARB = static class
     public const ExtensionString = 'GL_ARB_explicit_attrib_location';
   end;
   
-  ///
+  /// id: GL_ARB_explicit_uniform_location
   glExplicitUniformLocationARB = static class
     public const ExtensionString = 'GL_ARB_explicit_uniform_location';
   end;
   
-  ///
+  /// id: GL_ARB_fragment_coord_conventions
   glFragmentCoordConventionsARB = static class
     public const ExtensionString = 'GL_ARB_fragment_coord_conventions';
   end;
   
-  ///
+  /// id: GL_ARB_fragment_layer_viewport
   glFragmentLayerViewportARB = static class
     public const ExtensionString = 'GL_ARB_fragment_layer_viewport';
   end;
@@ -3356,7 +3356,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_fragment_program
   glFragmentProgramARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3559,17 +3559,17 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_fragment_program_shadow
   glFragmentProgramShadowARB = static class
     public const ExtensionString = 'GL_ARB_fragment_program_shadow';
   end;
   
-  ///
+  /// id: GL_ARB_fragment_shader
   glFragmentShaderARB = static class
     public const ExtensionString = 'GL_ARB_fragment_shader';
   end;
   
-  ///
+  /// id: GL_ARB_fragment_shader_interlock
   glFragmentShaderInterlockARB = static class
     public const ExtensionString = 'GL_ARB_fragment_shader_interlock';
   end;
@@ -3578,7 +3578,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_framebuffer_no_attachments
   glFramebufferNoAttachmentsARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3607,7 +3607,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_framebuffer_object
   glFramebufferObjectARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3765,7 +3765,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_framebuffer_sRGB
   glFramebufferSRGBARB = static class
     public const ExtensionString = 'GL_ARB_framebuffer_sRGB';
   end;
@@ -3774,7 +3774,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_geometry_shader4
   glGeometryShader4ARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3810,7 +3810,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_get_program_binary
   glGetProgramBinaryARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3850,7 +3850,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_get_texture_sub_image
   glGetTextureSubImageARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3876,7 +3876,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_gl_spirv
   glGlSpirvARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -3960,7 +3960,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_gpu_shader5
   glGpuShader5ARB = static class
     public const ExtensionString = 'GL_ARB_gpu_shader5';
   end;
@@ -3969,7 +3969,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_gpu_shader_fp64
   glGpuShaderFp64ARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -4244,7 +4244,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_gpu_shader_int64
   glGpuShaderInt64ARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -4644,12 +4644,12 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_half_float_pixel
   glHalfFloatPixelARB = static class
     public const ExtensionString = 'GL_ARB_half_float_pixel';
   end;
   
-  ///
+  /// id: GL_ARB_half_float_vertex
   glHalfFloatVertexARB = static class
     public const ExtensionString = 'GL_ARB_half_float_vertex';
   end;
@@ -4658,7 +4658,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_imaging
   glImagingARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -4914,7 +4914,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_indirect_parameters
   glIndirectParametersARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -4940,7 +4940,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_instanced_arrays
   glInstancedArraysARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -4961,7 +4961,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_internalformat_query
   glInternalformatQueryARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -4985,7 +4985,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_internalformat_query2
   glInternalformatQuery2ARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -5009,7 +5009,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_invalidate_subdata
   glInvalidateSubdataARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -5071,7 +5071,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_map_buffer_alignment
   glMapBufferAlignmentARB = static class
     public const ExtensionString = 'GL_ARB_map_buffer_alignment';
   end;
@@ -5080,7 +5080,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_map_buffer_range
   glMapBufferRangeARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -5106,7 +5106,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_matrix_palette
   glMatrixPaletteARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -5177,7 +5177,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_multi_bind
   glMultiBindARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -5347,7 +5347,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_multi_draw_indirect
   glMultiDrawIndirectARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -5373,7 +5373,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_multisample
   glMultisampleARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -5394,7 +5394,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_multitexture
   glMultitextureARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -5776,7 +5776,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_occlusion_query
   glOcclusionQueryARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -5857,7 +5857,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_occlusion_query2
   glOcclusionQuery2ARB = static class
     public const ExtensionString = 'GL_ARB_occlusion_query2';
   end;
@@ -5866,7 +5866,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_parallel_shader_compile
   glParallelShaderCompileARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -5883,12 +5883,12 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_pipeline_statistics_query
   glPipelineStatisticsQueryARB = static class
     public const ExtensionString = 'GL_ARB_pipeline_statistics_query';
   end;
   
-  ///
+  /// id: GL_ARB_pixel_buffer_object
   glPixelBufferObjectARB = static class
     public const ExtensionString = 'GL_ARB_pixel_buffer_object';
   end;
@@ -5897,7 +5897,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_point_parameters
   glPointParametersARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -5929,7 +5929,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_point_sprite
   glPointSpriteARB = static class
     public const ExtensionString = 'GL_ARB_point_sprite';
   end;
@@ -5938,7 +5938,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_polygon_offset_clamp
   glPolygonOffsetClampARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -5955,7 +5955,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_post_depth_coverage
   glPostDepthCoverageARB = static class
     public const ExtensionString = 'GL_ARB_post_depth_coverage';
   end;
@@ -5964,7 +5964,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_program_interface_query
   glProgramInterfaceQueryARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -6092,7 +6092,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_provoking_vertex
   glProvokingVertexARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -6109,12 +6109,12 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_query_buffer_object
   glQueryBufferObjectARB = static class
     public const ExtensionString = 'GL_ARB_query_buffer_object';
   end;
   
-  ///
+  /// id: GL_ARB_robust_buffer_access_behavior
   glRobustBufferAccessBehaviorARB = static class
     public const ExtensionString = 'GL_ARB_robust_buffer_access_behavior';
   end;
@@ -6123,7 +6123,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_robustness
   glRobustnessARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -6268,7 +6268,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_robustness_isolation
   glRobustnessIsolationARB = static class
     public const ExtensionString = 'GL_ARB_robustness_isolation';
   end;
@@ -6277,7 +6277,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_sample_locations
   glSampleLocationsARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -6328,7 +6328,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_sampler_objects
   glSamplerObjectsARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -6486,7 +6486,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_sample_shading
   glSampleShadingARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -6503,12 +6503,12 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_seamless_cube_map
   glSeamlessCubeMapARB = static class
     public const ExtensionString = 'GL_ARB_seamless_cube_map';
   end;
   
-  ///
+  /// id: GL_ARB_seamless_cubemap_per_texture
   glSeamlessCubemapPerTextureARB = static class
     public const ExtensionString = 'GL_ARB_seamless_cubemap_per_texture';
   end;
@@ -6517,7 +6517,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_separate_shader_objects
   glSeparateShaderObjectsARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -7319,7 +7319,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_shader_atomic_counter_ops
   glShaderAtomicCounterOpsARB = static class
     public const ExtensionString = 'GL_ARB_shader_atomic_counter_ops';
   end;
@@ -7328,7 +7328,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_shader_atomic_counters
   glShaderAtomicCountersARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -7348,27 +7348,27 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_shader_ballot
   glShaderBallotARB = static class
     public const ExtensionString = 'GL_ARB_shader_ballot';
   end;
   
-  ///
+  /// id: GL_ARB_shader_bit_encoding
   glShaderBitEncodingARB = static class
     public const ExtensionString = 'GL_ARB_shader_bit_encoding';
   end;
   
-  ///
+  /// id: GL_ARB_shader_clock
   glShaderClockARB = static class
     public const ExtensionString = 'GL_ARB_shader_clock';
   end;
   
-  ///
+  /// id: GL_ARB_shader_draw_parameters
   glShaderDrawParametersARB = static class
     public const ExtensionString = 'GL_ARB_shader_draw_parameters';
   end;
   
-  ///
+  /// id: GL_ARB_shader_group_vote
   glShaderGroupVoteARB = static class
     public const ExtensionString = 'GL_ARB_shader_group_vote';
   end;
@@ -7377,7 +7377,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_shader_image_load_store
   glShaderImageLoadStoreARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -7399,7 +7399,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_shader_image_size
   glShaderImageSizeARB = static class
     public const ExtensionString = 'GL_ARB_shader_image_size';
   end;
@@ -7408,7 +7408,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_shader_objects
   glShaderObjectsARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -7849,12 +7849,12 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_shader_precision
   glShaderPrecisionARB = static class
     public const ExtensionString = 'GL_ARB_shader_precision';
   end;
   
-  ///
+  /// id: GL_ARB_shader_stencil_export
   glShaderStencilExportARB = static class
     public const ExtensionString = 'GL_ARB_shader_stencil_export';
   end;
@@ -7863,7 +7863,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_shader_storage_buffer_object
   glShaderStorageBufferObjectARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -7884,7 +7884,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_shader_subroutine
   glShaderSubroutineARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -7979,27 +7979,27 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_shader_texture_image_samples
   glShaderTextureImageSamplesARB = static class
     public const ExtensionString = 'GL_ARB_shader_texture_image_samples';
   end;
   
-  ///
+  /// id: GL_ARB_shader_texture_lod
   glShaderTextureLodARB = static class
     public const ExtensionString = 'GL_ARB_shader_texture_lod';
   end;
   
-  ///
+  /// id: GL_ARB_shader_viewport_layer_array
   glShaderViewportLayerArrayARB = static class
     public const ExtensionString = 'GL_ARB_shader_viewport_layer_array';
   end;
   
-  ///
+  /// id: GL_ARB_shading_language_100
   glShadingLanguage100ARB = static class
     public const ExtensionString = 'GL_ARB_shading_language_100';
   end;
   
-  ///
+  /// id: GL_ARB_shading_language_420pack
   glShadingLanguage420packARB = static class
     public const ExtensionString = 'GL_ARB_shading_language_420pack';
   end;
@@ -8008,7 +8008,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_shading_language_include
   glShadingLanguageIncludeARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8177,17 +8177,17 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_shading_language_packing
   glShadingLanguagePackingARB = static class
     public const ExtensionString = 'GL_ARB_shading_language_packing';
   end;
   
-  ///
+  /// id: GL_ARB_shadow
   glShadowARB = static class
     public const ExtensionString = 'GL_ARB_shadow';
   end;
   
-  ///
+  /// id: GL_ARB_shadow_ambient
   glShadowAmbientARB = static class
     public const ExtensionString = 'GL_ARB_shadow_ambient';
   end;
@@ -8196,7 +8196,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_sparse_buffer
   glSparseBufferARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8227,7 +8227,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_sparse_texture
   glSparseTextureARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8244,22 +8244,22 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_sparse_texture2
   glSparseTexture2ARB = static class
     public const ExtensionString = 'GL_ARB_sparse_texture2';
   end;
   
-  ///
+  /// id: GL_ARB_sparse_texture_clamp
   glSparseTextureClampARB = static class
     public const ExtensionString = 'GL_ARB_sparse_texture_clamp';
   end;
   
-  ///
+  /// id: GL_ARB_spirv_extensions
   glSpirvExtensionsARB = static class
     public const ExtensionString = 'GL_ARB_spirv_extensions';
   end;
   
-  ///
+  /// id: GL_ARB_stencil_texturing
   glStencilTexturingARB = static class
     public const ExtensionString = 'GL_ARB_stencil_texturing';
   end;
@@ -8268,7 +8268,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_sync
   glSyncARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8331,7 +8331,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_tessellation_shader
   glTessellationShaderARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8367,7 +8367,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_texture_barrier
   glTextureBarrierARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8384,7 +8384,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_texture_border_clamp
   glTextureBorderClampARB = static class
     public const ExtensionString = 'GL_ARB_texture_border_clamp';
   end;
@@ -8393,7 +8393,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_texture_buffer_object
   glTextureBufferObjectARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8410,7 +8410,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_texture_buffer_object_rgb32
   glTextureBufferObjectRgb32ARB = static class
     public const ExtensionString = 'GL_ARB_texture_buffer_object_rgb32';
   end;
@@ -8419,7 +8419,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_texture_buffer_range
   glTextureBufferRangeARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8440,7 +8440,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_texture_compression
   glTextureCompressionARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8487,72 +8487,72 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_texture_compression_bptc
   glTextureCompressionBptcARB = static class
     public const ExtensionString = 'GL_ARB_texture_compression_bptc';
   end;
   
-  ///
+  /// id: GL_ARB_texture_compression_rgtc
   glTextureCompressionRgtcARB = static class
     public const ExtensionString = 'GL_ARB_texture_compression_rgtc';
   end;
   
-  ///
+  /// id: GL_ARB_texture_cube_map
   glTextureCubeMapARB = static class
     public const ExtensionString = 'GL_ARB_texture_cube_map';
   end;
   
-  ///
+  /// id: GL_ARB_texture_cube_map_array
   glTextureCubeMapArrayARB = static class
     public const ExtensionString = 'GL_ARB_texture_cube_map_array';
   end;
   
-  ///
+  /// id: GL_ARB_texture_env_add
   glTextureEnvAddARB = static class
     public const ExtensionString = 'GL_ARB_texture_env_add';
   end;
   
-  ///
+  /// id: GL_ARB_texture_env_combine
   glTextureEnvCombineARB = static class
     public const ExtensionString = 'GL_ARB_texture_env_combine';
   end;
   
-  ///
+  /// id: GL_ARB_texture_env_crossbar
   glTextureEnvCrossbarARB = static class
     public const ExtensionString = 'GL_ARB_texture_env_crossbar';
   end;
   
-  ///
+  /// id: GL_ARB_texture_env_dot3
   glTextureEnvDot3ARB = static class
     public const ExtensionString = 'GL_ARB_texture_env_dot3';
   end;
   
-  ///
+  /// id: GL_ARB_texture_filter_anisotropic
   glTextureFilterAnisotropicARB = static class
     public const ExtensionString = 'GL_ARB_texture_filter_anisotropic';
   end;
   
-  ///
+  /// id: GL_ARB_texture_filter_minmax
   glTextureFilterMinmaxARB = static class
     public const ExtensionString = 'GL_ARB_texture_filter_minmax';
   end;
   
-  ///
+  /// id: GL_ARB_texture_float
   glTextureFloatARB = static class
     public const ExtensionString = 'GL_ARB_texture_float';
   end;
   
-  ///
+  /// id: GL_ARB_texture_gather
   glTextureGatherARB = static class
     public const ExtensionString = 'GL_ARB_texture_gather';
   end;
   
-  ///
+  /// id: GL_ARB_texture_mirror_clamp_to_edge
   glTextureMirrorClampToEdgeARB = static class
     public const ExtensionString = 'GL_ARB_texture_mirror_clamp_to_edge';
   end;
   
-  ///
+  /// id: GL_ARB_texture_mirrored_repeat
   glTextureMirroredRepeatARB = static class
     public const ExtensionString = 'GL_ARB_texture_mirrored_repeat';
   end;
@@ -8561,7 +8561,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_texture_multisample
   glTextureMultisampleARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8596,37 +8596,37 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_texture_non_power_of_two
   glTextureNonPowerOfTwoARB = static class
     public const ExtensionString = 'GL_ARB_texture_non_power_of_two';
   end;
   
-  ///
+  /// id: GL_ARB_texture_query_levels
   glTextureQueryLevelsARB = static class
     public const ExtensionString = 'GL_ARB_texture_query_levels';
   end;
   
-  ///
+  /// id: GL_ARB_texture_query_lod
   glTextureQueryLodARB = static class
     public const ExtensionString = 'GL_ARB_texture_query_lod';
   end;
   
-  ///
+  /// id: GL_ARB_texture_rectangle
   glTextureRectangleARB = static class
     public const ExtensionString = 'GL_ARB_texture_rectangle';
   end;
   
-  ///
+  /// id: GL_ARB_texture_rg
   glTextureRgARB = static class
     public const ExtensionString = 'GL_ARB_texture_rg';
   end;
   
-  ///
+  /// id: GL_ARB_texture_rgb10_a2ui
   glTextureRgb10A2uiARB = static class
     public const ExtensionString = 'GL_ARB_texture_rgb10_a2ui';
   end;
   
-  ///
+  /// id: GL_ARB_texture_stencil8
   glTextureStencil8ARB = static class
     public const ExtensionString = 'GL_ARB_texture_stencil8';
   end;
@@ -8635,7 +8635,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_texture_storage
   glTextureStorageARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8666,7 +8666,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_texture_storage_multisample
   glTextureStorageMultisampleARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8688,7 +8688,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_texture_swizzle
   glTextureSwizzleARB = static class
     public const ExtensionString = 'GL_ARB_texture_swizzle';
   end;
@@ -8697,7 +8697,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_texture_view
   glTextureViewARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8718,7 +8718,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_timer_query
   glTimerQueryARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8755,7 +8755,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_transform_feedback2
   glTransformFeedback2ARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8826,7 +8826,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_transform_feedback3
   glTransformFeedback3ARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8865,7 +8865,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_transform_feedback_instanced
   glTransformFeedbackInstancedARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8887,7 +8887,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_transform_feedback_overflow_query
   glTransformFeedbackOverflowQueryARB = static class
     public const ExtensionString = 'GL_ARB_transform_feedback_overflow_query';
   end;
@@ -8896,7 +8896,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_transpose_matrix
   glTransposeMatrixARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -8972,7 +8972,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_uniform_buffer_object
   glUniformBufferObjectARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -9131,7 +9131,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_vertex_array_bgra
   glVertexArrayBgraARB = static class
     public const ExtensionString = 'GL_ARB_vertex_array_bgra';
   end;
@@ -9140,7 +9140,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_vertex_array_object
   glVertexArrayObjectARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -9196,7 +9196,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_vertex_attrib_64bit
   glVertexAttrib64bitARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -9314,7 +9314,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_vertex_attrib_binding
   glVertexAttribBindingARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -9360,7 +9360,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_vertex_blend
   glVertexBlendARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -9506,7 +9506,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_vertex_buffer_object
   glVertexBufferObjectARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -9639,7 +9639,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_vertex_program
   glVertexProgramARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -10363,7 +10363,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_vertex_shader
   glVertexShaderARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -10946,7 +10946,7 @@
     
   end;
   
-  ///
+  /// id: GL_ARB_vertex_type_10f_11f_11f_rev
   glVertexType10f11f11fRevARB = static class
     public const ExtensionString = 'GL_ARB_vertex_type_10f_11f_11f_rev';
   end;
@@ -10955,7 +10955,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_vertex_type_2_10_10_10_rev
   glVertexType2101010RevARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -11351,7 +11351,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_viewport_array
   glViewportArrayARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -11493,7 +11493,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ARB_window_pos
   glWindowPosARB = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -11693,7 +11693,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ATI_draw_buffers
   glDrawBuffersATI = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -11724,7 +11724,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ATI_element_array
   glElementArrayATI = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -11755,7 +11755,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ATI_envmap_bumpmap
   glEnvmapBumpmapATI = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -11817,7 +11817,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ATI_fragment_shader
   glFragmentShaderATI = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -11913,7 +11913,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ATI_map_object_buffer
   glMapObjectBufferATI = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -11935,12 +11935,12 @@
     
   end;
   
-  ///
+  /// id: GL_ATI_meminfo
   glMeminfoATI = static class
     public const ExtensionString = 'GL_ATI_meminfo';
   end;
   
-  ///
+  /// id: GL_ATI_pixel_format_float
   glPixelFormatFloatATI = static class
     public const ExtensionString = 'GL_ATI_pixel_format_float';
   end;
@@ -11949,7 +11949,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ATI_pn_triangles
   glPnTrianglesATI = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -11975,7 +11975,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ATI_separate_stencil
   glSeparateStencilATI = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -11997,22 +11997,22 @@
     
   end;
   
-  ///
+  /// id: GL_ATI_text_fragment_shader
   glTextFragmentShaderATI = static class
     public const ExtensionString = 'GL_ATI_text_fragment_shader';
   end;
   
-  ///
+  /// id: GL_ATI_texture_env_combine3
   glTextureEnvCombine3ATI = static class
     public const ExtensionString = 'GL_ATI_texture_env_combine3';
   end;
   
-  ///
+  /// id: GL_ATI_texture_float
   glTextureFloatATI = static class
     public const ExtensionString = 'GL_ATI_texture_float';
   end;
   
-  ///
+  /// id: GL_ATI_texture_mirror_once
   glTextureMirrorOnceATI = static class
     public const ExtensionString = 'GL_ATI_texture_mirror_once';
   end;
@@ -12021,7 +12021,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ATI_vertex_array_object
   glVertexArrayObjectATI = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -12115,7 +12115,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ATI_vertex_attrib_array_object
   glVertexAttribArrayObjectATI = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -12152,7 +12152,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_ATI_vertex_streams
   glVertexStreamsATI = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -12650,17 +12650,17 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_422_pixels
   gl422PixelsEXT = static class
     public const ExtensionString = 'GL_EXT_422_pixels';
   end;
   
-  ///
+  /// id: GL_EXT_abgr
   glAbgrEXT = static class
     public const ExtensionString = 'GL_EXT_abgr';
   end;
   
-  ///
+  /// id: GL_EXT_bgra
   glBgraEXT = static class
     public const ExtensionString = 'GL_EXT_bgra';
   end;
@@ -12669,7 +12669,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_bindable_uniform
   glBindableUniformEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -12700,7 +12700,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_blend_color
   glBlendColorEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -12721,7 +12721,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_blend_equation_separate
   glBlendEquationSeparateEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -12742,7 +12742,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_blend_func_separate
   glBlendFuncSeparateEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -12759,7 +12759,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_blend_logic_op
   glBlendLogicOpEXT = static class
     public const ExtensionString = 'GL_EXT_blend_logic_op';
   end;
@@ -12768,7 +12768,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_blend_minmax
   glBlendMinmaxEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -12785,17 +12785,17 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_blend_subtract
   glBlendSubtractEXT = static class
     public const ExtensionString = 'GL_EXT_blend_subtract';
   end;
   
-  ///
+  /// id: GL_EXT_clip_volume_hint
   glClipVolumeHintEXT = static class
     public const ExtensionString = 'GL_EXT_clip_volume_hint';
   end;
   
-  ///
+  /// id: GL_EXT_cmyka
   glCmykaEXT = static class
     public const ExtensionString = 'GL_EXT_cmyka';
   end;
@@ -12804,7 +12804,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_color_subtable
   glColorSubtableEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -12830,7 +12830,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_compiled_vertex_array
   glCompiledVertexArrayEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -12856,7 +12856,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_convolution
   glConvolutionEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -12963,7 +12963,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_coordinate_frame
   glCoordinateFrameEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -13219,7 +13219,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_copy_texture
   glCopyTextureEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -13260,7 +13260,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_cull_vertex
   glCullVertexEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -13306,7 +13306,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_debug_label
   glDebugLabelEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -13344,7 +13344,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_debug_marker
   glDebugMarkerEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -13393,7 +13393,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_depth_bounds_test
   glDepthBoundsTestEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -13414,7 +13414,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_direct_state_access
   glDirectStateAccessEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -15665,7 +15665,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_draw_buffers2
   glDrawBuffers2EXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -15717,7 +15717,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_draw_instanced
   glDrawInstancedEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -15743,7 +15743,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_draw_range_elements
   glDrawRangeElementsEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -15764,7 +15764,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_EGL_image_storage
   glEGLImageStorageEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -15806,7 +15806,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_EGL_sync
   glEGLSyncEXT = static class
     public const ExtensionString = 'GL_EXT_EGL_sync';
   end;
@@ -15815,7 +15815,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_external_buffer
   glExternalBufferEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -15841,7 +15841,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_fog_coord
   glFogCoordEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -15902,7 +15902,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_framebuffer_blit
   glFramebufferBlitEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -15923,7 +15923,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_framebuffer_blit_layers
   glFramebufferBlitLayersEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -15949,7 +15949,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_framebuffer_multisample
   glFramebufferMultisampleEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -15966,7 +15966,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_framebuffer_multisample_blit_scaled
   glFramebufferMultisampleBlitScaledEXT = static class
     public const ExtensionString = 'GL_EXT_framebuffer_multisample_blit_scaled';
   end;
@@ -15975,7 +15975,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_framebuffer_object
   glFramebufferObjectEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -16118,7 +16118,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_framebuffer_sRGB
   glFramebufferSRGBEXT = static class
     public const ExtensionString = 'GL_EXT_framebuffer_sRGB';
   end;
@@ -16127,7 +16127,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_geometry_shader4
   glGeometryShader4EXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -16148,7 +16148,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_gpu_program_parameters
   glGpuProgramParametersEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -16200,7 +16200,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_gpu_shader4
   glGpuShader4EXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -16612,7 +16612,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_histogram
   glHistogramEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -16686,7 +16686,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_index_array_formats
   glIndexArrayFormatsEXT = static class
     public const ExtensionString = 'GL_EXT_index_array_formats';
   end;
@@ -16695,7 +16695,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_index_func
   glIndexFuncEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -16716,7 +16716,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_index_material
   glIndexMaterialEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -16733,7 +16733,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_index_texture
   glIndexTextureEXT = static class
     public const ExtensionString = 'GL_EXT_index_texture';
   end;
@@ -16742,7 +16742,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_light_texture
   glLightTextureEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -16773,7 +16773,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_memory_object
   glMemoryObjectEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -16923,7 +16923,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_memory_object_fd
   glMemoryObjectFdEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -16944,7 +16944,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_memory_object_win32
   glMemoryObjectWin32EXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -16966,7 +16966,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_misc_attribute
   glMiscAttributeEXT = static class
     public const ExtensionString = 'GL_EXT_misc_attribute';
   end;
@@ -16975,7 +16975,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_multi_draw_arrays
   glMultiDrawArraysEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17042,7 +17042,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_multisample
   glMultisampleEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17064,32 +17064,32 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_multiview_tessellation_geometry_shader
   glMultiviewTessellationGeometryShaderEXT = static class
     public const ExtensionString = 'GL_EXT_multiview_tessellation_geometry_shader';
   end;
   
-  ///
+  /// id: GL_EXT_multiview_texture_multisample
   glMultiviewTextureMultisampleEXT = static class
     public const ExtensionString = 'GL_EXT_multiview_texture_multisample';
   end;
   
-  ///
+  /// id: GL_EXT_multiview_timer_query
   glMultiviewTimerQueryEXT = static class
     public const ExtensionString = 'GL_EXT_multiview_timer_query';
   end;
   
-  ///
+  /// id: GL_EXT_packed_depth_stencil
   glPackedDepthStencilEXT = static class
     public const ExtensionString = 'GL_EXT_packed_depth_stencil';
   end;
   
-  ///
+  /// id: GL_EXT_packed_float
   glPackedFloatEXT = static class
     public const ExtensionString = 'GL_EXT_packed_float';
   end;
   
-  ///
+  /// id: GL_EXT_packed_pixels
   glPackedPixelsEXT = static class
     public const ExtensionString = 'GL_EXT_packed_pixels';
   end;
@@ -17098,7 +17098,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_paletted_texture
   glPalettedTextureEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17136,7 +17136,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_pixel_buffer_object
   glPixelBufferObjectEXT = static class
     public const ExtensionString = 'GL_EXT_pixel_buffer_object';
   end;
@@ -17145,7 +17145,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_pixel_transform
   glPixelTransformEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17213,7 +17213,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_pixel_transform_color_table
   glPixelTransformColorTableEXT = static class
     public const ExtensionString = 'GL_EXT_pixel_transform_color_table';
   end;
@@ -17222,7 +17222,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_point_parameters
   glPointParametersEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17258,7 +17258,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_polygon_offset
   glPolygonOffsetEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17279,7 +17279,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_polygon_offset_clamp
   glPolygonOffsetClampEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17296,7 +17296,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_post_depth_coverage
   glPostDepthCoverageEXT = static class
     public const ExtensionString = 'GL_EXT_post_depth_coverage';
   end;
@@ -17305,7 +17305,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_provoking_vertex
   glProvokingVertexEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17326,7 +17326,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_raster_multisample
   glRasterMultisampleEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17343,7 +17343,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_rescale_normal
   glRescaleNormalEXT = static class
     public const ExtensionString = 'GL_EXT_rescale_normal';
   end;
@@ -17352,7 +17352,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_secondary_color
   glSecondaryColorEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17557,7 +17557,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_semaphore
   glSemaphoreEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17741,7 +17741,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_semaphore_fd
   glSemaphoreFdEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17762,7 +17762,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_semaphore_win32
   glSemaphoreWin32EXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17788,7 +17788,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_separate_shader_objects
   glSeparateShaderObjectsEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17824,12 +17824,12 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_separate_specular_color
   glSeparateSpecularColorEXT = static class
     public const ExtensionString = 'GL_EXT_separate_specular_color';
   end;
   
-  ///
+  /// id: GL_EXT_shader_framebuffer_fetch
   glShaderFramebufferFetchEXT = static class
     public const ExtensionString = 'GL_EXT_shader_framebuffer_fetch';
   end;
@@ -17838,7 +17838,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_shader_framebuffer_fetch_non_coherent
   glShaderFramebufferFetchNonCoherentEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17855,7 +17855,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_shader_image_load_formatted
   glShaderImageLoadFormattedEXT = static class
     public const ExtensionString = 'GL_EXT_shader_image_load_formatted';
   end;
@@ -17864,7 +17864,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_shader_image_load_store
   glShaderImageLoadStoreEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17886,27 +17886,27 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_shader_integer_mix
   glShaderIntegerMixEXT = static class
     public const ExtensionString = 'GL_EXT_shader_integer_mix';
   end;
   
-  ///
+  /// id: GL_EXT_shader_samples_identical
   glShaderSamplesIdenticalEXT = static class
     public const ExtensionString = 'GL_EXT_shader_samples_identical';
   end;
   
-  ///
+  /// id: GL_EXT_shadow_funcs
   glShadowFuncsEXT = static class
     public const ExtensionString = 'GL_EXT_shadow_funcs';
   end;
   
-  ///
+  /// id: GL_EXT_shared_texture_palette
   glSharedTexturePaletteEXT = static class
     public const ExtensionString = 'GL_EXT_shared_texture_palette';
   end;
   
-  ///
+  /// id: GL_EXT_sparse_texture2
   glSparseTexture2EXT = static class
     public const ExtensionString = 'GL_EXT_sparse_texture2';
   end;
@@ -17915,7 +17915,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_stencil_clear_tag
   glStencilClearTagEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17936,7 +17936,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_stencil_two_side
   glStencilTwoSideEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17953,7 +17953,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_stencil_wrap
   glStencilWrapEXT = static class
     public const ExtensionString = 'GL_EXT_stencil_wrap';
   end;
@@ -17962,7 +17962,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_subtexture
   glSubtextureEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -17984,7 +17984,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_texture
   glTextureEXT = static class
     public const ExtensionString = 'GL_EXT_texture';
   end;
@@ -17993,7 +17993,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_texture3D
   glTexture3DEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -18019,7 +18019,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_texture_array
   glTextureArrayEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -18040,7 +18040,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_texture_buffer_object
   glTextureBufferObjectEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -18057,47 +18057,47 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_texture_compression_latc
   glTextureCompressionLatcEXT = static class
     public const ExtensionString = 'GL_EXT_texture_compression_latc';
   end;
   
-  ///
+  /// id: GL_EXT_texture_compression_rgtc
   glTextureCompressionRgtcEXT = static class
     public const ExtensionString = 'GL_EXT_texture_compression_rgtc';
   end;
   
-  ///
+  /// id: GL_EXT_texture_compression_s3tc
   glTextureCompressionS3tcEXT = static class
     public const ExtensionString = 'GL_EXT_texture_compression_s3tc';
   end;
   
-  ///
+  /// id: GL_EXT_texture_cube_map
   glTextureCubeMapEXT = static class
     public const ExtensionString = 'GL_EXT_texture_cube_map';
   end;
   
-  ///
+  /// id: GL_EXT_texture_env_add
   glTextureEnvAddEXT = static class
     public const ExtensionString = 'GL_EXT_texture_env_add';
   end;
   
-  ///
+  /// id: GL_EXT_texture_env_combine
   glTextureEnvCombineEXT = static class
     public const ExtensionString = 'GL_EXT_texture_env_combine';
   end;
   
-  ///
+  /// id: GL_EXT_texture_env_dot3
   glTextureEnvDot3EXT = static class
     public const ExtensionString = 'GL_EXT_texture_env_dot3';
   end;
   
-  ///
+  /// id: GL_EXT_texture_filter_anisotropic
   glTextureFilterAnisotropicEXT = static class
     public const ExtensionString = 'GL_EXT_texture_filter_anisotropic';
   end;
   
-  ///
+  /// id: GL_EXT_texture_filter_minmax
   glTextureFilterMinmaxEXT = static class
     public const ExtensionString = 'GL_EXT_texture_filter_minmax';
   end;
@@ -18106,7 +18106,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_texture_integer
   glTextureIntegerEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -18174,12 +18174,12 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_texture_lod_bias
   glTextureLodBiasEXT = static class
     public const ExtensionString = 'GL_EXT_texture_lod_bias';
   end;
   
-  ///
+  /// id: GL_EXT_texture_mirror_clamp
   glTextureMirrorClampEXT = static class
     public const ExtensionString = 'GL_EXT_texture_mirror_clamp';
   end;
@@ -18188,7 +18188,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_texture_object
   glTextureObjectEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -18296,7 +18296,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_texture_perturb_normal
   glTexturePerturbNormalEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -18313,37 +18313,37 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_texture_shadow_lod
   glTextureShadowLodEXT = static class
     public const ExtensionString = 'GL_EXT_texture_shadow_lod';
   end;
   
-  ///
+  /// id: GL_EXT_texture_shared_exponent
   glTextureSharedExponentEXT = static class
     public const ExtensionString = 'GL_EXT_texture_shared_exponent';
   end;
   
-  ///
+  /// id: GL_EXT_texture_snorm
   glTextureSnormEXT = static class
     public const ExtensionString = 'GL_EXT_texture_snorm';
   end;
   
-  ///
+  /// id: GL_EXT_texture_sRGB
   glTextureSRGBEXT = static class
     public const ExtensionString = 'GL_EXT_texture_sRGB';
   end;
   
-  ///
+  /// id: GL_EXT_texture_sRGB_decode
   glTextureSRGBDecodeEXT = static class
     public const ExtensionString = 'GL_EXT_texture_sRGB_decode';
   end;
   
-  ///
+  /// id: GL_EXT_texture_sRGB_R8
   glTextureSRGBR8EXT = static class
     public const ExtensionString = 'GL_EXT_texture_sRGB_R8';
   end;
   
-  ///
+  /// id: GL_EXT_texture_sRGB_RG8
   glTextureSRGBRG8EXT = static class
     public const ExtensionString = 'GL_EXT_texture_sRGB_RG8';
   end;
@@ -18352,7 +18352,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_texture_storage
   glTextureStorageEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -18394,7 +18394,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_texture_swizzle
   glTextureSwizzleEXT = static class
     public const ExtensionString = 'GL_EXT_texture_swizzle';
   end;
@@ -18403,7 +18403,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_timer_query
   glTimerQueryEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -18435,7 +18435,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_transform_feedback
   glTransformFeedbackEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -18536,7 +18536,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_vertex_array
   glVertexArrayEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -18606,7 +18606,7 @@
     
   end;
   
-  ///
+  /// id: GL_EXT_vertex_array_bgra
   glVertexArrayBgraEXT = static class
     public const ExtensionString = 'GL_EXT_vertex_array_bgra';
   end;
@@ -18615,7 +18615,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_vertex_attrib_64bit
   glVertexAttrib64bitEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -18733,7 +18733,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_vertex_shader
   glVertexShaderEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19069,7 +19069,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_vertex_weighting
   glVertexWeightingEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19110,7 +19110,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_win32_keyed_mutex
   glWin32KeyedMutexEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19136,7 +19136,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_window_rectangles
   glWindowRectanglesEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19167,7 +19167,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_EXT_x11_sync_object
   glX11SyncObjectEXT = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19188,7 +19188,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_GREMEDY_frame_terminator
   glFrameTerminatorGREMEDY = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19209,7 +19209,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_GREMEDY_string_marker
   glStringMarkerGREMEDY = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19226,7 +19226,7 @@
     
   end;
   
-  ///
+  /// id: GL_HP_convolution_border_modes
   glConvolutionBorderModesHP = static class
     public const ExtensionString = 'GL_HP_convolution_border_modes';
   end;
@@ -19235,7 +19235,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_HP_image_transform
   glImageTransformHP = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19303,17 +19303,17 @@
     
   end;
   
-  ///
+  /// id: GL_HP_occlusion_test
   glOcclusionTestHP = static class
     public const ExtensionString = 'GL_HP_occlusion_test';
   end;
   
-  ///
+  /// id: GL_HP_texture_lighting
   glTextureLightingHP = static class
     public const ExtensionString = 'GL_HP_texture_lighting';
   end;
   
-  ///
+  /// id: GL_IBM_cull_vertex
   glCullVertexIBM = static class
     public const ExtensionString = 'GL_IBM_cull_vertex';
   end;
@@ -19322,7 +19322,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_IBM_multimode_draw_arrays
   glMultimodeDrawArraysIBM = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19427,7 +19427,7 @@
     
   end;
   
-  ///
+  /// id: GL_IBM_rasterpos_clip
   glRasterposClipIBM = static class
     public const ExtensionString = 'GL_IBM_rasterpos_clip';
   end;
@@ -19436,7 +19436,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_IBM_static_data
   glStaticDataIBM = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19453,7 +19453,7 @@
     
   end;
   
-  ///
+  /// id: GL_IBM_texture_mirrored_repeat
   glTextureMirroredRepeatIBM = static class
     public const ExtensionString = 'GL_IBM_texture_mirrored_repeat';
   end;
@@ -19462,7 +19462,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_IBM_vertex_array_lists
   glVertexArrayListsIBM = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19626,7 +19626,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_INGR_blend_func_separate
   glBlendFuncSeparateINGR = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19643,27 +19643,27 @@
     
   end;
   
-  ///
+  /// id: GL_INGR_color_clamp
   glColorClampINGR = static class
     public const ExtensionString = 'GL_INGR_color_clamp';
   end;
   
-  ///
+  /// id: GL_INGR_interlace_read
   glInterlaceReadINGR = static class
     public const ExtensionString = 'GL_INGR_interlace_read';
   end;
   
-  ///
+  /// id: GL_INTEL_blackhole_render
   glBlackholeRenderINTEL = static class
     public const ExtensionString = 'GL_INTEL_blackhole_render';
   end;
   
-  ///
+  /// id: GL_INTEL_conservative_rasterization
   glConservativeRasterizationINTEL = static class
     public const ExtensionString = 'GL_INTEL_conservative_rasterization';
   end;
   
-  ///
+  /// id: GL_INTEL_fragment_shader_ordering
   glFragmentShaderOrderingINTEL = static class
     public const ExtensionString = 'GL_INTEL_fragment_shader_ordering';
   end;
@@ -19672,7 +19672,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_INTEL_framebuffer_CMAA
   glFramebufferCMAAINTEL = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19693,7 +19693,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_INTEL_map_texture
   glMapTextureINTEL = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19745,7 +19745,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_INTEL_parallel_arrays
   glParallelArraysINTEL = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19821,7 +19821,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_INTEL_performance_query
   glPerformanceQueryINTEL = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19933,7 +19933,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_KHR_blend_equation_advanced
   glBlendEquationAdvancedKHR = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -19950,12 +19950,12 @@
     
   end;
   
-  ///
+  /// id: GL_KHR_blend_equation_advanced_coherent
   glBlendEquationAdvancedCoherentKHR = static class
     public const ExtensionString = 'GL_KHR_blend_equation_advanced_coherent';
   end;
   
-  ///
+  /// id: GL_KHR_context_flush_control
   glContextFlushControlKHR = static class
     public const ExtensionString = 'GL_KHR_context_flush_control';
   end;
@@ -19964,7 +19964,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_KHR_debug
   glDebugKHR = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -20089,7 +20089,7 @@
     
   end;
   
-  ///
+  /// id: GL_KHR_no_error
   glNoErrorKHR = static class
     public const ExtensionString = 'GL_KHR_no_error';
   end;
@@ -20098,7 +20098,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_KHR_parallel_shader_compile
   glParallelShaderCompileKHR = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -20115,7 +20115,7 @@
     
   end;
   
-  ///
+  /// id: GL_KHR_robust_buffer_access_behavior
   glRobustBufferAccessBehaviorKHR = static class
     public const ExtensionString = 'GL_KHR_robust_buffer_access_behavior';
   end;
@@ -20124,7 +20124,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_KHR_robustness
   glRobustnessKHR = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -20170,27 +20170,27 @@
     
   end;
   
-  ///
+  /// id: GL_KHR_shader_subgroup
   glShaderSubgroupKHR = static class
     public const ExtensionString = 'GL_KHR_shader_subgroup';
   end;
   
-  ///
+  /// id: GL_KHR_texture_compression_astc_hdr
   glTextureCompressionAstcHdrKHR = static class
     public const ExtensionString = 'GL_KHR_texture_compression_astc_hdr';
   end;
   
-  ///
+  /// id: GL_KHR_texture_compression_astc_ldr
   glTextureCompressionAstcLdrKHR = static class
     public const ExtensionString = 'GL_KHR_texture_compression_astc_ldr';
   end;
   
-  ///
+  /// id: GL_KHR_texture_compression_astc_sliced_3d
   glTextureCompressionAstcSliced3dKHR = static class
     public const ExtensionString = 'GL_KHR_texture_compression_astc_sliced_3d';
   end;
   
-  ///
+  /// id: GL_MESA_framebuffer_flip_x
   glFramebufferFlipXMESA = static class
     public const ExtensionString = 'GL_MESA_framebuffer_flip_x';
   end;
@@ -20199,7 +20199,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_MESA_framebuffer_flip_y
   glFramebufferFlipYMESA = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -20224,17 +20224,17 @@
     
   end;
   
-  ///
+  /// id: GL_MESA_framebuffer_swap_xy
   glFramebufferSwapXyMESA = static class
     public const ExtensionString = 'GL_MESA_framebuffer_swap_xy';
   end;
   
-  ///
+  /// id: GL_MESA_pack_invert
   glPackInvertMESA = static class
     public const ExtensionString = 'GL_MESA_pack_invert';
   end;
   
-  ///
+  /// id: GL_MESA_program_binary_formats
   glProgramBinaryFormatsMESA = static class
     public const ExtensionString = 'GL_MESA_program_binary_formats';
   end;
@@ -20243,7 +20243,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_MESA_resize_buffers
   glResizeBuffersMESA = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -20260,12 +20260,12 @@
     
   end;
   
-  ///
+  /// id: GL_MESA_shader_integer_functions
   glShaderIntegerFunctionsMESA = static class
     public const ExtensionString = 'GL_MESA_shader_integer_functions';
   end;
   
-  ///
+  /// id: GL_MESA_tile_raster_order
   glTileRasterOrderMESA = static class
     public const ExtensionString = 'GL_MESA_tile_raster_order';
   end;
@@ -20274,7 +20274,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_MESA_window_pos
   glWindowPosMESA = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -20562,12 +20562,12 @@
     
   end;
   
-  ///
+  /// id: GL_MESA_ycbcr_texture
   glYcbcrTextureMESA = static class
     public const ExtensionString = 'GL_MESA_ycbcr_texture';
   end;
   
-  ///
+  /// id: GL_MESAX_texture_stack
   glTextureStackMESAX = static class
     public const ExtensionString = 'GL_MESAX_texture_stack';
   end;
@@ -20576,7 +20576,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_alpha_to_coverage_dither_control
   glAlphaToCoverageDitherControlNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -20597,7 +20597,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_bindless_multi_draw_indirect
   glBindlessMultiDrawIndirectNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -20623,7 +20623,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_bindless_multi_draw_indirect_count
   glBindlessMultiDrawIndirectCountNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -20649,7 +20649,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_bindless_texture
   glBindlessTextureNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -20750,7 +20750,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_blend_equation_advanced
   glBlendEquationAdvancedNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -20772,17 +20772,17 @@
     
   end;
   
-  ///
+  /// id: GL_NV_blend_equation_advanced_coherent
   glBlendEquationAdvancedCoherentNV = static class
     public const ExtensionString = 'GL_NV_blend_equation_advanced_coherent';
   end;
   
-  ///
+  /// id: GL_NV_blend_minmax_factor
   glBlendMinmaxFactorNV = static class
     public const ExtensionString = 'GL_NV_blend_minmax_factor';
   end;
   
-  ///
+  /// id: GL_NV_blend_square
   glBlendSquareNV = static class
     public const ExtensionString = 'GL_NV_blend_square';
   end;
@@ -20791,7 +20791,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_clip_space_w_scaling
   glClipSpaceWScalingNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -20812,7 +20812,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_command_list
   glCommandListNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21237,12 +21237,12 @@
     
   end;
   
-  ///
+  /// id: GL_NV_compute_program5
   glComputeProgram5NV = static class
     public const ExtensionString = 'GL_NV_compute_program5';
   end;
   
-  ///
+  /// id: GL_NV_compute_shader_derivatives
   glComputeShaderDerivativesNV = static class
     public const ExtensionString = 'GL_NV_compute_shader_derivatives';
   end;
@@ -21251,7 +21251,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_conditional_render
   glConditionalRenderNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21277,7 +21277,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_conservative_raster
   glConservativeRasterNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21298,7 +21298,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_conservative_raster_dilate
   glConservativeRasterDilateNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21315,7 +21315,7 @@
     
   end;
   
-  ///
+  /// id: GL_NV_conservative_raster_pre_snap
   glConservativeRasterPreSnapNV = static class
     public const ExtensionString = 'GL_NV_conservative_raster_pre_snap';
   end;
@@ -21324,7 +21324,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_conservative_raster_pre_snap_triangles
   glConservativeRasterPreSnapTrianglesNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21341,12 +21341,12 @@
     
   end;
   
-  ///
+  /// id: GL_NV_conservative_raster_underestimation
   glConservativeRasterUnderestimationNV = static class
     public const ExtensionString = 'GL_NV_conservative_raster_underestimation';
   end;
   
-  ///
+  /// id: GL_NV_copy_depth_to_color
   glCopyDepthToColorNV = static class
     public const ExtensionString = 'GL_NV_copy_depth_to_color';
   end;
@@ -21355,7 +21355,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_copy_image
   glCopyImageNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21372,7 +21372,7 @@
     
   end;
   
-  ///
+  /// id: GL_NV_deep_texture3D
   glDeepTexture3DNV = static class
     public const ExtensionString = 'GL_NV_deep_texture3D';
   end;
@@ -21381,7 +21381,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_depth_buffer_float
   glDepthBufferFloatNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21408,7 +21408,7 @@
     
   end;
   
-  ///
+  /// id: GL_NV_depth_clamp
   glDepthClampNV = static class
     public const ExtensionString = 'GL_NV_depth_clamp';
   end;
@@ -21417,7 +21417,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_draw_texture
   glDrawTextureNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21438,7 +21438,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_draw_vulkan_image
   glDrawVulkanImageNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21488,7 +21488,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_evaluators
   glEvaluatorsNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21581,7 +21581,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_explicit_multisample
   glExplicitMultisampleNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21615,7 +21615,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_fence
   glFenceNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21685,17 +21685,17 @@
     
   end;
   
-  ///
+  /// id: GL_NV_fill_rectangle
   glFillRectangleNV = static class
     public const ExtensionString = 'GL_NV_fill_rectangle';
   end;
   
-  ///
+  /// id: GL_NV_float_buffer
   glFloatBufferNV = static class
     public const ExtensionString = 'GL_NV_float_buffer';
   end;
   
-  ///
+  /// id: GL_NV_fog_distance
   glFogDistanceNV = static class
     public const ExtensionString = 'GL_NV_fog_distance';
   end;
@@ -21704,7 +21704,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_fragment_coverage_to_color
   glFragmentCoverageToColorNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21725,7 +21725,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_fragment_program
   glFragmentProgramNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -21925,27 +21925,27 @@
     
   end;
   
-  ///
+  /// id: GL_NV_fragment_program2
   glFragmentProgram2NV = static class
     public const ExtensionString = 'GL_NV_fragment_program2';
   end;
   
-  ///
+  /// id: GL_NV_fragment_program4
   glFragmentProgram4NV = static class
     public const ExtensionString = 'GL_NV_fragment_program4';
   end;
   
-  ///
+  /// id: GL_NV_fragment_program_option
   glFragmentProgramOptionNV = static class
     public const ExtensionString = 'GL_NV_fragment_program_option';
   end;
   
-  ///
+  /// id: GL_NV_fragment_shader_barycentric
   glFragmentShaderBarycentricNV = static class
     public const ExtensionString = 'GL_NV_fragment_shader_barycentric';
   end;
   
-  ///
+  /// id: GL_NV_fragment_shader_interlock
   glFragmentShaderInterlockNV = static class
     public const ExtensionString = 'GL_NV_fragment_shader_interlock';
   end;
@@ -21954,7 +21954,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_framebuffer_mixed_samples
   glFramebufferMixedSamplesNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -22003,7 +22003,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_framebuffer_multisample_coverage
   glFramebufferMultisampleCoverageNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -22024,7 +22024,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_geometry_program4
   glGeometryProgram4NV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -22056,12 +22056,12 @@
     
   end;
   
-  ///
+  /// id: GL_NV_geometry_shader4
   glGeometryShader4NV = static class
     public const ExtensionString = 'GL_NV_geometry_shader4';
   end;
   
-  ///
+  /// id: GL_NV_geometry_shader_passthrough
   glGeometryShaderPassthroughNV = static class
     public const ExtensionString = 'GL_NV_geometry_shader_passthrough';
   end;
@@ -22070,7 +22070,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_gpu_multicast
   glGpuMulticastNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -22196,7 +22196,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_gpu_program4
   glGpuProgram4NV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -22408,7 +22408,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_gpu_program5
   glGpuProgram5NV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -22443,7 +22443,7 @@
     
   end;
   
-  ///
+  /// id: GL_NV_gpu_program5_mem_extended
   glGpuProgram5MemExtendedNV = static class
     public const ExtensionString = 'GL_NV_gpu_program5_mem_extended';
   end;
@@ -22452,7 +22452,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_gpu_shader5
   glGpuShader5NV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -22832,7 +22832,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_half_float
   glHalfFloatNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -23328,7 +23328,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_internalformat_sample_query
   glInternalformatSampleQueryNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -23348,7 +23348,7 @@
     
   end;
   
-  ///
+  /// id: GL_NV_light_max_exponent
   glLightMaxExponentNV = static class
     public const ExtensionString = 'GL_NV_light_max_exponent';
   end;
@@ -23357,7 +23357,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_memory_attachment
   glMemoryAttachmentNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -23406,7 +23406,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_memory_object_sparse
   glMemoryObjectSparseNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -23442,7 +23442,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_mesh_shader
   glMeshShaderNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -23474,12 +23474,12 @@
     
   end;
   
-  ///
+  /// id: GL_NV_multisample_coverage
   glMultisampleCoverageNV = static class
     public const ExtensionString = 'GL_NV_multisample_coverage';
   end;
   
-  ///
+  /// id: GL_NV_multisample_filter_hint
   glMultisampleFilterHintNV = static class
     public const ExtensionString = 'GL_NV_multisample_filter_hint';
   end;
@@ -23488,7 +23488,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_occlusion_query
   glOcclusionQueryNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -23561,7 +23561,7 @@
     
   end;
   
-  ///
+  /// id: GL_NV_packed_depth_stencil
   glPackedDepthStencilNV = static class
     public const ExtensionString = 'GL_NV_packed_depth_stencil';
   end;
@@ -23570,7 +23570,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_parameter_buffer_object
   glParameterBufferObjectNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -23627,7 +23627,7 @@
     
   end;
   
-  ///
+  /// id: GL_NV_parameter_buffer_object2
   glParameterBufferObject2NV = static class
     public const ExtensionString = 'GL_NV_parameter_buffer_object2';
   end;
@@ -23636,7 +23636,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_path_rendering
   glPathRenderingNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -24478,7 +24478,7 @@
     
   end;
   
-  ///
+  /// id: GL_NV_path_rendering_shared_edge
   glPathRenderingSharedEdgeNV = static class
     public const ExtensionString = 'GL_NV_path_rendering_shared_edge';
   end;
@@ -24487,7 +24487,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_pixel_data_range
   glPixelDataRangeNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -24513,7 +24513,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_point_sprite
   glPointSpriteNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -24549,7 +24549,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_present_video
   glPresentVideoNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -24607,7 +24607,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_primitive_restart
   glPrimitiveRestartNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -24629,7 +24629,7 @@
     
   end;
   
-  ///
+  /// id: GL_NV_primitive_shading_rate
   glPrimitiveShadingRateNV = static class
     public const ExtensionString = 'GL_NV_primitive_shading_rate';
   end;
@@ -24638,7 +24638,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_query_resource
   glQueryResourceNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -24669,7 +24669,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_query_resource_tag
   glQueryResourceTagNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -24729,7 +24729,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_register_combiners
   glRegisterCombinersNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -24848,7 +24848,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_register_combiners2
   glRegisterCombiners2NV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -24883,12 +24883,12 @@
     
   end;
   
-  ///
+  /// id: GL_NV_representative_fragment_test
   glRepresentativeFragmentTestNV = static class
     public const ExtensionString = 'GL_NV_representative_fragment_test';
   end;
   
-  ///
+  /// id: GL_NV_robustness_video_memory_purge
   glRobustnessVideoMemoryPurgeNV = static class
     public const ExtensionString = 'GL_NV_robustness_video_memory_purge';
   end;
@@ -24897,7 +24897,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_sample_locations
   glSampleLocationsNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -24944,7 +24944,7 @@
     
   end;
   
-  ///
+  /// id: GL_NV_sample_mask_override_coverage
   glSampleMaskOverrideCoverageNV = static class
     public const ExtensionString = 'GL_NV_sample_mask_override_coverage';
   end;
@@ -24953,7 +24953,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_scissor_exclusive
   glScissorExclusiveNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -24985,27 +24985,27 @@
     
   end;
   
-  ///
+  /// id: GL_NV_shader_atomic_counters
   glShaderAtomicCountersNV = static class
     public const ExtensionString = 'GL_NV_shader_atomic_counters';
   end;
   
-  ///
+  /// id: GL_NV_shader_atomic_float
   glShaderAtomicFloatNV = static class
     public const ExtensionString = 'GL_NV_shader_atomic_float';
   end;
   
-  ///
+  /// id: GL_NV_shader_atomic_float64
   glShaderAtomicFloat64NV = static class
     public const ExtensionString = 'GL_NV_shader_atomic_float64';
   end;
   
-  ///
+  /// id: GL_NV_shader_atomic_fp16_vector
   glShaderAtomicFp16VectorNV = static class
     public const ExtensionString = 'GL_NV_shader_atomic_fp16_vector';
   end;
   
-  ///
+  /// id: GL_NV_shader_atomic_int64
   glShaderAtomicInt64NV = static class
     public const ExtensionString = 'GL_NV_shader_atomic_int64';
   end;
@@ -25014,7 +25014,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_shader_buffer_load
   glShaderBufferLoadNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -25128,32 +25128,32 @@
     
   end;
   
-  ///
+  /// id: GL_NV_shader_buffer_store
   glShaderBufferStoreNV = static class
     public const ExtensionString = 'GL_NV_shader_buffer_store';
   end;
   
-  ///
+  /// id: GL_NV_shader_storage_buffer_object
   glShaderStorageBufferObjectNV = static class
     public const ExtensionString = 'GL_NV_shader_storage_buffer_object';
   end;
   
-  ///
+  /// id: GL_NV_shader_subgroup_partitioned
   glShaderSubgroupPartitionedNV = static class
     public const ExtensionString = 'GL_NV_shader_subgroup_partitioned';
   end;
   
-  ///
+  /// id: GL_NV_shader_texture_footprint
   glShaderTextureFootprintNV = static class
     public const ExtensionString = 'GL_NV_shader_texture_footprint';
   end;
   
-  ///
+  /// id: GL_NV_shader_thread_group
   glShaderThreadGroupNV = static class
     public const ExtensionString = 'GL_NV_shader_thread_group';
   end;
   
-  ///
+  /// id: GL_NV_shader_thread_shuffle
   glShaderThreadShuffleNV = static class
     public const ExtensionString = 'GL_NV_shader_thread_shuffle';
   end;
@@ -25162,7 +25162,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_shading_rate_image
   glShadingRateImageNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -25235,22 +25235,22 @@
     
   end;
   
-  ///
+  /// id: GL_NV_stereo_view_rendering
   glStereoViewRenderingNV = static class
     public const ExtensionString = 'GL_NV_stereo_view_rendering';
   end;
   
-  ///
+  /// id: GL_NV_tessellation_program5
   glTessellationProgram5NV = static class
     public const ExtensionString = 'GL_NV_tessellation_program5';
   end;
   
-  ///
+  /// id: GL_NV_texgen_emboss
   glTexgenEmbossNV = static class
     public const ExtensionString = 'GL_NV_texgen_emboss';
   end;
   
-  ///
+  /// id: GL_NV_texgen_reflection
   glTexgenReflectionNV = static class
     public const ExtensionString = 'GL_NV_texgen_reflection';
   end;
@@ -25259,7 +25259,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_texture_barrier
   glTextureBarrierNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -25276,17 +25276,17 @@
     
   end;
   
-  ///
+  /// id: GL_NV_texture_compression_vtc
   glTextureCompressionVtcNV = static class
     public const ExtensionString = 'GL_NV_texture_compression_vtc';
   end;
   
-  ///
+  /// id: GL_NV_texture_env_combine4
   glTextureEnvCombine4NV = static class
     public const ExtensionString = 'GL_NV_texture_env_combine4';
   end;
   
-  ///
+  /// id: GL_NV_texture_expand_normal
   glTextureExpandNormalNV = static class
     public const ExtensionString = 'GL_NV_texture_expand_normal';
   end;
@@ -25295,7 +25295,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_texture_multisample
   glTextureMultisampleNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -25337,27 +25337,27 @@
     
   end;
   
-  ///
+  /// id: GL_NV_texture_rectangle
   glTextureRectangleNV = static class
     public const ExtensionString = 'GL_NV_texture_rectangle';
   end;
   
-  ///
+  /// id: GL_NV_texture_rectangle_compressed
   glTextureRectangleCompressedNV = static class
     public const ExtensionString = 'GL_NV_texture_rectangle_compressed';
   end;
   
-  ///
+  /// id: GL_NV_texture_shader
   glTextureShaderNV = static class
     public const ExtensionString = 'GL_NV_texture_shader';
   end;
   
-  ///
+  /// id: GL_NV_texture_shader2
   glTextureShader2NV = static class
     public const ExtensionString = 'GL_NV_texture_shader2';
   end;
   
-  ///
+  /// id: GL_NV_texture_shader3
   glTextureShader3NV = static class
     public const ExtensionString = 'GL_NV_texture_shader3';
   end;
@@ -25366,7 +25366,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_timeline_semaphore
   glTimelineSemaphoreNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -25420,7 +25420,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_transform_feedback
   glTransformFeedbackNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -25578,7 +25578,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_transform_feedback2
   glTransformFeedback2NV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -25645,12 +25645,12 @@
     
   end;
   
-  ///
+  /// id: GL_NV_uniform_buffer_std430_layout
   glUniformBufferStd430LayoutNV = static class
     public const ExtensionString = 'GL_NV_uniform_buffer_std430_layout';
   end;
   
-  ///
+  /// id: GL_NV_uniform_buffer_unified_memory
   glUniformBufferUnifiedMemoryNV = static class
     public const ExtensionString = 'GL_NV_uniform_buffer_unified_memory';
   end;
@@ -25659,7 +25659,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_vdpau_interop
   glVdpauInteropNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -25785,7 +25785,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_vdpau_interop2
   glVdpauInterop2NV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -25816,7 +25816,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_vertex_array_range
   glVertexArrayRangeNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -25838,7 +25838,7 @@
     
   end;
   
-  ///
+  /// id: GL_NV_vertex_array_range2
   glVertexArrayRange2NV = static class
     public const ExtensionString = 'GL_NV_vertex_array_range2';
   end;
@@ -25847,7 +25847,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_vertex_attrib_integer_64bit
   glVertexAttribInteger64bitNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -26062,7 +26062,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_vertex_buffer_unified_memory
   glVertexBufferUnifiedMemoryNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -26141,7 +26141,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_vertex_program
   glVertexProgramNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -26940,22 +26940,22 @@
     
   end;
   
-  ///
+  /// id: GL_NV_vertex_program1_1
   glVertexProgram11NV = static class
     public const ExtensionString = 'GL_NV_vertex_program1_1';
   end;
   
-  ///
+  /// id: GL_NV_vertex_program2
   glVertexProgram2NV = static class
     public const ExtensionString = 'GL_NV_vertex_program2';
   end;
   
-  ///
+  /// id: GL_NV_vertex_program2_option
   glVertexProgram2OptionNV = static class
     public const ExtensionString = 'GL_NV_vertex_program2_option';
   end;
   
-  ///
+  /// id: GL_NV_vertex_program3
   glVertexProgram3NV = static class
     public const ExtensionString = 'GL_NV_vertex_program3';
   end;
@@ -26964,7 +26964,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_vertex_program4
   glVertexProgram4NV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -27251,7 +27251,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_video_capture
   glVideoCaptureNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -27386,7 +27386,7 @@
     
   end;
   
-  ///
+  /// id: GL_NV_viewport_array2
   glViewportArray2NV = static class
     public const ExtensionString = 'GL_NV_viewport_array2';
   end;
@@ -27395,7 +27395,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NV_viewport_swizzle
   glViewportSwizzleNV = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -27412,7 +27412,7 @@
     
   end;
   
-  ///
+  /// id: GL_NVX_blend_equation_advanced_multi_draw_buffers
   glBlendEquationAdvancedMultiDrawBuffersNVX = static class
     public const ExtensionString = 'GL_NVX_blend_equation_advanced_multi_draw_buffers';
   end;
@@ -27421,7 +27421,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NVX_conditional_render
   glConditionalRenderNVX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -27443,7 +27443,7 @@
     
   end;
   
-  ///
+  /// id: GL_NVX_gpu_memory_info
   glGpuMemoryInfoNVX = static class
     public const ExtensionString = 'GL_NVX_gpu_memory_info';
   end;
@@ -27452,7 +27452,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NVX_gpu_multicast2
   glGpuMulticast2NVX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -27680,7 +27680,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NVX_linked_gpu_multicast
   glLinkedGpuMulticastNVX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -27711,7 +27711,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_NVX_progress_fence
   glProgressFenceNVX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -27810,7 +27810,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_OES_byte_coordinates
   glByteCoordinatesOES = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -28069,7 +28069,7 @@
     
   end;
   
-  ///
+  /// id: GL_OES_compressed_paletted_texture
   glCompressedPalettedTextureOES = static class
     public const ExtensionString = 'GL_OES_compressed_paletted_texture';
   end;
@@ -28078,7 +28078,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_OES_fixed_point
   glFixedPointOES = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29053,7 +29053,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_OES_query_matrix
   glQueryMatrixOES = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29091,7 +29091,7 @@
     
   end;
   
-  ///
+  /// id: GL_OES_read_format
   glReadFormatOES = static class
     public const ExtensionString = 'GL_OES_read_format';
   end;
@@ -29100,7 +29100,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_OES_single_precision
   glSinglePrecisionOES = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29155,17 +29155,17 @@
     
   end;
   
-  ///
+  /// id: GL_OML_interlace
   glInterlaceOML = static class
     public const ExtensionString = 'GL_OML_interlace';
   end;
   
-  ///
+  /// id: GL_OML_resample
   glResampleOML = static class
     public const ExtensionString = 'GL_OML_resample';
   end;
   
-  ///
+  /// id: GL_OML_subsample
   glSubsampleOML = static class
     public const ExtensionString = 'GL_OML_subsample';
   end;
@@ -29174,7 +29174,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_OVR_multiview
   glMultiviewOVR = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29191,7 +29191,7 @@
     
   end;
   
-  ///
+  /// id: GL_OVR_multiview2
   glMultiview2OVR = static class
     public const ExtensionString = 'GL_OVR_multiview2';
   end;
@@ -29200,7 +29200,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_PGI_misc_hints
   glMiscHintsPGI = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29217,22 +29217,22 @@
     
   end;
   
-  ///
+  /// id: GL_PGI_vertex_hints
   glVertexHintsPGI = static class
     public const ExtensionString = 'GL_PGI_vertex_hints';
   end;
   
-  ///
+  /// id: GL_REND_screen_coordinates
   glScreenCoordinatesREND = static class
     public const ExtensionString = 'GL_REND_screen_coordinates';
   end;
   
-  ///
+  /// id: GL_S3_s3tc
   glS3tcS3 = static class
     public const ExtensionString = 'GL_S3_s3tc';
   end;
   
-  ///
+  /// id: GL_SGI_color_matrix
   glColorMatrixSGI = static class
     public const ExtensionString = 'GL_SGI_color_matrix';
   end;
@@ -29241,7 +29241,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGI_color_table
   glColorTableSGI = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29320,7 +29320,7 @@
     
   end;
   
-  ///
+  /// id: GL_SGI_texture_color_table
   glTextureColorTableSGI = static class
     public const ExtensionString = 'GL_SGI_texture_color_table';
   end;
@@ -29329,7 +29329,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIS_detail_texture
   glDetailTextureSGIS = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29368,7 +29368,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIS_fog_function
   glFogFunctionSGIS = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29403,7 +29403,7 @@
     
   end;
   
-  ///
+  /// id: GL_SGIS_generate_mipmap
   glGenerateMipmapSGIS = static class
     public const ExtensionString = 'GL_SGIS_generate_mipmap';
   end;
@@ -29412,7 +29412,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIS_multisample
   glMultisampleSGIS = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29438,7 +29438,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIS_pixel_texture
   glPixelTextureSGIS = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29506,7 +29506,7 @@
     
   end;
   
-  ///
+  /// id: GL_SGIS_point_line_texgen
   glPointLineTexgenSGIS = static class
     public const ExtensionString = 'GL_SGIS_point_line_texgen';
   end;
@@ -29515,7 +29515,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIS_point_parameters
   glPointParametersSGIS = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29551,7 +29551,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIS_sharpen_texture
   glSharpenTextureSGIS = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29590,7 +29590,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIS_texture4D
   glTexture4DSGIS = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29612,7 +29612,7 @@
     
   end;
   
-  ///
+  /// id: GL_SGIS_texture_border_clamp
   glTextureBorderClampSGIS = static class
     public const ExtensionString = 'GL_SGIS_texture_border_clamp';
   end;
@@ -29621,7 +29621,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIS_texture_color_mask
   glTextureColorMaskSGIS = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29638,7 +29638,7 @@
     
   end;
   
-  ///
+  /// id: GL_SGIS_texture_edge_clamp
   glTextureEdgeClampSGIS = static class
     public const ExtensionString = 'GL_SGIS_texture_edge_clamp';
   end;
@@ -29647,7 +29647,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIS_texture_filter4
   glTextureFilter4SGIS = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29682,12 +29682,12 @@
     
   end;
   
-  ///
+  /// id: GL_SGIS_texture_lod
   glTextureLodSGIS = static class
     public const ExtensionString = 'GL_SGIS_texture_lod';
   end;
   
-  ///
+  /// id: GL_SGIS_texture_select
   glTextureSelectSGIS = static class
     public const ExtensionString = 'GL_SGIS_texture_select';
   end;
@@ -29696,7 +29696,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIX_async
   glAsyncSGIX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29758,42 +29758,42 @@
     
   end;
   
-  ///
+  /// id: GL_SGIX_async_histogram
   glAsyncHistogramSGIX = static class
     public const ExtensionString = 'GL_SGIX_async_histogram';
   end;
   
-  ///
+  /// id: GL_SGIX_async_pixel
   glAsyncPixelSGIX = static class
     public const ExtensionString = 'GL_SGIX_async_pixel';
   end;
   
-  ///
+  /// id: GL_SGIX_blend_alpha_minmax
   glBlendAlphaMinmaxSGIX = static class
     public const ExtensionString = 'GL_SGIX_blend_alpha_minmax';
   end;
   
-  ///
+  /// id: GL_SGIX_calligraphic_fragment
   glCalligraphicFragmentSGIX = static class
     public const ExtensionString = 'GL_SGIX_calligraphic_fragment';
   end;
   
-  ///
+  /// id: GL_SGIX_clipmap
   glClipmapSGIX = static class
     public const ExtensionString = 'GL_SGIX_clipmap';
   end;
   
-  ///
+  /// id: GL_SGIX_convolution_accuracy
   glConvolutionAccuracySGIX = static class
     public const ExtensionString = 'GL_SGIX_convolution_accuracy';
   end;
   
-  ///
+  /// id: GL_SGIX_depth_pass_instrument
   glDepthPassInstrumentSGIX = static class
     public const ExtensionString = 'GL_SGIX_depth_pass_instrument';
   end;
   
-  ///
+  /// id: GL_SGIX_depth_texture
   glDepthTextureSGIX = static class
     public const ExtensionString = 'GL_SGIX_depth_texture';
   end;
@@ -29802,7 +29802,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIX_flush_raster
   glFlushRasterSGIX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -29819,7 +29819,7 @@
     
   end;
   
-  ///
+  /// id: GL_SGIX_fog_offset
   glFogOffsetSGIX = static class
     public const ExtensionString = 'GL_SGIX_fog_offset';
   end;
@@ -29828,7 +29828,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIX_fragment_lighting
   glFragmentLightingSGIX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30006,7 +30006,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIX_framezoom
   glFramezoomSGIX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30027,7 +30027,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIX_igloo_interface
   glIglooInterfaceSGIX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30048,7 +30048,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIX_instruments
   glInstrumentsSGIX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30110,12 +30110,12 @@
     
   end;
   
-  ///
+  /// id: GL_SGIX_interlace
   glInterlaceSGIX = static class
     public const ExtensionString = 'GL_SGIX_interlace';
   end;
   
-  ///
+  /// id: GL_SGIX_ir_instrument1
   glIrInstrument1SGIX = static class
     public const ExtensionString = 'GL_SGIX_ir_instrument1';
   end;
@@ -30124,7 +30124,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIX_list_priority
   glListPrioritySGIX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30196,7 +30196,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIX_pixel_texture
   glPixelTextureSGIX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30213,7 +30213,7 @@
     
   end;
   
-  ///
+  /// id: GL_SGIX_pixel_tiles
   glPixelTilesSGIX = static class
     public const ExtensionString = 'GL_SGIX_pixel_tiles';
   end;
@@ -30222,7 +30222,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIX_polynomial_ffd
   glPolynomialFfdSGIX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30278,7 +30278,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIX_reference_plane
   glReferencePlaneSGIX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30305,22 +30305,22 @@
     
   end;
   
-  ///
+  /// id: GL_SGIX_resample
   glResampleSGIX = static class
     public const ExtensionString = 'GL_SGIX_resample';
   end;
   
-  ///
+  /// id: GL_SGIX_scalebias_hint
   glScalebiasHintSGIX = static class
     public const ExtensionString = 'GL_SGIX_scalebias_hint';
   end;
   
-  ///
+  /// id: GL_SGIX_shadow
   glShadowSGIX = static class
     public const ExtensionString = 'GL_SGIX_shadow';
   end;
   
-  ///
+  /// id: GL_SGIX_shadow_ambient
   glShadowAmbientSGIX = static class
     public const ExtensionString = 'GL_SGIX_shadow_ambient';
   end;
@@ -30329,7 +30329,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIX_sprite
   glSpriteSGIX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30381,7 +30381,7 @@
     
   end;
   
-  ///
+  /// id: GL_SGIX_subsample
   glSubsampleSGIX = static class
     public const ExtensionString = 'GL_SGIX_subsample';
   end;
@@ -30390,7 +30390,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SGIX_tag_sample_buffer
   glTagSampleBufferSGIX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30407,52 +30407,52 @@
     
   end;
   
-  ///
+  /// id: GL_SGIX_texture_add_env
   glTextureAddEnvSGIX = static class
     public const ExtensionString = 'GL_SGIX_texture_add_env';
   end;
   
-  ///
+  /// id: GL_SGIX_texture_coordinate_clamp
   glTextureCoordinateClampSGIX = static class
     public const ExtensionString = 'GL_SGIX_texture_coordinate_clamp';
   end;
   
-  ///
+  /// id: GL_SGIX_texture_lod_bias
   glTextureLodBiasSGIX = static class
     public const ExtensionString = 'GL_SGIX_texture_lod_bias';
   end;
   
-  ///
+  /// id: GL_SGIX_texture_multi_buffer
   glTextureMultiBufferSGIX = static class
     public const ExtensionString = 'GL_SGIX_texture_multi_buffer';
   end;
   
-  ///
+  /// id: GL_SGIX_texture_scale_bias
   glTextureScaleBiasSGIX = static class
     public const ExtensionString = 'GL_SGIX_texture_scale_bias';
   end;
   
-  ///
+  /// id: GL_SGIX_vertex_preclip
   glVertexPreclipSGIX = static class
     public const ExtensionString = 'GL_SGIX_vertex_preclip';
   end;
   
-  ///
+  /// id: GL_SGIX_ycrcb
   glYcrcbSGIX = static class
     public const ExtensionString = 'GL_SGIX_ycrcb';
   end;
   
-  ///
+  /// id: GL_SGIX_ycrcba
   glYcrcbaSGIX = static class
     public const ExtensionString = 'GL_SGIX_ycrcba';
   end;
   
-  ///
+  /// id: GL_SGIX_ycrcb_subsample
   glYcrcbSubsampleSGIX = static class
     public const ExtensionString = 'GL_SGIX_ycrcb_subsample';
   end;
   
-  ///
+  /// id: GL_SUN_convolution_border_modes
   glConvolutionBorderModesSUN = static class
     public const ExtensionString = 'GL_SUN_convolution_border_modes';
   end;
@@ -30461,7 +30461,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SUN_global_alpha
   glGlobalAlphaSUN = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30517,7 +30517,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SUN_mesh_array
   glMeshArraySUN = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30534,7 +30534,7 @@
     
   end;
   
-  ///
+  /// id: GL_SUN_slice_accum
   glSliceAccumSUN = static class
     public const ExtensionString = 'GL_SUN_slice_accum';
   end;
@@ -30543,7 +30543,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SUN_triangle_list
   glTriangleListSUN = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -30634,7 +30634,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SUN_vertex
   glVertexSUN = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -31310,7 +31310,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GL_SUNX_constant_data
   glConstantDataSUNX = sealed partial class
     public constructor(loader: IGLPlatformLoader);
     private constructor := raise new System.NotSupportedException;
@@ -31327,17 +31327,17 @@
     
   end;
   
-  ///
+  /// id: GL_WIN_phong_shading
   glPhongShadingWIN = static class
     public const ExtensionString = 'GL_WIN_phong_shading';
   end;
   
-  ///
+  /// id: GL_WIN_specular_fog
   glSpecularFogWIN = static class
     public const ExtensionString = 'GL_WIN_specular_fog';
   end;
   
-  ///
+  /// id: GLX_3DFX_multisample
   glxMultisample3DFX = static class
     public const ExtensionString = 'GLX_3DFX_multisample';
   end;
@@ -31346,7 +31346,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_AMD_gpu_association
   glxGpuAssociationAMD = sealed class
     public constructor := exit;
     public static Instance := new glxGpuAssociationAMD;
@@ -31416,7 +31416,7 @@
     
   end;
   
-  ///
+  /// id: GLX_ARB_context_flush_control
   glxContextFlushControlARB = static class
     public const ExtensionString = 'GLX_ARB_context_flush_control';
   end;
@@ -31425,7 +31425,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_ARB_create_context
   glxCreateContextARB = sealed class
     public constructor := exit;
     public static Instance := new glxCreateContextARB;
@@ -31452,27 +31452,27 @@
     
   end;
   
-  ///
+  /// id: GLX_ARB_create_context_no_error
   glxCreateContextNoErrorARB = static class
     public const ExtensionString = 'GLX_ARB_create_context_no_error';
   end;
   
-  ///
+  /// id: GLX_ARB_create_context_profile
   glxCreateContextProfileARB = static class
     public const ExtensionString = 'GLX_ARB_create_context_profile';
   end;
   
-  ///
+  /// id: GLX_ARB_create_context_robustness
   glxCreateContextRobustnessARB = static class
     public const ExtensionString = 'GLX_ARB_create_context_robustness';
   end;
   
-  ///
+  /// id: GLX_ARB_fbconfig_float
   glxFbconfigFloatARB = static class
     public const ExtensionString = 'GLX_ARB_fbconfig_float';
   end;
   
-  ///
+  /// id: GLX_ARB_framebuffer_sRGB
   glxFramebufferSRGBARB = static class
     public const ExtensionString = 'GLX_ARB_framebuffer_sRGB';
   end;
@@ -31481,7 +31481,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_ARB_get_proc_address
   glxGetProcAddressARB = sealed class
     public constructor := exit;
     public static Instance := new glxGetProcAddressARB;
@@ -31507,57 +31507,57 @@
     
   end;
   
-  ///
+  /// id: GLX_ARB_multisample
   glxMultisampleARB = static class
     public const ExtensionString = 'GLX_ARB_multisample';
   end;
   
-  ///
+  /// id: GLX_ARB_robustness_application_isolation
   glxRobustnessApplicationIsolationARB = static class
     public const ExtensionString = 'GLX_ARB_robustness_application_isolation';
   end;
   
-  ///
+  /// id: GLX_ARB_robustness_share_group_isolation
   glxRobustnessShareGroupIsolationARB = static class
     public const ExtensionString = 'GLX_ARB_robustness_share_group_isolation';
   end;
   
-  ///
+  /// id: GLX_ARB_vertex_buffer_object
   glxVertexBufferObjectARB = static class
     public const ExtensionString = 'GLX_ARB_vertex_buffer_object';
   end;
   
-  ///
+  /// id: GLX_EXT_buffer_age
   glxBufferAgeEXT = static class
     public const ExtensionString = 'GLX_EXT_buffer_age';
   end;
   
-  ///
+  /// id: GLX_EXT_context_priority
   glxContextPriorityEXT = static class
     public const ExtensionString = 'GLX_EXT_context_priority';
   end;
   
-  ///
+  /// id: GLX_EXT_create_context_es2_profile
   glxCreateContextEs2ProfileEXT = static class
     public const ExtensionString = 'GLX_EXT_create_context_es2_profile';
   end;
   
-  ///
+  /// id: GLX_EXT_create_context_es_profile
   glxCreateContextEsProfileEXT = static class
     public const ExtensionString = 'GLX_EXT_create_context_es_profile';
   end;
   
-  ///
+  /// id: GLX_EXT_fbconfig_packed_float
   glxFbconfigPackedFloatEXT = static class
     public const ExtensionString = 'GLX_EXT_fbconfig_packed_float';
   end;
   
-  ///
+  /// id: GLX_EXT_framebuffer_sRGB
   glxFramebufferSRGBEXT = static class
     public const ExtensionString = 'GLX_EXT_framebuffer_sRGB';
   end;
   
-  ///
+  /// id: GLX_EXT_get_drawable_type
   glxGetDrawableTypeEXT = static class
     public const ExtensionString = 'GLX_EXT_get_drawable_type';
   end;
@@ -31566,7 +31566,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_EXT_import_context
   glxImportContextEXT = sealed class
     public constructor := exit;
     public static Instance := new glxImportContextEXT;
@@ -31613,17 +31613,17 @@
     
   end;
   
-  ///
+  /// id: GLX_EXT_libglvnd
   glxLibglvndEXT = static class
     public const ExtensionString = 'GLX_EXT_libglvnd';
   end;
   
-  ///
+  /// id: GLX_EXT_no_config_context
   glxNoConfigContextEXT = static class
     public const ExtensionString = 'GLX_EXT_no_config_context';
   end;
   
-  ///
+  /// id: GLX_EXT_stereo_tree
   glxStereoTreeEXT = static class
     public const ExtensionString = 'GLX_EXT_stereo_tree';
   end;
@@ -31632,7 +31632,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_EXT_swap_control
   glxSwapControlEXT = sealed class
     public constructor := exit;
     public static Instance := new glxSwapControlEXT;
@@ -31649,7 +31649,7 @@
     
   end;
   
-  ///
+  /// id: GLX_EXT_swap_control_tear
   glxSwapControlTearEXT = static class
     public const ExtensionString = 'GLX_EXT_swap_control_tear';
   end;
@@ -31658,7 +31658,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_EXT_texture_from_pixmap
   glxTextureFromPixmapEXT = sealed class
     public constructor := exit;
     public static Instance := new glxTextureFromPixmapEXT;
@@ -31690,17 +31690,17 @@
     
   end;
   
-  ///
+  /// id: GLX_EXT_visual_info
   glxVisualInfoEXT = static class
     public const ExtensionString = 'GLX_EXT_visual_info';
   end;
   
-  ///
+  /// id: GLX_EXT_visual_rating
   glxVisualRatingEXT = static class
     public const ExtensionString = 'GLX_EXT_visual_rating';
   end;
   
-  ///
+  /// id: GLX_INTEL_swap_event
   glxSwapEventINTEL = static class
     public const ExtensionString = 'GLX_INTEL_swap_event';
   end;
@@ -31709,7 +31709,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_MESA_agp_offset
   glxAgpOffsetMESA = sealed class
     public constructor := exit;
     public static Instance := new glxAgpOffsetMESA;
@@ -31730,7 +31730,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_MESA_copy_sub_buffer
   glxCopySubBufferMESA = sealed class
     public constructor := exit;
     public static Instance := new glxCopySubBufferMESA;
@@ -31751,7 +31751,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_MESA_pixmap_colormap
   glxPixmapColormapMESA = sealed class
     public constructor := exit;
     public static Instance := new glxPixmapColormapMESA;
@@ -31772,7 +31772,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_MESA_query_renderer
   glxQueryRendererMESA = sealed class
     public constructor := exit;
     public static Instance := new glxQueryRendererMESA;
@@ -31828,7 +31828,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_MESA_release_buffers
   glxReleaseBuffersMESA = sealed class
     public constructor := exit;
     public static Instance := new glxReleaseBuffersMESA;
@@ -31849,7 +31849,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_MESA_set_3dfx_mode
   glxSet3dfxModeMESA = sealed class
     public constructor := exit;
     public static Instance := new glxSet3dfxModeMESA;
@@ -31870,7 +31870,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_MESA_swap_control
   glxSwapControlMESA = sealed class
     public constructor := exit;
     public static Instance := new glxSwapControlMESA;
@@ -31896,7 +31896,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_NV_copy_buffer
   glxCopyBufferNV = sealed class
     public constructor := exit;
     public static Instance := new glxCopyBufferNV;
@@ -31922,7 +31922,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_NV_copy_image
   glxCopyImageNV = sealed class
     public constructor := exit;
     public static Instance := new glxCopyImageNV;
@@ -31943,7 +31943,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_NV_delay_before_swap
   glxDelayBeforeSwapNV = sealed class
     public constructor := exit;
     public static Instance := new glxDelayBeforeSwapNV;
@@ -31960,17 +31960,17 @@
     
   end;
   
-  ///
+  /// id: GLX_NV_float_buffer
   glxFloatBufferNV = static class
     public const ExtensionString = 'GLX_NV_float_buffer';
   end;
   
-  ///
+  /// id: GLX_NV_multigpu_context
   glxMultigpuContextNV = static class
     public const ExtensionString = 'GLX_NV_multigpu_context';
   end;
   
-  ///
+  /// id: GLX_NV_multisample_coverage
   glxMultisampleCoverageNV = static class
     public const ExtensionString = 'GLX_NV_multisample_coverage';
   end;
@@ -31979,7 +31979,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_NV_present_video
   glxPresentVideoNV = sealed class
     public constructor := exit;
     public static Instance := new glxPresentVideoNV;
@@ -32021,7 +32021,7 @@
     
   end;
   
-  ///
+  /// id: GLX_NV_robustness_video_memory_purge
   glxRobustnessVideoMemoryPurgeNV = static class
     public const ExtensionString = 'GLX_NV_robustness_video_memory_purge';
   end;
@@ -32030,7 +32030,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_NV_swap_group
   glxSwapGroupNV = sealed class
     public constructor := exit;
     public static Instance := new glxSwapGroupNV;
@@ -32126,7 +32126,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_NV_video_capture
   glxVideoCaptureNV = sealed class
     public constructor := exit;
     public static Instance := new glxVideoCaptureNV;
@@ -32187,7 +32187,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_NV_video_out
   glxVideoOutNV = sealed class
     public constructor := exit;
     public static Instance := new glxVideoOutNV;
@@ -32251,7 +32251,7 @@
     
   end;
   
-  ///
+  /// id: GLX_OML_swap_method
   glxSwapMethodOML = static class
     public const ExtensionString = 'GLX_OML_swap_method';
   end;
@@ -32260,7 +32260,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_OML_sync_control
   glxSyncControlOML = sealed class
     public constructor := exit;
     public static Instance := new glxSyncControlOML;
@@ -32411,7 +32411,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SGI_cushion
   glxCushionSGI = sealed class
     public constructor := exit;
     public static Instance := new glxCushionSGI;
@@ -32432,7 +32432,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SGI_make_current_read
   glxMakeCurrentReadSGI = sealed class
     public constructor := exit;
     public static Instance := new glxMakeCurrentReadSGI;
@@ -32458,7 +32458,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SGI_swap_control
   glxSwapControlSGI = sealed class
     public constructor := exit;
     public static Instance := new glxSwapControlSGI;
@@ -32479,7 +32479,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SGI_video_sync
   glxVideoSyncSGI = sealed class
     public constructor := exit;
     public static Instance := new glxVideoSyncSGI;
@@ -32514,17 +32514,17 @@
     
   end;
   
-  ///
+  /// id: GLX_SGIS_blended_overlay
   glxBlendedOverlaySGIS = static class
     public const ExtensionString = 'GLX_SGIS_blended_overlay';
   end;
   
-  ///
+  /// id: GLX_SGIS_multisample
   glxMultisampleSGIS = static class
     public const ExtensionString = 'GLX_SGIS_multisample';
   end;
   
-  ///
+  /// id: GLX_SGIS_shared_multisample
   glxSharedMultisampleSGIS = static class
     public const ExtensionString = 'GLX_SGIS_shared_multisample';
   end;
@@ -32533,7 +32533,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SGIX_dmbuffer
   glxDmbufferSGIX = sealed class
     public constructor := exit;
     public static Instance := new glxDmbufferSGIX;
@@ -32564,7 +32564,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SGIX_fbconfig
   glxFbconfigSGIX = sealed class
     public constructor := exit;
     public static Instance := new glxFbconfigSGIX;
@@ -32633,7 +32633,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SGIX_hyperpipe
   glxHyperpipeSGIX = sealed class
     public constructor := exit;
     public static Instance := new glxHyperpipeSGIX;
@@ -32698,7 +32698,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SGIX_pbuffer
   glxPbufferSGIX = sealed class
     public constructor := exit;
     public static Instance := new glxPbufferSGIX;
@@ -32762,7 +32762,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SGIX_swap_barrier
   glxSwapBarrierSGIX = sealed class
     public constructor := exit;
     public static Instance := new glxSwapBarrierSGIX;
@@ -32798,7 +32798,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SGIX_swap_group
   glxSwapGroupSGIX = sealed class
     public constructor := exit;
     public static Instance := new glxSwapGroupSGIX;
@@ -32819,7 +32819,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SGIX_video_resize
   glxVideoResizeSGIX = sealed class
     public constructor := exit;
     public static Instance := new glxVideoResizeSGIX;
@@ -33020,7 +33020,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SGIX_video_source
   glxVideoSourceSGIX = sealed class
     public constructor := exit;
     public static Instance := new glxVideoSourceSGIX;
@@ -33042,7 +33042,7 @@
     
   end;
   
-  ///
+  /// id: GLX_SGIX_visual_select_group
   glxVisualSelectGroupSGIX = static class
     public const ExtensionString = 'GLX_SGIX_visual_select_group';
   end;
@@ -33051,7 +33051,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: GLX_SUN_get_transparent_index
   glxGetTransparentIndexSUN = sealed class
     public constructor := exit;
     public static Instance := new glxGetTransparentIndexSUN;
@@ -33071,7 +33071,7 @@
     
   end;
   
-  ///
+  /// id: WGL_3DFX_multisample
   wglMultisample3DFX = static class
     public const ExtensionString = 'WGL_3DFX_multisample';
   end;
@@ -33080,7 +33080,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_3DL_stereo_control
   wglStereoControl3DL = sealed class
     public constructor := exit;
     public static Instance := new wglStereoControl3DL;
@@ -33101,7 +33101,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_AMD_gpu_association
   wglGpuAssociationAMD = sealed class
     public constructor := exit;
     public static Instance := new wglGpuAssociationAMD;
@@ -33175,7 +33175,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_ARB_buffer_region
   wglBufferRegionARB = sealed class
     public constructor := exit;
     public static Instance := new wglBufferRegionARB;
@@ -33207,7 +33207,7 @@
     
   end;
   
-  ///
+  /// id: WGL_ARB_context_flush_control
   wglContextFlushControlARB = static class
     public const ExtensionString = 'WGL_ARB_context_flush_control';
   end;
@@ -33216,7 +33216,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_ARB_create_context
   wglCreateContextARB = sealed class
     public constructor := exit;
     public static Instance := new wglCreateContextARB;
@@ -33243,17 +33243,17 @@
     
   end;
   
-  ///
+  /// id: WGL_ARB_create_context_no_error
   wglCreateContextNoErrorARB = static class
     public const ExtensionString = 'WGL_ARB_create_context_no_error';
   end;
   
-  ///
+  /// id: WGL_ARB_create_context_profile
   wglCreateContextProfileARB = static class
     public const ExtensionString = 'WGL_ARB_create_context_profile';
   end;
   
-  ///
+  /// id: WGL_ARB_create_context_robustness
   wglCreateContextRobustnessARB = static class
     public const ExtensionString = 'WGL_ARB_create_context_robustness';
   end;
@@ -33262,7 +33262,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_ARB_extensions_string
   wglExtensionsStringARB = sealed class
     public constructor := exit;
     public static Instance := new wglExtensionsStringARB;
@@ -33279,7 +33279,7 @@
     
   end;
   
-  ///
+  /// id: WGL_ARB_framebuffer_sRGB
   wglFramebufferSRGBARB = static class
     public const ExtensionString = 'WGL_ARB_framebuffer_sRGB';
   end;
@@ -33288,7 +33288,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_ARB_make_current_read
   wglMakeCurrentReadARB = sealed class
     public constructor := exit;
     public static Instance := new wglMakeCurrentReadARB;
@@ -33310,7 +33310,7 @@
     
   end;
   
-  ///
+  /// id: WGL_ARB_multisample
   wglMultisampleARB = static class
     public const ExtensionString = 'WGL_ARB_multisample';
   end;
@@ -33319,7 +33319,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_ARB_pbuffer
   wglPbufferARB = sealed class
     public constructor := exit;
     public static Instance := new wglPbufferARB;
@@ -33380,7 +33380,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_ARB_pixel_format
   wglPixelFormatARB = sealed class
     public constructor := exit;
     public static Instance := new wglPixelFormatARB;
@@ -33535,7 +33535,7 @@
     
   end;
   
-  ///
+  /// id: WGL_ARB_pixel_format_float
   wglPixelFormatFloatARB = static class
     public const ExtensionString = 'WGL_ARB_pixel_format_float';
   end;
@@ -33544,7 +33544,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_ARB_render_texture
   wglRenderTextureARB = sealed class
     public constructor := exit;
     public static Instance := new wglRenderTextureARB;
@@ -33581,42 +33581,42 @@
     
   end;
   
-  ///
+  /// id: WGL_ARB_robustness_application_isolation
   wglRobustnessApplicationIsolationARB = static class
     public const ExtensionString = 'WGL_ARB_robustness_application_isolation';
   end;
   
-  ///
+  /// id: WGL_ARB_robustness_share_group_isolation
   wglRobustnessShareGroupIsolationARB = static class
     public const ExtensionString = 'WGL_ARB_robustness_share_group_isolation';
   end;
   
-  ///
+  /// id: WGL_ATI_pixel_format_float
   wglPixelFormatFloatATI = static class
     public const ExtensionString = 'WGL_ATI_pixel_format_float';
   end;
   
-  ///
+  /// id: WGL_ATI_render_texture_rectangle
   wglRenderTextureRectangleATI = static class
     public const ExtensionString = 'WGL_ATI_render_texture_rectangle';
   end;
   
-  ///
+  /// id: WGL_EXT_colorspace
   wglColorspaceEXT = static class
     public const ExtensionString = 'WGL_EXT_colorspace';
   end;
   
-  ///
+  /// id: WGL_EXT_create_context_es2_profile
   wglCreateContextEs2ProfileEXT = static class
     public const ExtensionString = 'WGL_EXT_create_context_es2_profile';
   end;
   
-  ///
+  /// id: WGL_EXT_create_context_es_profile
   wglCreateContextEsProfileEXT = static class
     public const ExtensionString = 'WGL_EXT_create_context_es_profile';
   end;
   
-  ///
+  /// id: WGL_EXT_depth_float
   wglDepthFloatEXT = static class
     public const ExtensionString = 'WGL_EXT_depth_float';
   end;
@@ -33625,7 +33625,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_EXT_display_color_table
   wglDisplayColorTableEXT = sealed class
     public constructor := exit;
     public static Instance := new wglDisplayColorTableEXT;
@@ -33671,7 +33671,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_EXT_extensions_string
   wglExtensionsStringEXT = sealed class
     public constructor := exit;
     public static Instance := new wglExtensionsStringEXT;
@@ -33688,7 +33688,7 @@
     
   end;
   
-  ///
+  /// id: WGL_EXT_framebuffer_sRGB
   wglFramebufferSRGBEXT = static class
     public const ExtensionString = 'WGL_EXT_framebuffer_sRGB';
   end;
@@ -33697,7 +33697,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_EXT_make_current_read
   wglMakeCurrentReadEXT = sealed class
     public constructor := exit;
     public static Instance := new wglMakeCurrentReadEXT;
@@ -33719,7 +33719,7 @@
     
   end;
   
-  ///
+  /// id: WGL_EXT_multisample
   wglMultisampleEXT = static class
     public const ExtensionString = 'WGL_EXT_multisample';
   end;
@@ -33728,7 +33728,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_EXT_pbuffer
   wglPbufferEXT = sealed class
     public constructor := exit;
     public static Instance := new wglPbufferEXT;
@@ -33789,7 +33789,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_EXT_pixel_format
   wglPixelFormatEXT = sealed class
     public constructor := exit;
     public static Instance := new wglPixelFormatEXT;
@@ -33916,7 +33916,7 @@
     
   end;
   
-  ///
+  /// id: WGL_EXT_pixel_format_packed_float
   wglPixelFormatPackedFloatEXT = static class
     public const ExtensionString = 'WGL_EXT_pixel_format_packed_float';
   end;
@@ -33925,7 +33925,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_EXT_swap_control
   wglSwapControlEXT = sealed class
     public constructor := exit;
     public static Instance := new wglSwapControlEXT;
@@ -33947,7 +33947,7 @@
     
   end;
   
-  ///
+  /// id: WGL_EXT_swap_control_tear
   wglSwapControlTearEXT = static class
     public const ExtensionString = 'WGL_EXT_swap_control_tear';
   end;
@@ -33956,7 +33956,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_I3D_digital_video_control
   wglDigitalVideoControlI3D = sealed class
     public constructor := exit;
     public static Instance := new wglDigitalVideoControlI3D;
@@ -33995,7 +33995,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_I3D_gamma
   wglGammaI3D = sealed class
     public constructor := exit;
     public static Instance := new wglGammaI3D;
@@ -34105,7 +34105,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_I3D_genlock
   wglGenlockI3D = sealed class
     public constructor := exit;
     public static Instance := new wglGenlockI3D;
@@ -34223,7 +34223,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_I3D_image_buffer
   wglImageBufferI3D = sealed class
     public constructor := exit;
     public static Instance := new wglImageBufferI3D;
@@ -34310,7 +34310,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_I3D_swap_frame_lock
   wglSwapFrameLockI3D = sealed class
     public constructor := exit;
     public static Instance := new wglSwapFrameLockI3D;
@@ -34366,7 +34366,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_I3D_swap_frame_usage
   wglSwapFrameUsageI3D = sealed class
     public constructor := exit;
     public static Instance := new wglSwapFrameUsageI3D;
@@ -34446,7 +34446,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_NV_copy_image
   wglCopyImageNV = sealed class
     public constructor := exit;
     public static Instance := new wglCopyImageNV;
@@ -34467,7 +34467,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_NV_delay_before_swap
   wglDelayBeforeSwapNV = sealed class
     public constructor := exit;
     public static Instance := new wglDelayBeforeSwapNV;
@@ -34488,7 +34488,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_NV_DX_interop
   wglDXInteropNV = sealed class
     public constructor := exit;
     public static Instance := new wglDXInteropNV;
@@ -34560,12 +34560,12 @@
     
   end;
   
-  ///
+  /// id: WGL_NV_DX_interop2
   wglDXInterop2NV = static class
     public const ExtensionString = 'WGL_NV_DX_interop2';
   end;
   
-  ///
+  /// id: WGL_NV_float_buffer
   wglFloatBufferNV = static class
     public const ExtensionString = 'WGL_NV_float_buffer';
   end;
@@ -34574,7 +34574,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_NV_gpu_affinity
   wglGpuAffinityNV = sealed class
     public constructor := exit;
     public static Instance := new wglGpuAffinityNV;
@@ -34651,12 +34651,12 @@
     
   end;
   
-  ///
+  /// id: WGL_NV_multigpu_context
   wglMultigpuContextNV = static class
     public const ExtensionString = 'WGL_NV_multigpu_context';
   end;
   
-  ///
+  /// id: WGL_NV_multisample_coverage
   wglMultisampleCoverageNV = static class
     public const ExtensionString = 'WGL_NV_multisample_coverage';
   end;
@@ -34665,7 +34665,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_NV_present_video
   wglPresentVideoNV = sealed class
     public constructor := exit;
     public static Instance := new wglPresentVideoNV;
@@ -34722,12 +34722,12 @@
     
   end;
   
-  ///
+  /// id: WGL_NV_render_depth_texture
   wglRenderDepthTextureNV = static class
     public const ExtensionString = 'WGL_NV_render_depth_texture';
   end;
   
-  ///
+  /// id: WGL_NV_render_texture_rectangle
   wglRenderTextureRectangleNV = static class
     public const ExtensionString = 'WGL_NV_render_texture_rectangle';
   end;
@@ -34736,7 +34736,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_NV_swap_group
   wglSwapGroupNV = sealed class
     public constructor := exit;
     public static Instance := new wglSwapGroupNV;
@@ -34832,7 +34832,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_NV_vertex_array_range
   wglVertexArrayRangeNV = sealed class
     public constructor := exit;
     public static Instance := new wglVertexArrayRangeNV;
@@ -34858,7 +34858,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_NV_video_capture
   wglVideoCaptureNV = sealed class
     public constructor := exit;
     public static Instance := new wglVideoCaptureNV;
@@ -34919,7 +34919,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_NV_video_output
   wglVideoOutputNV = sealed class
     public constructor := exit;
     public static Instance := new wglVideoOutputNV;
@@ -34987,7 +34987,7 @@
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
-  ///
+  /// id: WGL_OML_sync_control
   wglSyncControlOML = sealed class
     public constructor := exit;
     public static Instance := new wglSyncControlOML;

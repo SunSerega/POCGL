@@ -27,9 +27,9 @@ final = ErrHandlerInitial#0: ExecuteEnqFunc container
 [ExecDebug]: 1 cache entries created
 [QueueResNil]: 5
 [QueueRes<T>]: 5
-	QueueResValDirect<array of integer>: 1
 	QueueResValDirect<CLArray<integer>>: 2
 	QueueResValDirect<CLKernel>: 1
+	QueueResValDirect<array of integer>: 1
 	QueueResValDirect<integer>: 1
 
 #ExpExecOtp1
@@ -46,9 +46,9 @@ final = ErrHandlerInitial#0: ExecuteEnqFunc container
 [ExecDebug]: 1 cache entries created
 [QueueResNil]: 5
 [QueueRes<T>]: 5
-	QueueResValDirect<array of integer>: 1
 	QueueResValDirect<CLArray<integer>>: 2
 	QueueResValDirect<CLKernel>: 1
+	QueueResValDirect<array of integer>: 1
 	QueueResValDirect<integer>: 1
 
 #ReqModules

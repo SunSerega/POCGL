@@ -11,7 +11,7 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
-Q выполнилась 
+Q выполнилась
 final = ErrHandlerBranchCombinator#0: CLTaskGlobalData.ParallelInvoke branches union
 	branch#0/3 = ErrHandlerFlattener#1: MU repeater for CastQueue<integer,Object>
 	victim = ErrHandlerInitial#2: Initial MU invoke
@@ -21,16 +21,16 @@ final = ErrHandlerBranchCombinator#0: CLTaskGlobalData.ParallelInvoke branches u
 	victim = ErrHandlerInitial#2: Initial MU invoke
 (total 5 handlers)
 5 25 625
-Q выполнилась 
+Q выполнилась
 final = ErrHandlerFlattener#0: MU repeater for CastQueue<integer,Object>
 victim = ErrHandlerInitial#1: Initial MU invoke
 (total 2 handlers)
-3125 
+3125
 [EventDebug]: 1 event's created
 [QueueRes<T>]: 14
+	QueueResValDirect<Object>: 2
 	QueueResValDirect<array of integer>: 1
 	QueueResValDirect<integer>: 6
-	QueueResValDirect<Object>: 2
 	QueueResValDirect<real>: 1
 	QueueResValWrap<Object>: 4
 

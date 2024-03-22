@@ -11,10 +11,10 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
-1 
-2 
-1 
-2 
+1
+2
+1
+2
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
 [QueueResNil]: 7

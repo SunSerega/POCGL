@@ -24,7 +24,7 @@ type
     private static aaaaa := constructor_hotfix;
 //    static constructor;
     
-    protected static function MakeName<TFullName>(api, s, api_beg: string; allow_nil: boolean; api_underscore_sep: boolean?; known_suffixes: HashSet<string>; params suffix_formats: array of string): TFullName;
+    protected static function MakeName<TFullName>(api, s, api_beg: string; allow_nil, skip_invalid: boolean; api_underscore_sep: boolean?; known_suffixes: HashSet<string>; params suffix_formats: array of string): TFullName;
       where TFullName: ApiVendorLName<TFullName>;
     begin
       Result := nil;
@@ -34,17 +34,18 @@ type
       if ctor=nil then
         raise new NotImplementedException(TypeToTypeName(typeof(TFullName)));
       
-      if s=nil then
+      if string.IsNullOrEmpty(s) then
       begin
         if not allow_nil then
           raise nil;
         exit;
       end;
       
-      if allow_nil then
+      if not s.ToLower.StartsWith(api_beg) or (api_underscore_sep = not s.Remove(0,api_beg.Length).StartsWith('_')) then
       begin
-        if not s.ToLower.StartsWith(api_beg) then exit;
-        if api_underscore_sep = not s.Remove(0,api_beg.Length).StartsWith('_') then exit;
+        if not skip_invalid then
+          raise new System.InvalidOperationException(s);
+        exit;
       end;
       
       var extract_suffix: Func<string, ValueTuple<string,string>> := l_name->

@@ -12,12 +12,12 @@ OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_
 
 #ExpExecOtp
 ConstQueue<Object>#0: byte{ 5 }
- 
+
 SimpleAsyncQueueArray<Object>#0
 	CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#1: function lambda: integer
 	CastQueue<integer,Object>#2
 		CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#3: function lambda: integer
- 
+
 CLMemoryCCQ#0
 	ConstQueue<CLMemory>#1: CLMemory[*] of size 1
 	QueueCommand<CLMemory>

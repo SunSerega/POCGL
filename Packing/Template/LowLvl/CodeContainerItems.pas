@@ -54,9 +54,10 @@ type
       Result := new Func(new ApiVendorLName(br), false);
       Result.entry_point_name := br.ReadString;
       Result.ntv_pars := br.ReadArr((br,i)->LoadedParData.Load(br, i<>0));
-      Result.alias_ind := br.ReadNullable(br->br.ReadInt32);
+      Result.alias_ind := br.ReadIndexOrNil;
     end);
     
+    //TODO Use for code-gen
     public property HasAlias: boolean read alias_ind<>nil;
     public property Alias: Func read Func.ByIndex(alias_ind.Value);
     
@@ -2457,25 +2458,68 @@ type
   
   {$region Extension}
   
+  FeatureOrExtensionIndex = record
+    public f_ind := default(integer?);
+    public e_ind := default(integer?);
+    
+    public constructor(br: BinReader) :=
+      case br.ReadInt32 of
+        0: ;
+        1: f_ind := br.ReadInt32;
+        2: e_ind := br.ReadInt32;
+        else raise new System.InvalidOperationException;
+      end;
+    
+  end;
+  
   Extension = sealed class(NamedLoadedItem<Extension, ApiVendorLName>)
     private ext_str: string;
     private add: RequiredList;
-    private dep_inds: array of integer;
+    
+    private revision: string;
+    private provisional: boolean;
+    
+    private core_dep_ind: integer?
+    private ext_dep_inds: array of integer;
+    
+    private obsolete_by: FeatureOrExtensionIndex;
+    private promoted_to: FeatureOrExtensionIndex;
     
     private static AllExtensions := new List<Extension>;
     
     static constructor := RegisterLoader(br->
     begin
       Result := new Extension(ApiVendorLName.Create(br).SnakeToCamelCase, false);
+      
       Result.ext_str := br.ReadString;
       Result.add := RequiredList.Load(br);
-      Result.dep_inds := br.ReadInt32Arr;
+      
+      Result.revision := br.ReadOrNil(br->br.ReadString);
+      Result.provisional := br.ReadBoolean;
+      
+      Result.core_dep_ind := br.ReadIndexOrNil;
+      Result.ext_dep_inds := br.ReadInt32Arr;
+      
+      Result.obsolete_by := new FeatureOrExtensionIndex(br);
+      Result.promoted_to := new FeatureOrExtensionIndex(br);
+      
       AllExtensions += Result;
     end);
     
+    public property ExtensionString: string read ext_str;
     public property Added: RequiredList read add;
     
-    public function Dependencies := Extension.MakeLazySeq(dep_inds).ToSeq;
+    public property RevisionStr: string read revision;
+    public property IsProvisional: boolean read provisional;
+    
+    public function HasCoreDependency := core_dep_ind<>nil;
+    public function CoreDependency := Feature.ByIndex(core_dep_ind.Value);
+    
+    public function HasExtDependencies := ext_dep_inds.Length<>0;
+    public function ExtDependencies := Extension.MakeLazySeq(ext_dep_inds).ToSeq;
+    
+    public property ObsoletedBy: FeatureOrExtensionIndex read obsolete_by;
+    public property PromotedTo: FeatureOrExtensionIndex read promoted_to;
     
     public procedure MarkBodyReferenced; override;
     begin
@@ -2501,7 +2545,7 @@ type
       if not ApiManager.ShouldKeep(api) then exit;
       Extension.written_c += 1;
       
-      foreach var dep in Dependencies.AsEnumerable do //TODO #2852
+      foreach var dep in ExtDependencies.AsEnumerable do //TODO #2852
         dep.Save;
       
       var any_funcs := add.Funcs.Any;
@@ -2541,7 +2585,81 @@ type
         intr_wr += '  [PCUNotRestore]'#10;
       end;
       
-      intr_wr += '  ///'#10;
+      intr_wr += '  /// id: ';
+      intr_wr += self.ExtensionString;
+      intr_wr += #10;
+      
+      if (self.RevisionStr<>nil) or (self.IsProvisional) then
+      begin
+        intr_wr += '  /// version: ';
+        if self.RevisionStr<>nil then
+        begin
+          intr_wr += self.RevisionStr;
+          if self.IsProvisional then
+            intr_wr += ' (provisional)';
+        end else
+        if self.IsProvisional then
+          intr_wr += 'provisional';
+        intr_wr += #10;
+      end;
+      
+      var write_feature := procedure(wr: Writer; f: Feature)->
+      begin
+        wr += f.Name.SourceAPI;
+        wr += ' ';
+        wr += f.Name.Major;
+        wr += '.';
+        wr += f.Name.Minor;
+      end;
+      if self.HasCoreDependency then
+      begin
+        intr_wr += '  /// core dependency: ';
+        write_feature(intr_wr, self.CoreDependency);
+        intr_wr += #10;
+      end;
+      
+      var write_ext := procedure(wr: Writer; e: Extension)->
+      begin
+        wr += e.ExtensionString;
+        wr += ' (';
+        wr += e.MakeWriteableName;
+        wr += ')';
+      end;
+      if self.HasExtDependencies then
+      begin
+        intr_wr += '  /// ext dependencies:'#10;
+        foreach var e in self.ExtDependencies do
+        begin
+          intr_wr += '  /// - ';
+          write_ext(intr_wr, e);
+          intr_wr += #10;
+        end;
+      end;
+      
+      var write_foe := procedure(wr: Writer; foe: FeatureOrExtensionIndex; header: string)->
+      begin
+        
+        if foe.f_ind<>nil then
+        begin
+          wr += '  /// ';
+          wr += header;
+          wr += ': ';
+          write_feature(wr, Feature.ByIndex(foe.f_ind.Value));
+          wr += #10;
+        end;
+        
+        if foe.e_ind<>nil then
+        begin
+          wr += '  /// ';
+          wr += header;
+          wr += ': ';
+          write_ext(wr, Extension.ByIndex(foe.e_ind.Value));
+          wr += #10;
+        end;
+        
+      end;
+      write_foe(intr_wr, self.ObsoletedBy, 'obsoleted by');
+      write_foe(intr_wr, self.PromotedTo, 'promoted to');
       
       intr_wr += '  ';
       intr_wr += display_name;
@@ -2623,7 +2741,7 @@ type
       end;
       
       intr_wr += '    public const ExtensionString = ''';
-      intr_wr += ext_str;
+      intr_wr += self.ExtensionString;
       intr_wr += ''';'+#10;
       if any_funcs then
         intr_wr += '    '+#10;
@@ -2658,7 +2776,7 @@ type
     
     public procedure LogContents(l: Logger); override;
     begin
-      l.Otp($'# {MakeWriteableName} ({ext_str})');
+      l.Otp($'# {MakeWriteableName} ({ExtensionString})');
       
       foreach var e in Added.Enums do
         l.Otp(#9+e);

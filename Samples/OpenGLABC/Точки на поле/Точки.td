@@ -3,14 +3,14 @@
 
 #Delegates
 OpenGL.$delegate? = function(type: glShaderType): gl_shader
-OpenGL.$delegate? = function: gl_program
 OpenGL.$delegate? = function: glErrorCode
+OpenGL.$delegate? = function: gl_program
 OpenGL.$delegate? = procedure
 OpenGL.$delegate? = procedure(buffer: gl_buffer; size: System.UIntPtr; data: System.IntPtr; usage: glVertexBufferObjectUsage)
 OpenGL.$delegate? = procedure(buffer: gl_buffer; size: System.UIntPtr; var data: byte; usage: glVertexBufferObjectUsage)
 OpenGL.$delegate? = procedure(location: integer; count: integer; value: System.IntPtr)
-OpenGL.$delegate? = procedure(location: integer; count: integer; var value: real)
 OpenGL.$delegate? = procedure(location: integer; count: integer; var value: Vec2d)
+OpenGL.$delegate? = procedure(location: integer; count: integer; var value: real)
 OpenGL.$delegate? = procedure(location: integer; v0: integer)
 OpenGL.$delegate? = procedure(location: integer; x: real)
 OpenGL.$delegate? = procedure(mode: glPrimitiveType; first: integer; count: integer)
@@ -37,10 +37,10 @@ OpenGL.$delegate? = procedure(shader: gl_shader; pname: glShaderParameterName; v
 OpenGL.$delegate? = procedure(target: glBufferTarget; index: longword; buffer: gl_buffer)
 OpenGL.$delegate? = procedure(x: integer; y: integer; width: integer; height: integer)
 OpenGLABC.RedrawThreadProc = procedure(pl: IGLPlatformLoader; EndFrame: procedure)
-Точки.$delegate? = function(<>pos: Vec2d): integer
 Точки.$delegate? = function(<>X: integer; <>Y: integer): Vec2d
-Точки.$delegate? = function(pos: Vec2d): integer
+Точки.$delegate? = function(<>pos: Vec2d): integer
 Точки.$delegate? = function(X: integer; Y: integer): Vec2d
+Точки.$delegate? = function(pos: Vec2d): integer
 
 #ReqModules
 OpenGL+OpenGLABC

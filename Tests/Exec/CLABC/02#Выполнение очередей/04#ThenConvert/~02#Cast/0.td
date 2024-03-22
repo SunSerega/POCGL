@@ -13,16 +13,16 @@ OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_
 #ExpExecOtp
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
-25 
+25
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
-(625, True) 
+(625, True)
 [EventDebug]: 2 event's created
 [QueueRes<T>]: 8
 	QueueResValDirect<(int64,boolean)>: 1
+	QueueResValDirect<Object>: 4
 	QueueResValDirect<int64>: 1
 	QueueResValDirect<integer>: 2
-	QueueResValDirect<Object>: 4
 
 #ReqModules
 OpenCLABC

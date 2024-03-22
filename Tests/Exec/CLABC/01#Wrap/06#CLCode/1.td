@@ -11,19 +11,19 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
-OpenCLABC.CLProgramCode 
-SourceCode:     kernel void k(int x) {} 
-SourceIL:       nil 
-HasGlobalInit:  FALSE 
-HasGlobalFnlz:  FALSE 
+OpenCLABC.CLProgramCode
+SourceCode:     kernel void k(int x) {}
+SourceIL:       nil
+HasGlobalInit:  FALSE
+HasGlobalFnlz:  FALSE
 CLKernel[k] from CLProgramCode[*]
-True 
-True 
-OpenCLABC.CLProgramCode 
-SourceCode:     kernel void k(int x) {} 
-SourceIL:       nil 
-HasGlobalInit:  FALSE 
-HasGlobalFnlz:  FALSE 
+True
+True
+OpenCLABC.CLProgramCode
+SourceCode:     kernel void k(int x) {}
+SourceIL:       nil
+HasGlobalInit:  FALSE
+HasGlobalFnlz:  FALSE
 CLKernel[k] from CLProgramCode[*]
 
 #ReqModules

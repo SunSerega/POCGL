@@ -11,7 +11,7 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
-Got signal of M 
+Got signal of M
 final = ErrHandlerMURepeater#0: MU repeater for CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>
 	victim = ErrHandlerInitial#1: Initial MU invoke
 origin = ErrHandlerFlattener#2: MU repeater for CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>
@@ -19,7 +19,7 @@ victim = ErrHandlerInitial#1: Initial MU invoke
 (total 3 handlers)
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
-5 
+5
 [EventDebug]: 3 event's created
 [WaitDebug]: 4 wait handler's created
 [QueueResNil]: 6

@@ -18,7 +18,7 @@ SimpleSyncQueueArray<integer>#0
 			val: 1
 			ind: ConstQueue<integer>#3: 2
 	ConstQueue<integer>#4: 3
- 
+
 SimpleSyncQueueArray<integer>#0
 	CLArrayCCQ<byte>#1
 		ConstQueue<CLArray<byte>>#2: CLArray<byte>[*] of length 1
@@ -26,7 +26,6 @@ SimpleSyncQueueArray<integer>#0
 			val: ConstQueue<byte>#3: 1
 			ind: ConstQueue<integer>#4: 2
 	ConstQueue<integer>#5: 3
- 
 
 #ReqModules
 OpenCLABC

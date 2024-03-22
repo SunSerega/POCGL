@@ -15,7 +15,7 @@ final = ErrHandlerInitial#0: ExecuteEnqFunc container
 (total 1 handlers)
 final = ErrHandlerInitial#0: ExecuteEnqFunc container
 (total 1 handlers)
-1020304 
+1020304
 [EventDebug]: 2 event's created
 [QueueDebug]: 2 queue's created
 [QueueResNil]: 3

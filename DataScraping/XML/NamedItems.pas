@@ -481,11 +481,51 @@ type
   
   {$endregion MultiKindItem}
   
-procedure WriteBinIndices<T>(self: BinWriter; l: IList<T>); extensionmethod; where T: IBinIndexable;
+procedure WriteNullable<T>(self: BinWriter; o: T; write: (BinWriter,T)->()); extensionmethod;
+begin
+  self.Write(o<>nil);
+  if o=nil then exit;
+  write(self,o);
+end;
+
+procedure WriteNullable<T>(self: BinWriter; o: T; write: T->()); extensionmethod;
+begin
+  self.Write(o<>nil);
+  if o=nil then exit;
+  write(o);
+end;
+
+procedure WriteBinIndexOrNil<T>(self: BinWriter; o: T); extensionmethod; where T: IBinIndexable;
+begin
+  self.Write(if o=nil then -1 else o.BinIndex);
+end;
+
+procedure WriteBinIndexArr<T>(self: BinWriter; l: IList<T>); extensionmethod; where T: IBinIndexable;
 begin
   self.Write(l.Count);
   foreach var o in l.Order do
     self.Write(o.BinIndex);
+end;
+
+procedure WriteAnyBinIndexOrNil<T1,T2>(self: BinWriter; t: (T1,T2)); extensionmethod; where T1,T2: IBinIndexable;
+begin
+  var any_done := false;
+  var type_ind := 0;
+  var add := procedure(o: IBinIndexable)->
+  begin
+    type_ind += 1;
+    if o=nil then exit;
+    
+    if any_done then raise new System.InvalidOperationException($'Multiple non-nil items in {_ObjectToString(t)}');
+    any_done := true;
+    
+    self.Write(type_ind);
+    self.Write(o.BinIndex);
+  end;
+  add(t.Item1);
+  add(t.Item2);
+  if not any_done then
+    self.Write(0);
 end;
 
 initialization

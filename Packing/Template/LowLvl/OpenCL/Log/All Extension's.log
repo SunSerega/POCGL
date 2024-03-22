@@ -605,6 +605,12 @@
 	Func [cl::EnqueueAcquireVA_APIMediaSurfaces + INTEL]
 	Func [cl::EnqueueReleaseVA_APIMediaSurfaces + INTEL]
 
+# cl3dImageWritesKHR (cl_khr_3d_image_writes)
+
+# clAsyncWorkGroupCopyFenceKHR (cl_khr_async_work_group_copy_fence)
+
+# clByteAddressableStoreKHR (cl_khr_byte_addressable_store)
+
 # clCommandBufferKHR (cl_khr_command_buffer)
 	Enum [cl::INCOMPATIBLE_COMMAND_QUEUE]
 	Enum [cl::INVALID_SYNC_POINT_WAIT_LIST]
@@ -641,9 +647,9 @@
 	Func [cl::CommandFillBuffer + KHR]
 	Func [cl::CommandFillImage + KHR]
 	Func [cl::CommandNDRangeKernel + KHR]
+	Func [cl::GetCommandBufferInfo + KHR]
 	Func [cl::CommandSVMMemcpy + KHR]
 	Func [cl::CommandSVMMemFill + KHR]
-	Func [cl::GetCommandBufferInfo + KHR]
 
 # clCommandBufferMultiDeviceKHR (cl_khr_command_buffer_multi_device)
 	Enum [cl::COMMAND_BUFFER_PLATFORM_UNIVERSAL_SYNC]
@@ -734,6 +740,8 @@
 # clDepthImagesKHR (cl_khr_depth_images)
 	Enum [cl::DEPTH]
 
+# clDeviceEnqueueLocalArgTypesKHR (cl_khr_device_enqueue_local_arg_types)
+
 # clDeviceUuidKHR (cl_khr_device_uuid)
 	Enum [cl::LUID_SIZE]
 	Enum [cl::UUID_SIZE]
@@ -778,6 +786,12 @@
 	Func [cl::CreateFromEGLImage + KHR]
 	Func [cl::EnqueueAcquireEGLObjects + KHR]
 	Func [cl::EnqueueReleaseEGLObjects + KHR]
+
+# clExpectAssumeKHR (cl_khr_expect_assume)
+
+# clExtendedAsyncCopiesKHR (cl_khr_extended_async_copies)
+
+# clExtendedBitOpsKHR (cl_khr_extended_bit_ops)
 
 # clExtendedVersioningKHR (cl_khr_extended_versioning)
 	Enum [cl::VERSION_MAJOR_BITS]
@@ -860,6 +874,10 @@
 # clGlMsaaSharingKHR (cl_khr_gl_msaa_sharing)
 	Enum [cl::GL_NUM_SAMPLES]
 
+# clGlobalInt32BaseAtomicsKHR (cl_khr_global_int32_base_atomics)
+
+# clGlobalInt32ExtendedAtomicsKHR (cl_khr_global_int32_extended_atomics)
+
 # clGLSharingKHR (cl_khr_gl_sharing)
 	Enum [cl::INVALID_GL_SHAREGROUP_REFERENCE]
 	Enum [cl::GL_OBJECT_BUFFER]
@@ -909,6 +927,10 @@
 	Enum [cl::CONTEXT_MEMORY_INITIALIZE_PRIVATE]
 	Enum [cl::CONTEXT_MEMORY_INITIALIZE]
 
+# clInt64BaseAtomicsKHR (cl_khr_int64_base_atomics)
+
+# clInt64ExtendedAtomicsKHR (cl_khr_int64_extended_atomics)
+
 # clIntegerDotProductKHR (cl_khr_integer_dot_product)
 	Enum [cl::DEVICE_INTEGER_DOT_PRODUCT_INPUT_4x8BIT_PACKED]
 	Enum [cl::DEVICE_INTEGER_DOT_PRODUCT_INPUT_4x8BIT]
@@ -916,10 +938,16 @@
 	Enum [cl::DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT]
 	Enum [cl::DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED]
 
+# clLocalInt32BaseAtomicsKHR (cl_khr_local_int32_base_atomics)
+
+# clLocalInt32ExtendedAtomicsKHR (cl_khr_local_int32_extended_atomics)
+
 # clMipmapImageKHR (cl_khr_mipmap_image)
 	Enum [cl::SAMPLER_MIP_FILTER_MODE]
 	Enum [cl::SAMPLER_LOD_MIN]
 	Enum [cl::SAMPLER_LOD_MAX]
+
+# clMipmapImageWritesKHR (cl_khr_mipmap_image_writes)
 
 # clPciBusInfoKHR (cl_khr_pci_bus_info)
 	Enum [cl::DEVICE_PCI_BUS_INFO]
@@ -929,6 +957,8 @@
 	Enum [cl::QUEUE_PRIORITY_MED]
 	Enum [cl::QUEUE_PRIORITY_LOW]
 	Enum [cl::QUEUE_PRIORITY]
+
+# clSelectFproundingModeKHR (cl_khr_select_fprounding_mode)
 
 # clSemaphoreKHR (cl_khr_semaphore)
 	Enum [cl::INVALID_SEMAPHORE]
@@ -955,13 +985,31 @@
 	Enum [cl::DEVICE_SPIR_VERSIONS]
 	Enum [cl::PROGRAM_BINARY_TYPE_INTERMEDIATE]
 
+# clSrgbImageWritesKHR (cl_khr_srgb_image_writes)
+
+# clSubgroupBallotKHR (cl_khr_subgroup_ballot)
+
+# clSubgroupClusteredReduceKHR (cl_khr_subgroup_clustered_reduce)
+
+# clSubgroupExtendedTypesKHR (cl_khr_subgroup_extended_types)
+
 # clSubgroupNamedBarrierKHR (cl_khr_subgroup_named_barrier)
 	Enum [cl::DEVICE_MAX_NAMED_BARRIER_COUNT]
+
+# clSubgroupNonUniformArithmeticKHR (cl_khr_subgroup_non_uniform_arithmetic)
+
+# clSubgroupNonUniformVoteKHR (cl_khr_subgroup_non_uniform_vote)
+
+# clSubgroupRotateKHR (cl_khr_subgroup_rotate)
 
 # clSubgroupsKHR (cl_khr_subgroups)
 	Enum [cl::KERNEL_MAX_SUB_GROUP_SIZE_FOR_NDRANGE]
 	Enum [cl::KERNEL_SUB_GROUP_COUNT_FOR_NDRANGE]
 	Func [cl::GetKernelSubGroupInfo + KHR]
+
+# clSubgroupShuffleKHR (cl_khr_subgroup_shuffle)
+
+# clSubgroupShuffleRelativeKHR (cl_khr_subgroup_shuffle_relative)
 
 # clSuggestedLocalWorkSizeKHR (cl_khr_suggested_local_work_size)
 	Func [cl::GetKernelSuggestedLocalWorkSize + KHR]
@@ -978,6 +1026,8 @@
 	Enum [cl::QUEUE_THROTTLE_MED]
 	Enum [cl::QUEUE_THROTTLE_LOW]
 	Enum [cl::QUEUE_THROTTLE]
+
+# clWorkGroupUniformArithmeticKHR (cl_khr_work_group_uniform_arithmetic)
 
 # clDeviceAttributeQueryNV (cl_nv_device_attribute_query)
 	Enum [cl::DEVICE_COMPUTE_CAPABILITY_MAJOR]

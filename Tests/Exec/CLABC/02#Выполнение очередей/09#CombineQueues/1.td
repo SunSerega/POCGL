@@ -16,7 +16,7 @@ SimpleSyncQueueArray<integer>#0
 	CommandQueueHostThreadedFunc<integer,SimpleFunc0Container<integer>>#1: function lambda: integer
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
-5 
+5
 [EventDebug]: 2 event's created
 [QueueResNil]: 1
 [QueueRes<T>]: 1

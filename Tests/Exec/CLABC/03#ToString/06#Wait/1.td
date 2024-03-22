@@ -14,26 +14,26 @@ OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_
 WaitMarkerAll#0
 	WaitMarkerDummy#1
 	WaitMarkerDummy#2
- 
+
 ------------------------------
- 
+
 WaitMarkerAny#0
 	WaitMarkerAll#1
 		WaitMarkerDummy#2
 	WaitMarkerAll#3
 		WaitMarkerDummy#4
- 
+
 ------------------------------
- 
+
 WaitMarkerAll#0
 	WaitMarkerDummy#1 * 2
- 
+
 ------------------------------
- 
+
 WaitMarkerDummy#0
- 
+
 ------------------------------
- 
+
 WaitMarkerAny#0
 	WaitMarkerAll#1
 		WaitMarkerDummy#2 * 2
@@ -42,41 +42,41 @@ WaitMarkerAny#0
 		WaitMarkerDummy#4
 	WaitMarkerAll#5
 		WaitMarkerDummy#4 * 2
- 
+
 ------------------------------
- 
+
 ==============================
- 
+
 CommandQueueWaitFor#0
 	WaitMarkerDummy#1
- 
+
 ------------------------------
- 
+
 SimpleSyncQueueArrayNil#0
 	WaitMarkerDummyExecutor#1
 		WaitMarkerDummy#2
 	CommandQueueWaitFor#3
 		WaitMarkerDummy#2
- 
+
 ------------------------------
- 
+
 SimpleSyncQueueArrayNil#0
 	CommandQueueWaitFor#1
 		WaitMarkerDummy#2
 	WaitMarkerDummyExecutor#3
 		WaitMarkerDummy#2
- 
+
 ------------------------------
- 
+
 ==============================
- 
+
 CLMemoryCCQ#0
 	ConstQueue<CLMemory>#1: CLMemory[*] of size 1
 	WaitCommand<CLMemory>
 		WaitMarkerDummy#2
- 
+
 ------------------------------
- 
+
 SimpleSyncQueueArray<CLMemory>#0
 	WaitMarkerDummyExecutor#1
 		WaitMarkerDummy#2
@@ -84,9 +84,9 @@ SimpleSyncQueueArray<CLMemory>#0
 		ConstQueue<CLMemory>#4: CLMemory[*] of size 1
 		WaitCommand<CLMemory>
 			WaitMarkerDummy#2
- 
+
 ------------------------------
- 
+
 SimpleSyncQueueArrayNil#0
 	CLMemoryCCQ#1
 		ConstQueue<CLMemory>#2: CLMemory[*] of size 1
@@ -94,9 +94,8 @@ SimpleSyncQueueArrayNil#0
 			WaitMarkerDummy#3
 	WaitMarkerDummyExecutor#4
 		WaitMarkerDummy#3
- 
+
 ------------------------------
- 
 
 #ReqModules
 OpenCLABC

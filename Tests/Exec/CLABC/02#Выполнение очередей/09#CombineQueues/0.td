@@ -17,7 +17,7 @@ final = ErrHandlerInitial#0: Initial CLTask invoke
 1 2 3 4 5 6 7 8 9 10
 final = ErrHandlerInitial#0: Initial CLTask invoke
 (total 1 handlers)
-(5,abc) 
+(5,abc)
 final = ErrHandlerBranchCombinator#0: CLTaskGlobalData.ParallelInvoke branches union
 	branch#0/10 = ErrHandlerInitial#1: (origin-less) branch invoke
 	branch#1/10 = ErrHandlerInitial#2: (origin-less) branch invoke
@@ -35,7 +35,7 @@ final = ErrHandlerBranchCombinator#0: CLTaskGlobalData.ParallelInvoke branches u
 	branch#0/2 = ErrHandlerInitial#1: (origin-less) branch invoke
 	branch#1/2 = ErrHandlerInitial#2: (origin-less) branch invoke
 (total 3 handlers)
-(5,abc) 
+(5,abc)
 [EventDebug]: 24 event's created
 [QueueRes<T>]: 28
 	QueueResValDirect<(integer,string)>: 2

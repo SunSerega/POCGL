@@ -77,16 +77,16 @@ type
   DelegateSource = sealed class(ItemSource<DelegateSource, DelegateName, Delegate>)
     private context_api, org_name, text: string;
     
-    public static function MakeName(api, name: string; allow_nil: boolean): DelegateName;
+    public static function MakeName(api, name: string; allow_nil, skip_invalid: boolean): DelegateName;
     begin
       if name='__GLXextFuncPtr' then
         name := name.TrimStart('_');
-      Result := inherited MakeName&<DelegateName>(api, name, api, allow_nil, false, VendorSuffixSource.known_suffixes, '*E','e*');
+      Result := inherited MakeName&<DelegateName>(api, name, api, allow_nil, skip_invalid, false, VendorSuffixSource.known_suffixes, '*E','e*');
     end;
     
     public constructor(api, name, text: string);
     begin
-      inherited Create(MakeName(api, name, false));
+      inherited Create(MakeName(api, name, false, false));
       self.context_api := api;
       self.org_name := name;
       self.text := text;
@@ -180,7 +180,7 @@ type
         name := name.Substring(api_sep_ind+2);
       end;
       
-      Result := inherited MakeName&<GroupName>(api, name, '', false, false, VendorSuffixSource.known_suffixes, '*E');
+      Result := inherited MakeName&<GroupName>(api, name, '', false, false, false, VendorSuffixSource.known_suffixes, '*E');
     end;
     
     public static procedure Register(api,name: string; is_bitfield: boolean; ename: EnumName);
@@ -222,7 +222,7 @@ type
       if (context_api='wgl') and l_name.StartsWith('ERROR') then
         api_beg := '';
       
-      Result := inherited MakeName&<EnumName>(own_api, l_name, api_beg, for_lookup, api_beg<>'', VendorSuffixSource.known_suffixes, '*_E');
+      Result := inherited MakeName&<EnumName>(own_api, l_name, api_beg, for_lookup, false, api_beg<>'', VendorSuffixSource.known_suffixes, '*_E');
       if Result=nil then exit;
       
       if not for_lookup then exit;
@@ -230,7 +230,7 @@ type
       
       if own_api in |'gles1', 'gles2', 'glsc2'| then
       begin
-        Result := inherited MakeName&<EnumName>('gl', l_name, api_beg, for_lookup, api_beg<>'', VendorSuffixSource.known_suffixes, '*_E');
+        Result := inherited MakeName&<EnumName>('gl', l_name, api_beg, for_lookup, false, api_beg<>'', VendorSuffixSource.known_suffixes, '*_E');
       end;
       
     end;
@@ -322,8 +322,8 @@ type
     
     public static extra_defined := new HashSet<IdClassName>;
     
-    public static function MakeName(api, name: string) := if (name=nil) or name.StartsWith('_') then nil else
-      inherited MakeName&<IdClassName>(api, name, '', false, false, VendorSuffixSource.known_suffixes);
+    public static function MakeName(api, name: string; skip_invalid: boolean) := if (name=nil) or name.StartsWith('_') then nil else
+      inherited MakeName&<IdClassName>(api, name, '', false, skip_invalid, false, VendorSuffixSource.known_suffixes);
     
     public static function UseAs(name: IdClassName; t: string): IdClassSource;
     begin
@@ -378,7 +378,7 @@ type
       end;
       
       self.gr_source := GroupSource.UseAs(GroupSource.MakeName(api, n['group'], true), tname);
-      self.cl_source := IdClassSource.UseAs(IdClassSource.MakeName(api, n['class']), tname);
+      self.cl_source := IdClassSource.UseAs(IdClassSource.MakeName(api, n['class'], false), tname);
       self.len_s := n['len'];
       self.kinds_s := n['kind'];
       
@@ -414,7 +414,7 @@ type
         api := 'gdi';
       end;
       
-      Result := inherited MakeName&<FuncName>(api, name, api_beg, false, false, VendorSuffixSource.known_suffixes, '*E');
+      Result := inherited MakeName&<FuncName>(api, name, api_beg, false, false, false, VendorSuffixSource.known_suffixes, '*E');
     end;
     private constructor(api: string; n: XmlNode);
     begin
@@ -547,7 +547,7 @@ type
     private add: RequiredListSource;
     
     public static function MakeName(own_api, name, context_api: string; allow_nil: boolean) :=
-      inherited MakeName&<ExtensionName>(own_api, name, context_api, allow_nil, true, VendorSuffixSource.known_suffixes, 'e_*','E_*');
+      inherited MakeName&<ExtensionName>(own_api, name, context_api, allow_nil, false, true, VendorSuffixSource.known_suffixes, 'e_*','E_*');
     
     public static procedure InitAll(file_api: string; extensions_n: XmlNode) :=
       foreach var extension_n in extensions_n.SubNodes['extension'] do
@@ -635,8 +635,8 @@ function VendorSuffixSource.MakeNewItem :=
     begin
       
       var bt := default(BasicType);
-      var cl := IdClassSource.FindOrMakeItem(IdClassSource.MakeName(api, tname));
-      var d := DelegateSource.FindOrMakeItem(DelegateSource.MakeName(api, tname, true));
+      var cl := IdClassSource.FindOrMakeItem(IdClassSource.MakeName(api, tname, true));
+      var d := DelegateSource.FindOrMakeItem(DelegateSource.MakeName(api, tname, true, true));
       
       if (cl<>nil) and (cl.Name not in IdClassSource.extra_defined) then
         raise new InvalidOperationException;
@@ -1056,7 +1056,17 @@ end;
 {$region Extension}
 
 function ExtensionSource.MakeNewItem :=
-  new Extension(self.Name, self.ext_str, self.add.MakeNewItem, System.Array.Empty&<Extension>);
+  new Extension(self.Name,
+    self.ext_str, self.add.MakeNewItem,
+    nil, false,
+    
+    default(Feature),
+    System.Array.Empty&<Extension>,
+    
+    (default(Feature), default(Extension)),
+    (default(Feature), default(Extension))
+    
+  );
 
 {$endregion Extension}
 

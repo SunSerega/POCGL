@@ -61,15 +61,15 @@ type
     private is_bitpos: boolean;
     private val_s: string;
     
-    public static function MakeName(s: string; allow_nil: boolean) :=
-      inherited MakeName&<EnumName>(api, s, api, allow_nil, true, VendorSuffixSource.known_suffixes, '*_E');
+    public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
+      inherited MakeName&<EnumName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes, '*_E');
     
     /// CL_FLT_MAX and stuff
     private static external_enum_names := new HashSet<string>;
     
     private constructor(allow_bitpos: boolean; n: XmlNode);
     begin
-      inherited Create(MakeName(n['name'], false));
+      inherited Create(MakeName(n['name'], false, false));
       n.TryDiscardAttrib('comment');
 //      self.allow_bitpos := allow_bitpos;
       
@@ -181,8 +181,8 @@ type
     private org_name, etype: string;
     private definitions := new List<XmlNode>;
     
-    public static function MakeName(s: string; allow_nil: boolean) :=
-      inherited MakeName&<GroupName>(api, s, api, allow_nil, true, VendorSuffixSource.known_suffixes, '*_e');
+    public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
+      inherited MakeName&<GroupName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes, '*_e');
     
     private constructor(gr_name: GroupName; org_name, etype: string);
     begin
@@ -214,7 +214,7 @@ type
       
       foreach var enum_n in n.SubNodes['enum'] do
       begin
-        var ename := EnumSource.MakeName(enum_n['name'], false);
+        var ename := EnumSource.MakeName(enum_n['name'], false, false);
         var esource := EnumSource.FindOrMakeSource(ename, nil);
         if esource=nil then
         begin
@@ -252,7 +252,7 @@ type
           if 'propert' in gr_name then
             Otp($'{gr_name}: Maybe etype="property list"');
         end;
-        Register(MakeName(gr_name, true), gr_name, etype??'enum', rn);
+        Register(MakeName(gr_name, true, false), gr_name, etype??'enum', rn);
       end;
     
     protected function MakeNewItem: Group; override;
@@ -267,8 +267,8 @@ type
     private base_t: string;
     private is_ptr_hungry: boolean;
     
-    public static function MakeName(s: string; allow_nil: boolean) :=
-      inherited MakeName&<IdClassName>(api, s, api, allow_nil, nil, VendorSuffixSource.known_suffixes, '*_e','*E');
+    public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
+      inherited MakeName&<IdClassName>(api, s, api, allow_nil, skip_invalid, nil, VendorSuffixSource.known_suffixes, '*_e','*E');
     
     public constructor(name: IdClassName; base_t: string; is_ptr_hungry: boolean);
     begin
@@ -288,12 +288,12 @@ type
   StructSource = sealed class(ItemSource<StructSource, StructName, Struct>)
     private member_ns: array of XmlNode;
     
-    public static function MakeName(s: string; allow_nil: boolean) :=
-      inherited MakeName&<StructName>(api, s, api, allow_nil, true, VendorSuffixSource.known_suffixes, '*_e');
+    public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
+      inherited MakeName&<StructName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes, '*_e');
     
     public constructor(n: XmlNode);
     begin
-      inherited Create(MakeName(n['name'], false));
+      inherited Create(MakeName(n['name'], false, false));
       self.member_ns := n.SubNodes['member'].ToArray;
     end;
     
@@ -308,12 +308,12 @@ type
   DelegateSource = sealed class(ItemSource<DelegateSource, DelegateName, Delegate>)
     private par_ns: array of XmlNode;
     
-    public static function MakeName(s: string; allow_nil: boolean) :=
-      inherited MakeName&<DelegateName>(api, s, api, allow_nil, true, VendorSuffixSource.known_suffixes);
+    public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
+      inherited MakeName&<DelegateName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes);
     
     public constructor(n: XmlNode);
     begin
-      inherited Create(MakeName(n['name'], false));
+      inherited Create(MakeName(n['name'], false, false));
       self.par_ns := (
         n.SubNodes['proto'].Single +
         n.SubNodes['param']
@@ -332,8 +332,8 @@ type
     private entry_point_name: string;
     private par_ns: array of XmlNode;
     
-    public static function MakeName(s: string; allow_nil: boolean) :=
-      inherited MakeName&<FuncName>(api, s, api, allow_nil, false, VendorSuffixSource.known_suffixes, '*E');
+    public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
+      inherited MakeName&<FuncName>(api, s, api, allow_nil, skip_invalid, false, VendorSuffixSource.known_suffixes, '*E');
     
     public constructor(name: FuncName; entry_point_name: string; par_ns: sequence of XmlNode);
     begin
@@ -352,7 +352,7 @@ type
         command_n.TryDiscardAttrib('suffix');
         var name := command_n.SubNodes['proto'].Single.SubNodes['name'].Single.Text;
         
-        new FuncSource(MakeName(name, false), name,
+        new FuncSource(MakeName(name, false, false), name,
           command_n.SubNodes['proto'] +
           command_n.SubNodes['param']
         );
@@ -372,6 +372,28 @@ type
   FeatureSource = sealed class(ItemSource<FeatureSource, FeatureName, Feature>)
     private rns: sequence of XmlNode;
     
+    public static function MakeName(s: string; allow_nil, skip_invalid: boolean): FeatureName;
+    begin
+      Result := nil;
+      
+      if s=nil then
+      begin
+        if not allow_nil then
+          raise nil;
+        exit;
+      end;
+      
+      var m := Regex.Match(s, '^CL_VERSION_(\d+)_(\d+)$');
+      if not m.Success then
+      begin
+        if not skip_invalid then
+          raise new System.FormatException(s);
+        exit;
+      end;
+      
+      Result := new FeatureName(api, m.Groups[1].Value.ToInteger, m.Groups[2].Value.ToInteger);
+    end;
+    
     public constructor(name: FeatureName; rns: sequence of XmlNode);
     begin
       inherited Create(name);
@@ -383,9 +405,11 @@ type
       begin
         if feature_n['api'] <> 'opencl' then raise new System.NotImplementedException;
         if feature_n['comment'] <> 'OpenCL core API interface definitions' then raise new System.InvalidOperationException;
-        var name := FeatureName.Parse(api, feature_n['number']);
         
-        if feature_n['name'] <> $'CL_VERSION_{name.Major}_{name.Minor}' then
+        var name := MakeName(feature_n['name'], false, false);
+        
+        var number_name := FeatureName.Parse(api, feature_n['number']);
+        if number_name <> name then
           raise new System.InvalidOperationException;
         
         new FeatureSource(name, feature_n.SubNodes['require']);
@@ -402,30 +426,97 @@ type
   ExtensionSource = sealed class(ItemSource<ExtensionSource, ExtensionName, Extension>)
     private ext_str: string;
     private rns: sequence of XmlNode;
-    private dep: ExtensionName;
     
-    public static function MakeName(s: string; allow_nil: boolean) :=
-      inherited MakeName&<ExtensionName>(api, s, api, allow_nil, true, VendorSuffixSource.known_suffixes, 'e_*','E_*');
+    private revision: string;
+    private provisional: boolean;
     
-    public constructor(name: ExtensionName; ext_str: string; rns: sequence of XmlNode; dep: string);
+    private core_dep: FeatureName;
+    private ext_deps: array of ExtensionName;
+    
+    private obsolete_by: (FeatureName, ExtensionName);
+    private promoted_to: (FeatureName, ExtensionName);
+    
+    public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
+      inherited MakeName&<ExtensionName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes, 'e_*','E_*');
+    
+    private static function MakeFeatureOrExtensionName(s: string): (FeatureName, ExtensionName);
+    begin
+      var f := FeatureSource.MakeName(s, true, true);
+      Result := (f, if f<>nil then nil else ExtensionSource.MakeName(s, true, true));
+    end;
+    
+    public constructor(name: ExtensionName; ext_str: string; rns: sequence of XmlNode; revision, provisional, deps, obsolete_by, promoted_to: string);
     begin
       inherited Create(name);
       if name.VendorSuffix=nil then
         log.Otp($'{self}: No suffix');
       self.ext_str := ext_str;
       self.rns := rns;
-      self.dep := MakeName(dep, true);
+      
+      self.revision := revision;
+      if provisional=nil then
+        self.provisional := false else
+      begin
+        if provisional<>'true' then
+          raise new NotImplementedException(provisional);
+        self.provisional := true;
+      end;
+      
+      if ext_str='cl_khr_gl_depth_images' then
+      begin
+        ext_str := ext_str;
+      end;
+      
+      self.core_dep := nil;
+      if string.IsNullOrEmpty(deps) then
+        ext_deps := System.Array.Empty&<ExtensionName> else
+      begin
+        var ext_deps_l := new List<ExtensionName>;
+        foreach var dep in deps.Split('+') do
+        begin
+          var (f,e) := MakeFeatureOrExtensionName(dep);
+          
+          if f<>nil then
+          begin
+            if core_dep<>nil then
+              raise new System.NotImplementedException;
+            core_dep := f;
+          end;
+          
+          if e<>nil then
+            ext_deps_l += e;
+          
+        end;
+        self.ext_deps := ext_deps_l.ToArray;
+      end;
+      
+      self.obsolete_by := MakeFeatureOrExtensionName(obsolete_by);
+      self.promoted_to := MakeFeatureOrExtensionName(promoted_to);
+      
     end;
     
     public static procedure InitAll(extensions_n: XmlNode) :=
       foreach var extension_n in extensions_n.SubNodes['extension'] do
       begin
-        extension_n.TryDiscardAttrib('comment');
-        extension_n.TryDiscardAttrib('condition');
-        if extension_n['supported'] <> 'opencl' then raise new System.NotImplementedException;
         var name := extension_n['name'];
         
-        new ExtensionSource(MakeName(name, false), name, extension_n.SubNodes['require'], extension_n['requires']);
+        extension_n.TryDiscardAttrib('comment');
+        if extension_n['supported'] <> 'opencl' then raise new System.NotImplementedException;
+        
+        // Info for implementers:
+        // https://github.com/KhronosGroup/OpenCL-Docs/pull/950#issuecomment-2015066665
+        if extension_n['ratified'] is string(var ratified_s) then
+        begin
+          if ratified_s <> 'opencl' then raise new System.NotImplementedException;
+        end;
+        
+        new ExtensionSource(MakeName(name, false, false),
+          name, extension_n.SubNodes['require'],
+          extension_n['revision'], extension_n['provisional'],
+          extension_n['depends'],
+          extension_n['obsoletedby'],
+          extension_n['promotedto']
+        );
       end;
     
     protected function MakeNewItem: Extension; override;
@@ -492,7 +583,7 @@ begin
           else raise new System.NotImplementedException(v);
         end;
       end else
-      if EnumSource.FindOrMakeItem(EnumSource.MakeName(val_str, true)) is Enum(var old_e) then
+      if EnumSource.FindOrMakeItem(EnumSource.MakeName(val_str, true, false)) is Enum(var old_e) then
         val := old_e.Value else
         raise new MessageException($'ERROR: Could not parse value [{val_str}] of {self}');
   end;
@@ -511,14 +602,19 @@ end;
       if tname=nil then raise nil;
       
       var bt := BasicTypeSource .FromName(tname);
-      var gr := GroupSource     .FindOrMakeSource(GroupSource   .MakeName(tname, true), nil);
-      var cl := IdClassSource   .FindOrMakeSource(IdClassSource .MakeName(tname, true), nil);
-      var s :=  StructSource    .FindOrMakeSource(StructSource  .MakeName(tname, true), nil);
-      var d :=  DelegateSource  .FindOrMakeSource(DelegateSource.MakeName(tname, true), nil);
+      var gr := GroupSource     .FindOrMakeSource(GroupSource   .MakeName(tname, true, true), nil);
+      var cl := IdClassSource   .FindOrMakeSource(IdClassSource .MakeName(tname, true, true), nil);
+      var s :=  StructSource    .FindOrMakeSource(StructSource  .MakeName(tname, true, true), nil);
+      var d :=  DelegateSource  .FindOrMakeSource(DelegateSource.MakeName(tname, true, true), nil);
       if gr<>nil then bt := nil;
       
       case Ord(bt<>nil)+Ord(gr<>nil)+Ord(cl<>nil)+Ord(s<>nil)+Ord(d<>nil) of
-        0: exit;
+        0:
+        begin
+          Otp($'WARNING: [{tname}] is not a defined type');
+          Result := nil;
+          exit;
+        end;
         1: ;
         else raise new System.NotImplementedException(tname);
       end;
@@ -610,7 +706,7 @@ end;
               0: is_ptr_hungry := true;
               else raise new System.InvalidOperationException;
             end;
-            new IdClassSource(IdClassSource.MakeName(name, false), 'intptr_t', is_ptr_hungry);
+            new IdClassSource(IdClassSource.MakeName(name, false, false), 'intptr_t', is_ptr_hungry);
           end else
           begin
             
@@ -677,7 +773,7 @@ begin
       var ename := enum_n['name'];
       if ename in EnumSource.external_enum_names then
         continue;
-      var e := EnumSource.FindOrMakeItem(EnumSource.MakeName(ename,false));
+      var e := EnumSource.FindOrMakeItem(EnumSource.MakeName(ename,false,false));
       if not new_enums.Add(e) then
         Otp($'WARNING: {e} was added twice in the same RN') else
       if e not in node_by_enum then
@@ -719,7 +815,7 @@ begin
       end else
       if sz_s.IsInteger then
         sz := new ParArrSizeConst(sz_s.ToInteger) else
-      if EnumSource.FindOrMakeItem(EnumSource.MakeName(sz_s,true)) is Enum(var old_e) then
+      if EnumSource.FindOrMakeItem(EnumSource.MakeName(sz_s,true,false)) is Enum(var old_e) then
         sz := new ParArrSizeConst(old_e.Value) else
         raise new System.FormatException(sz_s);
     end else
@@ -773,7 +869,7 @@ begin
           
           else
           begin
-            var old_e := EnumSource.FindOrMakeItem(EnumSource.MakeName(terminate_s,false));
+            var old_e := EnumSource.FindOrMakeItem(EnumSource.MakeName(terminate_s,false,false));
             if old_e=nil then raise nil;
             term_by.Add(old_e, e);
           end;
@@ -831,7 +927,7 @@ begin
         '}'
       |) then
       begin
-        Result := new ParData('mem_object', new TypeRef(IdClassSource[IdClassSource.MakeName('cl_mem',false)].GetItem), 0, new integer[0], ParArrSizeNotArray.Instance, nil);
+        Result := new ParData('mem_object', new TypeRef(IdClassSource[IdClassSource.MakeName('cl_mem',false,false)].GetItem), 0, new integer[0], ParArrSizeNotArray.Instance, nil);
         exit;
       end;
       raise new System.InvalidOperationException(self.ToString+text.Split(#10).Select(l->#10+l.Trim).JoinToString(''));
@@ -843,7 +939,7 @@ begin
       var text_end := $'[{static_len_enum_name}]';
       if not text.EndsWith(text_end) then raise new System.InvalidOperationException;
       text := text.RemoveEnd(text_end);
-      len := new ParArrSizeConst(EnumSource.FindOrMakeItem(EnumSource.MakeName(static_len_enum_name, false)).Value);
+      len := new ParArrSizeConst(EnumSource.FindOrMakeItem(EnumSource.MakeName(static_len_enum_name, false, false)).Value);
     end else
       len := ParArrSizeNotArray.Instance;
     
@@ -921,7 +1017,7 @@ begin
   
   Result := new Func(self.Name, self.entry_point_name, pars, nil);
   
-  var err_code_gr := GroupSource.FindOrMakeItem(GroupSource.MakeName('cl_error_code',false));
+  var err_code_gr := GroupSource.FindOrMakeItem(GroupSource.MakeName('cl_error_code',false,false));
   if err_code_gr=nil then raise nil;
   
   var have_err_ret := pars.Any(par->par.ParType.TypeObj = err_code_gr);
@@ -988,7 +1084,7 @@ end;
           var ename := enum_n['name'];
           if ename in EnumSource.external_enum_names then
             continue;
-          var esource := EnumSource.FindOrMakeSource(EnumSource.MakeName(ename, false), nil);
+          var esource := EnumSource.FindOrMakeSource(EnumSource.MakeName(ename, false, false), nil);
 //          if esource.group_is_throw_away=true then continue;
           Result.enums += esource.GetItem;
           used_type_names += |enum_n['followed'],enum_n['info_type'],enum_n['input_type']|.Where(tname->tname<>nil).Select(tname->tname.TrimEnd('[]*'.ToCharArray));
@@ -1005,7 +1101,7 @@ end;
           func_n.TryDiscardAttrib('requires');
           
           var name := func_n['name'];
-          Result.funcs += FuncSource.FindOrMakeItem(FuncSource.MakeName(name, false));
+          Result.funcs += FuncSource.FindOrMakeItem(FuncSource.MakeName(name, false, false));
           
         end;
         {$endregion func}
@@ -1016,6 +1112,7 @@ end;
           else raise new System.NotImplementedException(processed_node_types.JoinToString);
         end;
         
+        rn.TryDiscardAttrib('depends'); //TODO Use this to display a comment in generated files
         rn.TryDiscardAttrib('comment');
         rn.TryDiscardAttrib('condition');
         rn.TryDiscardSubNodes('comment');
@@ -1057,8 +1154,15 @@ function FeatureSource.MakeNewItem :=
 function ExtensionSource.MakeNewItem :=
   new Extension(self.Name, self.ext_str,
     RequreNodeHelper.MakeRL(self.rns, self.ToString),
-    if dep=nil then new Extension[0] else
-      |ExtensionSource.FindOrMakeItem(dep)|
+    
+    self.revision, self.provisional,
+    
+    FeatureSource.FindOrMakeItem(self.core_dep),
+    self.ext_deps.ConvertAll(ExtensionSource.FindOrMakeItem),
+    
+    (FeatureSource.FindOrMakeItem(self.obsolete_by[0]), ExtensionSource.FindOrMakeItem(self.obsolete_by[1])),
+    (FeatureSource.FindOrMakeItem(self.promoted_to[0]), ExtensionSource.FindOrMakeItem(self.promoted_to[1]))
+    
   );
 
 {$endregion Extension}

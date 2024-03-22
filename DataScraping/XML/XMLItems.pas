@@ -443,11 +443,7 @@ type
     public procedure Save(bw: BinWriter; save_name: boolean?);
     begin
       if save_name=nil then
-      begin
-        bw.Write(name<>nil);
-        if name<>nil then
-          bw.Write(name);
-      end else
+        bw.WriteNullable(name, bw.Write) else
       if save_name.Value then
         bw.Write(name) else
       if name<>nil then
@@ -461,9 +457,7 @@ type
       
       arr_size.Save(bw);
       
-      bw.Write(val_combo<>nil);
-      if val_combo<>nil then
-        val_combo.Save(bw);
+      bw.WriteNullable(val_combo, (bw,val_combo)->val_combo.Save(bw));
       
     end;
     
@@ -550,7 +544,7 @@ type
     
     protected procedure SaveBody(bw: BinWriter); override;
     begin
-      bw.WriteBinIndices( self.UniqueEnums );
+      bw.WriteBinIndexArr( self.UniqueEnums );
     end;
     
   end;
@@ -569,15 +563,8 @@ type
     public procedure Save(bw: BinWriter);
     begin
       bw.Write(e.BinIndex);
-      
-      bw.Write(inp_t<>nil);
-      if inp_t<>nil then
-        inp_t.Save(bw, false);
-      
-      bw.Write(otp_t<>nil);
-      if otp_t<>nil then
-        otp_t.Save(bw, false);
-      
+      bw.WriteNullable(inp_t, (bw,inp_t)->inp_t.Save(bw, false));
+      bw.WriteNullable(otp_t, (bw,otp_t)->otp_t.Save(bw, false));
     end;
     
   end;
@@ -660,13 +647,8 @@ type
     public procedure Save(bw: BinWriter);
     begin
       bw.Write(e.BinIndex);
-      
       prop_t.Save(bw, false);
-      
-      bw.Write(list_end<>nil);
-      if list_end<>nil then
-        bw.Write(list_end.BinIndex);
-      
+      bw.WriteBinIndexOrNil(list_end);
     end;
     
   end;
@@ -748,7 +730,7 @@ type
       bw.Write(enums.Count);
       foreach var r in enums.OrderBy(r->r.e) do
         r.Save(bw);
-      bw.WriteBinIndices( Enum.DistillAllUnique(self.global_list_ends) );
+      bw.WriteBinIndexArr( Enum.DistillAllUnique(self.global_list_ends) );
     end;
     
   end;
@@ -804,7 +786,7 @@ type
     
     protected procedure SaveBody(bw: BinWriter); override;
     begin
-      bw.WriteBinIndices( BasicType.DistillAllUnique(self.castable_to) );
+      bw.WriteBinIndexArr( BasicType.DistillAllUnique(self.castable_to) );
       enums.Save(bw);
     end;
     
@@ -853,7 +835,7 @@ type
     
     protected procedure SaveBody(bw: BinWriter); override;
     begin
-      bw.WriteBinIndices( BasicType.DistillAllUnique(self.castable_to) );
+      bw.WriteBinIndexArr( BasicType.DistillAllUnique(self.castable_to) );
     end;
     
   end;
@@ -1042,9 +1024,7 @@ type
       bw.Write(pars.Count);
       foreach var p in pars index i do
         p.Save(bw, i<>0);
-      bw.Write(alias<>nil);
-      if alias<>nil then
-        bw.Write(alias.BinIndex);
+      bw.WriteBinIndexOrNil(alias);
     end;
     
   end;
@@ -1059,8 +1039,8 @@ type
     
     public procedure Save(bw: BinWriter);
     begin
-      bw.WriteBinIndices( Enum.DistillAllUnique(self.enums) );
-      bw.WriteBinIndices( Func.DistillAllUnique(self.funcs) );
+      bw.WriteBinIndexArr( Enum.DistillAllUnique(self.enums) );
+      bw.WriteBinIndexArr( Func.DistillAllUnique(self.funcs) );
     end;
     
   end;
@@ -1177,7 +1157,15 @@ type
   Extension = sealed class(NamedItem<Extension, ExtensionName>)
     private ext_str: string;
     private add: RequiredList;
-    private deps: array of Extension;
+    
+    private revision: string;
+    private provisional: boolean;
+    
+    private core_dep: Feature;
+    private ext_deps: array of Extension;
+    
+    private obsolete_by: (Feature, Extension);
+    private promoted_to: (Feature, Extension);
     
     static constructor;
     begin
@@ -1185,12 +1173,25 @@ type
       perform_merge := false;
     end;
     
-    public constructor(name: ExtensionName; ext_str: string; add: RequiredList; deps: array of Extension);
+    public constructor(
+      name: ExtensionName;
+      ext_str: string; add: RequiredList;
+      revision: string; provisional: boolean;
+      core_dep: Feature;
+      ext_deps: array of Extension;
+      obsolete_by: (Feature, Extension);
+      promoted_to: (Feature, Extension)
+    );
     begin
       inherited Create(name, nil);
       self.ext_str := ext_str;
       self.add := add;
-      self.deps := deps;
+      self.revision := revision;
+      self.provisional := provisional;
+      self.core_dep := core_dep;
+      self.ext_deps := ext_deps;
+      self.obsolete_by := obsolete_by;
+      self.promoted_to := promoted_to;
     end;
     private constructor := raise new InvalidOperationException;
     
@@ -1200,7 +1201,15 @@ type
       
       add.Save(bw);
       
-      bw.WriteBinIndices( Extension.DistillAllUnique(self.deps) );
+      bw.WriteNullable(self.revision, bw.Write);
+      bw.Write(self.provisional);
+      
+      bw.WriteBinIndexOrNil(self.core_dep);
+      bw.WriteBinIndexArr( Extension.DistillAllUnique(self.ext_deps) );
+      
+      bw.WriteAnyBinIndexOrNil(self.obsolete_by);
+      bw.WriteAnyBinIndexOrNil(self.promoted_to);
+      
     end;
     
   end;

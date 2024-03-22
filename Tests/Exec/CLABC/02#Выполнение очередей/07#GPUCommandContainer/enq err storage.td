@@ -11,7 +11,7 @@ OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command
 OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
 
 #ExpExecOtp
-NullReferenceException 
+NullReferenceException
 final = ErrHandlerMURepeater#0: MU repeater for SimpleSyncQueueArray<CLArray<integer>>
 	victim = ErrHandlerInitial#1: Initial MU invoke
 origin = ErrHandlerBranchCombinator#2: CLArrayCommandWriteArrayAutoSize<integer> origin+par+enq union
@@ -24,8 +24,8 @@ origin = ErrHandlerBranchCombinator#2: CLArrayCommandWriteArrayAutoSize<integer>
 [QueueDebug]: 1 queue's created
 [QueueResNil]: 4
 [QueueRes<T>]: 2
-	QueueResValDirect<array of integer>: 1
 	QueueResValDirect<CLArray<integer>>: 1
+	QueueResValDirect<array of integer>: 1
 
 #ReqModules
 OpenCLABC

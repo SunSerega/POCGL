@@ -64,7 +64,7 @@ ScrapXML[OpenCL]: Struct: Saved 16 items
 ScrapXML[OpenCL]: Delegate: Saved 8 items
 ScrapXML[OpenCL]: Func: Saved 241 items
 ScrapXML[OpenCL]: Feature: Saved 7 items
-ScrapXML[OpenCL]: Extension: Saved 105 items
+ScrapXML[OpenCL]: Extension: Saved 130 items
 ScrapXML[OpenCL]: Done
 Finished runing ScrapXML[OpenCL]
 Compiling "DataScraping/XML/OpenGL/ScrapXML.pas"
@@ -230,10 +230,10 @@ Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 1
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseEGLObjects + KHR]
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireExternalMemObjects + KHR]
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseExternalMemObjects + KHR]
-Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGLObjects]
-Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGLObjects]
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueWaitSemaphores + KHR]
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 30>12 overloads of non-fixed Func [cl::EnqueueSignalSemaphores + KHR]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueAcquireGLObjects]
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: WARNING: 18>12 overloads of non-fixed Func [cl::EnqueueReleaseGLObjects]
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Logging PascalBasicType items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Logging TypeCombo items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Logging Group items
@@ -255,7 +255,7 @@ Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Struct: Pa
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Delegate: Packed 7 items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Func: Packed 241 items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Feature: Packed 1 items
-Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Extension: Packed 105 items
+Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Extension: Packed 130 items
 Template[OpenCL]: TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]: Cleanup
 Template[OpenCL]: Finished runing TemplateCommand[LowLvl/OpenCL/Pack Essentials.exe]
 Finished runing Template[OpenCL]
