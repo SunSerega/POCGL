@@ -1119,6 +1119,7 @@ type
         if t.resave_settings then
         begin
           var sw := new System.IO.StreamWriter(System.IO.File.Create(t.td_fname), enc);
+          sw.NewLine := #10;
           sw.WriteLine;
           sw.WriteLine;
           
