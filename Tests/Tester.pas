@@ -1116,30 +1116,30 @@ type
         Otp($'WARNING: Not all loaded tests were executed');
       
       foreach var t in all_loaded do
-        if t.resave_settings then
-        begin
-          var sw := new System.IO.StreamWriter(System.IO.File.Create(t.td_fname), enc);
-          sw.NewLine := #10;
-          sw.WriteLine;
-          sw.WriteLine;
-          
-          var used_settings := t.used_settings.ToHashSet;
-          foreach var key in t.all_settings.Keys.Order do
-            if key not in used_settings then
-              Otp($'WARNING: Setting {key} was deleted from "{t.td_fname}"', lk_pack_stage_unspecific) else
-            begin
-              var val := t.all_settings[key];
-              sw.WriteLine;
-              sw.WriteLine(key);
-              if not string.IsNullOrWhiteSpace(val) then
-                sw.WriteLine(val);
-            end;
-          
-          sw.WriteLine;
-          sw.WriteLine;
-          sw.Close;
-          Otp($'WARNING: File "{GetRelativePath(t.td_fname)}" updated', lk_pack_stage_unspecific);
-        end;
+      begin
+        if not t.resave_settings then continue;
+        var sw := new System.IO.StreamWriter(System.IO.File.Create(t.td_fname), enc);
+        sw.NewLine := #10;
+        sw.WriteLine;
+        sw.WriteLine;
+        
+        var used_settings := t.used_settings.ToHashSet;
+        foreach var key in t.all_settings.Keys.Order do
+          if key not in used_settings then
+            Otp($'WARNING: Setting {key} was deleted from "{t.td_fname}"', lk_pack_stage_unspecific) else
+          begin
+            var val := t.all_settings[key];
+            sw.WriteLine;
+            sw.WriteLine(key);
+            if not string.IsNullOrWhiteSpace(val) then
+              sw.WriteLine(val);
+          end;
+        
+        sw.WriteLine;
+        sw.WriteLine;
+        sw.Close;
+        Otp($'WARNING: File "{GetRelativePath(t.td_fname)}" updated', lk_pack_stage_unspecific);
+      end;
       
       foreach var td_fname in unused_test_files do
         case MessageBox.Show($'File "{GetRelativePath(td_fname)}" wasn''t used in any test{#10}Delete it?', 'Unused TestData file', MessageBoxButtons.YesNo) of
