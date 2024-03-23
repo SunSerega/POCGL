@@ -137,7 +137,7 @@ type
   
   Fixer<TSelf, TFixable, TName> = abstract class
   where TSelf: Fixer<TSelf, TFixable, TName>;
-//  where TFixable: class; //TODO #2736
+//  where TFixable: class, IFixable; //TODO #2640: Доделать для классов, чтобы можно было в наследниках указывать более точно
   where TName: System.IEquatable<TName>;
     private _name: TName;
     private used: boolean;

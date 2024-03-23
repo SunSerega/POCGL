@@ -137,7 +137,7 @@ type
       
       attribs_cache := Result;
     end;
-    //TODO #????: self.
+    //TODO #3065: self.
     public property Attrib[name: string]: XmlAttrib read GetContent(()->self.GetAllAttribs.Get(name));
     //TODO #2461: string(...)
     public property AttribData[name: string]: string read string(Attrib[name]?.Data); default;
@@ -172,7 +172,7 @@ type
       
       sub_nodes_cache := Result.ToArray;
     end;
-    //TODO #????: self.
+    //TODO #3065: self.
     public property SubNodes[tag: string]: sequence of XmlNode read GetContent(()->self.GetAllSubNodes.Where(n->n.Tag=tag));
     
     public function TryDiscardSubNodes(tag: string) := SubNodes[tag].Count(n->n.TryDiscard);
