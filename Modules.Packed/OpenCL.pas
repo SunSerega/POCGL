@@ -13828,6 +13828,7 @@ type
   end;
   
   /// id: cl_arm_get_core_id
+  /// core dependency: cl 1.2
   clGetCoreIdARM = static class
     public const ExtensionString = 'cl_arm_get_core_id';
   end;
@@ -14313,6 +14314,7 @@ type
   end;
   
   /// id: cl_ext_image_from_buffer
+  /// core dependency: cl 3.0
   clImageFromBufferEXT = static class
     public const ExtensionString = 'cl_ext_image_from_buffer';
   end;
@@ -14327,6 +14329,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_ext_image_requirements_info
+  /// core dependency: cl 3.0
   clImageRequirementsInfoEXT = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
