@@ -1248,7 +1248,7 @@ begin
     if named_types_save_proc.TryGetValue(cl, p) then
       p(bw) else
     begin
-      Log.Otp($'No {cl} to save'); //TODO Should only be Struct in GL - check
+      Log.Otp($'No {cl} to save');
       bw.Write(0);
     end;
   end;

@@ -10,6 +10,7 @@ uses '../Utils/AOtp';
 uses '../Utils/ATask';
 uses '../Utils/CLArgs';
 uses '../Utils/Timers';
+uses '../Utils/Fixers';
 uses '../Utils/SubExecuters';
 uses '../Utils/Testing/Testing';
 
@@ -31,6 +32,7 @@ type
   TestCanceledException = sealed class(Exception) end;
   
   //TODO Replace with MergedString
+  // - But only after Intellisense memory leaks are fixed...
   {$region ExpectedText}
   
   ExpectedTextPart = sealed class
@@ -574,44 +576,12 @@ type
       core_timer.cl_context_gen_time := sw.Elapsed;
     end;
     
-    procedure LoadSettingsDict;
-    begin
-      //TODO Use fixer utils
-      all_settings := new Dictionary<string, string>;
-      
-      var lns := ReadAllLines(td_fname, enc);
-      
-      var i := -1;
-      while true do
-      begin
-        i += 1;
-        if i >= lns.Length then break;
-        var s := lns[i];
-        if not s.StartsWith('#') then continue;
-        
-        var sb := new StringBuilder;
-        var key := s;
-        while true do
-        begin
-          i += 1;
-          if i = lns.Length then break;
-          s := lns[i];
-          
-          if s.StartsWith('#') then
-          begin
-            i -= 1;
-            break;
-          end;
-          
-          sb += s;
-          sb += #10;
-          
-        end;
-        
-        all_settings.Add(key, sb.ToString.TrimEnd(#10).Replace('\#','#'));
-      end;
-      
-    end;
+    procedure LoadSettingsDict :=
+      all_settings := FixerUtils.ReadBlocks(td_fname, false)
+        .ToDictionary(
+          \(key,data)->'#'+key,
+          \(key,data)->data.JoinToString(#10)
+        );
     procedure FindReqModules;
     begin
       req_modules := new List<string>;
@@ -1132,7 +1102,7 @@ type
             sw.WriteLine;
             sw.WriteLine(key);
             if not string.IsNullOrWhiteSpace(val) then
-              sw.WriteLine(val);
+              sw.WriteLine(val.Replace('\','\\').RegexReplace('(^|\n)#','$1\#'));
           end;
         
         sw.WriteLine;
@@ -1169,9 +1139,10 @@ begin
     TestInfo.LoadAll('Tests/Exec',  'Comp','Exec');
     TestInfo.LoadAll('Samples',     'Comp');
     (*)
-    TestInfo.allowed_modules += 'OpenCLABC';
+    allowed_modules += 'OpenCLABC';
     TestInfo.MakeDebugPCU;
-    TestInfo.LoadAll('Samples', 'Comp');
+    TestInfo.GenCLContext;
+    TestInfo.LoadAll('Tests/Exec/CLABC/01#Wrap/04#Memory/3#CLArray', 'Comp','Exec');
     (**)
     
     try

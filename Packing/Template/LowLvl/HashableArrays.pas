@@ -18,7 +18,7 @@ type
     
     public property Size: integer read items.Length;
     public property Item[ind: integer]: TItem read items[ind]; default;
-    public function ItemsSeq := System.Collections.Generic.IReadOnlyList&<TItem>(items as object); //TODO #2886
+    public function ItemsSeq := System.Collections.Generic.IReadOnlyList&<TItem>(items as object); //TODO #2886: Надо доделать за ibond-ом...
     
     protected function BodyEquals(other: TSelf): boolean; virtual := true;
     

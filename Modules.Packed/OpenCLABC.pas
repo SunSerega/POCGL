@@ -5689,8 +5689,7 @@ type
     
     public static function operator=(wr1, wr2: CLPlatform): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLPlatform): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLPlatform): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLPlatform(var wr)) and (self = wr);
@@ -5717,8 +5716,7 @@ type
     
     public static function operator=(wr1, wr2: CLDevice): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLDevice): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLDevice): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLDevice(var wr)) and (self = wr);
@@ -5760,8 +5758,7 @@ type
     
     public static function operator=(wr1, wr2: CLContext): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLContext): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLContext): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLContext(var wr)) and (self = wr);
@@ -5780,8 +5777,7 @@ type
     
     public static function operator=(wr1, wr2: CLCode): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLCode): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLCode): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLCode(var wr)) and (self = wr);
@@ -5798,8 +5794,7 @@ type
     
     public static function operator=(wr1, wr2: CLKernel): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
-    public static function operator<>(wr1, wr2: CLKernel): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
+    public static function operator<>(wr1, wr2: CLKernel): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLKernel(var wr)) and (self = wr);
@@ -5829,8 +5824,7 @@ type
     
     public static function operator=(wr1, wr2: CLMemory): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLMemory): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLMemory): boolean := not(wr1=wr2);
     
     ///--
     public function Equals(obj: object): boolean; override :=
@@ -5880,8 +5874,7 @@ type
     
     public static function operator=(wr1, wr2: CLValue<T>): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLValue<T>): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLValue<T>): boolean := not(wr1=wr2);
     
     ///--
     public function Equals(obj: object): boolean; override :=
@@ -5913,8 +5906,7 @@ type
     
     public static function operator=(wr1, wr2: CLArray<T>): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLArray<T>): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLArray<T>): boolean := not(wr1=wr2);
     
     ///--
     public function Equals(obj: object): boolean; override :=
@@ -17866,7 +17858,7 @@ type
 static function CLKernelArgGlobal.FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArgGlobal;
 begin Result := new CLKernelArgGlobalCLMemory(cl_mem) end;
 static function CLKernelArgGlobal.operator implicit(cl_mem: CLMemoryCCQ): CLKernelArgGlobal;
-begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
+begin Result := FromCLMemory(cl_mem) end;
 
 {$endregion CLMemory}
 
@@ -17899,7 +17891,7 @@ type
 static function CLKernelArgGlobal.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgGlobal; where T: record;
 begin Result := new CLKernelArgGlobalCLValue<T>(cl_val) end;
 static function CLKernelArgGlobal.operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArgGlobal; where T: record;
-begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
+begin Result := FromCLValue(cl_val) end;
 
 {$endregion CLValue}
 
@@ -17932,7 +17924,7 @@ type
 static function CLKernelArgGlobal.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgGlobal; where T: record;
 begin Result := new CLKernelArgGlobalCLArray<T>(cl_arr) end;
 static function CLKernelArgGlobal.operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArgGlobal; where T: record;
-begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
+begin Result := FromCLArray(cl_arr) end;
 
 {$endregion CLArray}
 
@@ -17972,7 +17964,7 @@ type
 static function CLKernelArgConstant.FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArgConstant;
 begin Result := new CLKernelArgConstantCLMemory(cl_mem) end;
 static function CLKernelArgConstant.operator implicit(cl_mem: CLMemoryCCQ): CLKernelArgConstant;
-begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
+begin Result := FromCLMemory(cl_mem) end;
 
 {$endregion CLMemory}
 
@@ -18005,7 +17997,7 @@ type
 static function CLKernelArgConstant.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgConstant; where T: record;
 begin Result := new CLKernelArgConstantCLValue<T>(cl_val) end;
 static function CLKernelArgConstant.operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArgConstant; where T: record;
-begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
+begin Result := FromCLValue(cl_val) end;
 
 {$endregion CLValue}
 
@@ -18038,7 +18030,7 @@ type
 static function CLKernelArgConstant.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgConstant; where T: record;
 begin Result := new CLKernelArgConstantCLArray<T>(cl_arr) end;
 static function CLKernelArgConstant.operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArgConstant; where T: record;
-begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
+begin Result := FromCLArray(cl_arr) end;
 
 {$endregion CLArray}
 
@@ -18607,7 +18599,7 @@ begin Result := CLKernelArgPrivate.FromNativeArray(ntv_arr) end;
 static function CLKernelArg.FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArg;
 begin Result := CLKernelArgGlobal.FromCLMemory(cl_mem) end;
 static function CLKernelArg.operator implicit(cl_mem: CLMemoryCCQ): CLKernelArg;
-begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
+begin Result := FromCLMemory(cl_mem) end;
 
 {$endregion CLMemory}
 
@@ -18616,7 +18608,7 @@ begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 static function CLKernelArg.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArg; where T: record;
 begin Result := CLKernelArgGlobal.FromCLValue(cl_val) end;
 static function CLKernelArg.operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArg; where T: record;
-begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
+begin Result := FromCLValue(cl_val) end;
 
 {$endregion CLValue}
 
@@ -18625,7 +18617,7 @@ begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 static function CLKernelArg.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArg; where T: record;
 begin Result := CLKernelArgGlobal.FromCLArray(cl_arr) end;
 static function CLKernelArg.operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArg; where T: record;
-begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
+begin Result := FromCLArray(cl_arr) end;
 
 {$endregion CLArray}
 
@@ -19281,24 +19273,24 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
-       sz1.InitBeforeInvoke(g, prev_hubs);
+      sz1.InitBeforeInvoke(g, prev_hubs);
     end;
     
     protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>; get_arg_cache: ()->CLKernelArgCache): ParamInvRes<cl_kernel>; override;
     begin
-      var  sz1_qr: QueueRes<integer>;
+      var sz1_qr: QueueRes<integer>;
       var arg_setters: array of CLKernelArgSetter;
       
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch( sz1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        sz1_qr := invoker.InvokeBranch(sz1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
         arg_setters := self.InvokeArgs(invoker, enq_evs, par_err_handlers);
       end);
       
       {$ifdef DEBUG}
       Result.Item1 := ()->
       begin
-         sz1_qr.CancelStatusCheck('enq cancel');
+        sz1_qr.CancelStatusCheck('enq cancel');
       end;
       {$else DEBUG}
       Result.Item1 := nil;
@@ -19306,7 +19298,7 @@ type
       
       Result.Item2 := (o, cq, evs)->
       begin
-        var  sz1 :=  sz1_qr.GetResDirect;
+        var sz1 := sz1_qr.GetResDirect;
         ApplySetters(get_arg_cache(), arg_setters);
         var res_ev: cl_event;
         
@@ -19374,28 +19366,28 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
-       sz1.InitBeforeInvoke(g, prev_hubs);
-       sz2.InitBeforeInvoke(g, prev_hubs);
+      sz1.InitBeforeInvoke(g, prev_hubs);
+      sz2.InitBeforeInvoke(g, prev_hubs);
     end;
     
     protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>; get_arg_cache: ()->CLKernelArgCache): ParamInvRes<cl_kernel>; override;
     begin
-      var  sz1_qr: QueueRes<integer>;
-      var  sz2_qr: QueueRes<integer>;
+      var sz1_qr: QueueRes<integer>;
+      var sz2_qr: QueueRes<integer>;
       var arg_setters: array of CLKernelArgSetter;
       
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch( sz1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
-         sz2_qr := invoker.InvokeBranch( sz2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        sz1_qr := invoker.InvokeBranch(sz1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        sz2_qr := invoker.InvokeBranch(sz2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
         arg_setters := self.InvokeArgs(invoker, enq_evs, par_err_handlers);
       end);
       
       {$ifdef DEBUG}
       Result.Item1 := ()->
       begin
-         sz1_qr.CancelStatusCheck('enq cancel');
-         sz2_qr.CancelStatusCheck('enq cancel');
+        sz1_qr.CancelStatusCheck('enq cancel');
+        sz2_qr.CancelStatusCheck('enq cancel');
       end;
       {$else DEBUG}
       Result.Item1 := nil;
@@ -19403,8 +19395,8 @@ type
       
       Result.Item2 := (o, cq, evs)->
       begin
-        var  sz1 :=  sz1_qr.GetResDirect;
-        var  sz2 :=  sz2_qr.GetResDirect;
+        var sz1 := sz1_qr.GetResDirect;
+        var sz2 := sz2_qr.GetResDirect;
         ApplySetters(get_arg_cache(), arg_setters);
         var res_ev: cl_event;
         
@@ -19479,32 +19471,32 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
-       sz1.InitBeforeInvoke(g, prev_hubs);
-       sz2.InitBeforeInvoke(g, prev_hubs);
-       sz3.InitBeforeInvoke(g, prev_hubs);
+      sz1.InitBeforeInvoke(g, prev_hubs);
+      sz2.InitBeforeInvoke(g, prev_hubs);
+      sz3.InitBeforeInvoke(g, prev_hubs);
     end;
     
     protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>; get_arg_cache: ()->CLKernelArgCache): ParamInvRes<cl_kernel>; override;
     begin
-      var  sz1_qr: QueueRes<integer>;
-      var  sz2_qr: QueueRes<integer>;
-      var  sz3_qr: QueueRes<integer>;
+      var sz1_qr: QueueRes<integer>;
+      var sz2_qr: QueueRes<integer>;
+      var sz3_qr: QueueRes<integer>;
       var arg_setters: array of CLKernelArgSetter;
       
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch( sz1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
-         sz2_qr := invoker.InvokeBranch( sz2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
-         sz3_qr := invoker.InvokeBranch( sz3.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        sz1_qr := invoker.InvokeBranch(sz1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        sz2_qr := invoker.InvokeBranch(sz2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        sz3_qr := invoker.InvokeBranch(sz3.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
         arg_setters := self.InvokeArgs(invoker, enq_evs, par_err_handlers);
       end);
       
       {$ifdef DEBUG}
       Result.Item1 := ()->
       begin
-         sz1_qr.CancelStatusCheck('enq cancel');
-         sz2_qr.CancelStatusCheck('enq cancel');
-         sz3_qr.CancelStatusCheck('enq cancel');
+        sz1_qr.CancelStatusCheck('enq cancel');
+        sz2_qr.CancelStatusCheck('enq cancel');
+        sz3_qr.CancelStatusCheck('enq cancel');
       end;
       {$else DEBUG}
       Result.Item1 := nil;
@@ -19512,9 +19504,9 @@ type
       
       Result.Item2 := (o, cq, evs)->
       begin
-        var  sz1 :=  sz1_qr.GetResDirect;
-        var  sz2 :=  sz2_qr.GetResDirect;
-        var  sz3 :=  sz3_qr.GetResDirect;
+        var sz1 := sz1_qr.GetResDirect;
+        var sz2 := sz2_qr.GetResDirect;
+        var sz3 := sz3_qr.GetResDirect;
         ApplySetters(get_arg_cache(), arg_setters);
         var res_ev: cl_event;
         

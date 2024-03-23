@@ -153,8 +153,7 @@ type
     
     public function MakeLogLines(lvl: integer; header: string): sequence of (integer,string,string); override;
     begin
-      //TODO #2896
-      yield (lvl, header, Timer.TimeToText(self.OuterTime));
+      yield (lvl, header, TimeToText(self.OuterTime));
       
       foreach var nick in sub_timers.Keys.Order do
       begin
@@ -166,8 +165,7 @@ type
           continue;
         end;
         
-        //TODO #2896
-        yield (lvl+1, $'♦ {nick} x{l.Count}', Timer.TimeToText(time_per_nick[nick]));
+        yield (lvl+1, $'♦ {nick} x{l.Count}', TimeToText(time_per_nick[nick]));
         
         var common_name_parts := l.First[0].Split('/')[:^1];
         foreach var (full_name, t) in l.Skip(1) do

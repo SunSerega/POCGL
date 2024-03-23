@@ -27,7 +27,7 @@ type
     private static inst := new ParArrSizeNotArray;
     public static property Instance: ParArrSizeNotArray read inst;
     
-    //TODO #????: Cannot use Instance - "self not defined"
+    //TODO #3063: use Instance
     static constructor := DefineLoader(PASK_NotArray, br->inst);
     
   end;
@@ -39,7 +39,7 @@ type
     private static inst := new ParArrSizeArbitrary;
     public static property Instance: ParArrSizeArbitrary read inst;
     
-    //TODO #????: Cannot use Instance - "self not defined"
+    //TODO #3063: use Instance
     static constructor := DefineLoader(PASK_Arbitrary, br->inst);
     
   end;

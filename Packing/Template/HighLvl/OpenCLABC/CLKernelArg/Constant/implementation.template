@@ -31,7 +31,7 @@ type
 static function CLKernelArgConstant.FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArgConstant;
 begin Result := new CLKernelArgConstantCLMemory(cl_mem) end;
 static function CLKernelArgConstant.operator implicit(cl_mem: CLMemoryCCQ): CLKernelArgConstant;
-begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
+begin Result := FromCLMemory(cl_mem) end;
 
 {$endregion CLMemory}
 
@@ -64,7 +64,7 @@ type
 static function CLKernelArgConstant.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArgConstant; where T: record;
 begin Result := new CLKernelArgConstantCLValue<T>(cl_val) end;
 static function CLKernelArgConstant.operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArgConstant; where T: record;
-begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
+begin Result := FromCLValue(cl_val) end;
 
 {$endregion CLValue}
 
@@ -97,7 +97,7 @@ type
 static function CLKernelArgConstant.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArgConstant; where T: record;
 begin Result := new CLKernelArgConstantCLArray<T>(cl_arr) end;
 static function CLKernelArgConstant.operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArgConstant; where T: record;
-begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
+begin Result := FromCLArray(cl_arr) end;
 
 {$endregion CLArray}
 

@@ -192,11 +192,7 @@ begin
         res += '    public static function operator<>(wr1, wr2: ';
         res += t.name;
         WriteGenerics;
-        //TODO #????: not (wr1=wr2)
-        res += '): boolean := false='#10;
-        res += '    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and ';
-        res += t.operator_equ ?? '(wr1.ntv = wr2.ntv)';
-        res += ';'#10;
+        res += '): boolean := not(wr1=wr2);'#10;
         
         res += '    '#10;
         

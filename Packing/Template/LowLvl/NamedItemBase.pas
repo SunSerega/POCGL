@@ -165,7 +165,7 @@ type
   {$region NamedLoadedItem}
   
   NamedLoadedItem<TSelf, TName> = abstract class(NamedItem<TSelf, TName>)
-  where TSelf: NamedItem<TSelf, TName>; //TODO #2736
+  where TSelf: NamedItem<TSelf, TName>; //TODO #2640: Доделать для классов, чтобы можно было указывать NamedLoadedItem
   where TName: IEquatable<TName>, IComparable<TName>;
     private static AllLoaded: array of TSelf;
     

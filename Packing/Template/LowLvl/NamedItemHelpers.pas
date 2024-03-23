@@ -52,9 +52,10 @@ type
       
       foreach var kvp in all_unused_reports do
         kvp.Value();
-      //TODO #????: Почему то считает что значения тут INamedItem
-//      foreach var rep: Action in all_unused_reports.Values do
+      //TODO #3061: Заменить предыдущий цикл
+//      foreach var rep in all_unused_reports.Values do
 //        rep.Invoke();
+      
       all_unused_reports := nil;
     end;
     

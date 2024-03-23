@@ -15,7 +15,7 @@ type
   {$region NamedItemFixer}
   
   NamedItemFixer<TSelf, TItem, TName> = abstract class(Fixer<TSelf, TItem, TName>)
-  where TSelf: Fixer<TSelf, TItem, TName>; //TODO #2736: "TSelf: NamedItemFixer"
+  where TSelf: Fixer<TSelf, TItem, TName>; //TODO #2640: Доделать для классов, чтобы можно было указывать NamedItemFixer
   where TItem: NamedItem<TItem, TName>;
   where TName: IEquatable<TName>, IComparable<TName>;
     
@@ -64,7 +64,7 @@ type
   {$region NamedItemCommonFixer}
   
   NamedItemCommonFixer<TSelf, TItem> = abstract class(NamedItemFixer<TSelf, TItem, ApiVendorLName>)
-  where TSelf: Fixer<TSelf, TItem, ApiVendorLName>; //TODO #2736: "TSelf: NamedItemCommonFixer"
+  where TSelf: Fixer<TSelf, TItem, ApiVendorLName>; //TODO #2640: Доделать для классов, чтобы можно было указывать NamedItemCommonFixer
   where TItem: NamedItem<TItem, ApiVendorLName>;
     
     protected static procedure RegisterLoader(command_name: string; load: Func<ApiVendorLName, array of string, TSelf>) :=

@@ -2545,7 +2545,7 @@ type
       if not ApiManager.ShouldKeep(api) then exit;
       Extension.written_c += 1;
       
-      foreach var dep in ExtDependencies.AsEnumerable do //TODO #2852
+      foreach var dep in ExtDependencies do
         dep.Save;
       
       var any_funcs := add.Funcs.Any;

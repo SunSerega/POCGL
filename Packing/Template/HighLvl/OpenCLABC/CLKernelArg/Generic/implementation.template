@@ -90,7 +90,7 @@ begin Result := CLKernelArgPrivate.FromNativeArray(ntv_arr) end;
 static function CLKernelArg.FromCLMemory(cl_mem: CommandQueue<CLMemory>): CLKernelArg;
 begin Result := CLKernelArgGlobal.FromCLMemory(cl_mem) end;
 static function CLKernelArg.operator implicit(cl_mem: CLMemoryCCQ): CLKernelArg;
-begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
+begin Result := FromCLMemory(cl_mem) end;
 
 {$endregion CLMemory}
 
@@ -99,7 +99,7 @@ begin Result := FromCLMemory(cl_mem as object as CommandQueue<CLMemory>) end;
 static function CLKernelArg.FromCLValue<T>(cl_val: CommandQueue<CLValue<T>>): CLKernelArg; where T: record;
 begin Result := CLKernelArgGlobal.FromCLValue(cl_val) end;
 static function CLKernelArg.operator implicit<T>(cl_val: CLValueCCQ<T>): CLKernelArg; where T: record;
-begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
+begin Result := FromCLValue(cl_val) end;
 
 {$endregion CLValue}
 
@@ -108,7 +108,7 @@ begin Result := FromCLValue(cl_val as object as CommandQueue<CLValue<T>>) end;
 static function CLKernelArg.FromCLArray<T>(cl_arr: CommandQueue<CLArray<T>>): CLKernelArg; where T: record;
 begin Result := CLKernelArgGlobal.FromCLArray(cl_arr) end;
 static function CLKernelArg.operator implicit<T>(cl_arr: CLArrayCCQ<T>): CLKernelArg; where T: record;
-begin Result := FromCLArray(cl_arr as object as CommandQueue<CLArray<T>>) end;
+begin Result := FromCLArray(cl_arr) end;
 
 {$endregion CLArray}
 

@@ -95,7 +95,7 @@ type
       if max.IsValid and (c>integer(max)) then exit;
       Result := true;
     end;
-    public static function operator in(c: integer; l: MergedStringLength) := c in l;
+    public static function operator in(c: integer; l: MergedStringLength) := l.Contains(c);
     
     public static function operator+(c1, c2: MergedStringLength): MergedStringLength;
     begin
@@ -454,8 +454,7 @@ implementation
     public procedure WriteTo(b: ColoredStringBuilderBase<string>; escape_sym: char); override :=
     b.AddSubRange('wild', b->
     begin
-      //TODO #????
-      b += MergedStringPartWild.wild_beg;
+      b += wild_beg;
       
       b.AddSubRange('count', b->
       begin
@@ -465,15 +464,13 @@ implementation
         b += c_min_s;
         if c_max_s<>c_min_s then
         begin
-          //TODO #????
-          b += MergedStringPartWild.range_sep;
+          b += range_sep;
           b += c_max_s;
         end;
         
       end);
       
-      //TODO #????
-      b += MergedStringPartWild.count_chs_sep;
+      b += count_chs_sep;
       
       if not ReferenceEquals(allowed, allowed_anything) then
         b.AddSubRange('chars', b->
@@ -497,8 +494,7 @@ implementation
             if ch1<>ch2 then
             begin
               if ch2.Code-ch1.Code <> 1 then
-                //TODO #????: Need "MergedStringPart."
-                b += MergedStringPartWild.range_sep;
+                b += range_sep;
               AddEscaped(ch2);
             end;
             
@@ -519,8 +515,7 @@ implementation
           FlushPrev;
         end);
       
-      //TODO #????
-      b += MergedStringPartWild.wild_end;
+      b += wild_end;
     end);
     
   end;
@@ -680,7 +675,7 @@ type
 function MergedStringPointer.IsOut := data.part_i = s.parts.Length;
 
 static function MergedString.Literal(s: string) :=
-//TODO #????: adding params breaks case where array is passed to "new MergedString"
+//TODO #3064: adding params breaks case where array is passed to "new MergedString"
 new MergedString(new MergedStringPart[](new MergedStringPartSolid(s)));
 
 static function MergedString.Parse(s: StringSection; escape_sym: char) :=
@@ -871,7 +866,6 @@ function NextZeroJumpPoint(p: MergedStringPoint2): MergedStringPoint2;
 begin
   var ep1 := p.Edge1;
   var ep2 := p.Edge2;
-  var s := ep1.s;
   
   while true do
   begin
@@ -1178,7 +1172,6 @@ begin
     end;
     exit;
   end;
-  var s := ep1.s;
   
   var part2 := EdgePart(ep2);
   if part2 is MergedStringPartSolid then

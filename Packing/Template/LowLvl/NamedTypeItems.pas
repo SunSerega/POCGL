@@ -2038,7 +2038,7 @@ type
     begin
       if org_t1.Name.IsMatrix <> org_t2.Name.IsMatrix then exit;
       
-      //TODO #????
+      //TODO #3062
 //      foreach var (t1,t2) in |org_t1,org_t2|.Permutations do
       foreach var (t1,t2) in |(org_t1,org_t2),(org_t2,org_t1)| do
       begin
@@ -2348,8 +2348,6 @@ type
       
       Result := (prev_written, intr_wr, impl_wr)->
       begin
-        //TODO #????
-        var _self := self;
         
         intr_wr += '  ///'#10;
         
@@ -2365,8 +2363,8 @@ type
         NameConditional(sz->exit(),
           (sz1,sz2)->
           begin
-            _self.WriteIdentity(intr_wr, main_name, sz1,sz2);
-            _self.WriteColRow(intr_wr, main_name, sz1,sz2);
+            self.WriteIdentity(intr_wr, main_name, sz1,sz2);
+            self.WriteColRow(intr_wr, main_name, sz1,sz2);
           end
         );
         WriteValAt(intr_wr);
@@ -2737,7 +2735,7 @@ type
   {$region CommonDirectNamedType}
   
   CommonDirectNamedType<TSelf> = abstract class(NamedLoadedItem<TSelf, ApiVendorLName>, ILoadedNamedType, IDirectNamedType)
-  where TSelf: NamedItem<TSelf, ApiVendorLName>, ILoadedNamedType, IDirectNamedType; //TODO #2736
+  where TSelf: NamedItem<TSelf, ApiVendorLName>, ILoadedNamedType, IDirectNamedType; //TODO #2640: Доделать для классов, чтобы можно было указывать CommonDirectNamedType
     
     static constructor;
     begin

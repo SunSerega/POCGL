@@ -1,6 +1,6 @@
 ﻿unit BinUtils;
 
-{$savepcu false}//TODO #2853
+{$savepcu false} //TODO #3057
 
 uses System;
 
@@ -51,7 +51,7 @@ begin
   if typeof(T).GetEnumUnderlyingType <> typeof(Int32) then
     raise new NotSupportedException;
   {$endif DEBUG}
-  //TODO #????: as object
+  //TODO #3056: as object
   Result := T(self.ReadInt32() as object);
 end;
 

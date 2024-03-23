@@ -448,13 +448,12 @@ type
     protected procedure WriteSpecialPreEnq(wr: Writer; settings: TSettings); virtual := exit;
     protected procedure WriteSpecialPostEnq(wr: Writer; settings: TSettings); virtual := exit;
     
-    private procedure WriteParamInvokes(fn: string; max_arg_w: integer; settings: TSettings);
+    private procedure WriteParamInvokes(fn: string; max_non_arr_cq_arg_w: integer; settings: TSettings);
     begin
-      //TODO #2654
-      var invokeable_args :=
-        settings.args?.&Where(arg->(settings as MethodSettings).arg_usage.ContainsKey(arg.name) and arg.t.IsCQ)
-        .Concat(GetSpecialInvokeResVars(settings)).ToArray
-      ?? System.Array.Empty&<MethodArg>;
+      var invokeable_args := (
+        (settings.args?.&Where(arg->settings.arg_usage.ContainsKey(arg.name) and arg.t.IsCQ) ?? System.Array.Empty&<MethodArg>)
+        + GetSpecialInvokeResVars(settings)
+      ).ToArray;
       
       if invokeable_args.Length=0 then exit;
       
@@ -469,7 +468,7 @@ type
           res_EIm += ';'#10;
           continue;
         end;
-        res_EIm += arg.name.PadLeft(max_arg_w);
+        res_EIm += if arg.t.ArrLvl<>0 then arg.name else arg.name.PadLeft(max_non_arr_cq_arg_w);
         res_EIm += '_qr: ';
         
         var t := arg.t;
@@ -490,8 +489,7 @@ type
             break;
         
         res_EIm += 'QueueRes';
-        //TODO #2654
-        if (settings as MethodSettings).arg_usage[arg.name]='ptr' then
+        if settings.arg_usage[arg.name]='ptr' then
           res_EIm += 'Ptr';
         res_EIm += '<';
         res_EIm += MethodArgTypeCQ(t).next.org_text;
@@ -506,8 +504,7 @@ type
       
       var WriteArgInvoke := procedure(arg: MethodArg; to_ptr: boolean)->
       begin
-        //TODO #2654
-        if to_ptr <> ((settings as MethodSettings).arg_usage[arg.name]='ptr') then exit;
+        if to_ptr <> (settings.arg_usage[arg.name]='ptr') then exit;
         
         res_EIm += '        ';
         if arg.t is MethodArgTypeBasic then
@@ -516,9 +513,7 @@ type
           exit;
         end;
         
-        var res_EIm := res_EIm; //TODO #???? (issue с 3 переменными)
-        
-        res_EIm += arg.name.PadLeft(max_arg_w);
+        res_EIm += if arg.t.ArrLvl<>0 then arg.name else arg.name.PadLeft(max_non_arr_cq_arg_w);
         res_EIm += '_qr := ';
         
         var arg_name := arg.name;
@@ -536,8 +531,7 @@ type
         end;
         
         res_EIm += 'invoker.InvokeBranch(';
-        //TODO Вместо max_arg_w тут надо что то отдельное, потому что не все проходят это условие
-        res_EIm += if arg.t.ArrLvl<>0 then arg_name else arg_name.PadLeft(max_arg_w);
+        res_EIm += if arg.t.ArrLvl<>0 then arg_name else arg_name.PadLeft(max_non_arr_cq_arg_w);
         res_EIm += '.Invoke';
         res_EIm += to_ptr ? 'ToPtr' : 'ToAny';
         res_EIm += ', par_err_handlers, ';
@@ -570,7 +564,7 @@ type
       
     end;
     
-    private procedure WriteCommandTypeInvoke(fn: string; max_arg_w: integer; settings: TSettings);
+    private procedure WriteCommandTypeInvoke(fn: string; max_non_arr_cq_arg_w: integer; settings: TSettings);
     begin
       WriteInvokeHeader(settings);
       res_EIm += '    begin'#10;
@@ -580,7 +574,7 @@ type
           if not settings.arg_usage.ContainsKey(arg.name) then
             Otp($'WARNING: arg [{arg.name}] is defined for {fn}({settings.args_str}), but never used');
       
-      WriteParamInvokes(fn, max_arg_w, settings);
+      WriteParamInvokes(fn, max_non_arr_cq_arg_w, settings);
       
       res_EIm += '      '#10;
       
@@ -596,7 +590,7 @@ type
             if not arg.t.IsCQ then continue;
             
             res_EIm += '        ';
-            res_EIm += arg.name.PadLeft(max_arg_w);
+            res_EIm += if arg.t.ArrLvl<>0 then arg.name else arg.name.PadLeft(max_non_arr_cq_arg_w);
             res_EIm += '_qr';
             
             for var i := 1 to arg.t.ArrLvl do
@@ -636,9 +630,9 @@ type
             if not arg.t.IsCQ then continue;
             
             res_EIm += '        var ';
-            res_EIm += arg.name.PadLeft(max_arg_w);
+            res_EIm += if arg.t.ArrLvl<>0 then arg.name else arg.name.PadLeft(max_non_arr_cq_arg_w);
             res_EIm += ' := ';
-            res_EIm += arg.name.PadLeft(max_arg_w);
+            res_EIm += if arg.t.ArrLvl<>0 then arg.name else arg.name.PadLeft(max_non_arr_cq_arg_w);
             res_EIm += '_qr';
             
             for var i := 1 to arg.t.ArrLvl do
@@ -820,6 +814,7 @@ type
       {$region field's}
       
       var max_arg_w := settings.args=nil ? 0 : settings.args.Max(arg->arg.name.Length);
+      var max_non_arr_cq_arg_w := settings.args=nil ? 0 : settings.args.Where(arg->arg.t.ArrLvl=0).Where(arg->arg.t.IsCQ).Select(arg->arg.name.Length).DefaultIfEmpty.Max;
       
       var val_ptr_args := new HashSet<string>;
       if settings.args<>nil then
@@ -981,7 +976,7 @@ type
               vname := nvname;
             end;
             
-            res_EIm += arg.t is MethodArgTypeArray ? vname : vname.PadLeft(max_arg_w);
+            res_EIm += if arg.t.ArrLvl<>0 then vname else vname.PadLeft(max_non_arr_cq_arg_w);
             res_EIm += '.InitBeforeInvoke(g, prev_hubs);'#10;
           end;
         
@@ -992,7 +987,7 @@ type
       
       {$endregion InitBeforeInvoke}
       
-      WriteCommandTypeInvoke(fn, max_arg_w, settings);
+      WriteCommandTypeInvoke(fn, max_non_arr_cq_arg_w, settings);
       res_EIm += '    '#10;
       
       {$region ToStringImpl}
@@ -1194,8 +1189,7 @@ type
           res_EIm += t;
           res_EIm += 'Command';
           res_EIm += tn;
-          //TODO #2654
-          if generics.Count+(settings as MethodSettings).generics.Count <> 0 then
+          if generics.Count+settings.generics.Count <> 0 then
           begin
             res_EIm += '<';
             res_EIm += generics.Select(g->g[0]).Concat(settings.generics).JoinToString(', ');
@@ -1204,8 +1198,7 @@ type
           if settings.impl_args<>nil then
           begin
             res_EIm += '(';
-            //TODO #2654
-            res_EIm += (settings as MethodSettings).impl_args.JoinToString(', ');
+            res_EIm += settings.impl_args.JoinToString(', ');
             res_EIm += ')';
           end;
         end, settings);

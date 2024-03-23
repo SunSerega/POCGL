@@ -4,8 +4,6 @@ uses '../../../../Utils/CodeGen';
 
 uses '../../Common/PackingUtils';
 
-//TODO Генерация теста
-
 type
   FromMethodSettings = record
     public inp_nick, par_name, inp_tname: string;
@@ -472,11 +470,6 @@ type
           m += s.inp_nick;
           m += '(';
           m += s.par_name;
-          //TODO #????
-          begin
-            m += ' as object as ';
-            write_inp_t(m, 'CommandQueue');
-          end;
           m += ') end;'#10;
           
           t += 'TestT&<';
@@ -584,7 +577,7 @@ begin
       
     end);
     
-    //TODO #2650: Как исправят - перенести в начало [Managed]
+    //TODO #3054: Как исправят - перенести в начало [Managed]
     begin
       var s := FromMethodSettings.Create('Value', 'val', nil, true, false);
       

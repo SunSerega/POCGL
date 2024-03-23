@@ -19,10 +19,7 @@ type
     
     public static procedure PrintAllNames := all_sources.Keys.PrintLines;
     
-    //TODO #2842
-    private static function constructor_hotfix: byte;
-    private static aaaaa := constructor_hotfix;
-//    static constructor;
+    static constructor;
     
     protected static function MakeName<TFullName>(api, s, api_beg: string; allow_nil, skip_invalid: boolean; api_underscore_sep: boolean?; known_suffixes: HashSet<string>; params suffix_formats: array of string): TFullName;
       where TFullName: ApiVendorLName<TFullName>;
@@ -55,7 +52,6 @@ type
     
     protected constructor(name: TSourceName);
     begin
-      aaaaa := aaaaa;
       self._name := name;
       if name in all_sources then
         raise new InvalidOperationException(self.ToString);
@@ -127,12 +123,9 @@ uses '../../POCGL_Utils';
 
 var source_create_callbacks: Action;
 
-//TODO #2842
-static function ItemSource<TSelf,TSourceName,TItem>.constructor_hotfix: byte;
-//static constructor ItemSource<TSelf,TSourceName,TItem>.Create;
+static constructor ItemSource<TSelf,TSourceName,TItem>.Create;
 begin
 //  Println(TypeToTypeName(typeof(TSelf)));
-  Result := 0;
   
   source_create_callbacks += ()->
     foreach var s in all_sources.Values do

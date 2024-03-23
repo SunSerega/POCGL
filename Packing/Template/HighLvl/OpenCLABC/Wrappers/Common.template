@@ -15,8 +15,7 @@
     
     public static function operator=(wr1, wr2: CLPlatform): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLPlatform): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLPlatform): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLPlatform(var wr)) and (self = wr);
@@ -43,8 +42,7 @@
     
     public static function operator=(wr1, wr2: CLDevice): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLDevice): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLDevice): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLDevice(var wr)) and (self = wr);
@@ -86,8 +84,7 @@
     
     public static function operator=(wr1, wr2: CLContext): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLContext): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLContext): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLContext(var wr)) and (self = wr);
@@ -106,8 +103,7 @@
     
     public static function operator=(wr1, wr2: CLCode): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLCode): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLCode): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLCode(var wr)) and (self = wr);
@@ -124,8 +120,7 @@
     
     public static function operator=(wr1, wr2: CLKernel): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
-    public static function operator<>(wr1, wr2: CLKernel): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
+    public static function operator<>(wr1, wr2: CLKernel): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLKernel(var wr)) and (self = wr);
@@ -152,8 +147,7 @@
     
     public static function operator=(wr1, wr2: CLMemory): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLMemory): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLMemory): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLMemory(var wr)) and (self = wr);
@@ -195,8 +189,7 @@
     
     public static function operator=(wr1, wr2: CLValue<T>): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLValue<T>): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLValue<T>): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLValue<T>(var wr)) and (self = wr);
@@ -223,8 +216,7 @@
     
     public static function operator=(wr1, wr2: CLArray<T>): boolean :=
     ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
-    public static function operator<>(wr1, wr2: CLArray<T>): boolean := false=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+    public static function operator<>(wr1, wr2: CLArray<T>): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
     (obj is CLArray<T>(var wr)) and (self = wr);

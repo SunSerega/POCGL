@@ -67,10 +67,7 @@ begin
   var curr_fragment_shader := 0;
   var point_count := 0;
   var points := new Vec2d[4];
-  //TODO Не используется сейчас
-  // - https://registry.khronos.org/OpenGL-Refpages/gl4/html/gl_FragCoord.xhtml
-  // - Использовать чтобы возвращать какую-то уникальную инфу из функции
-  var mouse_pos := new Vec2d(real.NaN, real.NaN);
+  var mouse_pos := default(Vec2i);
   {$region Управление}
   var points_updated := 0;
   begin
@@ -159,8 +156,8 @@ begin
     
     f.MouseMove += (o,e)->
     begin
+      mouse_pos := new Vec2i(e.X, f.ClientSize.Height-e.Y);
       var pos := CoordsFromScreen(e.X,e.Y);
-      mouse_pos := pos;
       if grabbed_point_ind<>nil then
       begin
         points[grabbed_point_ind.Value] := pos;
@@ -194,15 +191,15 @@ begin
     gl.CreateBuffers(1, buffer_points);
     gl.BindBufferBase(glBufferTarget.SHADER_STORAGE_BUFFER, 0, buffer_points);
     
-    var uniform_aspect  := 1;
-    var uniform_scale   := 2;
-    var uniform_pos     := 3;
+    var uniform_aspect    := 1;
+    var uniform_scale     := 2;
+    var uniform_pos       := 3;
+    var uniform_mouse_pos := 4;
     
-    // Для дебага
-//    var buffer_temp: gl_buffer;
-//    gl.CreateBuffers(1, buffer_temp);
-//    gl.NamedBufferData(buffer_temp, new IntPtr(3*sizeof(real)), IntPtr.Zero, VertexBufferObjectUsage.DYNAMIC_READ);
-//    gl.BindBufferBase(BufferTarget.SHADER_STORAGE_BUFFER, 1, buffer_temp);
+    var buffer_point_data: gl_buffer;
+    gl.CreateBuffers(1, buffer_point_data);
+    gl.NamedBufferData(buffer_point_data, new UIntPtr(1*sizeof(real)), IntPtr.Zero, glVertexBufferObjectUsage.DYNAMIC_READ);
+    gl.BindBufferBase(glBufferTarget.SHADER_STORAGE_BUFFER, 1, buffer_point_data);
     
     var timings_max_count := 30;
     var timings := new Queue<TimeSpan>(timings_max_count);
@@ -252,12 +249,12 @@ begin
       // Копируем все данные сразу в локальную переменную
       var camera := camera;
       // И затем в юниформы
-      gl.Uniform1d(uniform_aspect,  camera.aspect);
-      gl.Uniform1d(uniform_scale,   camera.scale);
-      gl.Uniform2dv(uniform_pos, 1, camera.pos);
+      gl.Uniform1d(uniform_aspect,        camera.aspect);
+      gl.Uniform1d(uniform_scale,         camera.scale);
+      gl.Uniform2dv(uniform_pos, 1,       camera.pos);
+      gl.Uniform2iv(uniform_mouse_pos, 1, mouse_pos);
       
-      // Для дебага
-//      gl.NamedBufferSubData(buffer_temp, new IntPtr(0*sizeof(real)), new IntPtr(2*sizeof(real)), mouse_pos);
+      gl.NamedBufferSubData(buffer_point_data, new IntPtr(0*sizeof(real)), new UIntPtr(1*sizeof(real)), |real.NaN|);
       
       // Вызываем шейдерную программу один раз, не передавая локальные данные
       // Вместо этого будем использовать только юниформы (общие для всех точек данные)
@@ -266,9 +263,8 @@ begin
       // Обычно это неэффективно, но тут только простая демонстация
       gl.DrawArrays(glPrimitiveType.POINTS, 0,1);
       
-      // Для дебага
-//      var temp_data := new real[1];
-//      gl.GetNamedBufferSubData(buffer_temp, new IntPtr(2*sizeof(real)), new IntPtr(1*sizeof(real)), temp_data);
+      var point_data: real;
+      gl.GetNamedBufferSubData(buffer_point_data, new IntPtr(0*sizeof(real)), new UIntPtr(1*sizeof(real)), point_data);
       
       var err := gl.GetError;
       if err.IS_ERROR then MessageBox.Show(err.ToString);
@@ -284,7 +280,7 @@ begin
       timings += curr_time;
       
       var fps := timings.Count/total_time.TotalSeconds;
-      var form_text := $'{fps:N2} fps, {1000/fps:N2} mspf, {point_count} points, scale={camera.scale}, pos={camera.pos}';
+      var form_text := $'{all_shaders[curr_fragment_shader]}: {fps:N2} fps, {1000/fps:N2} mspf, {point_count} points, scale={camera.scale}, pos={camera.pos} data={point_data}';
 //      form_text := $'temp_data={_ObjectToString(temp_data)}, '+form_text;
       f.Text := form_text;
       EndFrame;

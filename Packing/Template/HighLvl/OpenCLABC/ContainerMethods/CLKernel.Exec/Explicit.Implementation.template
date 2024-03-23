@@ -23,24 +23,24 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
-       sz1.InitBeforeInvoke(g, prev_hubs);
+      sz1.InitBeforeInvoke(g, prev_hubs);
     end;
     
     protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>; get_arg_cache: ()->CLKernelArgCache): ParamInvRes<cl_kernel>; override;
     begin
-      var  sz1_qr: QueueRes<integer>;
+      var sz1_qr: QueueRes<integer>;
       var arg_setters: array of CLKernelArgSetter;
       
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch( sz1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        sz1_qr := invoker.InvokeBranch(sz1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
         arg_setters := self.InvokeArgs(invoker, enq_evs, par_err_handlers);
       end);
       
       {$ifdef DEBUG}
       Result.Item1 := ()->
       begin
-         sz1_qr.CancelStatusCheck('enq cancel');
+        sz1_qr.CancelStatusCheck('enq cancel');
       end;
       {$else DEBUG}
       Result.Item1 := nil;
@@ -48,7 +48,7 @@ type
       
       Result.Item2 := (o, cq, evs)->
       begin
-        var  sz1 :=  sz1_qr.GetResDirect;
+        var sz1 := sz1_qr.GetResDirect;
         ApplySetters(get_arg_cache(), arg_setters);
         var res_ev: cl_event;
         
@@ -116,28 +116,28 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
-       sz1.InitBeforeInvoke(g, prev_hubs);
-       sz2.InitBeforeInvoke(g, prev_hubs);
+      sz1.InitBeforeInvoke(g, prev_hubs);
+      sz2.InitBeforeInvoke(g, prev_hubs);
     end;
     
     protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>; get_arg_cache: ()->CLKernelArgCache): ParamInvRes<cl_kernel>; override;
     begin
-      var  sz1_qr: QueueRes<integer>;
-      var  sz2_qr: QueueRes<integer>;
+      var sz1_qr: QueueRes<integer>;
+      var sz2_qr: QueueRes<integer>;
       var arg_setters: array of CLKernelArgSetter;
       
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch( sz1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
-         sz2_qr := invoker.InvokeBranch( sz2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        sz1_qr := invoker.InvokeBranch(sz1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        sz2_qr := invoker.InvokeBranch(sz2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
         arg_setters := self.InvokeArgs(invoker, enq_evs, par_err_handlers);
       end);
       
       {$ifdef DEBUG}
       Result.Item1 := ()->
       begin
-         sz1_qr.CancelStatusCheck('enq cancel');
-         sz2_qr.CancelStatusCheck('enq cancel');
+        sz1_qr.CancelStatusCheck('enq cancel');
+        sz2_qr.CancelStatusCheck('enq cancel');
       end;
       {$else DEBUG}
       Result.Item1 := nil;
@@ -145,8 +145,8 @@ type
       
       Result.Item2 := (o, cq, evs)->
       begin
-        var  sz1 :=  sz1_qr.GetResDirect;
-        var  sz2 :=  sz2_qr.GetResDirect;
+        var sz1 := sz1_qr.GetResDirect;
+        var sz2 := sz2_qr.GetResDirect;
         ApplySetters(get_arg_cache(), arg_setters);
         var res_ev: cl_event;
         
@@ -221,32 +221,32 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; prev_hubs: HashSet<IMultiusableCommandQueue>); override;
     begin
       foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs);
-       sz1.InitBeforeInvoke(g, prev_hubs);
-       sz2.InitBeforeInvoke(g, prev_hubs);
-       sz3.InitBeforeInvoke(g, prev_hubs);
+      sz1.InitBeforeInvoke(g, prev_hubs);
+      sz2.InitBeforeInvoke(g, prev_hubs);
+      sz3.InitBeforeInvoke(g, prev_hubs);
     end;
     
     protected function InvokeParams(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>; get_arg_cache: ()->CLKernelArgCache): ParamInvRes<cl_kernel>; override;
     begin
-      var  sz1_qr: QueueRes<integer>;
-      var  sz2_qr: QueueRes<integer>;
-      var  sz3_qr: QueueRes<integer>;
+      var sz1_qr: QueueRes<integer>;
+      var sz2_qr: QueueRes<integer>;
+      var sz3_qr: QueueRes<integer>;
       var arg_setters: array of CLKernelArgSetter;
       
       g.ParallelInvoke(nil, enq_c, invoker->
       begin
-         sz1_qr := invoker.InvokeBranch( sz1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
-         sz2_qr := invoker.InvokeBranch( sz2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
-         sz3_qr := invoker.InvokeBranch( sz3.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        sz1_qr := invoker.InvokeBranch(sz1.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        sz2_qr := invoker.InvokeBranch(sz2.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
+        sz3_qr := invoker.InvokeBranch(sz3.InvokeToAny, par_err_handlers, True).AddToEvLst(g, enq_evs, True);
         arg_setters := self.InvokeArgs(invoker, enq_evs, par_err_handlers);
       end);
       
       {$ifdef DEBUG}
       Result.Item1 := ()->
       begin
-         sz1_qr.CancelStatusCheck('enq cancel');
-         sz2_qr.CancelStatusCheck('enq cancel');
-         sz3_qr.CancelStatusCheck('enq cancel');
+        sz1_qr.CancelStatusCheck('enq cancel');
+        sz2_qr.CancelStatusCheck('enq cancel');
+        sz3_qr.CancelStatusCheck('enq cancel');
       end;
       {$else DEBUG}
       Result.Item1 := nil;
@@ -254,9 +254,9 @@ type
       
       Result.Item2 := (o, cq, evs)->
       begin
-        var  sz1 :=  sz1_qr.GetResDirect;
-        var  sz2 :=  sz2_qr.GetResDirect;
-        var  sz3 :=  sz3_qr.GetResDirect;
+        var sz1 := sz1_qr.GetResDirect;
+        var sz2 := sz2_qr.GetResDirect;
+        var sz3 := sz3_qr.GetResDirect;
         ApplySetters(get_arg_cache(), arg_setters);
         var res_ev: cl_event;
         

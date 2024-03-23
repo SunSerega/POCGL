@@ -56,7 +56,6 @@ type
   {$endregion MultiBooleanChoiceSet}
   
   {$region MultiIntegerChoiceSet}
-  //TODO Actually use (in InitOverloads)
   
   _MultiChoiceSep = record
     private s_div, s_mod: cardinal;

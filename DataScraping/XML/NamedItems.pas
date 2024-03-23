@@ -289,7 +289,7 @@ type
     
     {$region Pre-saving}
     
-    //TODO #????: as
+    //TODO #3059: as, use operator explicit
     protected function NameApi: string; virtual := (self.Name as IComplexName).ApiName;
     protected function NameSuffix: string; virtual := (self.Name as IComplexName).VendorSuffix;
     protected function NameLocal: string; virtual := (self.Name as IComplexName).LocalName;
@@ -358,16 +358,11 @@ type
       if perform_merge<>false then
         raise new InvalidOperationException;
       
-      save_ready := Defined.Values.Where(_item->
-      begin
-        //TODO #????: as
-        var item := _item as NamedItem<TSelf, TName>;
-        Result := item.merged_into=nil;
-      end).Distinct.ToArray;
+      save_ready := Defined.Values.Where(item->item.merged_into=nil).Distinct.ToArray;
       Sort(save_ready, item->item.Name);
       
       for var i := 0 to save_ready.Length-1 do
-        //TODO #????: as
+        //TODO #3060: as
         (save_ready[i] as NamedItem<TSelf, TName>).bin_index := i;
       
     end;
@@ -422,7 +417,7 @@ type
     end;
     public static function DistillAllUnique(inp: sequence of TSelf) := DistillAllUnique(inp, o->o, nil).ConvertAll(o->o.AfterMerges);
     
-    //TODO #????
+    //TODO #3059: as, use operator explicit
     protected procedure SaveName(bw: BinWriter); virtual := (Name as IBinSavable).Save(bw);
     protected procedure SaveBody(bw: BinWriter); abstract;
     private saved := false;
