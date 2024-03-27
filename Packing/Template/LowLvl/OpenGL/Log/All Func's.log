@@ -38564,6 +38564,20 @@ numViews:      Int32
 	------------------- | ----------------------- | ---------- | ----- | ------------- | -------- |
 	target              | attachment              | texture    | level | baseViewIndex | numViews |
 
+# gl::NamedFramebufferTextureMultiview + OVR
+!ppt
+framebuffer:   gl_framebuffer
+attachment:    glFramebufferAttachment
+texture:       gl_texture
+level:         Int32
+baseViewIndex: Int32
+numViews:      Int32
+!ffo
+1
+	gl_framebuffer | glFramebufferAttachment | gl_texture | Int32 | Int32         | Int32    |
+	-------------- | ----------------------- | ---------- | ----- | ------------- | -------- |
+	framebuffer    | attachment              | texture    | level | baseViewIndex | numViews |
+
 # gl::Hint + PGI
 !ppt
 target: glHintTarget

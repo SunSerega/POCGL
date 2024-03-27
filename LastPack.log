@@ -81,7 +81,7 @@ ScrapXML[OpenGL]: BasicType: Saved 116 items
 ScrapXML[OpenGL]: Group: Saved 323 items
 ScrapXML[OpenGL]: IdClass: Saved 15 items
 ScrapXML[OpenGL]: Delegate: Saved 5 items
-ScrapXML[OpenGL]: Func: Saved 3574 items
+ScrapXML[OpenGL]: Func: Saved 3575 items
 ScrapXML[OpenGL]: Feature: Saved 32 items
 ScrapXML[OpenGL]: Extension: Saved 1144 items
 ScrapXML[OpenGL]: Done
@@ -369,7 +369,7 @@ Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Group: Pac
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: IdClass: Packed 51 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Struct: Packed 4 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Delegate: Packed 4 items
-Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Func: Packed 3253 items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Func: Packed 3254 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Feature: Packed 4 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Extension: Packed 744 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Cleanup

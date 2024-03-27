@@ -29189,6 +29189,11 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure FramebufferTextureMultiviewOVR(target: glFramebufferTarget; attachment: glFramebufferAttachment; texture: gl_texture; level: Int32; baseViewIndex: Int32; numViews: Int32) :=
       ntv_FramebufferTextureMultiviewOVR_1(target, attachment, texture, level, baseViewIndex, numViews);
     
+    public NamedFramebufferTextureMultiviewOVR_adr := GetProcAddress('glNamedFramebufferTextureMultiviewOVR');
+    private ntv_NamedFramebufferTextureMultiviewOVR_1 := GetProcOrNil&<procedure(framebuffer: gl_framebuffer; attachment: glFramebufferAttachment; texture: gl_texture; level: Int32; baseViewIndex: Int32; numViews: Int32)>(NamedFramebufferTextureMultiviewOVR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure NamedFramebufferTextureMultiviewOVR(framebuffer: gl_framebuffer; attachment: glFramebufferAttachment; texture: gl_texture; level: Int32; baseViewIndex: Int32; numViews: Int32) :=
+      ntv_NamedFramebufferTextureMultiviewOVR_1(framebuffer, attachment, texture, level, baseViewIndex, numViews);
+    
   end;
   
   /// id: GL_OVR_multiview2

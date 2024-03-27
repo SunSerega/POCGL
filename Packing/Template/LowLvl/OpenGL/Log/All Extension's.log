@@ -7376,6 +7376,7 @@
 	Enum [gl::FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX]
 	Enum [gl::FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS]
 	Func [gl::FramebufferTextureMultiview + OVR]
+	Func [gl::NamedFramebufferTextureMultiview + OVR]
 
 # glMultiview2OVR (GL_OVR_multiview2)
 
@@ -12199,6 +12200,7 @@
 	Enum [gl::FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX]
 	Enum [gl::FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS]
 	Func [gl::FramebufferTextureMultiview + OVR]
+	Func [gl::NamedFramebufferTextureMultiview + OVR]
 
 # gles2Multiview2OVR (GL_OVR_multiview2)
 

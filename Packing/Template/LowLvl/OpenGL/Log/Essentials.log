@@ -97,7 +97,7 @@ Group: Packed 314 items
 IdClass: Packed 51 items
 Struct: Packed 4 items
 Delegate: Packed 4 items
-Func: Packed 3253 items
+Func: Packed 3254 items
 Feature: Packed 4 items
 Extension: Packed 744 items
 Cleanup
