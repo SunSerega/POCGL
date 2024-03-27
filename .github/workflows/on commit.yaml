@@ -79,6 +79,8 @@ jobs:
                     git add -A
                     git commit -m "win changes"
                     git push -f --set-upstream origin "$(git rev-parse --abbrev-ref HEAD)"
+                    
+                    exit 1
                 } else {
                     Write-Host "No changes detected"
                 }
@@ -157,6 +159,7 @@ jobs:
                     git commit -m "ubuntu changes"
                     git push -f --set-upstream origin "$(git rev-parse --abbrev-ref HEAD)"
                     
+                    exit 1
                 else
                     echo "No changes detected"
                 fi
