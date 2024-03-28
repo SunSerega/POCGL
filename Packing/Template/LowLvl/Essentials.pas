@@ -1,7 +1,5 @@
 ﻿unit Essentials;
 
-{$savepcu false} //TODO #3058
-
 interface
 
 uses System;
