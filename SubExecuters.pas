@@ -7,8 +7,6 @@ uses CLArgs;
 uses PathUtils;
 uses Timers;
 
-uses AQueue; //TODO #2543
-
 {$region Helpers}
 
 type

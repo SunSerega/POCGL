@@ -529,7 +529,7 @@ type
     private parts: array of MergedStringPart;
     private len_caps: array of MergedStringLength;
     
-    private constructor(parts: array of MergedStringPart);
+    private constructor(params parts: array of MergedStringPart);
     begin
       self.parts := parts;
       SetLength(len_caps, parts.Count);
@@ -675,8 +675,7 @@ type
 function MergedStringPointer.IsOut := data.part_i = s.parts.Length;
 
 static function MergedString.Literal(s: string) :=
-//TODO #3064: adding params breaks case where array is passed to "new MergedString"
-new MergedString(new MergedStringPart[](new MergedStringPartSolid(s)));
+new MergedString(new MergedStringPartSolid(s));
 
 static function MergedString.Parse(s: StringSection; escape_sym: char) :=
 new MergedString(OptimizeParts(MakeParts(s, escape_sym)).ToArray);
