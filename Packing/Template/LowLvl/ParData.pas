@@ -27,8 +27,7 @@ type
     private static inst := new ParArrSizeNotArray;
     public static property Instance: ParArrSizeNotArray read inst;
     
-    //TODO #3063: use Instance
-    static constructor := DefineLoader(PASK_NotArray, br->inst);
+    static constructor := DefineLoader(PASK_NotArray, br->Instance);
     
   end;
   
@@ -39,8 +38,7 @@ type
     private static inst := new ParArrSizeArbitrary;
     public static property Instance: ParArrSizeArbitrary read inst;
     
-    //TODO #3063: use Instance
-    static constructor := DefineLoader(PASK_Arbitrary, br->inst);
+    static constructor := DefineLoader(PASK_Arbitrary, br->Instance);
     
   end;
   

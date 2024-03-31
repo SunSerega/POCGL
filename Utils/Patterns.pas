@@ -1,9 +1,6 @@
 ﻿unit Patterns;
 {$zerobasedstrings}
 
-//TODO #2739
-{$savepcu false}
-
 interface
 
 uses System;

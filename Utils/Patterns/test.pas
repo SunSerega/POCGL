@@ -37,9 +37,9 @@ end;
 
 var p: MergedString;
 begin
-  var ps := EnumerateFiles('G:/0Prog/AutoMaximize/Classes/1 What')
+  var ps := EnumerateFiles('G:\0Prog\AutoMaximize\Classes\1 What')
     .Select(System.IO.Path.GetFileName)
-    .Where(fname->fname.StartsWith('HwndWrapper'))
+//    .Where(fname->fname.StartsWith('HwndWrapper'))
     .Select(MergedString.Literal)
     .ToHashSet;
   while ps.Count.Println>1 do

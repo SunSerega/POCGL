@@ -1,8 +1,7 @@
 ﻿unit BinUtils;
 
-{$savepcu false} //TODO #3057
-
 uses System;
+uses '..\..\..\Utils\TypeMagic';
 
 type
   BinReader = System.IO.BinaryReader;
@@ -51,8 +50,7 @@ begin
   if typeof(T).GetEnumUnderlyingType <> typeof(Int32) then
     raise new NotSupportedException;
   {$endif DEBUG}
-  //TODO #3056: as object
-  Result := T(self.ReadInt32() as object);
+  Result := ConvertTo&<T>.FromUnchecked(self.ReadInt32());
 end;
 
 end.

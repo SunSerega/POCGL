@@ -50,11 +50,8 @@ type
           Otp($'WARNING: {kvp.Key} referenced itself');
       end;
       
-      foreach var kvp in all_unused_reports do
-        kvp.Value();
-      //TODO #3061: Заменить предыдущий цикл
-//      foreach var rep in all_unused_reports.Values do
-//        rep.Invoke();
+      foreach var rep in all_unused_reports.values do
+        rep.Invoke();
       
       all_unused_reports := nil;
     end;

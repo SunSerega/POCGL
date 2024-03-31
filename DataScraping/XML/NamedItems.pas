@@ -289,10 +289,9 @@ type
     
     {$region Pre-saving}
     
-    //TODO #3059: as, use operator explicit
-    protected function NameApi: string; virtual := (self.Name as IComplexName).ApiName;
-    protected function NameSuffix: string; virtual := (self.Name as IComplexName).VendorSuffix;
-    protected function NameLocal: string; virtual := (self.Name as IComplexName).LocalName;
+    protected function NameApi: string; virtual := IComplexName(self.Name).ApiName;
+    protected function NameSuffix: string; virtual := IComplexName(self.Name).VendorSuffix;
+    protected function NameLocal: string; virtual := IComplexName(self.Name).LocalName;
     
     protected function NameWithoutSuffix: TName; virtual;
     begin
@@ -362,8 +361,7 @@ type
       Sort(save_ready, item->item.Name);
       
       for var i := 0 to save_ready.Length-1 do
-        //TODO #3060: as
-        (save_ready[i] as NamedItem<TSelf, TName>).bin_index := i;
+        save_ready[i].bin_index := i;
       
     end;
     
@@ -417,8 +415,7 @@ type
     end;
     public static function DistillAllUnique(inp: sequence of TSelf) := DistillAllUnique(inp, o->o, nil).ConvertAll(o->o.AfterMerges);
     
-    //TODO #3059: as, use operator explicit
-    protected procedure SaveName(bw: BinWriter); virtual := (Name as IBinSavable).Save(bw);
+    protected procedure SaveName(bw: BinWriter); virtual := IBinSavable(Name).Save(bw);
     protected procedure SaveBody(bw: BinWriter); abstract;
     private saved := false;
     public procedure Save(bw: BinWriter);

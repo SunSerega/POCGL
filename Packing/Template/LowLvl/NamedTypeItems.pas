@@ -2038,9 +2038,7 @@ type
     begin
       if org_t1.Name.IsMatrix <> org_t2.Name.IsMatrix then exit;
       
-      //TODO #3062
-//      foreach var (t1,t2) in |org_t1,org_t2|.Permutations do
-      foreach var (t1,t2) in |(org_t1,org_t2),(org_t2,org_t1)| do
+      foreach var (t1,t2) in |org_t1,org_t2|.Permutations do
       begin
         var t1_name := t1.Name.ToString(true);
         var t2_name := t2.Name.ToString(true);
