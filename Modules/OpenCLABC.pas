@@ -437,16 +437,31 @@ unit OpenCLABC;
 
 //TODO Issue компилятора:
 //TODO https://github.com/pascalabcnet/pascalabcnet/issues/{id}
-// - #2221
-// - #2550
-// - #2589
-// - #2604
-// - #2607
-// - #2610
+// - #634
+// --- Лямбду с var-параметром приходится расписывать как обычную функцию
+// - #2036
+// --- Нужна доп. неиспользуемая подпрограмма, чтобы парсер пропустил атрибут
+// - #2461
+// --- Функция вместо свойства
+// - #2779
+// --- "boolean(true)" в "read" свойства
+// - #3073
+// --- Явно реализую геттер вместо оригинального свойства
+// - #3074
+// --- Нужна доп. промежуточная перегрузка
+// - #3075
+// --- Нужен дубль оператора в наследнике
+// - #3076
+// --- Приходится указывать "&<...>"
+// - #3078
+// --- Надо "self."
+// - #3079
+// --- Приходится указывать "&<...>"
 
 //TODO Issue mono:
 //TODO https://github.com/mono/mono/issues/{id}
 // - #11034
+// --- Во многих местах приходится делать реализацию интерфейса не явной
 
 {$endregion Upstream bugs}
 
@@ -630,9 +645,7 @@ type
     public static property ValueSize: integer read Marshal.SizeOf(default(T));
     public property ByteSize: UIntPtr read new UIntPtr(ValueSize);
     
-    //TODO #????
-    private function PointerUntyped := pointer(ptr);
-    public property Pointer: ^T read PointerUntyped();
+    public property Pointer: ^T read ptr.ToPointer;
     public property Value: T read Pointer^ write Pointer^ := value;
     
     public property UntypedArea: NativeMemoryArea read new NativeMemoryArea(self.ptr, self.ByteSize);
@@ -966,9 +979,8 @@ type
     
     {$region ICollection}
     
-    //TODO #????
-    ///--
-    public property {System.Collections.Generic.ICollection<T>.}Count: integer read self.Length;
+    //TODO #3073
+    public function System.Collections.Generic.ICollection<T>.get_Count: integer := self.Length;
     public property System.Collections.Generic.ICollection<T>.IsReadOnly: boolean read boolean(true);
     
     public procedure System.Collections.Generic.ICollection<T>.Add(item: T) := raise new NotSupportedException;
@@ -1012,8 +1024,7 @@ type
       if self.Length<>0 then
       begin
         sb += ' ';
-        //TODO #????: as
-        foreach var x in self as IList<T> do
+        foreach var x in self do
         begin
           sb += _ObjectToString(x);
           sb += ', ';
@@ -1170,12 +1181,6 @@ type
     $'{time} | {GetActStr} when: {reason}';
     
   end;
-  //TODO #2680
-  ///
-  TimeNString = auto class
-    t: TimeSpan;
-    s: string;
-  end;
   ///
   EventUseLog = sealed class
     private log_lines := new List<EventRetainReleaseData>;
@@ -1195,14 +1200,14 @@ type
       ref_c -= 1;
     end;
     
-    private function MakeReports: sequence of array of TimeNString;
+    private function MakeReports: sequence of array of (TimeSpan,string);
     begin
-      var res := new List<TimeNString>;
+      var res := new List<(TimeSpan,string)>;
       var c := 0;
       foreach var act in log_lines do
       begin
         c += if act.is_release then -1 else +1;
-        res += new TimeNString(act.time, $'{c,3} | {act}');
+        res += (act.time, $'{c,3} | {act}');
         if c=0 then
         begin
           yield res.ToArray;
@@ -1242,14 +1247,14 @@ type
       var newest_report := TimeSpan.Zero;
       foreach var (r,ev) in Logs.SelectMany(kvp->
         kvp.Value.MakeReports.Tabulate(r->kvp.Key)
-      ).OrderBy(\(r,ev)->r[0].t) do
+      ).OrderBy(\(r,ev)->r[0][0]) do
       begin
-        if r[0].t>newest_report then
+        if r[0][0]>newest_report then
           otp.WriteLine;
         otp.WriteLine($'Logging state change of {ev}:');
-        foreach var l in r do
-          otp.WriteLine(l.s);
-        newest_report := |newest_report, r[^1].t|.Max;
+        foreach var (t,s) in r do
+          otp.WriteLine(s);
+        newest_report := |newest_report, r[^1][0]|.Max;
         otp.WriteLine('-'*30);
       end;
       
@@ -1595,8 +1600,7 @@ type
       begin
         var c :=
           {$ifdef ForceMaxDebug}
-          //TODO #????: Лишние ()
-          LoadTestContext() ??
+          LoadTestContext ??
           {$endif ForceMaxDebug}
           MakeNewDefaultContext;
         // Extra checks, in case .Default was explicitly set while generating new context
@@ -1965,7 +1969,7 @@ type
       );
     end;
     
-    //TODO #2899
+    //TODO #3074
     private function GetPropValue2(prop_f: _GetPropValueFunc<array of byte>) := GetPropValue(prop_f);
     
     //TODO #634
@@ -2148,6 +2152,7 @@ type
       
       if Result=cl_program.Zero then
         //TODO В этом случае нельзя получить лог???
+        // - Пока ещё молча обсуждаем: https://github.com/KhronosGroup/OpenCL-Docs/issues/1075
         OpenCLABCInternalException.RaiseIfError(ec) else
         CheckBuildFail(Result,
           ec, clErrorCode.LINK_PROGRAM_FAILURE,
@@ -2302,8 +2307,9 @@ type
     
     {$endregion Deserialize}
     
-    //TODO #2668
+    //TODO #3075
     public static function operator=(p1,p2: CLProgramCode) := p1.Equals(p2);
+    public static function operator<>(p1,p2: CLProgramCode) := not(p1=p2);
     
   end;
   
@@ -3522,6 +3528,7 @@ type
     {$endif ErrHandlerDebug}
     
     //TODO Дать пользователю это решать
+    // - Вообще это надо ещё перепродумать исходя из реального случая, к примеру в моём мандельброте
     private static max_spin_wait := TimeSpan.FromMilliseconds(50);
     public procedure Wait;
     begin
@@ -3755,6 +3762,9 @@ function CQReleaseGL(params mem_objs: array of ICLMemory): CommandQueueNil;
 
 implementation
 
+uses System.Collections;
+uses System.Collections.Generic;
+
 {$region Util type's}
 // To reorder first change OpenCLABC.Utils.drawio
 // Created using https://www.diagrams.net/
@@ -3875,8 +3885,7 @@ type
     
   end;
   
-//TODO #????
-function ParameterQueue<T>.NewSetter(val: T) := new ParameterQueueSetter(self as object as IParameterQueue, val);
+function ParameterQueue<T>.NewSetter(val: T) := new ParameterQueueSetter(self, val);
 
 type
   CLTaskParameterData = record
@@ -4172,7 +4181,9 @@ begin
       p.Invoke(inp, nil);
       if typeof(TInp)<>typeof(TRes) then
         raise new OpenCLABCInternalException($'Proc inp [{TypeToTypeName(typeof(TInp))}] <> res [{TypeToTypeName(typeof(TRes))}]');
-      Result := TRes(object(inp)); //TODO Убрать object. Пока не заменил as на TRes(...) - работало без него
+      //TODO Убрать object. Пока не заменил as на TRes(...) - работало без него
+      // - Это надо делать через что-то типа Utils\TypeMagic
+      Result := TRes(object(inp));
     end;
     else raise new OpenCLABCInternalException($'Wrong DC type: [{TypeName(self)}] is not [{TypeToTypeName(typeof(TInp))}]=>[{TypeToTypeName(typeof(TRes))}]');
   end;
@@ -4307,14 +4318,12 @@ type
       Result := EventList.Empty;
       var count := 0;
       
-      //TODO #2589
-      for var i := 0 to (evs as IList<EventList>).Count-1 do
+      for var i := 0 to evs.Count-1 do
         count += evs.Item[i].count;
       if count=0 then exit;
       
       Result := new EventList(count);
-      //TODO #2589
-      for var i := 0 to (evs as IList<EventList>).Count-1 do
+      for var i := 0 to evs.Count-1 do
         Result += evs.Item[i];
       
     end;
@@ -4463,7 +4472,7 @@ type
 {$region DoubleList}
 
 type
-  DoubleList<T> = sealed class
+  DoubleList<T> = sealed class(IList<T>)
     private items: array of T;
     private c1 := 0;
     {$ifdef DEBUG}
@@ -4476,6 +4485,8 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     public property Capacity: integer read items.Length;
+    
+    {$region DEBUG}
     
     {$ifdef DEBUG}
     private procedure CheckFill(exp_done: boolean);
@@ -4493,6 +4504,10 @@ type
         raise new OpenCLABCInternalException($'{#10}{self.c1}+{self.skipped_c1}+{self.skipped_c2}+{self.c2}=>{self.items.Length} vs{#10}{other.c1}+{other.skipped_c1}+{other.skipped_c2}+{other.c2}=>{other.items.Length}');
     end;
     {$endif DEBUG}
+    
+    {$endregion DEBUG}
+    
+    {$region Own operations}
     
     public function L1Empty := c1=0;
     
@@ -4547,23 +4562,6 @@ type
       {$endif DEBUG}
       Result := new ArraySegment<T>(items,items.Length-c2,c2);
     end;
-    //TODO Вместо выделения .ToArray, лучше бы реализовать IList<T>...
-    // - Получится избежать пере-выделений при создании ErrHandlerBranchCombinator
-    public function GetAll: array of T;
-    begin
-      {$ifdef DEBUG}
-      CheckFill(true);
-      {$endif DEBUG}
-      var c := c1+c2;
-      Result := self.items;
-      if c=Result.Length then exit;
-      Result := new T[c];
-      for var i := 0 to c1-1 do
-        Result[i] := items[i];
-      var shift := c-items.Length;
-      for var i := items.Length-c2 to items.Length-1 do
-        Result[i+shift] := items[i];
-    end;
     
     public function L1Any(pred: T->boolean): boolean;
     begin
@@ -4579,6 +4577,87 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Combine<TRes>(conv: ArraySegment<T>->TRes) :=
       ValueTuple.Create( conv(GetL1), conv(GetL2) );
+    
+    {$endregion Own operations}
+    
+    {$region interface's}
+    
+    {$region IList}
+    
+    private function GetListItem(_ind: integer): T;
+    begin
+      var ind := cardinal(_ind);
+      
+      if ind<c1 then
+      begin
+        Result := items[ind];
+        exit;
+      end;
+      ind -= c1;
+      
+      if ind<c2 then
+      begin
+        Result := items[items.Length-c2+ind];
+        exit;
+      end;
+      ind -= c2;
+      
+      raise new System.IndexOutOfRangeException;
+    end;
+    property IList<T>.Item[ind: integer]: T read GetListItem write raise new System.InvalidOperationException;
+    
+    function IList<T>.IndexOf(item: T): integer;
+    begin
+      Result := 0;
+      raise new System.NotImplementedException;
+    end;
+    procedure IList<T>.Insert(ind: integer; item: T) :=
+      raise new System.InvalidOperationException;
+    procedure IList<T>.RemoveAt(ind: integer) :=
+      raise new System.InvalidOperationException;
+    
+    {$endregion IList}
+    
+    {$region ICollection}
+    
+    //TODO #3073
+    function ICollection<T>.get_Count: integer := c1+c2;
+    
+    //TODO #2779
+    property ICollection<T>.IsReadOnly: boolean read boolean(true);
+    
+    procedure ICollection<T>.CopyTo(a: array of T; ind: integer);
+    begin
+      System.Array.Copy(self.items,0,                     a,ind,    c1);
+      System.Array.Copy(self.items,self.items.Length-c2,  a,ind+c1, c2);
+    end;
+    
+    function ICollection<T>.Contains(item: T): boolean;
+    begin
+      Result := false;
+      raise new System.InvalidOperationException;
+    end;
+    procedure ICollection<T>.Add(item: T) :=
+      raise new System.InvalidOperationException;
+    function ICollection<T>.Remove(item: T): boolean;
+    begin
+      Result := false;
+      raise new System.InvalidOperationException;
+    end;
+    procedure ICollection<T>.Clear :=
+      raise new System.InvalidOperationException;
+    
+    {$endregion ICollection}
+    
+    {$region IEnumerable}
+    
+    private function Enmr := GetL1 + GetL2;
+    function IEnumerable<T>.GetEnumerator: IEnumerator<T> := Enmr.GetEnumerator;
+    function IEnumerable.GetEnumerator: IEnumerator := Enmr.GetEnumerator;
+    
+    {$endregion IEnumerable}
+    
+    {$endregion interface's}
     
   end;
   
@@ -4992,17 +5071,17 @@ type
     end;
     private constructor := raise new OpenCLABCInternalException;
     
-    //TODO Принимать TList:IList?
-    public static function Wrap(origin: LazyErrHandler; branches: array of ErrHandler{$ifdef DEBUG}; stage_reason: string{$endif}): LazyErrHandler;
+    public static function Wrap<TBranches>(origin: LazyErrHandler; branches: TBranches{$ifdef DEBUG}; stage_reason: string{$endif}): LazyErrHandler; where TBranches: IList<ErrHandler>;
     begin
       Result := origin;
-      if branches.Length=0 then exit;
+      if branches.Count=0 then exit;
       var origin_v := origin.TrySkipFunc;
       Result := LazyErrHandler.FromValue(
-        if (branches.Length=1) and (origin_v=nil) then
-          branches.Single else
+        if (branches.Count=1) and (origin_v=nil) then
+          branches[0] else
           new ErrHandlerBranchCombinator(
-            origin_v, branches
+            //TODO #3076: &<ErrHandler>
+            origin_v, branches.ToArray&<ErrHandler>
             {$ifdef DEBUG}, stage_reason{$endif}
           )
       );
@@ -5435,8 +5514,8 @@ type
     begin
       Result := done.TrySet(true);
       if not Result then exit;
-      // - Old INTEL drivers break if callback invoked by SetUserEventStatus deletes own event
       //TODO Delete this retain/release pair at some point
+      // - Old INTEL drivers break if callback invoked by SetUserEventStatus deletes own event
       OpenCLABCInternalException.RaiseIfError(cl.RetainEvent(uev));
       try
         OpenCLABCInternalException.RaiseIfError(
@@ -5457,18 +5536,6 @@ type
     
     public static function operator implicit(ev: UserEvent): cl_event := ev.uev;
     public static function operator implicit(ev: UserEvent): EventList := ev.uev;
-    
-    //TODO #????
-//    public static function operator+(ev1: EventList; ev2: UserEvent): EventList;
-//    begin
-//      Result := ev1 + ev2.uev;
-//      Result.abortable := true;
-//    end;
-//    public static procedure operator+=(ev1: EventList; ev2: UserEvent);
-//    begin
-//      ev1 += ev2.uev;
-//      ev1.abortable := true;
-//    end;
     
     public function ToString: string; override := $'UserEvent[{uev.val}]';
     
@@ -6564,7 +6631,6 @@ type
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override := exit;
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := new QueueResNil(l);
-    //TODO #????: Если убрать - ошибки компиляции нет, но сборка не загружается
     protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := qr_val_factory.MakeConst(l, self.Value);
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := qr_ptr_factory.MakeConst(l, self.Value);
     
@@ -6579,17 +6645,14 @@ type
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override;
     begin
-      //TODO #????
-      if g.parameters.ContainsKey(self as object as IParameterQueue) then exit;
-      //TODO #????
-      g.parameters[self as object as IParameterQueue] := if self.DefaultDefined then
+      if g.parameters.ContainsKey(self) then exit;
+      g.parameters[self] := if self.DefaultDefined then
         new CLTaskParameterData(self.Default) else
         new CLTaskParameterData;
     end;
     
     private function GetParVal(g: CLTaskGlobalData) :=
-    //TODO #????
-    T(g.parameters[self as object as IParameterQueue].val);
+    T(g.parameters[self].val);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := new QueueResNil(l);
     protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := qr_val_factory.MakeConst(l, self.GetParVal(g));
@@ -6755,9 +6818,8 @@ type
       g.ParallelInvoke(l, qs.Length+1, invoker->
       begin
         for var i := 0 to qs.Length-1 do
-          //TODO #2610
-          evs[i] := invoker.InvokeBranch&<IQueueRes>(
-            (g,l)->qs[i].InvokeToNil(g, l)
+          evs[i] := invoker.InvokeBranch(
+            qs[i].InvokeToNil
           ).AttachInvokeActions(g);
         var l_res := invoker.InvokeBranch(invoke_last);
         res := l_res;
@@ -7276,7 +7338,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
   
   {$region Threaded}
   
-  //TODO #2657
+  //TODO Cейчас парсер не принимает "(array of byte, word)->()" - #(2657)
   QueueResArr<T> = array of QueueRes<T>;
   
   CommandQueueThreadedArray<TInp,TRes, TInv, TDelegate, TWork> = sealed class(CommandQueueArrayWithWork<TInp,TRes, TInv,TDelegate>)
@@ -7681,7 +7743,7 @@ type
       {$endif DEBUG}
       if should_insta_call then
         d.Invoke(g, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, g.c) else
-        //TODO #????: self.
+        //TODO #3078: self.
         Result.AddAction(c->self.d.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c));
       
     end;
@@ -7744,8 +7806,7 @@ type
         prev_qr.ResEv, ()->
         begin
           acts.Invoke(c);
-          //TODO #????: self.
-          self.d.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c);
+          d.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c);
         end, g
         {$ifdef EventDebug}, $'body of {TypeName(self)}'{$endif}
       );
@@ -9523,7 +9584,7 @@ type
       {$endif DEBUG}
       if should_insta_call then
         p.Invoke(g, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, g.c) else
-        //TODO #????: self.
+        //TODO #3078: self.
         Result.AddAction(c->self.p.Invoke(nil, err_handler{$ifdef DEBUG}, err_test_reason{$endif}, prev_qr.GetResDirect, c));
       
     end;
@@ -9720,8 +9781,7 @@ begin
   cc.TakeCommandsBack;
   Result := TContainer(cc.Clone);
   cc.commands_in := Result;
-  //TODO #????
-  cc.old_command_count := (cc as GPUCommandContainer<T>).commands.Count;
+  cc.old_command_count := cc.commands.Count;
   cc.commands := nil;
   Result.commands += comm;
 end;
@@ -10083,77 +10143,6 @@ type
   
   EnqueueableCore = static class
     
-    //TODO Положить после Invoke, потому что оно в таком порядке вызывается...
-    // - При поиске будет интуитивнее
-    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    static function ExecuteEnqFunc<T>(
-      prev_res: T;
-      cq: cl_command_queue;
-      ev_l2: EventList;
-      {$ifdef DEBUG}cancel_p: Action;{$endif}
-      enq_f: EnqFunc<T>;
-      had_l1_err: boolean;
-      enq_err_handler: ErrHandler
-      {$ifdef DEBUG}; err_test_reason: string{$endif}
-      {$ifdef EventDebug}; q: object{$endif}
-    ): EnqRes;
-    begin
-      var direct_enq_res: DirectEnqRes;
-      try
-        {$ifdef DEBUG}
-        if prev_res=default(t) then
-          raise new OpenCLABCInternalException($'NULL Native');
-        {$endif DEBUG}
-        Result := new EnqRes(ev_l2, nil);
-        if had_l1_err then
-        begin
-          {$ifdef DEBUG}
-          cancel_p;
-          {$endif DEBUG}
-          exit;
-        end;
-        
-        try
-          direct_enq_res := enq_f(prev_res, cq, ev_l2);
-        except
-          on e: Exception do
-          begin
-            enq_err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
-            exit;
-          end;
-        end;
-      finally
-        {$ifdef DEBUG}
-        enq_err_handler.EndMaybeError(err_test_reason);
-        {$endif DEBUG}
-      end;
-      
-      var (enq_ev, act) := direct_enq_res;
-      Result.Item2 := act;
-      
-      // NVidia implementation doesn't create event if ev_l2.HasError
-      if enq_ev=cl_event.Zero then
-      begin
-        if not ev_l2.HasError then
-          raise new OpenCLABCInternalException($'');
-        exit;
-      end;
-      // Optimize the same way for the rest of implementations
-      // Also makes sure the debug event count is the same for all vendors
-      if EventList.HasError(enq_ev) or ev_l2.HasError then
-      begin
-        cl.ReleaseEvent(enq_ev).RaiseIfError;
-        exit;
-      end;
-      
-      {$ifdef EventDebug}
-      EventDebug.RegisterEventRetain(enq_ev, $'Enq by {TypeName(q)}, waiting on: {ev_l2.evs?.JoinToString}');
-      {$endif EventDebug}
-      // 1. ev_l2 can only be released after executing dependant command
-      // 2. If event in ev_l2 would complete with error, enq_ev would have non-descriptive error code
-      Result.Item1 := ev_l2 + enq_ev;
-    end;
-    
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     static function Invoke<T>(
       enq_c: integer;
@@ -10224,7 +10213,7 @@ type
         {$ifdef DEBUG}par_err_handlers.FakeAdd(false){$endif} else
         par_err_handlers.AddL2(enq_err_handler);
       
-      //TODO #2976
+      //TODO #3079
       var (ev_l1, ev_l2) := enq_evs.Combine(EventList.Combine&<ArraySegment<EventList>>);
       
       // When need_async_inv, cq needs to be secured for thread safety
@@ -10242,7 +10231,7 @@ type
       
       g.curr_err_handler :=
         ErrHandlerBranchCombinator.Wrap(
-          LazyErrHandler.InvalidFunc, par_err_handlers.GetAll
+          LazyErrHandler.InvalidFunc, par_err_handlers
           {$ifdef DEBUG}, $'{TypeName(q)} origin+par+enq union'{$endif}
         );
       var final_err_handler := g.curr_err_handler.TrySkipFunc;
@@ -10287,6 +10276,75 @@ type
         Result := new EnqRes(res_ev, nil);
       end;
       
+    end;
+    
+    private [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static function ExecuteEnqFunc<T>(
+      prev_res: T;
+      cq: cl_command_queue;
+      ev_l2: EventList;
+      {$ifdef DEBUG}cancel_p: Action;{$endif}
+      enq_f: EnqFunc<T>;
+      had_l1_err: boolean;
+      enq_err_handler: ErrHandler
+      {$ifdef DEBUG}; err_test_reason: string{$endif}
+      {$ifdef EventDebug}; q: object{$endif}
+    ): EnqRes;
+    begin
+      var direct_enq_res: DirectEnqRes;
+      try
+        {$ifdef DEBUG}
+        if prev_res=default(t) then
+          raise new OpenCLABCInternalException($'NULL Native');
+        {$endif DEBUG}
+        Result := new EnqRes(ev_l2, nil);
+        if had_l1_err then
+        begin
+          {$ifdef DEBUG}
+          cancel_p;
+          {$endif DEBUG}
+          exit;
+        end;
+        
+        try
+          direct_enq_res := enq_f(prev_res, cq, ev_l2);
+        except
+          on e: Exception do
+          begin
+            enq_err_handler.AddErr(e{$ifdef DEBUG}, err_test_reason{$endif});
+            exit;
+          end;
+        end;
+      finally
+        {$ifdef DEBUG}
+        enq_err_handler.EndMaybeError(err_test_reason);
+        {$endif DEBUG}
+      end;
+      
+      var (enq_ev, act) := direct_enq_res;
+      Result.Item2 := act;
+      
+      // NVidia implementation doesn't create event if ev_l2.HasError
+      if enq_ev=cl_event.Zero then
+      begin
+        if not ev_l2.HasError then
+          raise new OpenCLABCInternalException($'');
+        exit;
+      end;
+      // Optimize the same way for the rest of implementations
+      // Also makes sure the debug event count is the same for all vendors
+      if EventList.HasError(enq_ev) or ev_l2.HasError then
+      begin
+        cl.ReleaseEvent(enq_ev).RaiseIfError;
+        exit;
+      end;
+      
+      {$ifdef EventDebug}
+      EventDebug.RegisterEventRetain(enq_ev, $'Enq by {TypeName(q)}, waiting on: {ev_l2.evs?.JoinToString}');
+      {$endif EventDebug}
+      // 1. ev_l2 can only be released after executing dependant command
+      // 2. If event in ev_l2 would complete with error, enq_ev would have non-descriptive error code
+      Result.Item1 := ev_l2 + enq_ev;
     end;
     
   end;
@@ -11002,9 +11060,9 @@ HFQ&<T, SimpleFunc0ContainerC<T>>(f, need_own_thread);
       var prev_ev := l.AttachInvokeActions(g{$ifdef EventDebug}, l{$endif});
       var res_ev: cl_event;
       InvokeImpl(api_block, g.GetCQ(false), ntv_mem_objs, prev_ev, res_ev);
-	  //TODO Проверить и сделать всё релевантное из EnqueueableCore
-	  // - В частности что если enq_ev=0 из за предыдущих ошибок? Может ли тут NV тоже отказываться давать ивент?
-	  // - И сделать issue в OpenCL-Docs об этом, типа кто прав (или оба?)
+  	  //TODO Проверить и сделать всё релевантное из EnqueueableCore
+  	  // - В частности что если enq_ev=0 из за предыдущих ошибок? Может ли тут NV тоже отказываться давать ивент?
+  	  // - И сделать issue в OpenCL-Docs об этом, типа кто прав (или оба?)
       {$ifdef EventDebug}
       EventDebug.RegisterEventRetain(res_ev, $'Enq by {TypeName(self)}, waiting on: {prev_ev.evs?.Take(prev_ev.count).JoinToString}');
       {$endif EventDebug}
