@@ -80,7 +80,9 @@ jobs:
                     git commit -m "win changes"
                     git push -f --set-upstream origin "$(git rev-parse --abbrev-ref HEAD)"
                     
-                    exit 1
+                    if ((git diff --name-only ":!LastPack.log" ":!Log/PullUpstream.log" ":!DataScraping/Reps/OpenCL-Docs") -or (git ls-files --others --exclude-standard)) {
+                        exit 1
+                    }
                 } else {
                     Write-Host "No changes detected"
                 }
@@ -159,7 +161,9 @@ jobs:
                     git commit -m "ubuntu changes"
                     git push -f --set-upstream origin "$(git rev-parse --abbrev-ref HEAD)"
                     
-                    exit 1
+                    if [[ $(git diff --name-only ":!LastPack.log" ":!Log/PullUpstream.log" ":!DataScraping/Reps/OpenCL-Docs") || $(git ls-files --others --exclude-standard) ]]; then
+                        exit 1
+                    fi
                 else
                     echo "No changes detected"
                 fi
