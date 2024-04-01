@@ -9364,7 +9364,10 @@
     public static function operator+(v1, v2: glAttribMask) := new glAttribMask(v1.val or v2.val);
     public static function operator or(v1, v2: glAttribMask) := new glAttribMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glAttribMask) := new glAttribMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glAttribMask; v2: glAttribMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glAttribMask; v2: glAttribMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glAttribMask) := v1.val and v2.val = v1.val;
     
@@ -10198,7 +10201,10 @@
     public static function operator+(v1, v2: glBufferStorageMask) := new glBufferStorageMask(v1.val or v2.val);
     public static function operator or(v1, v2: glBufferStorageMask) := new glBufferStorageMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glBufferStorageMask) := new glBufferStorageMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glBufferStorageMask; v2: glBufferStorageMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glBufferStorageMask; v2: glBufferStorageMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glBufferStorageMask) := v1.val and v2.val = v1.val;
     
@@ -10484,7 +10490,10 @@
     public static function operator+(v1, v2: glClearBufferMask) := new glClearBufferMask(v1.val or v2.val);
     public static function operator or(v1, v2: glClearBufferMask) := new glClearBufferMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glClearBufferMask) := new glClearBufferMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glClearBufferMask; v2: glClearBufferMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glClearBufferMask; v2: glClearBufferMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glClearBufferMask) := v1.val and v2.val = v1.val;
     
@@ -10546,7 +10555,10 @@
     public static function operator+(v1, v2: glClientAttribMask) := new glClientAttribMask(v1.val or v2.val);
     public static function operator or(v1, v2: glClientAttribMask) := new glClientAttribMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glClientAttribMask) := new glClientAttribMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glClientAttribMask; v2: glClientAttribMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glClientAttribMask; v2: glClientAttribMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glClientAttribMask) := v1.val and v2.val = v1.val;
     
@@ -11337,7 +11349,10 @@
     public static function operator+(v1, v2: glContextFlagMask) := new glContextFlagMask(v1.val or v2.val);
     public static function operator or(v1, v2: glContextFlagMask) := new glContextFlagMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glContextFlagMask) := new glContextFlagMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glContextFlagMask; v2: glContextFlagMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glContextFlagMask; v2: glContextFlagMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glContextFlagMask) := v1.val and v2.val = v1.val;
     
@@ -11398,7 +11413,10 @@
     public static function operator+(v1, v2: glContextProfileMask) := new glContextProfileMask(v1.val or v2.val);
     public static function operator or(v1, v2: glContextProfileMask) := new glContextProfileMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glContextProfileMask) := new glContextProfileMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glContextProfileMask; v2: glContextProfileMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glContextProfileMask; v2: glContextProfileMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glContextProfileMask) := v1.val and v2.val = v1.val;
     
@@ -12672,7 +12690,10 @@
     public static function operator+(v1, v2: glFfdMask) := new glFfdMask(v1.val or v2.val);
     public static function operator or(v1, v2: glFfdMask) := new glFfdMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glFfdMask) := new glFfdMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glFfdMask; v2: glFfdMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glFfdMask; v2: glFfdMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glFfdMask) := v1.val and v2.val = v1.val;
     
@@ -12886,7 +12907,10 @@
     public static function operator+(v1, v2: glFoveationConfigBit) := new glFoveationConfigBit(v1.val or v2.val);
     public static function operator or(v1, v2: glFoveationConfigBit) := new glFoveationConfigBit(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glFoveationConfigBit) := new glFoveationConfigBit(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glFoveationConfigBit; v2: glFoveationConfigBit) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glFoveationConfigBit; v2: glFoveationConfigBit) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glFoveationConfigBit) := v1.val and v2.val = v1.val;
     
@@ -13116,7 +13140,10 @@
     public static function operator+(v1, v2: glFragmentShaderColorModMask) := new glFragmentShaderColorModMask(v1.val or v2.val);
     public static function operator or(v1, v2: glFragmentShaderColorModMask) := new glFragmentShaderColorModMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glFragmentShaderColorModMask) := new glFragmentShaderColorModMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glFragmentShaderColorModMask; v2: glFragmentShaderColorModMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glFragmentShaderColorModMask; v2: glFragmentShaderColorModMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glFragmentShaderColorModMask) := v1.val and v2.val = v1.val;
     
@@ -13285,7 +13312,10 @@
     public static function operator+(v1, v2: glFragmentShaderDestMask) := new glFragmentShaderDestMask(v1.val or v2.val);
     public static function operator or(v1, v2: glFragmentShaderDestMask) := new glFragmentShaderDestMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glFragmentShaderDestMask) := new glFragmentShaderDestMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glFragmentShaderDestMask; v2: glFragmentShaderDestMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glFragmentShaderDestMask; v2: glFragmentShaderDestMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glFragmentShaderDestMask) := v1.val and v2.val = v1.val;
     
@@ -13344,7 +13374,10 @@
     public static function operator+(v1, v2: glFragmentShaderDestModMask) := new glFragmentShaderDestModMask(v1.val or v2.val);
     public static function operator or(v1, v2: glFragmentShaderDestModMask) := new glFragmentShaderDestModMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glFragmentShaderDestModMask) := new glFragmentShaderDestModMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glFragmentShaderDestModMask; v2: glFragmentShaderDestModMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glFragmentShaderDestModMask; v2: glFragmentShaderDestModMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glFragmentShaderDestModMask) := v1.val and v2.val = v1.val;
     
@@ -18296,7 +18329,10 @@
     public static function operator+(v1, v2: glMapBufferAccessMask) := new glMapBufferAccessMask(v1.val or v2.val);
     public static function operator or(v1, v2: glMapBufferAccessMask) := new glMapBufferAccessMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glMapBufferAccessMask) := new glMapBufferAccessMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glMapBufferAccessMask; v2: glMapBufferAccessMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glMapBufferAccessMask; v2: glMapBufferAccessMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glMapBufferAccessMask) := v1.val and v2.val = v1.val;
     
@@ -18618,7 +18654,10 @@
     public static function operator+(v1, v2: glMemoryBarrierMask) := new glMemoryBarrierMask(v1.val or v2.val);
     public static function operator or(v1, v2: glMemoryBarrierMask) := new glMemoryBarrierMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glMemoryBarrierMask) := new glMemoryBarrierMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glMemoryBarrierMask; v2: glMemoryBarrierMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glMemoryBarrierMask; v2: glMemoryBarrierMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glMemoryBarrierMask) := v1.val and v2.val = v1.val;
     
@@ -18911,7 +18950,10 @@
     public static function operator+(v1, v2: glOcclusionQueryEventMask) := new glOcclusionQueryEventMask(v1.val or v2.val);
     public static function operator or(v1, v2: glOcclusionQueryEventMask) := new glOcclusionQueryEventMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glOcclusionQueryEventMask) := new glOcclusionQueryEventMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glOcclusionQueryEventMask; v2: glOcclusionQueryEventMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glOcclusionQueryEventMask; v2: glOcclusionQueryEventMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glOcclusionQueryEventMask) := v1.val and v2.val = v1.val;
     
@@ -19459,7 +19501,10 @@
     public static function operator+(v1, v2: glPathFontStyle) := new glPathFontStyle(v1.val or v2.val);
     public static function operator or(v1, v2: glPathFontStyle) := new glPathFontStyle(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glPathFontStyle) := new glPathFontStyle(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glPathFontStyle; v2: glPathFontStyle) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glPathFontStyle; v2: glPathFontStyle) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glPathFontStyle) := v1.val and v2.val = v1.val;
     
@@ -19617,7 +19662,10 @@
     public static function operator+(v1, v2: glPathMetricMask) := new glPathMetricMask(v1.val or v2.val);
     public static function operator or(v1, v2: glPathMetricMask) := new glPathMetricMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glPathMetricMask) := new glPathMetricMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glPathMetricMask; v2: glPathMetricMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glPathMetricMask; v2: glPathMetricMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glPathMetricMask) := v1.val and v2.val = v1.val;
     
@@ -19914,7 +19962,10 @@
     public static function operator+(v1, v2: glPerformanceQueryCapsMask) := new glPerformanceQueryCapsMask(v1.val or v2.val);
     public static function operator or(v1, v2: glPerformanceQueryCapsMask) := new glPerformanceQueryCapsMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glPerformanceQueryCapsMask) := new glPerformanceQueryCapsMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glPerformanceQueryCapsMask; v2: glPerformanceQueryCapsMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glPerformanceQueryCapsMask; v2: glPerformanceQueryCapsMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glPerformanceQueryCapsMask) := v1.val and v2.val = v1.val;
     
@@ -22580,7 +22631,10 @@
     public static function operator+(v1, v2: glSubgroupSupportedFeatures) := new glSubgroupSupportedFeatures(v1.val or v2.val);
     public static function operator or(v1, v2: glSubgroupSupportedFeatures) := new glSubgroupSupportedFeatures(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glSubgroupSupportedFeatures) := new glSubgroupSupportedFeatures(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glSubgroupSupportedFeatures; v2: glSubgroupSupportedFeatures) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glSubgroupSupportedFeatures; v2: glSubgroupSupportedFeatures) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glSubgroupSupportedFeatures) := v1.val and v2.val = v1.val;
     
@@ -22742,7 +22796,10 @@
     public static function operator+(v1, v2: glSyncObjectMask) := new glSyncObjectMask(v1.val or v2.val);
     public static function operator or(v1, v2: glSyncObjectMask) := new glSyncObjectMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glSyncObjectMask) := new glSyncObjectMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glSyncObjectMask; v2: glSyncObjectMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glSyncObjectMask; v2: glSyncObjectMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glSyncObjectMask) := v1.val and v2.val = v1.val;
     
@@ -23573,7 +23630,10 @@
     public static function operator+(v1, v2: glTextureStorageMask) := new glTextureStorageMask(v1.val or v2.val);
     public static function operator or(v1, v2: glTextureStorageMask) := new glTextureStorageMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glTextureStorageMask) := new glTextureStorageMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glTextureStorageMask; v2: glTextureStorageMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glTextureStorageMask; v2: glTextureStorageMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glTextureStorageMask) := v1.val and v2.val = v1.val;
     
@@ -24347,7 +24407,10 @@
     public static function operator+(v1, v2: glUseProgramStageMask) := new glUseProgramStageMask(v1.val or v2.val);
     public static function operator or(v1, v2: glUseProgramStageMask) := new glUseProgramStageMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glUseProgramStageMask) := new glUseProgramStageMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glUseProgramStageMask; v2: glUseProgramStageMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glUseProgramStageMask; v2: glUseProgramStageMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glUseProgramStageMask) := v1.val and v2.val = v1.val;
     
@@ -24825,7 +24888,10 @@
     public static function operator+(v1, v2: glVertexHintsMask) := new glVertexHintsMask(v1.val or v2.val);
     public static function operator or(v1, v2: glVertexHintsMask) := new glVertexHintsMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: glVertexHintsMask) := new glVertexHintsMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: glVertexHintsMask; v2: glVertexHintsMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: glVertexHintsMask; v2: glVertexHintsMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: glVertexHintsMask) := v1.val and v2.val = v1.val;
     
@@ -25322,7 +25388,10 @@
     public static function operator+(v1, v2: gdiLayerPlaneFlags) := new gdiLayerPlaneFlags(v1.val or v2.val);
     public static function operator or(v1, v2: gdiLayerPlaneFlags) := new gdiLayerPlaneFlags(v1.val or v2.val);
     
+    public static function operator-(v1, v2: gdiLayerPlaneFlags) := new gdiLayerPlaneFlags(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: gdiLayerPlaneFlags; v2: gdiLayerPlaneFlags) := v1 := v1+v2;
+    public static procedure operator-=(var v1: gdiLayerPlaneFlags; v2: gdiLayerPlaneFlags) := v1 := v1-v2;
     
     public static function operator in(v1, v2: gdiLayerPlaneFlags) := v1.val and v2.val = v1.val;
     
@@ -25441,7 +25510,10 @@
     public static function operator+(v1, v2: gdiPixelFormatFlags) := new gdiPixelFormatFlags(v1.val or v2.val);
     public static function operator or(v1, v2: gdiPixelFormatFlags) := new gdiPixelFormatFlags(v1.val or v2.val);
     
+    public static function operator-(v1, v2: gdiPixelFormatFlags) := new gdiPixelFormatFlags(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: gdiPixelFormatFlags; v2: gdiPixelFormatFlags) := v1 := v1+v2;
+    public static procedure operator-=(var v1: gdiPixelFormatFlags; v2: gdiPixelFormatFlags) := v1 := v1-v2;
     
     public static function operator in(v1, v2: gdiPixelFormatFlags) := v1.val and v2.val = v1.val;
     
@@ -25614,7 +25686,10 @@
     public static function operator+(v1, v2: wglColorBufferMask) := new wglColorBufferMask(v1.val or v2.val);
     public static function operator or(v1, v2: wglColorBufferMask) := new wglColorBufferMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: wglColorBufferMask) := new wglColorBufferMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: wglColorBufferMask; v2: wglColorBufferMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: wglColorBufferMask; v2: wglColorBufferMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: wglColorBufferMask) := v1.val and v2.val = v1.val;
     
@@ -25717,7 +25792,10 @@
     public static function operator+(v1, v2: wglDXInteropMask) := new wglDXInteropMask(v1.val or v2.val);
     public static function operator or(v1, v2: wglDXInteropMask) := new wglDXInteropMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: wglDXInteropMask) := new wglDXInteropMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: wglDXInteropMask; v2: wglDXInteropMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: wglDXInteropMask; v2: wglDXInteropMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: wglDXInteropMask) := v1.val and v2.val = v1.val;
     
@@ -25841,7 +25919,10 @@
     public static function operator+(v1, v2: wglImageBufferMask) := new wglImageBufferMask(v1.val or v2.val);
     public static function operator or(v1, v2: wglImageBufferMask) := new wglImageBufferMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: wglImageBufferMask) := new wglImageBufferMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: wglImageBufferMask; v2: wglImageBufferMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: wglImageBufferMask; v2: wglImageBufferMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: wglImageBufferMask) := v1.val and v2.val = v1.val;
     
@@ -25916,7 +25997,10 @@
     public static function operator+(v1, v2: wglLayerPlaneMask) := new wglLayerPlaneMask(v1.val or v2.val);
     public static function operator or(v1, v2: wglLayerPlaneMask) := new wglLayerPlaneMask(v1.val or v2.val);
     
+    public static function operator-(v1, v2: wglLayerPlaneMask) := new wglLayerPlaneMask(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: wglLayerPlaneMask; v2: wglLayerPlaneMask) := v1 := v1+v2;
+    public static procedure operator-=(var v1: wglLayerPlaneMask; v2: wglLayerPlaneMask) := v1 := v1-v2;
     
     public static function operator in(v1, v2: wglLayerPlaneMask) := v1.val and v2.val = v1.val;
     

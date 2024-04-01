@@ -2995,13 +2995,29 @@ type
             end;
             wr += '    '#10;
             
-            wr += '    public static procedure operator+=(var v1: ';
+            wr += '    public static function operator-(v1, v2: ';
             wr += MakeWriteableName;
             wr += BaseSuffixFor(base_t);
-            wr += '; v2: ';
+            wr += ') := new ';
             wr += MakeWriteableName;
             wr += BaseSuffixFor(base_t);
-            wr += ') := v1 := v1+v2;'#10;
+            wr += '(v1.val and not v2.val);'#10;
+            wr += '    '#10;
+            
+            foreach var op in '+-' do
+            begin
+              wr += '    public static procedure operator';
+              wr += op;
+              wr += '=(var v1: ';
+              wr += MakeWriteableName;
+              wr += BaseSuffixFor(base_t);
+              wr += '; v2: ';
+              wr += MakeWriteableName;
+              wr += BaseSuffixFor(base_t);
+              wr += ') := v1 := v1';
+              wr += op;
+              wr += 'v2;'#10;
+            end;
             wr += '    '#10;
             
             wr += '    public static function operator in(v1, v2: ';

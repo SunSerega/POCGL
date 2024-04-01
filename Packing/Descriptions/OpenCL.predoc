@@ -500,7 +500,10 @@ type
     public static function operator+(v1, v2: clCommandQueueCapabilities) := new clCommandQueueCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clCommandQueueCapabilities) := new clCommandQueueCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clCommandQueueCapabilities) := new clCommandQueueCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clCommandQueueCapabilities; v2: clCommandQueueCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clCommandQueueCapabilities; v2: clCommandQueueCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clCommandQueueCapabilities) := v1.val and v2.val = v1.val;
     
@@ -663,7 +666,10 @@ type
     public static function operator+(v1, v2: clCommandQueueProperties) := new clCommandQueueProperties(v1.val or v2.val);
     public static function operator or(v1, v2: clCommandQueueProperties) := new clCommandQueueProperties(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clCommandQueueProperties) := new clCommandQueueProperties(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clCommandQueueProperties; v2: clCommandQueueProperties) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clCommandQueueProperties; v2: clCommandQueueProperties) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clCommandQueueProperties) := v1.val and v2.val = v1.val;
     
@@ -1151,7 +1157,10 @@ type
     public static function operator+(v1, v2: clDeviceAffinityDomain) := new clDeviceAffinityDomain(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceAffinityDomain) := new clDeviceAffinityDomain(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceAffinityDomain) := new clDeviceAffinityDomain(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceAffinityDomain; v2: clDeviceAffinityDomain) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceAffinityDomain; v2: clDeviceAffinityDomain) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceAffinityDomain) := v1.val and v2.val = v1.val;
     
@@ -1222,7 +1231,10 @@ type
     public static function operator+(v1, v2: clDeviceAtomicCapabilities) := new clDeviceAtomicCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceAtomicCapabilities) := new clDeviceAtomicCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceAtomicCapabilities) := new clDeviceAtomicCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceAtomicCapabilities; v2: clDeviceAtomicCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceAtomicCapabilities; v2: clDeviceAtomicCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceAtomicCapabilities) := v1.val and v2.val = v1.val;
     
@@ -1315,7 +1327,10 @@ type
     public static function operator+(v1, v2: clDeviceCommandBufferCapabilities) := new clDeviceCommandBufferCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceCommandBufferCapabilities) := new clDeviceCommandBufferCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceCommandBufferCapabilities) := new clDeviceCommandBufferCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceCommandBufferCapabilities; v2: clDeviceCommandBufferCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceCommandBufferCapabilities; v2: clDeviceCommandBufferCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceCommandBufferCapabilities) := v1.val and v2.val = v1.val;
     
@@ -1377,7 +1392,10 @@ type
     public static function operator+(v1, v2: clDeviceControlledTerminationCapabilities) := new clDeviceControlledTerminationCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceControlledTerminationCapabilities) := new clDeviceControlledTerminationCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceControlledTerminationCapabilities) := new clDeviceControlledTerminationCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceControlledTerminationCapabilities; v2: clDeviceControlledTerminationCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceControlledTerminationCapabilities; v2: clDeviceControlledTerminationCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceControlledTerminationCapabilities) := v1.val and v2.val = v1.val;
     
@@ -1428,7 +1446,10 @@ type
     public static function operator+(v1, v2: clDeviceExecCapabilities) := new clDeviceExecCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceExecCapabilities) := new clDeviceExecCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceExecCapabilities) := new clDeviceExecCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceExecCapabilities; v2: clDeviceExecCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceExecCapabilities; v2: clDeviceExecCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceExecCapabilities) := v1.val and v2.val = v1.val;
     
@@ -1474,7 +1495,10 @@ type
     public static function operator+(v1, v2: clDeviceFeatureCapabilities) := new clDeviceFeatureCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceFeatureCapabilities) := new clDeviceFeatureCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceFeatureCapabilities) := new clDeviceFeatureCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceFeatureCapabilities; v2: clDeviceFeatureCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceFeatureCapabilities; v2: clDeviceFeatureCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceFeatureCapabilities) := v1.val and v2.val = v1.val;
     
@@ -1524,7 +1548,10 @@ type
     public static function operator+(v1, v2: clDeviceFpAtomicCapabilities) := new clDeviceFpAtomicCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceFpAtomicCapabilities) := new clDeviceFpAtomicCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceFpAtomicCapabilities) := new clDeviceFpAtomicCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceFpAtomicCapabilities; v2: clDeviceFpAtomicCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceFpAtomicCapabilities; v2: clDeviceFpAtomicCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceFpAtomicCapabilities) := v1.val and v2.val = v1.val;
     
@@ -1596,7 +1623,10 @@ type
     public static function operator+(v1, v2: clDeviceFPConfig) := new clDeviceFPConfig(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceFPConfig) := new clDeviceFPConfig(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceFPConfig) := new clDeviceFPConfig(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceFPConfig; v2: clDeviceFPConfig) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceFPConfig; v2: clDeviceFPConfig) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceFPConfig) := v1.val and v2.val = v1.val;
     
@@ -2289,7 +2319,10 @@ type
     public static function operator+(v1, v2: clDeviceIntegerDotProductCapabilities) := new clDeviceIntegerDotProductCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceIntegerDotProductCapabilities) := new clDeviceIntegerDotProductCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceIntegerDotProductCapabilities) := new clDeviceIntegerDotProductCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceIntegerDotProductCapabilities; v2: clDeviceIntegerDotProductCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceIntegerDotProductCapabilities; v2: clDeviceIntegerDotProductCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceIntegerDotProductCapabilities) := v1.val and v2.val = v1.val;
     
@@ -2398,7 +2431,10 @@ type
     public static function operator+(v1, v2: clDeviceOnDeviceEnqueueCapabilities) := new clDeviceOnDeviceEnqueueCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceOnDeviceEnqueueCapabilities) := new clDeviceOnDeviceEnqueueCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceOnDeviceEnqueueCapabilities) := new clDeviceOnDeviceEnqueueCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceOnDeviceEnqueueCapabilities; v2: clDeviceOnDeviceEnqueueCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceOnDeviceEnqueueCapabilities; v2: clDeviceOnDeviceEnqueueCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceOnDeviceEnqueueCapabilities) := v1.val and v2.val = v1.val;
     
@@ -2483,7 +2519,10 @@ type
     public static function operator+(v1, v2: clDeviceSchedulingControlsCapabilities) := new clDeviceSchedulingControlsCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceSchedulingControlsCapabilities) := new clDeviceSchedulingControlsCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceSchedulingControlsCapabilities) := new clDeviceSchedulingControlsCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceSchedulingControlsCapabilities; v2: clDeviceSchedulingControlsCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceSchedulingControlsCapabilities; v2: clDeviceSchedulingControlsCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceSchedulingControlsCapabilities) := v1.val and v2.val = v1.val;
     
@@ -2561,7 +2600,10 @@ type
     public static function operator+(v1, v2: clDeviceSVMCapabilities) := new clDeviceSVMCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceSVMCapabilities) := new clDeviceSVMCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceSVMCapabilities) := new clDeviceSVMCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceSVMCapabilities; v2: clDeviceSVMCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceSVMCapabilities; v2: clDeviceSVMCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceSVMCapabilities) := v1.val and v2.val = v1.val;
     
@@ -2616,7 +2658,10 @@ type
     public static function operator+(v1, v2: clDeviceTerminateCapability) := new clDeviceTerminateCapability(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceTerminateCapability) := new clDeviceTerminateCapability(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceTerminateCapability) := new clDeviceTerminateCapability(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceTerminateCapability; v2: clDeviceTerminateCapability) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceTerminateCapability; v2: clDeviceTerminateCapability) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceTerminateCapability) := v1.val and v2.val = v1.val;
     
@@ -2661,7 +2706,10 @@ type
     public static function operator+(v1, v2: clDeviceType) := new clDeviceType(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceType) := new clDeviceType(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceType) := new clDeviceType(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceType; v2: clDeviceType) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceType; v2: clDeviceType) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceType) := v1.val and v2.val = v1.val;
     
@@ -2729,7 +2777,10 @@ type
     public static function operator+(v1, v2: clDeviceUnifiedSharedMemoryCapabilities) := new clDeviceUnifiedSharedMemoryCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clDeviceUnifiedSharedMemoryCapabilities) := new clDeviceUnifiedSharedMemoryCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clDeviceUnifiedSharedMemoryCapabilities) := new clDeviceUnifiedSharedMemoryCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clDeviceUnifiedSharedMemoryCapabilities; v2: clDeviceUnifiedSharedMemoryCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceUnifiedSharedMemoryCapabilities; v2: clDeviceUnifiedSharedMemoryCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clDeviceUnifiedSharedMemoryCapabilities) := v1.val and v2.val = v1.val;
     
@@ -3697,7 +3748,10 @@ type
     public static function operator+(v1, v2: clKernelArgTypeQualifier) := new clKernelArgTypeQualifier(v1.val or v2.val);
     public static function operator or(v1, v2: clKernelArgTypeQualifier) := new clKernelArgTypeQualifier(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clKernelArgTypeQualifier) := new clKernelArgTypeQualifier(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clKernelArgTypeQualifier; v2: clKernelArgTypeQualifier) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clKernelArgTypeQualifier; v2: clKernelArgTypeQualifier) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clKernelArgTypeQualifier) := v1.val and v2.val = v1.val;
     
@@ -3934,7 +3988,10 @@ type
     public static function operator+(v1, v2: clMapFlags) := new clMapFlags(v1.val or v2.val);
     public static function operator or(v1, v2: clMapFlags) := new clMapFlags(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clMapFlags) := new clMapFlags(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clMapFlags; v2: clMapFlags) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clMapFlags; v2: clMapFlags) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clMapFlags) := v1.val and v2.val = v1.val;
     
@@ -4025,7 +4082,10 @@ type
     public static function operator+(v1, v2: clMemFlags) := new clMemFlags(v1.val or v2.val);
     public static function operator or(v1, v2: clMemFlags) := new clMemFlags(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clMemFlags) := new clMemFlags(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clMemFlags; v2: clMemFlags) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clMemFlags; v2: clMemFlags) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clMemFlags) := v1.val and v2.val = v1.val;
     
@@ -4246,7 +4306,10 @@ type
     public static function operator+(v1, v2: clMemMigrationFlags) := new clMemMigrationFlags(v1.val or v2.val);
     public static function operator or(v1, v2: clMemMigrationFlags) := new clMemMigrationFlags(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clMemMigrationFlags) := new clMemMigrationFlags(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clMemMigrationFlags; v2: clMemMigrationFlags) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clMemMigrationFlags; v2: clMemMigrationFlags) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clMemMigrationFlags) := v1.val and v2.val = v1.val;
     
@@ -4419,7 +4482,10 @@ type
     public static function operator+(v1, v2: clMutableDispatchFields) := new clMutableDispatchFields(v1.val or v2.val);
     public static function operator or(v1, v2: clMutableDispatchFields) := new clMutableDispatchFields(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clMutableDispatchFields) := new clMutableDispatchFields(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clMutableDispatchFields; v2: clMutableDispatchFields) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clMutableDispatchFields; v2: clMutableDispatchFields) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clMutableDispatchFields) := v1.val and v2.val = v1.val;
     
@@ -4522,7 +4588,10 @@ type
     public static function operator+(v1, v2: clPlatformCommandBufferCapabilities) := new clPlatformCommandBufferCapabilities(v1.val or v2.val);
     public static function operator or(v1, v2: clPlatformCommandBufferCapabilities) := new clPlatformCommandBufferCapabilities(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clPlatformCommandBufferCapabilities) := new clPlatformCommandBufferCapabilities(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clPlatformCommandBufferCapabilities; v2: clPlatformCommandBufferCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clPlatformCommandBufferCapabilities; v2: clPlatformCommandBufferCapabilities) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clPlatformCommandBufferCapabilities) := v1.val and v2.val = v1.val;
     
@@ -5018,7 +5087,10 @@ type
     public static function operator+(v1, v2: clSvmMemFlags) := new clSvmMemFlags(v1.val or v2.val);
     public static function operator or(v1, v2: clSvmMemFlags) := new clSvmMemFlags(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clSvmMemFlags) := new clSvmMemFlags(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clSvmMemFlags; v2: clSvmMemFlags) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clSvmMemFlags; v2: clSvmMemFlags) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clSvmMemFlags) := v1.val and v2.val = v1.val;
     
@@ -5229,7 +5301,10 @@ type
     public static function operator+(v1, v2: clMemAllocFlagsIMG) := new clMemAllocFlagsIMG(v1.val or v2.val);
     public static function operator or(v1, v2: clMemAllocFlagsIMG) := new clMemAllocFlagsIMG(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clMemAllocFlagsIMG) := new clMemAllocFlagsIMG(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clMemAllocFlagsIMG; v2: clMemAllocFlagsIMG) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clMemAllocFlagsIMG; v2: clMemAllocFlagsIMG) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clMemAllocFlagsIMG) := v1.val and v2.val = v1.val;
     
@@ -5296,7 +5371,10 @@ type
     public static function operator+(v1, v2: clMemAllocFlagsINTEL) := new clMemAllocFlagsINTEL(v1.val or v2.val);
     public static function operator or(v1, v2: clMemAllocFlagsINTEL) := new clMemAllocFlagsINTEL(v1.val or v2.val);
     
+    public static function operator-(v1, v2: clMemAllocFlagsINTEL) := new clMemAllocFlagsINTEL(v1.val and not v2.val);
+    
     public static procedure operator+=(var v1: clMemAllocFlagsINTEL; v2: clMemAllocFlagsINTEL) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clMemAllocFlagsINTEL; v2: clMemAllocFlagsINTEL) := v1 := v1-v2;
     
     public static function operator in(v1, v2: clMemAllocFlagsINTEL) := v1.val and v2.val = v1.val;
     
