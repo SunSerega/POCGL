@@ -1,7 +1,6 @@
 ﻿
 {%../../Common/LicenseHeader.txt%}
 
-/// Внутренний модуль POCGL для тестирования кодогенераторов
 unit Dummy;
 
 {$zerobasedstrings}

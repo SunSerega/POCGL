@@ -75,6 +75,16 @@
 # IGLPlatformLoader.GetProcAddress(string)
 Этот метод вызывается для каждой динамически загружаемой функции
 
+# OpenGL
+Код переведён отсюда:
+    https://github.com/KhronosGroup/OpenGL-Registry/tree/master/xml
+
+Спецификации всех версий OpenGL:
+    https://www.khronos.org/registry/OpenGL/specs/gl/
+
+Если чего-либо не хватает, или найдена ошибка - писать сюда:
+    https://github.com/SunSerega/POCGL/issues
+
 # OpenGLException
 Исключение, которое кидает glErrorCode.RaiseIfError
 

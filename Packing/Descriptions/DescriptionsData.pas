@@ -19,6 +19,16 @@ type
     
   end;
   
+  CommentableUnit = sealed class(CommentableBase)
+    
+    public constructor(name: string) := inherited;
+    
+    public property FullName: string read self.Name; override;
+    
+    public static function Parse(l: string): CommentableUnit;
+    
+  end;
+  
   CommentableType = sealed class(CommentableBase)
     private re_def: string;
     private is_sealed, is_interface: boolean;
@@ -256,6 +266,14 @@ end;
 
 {$region Member parser's}
 
+static function CommentableUnit.Parse(l: string): CommentableUnit;
+const unit_keyword = 'unit';
+begin
+  if not l.StartsWith(unit_keyword) then exit;
+  if not l.EndsWith(';') then raise new System.FormatException(l);
+  Result := new CommentableUnit(l.Substring(unit_keyword.Length)[:^1].Trim);
+end;
+
 static function CommentableType.Parse(l: string): CommentableType;
 const separator = ' = ';
 const type_keywords: array of string = ('record', 'class', 'interface');
@@ -442,9 +460,13 @@ begin
     var l := enmr.Current;
     
     if not start_checking then
+    begin
+      if CommentableUnit.Parse(l) is CommentableUnit(var u) then
+        yield u else
       if 'interface' in l then
-        start_checking := true else
-        continue;
+        start_checking := true;
+      continue;
+    end;
     
     if not end_checking and ('implementation' in l) then end_checking := true;
     if end_checking then continue;

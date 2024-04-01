@@ -1,4 +1,7 @@
-﻿# DummyLoader
+﻿# Dummy
+Внутренний модуль POCGL для тестирования кодогенераторов
+
+# DummyLoader
 Абстрактное понятие загрузчика адресов функций api
 
 # DummyLoader.GetProcAddress(string)

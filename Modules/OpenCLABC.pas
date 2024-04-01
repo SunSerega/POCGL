@@ -1,17 +1,6 @@
 ﻿
 {%../../Common/LicenseHeader.txt%}
 
-///
-///Высокоуровневая оболочка модуля OpenCL
-///   OpenCL и OpenCLABC можно использовать одновременно
-///   Но контактировать они практически не будут
-///
-///Если не хватает типа/метода или найдена ошибка - писать сюда:
-///   https://github.com/SunSerega/POCGL/issues
-///
-///Справка данного модуля находится в папке примеров
-///   По-умолчанию, её можно найти в "C:\PABCWork.NET\Samples\OpenGL и OpenCL"
-///
 unit OpenCLABC;
 
 {$region DEBUG}{$ifdef DEBUG}

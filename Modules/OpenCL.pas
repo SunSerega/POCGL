@@ -1,16 +1,6 @@
 ﻿
 {%../../Common/LicenseHeader.txt%}
 
-///
-///Код переведён отсюда:
-///   https://github.com/KhronosGroup/OpenCL-Docs/tree/master/xml
-///
-///Спецификации всех версий OpenCL:
-///   https://www.khronos.org/registry/OpenCL/
-///
-///Если чего-либо не хватает, или найдена ошибка - писать сюда:
-///   https://github.com/SunSerega/POCGL/issues
-///
 unit OpenCL;
 
 {$zerobasedstrings}

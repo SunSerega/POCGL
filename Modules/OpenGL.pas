@@ -1,16 +1,6 @@
 ﻿
 {%../../Common/LicenseHeader.txt%}
 
-///
-///Код переведён отсюда:
-///   https://github.com/KhronosGroup/OpenGL-Registry/tree/master/xml
-///
-///Спецификации всех версий OpenGL:
-///   https://www.khronos.org/registry/OpenGL/specs/gl/
-///
-///Если чего-либо не хватает, или найдена ошибка - писать сюда:
-///   https://github.com/SunSerega/POCGL/issues
-///
 unit OpenGL;
 
 {$zerobasedstrings}
