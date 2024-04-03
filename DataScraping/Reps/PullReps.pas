@@ -62,12 +62,15 @@ begin
   
   ExecCommands(path, nick, nil
     , $'echo [checkout] && git checkout {branch} 2>&1'
-    , $'echo [pull] && git pull {remote_official} main & echo [pull-own]: && git pull {remote_own} {branch}'
+    , $'echo [pull-own]: && git pull {remote_own} {branch}'
+    , $'echo [fetch-main] && git fetch {remote_official} main:main'
+    , $'echo [merge-main] && git merge main'
   );
   
   if not disable_push then
     ExecCommands(path, nick, |'console only'|
-      , $'echo [push] && git push {remote_own} {branch} || cd .'
+      , $'echo [push main] && git push {remote_own} main || cd .'
+      , $'echo [push {branch}] && git push {remote_own} {branch} || cd .'
     );
   
   Otp($'Done pulling {nick}');
