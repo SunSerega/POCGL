@@ -109,17 +109,17 @@ type
     {$region Append}
     
     public procedure Append(ch: char) :=
-    if range.i2.IsInvalid then sb += ch else
-      raise new System.InvalidOperationException($'{TypeName(self)} is sealed');
+      if range.i2.IsInvalid then sb += ch else
+        raise new System.InvalidOperationException($'{TypeName(self)} is sealed');
     
     public procedure Append(ch: char; c: integer) :=
-    loop c do Append(ch);
+      loop c do Append(ch);
     
     public procedure Append(s: string) :=
-    for var i := 0 to s.Length-1 do Append(s[i]);
+      for var i := 0 to s.Length-1 do Append(s[i]);
     
     public procedure Append(s: StringSection) :=
-    for var i := 0 to s.Length-1 do Append(s[i]);
+      for var i := 0 to s.Length-1 do Append(s[i]);
     
     public static procedure operator+=(b: ColoredStringBuilderBase<TKey>; ch: char) := b.Append(ch);
     public static procedure operator+=(b: ColoredStringBuilderBase<TKey>; s: string) := b.Append(s);
@@ -179,7 +179,7 @@ type
         Result[i] := parts[i].FinishAsPart;
     end;
     private function FinishAsPart :=
-    new ColoredStringPart<TKey>(self.key, self.GetFixedRange, FinishAllParts);
+      new ColoredStringPart<TKey>(self.key, self.GetFixedRange, FinishAllParts);
     
     public function Finish: ColoredString<TKey>;
     begin

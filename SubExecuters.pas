@@ -109,7 +109,7 @@ type
   end;
   
 function GetUsedModules(fname: string; prev: array of string): sequence of string;
-const savepcu_d = '{'+'$savepcu false}';
+  const savepcu_d = '{'+'$savepcu false}';
 begin
   if fname in prev then exit;
   prev := prev+|fname|;

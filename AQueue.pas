@@ -15,37 +15,33 @@ type
     {$endif DEBUG}
     
     public constructor :=
-    q := new Queue<T>;
+      q := new Queue<T>;
     public constructor(capacity: integer) :=
-    q := new Queue<T>(capacity);
+      q := new Queue<T>(capacity);
     
-    public procedure Enq(o: T) :=
-    lock q do
+    public procedure Enq(o: T) := lock q do
     begin
       if done then raise new System.InvalidOperationException($'ERROR: Попытка писать {TypeName(o)}[{_ObjectToString(o)}] в завершенную {TypeName(self)}');
       q.Enqueue(o);
       ev.Set;
     end;
     public procedure EnqRange(sq: sequence of T) :=
-    foreach var o in sq do Enq(o);
+      foreach var o in sq do Enq(o);
     
-    public procedure Finish;
+    public procedure Finish := lock q do
     begin
-      lock q do
-      begin
-        if done then raise new InvalidOperationException($'ERROR: Двойная попытка завершить {self.GetType}'
-          {$ifdef DEBUG}
-            +':'#10#10+
-            done_trace + #10#10 +
-            System.Environment.StackTrace
-          {$endif DEBUG}
-        );
-        done := true;
+      if done then raise new InvalidOperationException($'ERROR: Двойная попытка завершить {self.GetType}'
         {$ifdef DEBUG}
-        done_trace := System.Environment.StackTrace;
+          +':'#10#10+
+          done_trace + #10#10 +
+          System.Environment.StackTrace
         {$endif DEBUG}
-        ev.Set;
-      end;
+      );
+      done := true;
+      {$ifdef DEBUG}
+      done_trace := System.Environment.StackTrace;
+      {$endif DEBUG}
+      ev.Set;
     end;
     
     public function GetEnumerator: IEnumerator<T> := self;

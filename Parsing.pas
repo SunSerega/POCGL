@@ -27,9 +27,9 @@ type
     
     public static function operator=(ind1, ind2: StringIndex) := ind1.val=ind2.val;
     public static function operator=(ind1: StringIndex; ind2: integer) :=
-    (ind1.val=ind2) and not ind1.IsInvalid;
+      (ind1.val=ind2) and not ind1.IsInvalid;
     public static function operator=(ind1: integer; ind2: StringIndex) :=
-    (ind1=ind2.val) and not ind2.IsInvalid;
+      (ind1=ind2.val) and not ind2.IsInvalid;
     
     public static function operator<(ind1: StringIndex; ind2: integer) := integer(ind1)<ind2;
     public static function operator>(ind1: StringIndex; ind2: integer) := integer(ind1)>ind2;
@@ -53,20 +53,20 @@ type
     public static function operator>=(ind1, ind2: StringIndex) := not (ind1<ind2);
     
     public static function MinOrInvalid(ind1, ind2: StringIndex) :=
-    if ind1.IsInvalid or ind2.IsInvalid then Invalid else
-      Min(ind1.val, ind2.val);
+      if ind1.IsInvalid or ind2.IsInvalid then Invalid else
+        Min(ind1.val, ind2.val);
     public static function MaxOrInvalid(ind1, ind2: StringIndex) :=
-    if ind1.IsInvalid or ind2.IsInvalid then Invalid else
-      Max(ind1.val, ind2.val);
+      if ind1.IsInvalid or ind2.IsInvalid then Invalid else
+        Max(ind1.val, ind2.val);
     
     public static function MinValid(ind1, ind2: StringIndex) :=
-    if ind2.IsInvalid then ind1 else
-    if ind1.IsInvalid then ind2 else
-      Min(ind1.val, ind2.val);
+      if ind2.IsInvalid then ind1 else
+      if ind1.IsInvalid then ind2 else
+        Min(ind1.val, ind2.val);
     public static function MaxValid(ind1, ind2: StringIndex) :=
-    if ind2.IsInvalid then ind1 else
-    if ind1.IsInvalid then ind2 else
-      Max(ind1.val, ind2.val);
+      if ind2.IsInvalid then ind1 else
+      if ind1.IsInvalid then ind2 else
+        Max(ind1.val, ind2.val);
     
     public static function Compare(ind1, ind2: StringIndex; invalid_ord: integer := 0): integer;
     begin
@@ -109,7 +109,7 @@ type
     end;
     
     public function ToString: string; override :=
-    if self.IsInvalid then 'StringIndex.Invalid' else self.val.ToString;
+      if self.IsInvalid then 'StringIndex.Invalid' else self.val.ToString;
     public function Print: StringIndex;
     begin
       self.ToString.Print;
@@ -171,9 +171,9 @@ type
     public constructor := exit;
     
     public procedure ValidateInd(ind: StringIndex) :=
-    if (ind >= StringIndex(Length)) then raise new System.IndexOutOfRangeException($'Index {ind} was >= {Length}');
+      if (ind >= StringIndex(Length)) then raise new System.IndexOutOfRangeException($'Index {ind} was >= {Length}');
     public procedure ValidateLen(len: StringIndex) :=
-    if (len >  StringIndex(Length)) then raise new System.IndexOutOfRangeException($'Length {len} was > {Length}');
+      if (len >  StringIndex(Length)) then raise new System.IndexOutOfRangeException($'Length {len} was > {Length}');
     
     public static function operator in(ind: StringIndex; s: StringSection) := ind in s.range;
     
@@ -267,13 +267,13 @@ type
       end;
     end;
     public function TrimWhile(ch_validator: char->boolean) := self
-    .TrimFirstWhile(ch_validator)
-    .TrimLastWhile(ch_validator);
+      .TrimFirstWhile(ch_validator)
+      .TrimLastWhile(ch_validator);
     
     public function TakeFirstWhile(ch_validator: char->boolean) :=
-    self.TakeFirst(0).NextWhile(self.I2, ch_validator);
+      self.TakeFirst(0).NextWhile(self.I2, ch_validator);
     public function TakeLastWhile(ch_validator: char->boolean) :=
-    self.TakeLast(0).PrevWhile(self.I1, ch_validator);
+      self.TakeLast(0).PrevWhile(self.I1, ch_validator);
     
     public function TrimAfterFirst(ch: char): StringSection;
     begin
@@ -514,7 +514,7 @@ type
     end;
     
     public function IsEscaped(min_ind: StringIndex; escape_sym: char) :=
-    self.TakeFirst(0).PrevWhile(min_ind, ch->ch=escape_sym).Length.IsOdd;
+      self.TakeFirst(0).PrevWhile(min_ind, ch->ch=escape_sym).Length.IsOdd;
     
     public procedure UnescapeTo(res: StringBuilder; escape_sym: char);
     begin
@@ -578,7 +578,7 @@ type
     end;
     
     public function ToString: string; override :=
-    if self.IsInvalid then 'StringSection.Invalid' else range.ToString(text);
+      if self.IsInvalid then 'StringSection.Invalid' else range.ToString(text);
     public property AsString: string read ToString;
     
   end;

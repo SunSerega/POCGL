@@ -40,7 +40,7 @@ type
     public n: TJumpNode;
     public constructor(n: TJumpNode) := self.n := n;
     public static function operator implicit(n: TJumpNode): PatternPath<TJumpNode> :=
-    new PatternPath<TJumpNode>(n);
+      new PatternPath<TJumpNode>(n);
     
     public function Count: integer;
     begin
@@ -65,7 +65,7 @@ type
     end;
     
     public function ToString: string; override :=
-    self.ToArray(n->n).JoinToString(', ');
+      self.ToArray(n->n).JoinToString(', ');
     
   end;
   
@@ -136,12 +136,12 @@ type
     function Equals(p: BasicPatternPointDummy<TPointer>) := self.ep = p.ep;
     
     public static function operator implicit(ep: TPointer): BasicPatternPointDummy<TPointer> :=
-    new BasicPatternPointDummy<TPointer>(ep);
+      new BasicPatternPointDummy<TPointer>(ep);
     
     public property Edge: TPointer read ep;
     
     public function ToString: string; override :=
-    $'{self.GetType.Name}(Edge={Edge})';
+      $'{self.GetType.Name}(Edge={Edge})';
     
   end;
   
@@ -173,7 +173,7 @@ type
     public property OtherEdges: TOther read other;
     
     public function ToString: string; override :=
-    $'{self.GetType.Name}(FirstEdge={FirstEdge}; OtherEdges={OtherEdges})';
+      $'{self.GetType.Name}(FirstEdge={FirstEdge}; OtherEdges={OtherEdges})';
     
   end;
   
@@ -183,7 +183,7 @@ type
     private impl: BasicPatternPointRec<TPointer1, BasicPatternPointDummy<TPointer2>>;
     
     public constructor(ep1: TPointer1; ep2: TPointer2) := impl :=
-    new BasicPatternPointRec<TPointer1, BasicPatternPointDummy<TPointer2>>(ep1, ep2);
+      new BasicPatternPointRec<TPointer1, BasicPatternPointDummy<TPointer2>>(ep1, ep2);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function AnyEdgesDone := impl.AnyEdgesDone;
@@ -200,8 +200,8 @@ type
     public property Edge2: TPointer2 read impl.OtherEdges.Edge;
     
     public function ToString: string; override :=
-    $'({Edge1}; {Edge2})';
-//    $'{self.GetType.Name}(Edge1={Edge1}; Edge2={Edge2})';
+      $'({Edge1}; {Edge2})';
+//      $'{self.GetType.Name}(Edge1={Edge1}; Edge2={Edge2})';
     
   end;
   
@@ -235,7 +235,7 @@ type
     public function Plus(cost: BasicJumpCost): BasicJumpCost := self.val+cost.val;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}({val})';
+      $'{TypeName(self)}({val})';
     
   end;
   
@@ -276,7 +276,7 @@ type
     public static function operator<>(i1, i2: BasicCharIterator) := not (i1=i2);
     public function Equals(i: BasicCharIterator) := self=i;
     public function Equals(o: object): boolean; override :=
-    (o is BasicCharIterator(var i)) and self.Equals(i);
+      (o is BasicCharIterator(var i)) and self.Equals(i);
     
     public property Current: char read s.First;
     
@@ -326,8 +326,8 @@ type
     public function MakeCostJumps(i: BasicCharIterator) := BasicCharIterator.MakeCostJumps(self, i);
     
     public function ToString: string; override :=
-    s.I1.ToString;
-//    $'{TypeName(self)}(ind={s.I1}; left={s})';
+      s.I1.ToString;
+//      $'{TypeName(self)}(ind={s.I1}; left={s})';
     
   end;
   
@@ -363,11 +363,11 @@ type
   BasicPattern = static class
     
     public static function MinPaths<TPointer1,TPointer2>(ep1: TPointer1; ep2: TPointer2): sequence of array of BasicPatternDiffBase;
-    where TPointer1: record, IPatternEdgePointer<TPointer1>;
-    where TPointer2: record, IPatternEdgePointer<TPointer2>;
+      where TPointer1: record, IPatternEdgePointer<TPointer1>;
+      where TPointer2: record, IPatternEdgePointer<TPointer2>;
     
     public static function MinPaths<TPointer>(ep1, ep2: TPointer): sequence of array of BasicPatternDiff<TPointer>;
-    where TPointer: record, IPatternEdgePointer<TPointer>;
+      where TPointer: record, IPatternEdgePointer<TPointer>;
     
   end;
   
@@ -408,7 +408,7 @@ type
     end;
     
     procedure RemoveWorseThan(p: TPoint) :=
-    pts.RemoveAll(j_res->j_res.Item1.IncLessThan(p));
+      pts.RemoveAll(j_res->j_res.Item1.IncLessThan(p));
     
   end;
   

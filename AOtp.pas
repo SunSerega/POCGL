@@ -13,8 +13,7 @@ type
   {$region Exception's}
   
   MessageException = class(Exception)
-    public constructor(text: string) :=
-    inherited Create(text);
+    public constructor(text: string) := inherited Create(text);
     private constructor := raise new System.InvalidOperationException;
   end;
   ParentHaltException = class(Exception)
@@ -406,11 +405,11 @@ begin
 end;
 
 procedure Otp(line: OtpLine) :=
-if AsyncProcOtp.curr<>nil then
-  AsyncProcOtp.curr.Enq(line) else
-if Logger.main=nil then
-  line.Println else
-  Logger.main.Otp(line);
+  if AsyncProcOtp.curr<>nil then
+    AsyncProcOtp.curr.Enq(line) else
+  if Logger.main=nil then
+    line.Println else
+    Logger.main.Otp(line);
 procedure Otp(line: string; kind: OtpKind) :=
   Otp(new OtpLine(line, kind));
 procedure Otp(line: string; kinds: array of string) :=
