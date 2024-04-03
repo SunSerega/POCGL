@@ -1195,7 +1195,7 @@ type
             wr += '    private ';
             WriteOvrT(wr, ovr.ItemsSeq,par_names,nil, md.FinalName(nil));
             wr += ';'#10;
-            wr += '    external ''';
+            wr += '      external ''';
             wr += Func.last_lib_name;
             wr += ''' name ''';
             wr += entry_point_name;

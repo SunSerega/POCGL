@@ -51,23 +51,27 @@ type
     end;
     
     protected function GetSpecialInvokeResVars(settings: ExecMethodSettings): sequence of MethodArg; override := |ExecMethodSettings.arg_k_args|;
-    protected procedure WriteBasicInvokeRes(wr: Writer; arg: MethodArg; settings: ExecMethodSettings); override :=
-    if arg=ExecMethodSettings.arg_k_args then
+    protected procedure WriteBasicInvokeRes(wr: Writer; arg: MethodArg; settings: ExecMethodSettings); override;
     begin
+      if arg<>ExecMethodSettings.arg_k_args then
+      begin
+        inherited;
+        exit;
+      end;
       wr += 'arg_setters: array of ';
       wr += t;
       wr += 'ArgSetter';
-    end else inherited;
+    end;
     protected procedure WriteBasicArgInvoke(wr: Writer; arg: MethodArg; settings: ExecMethodSettings); override :=
-    if arg=ExecMethodSettings.arg_k_args then wr += 'arg_setters := self.InvokeArgs(invoker, enq_evs, par_err_handlers);'#10 else inherited;
+      if arg=ExecMethodSettings.arg_k_args then wr += 'arg_setters := self.InvokeArgs(invoker, enq_evs, par_err_handlers);'#10 else inherited;
     
     protected procedure WriteSpecialPreEnq(wr: Writer; settings: ExecMethodSettings); override :=
-    wr += '        ApplySetters(get_arg_cache(), arg_setters);'#10;
+      wr += '        ApplySetters(get_arg_cache(), arg_setters);'#10;
     
     protected procedure WriteCommandBaseTypeName(t: string; settings: ExecMethodSettings); override :=
-    res_EIm += 'EnqueueableExecCommand';
+      res_EIm += 'EnqueueableExecCommand';
     protected procedure WriteCommandTypeInhConstructor; override :=
-    res_EIm += '      inherited Create(args);'#10;
+      res_EIm += '      inherited Create(args);'#10;
     protected function GetInitBeforeInvokeExtra: string; override := 'foreach var arg in args do arg.InitBeforeInvoke(g, prev_hubs)';
     
     protected procedure WriteBasicValueToString(wr: Writer; tab, vname: string; stored_as_ptr: boolean); override;

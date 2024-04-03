@@ -2,7 +2,7 @@
 
 /// Вывод типа и значения объекта
 procedure OtpObject(o: object) :=
-Writeln( $'{o?.GetType}[{_ObjectToString(o)}]' );
+  Writeln( $'{o?.GetType}[{_ObjectToString(o)}]' );
 // "o?.GetType" это короткая форма "o=nil ? nil : o.GetType",
 // то есть, берём или тип объекта, или nil если сам объект nil
 // _ObjectToString это функция, которую использует Writeln для форматирования значений

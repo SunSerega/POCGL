@@ -14,7 +14,7 @@ type
     
     ///Создаёт новый контекст устройства GDI для дескриптора элемента управления
     public static function GetControlDC(hwnd: IntPtr): gdi_device_context;
-    external 'user32.dll' name 'GetDC';
+      external 'user32.dll' name 'GetDC';
     
     ///Создаёт и настраивает контекст устройства GDI элемента управления WF
     ///hwnd - дескриптор элемента управления

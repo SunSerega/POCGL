@@ -10,21 +10,21 @@ type
     private data: CLKernelArgConstantCommon<CLMemory>;
     
     public constructor(cl_mem: CommandQueue<CLMemory>) :=
-    data := new CLKernelArgConstantCommon<CLMemory>(cl_mem);
+      data := new CLKernelArgConstantCommon<CLMemory>(cl_mem);
     
     private static function WrapToNative(o: CLMemory) := o.Native;
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    data.TryGetConstSetter(WrapToNative);
+      data.TryGetConstSetter(WrapToNative);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, WrapToNative, par_err_handlers);
+      data.Invoke(inv, WrapToNative, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -43,21 +43,21 @@ type
     private data: CLKernelArgConstantCommon<CLValue<T>>;
     
     public constructor(cl_val: CommandQueue<CLValue<T>>) :=
-    data := new CLKernelArgConstantCommon<CLValue<T>>(cl_val);
+      data := new CLKernelArgConstantCommon<CLValue<T>>(cl_val);
     
     private static function WrapToNative(o: CLValue<T>) := o.Native;
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    data.TryGetConstSetter(WrapToNative);
+      data.TryGetConstSetter(WrapToNative);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, WrapToNative, par_err_handlers);
+      data.Invoke(inv, WrapToNative, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -76,21 +76,21 @@ type
     private data: CLKernelArgConstantCommon<CLArray<T>>;
     
     public constructor(cl_arr: CommandQueue<CLArray<T>>) :=
-    data := new CLKernelArgConstantCommon<CLArray<T>>(cl_arr);
+      data := new CLKernelArgConstantCommon<CLArray<T>>(cl_arr);
     
     private static function WrapToNative(o: CLArray<T>) := o.Native;
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    data.TryGetConstSetter(WrapToNative);
+      data.TryGetConstSetter(WrapToNative);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, WrapToNative, par_err_handlers);
+      data.Invoke(inv, WrapToNative, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   

@@ -16,7 +16,7 @@ uses '../Common';
 {$apptype windows} // Убираем консоль
 
 procedure RedrawProc(pl: IGLPlatformLoader; EndFrame: ()->());
-const dy = -Sin(Pi / 6) / 2;
+  const dy = -Sin(Pi / 6) / 2;
 begin
   
   {$region Настройка глобальных параметров OpenGL}

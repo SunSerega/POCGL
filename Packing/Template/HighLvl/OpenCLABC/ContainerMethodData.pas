@@ -63,7 +63,7 @@ type
     end;
     
     public constructor(s: string);
-    const cq_def = 'CommandQueue<';
+      const cq_def = 'CommandQueue<';
     begin
       org_text := s;
       
@@ -120,10 +120,10 @@ begin
 end;
 
 function IsCQ(self: MethodArgType): boolean; extensionmethod :=
-self.Enmr.OfType&<MethodArgTypeCQ>.Any;
+  self.Enmr.OfType&<MethodArgTypeCQ>.Any;
 
 function ArrLvl(self: MethodArgType): integer; extensionmethod :=
-self.Enmr.TakeWhile(at->at is MethodArgTypeArray).Count;
+  self.Enmr.TakeWhile(at->at is MethodArgTypeArray).Count;
 
 type
   MethodArg = sealed class
@@ -136,8 +136,7 @@ type
       self.t := t;
     end;
     
-    public static function AllFromString(l: string) :=
-    l.Split(';').SelectMany(arg_str->
+    public static function AllFromString(l: string) := l.Split(';').SelectMany(arg_str->
     begin
       arg_str := arg_str.Trim;
       if arg_str.StartsWith('params ') then arg_str := arg_str.Remove(0, 'params '.Length);
@@ -245,77 +244,78 @@ type
     public where_record_str: string := nil;
     
     public procedure Apply(setting_name: string; setting_lns: sequence of string; debug_tn: string); virtual :=
-    match setting_name with
-      
-      nil:
-      begin
-        args_str := setting_lns.Single;
-        impl_args_str := args_str;
+      match setting_name with
         
-        args := MethodArg.AllFromString(args_str).ToList;
-        impl_args := args.ConvertAll(arg->arg.name).ToList;
-      end;
-      
-      'ShortDef':
-      begin
-        if def<>nil then raise new System.InvalidOperationException($'{debug_tn}({args_str})');
-        def := setting_lns;
-        is_short_def := true;
-      end;
-      
-      'Enqueue':
-      begin
-        if def<>nil then raise new System.InvalidOperationException($'{debug_tn}({args_str})');
-        def := setting_lns;
-        is_short_def := false;
-      end;
-      
-      'ImplicitOnly': implicit_only := true;
-      
-      'AttachCallback': callback_lines := setting_lns;
-      
-      else raise new System.InvalidOperationException($'!{setting_name} in {debug_tn}');
-    end;
-    
-    protected procedure ProcessSpecialDefVar(sb: StringBuilder; arg_name, usage: string; debug_tn: string); virtual :=
-    case arg_name of
-      
-      'evs':
-      begin
-        if usage<>nil then raise new System.NotSupportedException;
-        sb += 'evs.count, evs.evs, res_ev';
-      end;
-      
-      else
-      begin
-        if arg_usage.ContainsKey(arg_name) and (arg_usage[arg_name]<>usage) then
-          raise new System.NotSupportedException($'arg [{arg_name}] in {debug_tn}({args_str}) had usages [{arg_usage[arg_name]}] and [{usage}]');
-        
-        var arg := args?.SingleOrDefault(arg->arg.name=arg_name);
-        if arg=nil then raise new System.InvalidOperationException($'arg [{arg_name}] not found in params of func {debug_tn}({args_str})');
-        
-        arg_usage[arg_name] := usage;
-        
-        match usage with
+        nil:
+        begin
+          args_str := setting_lns.Single;
+          impl_args_str := args_str;
           
-          nil: sb += arg_name;
-          
-          'ptr': if arg.t.IsCQ then
-          begin
-            sb += arg_name;
-          end else
-          begin
-            sb += arg_name;
-            sb += '.Pointer';
-          end;
-          
-          'pinn': sb += arg_name; // array indeces defined in .dat file
-          
-          else if usage<>nil then raise new System.InvalidOperationException(usage);
+          args := MethodArg.AllFromString(args_str).ToList;
+          impl_args := args.ConvertAll(arg->arg.name).ToList;
         end;
         
+        'ShortDef':
+        begin
+          if def<>nil then raise new System.InvalidOperationException($'{debug_tn}({args_str})');
+          def := setting_lns;
+          is_short_def := true;
+        end;
+        
+        'Enqueue':
+        begin
+          if def<>nil then raise new System.InvalidOperationException($'{debug_tn}({args_str})');
+          def := setting_lns;
+          is_short_def := false;
+        end;
+        
+        'ImplicitOnly': implicit_only := true;
+        
+        'AttachCallback': callback_lines := setting_lns;
+        
+        else raise new System.InvalidOperationException($'!{setting_name} in {debug_tn}');
       end;
-    end;
+    
+    protected procedure ProcessSpecialDefVar(sb: StringBuilder; arg_name, usage: string; debug_tn: string); virtual :=
+      //TODO #2831: case instead of match
+      case arg_name of
+        
+        'evs':
+        begin
+          if usage<>nil then raise new System.NotSupportedException;
+          sb += 'evs.count, evs.evs, res_ev';
+        end;
+        
+        else
+        begin
+          if arg_usage.ContainsKey(arg_name) and (arg_usage[arg_name]<>usage) then
+            raise new System.NotSupportedException($'arg [{arg_name}] in {debug_tn}({args_str}) had usages [{arg_usage[arg_name]}] and [{usage}]');
+          
+          var arg := args?.SingleOrDefault(arg->arg.name=arg_name);
+          if arg=nil then raise new System.InvalidOperationException($'arg [{arg_name}] not found in params of func {debug_tn}({args_str})');
+          
+          arg_usage[arg_name] := usage;
+          
+          match usage with
+            
+            nil: sb += arg_name;
+            
+            'ptr': if arg.t.IsCQ then
+            begin
+              sb += arg_name;
+            end else
+            begin
+              sb += arg_name;
+              sb += '.Pointer';
+            end;
+            
+            'pinn': sb += arg_name; // array indeces defined in .dat file
+            
+            else if usage<>nil then raise new System.InvalidOperationException(usage);
+          end;
+          
+        end;
+      end;
     protected function ProcessDefLine(l: string; debug_tn: string): string;
     begin
       var sb := new StringBuilder;
@@ -343,7 +343,7 @@ type
     end;
     
     protected function GetArgTNames: sequence of string; virtual :=
-    args=nil? System.Array.Empty&<string> : args.Select(arg->arg.t.Enmr.Last.org_text);
+      if args=nil then System.Array.Empty&<string> else args.Select(arg->arg.t.Enmr.Last.org_text);
     
     public procedure Seal(t: string; type_generics: sequence of string; debug_tn: string); virtual;
     begin

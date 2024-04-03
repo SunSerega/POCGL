@@ -185,7 +185,7 @@ begin
         res += t.name;
         WriteGenerics;
         res += '): boolean :='#10;
-        res += '    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and ';
+        res += '      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and ';
         res += t.operator_equ ?? '(wr1.ntv = wr2.ntv)';
         res += ';'#10;
         
@@ -198,7 +198,7 @@ begin
         
         res += '    public function Equals(obj: object): boolean; override :='#10;
         
-        res += '    (obj is ';
+        res += '      (obj is ';
         res += t.name;
         WriteGenerics;
         res += '(var wr)) and (self = wr);'#10;
@@ -213,7 +213,7 @@ begin
       if is_direct_wrap or (t.get_hash_code_def<>nil) then
       begin
         res += '    public function GetHashCode: integer; override :='#10;
-        res += '    ';
+        res += '      ';
         res += t.get_hash_code_def ?? 'ntv.val.GetHashCode';
         res += ';'#10;
         
@@ -227,7 +227,7 @@ begin
       if is_direct_wrap or (t.to_string_def<>nil) then
       begin
         res += '    public function ToString: string; override :='#10;
-        res += '    $''';
+        res += '      $''';
         res += t.to_string_def ?? '{TypeName(self)}[{ntv.val}]';
         res += ''';'#10;
         

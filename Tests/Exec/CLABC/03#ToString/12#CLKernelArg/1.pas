@@ -3,13 +3,13 @@ uses System;
 
 var test_layer := 0;
 procedure PrintIdents :=
-loop test_layer do Write('|'#9);
+  loop test_layer do Write('|'#9);
 procedure Test(arg: CLKernelArg) :=
-foreach var l in arg.ToString.Trim.Split(#10) do
-begin
-  PrintIdents;
-  l.Println;
-end;
+  foreach var l in arg.ToString.Trim.Split(#10) do
+  begin
+    PrintIdents;
+    l.Println;
+  end;
 procedure TestT<T>(arg: T); where T: CLKernelArg;
 begin
   Test(arg);

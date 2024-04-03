@@ -15,51 +15,51 @@ type
     public need_pinn := false;
     
     public procedure Apply(setting_name: string; setting_lns: sequence of string; debug_tn: string); override :=
-    match setting_name with
-      
-      'ResultType': result_type := MethodArgType.FromString(setting_lns.Single);
-      
-      'SetRes': result_init := ProcessDefLine(setting_lns.Single, debug_tn);
-      
-      'ForcePtrQr':
-      begin
-        if force_ptr_qr or need_pinn then raise new System.InvalidOperationException;
-        force_ptr_qr := true;
+      match setting_name with
+        
+        'ResultType': result_type := MethodArgType.FromString(setting_lns.Single);
+        
+        'SetRes': result_init := ProcessDefLine(setting_lns.Single, debug_tn);
+        
+        'ForcePtrQr':
+        begin
+          if force_ptr_qr or need_pinn then raise new System.InvalidOperationException;
+          force_ptr_qr := true;
+        end;
+        
+        'PinnRes':
+        begin
+          if force_ptr_qr or need_pinn then raise new System.InvalidOperationException;
+          need_pinn := true;
+        end;
+        
+        else inherited;
       end;
-      
-      'PinnRes':
-      begin
-        if force_ptr_qr or need_pinn then raise new System.InvalidOperationException;
-        need_pinn := true;
-      end;
-      
-      else inherited;
-    end;
     
     protected procedure ProcessSpecialDefVar(sb: StringBuilder; arg_name, usage: string; debug_tn: string); override :=
-    case arg_name of
-      
-      'res':
-      begin
-        if result_init=nil then raise new System.InvalidOperationException;
-        sb += 'res';
+      match arg_name with
+        
+        'res':
+        begin
+          if result_init=nil then raise new System.InvalidOperationException;
+          sb += 'res';
+        end;
+        
+        'res_ptr':
+        begin
+          sb += '(own_qr as QueueResPtr<';
+          sb += result_type.org_text;
+          sb += '>).GetResPtrForWrite';
+        end;
+        
+        'res_pinn_adr':
+        begin
+          if not need_pinn then raise new System.InvalidOperationException;
+          sb += 'res_hnd.AddrOfPinnedObject.ToPointer';
+        end;
+        
+        else inherited;
       end;
-      
-      'res_ptr':
-      begin
-        sb += '(own_qr as QueueResPtr<';
-        sb += result_type.org_text;
-        sb += '>).GetResPtrForWrite';
-      end;
-      
-      'res_pinn_adr':
-      begin
-        if not need_pinn then raise new System.InvalidOperationException;
-        sb += 'res_hnd.AddrOfPinnedObject.ToPointer';
-      end;
-      
-      else inherited;
-    end;
     protected function GetArgTNames: sequence of string; override := args=nil? Seq(result_type.Enmr.Last.org_text) : args.Select(arg->arg.t.Enmr.Last.org_text).Append(result_type.Enmr.Last.org_text);
     
     public procedure Seal(t: string; type_generics: sequence of string; debug_tn: string); override;
@@ -116,13 +116,13 @@ type
       res_EIm += '>; override;'#10;
     end;
     protected procedure AddGCHandleArgs(args_keep_alive: List<string>; args_with_pinn: List<(string,string)>; settings: GetMethodSettings); override :=
-    if settings.force_ptr_qr then
-      args_keep_alive += 'own_qr' else
-    if settings.need_pinn then
-      args_with_pinn += ('res','res');
-    protected procedure WriteSpecialPreEnq(wr: Writer; settings: GetMethodSettings); override :=
-    if settings.result_init<>nil then
+      if settings.force_ptr_qr then
+        args_keep_alive += 'own_qr' else
+      if settings.need_pinn then
+        args_with_pinn += ('res','res');
+    protected procedure WriteSpecialPreEnq(wr: Writer; settings: GetMethodSettings); override;
     begin
+      if settings.result_init=nil then exit;
       wr += '        var res := ';
       wr += settings.result_init;
       wr += ';'#10;
@@ -147,7 +147,7 @@ type
       res_EIm += '>';
     end;
     protected procedure WriteCommandTypeInhConstructor; override :=
-    res_EIm += '      inherited Create(ccq);'#10;
+      res_EIm += '      inherited Create(ccq);'#10;
     protected function GetInitBeforeInvokeExtra: string; override := 'prev_commands.InitBeforeInvoke(g, prev_hubs)';
     
     protected procedure WriteMethodResT(l_res, l_res_E: Writer; settings: GetMethodSettings); override;

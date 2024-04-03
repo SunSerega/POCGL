@@ -24,12 +24,12 @@ type
     
     public static all := new Dictionary<string, CommentData>;
     public static procedure LoadFile(fname: string) :=
-    foreach var (bl_name, bl_lns) in FixerUtils.ReadBlocks(fname, true) do
-      if bl_name=nil then
-        continue else // Комментарий в начале файла
-      if all.ContainsKey(bl_name) then
-        Otp($'ERROR: key %{bl_name}% found in "{all[bl_name].source}" and "{GetRelativePathRTA(fname)}"') else
-        all[bl_name] := new CommentData(GetRelativePathRTA(fname), bl_lns.JoinToString(#10).Trim);
+      foreach var (bl_name, bl_lns) in FixerUtils.ReadBlocks(fname, true) do
+        if bl_name=nil then
+          continue else // Комментарий в начале файла
+        if all.ContainsKey(bl_name) then
+          Otp($'ERROR: key %{bl_name}% found in "{all[bl_name].source}" and "{GetRelativePathRTA(fname)}"') else
+          all[bl_name] := new CommentData(GetRelativePathRTA(fname), bl_lns.JoinToString(#10).Trim);
     public static procedure LoadAll(nick: string);
     begin
       var path := GetFullPathRTA(nick);
@@ -93,15 +93,15 @@ type
     end;
     
     static procedure ApplyToString(l: string; missing_keys: AsyncQueue<string>; prev: Stack<string>; res: StringBuilder) :=
-    foreach var (is_key, s) in FixerUtils.FindTemplateInsertions(l, '%','%') do
-      if not is_key then
-        res *= s else
-      if not ApplyToKey(s.TrimWhile(char.IsWhiteSpace).ToString, missing_keys, prev, res) then
-      begin
-        res += '%';
-        res *= s;
-        res += '%';
-      end;
+      foreach var (is_key, s) in FixerUtils.FindTemplateInsertions(l, '%','%') do
+        if not is_key then
+          res *= s else
+        if not ApplyToKey(s.TrimWhile(char.IsWhiteSpace).ToString, missing_keys, prev, res) then
+        begin
+          res += '%';
+          res *= s;
+          res += '%';
+        end;
     static function ApplyToString(l: string; missing_keys: AsyncQueue<string>; prev: Stack<string> := nil): string;
     begin
       var res := new StringBuilder;

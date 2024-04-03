@@ -14,17 +14,17 @@
     public property Properties: CLPlatformProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLPlatform): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLPlatform): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLPlatform(var wr)) and (self = wr);
+      (obj is CLPlatform(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}]';
+      $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
@@ -41,17 +41,17 @@
     public property Properties: CLDeviceProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLDevice): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLDevice): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLDevice(var wr)) and (self = wr);
+      (obj is CLDevice(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}]';
+      $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
@@ -66,7 +66,7 @@
     public property Properties: CLSubDeviceProperties read GetProperties;
     
     public function ToString: string; override :=
-    $'{inherited ToString} of {Parent}';
+      $'{inherited ToString} of {Parent}';
     
   end;
   
@@ -83,17 +83,17 @@
     public property Properties: CLContextProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLContext): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLContext): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLContext(var wr)) and (self = wr);
+      (obj is CLContext(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}] on devices: {AllDevices.JoinToString('', '')}; Main device: {MainDevice}';
+      $'{TypeName(self)}[{ntv.val}] on devices: {AllDevices.JoinToString('', '')}; Main device: {MainDevice}';
     
   end;
   
@@ -102,34 +102,34 @@
     public property Native: cl_program read ntv;
     
     public static function operator=(wr1, wr2: CLCode): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLCode): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLCode(var wr)) and (self = wr);
+      (obj is CLCode(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}]';
+      $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
   CLKernel = partial class
     
     public static function operator=(wr1, wr2: CLKernel): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
     public static function operator<>(wr1, wr2: CLKernel): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLKernel(var wr)) and (self = wr);
+      (obj is CLKernel(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    Name.GetHashCode xor CodeContainer.GetHashCode;
+      Name.GetHashCode xor CodeContainer.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{Name}] from {CodeContainer}';
+      $'{TypeName(self)}[{Name}] from {CodeContainer}';
     
   end;
   
@@ -146,17 +146,17 @@
     public property Properties: CLMemoryProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLMemory): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLMemory): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLMemory(var wr)) and (self = wr);
+      (obj is CLMemory(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}] of size {Size}';
+      $'{TypeName(self)}[{ntv.val}] of size {Size}';
     
   end;
   
@@ -171,7 +171,7 @@
     public property Properties: CLMemorySubSegmentProperties read GetProperties;
     
     public function ToString: string; override :=
-    $'{inherited ToString} inside {Parent}';
+      $'{inherited ToString} inside {Parent}';
     
   end;
   
@@ -188,17 +188,17 @@
     public property Properties: CLValueProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLValue<T>): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLValue<T>): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLValue<T>(var wr)) and (self = wr);
+      (obj is CLValue<T>(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}]';
+      $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
@@ -215,17 +215,17 @@
     public property Properties: CLArrayProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLArray<T>): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLArray<T>): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLArray<T>(var wr)) and (self = wr);
+      (obj is CLArray<T>(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}] of length {Length}';
+      $'{TypeName(self)}[{ntv.val}] of length {Length}';
     
   end;
   

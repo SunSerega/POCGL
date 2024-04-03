@@ -111,7 +111,7 @@ type
     end;
     
     public function ToString: string; override :=
-    $'{min}..{max}';
+      $'{min}..{max}';
     
   end;
   
@@ -165,7 +165,7 @@ type
     end;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{strafe}, {merge_infs}, {merge_chrs}]';
+      $'{TypeName(self)}[{strafe}, {merge_infs}, {merge_chrs}]';
     
   end;
   
@@ -241,7 +241,7 @@ type
     public function CompareTo(p: MergedStringPointer) := Compare(self, p);
     
     public function ToString: string; override :=
-    $'>>> {s} <<< [{data.part_i}, {data.solid_sym_used}]';
+      $'>>> {s} <<< [{data.part_i}, {data.solid_sym_used}]';
     
   end;
   
@@ -271,21 +271,21 @@ implementation
     public property Length: MergedStringLength read new MergedStringLength(val.Length); override;
     
     public function TryApply(text: StringSection; c_min, c_max: integer): sequence of StringSection; override :=
-    if val.Length.InRange(c_min, c_max) and text.StartsWith(val) then
-      |text.TakeFirst(val.Length)| else
-      System.Array.Empty&<StringSection>;
+      if val.Length.InRange(c_min, c_max) and text.StartsWith(val) then
+        |text.TakeFirst(val.Length)| else
+        System.Array.Empty&<StringSection>;
     
     public static function Compare(p1, p2: MergedStringPartSolid) := string.Compare(p1.val, p2.val);
     
     public procedure WriteTo(b: ColoredStringBuilderBase<string>; escape_sym: char); override :=
-    b.AddSubRange('solid', b->
-      foreach var ch in self.val do
-      begin
-        if (ch=escape_sym) or (ch='@') then
-          b += escape_sym;
-        b += ch;
-      end
-    );
+      b.AddSubRange('solid', b->
+        foreach var ch in self.val do
+        begin
+          if (ch=escape_sym) or (ch='@') then
+            b += escape_sym;
+          b += ch;
+        end
+      );
     
   end;
   MergedStringPartWild = sealed class(MergedStringPart)
@@ -451,8 +451,7 @@ implementation
       end;
     end;
     
-    public procedure WriteTo(b: ColoredStringBuilderBase<string>; escape_sym: char); override :=
-    b.AddSubRange('wild', b->
+    public procedure WriteTo(b: ColoredStringBuilderBase<string>; escape_sym: char); override := b.AddSubRange('wild', b->
     begin
       b += wild_beg;
       
@@ -675,13 +674,13 @@ type
 function MergedStringPointer.IsOut := data.part_i = s.parts.Length;
 
 static function MergedString.Literal(s: string) :=
-new MergedString(new MergedStringPartSolid(s));
+  new MergedString(new MergedStringPartSolid(s));
 
 static function MergedString.Parse(s: StringSection; escape_sym: char) :=
-new MergedString(OptimizeParts(MakeParts(s, escape_sym)).ToArray);
+  new MergedString(OptimizeParts(MakeParts(s, escape_sym)).ToArray);
 
 procedure MergedString.WriteTo(b: ColoredStringBuilderBase<string>; escape_sym: char) :=
-foreach var part in parts do part.WriteTo(b, escape_sym);
+  foreach var part in parts do part.WriteTo(b, escape_sym);
 
 static function MergedString.Compare(s1, s2: MergedString): integer;
 begin
@@ -746,10 +745,10 @@ type
     public function ToParts(edge1: MergedString): sequence of MergedStringPart; abstract;
     
     public static function ToMergedString(edge1: MergedString; n: MergedStringJumpNode) :=
-    new MergedString(MergedString.OptimizeParts(
-      PatternPath&<MergedStringJumpNode>(n)
-      .ToArray(n->n.ToParts(edge1)).SelectMany(ps->ps)
-    ).ToArray);
+      new MergedString(MergedString.OptimizeParts(
+        PatternPath&<MergedStringJumpNode>(n)
+        .ToArray(n->n.ToParts(edge1)).SelectMany(ps->ps)
+      ).ToArray);
     
   end;
   
@@ -812,10 +811,10 @@ type
     end;
     
     public function ToParts(edge1: MergedString): sequence of MergedStringPart; override :=
-    new MergedStringPart[](new MergedStringPartWild(
-      len1 * len2,
-      chars.ToHashSet
-    ));
+      new MergedStringPart[](new MergedStringPartWild(
+        len1 * len2,
+        chars.ToHashSet
+      ));
     
   end;
   
@@ -1103,42 +1102,42 @@ type
   end;
   
 static function MergedString.AllMerges(s1, s2: MergedString) :=
-Pattern.MinPaths(
-  new MergedStringPoint2(s1, s2),
-  default(MergedStringJumpNode),
-  new MergedStringCost,
-  
-  (p, j)->
-  begin
-    var p2 := NextZeroJumpPoint(p);
+  Pattern.MinPaths(
+    new MergedStringPoint2(s1, s2),
+    default(MergedStringJumpNode),
+    new MergedStringCost,
     
-    Result := |ValueTuple.Create(p2,
-      if p.Edge1=p2.Edge1 then j else
-        new MergedStringJumpNodeCopy(j, p.Edge1.data, p2.Edge1.data)
-    )|;
+    (p, j)->
+    begin
+      var p2 := NextZeroJumpPoint(p);
+      
+      Result := |ValueTuple.Create(p2,
+        if p.Edge1=p2.Edge1 then j else
+          new MergedStringJumpNodeCopy(j, p.Edge1.data, p2.Edge1.data)
+      )|;
+      
+    end,
     
-  end,
-  
-  (p, j)->
-  MergedStringMltCostJumpData.Create(p, j).AllCostJumps
-  
-).Select(n->
-begin
-  Result := MergedStringJumpNode.ToMergedString(s1, n);
-  {$ifdef DEBUG}
-  
-  if s1 not in Result then raise new System.InvalidOperationException($'s1{#10}{s1}{#10}{s2}{#10}{Result}{#10}');
-  if s2 not in Result then raise new System.InvalidOperationException($'s2{#10}{s1}{#10}{s2}{#10}{Result}{#10}');
-  
-  foreach var esc_ch in '@\' do
+    (p, j)->
+    MergedStringMltCostJumpData.Create(p, j).AllCostJumps
+    
+  ).Select(n->
   begin
-    var r2 := MergedString.Parse(Result.ToString(esc_ch), esc_ch);
-    if Result <> r2 then
-      raise new System.InvalidOperationException($'{#10}{Result}{#10}{r2}{#10}');
-  end;
-  
-  {$endif DEBUG}
-end);
+    Result := MergedStringJumpNode.ToMergedString(s1, n);
+    {$ifdef DEBUG}
+    
+    if s1 not in Result then raise new System.InvalidOperationException($'s1{#10}{s1}{#10}{s2}{#10}{Result}{#10}');
+    if s2 not in Result then raise new System.InvalidOperationException($'s2{#10}{s1}{#10}{s2}{#10}{Result}{#10}');
+    
+    foreach var esc_ch in '@\' do
+    begin
+      var r2 := MergedString.Parse(Result.ToString(esc_ch), esc_ch);
+      if Result <> r2 then
+        raise new System.InvalidOperationException($'{#10}{Result}{#10}{r2}{#10}');
+    end;
+    
+    {$endif DEBUG}
+  end);
 
 {$endregion operator*}
 
@@ -1321,10 +1320,10 @@ begin
 end;
 
 static function MergedString.operator in(s1, s2: MergedString) :=
-Pattern.AllPaths(
-  new MergedStringPoint2(s1, s2), true,
-  (p, j) -> MergedStringInMakeJumps(p)
-).Any;
+  Pattern.AllPaths(
+    new MergedStringPoint2(s1, s2), true,
+    (p, j) -> MergedStringInMakeJumps(p)
+  ).Any;
 
 {$endregion operator in}
 

@@ -667,8 +667,8 @@ type
     public function Visual := body;
     
     public procedure UpdateHeaders(unused, used: HashSet<string>) :=
-    foreach var (names, r) in headers do
-      r.Background := MakeHeaderColor(names, unused, used);
+      foreach var (names, r) in headers do
+        r.Background := MakeHeaderColor(names, unused, used);
     
   end;
   

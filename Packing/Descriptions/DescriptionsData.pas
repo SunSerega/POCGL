@@ -107,7 +107,7 @@ type
   CommentableConstructor = sealed class(CommentableMethod)
     
     public constructor(t: CommentableType; args: array of string) :=
-    inherited Create(t, nil, args);
+      inherited Create(t, nil, args);
     
     public static function Parse(l: string; t: CommentableType): CommentableConstructor;
     
@@ -267,7 +267,7 @@ end;
 {$region Member parser's}
 
 static function CommentableUnit.Parse(l: string): CommentableUnit;
-const unit_keyword = 'unit';
+  const unit_keyword = 'unit';
 begin
   if not l.StartsWith(unit_keyword) then exit;
   if not l.EndsWith(';') then raise new System.FormatException(l);
@@ -275,8 +275,8 @@ begin
 end;
 
 static function CommentableType.Parse(l: string): CommentableType;
-const separator = ' = ';
-const type_keywords: array of string = ('record', 'class', 'interface');
+  const separator = ' = ';
+  const type_keywords: array of string = ('record', 'class', 'interface');
 begin
   if l.StartsWith('[') then exit; // [StructLayout(Size = 1)]
 //  if 'glQueryTarget' in l then
@@ -300,7 +300,7 @@ begin
 end;
 
 static function CommentableMethod.Parse(l: string; t: CommentableType): CommentableMethod;
-const method_keywords: array of string = ('function', 'procedure');
+  const method_keywords: array of string = ('function', 'procedure');
 begin
   var ind := l.IndexOfAnySpaced(method_keywords);
   if ind=nil then exit;
@@ -331,7 +331,7 @@ begin
 end;
 
 static function CommentableConstructor.Parse(l: string; t: CommentableType): CommentableConstructor;
-const constructor_keywords: array of string = ('constructor');
+  const constructor_keywords: array of string = ('constructor');
 begin
   var ind := l.IndexOfAnySpaced(constructor_keywords);
   if ind=nil then exit;
@@ -346,7 +346,7 @@ begin
 end;
 
 static function CommentableProp.Parse(l: string; t: CommentableType): CommentableProp;
-const prop_keywords: array of string = ('property');
+  const prop_keywords: array of string = ('property');
 begin
   var ind := l.IndexOfAnySpaced(prop_keywords);
   if ind=nil then exit;
@@ -365,7 +365,7 @@ begin
 end;
 
 static function CommentableEvent.Parse(l: string; t: CommentableType): CommentableEvent;
-const event_keywords: array of string = ('event');
+  const event_keywords: array of string = ('event');
 begin
   var ind := l.IndexOfAnySpaced(event_keywords);
   if ind=nil then exit;
@@ -389,7 +389,7 @@ var parse_level := 0;
 {$endif ParseLevelDebug}
 
 function SkipCodeBlock(l: string; enmr: IEnumerator<string>): boolean;
-const block_open_kvds: array of string = ('begin', 'case', 'match', 'try');
+  const block_open_kvds: array of string = ('begin', 'case', 'match', 'try');
 begin
   Result := false;
   if l.IndexOfAnySpaced(block_open_kvds)=nil then exit;

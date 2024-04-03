@@ -54,9 +54,9 @@ type
     end;
     
     public static function Parse(str: string): FuncParamT;
-    const const_s = 'const';
-    const var_arg_s = 'var ';
-    const array_arg_s = 'array of ';
+      const const_s = 'const';
+      const var_arg_s = 'var ';
+      const array_arg_s = 'array of ';
     begin
       str := str.Trim;
       
@@ -1061,7 +1061,7 @@ type
       begin
         foreach var tname in pointer_types do
         begin
-          wr += '    type P';
+          wr += '      type P';
           wr += tname.First.ToUpper;
           wr += tname.SubString(1);
           wr += ' = ^';

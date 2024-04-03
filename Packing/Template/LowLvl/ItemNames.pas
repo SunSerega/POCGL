@@ -139,7 +139,7 @@ type
     end;
     
     public static function ParseVector(s: string): TypeComboName;
-    const vec_s = 'Vec';
+      const vec_s = 'Vec';
     begin
       
       if not s.StartsWith(vec_s) then
@@ -240,8 +240,8 @@ type
     end;
     
     public static function Parse(name: string): ApiVendorLName;
-    const api_sep = $'::';
-    const suffix_sep = $'+';
+      const api_sep = $'::';
+      const suffix_sep = $'+';
     begin
       
       var api_sep_ind := name.IndexOf(api_sep);

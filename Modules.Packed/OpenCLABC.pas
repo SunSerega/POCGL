@@ -542,9 +542,9 @@ type
     {$region Fill}
     
     private static procedure RtlZeroMemory(dst: IntPtr; length: UIntPtr);
-    external 'kernel32.dll';
+      external 'kernel32.dll';
     private static procedure RtlFillMemory(dst: IntPtr; length: UIntPtr; fill: byte);
-    external 'kernel32.dll';
+      external 'kernel32.dll';
     
     ///Заполняет всю область памяти нулевыми байтами
     public procedure FillZero := RtlZeroMemory(ptr, sz);
@@ -556,11 +556,11 @@ type
     {$region Copy}
     
     private static procedure RtlCopyMemory(dst: IntPtr; source: IntPtr; length: UIntPtr);
-    external 'kernel32.dll';
+      external 'kernel32.dll';
     private static procedure RtlCopyMemory(var dst: byte; source: IntPtr; length: UIntPtr);
-    external 'kernel32.dll';
+      external 'kernel32.dll';
     private static procedure RtlCopyMemory(dst: IntPtr; var source: byte; length: UIntPtr);
-    external 'kernel32.dll';
+      external 'kernel32.dll';
     
     ///Копирует данные из данной области памяти в указанную
     ///Области памяти не должны пересекаться. Иначе поведение неопределено
@@ -611,11 +611,11 @@ type
     {$region CopyOverlapped}
     
     private static procedure RtlMoveMemory(dst: IntPtr; source: IntPtr; length: UIntPtr);
-    external 'kernel32.dll';
+      external 'kernel32.dll';
     private static procedure RtlMoveMemory(var dst: byte; source: IntPtr; length: UIntPtr);
-    external 'kernel32.dll';
+      external 'kernel32.dll';
     private static procedure RtlMoveMemory(dst: IntPtr; var source: byte; length: UIntPtr);
-    external 'kernel32.dll';
+      external 'kernel32.dll';
     
     ///Копирует данные из данной области памяти в указанную
     ///Области памяти могут пересекаться, но взамен данный метод немного медленнее соответствующего метода без Overlapped в названии
@@ -690,7 +690,7 @@ type
     
     ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
-    $'{TypeName(self)}:${ptr.ToString(''X'')}[{sz}]';
+      $'{TypeName(self)}:${ptr.ToString(''X'')}[{sz}]';
     
   end;
   
@@ -708,8 +708,8 @@ type
     
     public constructor(ptr: IntPtr) := self.ptr := ptr;
     public constructor(alloc: boolean := false) :=
-    if alloc then self.Alloc else
-    self.ptr := IntPtr.Zero;
+      if alloc then self.Alloc else
+        self.ptr := IntPtr.Zero;
     
     public static function operator implicit(p: ^T): NativeValueArea<T> := new NativeValueArea<T>(new IntPtr(p));
     public static function operator implicit(area: NativeValueArea<T>): ^T := area.Pointer;
@@ -759,7 +759,7 @@ type
     {$endregion Alloc/Release}
     
     public function ToString: string; override :=
-    $'{TypeName(self)}:${ptr.ToString(''X'')}';
+      $'{TypeName(self)}:${ptr.ToString(''X'')}';
     
   end;
   
@@ -869,7 +869,7 @@ type
     {$endregion Alloc/Release}
     
     public function ToString: string; override :=
-    $'{TypeName(self)}:${first_ptr.ToString(''X'')}[{item_count}]';
+      $'{TypeName(self)}:${first_ptr.ToString(''X'')}[{item_count}]';
     
   end;
   
@@ -904,13 +904,13 @@ type
     {$region IDisposable}
     
     public procedure Dispose :=
-    if Area.TryRelease then GC.SuppressFinalize(self);
+      if Area.TryRelease then GC.SuppressFinalize(self);
     protected procedure Finalize; override := Dispose;
     
     {$endregion IDisposable}
     
     public function ToString: string; override :=
-    $'{TypeName(self)}:${Area.ptr.ToString(''X'')}[{Area.sz}]';
+      $'{TypeName(self)}:${Area.ptr.ToString(''X'')}[{Area.sz}]';
     
   end;
   
@@ -954,7 +954,7 @@ type
     ///Ничего не делает, если значение уже освобождено
     ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
     public procedure Dispose :=
-    if Area.TryRelease then GC.SuppressFinalize(self);
+      if Area.TryRelease then GC.SuppressFinalize(self);
     ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
     ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
     protected procedure Finalize; override := Dispose;
@@ -963,7 +963,7 @@ type
     
     ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
-    $'{TypeName(self)}{{ {_ObjectToString(Value)} }}';
+      $'{TypeName(self)}{{ {_ObjectToString(Value)} }}';
     
   end;
   
@@ -1127,7 +1127,7 @@ type
     ///Этот метод потоко-безопасен
     ///Данный метод вызывается автоматически во время сборки мусора, если объект ещё не удалён
     public procedure Dispose :=
-    if Area.TryRelease then GC.SuppressFinalize(self);
+      if Area.TryRelease then GC.SuppressFinalize(self);
     ///Вызывает Dispose. Данный метод вызывается автоматически во время сборки мусора
     ///Данный метод не должен вызываться из пользовательского кода. Он виден только на случай если вы хотите переопределить его в своём классе-наследнике
     protected procedure Finalize; override := Dispose;
@@ -1299,7 +1299,7 @@ type
     
     private function GetActStr := is_release ? 'Released' : 'Retained';
     public function ToString: string; override :=
-    $'{time} | {GetActStr} when: {reason}';
+      $'{time} | {GetActStr} when: {reason}';
     
   end;
   ///
@@ -1307,15 +1307,13 @@ type
     private log_lines := new List<EventRetainReleaseData>;
     private ref_c := 0;
     
-    private procedure Retain(reason: string) :=
-    lock self do
+    private procedure Retain(reason: string) := lock self do
     begin
       log_lines += new EventRetainReleaseData(false, reason);
       ref_c += 1;
     end;
     
-    private procedure Release(reason: string) :=
-    lock self do
+    private procedure Release(reason: string) := lock self do
     begin
       log_lines += new EventRetainReleaseData(true, reason);
       ref_c -= 1;
@@ -1349,8 +1347,8 @@ type
     {$region Log lines}
     
     public static procedure RegisterEventRetain(ev: cl_event; reason: string) :=
-    if ev=cl_event.Zero then raise new OpenCLABCInternalException($'Zero event retain') else
-    LogFor(ev).Retain(reason);
+      if ev<>cl_event.Zero then LogFor(ev).Retain(reason) else
+        raise new OpenCLABCInternalException($'Zero event retain');
     
     public static procedure RegisterEventRelease(ev: cl_event; reason: string) :=
     begin
@@ -1360,8 +1358,7 @@ type
     
     {$endregion Log lines}
     
-    public static procedure ReportEventLogs(otp: System.IO.TextWriter := Console.Out) :=
-    lock otp do
+    public static procedure ReportEventLogs(otp: System.IO.TextWriter := Console.Out) := lock otp do
     begin
       otp.WriteLine(System.Environment.StackTrace);
       
@@ -1391,7 +1388,7 @@ type
     end;
     
     public static procedure VerifyExists(ev: cl_event; reason: string) :=
-    if LogFor(ev).ref_c<=0 then ReportProblem($'Event {ev} was released before last use ({reason})');
+      if LogFor(ev).ref_c<=0 then ReportProblem($'Event {ev} was released before last use ({reason})');
     
     public static procedure FinallyReport;
     begin
@@ -1416,8 +1413,7 @@ type
     private static function QueueUsesFor(cq: cl_command_queue) := QueueUses.GetOrAdd(cq, cq->new ConcurrentQueue<string>);
     private static procedure Add(cq: cl_command_queue; use: string) := QueueUsesFor(cq).Enqueue(use);
     
-    public static procedure ReportQueueUses(otp: System.IO.TextWriter := Console.Out) :=
-    lock otp do
+    public static procedure ReportQueueUses(otp: System.IO.TextWriter := Console.Out) := lock otp do
     begin
       otp.WriteLine(System.Environment.StackTrace);
       
@@ -1433,9 +1429,9 @@ type
       otp.Flush;
     end;
     
-    public static procedure FinallyReport :=
-    if QueueUses.Count<>0 then
+    public static procedure FinallyReport;
     begin
+      if QueueUses.Count=0 then exit;
       var total_q_count := QueueUses.Keys.Sum(q->
       begin
         Result := 0;
@@ -1465,10 +1461,9 @@ type
     private static WaitActions := new ConcurrentDictionary<object, ConcurrentQueue<string>>;
     
     private static procedure RegisterAction(handler: object; act: string) :=
-    WaitActions.GetOrAdd(handler, hc->new ConcurrentQueue<string>).Enqueue(act);
+      WaitActions.GetOrAdd(handler, hc->new ConcurrentQueue<string>).Enqueue(act);
     
-    public static procedure ReportWaitActions(otp: System.IO.TextWriter := Console.Out) :=
-    lock otp do
+    public static procedure ReportWaitActions(otp: System.IO.TextWriter := Console.Out) := lock otp do
     begin
       otp.WriteLine(System.Environment.StackTrace);
       
@@ -1500,19 +1495,20 @@ type
     
     private static count_of_type := new ConcurrentDictionary<System.Type, integer>;
     private static prev_names := new ConcurrentDictionary<(System.Type,integer), string>;
-    private static function MakeName(command: object) :=
-    prev_names.GetOrAdd((command.GetType,command.GetHashCode), t->
-    begin
-      var n := count_of_type.AddOrUpdate(t[0], 1, (t,n)->n+1);
-      Result := $'{TypeToTypeName(t[0])}#{n}';
-    end);
+    private static function MakeName(command: object) := prev_names.GetOrAdd(
+      (command.GetType,command.GetHashCode),
+      t->
+      begin
+        var n := count_of_type.AddOrUpdate(t[0], 1, (t,n)->n+1);
+        Result := $'{TypeToTypeName(t[0])}#{n}';
+      end
+    );
     
     private static procedure RegisterExecCacheTry(command: object; is_new: boolean; descr: string) :=
-    ExecCacheTries.GetOrAdd(MakeName(command), name->new ConcurrentQueue<(boolean,string)>).Enqueue((is_new,descr));
+      ExecCacheTries.GetOrAdd(MakeName(command), name->new ConcurrentQueue<(boolean,string)>).Enqueue((is_new,descr));
     
     private static procedure DisposeAllCommands;
-    public static procedure ReportExecCache(otp: System.IO.TextWriter := Console.Out) :=
-    lock otp do
+    public static procedure ReportExecCache(otp: System.IO.TextWriter := Console.Out) := lock otp do
     begin
       DisposeAllCommands;
       
@@ -3419,7 +3415,7 @@ type
     private constructor := inherited;
     
     protected procedure Finalize; override :=
-    OpenCLABCInternalException.RaiseIfError(cl.ReleaseDevice(ntv));
+      OpenCLABCInternalException.RaiseIfError(cl.ReleaseDevice(ntv));
     
   end;
   
@@ -3973,8 +3969,7 @@ type
       OpenCLABCInternalException.RaiseIfError(ec);
     end;
     
-    protected static function LoadBins(br: System.IO.BinaryReader) :=
-    ArrGen(br.ReadInt32, i->
+    protected static function LoadBins(br: System.IO.BinaryReader) := ArrGen(br.ReadInt32, i->
     begin
       var len := br.ReadInt32;
       Result := br.ReadBytes(len);
@@ -4067,11 +4062,11 @@ type
     {$region Deserialize}
     
     public static function Deserialize(bin: array of array of byte; c: CLContext := nil) :=
-    new CLCompCode(DeserializeNative(c, bin), false);
+      new CLCompCode(DeserializeNative(c, bin), false);
     public static function DeserializeFrom(br: System.IO.BinaryReader; c: CLContext := nil) :=
-    Deserialize(LoadBins(br), c);
+      Deserialize(LoadBins(br), c);
     public static function DeserializeFrom(str: System.IO.Stream; c: CLContext := nil) :=
-    DeserializeFrom(new System.IO.BinaryReader(str), c);
+      DeserializeFrom(new System.IO.BinaryReader(str), c);
     
     {$endregion Deserialize}
     
@@ -4097,11 +4092,11 @@ type
     {$region Deserialize}
     
     public static function Deserialize(bin: array of array of byte; c: CLContext := nil) :=
-    new CLCodeLib(DeserializeNative(c, bin), false);
+      new CLCodeLib(DeserializeNative(c, bin), false);
     public static function DeserializeFrom(br: System.IO.BinaryReader; c: CLContext := nil) :=
-    Deserialize(LoadBins(br), c);
+      Deserialize(LoadBins(br), c);
     public static function DeserializeFrom(str: System.IO.Stream; c: CLContext := nil) :=
-    DeserializeFrom(new System.IO.BinaryReader(str), c);
+      DeserializeFrom(new System.IO.BinaryReader(str), c);
     
     {$endregion Deserialize}
     
@@ -4155,9 +4150,9 @@ type
     end;
     
     public static function DeserializeFrom(br: System.IO.BinaryReader; opt: CLProgramCompOptions := nil) :=
-    Deserialize(LoadBins(br), opt);
+      Deserialize(LoadBins(br), opt);
     public static function DeserializeFrom(str: System.IO.Stream; opt: CLProgramCompOptions := nil) :=
-    DeserializeFrom(new System.IO.BinaryReader(str), opt);
+      DeserializeFrom(new System.IO.BinaryReader(str), opt);
     
     {$endregion Deserialize}
     
@@ -4423,16 +4418,16 @@ type
       
     end;
     public constructor(size: integer; c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(new UIntPtr(size), c, kernel_use, map_use);
+      Create(new UIntPtr(size), c, kernel_use, map_use);
     public constructor(size: int64;   c: CLContext; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(new UIntPtr(size), c, kernel_use, map_use);
+      Create(new UIntPtr(size), c, kernel_use, map_use);
     
     public constructor(size: UIntPtr; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(size, CLContext.Default, kernel_use, map_use);
+      Create(size, CLContext.Default, kernel_use, map_use);
     public constructor(size: integer; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(new UIntPtr(size), kernel_use, map_use);
+      Create(new UIntPtr(size), kernel_use, map_use);
     public constructor(size: int64;   kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(new UIntPtr(size), kernel_use, map_use);
+      Create(new UIntPtr(size), kernel_use, map_use);
     
     private constructor(ntv: cl_mem; memory_report, need_retain: boolean);
     begin
@@ -5048,9 +5043,9 @@ type
       self._parent := parent.ntv;
     end;
     public constructor(parent: CLMemory; origin, size: UInt32; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
+      Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
     public constructor(parent: CLMemory; origin, size: UInt64; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
+      Create(parent, new UIntPtr(origin), new UIntPtr(size), kernel_use, map_use);
     
     // For the CLMemory.FromNative
     private constructor(parent, ntv: cl_mem; memory_report, need_retain: boolean);
@@ -5107,9 +5102,9 @@ type
     end;
     
     public constructor(kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(CLContext.Default, kernel_use, map_use);
+      Create(CLContext.Default, kernel_use, map_use);
     public constructor(val: T; kernel_use: CLMemoryUsage := CLMemoryUsage.read_write_bits; map_use: CLMemoryUsage := CLMemoryUsage.read_write_bits) :=
-    Create(CLContext.Default, val, kernel_use, map_use);
+      Create(CLContext.Default, val, kernel_use, map_use);
     
     public constructor(ntv: cl_mem; memory_report, need_retain: boolean);
     begin
@@ -5698,17 +5693,17 @@ type
     public property Properties: CLPlatformProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLPlatform): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLPlatform): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLPlatform(var wr)) and (self = wr);
+      (obj is CLPlatform(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}]';
+      $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
@@ -5725,17 +5720,17 @@ type
     public property Properties: CLDeviceProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLDevice): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLDevice): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLDevice(var wr)) and (self = wr);
+      (obj is CLDevice(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}]';
+      $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
@@ -5750,7 +5745,7 @@ type
     public property Properties: CLSubDeviceProperties read GetProperties;
     
     public function ToString: string; override :=
-    $'{inherited ToString} of {Parent}';
+      $'{inherited ToString} of {Parent}';
     
   end;
   
@@ -5767,17 +5762,17 @@ type
     public property Properties: CLContextProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLContext): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLContext): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLContext(var wr)) and (self = wr);
+      (obj is CLContext(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}] on devices: {AllDevices.JoinToString('', '')}; Main device: {MainDevice}';
+      $'{TypeName(self)}[{ntv.val}] on devices: {AllDevices.JoinToString('', '')}; Main device: {MainDevice}';
     
   end;
   
@@ -5786,34 +5781,34 @@ type
     public property Native: cl_program read ntv;
     
     public static function operator=(wr1, wr2: CLCode): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLCode): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLCode(var wr)) and (self = wr);
+      (obj is CLCode(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}]';
+      $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
   CLKernel = partial class
     
     public static function operator=(wr1, wr2: CLKernel): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.Name=wr2.Name) and (wr1.CodeContainer=wr2.CodeContainer);
     public static function operator<>(wr1, wr2: CLKernel): boolean := not(wr1=wr2);
     
     public function Equals(obj: object): boolean; override :=
-    (obj is CLKernel(var wr)) and (self = wr);
+      (obj is CLKernel(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    Name.GetHashCode xor CodeContainer.GetHashCode;
+      Name.GetHashCode xor CodeContainer.GetHashCode;
     
     public function ToString: string; override :=
-    $'{TypeName(self)}[{Name}] from {CodeContainer}';
+      $'{TypeName(self)}[{Name}] from {CodeContainer}';
     
   end;
   
@@ -5833,19 +5828,19 @@ type
     public property Properties: CLMemoryProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLMemory): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLMemory): boolean := not(wr1=wr2);
     
     ///--
     public function Equals(obj: object): boolean; override :=
-    (obj is CLMemory(var wr)) and (self = wr);
+      (obj is CLMemory(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}] of size {Size}';
+      $'{TypeName(self)}[{ntv.val}] of size {Size}';
     
   end;
   
@@ -5863,7 +5858,7 @@ type
     
     ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
-    $'{inherited ToString} inside {Parent}';
+      $'{inherited ToString} inside {Parent}';
     
   end;
   
@@ -5883,19 +5878,19 @@ type
     public property Properties: CLValueProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLValue<T>): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLValue<T>): boolean := not(wr1=wr2);
     
     ///--
     public function Equals(obj: object): boolean; override :=
-    (obj is CLValue<T>(var wr)) and (self = wr);
+      (obj is CLValue<T>(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}]';
+      $'{TypeName(self)}[{ntv.val}]';
     
   end;
   
@@ -5915,19 +5910,19 @@ type
     public property Properties: CLArrayProperties read GetProperties;
     
     public static function operator=(wr1, wr2: CLArray<T>): boolean :=
-    ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
+      ReferenceEquals(wr1,wr2) or not ReferenceEquals(wr1,nil) and not ReferenceEquals(wr2,nil) and (wr1.ntv = wr2.ntv);
     public static function operator<>(wr1, wr2: CLArray<T>): boolean := not(wr1=wr2);
     
     ///--
     public function Equals(obj: object): boolean; override :=
-    (obj is CLArray<T>(var wr)) and (self = wr);
+      (obj is CLArray<T>(var wr)) and (self = wr);
     
     public function GetHashCode: integer; override :=
-    ntv.val.GetHashCode;
+      ntv.val.GetHashCode;
     
     ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override :=
-    $'{TypeName(self)}[{ntv.val}] of length {Length}';
+      $'{TypeName(self)}[{ntv.val}] of length {Length}';
     
   end;
   
@@ -6030,10 +6025,11 @@ type
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     
     private static function GetValueRuntimeType<T>(val: T) :=
-    if typeof(T).IsValueType then
-      typeof(T) else
-    if val = default(T) then
-      nil else val.GetType;
+      if typeof(T).IsValueType then
+        typeof(T) else
+      if val = default(T) then
+        nil else
+        val.GetType;
     private static procedure ToStringRuntimeValue<T>(sb: StringBuilder; val: T);
     begin
       var rt := GetValueRuntimeType(val);
@@ -6065,9 +6061,9 @@ type
       
     end;
     private static procedure ToStringWriteDelegate(sb: StringBuilder; d: System.Delegate);
-    const lambda='lambda';
-    const sugar_begin='<>';
-    const par_separator='; ';
+      const lambda='lambda';
+      const sugar_begin='<>';
+      const par_separator='; ';
     begin
       if d.Target<>nil then
       begin
@@ -6315,7 +6311,7 @@ type
   CommandQueue<T> = abstract partial class(CommandQueueBase)
     
     public static function operator implicit(o: T): CommandQueue<T> :=
-    new ConstQueue<T>(o);
+      new ConstQueue<T>(o);
     
   end;
   
@@ -8719,7 +8715,7 @@ type
     private val := 0;
     
     public constructor(b: boolean) :=
-    self.val := integer(b);
+      self.val := integer(b);
     
     public function TrySet(b: boolean): boolean;
     begin
@@ -8740,7 +8736,7 @@ type
 type
   BlittableException = sealed class(Exception)
     public constructor(t, blame: System.Type; source_name: string) :=
-    inherited Create(t=blame ? $'Значения типа {TypeToTypeName(t)} нельзя {source_name}' : $'Значения типа {TypeToTypeName(t)} нельзя {source_name}, потому что он содержит тип {TypeToTypeName(blame)}' );
+      inherited Create(t=blame ? $'Значения типа {TypeToTypeName(t)} нельзя {source_name}' : $'Значения типа {TypeToTypeName(t)} нельзя {source_name}, потому что он содержит тип {TypeToTypeName(blame)}' );
   end;
   BlittableHelper = static class
     
@@ -8786,18 +8782,18 @@ type
   
   CLValue<T> = partial class
     static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(T), $'использовать как тип значения CLValue<>');
+      BlittableHelper.RaiseIfBad(typeof(T), $'использовать как тип значения CLValue<>');
   end;
   CLArray<T> = partial class
     static constructor :=
-    BlittableHelper.RaiseIfBad(typeof(T), $'использовать как элементы CLArray<>');
+      BlittableHelper.RaiseIfBad(typeof(T), $'использовать как элементы CLArray<>');
   end;
   
 static constructor NativeValueArea<T>.Create :=
-BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:NativeValue[Area]%');
+  BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:NativeValue[Area]%');
 
 static constructor NativeArrayArea<T>.Create :=
-BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:NativeArray[Area]%');
+  BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:NativeArray[Area]%');
 
 {$endregion Blittable}
 
@@ -8833,7 +8829,7 @@ type
     state: (TPS_Default, TPS_Empty, TPS_Set);
     
     public constructor :=
-    self.state := TPS_Empty;
+      self.state := TPS_Empty;
     public constructor(def: object);
     begin
       self.val := def;
@@ -8849,8 +8845,8 @@ type
     end;
     
     public procedure TestSet(name: string) :=
-    if self.state=TPS_Empty then
-      raise new ArgumentException($'Значение параметра {name} небыло установлено');
+      if self.state=TPS_Empty then
+        raise new ArgumentException($'Значение параметра {name} небыло установлено');
     
   end;
   
@@ -8969,7 +8965,7 @@ type
     public procedure Invoke(c: CLContext) := d();
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc0ContainerC = record(ISimpleProc0Container)
@@ -8983,7 +8979,7 @@ type
     public procedure Invoke(c: CLContext) := d(c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -9008,7 +9004,7 @@ type
     public function Invoke(c: CLContext) := d();
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc0ContainerC<T> = record(ISimpleFunc0Container<T>)
@@ -9022,7 +9018,7 @@ type
     public function Invoke(c: CLContext) := d(c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -9051,7 +9047,7 @@ type
     public procedure Invoke(inp: TInp; c: CLContext) := d(inp);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProcContainerC<TInp> = record(ISimpleProcContainer<TInp>)
@@ -9065,7 +9061,7 @@ type
     public procedure Invoke(inp: TInp; c: CLContext) := d(inp, c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -9090,7 +9086,7 @@ type
     public function Invoke(inp: TInp; c: CLContext) := d(inp);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFuncContainerC<TInp,TRes> = record(ISimpleFuncContainer<TInp,TRes>)
@@ -9104,7 +9100,7 @@ type
     public function Invoke(inp: TInp; c: CLContext) := d(inp, c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -9203,7 +9199,7 @@ type
     {$region constructor's}
     
     public constructor(count: integer) :=
-    self.evs := new cl_event[count];
+      self.evs := new cl_event[count];
     public constructor := raise new OpenCLABCInternalException;
     public static Empty := default(EventList);
     
@@ -9312,42 +9308,42 @@ type
     private static multi_attachable_callback: clEventCallback := InvokeMultiAttachedCallback;
     
     public procedure MultiAttachCallback(work: Action{$ifdef EventDebug}; reason: string{$endif}) :=
-    case self.count of
-      0: work;
-      1: AttachCallback(self.evs[0], work{$ifdef EventDebug}, reason{$endif});
-      else
-      begin
-        var cb_data := new MultiAttachCallbackData(work, self.count{$ifdef EventDebug}, reason, evs.Take(count){$endif});
-        var hnd_ptr := GCHandle.ToIntPtr(GCHandle.Alloc(cb_data));
-        for var i := 0 to count-1 do
+      case self.count of
+        0: work;
+        1: AttachCallback(self.evs[0], work{$ifdef EventDebug}, reason{$endif});
+        else
         begin
-          var ec := cl.SetEventCallback(evs[i], clCommandExecutionStatus.COMPLETE, multi_attachable_callback, hnd_ptr);
-          OpenCLABCInternalException.RaiseIfError(ec);
+          var cb_data := new MultiAttachCallbackData(work, self.count{$ifdef EventDebug}, reason, evs.Take(count){$endif});
+          var hnd_ptr := GCHandle.ToIntPtr(GCHandle.Alloc(cb_data));
+          for var i := 0 to count-1 do
+          begin
+            var ec := cl.SetEventCallback(evs[i], clCommandExecutionStatus.COMPLETE, multi_attachable_callback, hnd_ptr);
+            OpenCLABCInternalException.RaiseIfError(ec);
+          end;
         end;
       end;
-    end;
     
     {$endregion MultiAttachCallback}
     
     {$region Retain/Release}
     
     public procedure Retain({$ifdef EventDebug}reason: string{$endif}) :=
-    for var i := 0 to count-1 do
-    begin
-      {$ifdef EventDebug}
-      EventDebug.RegisterEventRetain(evs[i], $'{reason}, together with evs: {evs.Take(count).JoinToString}');
-      {$endif EventDebug}
-      OpenCLABCInternalException.RaiseIfError( cl.RetainEvent(evs[i]) );
-    end;
+      for var i := 0 to count-1 do
+      begin
+        {$ifdef EventDebug}
+        EventDebug.RegisterEventRetain(evs[i], $'{reason}, together with evs: {evs.Take(count).JoinToString}');
+        {$endif EventDebug}
+        OpenCLABCInternalException.RaiseIfError( cl.RetainEvent(evs[i]) );
+      end;
     
     public procedure Release({$ifdef EventDebug}reason: string{$endif}) :=
-    for var i := 0 to count-1 do
-    begin
-      {$ifdef EventDebug}
-      EventDebug.RegisterEventRelease(evs[i], $'{reason}, together with evs: {evs.Take(count).JoinToString}');
-      {$endif EventDebug}
-      OpenCLABCInternalException.RaiseIfError( cl.ReleaseEvent(evs[i]) );
-    end;
+      for var i := 0 to count-1 do
+      begin
+        {$ifdef EventDebug}
+        EventDebug.RegisterEventRelease(evs[i], $'{reason}, together with evs: {evs.Take(count).JoinToString}');
+        {$endif EventDebug}
+        OpenCLABCInternalException.RaiseIfError( cl.ReleaseEvent(evs[i]) );
+      end;
     
     // - cl.WaitForEvents spin waits until all events fire
     // - ManualResetEventSlim only spin waits for a bit (configurable)
@@ -9679,7 +9675,7 @@ type
       if Result then had_error_cache := nil;
     end;
     public procedure TryRemoveErrors(handler: Exception->boolean) :=
-    TryRemoveErrors(new Dictionary<ErrHandler, boolean>, handler);
+      TryRemoveErrors(new Dictionary<ErrHandler, boolean>, handler);
     
     protected procedure FillErrLstWithPrev(origin_cache: HashSet<ErrHandler>; lst: List<Exception>); abstract;
     protected procedure FillErrLst(origin_cache: HashSet<ErrHandler>; lst: List<Exception>);
@@ -9695,7 +9691,7 @@ type
       lst.AddRange(local_err_lst);
     end;
     public procedure FillErrLst(lst: List<Exception>) :=
-    FillErrLst(new HashSet<ErrHandler>, lst);
+      FillErrLst(new HashSet<ErrHandler>, lst);
     
     {$endregion Error transfer}
     
@@ -9724,11 +9720,10 @@ type
       Result := res.ToString;
     end;
     
-    public procedure AddMaybeError(reason: string) :=
-    lock tests_exp do tests_exp += reason;
+    public procedure AddMaybeError(reason: string) := lock tests_exp do
+      tests_exp += reason;
     
-    public procedure EndMaybeError(reason: string) :=
-    lock tests_exp do
+    public procedure EndMaybeError(reason: string) := lock tests_exp do
     begin
       if not tests_exp.Remove(reason) then
         raise new OpenCLABCInternalException($'Test [{reason}] was no expected; {TestsReport}');
@@ -10609,9 +10604,11 @@ type
     end;
     
     {$ifdef DEBUG}
-    public procedure AssertFinalIntegrity :=
-    if (call_list<>nil) and (last_invoke_trace=nil) then
+    public procedure AssertFinalIntegrity;
     begin
+      if call_list=nil then exit;
+      if last_invoke_trace<>nil then exit;
+      
       var sb := new StringBuilder;
       sb += 'Actions were not called:'#10;
       for var i := 0 to count-1 do
@@ -10619,6 +10616,7 @@ type
         CommandQueueBase.ToStringWriteDelegate(sb, call_list[i]);
         sb += #10;
       end;
+      
       raise new System.InvalidProgramException(sb.ToString);
     end;
     {$endif DEBUG}
@@ -10649,7 +10647,7 @@ type
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function AttachInvokeActions(g: CLTaskGlobalData{$ifdef EventDebug}; attach_after: object{$endif}) :=
-    prev_delegate.AttachInvokeTo(prev_ev, g{$ifdef EventDebug}, attach_after{$endif});
+      prev_delegate.AttachInvokeTo(prev_ev, g{$ifdef EventDebug}, attach_after{$endif});
     
   end;
   
@@ -10853,13 +10851,13 @@ type
     private status_checked := new InterlockedBoolean;
     protected procedure ExpectCheckStatus :=
     ResEv.Retain({$ifdef EventDebug}$'for status check of {TypeName(self)}[{self.GetHashCode}]'{$endif});
-    protected procedure CheckStatus :=
-    //TODO В каких случаях надо это проверять?
-    // - И на всяк вставил в CancelStatusCheck, потому что его в конце выполнения вызывает
-    // - В случае MU наверное - но это поидее правильнее как то обходить
-    // - К примеру выделять несколько проверок оконченности специально для размноженной очереди
-    if status_checked.TrySet(true) then
+    protected procedure CheckStatus;
     begin
+      //TODO В каких случаях надо это проверять?
+      // - И на всяк вставил в CancelStatusCheck, потому что его в конце выполнения вызывает
+      // - В случае MU наверное - но это поидее правильнее как то обходить
+      // - К примеру выделять несколько проверок оконченности специально для размноженной очереди
+      if not status_checked.TrySet(true) then exit;
       if not IsConst and not ResEv.HasCompleted then
       begin
         var err := new StringBuilder($'Result read before {ResEv.count} events completed:');
@@ -11028,15 +11026,15 @@ type
   QueueResValFactory<T> = sealed class(IQueueResFactory<T, QueueResVal<T>>)
     
     public function MakeConst(l: CLTaskLocalData; res: T): QueueResVal<T> :=
-    new QueueResValDirect<T>(l, res);
+      new QueueResValDirect<T>(l, res);
     
     public function MakeDelayed(l: CLTaskLocalData; make_act: QueueResVal<T>->QueueResAction): QueueResVal<T> :=
-    new QueueResValDirect<T>(l, make_act);
+      new QueueResValDirect<T>(l, make_act);
     public function MakeDelayed(make_l: QueueResVal<T>->CLTaskLocalData): QueueResVal<T> :=
-    new QueueResValDirect<T>(make_l);
+      new QueueResValDirect<T>(make_l);
     
     public function MakeWrap(qr: QueueRes<T>; new_ev: EventList): QueueResVal<T> :=
-    new QueueResValWrap<T>(qr, new_ev);
+      new QueueResValWrap<T>(qr, new_ev);
     
   end;
   QueueRes<T> = abstract partial class(QueueResT)
@@ -11592,7 +11590,7 @@ type
     end;
     
     private function GetParVal(g: CLTaskGlobalData) :=
-    T(g.parameters[self].val);
+      T(g.parameters[self].val);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := new QueueResNil(l);
     protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := qr_val_factory.MakeConst(l, self.GetParVal(g));
@@ -11799,10 +11797,10 @@ type
     public function GetQS: sequence of CommandQueueBase := data.GetQS;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    data.InitBeforeInvoke(g, inited_mu);
+      data.InitBeforeInvoke(g, inited_mu);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -11832,10 +11830,10 @@ type
     public function GetQS: sequence of CommandQueueBase := data.GetQS;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    data.InitBeforeInvoke(g, inited_mu);
+      data.InitBeforeInvoke(g, inited_mu);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -11959,8 +11957,8 @@ type
     end;
     
     private static function Construct<T,TQ>(inp: sequence of CommandQueueBase; make_constructor: Func<array of CommandQueueBase, ITypedCQConverter<CommandQueueBase>>): TQ;
-    where T: ISimpleQueueArray;
-    where TQ: CommandQueueBase;
+      where T: ISimpleQueueArray;
+      where TQ: CommandQueueBase;
     begin
       var qs := FlattenQueueArray&<T>(inp);
       case qs.Count of
@@ -12194,7 +12192,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    foreach var q in qs do q.InitBeforeInvoke(g, inited_mu);
+      foreach var q in qs do q.InitBeforeInvoke(g, inited_mu);
     
     protected function TrySkipInvoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<TRes,TR>; var res: TR): boolean; where TR: IQueueRes;
     begin
@@ -12464,7 +12462,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc2ContainerC<TInp1,TInp2,TRes> = record(ISimpleFunc2Container<TInp1,TInp2,TRes>)
@@ -12478,7 +12476,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -12526,7 +12524,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc2ContainerC<TInp1,TInp2> = record(ISimpleProc2Container<TInp1,TInp2>)
@@ -12540,7 +12538,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -12888,7 +12886,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes> = record(ISimpleFunc3Container<TInp1,TInp2,TInp3,TRes>)
@@ -12902,7 +12900,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -12950,7 +12948,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc3ContainerC<TInp1,TInp2,TInp3> = record(ISimpleProc3Container<TInp1,TInp2,TInp3>)
@@ -12964,7 +12962,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -13329,7 +13327,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes> = record(ISimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>)
@@ -13343,7 +13341,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -13391,7 +13389,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4> = record(ISimpleProc4Container<TInp1,TInp2,TInp3,TInp4>)
@@ -13405,7 +13403,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -13787,7 +13785,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes> = record(ISimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>)
@@ -13801,7 +13799,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -13849,7 +13847,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5> = record(ISimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>)
@@ -13863,7 +13861,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -14262,7 +14260,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes> = record(ISimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>)
@@ -14276,7 +14274,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -14324,7 +14322,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6> = record(ISimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>)
@@ -14338,7 +14336,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -14754,7 +14752,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes> = record(ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>)
@@ -14768,7 +14766,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -14816,7 +14814,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7> = record(ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>)
@@ -14830,7 +14828,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -15161,7 +15159,7 @@ type
     public property SourceBase: CommandQueueBase read q as CommandQueueBase; override;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    q.InitBeforeInvoke(g, inited_mu);
+      q.InitBeforeInvoke(g, inited_mu);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := q.InvokeToNil(g, l);
     
@@ -15202,16 +15200,16 @@ type
   CastQueueConstructor<TRes> = record(ITypedCQConverter<CommandQueue<TRes>>)
     
     public function ConvertNil(q: CommandQueueNil): CommandQueue<TRes> :=
-    if q is ConstQueueNil then
-      CQ(TypedNilQueue&<TRes>.nil_val) else
-      new TypedNilQueue<TRes>(q);
+      if q is ConstQueueNil then
+        CQ(TypedNilQueue&<TRes>.nil_val) else
+        new TypedNilQueue<TRes>(q);
     
     public function Convert<TInp>(q: CommandQueue<TInp>): CommandQueue<TRes> :=
-    if q is CastQueueBase<TInp>(var cqb) then
-      cqb.SourceBase.Cast&<TRes> else
-    if q.IsConstResDepEmpty then
-      q + CQ(TRes(q.expected_const_res as object)) else
-      new CastQueue<TInp, TRes>(q);
+      if q is CastQueueBase<TInp>(var cqb) then
+        cqb.SourceBase.Cast&<TRes> else
+      if q.IsConstResDepEmpty then
+        q + CQ(TRes(q.expected_const_res as object)) else
+        new CastQueue<TInp, TRes>(q);
     
   end;
   
@@ -15551,7 +15549,7 @@ type
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     static procedure InitBeforeInvoke(self: IMultiusableCommandQueue; q: CommandQueueBase; g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>) :=
-    if inited_mu.Add(self) then q.InitBeforeInvoke(g, inited_mu);
+      if inited_mu.Add(self) then q.InitBeforeInvoke(g, inited_mu);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     static function Invoke<TR1, TR2>(
@@ -15628,13 +15626,13 @@ type
     {$endif DEBUG}
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    MultiusableCommandQueueCommon.InitBeforeInvoke(self,q, g,inited_mu);
+      MultiusableCommandQueueCommon.InitBeforeInvoke(self,q, g,inited_mu);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
-    MultiusableCommandQueueCommon.InvokeToNil(self, g,l, q.InvokeToNil);
+      MultiusableCommandQueueCommon.InvokeToNil(self, g,l, q.InvokeToNil);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    MultiusableCommandQueueCommon.ToString(q, sb,tabs,index,delayed);
+      MultiusableCommandQueueCommon.ToString(q, sb,tabs,index,delayed);
     
   end;
   
@@ -15653,10 +15651,10 @@ type
     {$endif DEBUG}
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    MultiusableCommandQueueCommon.InitBeforeInvoke(self,q, g,inited_mu);
+      MultiusableCommandQueueCommon.InitBeforeInvoke(self,q, g,inited_mu);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override :=
-    MultiusableCommandQueueCommon.InvokeToNil(self, g,l, q.InvokeToAny);
+      MultiusableCommandQueueCommon.InvokeToNil(self, g,l, q.InvokeToAny);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function Invoke<TR>(g: CLTaskGlobalData; l: CLTaskLocalData; qr_factory: IQueueResFactory<T,TR>): TR; where TR: QueueRes<T>;
@@ -15668,18 +15666,18 @@ type
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := Invoke(g, l, qr_ptr_factory);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    MultiusableCommandQueueCommon.ToString(q, sb,tabs,index,delayed);
+      MultiusableCommandQueueCommon.ToString(q, sb,tabs,index,delayed);
     
   end;
   
 function CommandQueueNil.Multiusable :=
-if (self is MultiusableCommandQueueNil) or (self is ConstQueueNil) then
-  self else new MultiusableCommandQueueNil(self);
+  if (self is MultiusableCommandQueueNil) or (self is ConstQueueNil) then
+    self else new MultiusableCommandQueueNil(self);
 
 function CommandQueue<T>.Multiusable :=
-// No const_res_dep checks, because (HPQ+CQ).MU should execute HPQ once
-if (self is MultiusableCommandQueue<T>) or (self is ConstQueue<T>) or (self is ParameterQueue<T>) then
-  self else new MultiusableCommandQueue<T>(self);
+  // No const_res_dep checks, because (HPQ+CQ).MU should execute HPQ once
+  if (self is MultiusableCommandQueue<T>) or (self is ConstQueue<T>) or (self is ParameterQueue<T>) then
+    self else new MultiusableCommandQueue<T>(self);
 
 {$endregion Multiusable}
 
@@ -15877,17 +15875,17 @@ type
 //      if not Result then ReleaseReserve(c);
     end;
     public procedure ReleaseReserve(c: integer) :=
-    if Interlocked.Add(reserved, -c)<0 then
-    begin
-      {$ifdef DEBUG}
-      raise new OpenCLABCInternalException($'reserved={reserved}');
-      {$endif DEBUG}
-    end else
-    begin
-      {$ifdef WaitDebug}
-      WaitDebug.RegisterAction(self, $'Released reserve {c}=>{reserved}');
-      {$endif WaitDebug}
-    end;
+      if Interlocked.Add(reserved, -c)<0 then
+      begin
+        {$ifdef DEBUG}
+        raise new OpenCLABCInternalException($'reserved={reserved}');
+        {$endif DEBUG}
+      end else
+      begin
+        {$ifdef WaitDebug}
+        WaitDebug.RegisterAction(self, $'Released reserve {c}=>{reserved}');
+        {$endif WaitDebug}
+      end;
     
     public procedure Comsume(c: integer);
     begin
@@ -15947,20 +15945,20 @@ type
     private handlers := new ConcurrentDictionary<CLTaskGlobalData, WaitHandlerDirect>;
     
     public procedure InitInnerHandles(g: CLTaskGlobalData); override :=
-    handlers.GetOrAdd(g, g->
-    begin
-      Result := new WaitHandlerDirect;
-      {$ifdef WaitDebug}
-      WaitDebug.RegisterAction(Result, $'Created for {TypeName(self)}[{self.GetHashCode}]');
-      {$endif WaitDebug}
-    end);
+      handlers.GetOrAdd(g, g->
+      begin
+        Result := new WaitHandlerDirect;
+        {$ifdef WaitDebug}
+        WaitDebug.RegisterAction(Result, $'Created for {TypeName(self)}[{self.GetHashCode}]');
+        {$endif WaitDebug}
+      end);
     
     public function MakeWaitEv(g: CLTaskGlobalData; prev_ev: EventList): EventList; override :=
-    WaitHandlerDirectWrap.Create(g, prev_ev, handlers[g]).uev;
+      WaitHandlerDirectWrap.Create(g, prev_ev, handlers[g]).uev;
     
     public procedure SendSignal; override :=
-    foreach var h in handlers.Values do
-      h.AddActivation;
+      foreach var h in handlers.Values do
+        h.AddActivation;
     
   end;
   
@@ -15979,7 +15977,7 @@ type
     public constructor := raise new OpenCLABCInternalException;
     
     public procedure InitInnerHandles(g: CLTaskGlobalData); override :=
-    foreach var child in children do child.InitInnerHandles(g);
+      foreach var child in children do child.InitInnerHandles(g);
     
     {$region Disabled override's}
     
@@ -15990,7 +15988,7 @@ type
     end;
     
     public procedure SendSignal; override :=
-    raise new System.InvalidProgramException($'%Err:WaitMarkerCombination.SendSignal%');
+      raise new System.InvalidProgramException($'%Err:WaitMarkerCombination.SendSignal%');
     
     {$endregion Disabled override's}
     
@@ -16181,7 +16179,7 @@ type
     end;
     
     public function MakeWaitEv(g: CLTaskGlobalData; prev_ev: EventList): EventList; override :=
-    WaitHandlerAllOuter.Create(g, prev_ev, children.ConvertAll(m->m.handlers[g]), ref_counts).uev;
+      WaitHandlerAllOuter.Create(g, prev_ev, children.ConvertAll(m->m.handlers[g]), ref_counts).uev;
     
     private function GetChildrenArr: array of WaitMarkerDirect;
     begin
@@ -16271,7 +16269,7 @@ type
     end;
     
     public function MakeWaitEv(g: CLTaskGlobalData; prev_ev: EventList): EventList; override :=
-    WaitHandlerAnyOuter.Create(g, prev_ev, children).uev;
+      WaitHandlerAnyOuter.Create(g, prev_ev, children).uev;
     
   end;
   
@@ -16284,7 +16282,7 @@ type
     private children: Dictionary<WaitMarkerDirect, integer>;
     
     public constructor(c: integer) :=
-    children := new Dictionary<WaitMarkerDirect, integer>(c);
+      children := new Dictionary<WaitMarkerDirect, integer>(c);
     public constructor(m: WaitMarkerDirect);
     begin
       Create(1);
@@ -16556,7 +16554,7 @@ type
       data.Invoke(data.q.InvokeToNil(g,l), g.curr_err_handler.TrySkipFunc);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -16570,7 +16568,7 @@ type
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := data.Invoke(g, l, data.q.InvokeToPtr);
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -16601,10 +16599,10 @@ type
     public constructor(marker: WaitMarker) := self.marker := marker;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    marker.InitInnerHandles(g);
+      marker.InitInnerHandles(g);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
-    new QueueResNil( marker.MakeWaitEv(g,l) );
+      new QueueResNil( marker.MakeWaitEv(g,l) );
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -16774,12 +16772,12 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    data.InitBeforeInvoke(g, inited_mu);
+      data.InitBeforeInvoke(g, inited_mu);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := data.Invoke(g, l, data.do_finally.InvokeToNil{$ifdef DEBUG}, self{$endif});
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   CommandQueueTryFinally<T> = sealed class(CommandQueue<T>)
@@ -16795,14 +16793,14 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    data.InitBeforeInvoke(g, inited_mu);
+      data.InitBeforeInvoke(g, inited_mu);
     
     protected function InvokeToNil(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil;    override := data.Invoke(g, l, data.do_finally.InvokeToNil{$ifdef DEBUG}, self{$endif});
     protected function InvokeToAny(g: CLTaskGlobalData; l: CLTaskLocalData): QueueRes   <T>; override := data.Invoke(g, l, data.do_finally.InvokeToAny{$ifdef DEBUG}, self{$endif});
     protected function InvokeToPtr(g: CLTaskGlobalData; l: CLTaskLocalData): QueueResPtr<T>; override := data.Invoke(g, l, data.do_finally.InvokeToPtr{$ifdef DEBUG}, self{$endif});
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -16810,9 +16808,9 @@ type
     private try_do: CommandQueueBase;
     
     public function ConvertNil(do_finally: CommandQueueNil): CommandQueueBase :=
-    new CommandQueueTryFinallyNil(try_do, do_finally);
+      new CommandQueueTryFinallyNil(try_do, do_finally);
     public function Convert<T>(do_finally: CommandQueue<T>): CommandQueueBase :=
-    new CommandQueueTryFinally<T>(try_do, do_finally);
+      new CommandQueueTryFinally<T>(try_do, do_finally);
     
   end;
   
@@ -16843,7 +16841,7 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    try_do.InitBeforeInvoke(g, inited_mu);
+      try_do.InitBeforeInvoke(g, inited_mu);
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     procedure ApplyTo(err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif});
@@ -16897,15 +16895,15 @@ type
   CommandQueueHandleWithoutResConstructor = record(ITypedCQConverter<CommandQueueNil>)
     
     function ConvertNil(cq: CommandQueueNil): CommandQueueNil :=
-    if cq is ConstQueueNil then cq else nil;
+      if cq is ConstQueueNil then cq else nil;
     function Convert<T>(cq: CommandQueue<T>): CommandQueueNil :=
-    if (cq is ConstQueue<T>) or (cq is ParameterQueue<T>) then CQNil else nil;
+      if (cq is ConstQueue<T>) or (cq is ParameterQueue<T>) then CQNil else nil;
     
   end;
   
 function CommandQueueBase.HandleWithoutRes(handler: Exception->boolean) :=
-self.ConvertTyped(new CommandQueueHandleWithoutResConstructor) ??
-new CommandQueueHandleWithoutRes(self, handler);
+  self.ConvertTyped(new CommandQueueHandleWithoutResConstructor) ??
+  new CommandQueueHandleWithoutRes(self, handler);
 
 type
   CommandQueueHandleDefaultRes<T> = sealed class(CommandQueue<T>)
@@ -16922,7 +16920,7 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    try_do.InitBeforeInvoke(g, inited_mu);
+      try_do.InitBeforeInvoke(g, inited_mu);
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     procedure ApplyTo(err_handler: ErrHandler{$ifdef DEBUG}; err_test_reason: string{$endif});
@@ -17012,8 +17010,8 @@ type
   end;
   
 function CommandQueue<T>.HandleDefaultRes(handler: Exception->boolean; def: T): CommandQueue<T> :=
-if (self is ConstQueue<T>) or (self is ParameterQueue<T>) then self else
-new CommandQueueHandleDefaultRes<T>(self, handler, def);
+  if (self is ConstQueue<T>) or (self is ParameterQueue<T>) then self else
+  new CommandQueueHandleDefaultRes<T>(self, handler, def);
 
 type
   CommandQueueHandleReplaceRes<T> = sealed class(CommandQueue<T>)
@@ -17028,7 +17026,7 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    try_do.InitBeforeInvoke(g, inited_mu);
+      try_do.InitBeforeInvoke(g, inited_mu);
     
     private [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function ApplyTo(err_handler: ErrHandlerThiefBase{$ifdef DEBUG}; err_test_reason: string{$endif}): ValueTuple<boolean,T>;
@@ -17128,8 +17126,8 @@ type
   end;
   
 function CommandQueue<T>.HandleReplaceRes(handler: List<Exception> -> T) :=
-if (self is ConstQueue<T>) or (self is ParameterQueue<T>) then self else
-new CommandQueueHandleReplaceRes<T>(self, handler);
+  if (self is ConstQueue<T>) or (self is ParameterQueue<T>) then self else
+  new CommandQueueHandleReplaceRes<T>(self, handler);
 
 {$endregion Handle}
 
@@ -17175,7 +17173,7 @@ type
     protected function TryPreCall(q: CommandQueue<T>): boolean; override := false;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    q.InitBeforeInvoke(g, inited_mu);
+      q.InitBeforeInvoke(g, inited_mu);
     
     protected function Invoke(dep_ok: boolean; inp: CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override := q.InvokeToNil(g, l);
     
@@ -17191,17 +17189,17 @@ type
   QueueCommandConstructor<TObj> = sealed class(ITypedCQConverter<GPUCommand<TObj>>)
     
     public function ConvertNil(cq: CommandQueueNil): GPUCommand<TObj> :=
-    if cq is ConstQueueNil then nil else
-      new QueueCommand<TObj>(cq);
+      if cq is ConstQueueNil then nil else
+        new QueueCommand<TObj>(cq);
     public function Convert<T>(cq: CommandQueue<T>): GPUCommand<TObj> :=
-    if cq is ConstQueue<T> then nil else
-    if cq is ParameterQueue<T> then nil else
-    if cq is CastQueueBase<T>(var ccq) then
-      ccq.SourceBase.ConvertTyped(self) else
-      new QueueCommand<TObj>(cq);
+      if cq is ConstQueue<T> then nil else
+      if cq is ParameterQueue<T> then nil else
+      if cq is CastQueueBase<T>(var ccq) then
+        ccq.SourceBase.ConvertTyped(self) else
+        new QueueCommand<TObj>(cq);
     
     public static function Make(q: CommandQueueBase): GPUCommand<TObj> :=
-    q.ConvertTyped(new QueueCommandConstructor<TObj>);
+      q.ConvertTyped(new QueueCommandConstructor<TObj>);
     
   end;
   
@@ -17345,10 +17343,10 @@ type
     protected function TryPreCall(q: CommandQueue<T>): boolean; override := false;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    marker.InitInnerHandles(g);
+      marker.InitInnerHandles(g);
     
     protected function Invoke(dep_ok: boolean; inp: CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; override :=
-    new QueueResNil( marker.MakeWaitEv(g,l) );
+      new QueueResNil( marker.MakeWaitEv(g,l) );
     
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override;
     begin
@@ -17684,7 +17682,7 @@ type
       SetObj(o);
     end;
     public constructor :=
-    inherited Create(false);
+      inherited Create(false);
     
     public procedure SetObj(o: T);
     begin
@@ -17807,7 +17805,7 @@ type
   CLKernelArgSetterLocalBytes = sealed class(CLKernelArgSetterTyped<UIntPtr>)
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o, nil) );
+      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o, nil) );
     
   end;
   
@@ -17819,11 +17817,11 @@ type
     private constructor := raise new OpenCLABCInternalException;
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    if bytes is ConstQueue<UIntPtr>(var c_bytes) then
-      new CLKernelArgSetterLocalBytes(c_bytes.Value) else nil;
+      if bytes is ConstQueue<UIntPtr>(var c_bytes) then
+        new CLKernelArgSetterLocalBytes(c_bytes.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_mu: HashSet<IMultiusableCommandQueue>); override :=
-    bytes.InitBeforeInvoke(g, inited_mu);
+      bytes.InitBeforeInvoke(g, inited_mu);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override;
     begin
@@ -17901,21 +17899,21 @@ type
     private data: CLKernelArgGlobalCommon<CLMemory>;
     
     public constructor(cl_mem: CommandQueue<CLMemory>) :=
-    data := new CLKernelArgGlobalCommon<CLMemory>(cl_mem);
+      data := new CLKernelArgGlobalCommon<CLMemory>(cl_mem);
     
     private static function WrapToNative(o: CLMemory) := o.Native;
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    data.TryGetConstSetter(WrapToNative);
+      data.TryGetConstSetter(WrapToNative);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, WrapToNative, par_err_handlers);
+      data.Invoke(inv, WrapToNative, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -17934,21 +17932,21 @@ type
     private data: CLKernelArgGlobalCommon<CLValue<T>>;
     
     public constructor(cl_val: CommandQueue<CLValue<T>>) :=
-    data := new CLKernelArgGlobalCommon<CLValue<T>>(cl_val);
+      data := new CLKernelArgGlobalCommon<CLValue<T>>(cl_val);
     
     private static function WrapToNative(o: CLValue<T>) := o.Native;
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    data.TryGetConstSetter(WrapToNative);
+      data.TryGetConstSetter(WrapToNative);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, WrapToNative, par_err_handlers);
+      data.Invoke(inv, WrapToNative, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -17967,21 +17965,21 @@ type
     private data: CLKernelArgGlobalCommon<CLArray<T>>;
     
     public constructor(cl_arr: CommandQueue<CLArray<T>>) :=
-    data := new CLKernelArgGlobalCommon<CLArray<T>>(cl_arr);
+      data := new CLKernelArgGlobalCommon<CLArray<T>>(cl_arr);
     
     private static function WrapToNative(o: CLArray<T>) := o.Native;
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    data.TryGetConstSetter(WrapToNative);
+      data.TryGetConstSetter(WrapToNative);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, WrapToNative, par_err_handlers);
+      data.Invoke(inv, WrapToNative, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18007,21 +18005,21 @@ type
     private data: CLKernelArgConstantCommon<CLMemory>;
     
     public constructor(cl_mem: CommandQueue<CLMemory>) :=
-    data := new CLKernelArgConstantCommon<CLMemory>(cl_mem);
+      data := new CLKernelArgConstantCommon<CLMemory>(cl_mem);
     
     private static function WrapToNative(o: CLMemory) := o.Native;
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    data.TryGetConstSetter(WrapToNative);
+      data.TryGetConstSetter(WrapToNative);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, WrapToNative, par_err_handlers);
+      data.Invoke(inv, WrapToNative, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18040,21 +18038,21 @@ type
     private data: CLKernelArgConstantCommon<CLValue<T>>;
     
     public constructor(cl_val: CommandQueue<CLValue<T>>) :=
-    data := new CLKernelArgConstantCommon<CLValue<T>>(cl_val);
+      data := new CLKernelArgConstantCommon<CLValue<T>>(cl_val);
     
     private static function WrapToNative(o: CLValue<T>) := o.Native;
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    data.TryGetConstSetter(WrapToNative);
+      data.TryGetConstSetter(WrapToNative);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, WrapToNative, par_err_handlers);
+      data.Invoke(inv, WrapToNative, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18073,21 +18071,21 @@ type
     private data: CLKernelArgConstantCommon<CLArray<T>>;
     
     public constructor(cl_arr: CommandQueue<CLArray<T>>) :=
-    data := new CLKernelArgConstantCommon<CLArray<T>>(cl_arr);
+      data := new CLKernelArgConstantCommon<CLArray<T>>(cl_arr);
     
     private static function WrapToNative(o: CLArray<T>) := o.Native;
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    data.TryGetConstSetter(WrapToNative);
+      data.TryGetConstSetter(WrapToNative);
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, WrapToNative, par_err_handlers);
+      data.Invoke(inv, WrapToNative, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18146,7 +18144,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf(default(T)))), self.o[0]) );
+      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf(default(T)))), self.o[0]) );
     
   end;
   CLKernelArgPrivateArray<T> = sealed class(CLKernelArgPrivate)
@@ -18156,20 +18154,20 @@ type
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:Array%');
     
     public constructor(a: CommandQueue<array of T>) :=
-    data := new CLKernelArgPrivateCommon<array of T>(a);
+      data := new CLKernelArgPrivateCommon<array of T>(a);
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    if data.q is ConstQueue<array of T>(var c_q) then
+      if data.q is ConstQueue<array of T>(var c_q) then
       new CLKernelArgPrivateSetterArray<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterArray<T>(o), ()->new CLKernelArgPrivateSetterArray<T>, par_err_handlers);
+      data.Invoke(inv, o->new CLKernelArgPrivateSetterArray<T>(o), ()->new CLKernelArgPrivateSetterArray<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18185,7 +18183,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf(default(T)))), self.o[0,0]) );
+      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf(default(T)))), self.o[0,0]) );
     
   end;
   CLKernelArgPrivateArray2<T> = sealed class(CLKernelArgPrivate)
@@ -18195,20 +18193,20 @@ type
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:Array2%');
     
     public constructor(a2: CommandQueue<array[,] of T>) :=
-    data := new CLKernelArgPrivateCommon<array[,] of T>(a2);
+      data := new CLKernelArgPrivateCommon<array[,] of T>(a2);
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    if data.q is ConstQueue<array[,] of T>(var c_q) then
+      if data.q is ConstQueue<array[,] of T>(var c_q) then
       new CLKernelArgPrivateSetterArray2<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterArray2<T>(o), ()->new CLKernelArgPrivateSetterArray2<T>, par_err_handlers);
+      data.Invoke(inv, o->new CLKernelArgPrivateSetterArray2<T>(o), ()->new CLKernelArgPrivateSetterArray2<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18224,7 +18222,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf(default(T)))), self.o[0,0,0]) );
+      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Length)*uint64(Marshal.SizeOf(default(T)))), self.o[0,0,0]) );
     
   end;
   CLKernelArgPrivateArray3<T> = sealed class(CLKernelArgPrivate)
@@ -18234,20 +18232,20 @@ type
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:Array3%');
     
     public constructor(a3: CommandQueue<array[,,] of T>) :=
-    data := new CLKernelArgPrivateCommon<array[,,] of T>(a3);
+      data := new CLKernelArgPrivateCommon<array[,,] of T>(a3);
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    if data.q is ConstQueue<array[,,] of T>(var c_q) then
+      if data.q is ConstQueue<array[,,] of T>(var c_q) then
       new CLKernelArgPrivateSetterArray3<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterArray3<T>(o), ()->new CLKernelArgPrivateSetterArray3<T>, par_err_handlers);
+      data.Invoke(inv, o->new CLKernelArgPrivateSetterArray3<T>(o), ()->new CLKernelArgPrivateSetterArray3<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18263,7 +18261,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Count)*uint64(Marshal.SizeOf(default(T)))), self.o.Array[self.o.Offset]) );
+      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(UInt32(self.o.Count)*uint64(Marshal.SizeOf(default(T)))), self.o.Array[self.o.Offset]) );
     
   end;
   CLKernelArgPrivateArraySegment<T> = sealed class(CLKernelArgPrivate)
@@ -18273,20 +18271,20 @@ type
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:ArraySegment%');
     
     public constructor(seg: CommandQueue<ArraySegment<T>>) :=
-    data := new CLKernelArgPrivateCommon<ArraySegment<T>>(seg);
+      data := new CLKernelArgPrivateCommon<ArraySegment<T>>(seg);
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    if data.q is ConstQueue<ArraySegment<T>>(var c_q) then
+      if data.q is ConstQueue<ArraySegment<T>>(var c_q) then
       new CLKernelArgPrivateSetterArraySegment<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterArraySegment<T>(o), ()->new CLKernelArgPrivateSetterArraySegment<T>, par_err_handlers);
+      data.Invoke(inv, o->new CLKernelArgPrivateSetterArraySegment<T>(o), ()->new CLKernelArgPrivateSetterArraySegment<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18305,27 +18303,27 @@ type
   CLKernelArgPrivateSetterNativeMemoryArea = sealed class(CLKernelArgSetterTyped<NativeMemoryArea>)
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.sz, self.o.ptr) );
+      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.sz, self.o.ptr) );
     
   end;
   CLKernelArgPrivateNativeMemoryArea = sealed class(CLKernelArgPrivate)
     private data: CLKernelArgPrivateCommon<NativeMemoryArea>;
     
     public constructor(ntv_mem_area: CommandQueue<NativeMemoryArea>) :=
-    data := new CLKernelArgPrivateCommon<NativeMemoryArea>(ntv_mem_area);
+      data := new CLKernelArgPrivateCommon<NativeMemoryArea>(ntv_mem_area);
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    if data.q is ConstQueue<NativeMemoryArea>(var c_q) then
+      if data.q is ConstQueue<NativeMemoryArea>(var c_q) then
       new CLKernelArgPrivateSetterNativeMemoryArea(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeMemoryArea(o), ()->new CLKernelArgPrivateSetterNativeMemoryArea, par_err_handlers);
+      data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeMemoryArea(o), ()->new CLKernelArgPrivateSetterNativeMemoryArea, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18341,7 +18339,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.ByteSize, self.o.ptr) );
+      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.ByteSize, self.o.ptr) );
     
   end;
   CLKernelArgPrivateNativeValueArea<T> = sealed class(CLKernelArgPrivate)
@@ -18351,20 +18349,20 @@ type
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:NativeValueArea%');
     
     public constructor(ntv_val_area: CommandQueue<NativeValueArea<T>>) :=
-    data := new CLKernelArgPrivateCommon<NativeValueArea<T>>(ntv_val_area);
+      data := new CLKernelArgPrivateCommon<NativeValueArea<T>>(ntv_val_area);
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    if data.q is ConstQueue<NativeValueArea<T>>(var c_q) then
+      if data.q is ConstQueue<NativeValueArea<T>>(var c_q) then
       new CLKernelArgPrivateSetterNativeValueArea<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeValueArea<T>(o), ()->new CLKernelArgPrivateSetterNativeValueArea<T>, par_err_handlers);
+      data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeValueArea<T>(o), ()->new CLKernelArgPrivateSetterNativeValueArea<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18380,7 +18378,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.ByteSize, self.o.first_ptr) );
+      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.ByteSize, self.o.first_ptr) );
     
   end;
   CLKernelArgPrivateNativeArrayArea<T> = sealed class(CLKernelArgPrivate)
@@ -18390,20 +18388,20 @@ type
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:NativeArrayArea%');
     
     public constructor(ntv_arr_area: CommandQueue<NativeArrayArea<T>>) :=
-    data := new CLKernelArgPrivateCommon<NativeArrayArea<T>>(ntv_arr_area);
+      data := new CLKernelArgPrivateCommon<NativeArrayArea<T>>(ntv_arr_area);
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    if data.q is ConstQueue<NativeArrayArea<T>>(var c_q) then
+      if data.q is ConstQueue<NativeArrayArea<T>>(var c_q) then
       new CLKernelArgPrivateSetterNativeArrayArea<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeArrayArea<T>(o), ()->new CLKernelArgPrivateSetterNativeArrayArea<T>, par_err_handlers);
+      data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeArrayArea<T>(o), ()->new CLKernelArgPrivateSetterNativeArrayArea<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18422,27 +18420,27 @@ type
   CLKernelArgPrivateSetterNativeMemory = sealed class(CLKernelArgSetterTyped<NativeMemory>)
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.Area.sz, self.o.Area.ptr) );
+      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.Area.sz, self.o.Area.ptr) );
     
   end;
   CLKernelArgPrivateNativeMemory = sealed class(CLKernelArgPrivate)
     private data: CLKernelArgPrivateCommon<NativeMemory>;
     
     public constructor(ntv_mem: CommandQueue<NativeMemory>) :=
-    data := new CLKernelArgPrivateCommon<NativeMemory>(ntv_mem);
+      data := new CLKernelArgPrivateCommon<NativeMemory>(ntv_mem);
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    if data.q is ConstQueue<NativeMemory>(var c_q) then
+      if data.q is ConstQueue<NativeMemory>(var c_q) then
       new CLKernelArgPrivateSetterNativeMemory(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeMemory(o), ()->new CLKernelArgPrivateSetterNativeMemory, par_err_handlers);
+      data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeMemory(o), ()->new CLKernelArgPrivateSetterNativeMemory, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18458,7 +18456,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.Area.ByteSize, self.o.Area.ptr) );
+      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.Area.ByteSize, self.o.Area.ptr) );
     
   end;
   CLKernelArgPrivateNativeValue<T> = sealed class(CLKernelArgPrivate)
@@ -18468,20 +18466,20 @@ type
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:NativeValue%');
     
     public constructor(ntv_val: CommandQueue<NativeValue<T>>) :=
-    data := new CLKernelArgPrivateCommon<NativeValue<T>>(ntv_val);
+      data := new CLKernelArgPrivateCommon<NativeValue<T>>(ntv_val);
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    if data.q is ConstQueue<NativeValue<T>>(var c_q) then
+      if data.q is ConstQueue<NativeValue<T>>(var c_q) then
       new CLKernelArgPrivateSetterNativeValue<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeValue<T>(o), ()->new CLKernelArgPrivateSetterNativeValue<T>, par_err_handlers);
+      data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeValue<T>(o), ()->new CLKernelArgPrivateSetterNativeValue<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18497,7 +18495,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.Area.ByteSize, self.o.Area.first_ptr) );
+      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, self.o.Area.ByteSize, self.o.Area.first_ptr) );
     
   end;
   CLKernelArgPrivateNativeArray<T> = sealed class(CLKernelArgPrivate)
@@ -18507,20 +18505,20 @@ type
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:NativeArray%');
     
     public constructor(ntv_arr: CommandQueue<NativeArray<T>>) :=
-    data := new CLKernelArgPrivateCommon<NativeArray<T>>(ntv_arr);
+      data := new CLKernelArgPrivateCommon<NativeArray<T>>(ntv_arr);
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    if data.q is ConstQueue<NativeArray<T>>(var c_q) then
+      if data.q is ConstQueue<NativeArray<T>>(var c_q) then
       new CLKernelArgPrivateSetterNativeArray<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeArray<T>(o), ()->new CLKernelArgPrivateSetterNativeArray<T>, par_err_handlers);
+      data.Invoke(inv, o->new CLKernelArgPrivateSetterNativeArray<T>(o), ()->new CLKernelArgPrivateSetterNativeArray<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -18538,7 +18536,7 @@ type
   where T: record;
     
     public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :=
-    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf(default(T))), self.o) );
+      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, new UIntPtr(Marshal.SizeOf(default(T))), self.o) );
     
   end;
   CLKernelArgPrivateValue<T> = sealed class(CLKernelArgPrivate)
@@ -18548,20 +18546,20 @@ type
     static constructor := BlittableHelper.RaiseIfBad(typeof(T), $'%Err:Blittable:Source:CLKernelArgPrivate:Value%');
     
     public constructor(val: CommandQueue<T>) :=
-    data := new CLKernelArgPrivateCommon<T>(val);
+      data := new CLKernelArgPrivateCommon<T>(val);
     
     protected function TryGetConstSetter: CLKernelArgSetter; override :=
-    if data.q is ConstQueue<T>(var c_q) then
+      if data.q is ConstQueue<T>(var c_q) then
       new CLKernelArgPrivateSetterValue<T>(c_q.Value) else nil;
     
     protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :=
-    data.q.InitBeforeInvoke(g, inited_hubs);
+      data.q.InitBeforeInvoke(g, inited_hubs);
     
     protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :=
-    data.Invoke(inv, o->new CLKernelArgPrivateSetterValue<T>(o), ()->new CLKernelArgPrivateSetterValue<T>, par_err_handlers);
+      data.Invoke(inv, o->new CLKernelArgPrivateSetterValue<T>(o), ()->new CLKernelArgPrivateSetterValue<T>, par_err_handlers);
     
     protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :=
-    data.ToString(sb, tabs, index, delayed);
+      data.ToString(sb, tabs, index, delayed);
     
   end;
   
@@ -19097,11 +19095,11 @@ type
     
     private k_cache := new ExecCommandCLKernelCache;
     private function GetArgCache(k: CLKernel) :=
-    k_cache.GetArgCache(k, k->
-    begin
-      Result := new CLKernelArgCache(k, self.args_c);
-      ApplyConstArgsTo(Result);
-    end{$ifdef ExecDebug}, self{$endif});
+      k_cache.GetArgCache(k, k->
+      begin
+        Result := new CLKernelArgCache(k, self.args_c);
+        ApplyConstArgsTo(Result);
+      end{$ifdef ExecDebug}, self{$endif});
     
     protected function TryPreCall(q: CommandQueue<CLKernel>): boolean; override;
     begin
@@ -19233,7 +19231,7 @@ type
     protected prev_commands: GPUCommandContainer<TObj>;
     
     public constructor(prev_commands: GPUCommandContainer<TObj>) :=
-    self.prev_commands := prev_commands;
+      self.prev_commands := prev_commands;
     
     protected function ExpectedEnqCount: integer; abstract;
     
@@ -36361,9 +36359,9 @@ begin
 end;
 
 function HPQ(p: ()->(); need_own_thread: boolean) :=
-HPQ&<SimpleProc0Container >(p, need_own_thread);
+  HPQ&<SimpleProc0Container >(p, need_own_thread);
 function HPQ(p: CLContext->(); need_own_thread: boolean) :=
-HPQ&<SimpleProc0ContainerC>(p, need_own_thread);
+  HPQ&<SimpleProc0ContainerC>(p, need_own_thread);
 
 {$endregion Proc}
 
@@ -36450,9 +36448,9 @@ begin
 end;
 
 function HFQ<T>(f: ()->T; need_own_thread: boolean) :=
-HFQ&<T, SimpleFunc0Container <T>>(f, need_own_thread);
+  HFQ&<T, SimpleFunc0Container <T>>(f, need_own_thread);
 function HFQ<T>(f: CLContext->T; need_own_thread: boolean) :=
-HFQ&<T, SimpleFunc0ContainerC<T>>(f, need_own_thread);
+  HFQ&<T, SimpleFunc0ContainerC<T>>(f, need_own_thread);
 
 {$endregion Func}
 
@@ -37839,8 +37837,7 @@ type
     private ntvs_used := 0;
     private unused_search_shift := 0;
     
-    public constructor :=
-    SetLength(ntvs, 1);
+    public constructor := SetLength(ntvs, 1);
     
     private function MakeMask: integer;
     begin
@@ -37866,8 +37863,7 @@ type
       end;
       raise new OpenCLABCInternalException($'No space to add, {ntvs_used}/{ntvs.Length} filled');
     end;
-    public procedure AddExisting(k: cl_kernel) :=
-    lock ntvs_lock do
+    public procedure AddExisting(k: cl_kernel) := lock ntvs_lock do
     begin
       TryResizeUp;
       AddExisting(k, false, MakeMask);
@@ -37897,11 +37893,11 @@ type
       
     end;
     private procedure TryResizeUp :=
-    if ntvs_used > ntvs.Length*resize_limit_up then
-      ResizeKeepingUsed(ntvs.Length shl 1);
+      if ntvs_used > ntvs.Length*resize_limit_up then
+        ResizeKeepingUsed(ntvs.Length shl 1);
     private procedure TryResizeDown :=
-    if ntvs_used < ntvs.Length*resize_limit_down then
-      ResizeKeepingUsed(ntvs.Length shr 1);
+      if ntvs_used < ntvs.Length*resize_limit_down then
+        ResizeKeepingUsed(ntvs.Length shr 1);
     
     public [MethodImpl(MethodImplOptions.AggressiveInlining)]
     function TakeOrMake(make_new: ()->cl_kernel): cl_kernel;
@@ -37931,8 +37927,7 @@ type
       end;
     end;
     
-    public procedure Return(k: cl_kernel) :=
-    lock ntvs_lock do
+    public procedure Return(k: cl_kernel) := lock ntvs_lock do
     begin
       var mask := MakeMask;
       var search_shift := k.val.GetHashCode;
@@ -37961,12 +37956,11 @@ type
     private ntvs := new CLKernelNtvList;
     
     protected procedure Finalize; override :=
-    ntvs.ResizeKeepingUsed(ntvs.ntvs.Length);
+      ntvs.ResizeKeepingUsed(ntvs.ntvs.Length);
     
   end;
   
-function CLKernel.AllocNative :=
-ntvs.TakeOrMake(()->
+function CLKernel.AllocNative := ntvs.TakeOrMake(()->
 begin
   var ec: clErrorCode;
   Result := cl.CreateKernel(code.ntv, k_name, ec);
@@ -38007,9 +38001,9 @@ end;
 {$region CLArray}
 
 function CLArray<T>.GetItemProp(ind: integer): T :=
-GetValue(ind);
+  GetValue(ind);
 procedure CLArray<T>.SetItemProp(ind: integer; value: T) :=
-WriteValue(value, ind);
+  WriteValue(value, ind);
 
 function CLArray<T>.GetSliceProp(range: IntRange): array of T;
 begin
@@ -38017,7 +38011,7 @@ begin
   ReadArray(Result, 0,Result.Length, range.Low);
 end;
 procedure CLArray<T>.SetSliceProp(range: IntRange; value: array of T) :=
-WriteArray(value, range.Low, range.High-range.Low+1, 0);
+  WriteArray(value, range.Low, range.High-range.Low+1, 0);
 
 {$endregion CLArray}
 

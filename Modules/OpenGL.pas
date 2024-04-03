@@ -64,11 +64,11 @@ type
   glPlWin = sealed class(IGLPlatformLoader)
     
     private static function LoadLibrary(name: string): IntPtr;
-    external 'kernel32.dll';
+      external 'kernel32.dll';
     private static lib := LoadLibrary('opengl32.dll');
     
     private static function GetProcAddress(lib: IntPtr; name: string): IntPtr;
-    external 'kernel32.dll';
+      external 'kernel32.dll';
     public function GetProcAddress(name: string): IntPtr; override;
     begin
       {%>Result := wgl.GetProcAddress(name);%} if Result<>IntPtr.Zero then exit;

@@ -303,7 +303,7 @@ type
           wr += '    '#10;
           
           wr += '    public procedure ToStringB(sb: StringBuilder) :='#10;
-          wr += '    CommandQueueBase.ToStringWriteDelegate(sb, d);'#10;
+          wr += '      CommandQueueBase.ToStringWriteDelegate(sb, d);'#10;
           wr += '    '#10;
           
           wr += '  end;'#10;
@@ -526,8 +526,7 @@ type
     
     {$region Body}
     
-    public procedure WriteBody :=
-    foreach var exec_speed in exec_speeds do
+    public procedure WriteBody := foreach var exec_speed in exec_speeds do
     begin
       wr += '  {$region ';
       wr += exec_speed;

@@ -355,7 +355,7 @@ type
     private val_combo: ParValCombo;
     
     public static function ParsePtrLvls(text: string): ValueTuple<string, integer, array of integer>;
-    const const_s = 'const';
+      const const_s = 'const';
     begin
       var flat_t := default(string);
       var ptr := text.CountOf('*');
@@ -432,10 +432,10 @@ type
       (self.arr_size = other.arr_size) and
       (self.val_combo = other.val_combo);
     public static function operator=(p1,p2: ParData) :=
-    ReferenceEquals(p1,p2) or (
-      not ReferenceEquals(p1, nil)
-      and p1.Equals(p2)
-    );
+      ReferenceEquals(p1,p2) or (
+        not ReferenceEquals(p1, nil)
+        and p1.Equals(p2)
+      );
     public static function operator<>(p1,p2: ParData) := not(p1=p2);
     public function Equals(obj: object): boolean; override :=
       (obj is ParData(var other)) and (self=other);

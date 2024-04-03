@@ -104,25 +104,25 @@ type
     
     // added in dum1.0
     private static procedure ntv_f1NoParam_1;
-    external 'dummy.dll' name 'f1NoParam';
+      external 'dummy.dll' name 'f1NoParam';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f1NoParam :=
       ntv_f1NoParam_1;
     
     // added in dum1.0
     private static function ntv_f1NoParamResult_1: UIntPtr;
-    external 'dummy.dll' name 'f1NoParamResult';
+      external 'dummy.dll' name 'f1NoParamResult';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f1NoParamResult: UIntPtr :=
       ntv_f1NoParamResult_1;
     
     // added in dum1.0
     private static procedure ntv_f2ParamString_1(s: IntPtr);
-    external 'dummy.dll' name 'f2ParamString';
+      external 'dummy.dll' name 'f2ParamString';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f2ParamString(s: IntPtr) :=
       ntv_f2ParamString_1(s);
     
     // added in dum1.0
     private static procedure ntv_f2ParamStringRO_1(s: IntPtr);
-    external 'dummy.dll' name 'f2ParamStringRO';
+      external 'dummy.dll' name 'f2ParamStringRO';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f2ParamStringRO(s: string);
     begin
       var s_str_ptr := Marshal.StringToHGlobalAnsi(s);
@@ -137,7 +137,7 @@ type
     
     // added in dum1.0
     private static function ntv_f3ResultString_1: IntPtr;
-    external 'dummy.dll' name 'f3ResultString';
+      external 'dummy.dll' name 'f3ResultString';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f3ResultString: string;
     begin
       var Result_str_ptr := ntv_f3ResultString_1;
@@ -150,17 +150,17 @@ type
     
     // added in dum1.0
     private static function ntv_f3ResultStringRO_1: IntPtr;
-    external 'dummy.dll' name 'f3ResultStringRO';
+      external 'dummy.dll' name 'f3ResultStringRO';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f3ResultStringRO: string :=
       Marshal.PtrToStringAnsi(ntv_f3ResultStringRO_1);
     
     // added in dum1.0
     private static procedure ntv_f4Generic_1(var data: Byte);
-    external 'dummy.dll' name 'f4Generic';
+      external 'dummy.dll' name 'f4Generic';
     private static procedure ntv_f4Generic_2(data: pointer);
-    external 'dummy.dll' name 'f4Generic';
+      external 'dummy.dll' name 'f4Generic';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4Generic<T>(data: array of T); where T: record;
-    type PT = ^T;
+      type PT = ^T;
     begin
       if (data<>nil) and (data.Length<>0) then
         f4Generic(data[0]) else
@@ -175,11 +175,11 @@ type
     
     // added in dum1.0
     private static procedure ntv_f4GenericRO_1(var data: Byte);
-    external 'dummy.dll' name 'f4GenericRO';
+      external 'dummy.dll' name 'f4GenericRO';
     private static procedure ntv_f4GenericRO_2(data: pointer);
-    external 'dummy.dll' name 'f4GenericRO';
+      external 'dummy.dll' name 'f4GenericRO';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericRO<T>(data: array of T); where T: record;
-    type PT = ^T;
+      type PT = ^T;
     begin
       if (data<>nil) and (data.Length<>0) then
         f4GenericRO(data[0]) else
@@ -194,15 +194,15 @@ type
     
     // added in dum1.0
     private static procedure ntv_f4GenericWOVarArg_1(var data: Byte);
-    external 'dummy.dll' name 'f4GenericWOVarArg';
+      external 'dummy.dll' name 'f4GenericWOVarArg';
     private static procedure ntv_f4GenericWOVarArg_2(data: pointer);
-    external 'dummy.dll' name 'f4GenericWOVarArg';
+      external 'dummy.dll' name 'f4GenericWOVarArg';
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure temp_f4GenericWOVarArg_1<T>(var data: T); where T: record;
     begin
       ntv_f4GenericWOVarArg_1(PByte(pointer(@data))^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericWOVarArg<T>(data: array of T); where T: record;
-    type PT = ^T;
+      type PT = ^T;
     begin
       if (data<>nil) and (data.Length<>0) then
         temp_f4GenericWOVarArg_1(data[0]) else
@@ -213,15 +213,15 @@ type
     
     // added in dum1.0
     private static procedure ntv_f4GenericWOVarArgRO_1(var data: Byte);
-    external 'dummy.dll' name 'f4GenericWOVarArgRO';
+      external 'dummy.dll' name 'f4GenericWOVarArgRO';
     private static procedure ntv_f4GenericWOVarArgRO_2(data: pointer);
-    external 'dummy.dll' name 'f4GenericWOVarArgRO';
+      external 'dummy.dll' name 'f4GenericWOVarArgRO';
     private [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure temp_f4GenericWOVarArgRO_1<T>(var data: T); where T: record;
     begin
       ntv_f4GenericWOVarArgRO_1(PByte(pointer(@data))^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericWOVarArgRO<T>(data: array of T); where T: record;
-    type PT = ^T;
+      type PT = ^T;
     begin
       if (data<>nil) and (data.Length<>0) then
         temp_f4GenericWOVarArgRO_1(data[0]) else
@@ -232,9 +232,9 @@ type
     
     // added in dum1.0
     private static procedure ntv_f5Arrrrrray_1(a: pointer);
-    external 'dummy.dll' name 'f5Arrrrrray';
+      external 'dummy.dll' name 'f5Arrrrrray';
     private static procedure ntv_f5Arrrrrray_2(var a: IntPtr);
-    external 'dummy.dll' name 'f5Arrrrrray';
+      external 'dummy.dll' name 'f5Arrrrrray';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5Arrrrrray(a: array of array of array of array of array of UIntPtr);
     begin
       if (a=nil) or (a.Length=0) then
@@ -436,9 +436,9 @@ type
     
     // added in dum1.0
     private static procedure ntv_f5ArrrrrrayOfGeneric_1(a: pointer);
-    external 'dummy.dll' name 'f5ArrrrrrayOfGeneric';
+      external 'dummy.dll' name 'f5ArrrrrrayOfGeneric';
     private static procedure ntv_f5ArrrrrrayOfGeneric_2(var a: IntPtr);
-    external 'dummy.dll' name 'f5ArrrrrrayOfGeneric';
+      external 'dummy.dll' name 'f5ArrrrrrayOfGeneric';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfGeneric<T>(a: array of array of array of array of array of T); where T: record;
     begin
       if (a=nil) or (a.Length=0) then
@@ -640,9 +640,9 @@ type
     
     // added in dum1.0
     private static procedure ntv_f5ArrrrrrayOfString_1(s: pointer);
-    external 'dummy.dll' name 'f5ArrrrrrayOfString';
+      external 'dummy.dll' name 'f5ArrrrrrayOfString';
     private static procedure ntv_f5ArrrrrrayOfString_2(var s: IntPtr);
-    external 'dummy.dll' name 'f5ArrrrrrayOfString';
+      external 'dummy.dll' name 'f5ArrrrrrayOfString';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfString(s: array of array of array of array of string);
     begin
       if (s=nil) or (s.Length=0) then
@@ -835,16 +835,16 @@ type
     
     // added in dum1.0
     private static function ntv_f6Mix_1(s1: IntPtr; s2: IntPtr; var gen: Byte; var gen_ro: Byte): IntPtr;
-    external 'dummy.dll' name 'f6Mix';
+      external 'dummy.dll' name 'f6Mix';
     private static function ntv_f6Mix_2(s1: IntPtr; s2: IntPtr; var gen: Byte; gen_ro: pointer): IntPtr;
-    external 'dummy.dll' name 'f6Mix';
+      external 'dummy.dll' name 'f6Mix';
     private static function ntv_f6Mix_3(s1: IntPtr; s2: IntPtr; gen: pointer; var gen_ro: Byte): IntPtr;
-    external 'dummy.dll' name 'f6Mix';
+      external 'dummy.dll' name 'f6Mix';
     private static function ntv_f6Mix_4(s1: IntPtr; s2: IntPtr; gen: pointer; gen_ro: pointer): IntPtr;
-    external 'dummy.dll' name 'f6Mix';
+      external 'dummy.dll' name 'f6Mix';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f6Mix<T,T2>(s1: IntPtr; s2: string; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
-    type PT = ^T;
-    type PT2 = ^T2;
+      type PT = ^T;
+      type PT2 = ^T2;
     begin
       Result := if (gen_ro<>nil) and (gen_ro.Length<>0) then
         if (gen<>nil) and (gen.Length<>0) then
@@ -855,8 +855,8 @@ type
           f6Mix(s1, s2, PT(nil)^, PT2(nil)^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f6Mix<T,T2>(s1: IntPtr; s2: IntPtr; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
-    type PT = ^T;
-    type PT2 = ^T2;
+      type PT = ^T;
+      type PT2 = ^T2;
     begin
       Result := if (gen_ro<>nil) and (gen_ro.Length<>0) then
         if (gen<>nil) and (gen.Length<>0) then
@@ -941,21 +941,21 @@ type
     
     // added in dum1.0
     private static procedure ntv_f7EnumToType_1(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr);
-    external 'dummy.dll' name 'f7EnumToType';
+      external 'dummy.dll' name 'f7EnumToType';
     private static procedure ntv_f7EnumToType_2(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; var otp_value: Byte; otp_value_size_ret: IntPtr);
-    external 'dummy.dll' name 'f7EnumToType';
+      external 'dummy.dll' name 'f7EnumToType';
     private static procedure ntv_f7EnumToType_3(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr);
-    external 'dummy.dll' name 'f7EnumToType';
+      external 'dummy.dll' name 'f7EnumToType';
     private static procedure ntv_f7EnumToType_4(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: Byte; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr);
-    external 'dummy.dll' name 'f7EnumToType';
+      external 'dummy.dll' name 'f7EnumToType';
     private static procedure ntv_f7EnumToType_5(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: Byte; var otp_value_size_ret: UIntPtr);
-    external 'dummy.dll' name 'f7EnumToType';
+      external 'dummy.dll' name 'f7EnumToType';
     private static procedure ntv_f7EnumToType_6(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: Byte; otp_value_size_ret: IntPtr);
-    external 'dummy.dll' name 'f7EnumToType';
+      external 'dummy.dll' name 'f7EnumToType';
     private static procedure ntv_f7EnumToType_7(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr);
-    external 'dummy.dll' name 'f7EnumToType';
+      external 'dummy.dll' name 'f7EnumToType';
     private static procedure ntv_f7EnumToType_8(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr);
-    external 'dummy.dll' name 'f7EnumToType';
+      external 'dummy.dll' name 'f7EnumToType';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType<TInp,T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where TInp, T: record;
     begin
       ntv_f7EnumToType_1(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
@@ -1102,9 +1102,9 @@ type
     
     // added in dum1.0
     private static procedure ntv_f7EnumToTypeInputOnly_1(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: Byte);
-    external 'dummy.dll' name 'f7EnumToTypeInputOnly';
+      external 'dummy.dll' name 'f7EnumToTypeInputOnly';
     private static procedure ntv_f7EnumToTypeInputOnly_2(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: pointer);
-    external 'dummy.dll' name 'f7EnumToTypeInputOnly';
+      external 'dummy.dll' name 'f7EnumToTypeInputOnly';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToTypeInputOnly<TInp>(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: TInp); where TInp: record;
     begin
       ntv_f7EnumToTypeInputOnly_1(choise, inp_value_size, PByte(pointer(@inp_value))^);
@@ -1199,7 +1199,7 @@ type
     private ntv_f4Generic_1 := GetProcOrNil&<procedure(var data: Byte)>(f4Generic_adr);
     private ntv_f4Generic_2 := GetProcOrNil&<procedure(data: pointer)>(f4Generic_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4Generic<T>(data: array of T); where T: record;
-    type PT = ^T;
+      type PT = ^T;
     begin
       if (data<>nil) and (data.Length<>0) then
         f4Generic(data[0]) else
@@ -1217,7 +1217,7 @@ type
     private ntv_f4GenericRO_1 := GetProcOrNil&<procedure(var data: Byte)>(f4GenericRO_adr);
     private ntv_f4GenericRO_2 := GetProcOrNil&<procedure(data: pointer)>(f4GenericRO_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericRO<T>(data: array of T); where T: record;
-    type PT = ^T;
+      type PT = ^T;
     begin
       if (data<>nil) and (data.Length<>0) then
         f4GenericRO(data[0]) else
@@ -1239,7 +1239,7 @@ type
       ntv_f4GenericWOVarArg_1(PByte(pointer(@data))^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericWOVarArg<T>(data: array of T); where T: record;
-    type PT = ^T;
+      type PT = ^T;
     begin
       if (data<>nil) and (data.Length<>0) then
         temp_f4GenericWOVarArg_1(data[0]) else
@@ -1257,7 +1257,7 @@ type
       ntv_f4GenericWOVarArgRO_1(PByte(pointer(@data))^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericWOVarArgRO<T>(data: array of T); where T: record;
-    type PT = ^T;
+      type PT = ^T;
     begin
       if (data<>nil) and (data.Length<>0) then
         temp_f4GenericWOVarArgRO_1(data[0]) else
@@ -1873,8 +1873,8 @@ type
     private ntv_f6Mix_3 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; gen: pointer; var gen_ro: Byte): IntPtr>(f6Mix_adr);
     private ntv_f6Mix_4 := GetProcOrNil&<function(s1: IntPtr; s2: IntPtr; gen: pointer; gen_ro: pointer): IntPtr>(f6Mix_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f6Mix<T,T2>(s1: IntPtr; s2: string; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
-    type PT = ^T;
-    type PT2 = ^T2;
+      type PT = ^T;
+      type PT2 = ^T2;
     begin
       Result := if (gen_ro<>nil) and (gen_ro.Length<>0) then
         if (gen<>nil) and (gen.Length<>0) then
@@ -1885,8 +1885,8 @@ type
           f6Mix(s1, s2, PT(nil)^, PT2(nil)^);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f6Mix<T,T2>(s1: IntPtr; s2: IntPtr; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
-    type PT = ^T;
-    type PT2 = ^T2;
+      type PT = ^T;
+      type PT2 = ^T2;
     begin
       Result := if (gen_ro<>nil) and (gen_ro.Length<>0) then
         if (gen<>nil) and (gen.Length<>0) then

@@ -507,8 +507,8 @@ type
     {$region Load}
     
     static procedure LoadCLA;
-    const modules_def = 'Modules';
-    const auto_update_def = 'AutoUpdate';
+      const modules_def = 'Modules';
+      const auto_update_def = 'AutoUpdate';
     begin
       
       foreach var w in CLArgs.GetArgs(modules_def).SelectMany(val->val.ToWords('+').Select(w->w.Trim)) do

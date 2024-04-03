@@ -20,7 +20,6 @@ type
   where TName: IEquatable<TName>, IComparable<TName>;
     
     static constructor;
-    type Expression = System.Linq.Expressions.Expression;
     begin
       
       RegisterFixableNameExtractor(item->item.Name);

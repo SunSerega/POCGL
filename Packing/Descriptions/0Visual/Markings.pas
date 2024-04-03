@@ -18,35 +18,35 @@ type
     private constructor := raise new System.InvalidOperationException;
     
     public procedure MarkAll(text: StringSection; validate: (StringSection, boolean, MarksInfo)->StringIndex) :=
-    while true do
-    begin
-      var beg := text.SubSectionOfFirstUnescaped(begs);
-      if beg.IsInvalid then exit;
-      text.range.i1 := beg.I1;
-      var info := sub_marks[begs.FindIndex(bs->bs=beg)];
-      
-      var ind := 0;
       while true do
       begin
-        var len := text.IndexOfUnescaped(info.s_beg.Length+ind, info.s_end);
-        if not len.IsInvalid then len += info.s_end.Length;
+        var beg := text.SubSectionOfFirstUnescaped(begs);
+        if beg.IsInvalid then exit;
+        text.range.i1 := beg.I1;
+        var info := sub_marks[begs.FindIndex(bs->bs=beg)];
         
-        var s := text;
-        var eot := len.IsInvalid;
-        if not eot then s := s.TakeFirst(len);
-        
-        var new_head := validate(s, eot, info);
-        if new_head.IsInvalid then
-          ind := len-info.s_end.Length+1 else
+        var ind := 0;
+        while true do
         begin
-          text.range.i1 := new_head;
-          break;
+          var len := text.IndexOfUnescaped(info.s_beg.Length+ind, info.s_end);
+          if not len.IsInvalid then len += info.s_end.Length;
+          
+          var s := text;
+          var eot := len.IsInvalid;
+          if not eot then s := s.TakeFirst(len);
+          
+          var new_head := validate(s, eot, info);
+          if new_head.IsInvalid then
+            ind := len-info.s_end.Length+1 else
+          begin
+            text.range.i1 := new_head;
+            break;
+          end;
         end;
+        
       end;
-      
-    end;
     public procedure MarkAll(text: string; validate: (StringSection, boolean, MarksInfo)->StringIndex) :=
-    MarkAll(new StringSection(text), validate);
+      MarkAll(new StringSection(text), validate);
     
   end;
   

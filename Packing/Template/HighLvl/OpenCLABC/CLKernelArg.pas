@@ -178,8 +178,7 @@ type
       all += #10;
     end;
     
-    public procedure WriteFrom(s: FromMethodSettings) :=
-    WriteReg(2, s.inp_nick, ()->
+    public procedure WriteFrom(s: FromMethodSettings) := WriteReg(2, s.inp_nick, ()->
     begin
       
       {$region Misc write's}
@@ -250,7 +249,7 @@ type
           m += '    '#10;
           
           m += '    public procedure ApplyImpl(k: cl_kernel; ind: UInt32); override :='#10;
-          m += '    OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, ';
+          m += '      OpenCLABCInternalException.RaiseIfError( cl.SetKernelArg(k, ind, ';
           m += s.setter_set_pars.Replace('%', 'self.o');
           m += ') );'#10;
           m += '    '#10;
@@ -297,7 +296,7 @@ type
         m += '    public constructor';
         write_pars_def(m, WriterEmpty.Instance, 'CommandQueue');
         m += ' :='#10;
-        m += '    data := new ';
+        m += '      data := new ';
         write_data_tname;
         write_pars_call(m);
         m += ';'#10;
@@ -314,10 +313,10 @@ type
         m += '    protected function TryGetConstSetter: CLKernelArgSetter; override :='#10;
         m += '    ';
         if s.IsGlobalOrConst then
-          m += 'data.TryGetConstSetter(WrapToNative);'#10 else
+          m += '  data.TryGetConstSetter(WrapToNative);'#10 else
         if s.IsPrivate then
         begin
-          m += 'if data.q is ';
+          m += '  if data.q is ';
           write_inp_t(m, 'ConstQueue');
           m += '(var c_q) then'#10;
           m += '      new ';
@@ -328,11 +327,11 @@ type
         m += '    '#10;
         
         m += '    protected procedure InitBeforeInvoke(g: CLTaskGlobalData; inited_hubs: HashSet<IMultiusableCommandQueue>); override :='#10;
-        m += '    data.q.InitBeforeInvoke(g, inited_hubs);'#10;
+        m += '      data.q.InitBeforeInvoke(g, inited_hubs);'#10;
         m += '    '#10;
         
         m += '    protected function Invoke(inv: CLTaskBranchInvoker; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<CLKernelArgSetter, EventList>; override :='#10;
-        m += '    data.Invoke(';
+        m += '      data.Invoke(';
         if s.IsGlobalOrConst then
           m += 'inv, WrapToNative' else
         if s.IsPrivate then
@@ -347,7 +346,7 @@ type
         m += '    '#10;
         
         m += '    protected procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); override :='#10;
-        m += '    data.ToString(sb, tabs, index, delayed);'#10;
+        m += '      data.ToString(sb, tabs, index, delayed);'#10;
         m += '    '#10;
         
         m += '  end;'#10;

@@ -1,7 +1,7 @@
 ﻿## uses OpenCLABC;
 
 function ErrQ(err: string) :=
-HPQ(()->raise new Exception(err), false);
+  HPQ(()->raise new Exception(err), false);
 
 var mre := new System.Threading.ManualResetEventSlim(false);
 CLContext.Default.SyncInvoke(

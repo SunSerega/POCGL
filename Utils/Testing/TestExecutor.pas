@@ -1,7 +1,6 @@
 ﻿## uses System.IO, '../CLArgs';
 
-procedure OnException(e: Exception; et: string := 'General') :=
-lock Console.Error do
+procedure OnException(e: Exception; et: string := 'General') := lock Console.Error do
 begin
   Console.Error.WriteLine($'%{et}Exception%');
   Console.Error.WriteLine(e);

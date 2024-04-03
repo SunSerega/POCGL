@@ -119,7 +119,7 @@
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes> = record(ISimpleFunc3Container<TInp1,TInp2,TInp3,TRes>)
@@ -133,7 +133,7 @@
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
@@ -181,7 +181,7 @@
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   SimpleProc3ContainerC<TInp1,TInp2,TInp3> = record(ISimpleProc3Container<TInp1,TInp2,TInp3>)
@@ -195,7 +195,7 @@
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-    CommandQueueBase.ToStringWriteDelegate(sb, d);
+      CommandQueueBase.ToStringWriteDelegate(sb, d);
     
   end;
   
