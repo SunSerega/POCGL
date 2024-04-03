@@ -5945,6 +5945,12 @@
     public const ExtensionString = 'cl_khr_integer_dot_product';
   end;
   
+  /// id: cl_khr_kernel_clock
+  /// version: provisional
+  clKernelClockKHR = static class
+    public const ExtensionString = 'cl_khr_kernel_clock';
+  end;
+  
   /// id: cl_khr_local_int32_base_atomics
   /// promoted to: cl 1.1
   clLocalInt32BaseAtomicsKHR = static class
@@ -5989,6 +5995,21 @@
   /// obsoleted by: cl_khr_il_program (clIlProgramKHR)
   clSpirKHR = static class
     public const ExtensionString = 'cl_khr_spir';
+  end;
+  
+  /// id: cl_khr_spirv_extended_debug_info
+  clSpirvExtendedDebugInfoKHR = static class
+    public const ExtensionString = 'cl_khr_spirv_extended_debug_info';
+  end;
+  
+  /// id: cl_khr_spirv_linkonce_odr
+  clSpirvLinkonceOdrKHR = static class
+    public const ExtensionString = 'cl_khr_spirv_linkonce_odr';
+  end;
+  
+  /// id: cl_khr_spirv_no_integer_wrap_decoration
+  clSpirvNoIntegerWrapDecorationKHR = static class
+    public const ExtensionString = 'cl_khr_spirv_no_integer_wrap_decoration';
   end;
   
   /// id: cl_khr_srgb_image_writes

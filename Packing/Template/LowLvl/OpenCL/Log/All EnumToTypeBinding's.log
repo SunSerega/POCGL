@@ -426,6 +426,9 @@ cl_device_integer_dot_product_acceleration_properties
 --- DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED
 !output
 cl_device_integer_dot_product_acceleration_properties
+--- DEVICE_KERNEL_CLOCK_CAPABILITIES
+!output
+clDeviceKernelClockCapabilities
 --- DEVICE_COMMAND_BUFFER_CAPABILITIES
 !output
 clDeviceCommandBufferCapabilities

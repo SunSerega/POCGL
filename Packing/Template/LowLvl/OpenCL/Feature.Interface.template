@@ -4620,6 +4620,14 @@
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_KERNEL_CLOCK_CAPABILITIES(device: cl_device_id; var param_value: clDeviceKernelClockCapabilities; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clDeviceKernelClockCapabilities>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetDeviceInfo(device, clDeviceInfo.DEVICE_KERNEL_CLOCK_CAPABILITIES, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_COMMAND_BUFFER_CAPABILITIES(device: cl_device_id; var param_value: clDeviceCommandBufferCapabilities; param_value_validate_size: boolean := false): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<clDeviceCommandBufferCapabilities>);

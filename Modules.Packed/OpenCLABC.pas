@@ -2413,6 +2413,10 @@ type
     begin
       cl.GetDeviceInfo_DEVICE_MEMORY_CAPABILITIES(self.ntv, Result).RaiseIfError;
     end;
+    private function GetKernelClockCapabilities: clDeviceKernelClockCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_KERNEL_CLOCK_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
     
     public property &Type:                                               clDeviceType                                          read GetType;
     public property VendorId:                                            clKhronosVendorId                                     read GetVendorId;
@@ -2592,6 +2596,7 @@ type
     public property NumThreadsPerEu:                                     UInt32                                                read GetNumThreadsPerEu;
     public property FeatureCapabilities:                                 clDeviceFeatureCapabilities                           read GetFeatureCapabilities;
     public property MemoryCapabilities:                                  clMemAllocFlagsIMG                                    read GetMemoryCapabilities;
+    public property KernelClockCapabilities:                             clDeviceKernelClockCapabilities                       read GetKernelClockCapabilities;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -2779,7 +2784,8 @@ type
       res += 'NumEusPerSubSlice                                   = '; AddProp(res, GetNumEusPerSubSlice                                  ); res += #10;
       res += 'NumThreadsPerEu                                     = '; AddProp(res, GetNumThreadsPerEu                                    ); res += #10;
       res += 'FeatureCapabilities                                 = '; AddProp(res, GetFeatureCapabilities                                ); res += #10;
-      res += 'MemoryCapabilities                                  = '; AddProp(res, GetMemoryCapabilities                                 );
+      res += 'MemoryCapabilities                                  = '; AddProp(res, GetMemoryCapabilities                                 ); res += #10;
+      res += 'KernelClockCapabilities                             = '; AddProp(res, GetKernelClockCapabilities                            );
     end;
     public function ToString: string; override;
     begin

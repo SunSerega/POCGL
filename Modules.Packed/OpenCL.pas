@@ -1813,6 +1813,7 @@ type
     public static property DEVICE_INTEGER_DOT_PRODUCT_CAPABILITIES:                          clDeviceInfo read new clDeviceInfo($1073);
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT:          clDeviceInfo read new clDeviceInfo($1074);
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED: clDeviceInfo read new clDeviceInfo($1075);
+    public static property DEVICE_KERNEL_CLOCK_CAPABILITIES:                                 clDeviceInfo read new clDeviceInfo($1076);
     public static property DEVICE_COMMAND_BUFFER_CAPABILITIES:                               clDeviceInfo read new clDeviceInfo($12A9);
     public static property DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES:                  clDeviceInfo read new clDeviceInfo($12AA);
     public static property DEVICE_COMMAND_BUFFER_NUM_SYNC_DEVICES:                           clDeviceInfo read new clDeviceInfo($12AB);
@@ -2135,6 +2136,8 @@ type
         Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT' else
       if DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED = self then
         Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED' else
+      if DEVICE_KERNEL_CLOCK_CAPABILITIES = self then
+        Result := 'DEVICE_KERNEL_CLOCK_CAPABILITIES' else
       if DEVICE_COMMAND_BUFFER_CAPABILITIES = self then
         Result := 'DEVICE_COMMAND_BUFFER_CAPABILITIES' else
       if DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES = self then
@@ -2346,6 +2349,61 @@ type
       if left_val<>0 then
       begin
         res += 'clDeviceIntegerDotProductCapabilities[';
+        res += self.val.ToString;
+        res += ']+';
+      end;
+      res.Length -= 1;
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
+  clDeviceKernelClockCapabilities = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property DEVICE_KERNEL_CLOCK_SCOPE_DEVICE:     clDeviceKernelClockCapabilities read new clDeviceKernelClockCapabilities(1 shl 0);
+    public static property DEVICE_KERNEL_CLOCK_SCOPE_WORK_GROUP: clDeviceKernelClockCapabilities read new clDeviceKernelClockCapabilities(1 shl 1);
+    public static property DEVICE_KERNEL_CLOCK_SCOPE_SUB_GROUP:  clDeviceKernelClockCapabilities read new clDeviceKernelClockCapabilities(1 shl 2);
+    
+    public static function operator+(v1, v2: clDeviceKernelClockCapabilities) := new clDeviceKernelClockCapabilities(v1.val or v2.val);
+    public static function operator or(v1, v2: clDeviceKernelClockCapabilities) := new clDeviceKernelClockCapabilities(v1.val or v2.val);
+    
+    public static function operator-(v1, v2: clDeviceKernelClockCapabilities) := new clDeviceKernelClockCapabilities(v1.val and not v2.val);
+    
+    public static procedure operator+=(var v1: clDeviceKernelClockCapabilities; v2: clDeviceKernelClockCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceKernelClockCapabilities; v2: clDeviceKernelClockCapabilities) := v1 := v1-v2;
+    
+    public static function operator in(v1, v2: clDeviceKernelClockCapabilities) := v1.val and v2.val = v1.val;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      var left_val := self.val;
+      if left_val=0 then
+      begin
+        Result := 'clDeviceKernelClockCapabilities[0]';
+        exit;
+      end;
+      if DEVICE_KERNEL_CLOCK_SCOPE_DEVICE in self then
+      begin
+        res += 'DEVICE_KERNEL_CLOCK_SCOPE_DEVICE+';
+        left_val := left_val and not DEVICE_KERNEL_CLOCK_SCOPE_DEVICE.val;
+      end;
+      if DEVICE_KERNEL_CLOCK_SCOPE_WORK_GROUP in self then
+      begin
+        res += 'DEVICE_KERNEL_CLOCK_SCOPE_WORK_GROUP+';
+        left_val := left_val and not DEVICE_KERNEL_CLOCK_SCOPE_WORK_GROUP.val;
+      end;
+      if DEVICE_KERNEL_CLOCK_SCOPE_SUB_GROUP in self then
+      begin
+        res += 'DEVICE_KERNEL_CLOCK_SCOPE_SUB_GROUP+';
+        left_val := left_val and not DEVICE_KERNEL_CLOCK_SCOPE_SUB_GROUP.val;
+      end;
+      if left_val<>0 then
+      begin
+        res += 'clDeviceKernelClockCapabilities[';
         res += self.val.ToString;
         res += ']+';
       end;
@@ -10966,6 +11024,14 @@ type
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_KERNEL_CLOCK_CAPABILITIES(device: cl_device_id; var param_value: clDeviceKernelClockCapabilities; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clDeviceKernelClockCapabilities>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetDeviceInfo(device, clDeviceInfo.DEVICE_KERNEL_CLOCK_CAPABILITIES, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_COMMAND_BUFFER_CAPABILITIES(device: cl_device_id; var param_value: clDeviceCommandBufferCapabilities; param_value_validate_size: boolean := false): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<clDeviceCommandBufferCapabilities>);
@@ -19574,6 +19640,12 @@ type
     public const ExtensionString = 'cl_khr_integer_dot_product';
   end;
   
+  /// id: cl_khr_kernel_clock
+  /// version: provisional
+  clKernelClockKHR = static class
+    public const ExtensionString = 'cl_khr_kernel_clock';
+  end;
+  
   /// id: cl_khr_local_int32_base_atomics
   /// promoted to: cl 1.1
   clLocalInt32BaseAtomicsKHR = static class
@@ -19618,6 +19690,21 @@ type
   /// obsoleted by: cl_khr_il_program (clIlProgramKHR)
   clSpirKHR = static class
     public const ExtensionString = 'cl_khr_spir';
+  end;
+  
+  /// id: cl_khr_spirv_extended_debug_info
+  clSpirvExtendedDebugInfoKHR = static class
+    public const ExtensionString = 'cl_khr_spirv_extended_debug_info';
+  end;
+  
+  /// id: cl_khr_spirv_linkonce_odr
+  clSpirvLinkonceOdrKHR = static class
+    public const ExtensionString = 'cl_khr_spirv_linkonce_odr';
+  end;
+  
+  /// id: cl_khr_spirv_no_integer_wrap_decoration
+  clSpirvNoIntegerWrapDecorationKHR = static class
+    public const ExtensionString = 'cl_khr_spirv_no_integer_wrap_decoration';
   end;
   
   /// id: cl_khr_srgb_image_writes

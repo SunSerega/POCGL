@@ -938,6 +938,12 @@
 	Enum [cl::DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT]
 	Enum [cl::DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED]
 
+# clKernelClockKHR (cl_khr_kernel_clock)
+	Enum [cl::DEVICE_KERNEL_CLOCK_SCOPE_DEVICE]
+	Enum [cl::DEVICE_KERNEL_CLOCK_SCOPE_WORK_GROUP]
+	Enum [cl::DEVICE_KERNEL_CLOCK_SCOPE_SUB_GROUP]
+	Enum [cl::DEVICE_KERNEL_CLOCK_CAPABILITIES]
+
 # clLocalInt32BaseAtomicsKHR (cl_khr_local_int32_base_atomics)
 
 # clLocalInt32ExtendedAtomicsKHR (cl_khr_local_int32_extended_atomics)
@@ -984,6 +990,12 @@
 # clSpirKHR (cl_khr_spir)
 	Enum [cl::DEVICE_SPIR_VERSIONS]
 	Enum [cl::PROGRAM_BINARY_TYPE_INTERMEDIATE]
+
+# clSpirvExtendedDebugInfoKHR (cl_khr_spirv_extended_debug_info)
+
+# clSpirvLinkonceOdrKHR (cl_khr_spirv_linkonce_odr)
+
+# clSpirvNoIntegerWrapDecorationKHR (cl_khr_spirv_no_integer_wrap_decoration)
 
 # clSrgbImageWritesKHR (cl_khr_srgb_image_writes)
 

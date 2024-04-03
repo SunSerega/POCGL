@@ -1781,6 +1781,7 @@
     public static property DEVICE_INTEGER_DOT_PRODUCT_CAPABILITIES:                          clDeviceInfo read new clDeviceInfo($1073);
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT:          clDeviceInfo read new clDeviceInfo($1074);
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED: clDeviceInfo read new clDeviceInfo($1075);
+    public static property DEVICE_KERNEL_CLOCK_CAPABILITIES:                                 clDeviceInfo read new clDeviceInfo($1076);
     public static property DEVICE_COMMAND_BUFFER_CAPABILITIES:                               clDeviceInfo read new clDeviceInfo($12A9);
     public static property DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES:                  clDeviceInfo read new clDeviceInfo($12AA);
     public static property DEVICE_COMMAND_BUFFER_NUM_SYNC_DEVICES:                           clDeviceInfo read new clDeviceInfo($12AB);
@@ -2103,6 +2104,8 @@
         Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT' else
       if DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED = self then
         Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED' else
+      if DEVICE_KERNEL_CLOCK_CAPABILITIES = self then
+        Result := 'DEVICE_KERNEL_CLOCK_CAPABILITIES' else
       if DEVICE_COMMAND_BUFFER_CAPABILITIES = self then
         Result := 'DEVICE_COMMAND_BUFFER_CAPABILITIES' else
       if DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES = self then
@@ -2314,6 +2317,61 @@
       if left_val<>0 then
       begin
         res += 'clDeviceIntegerDotProductCapabilities[';
+        res += self.val.ToString;
+        res += ']+';
+      end;
+      res.Length -= 1;
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
+  clDeviceKernelClockCapabilities = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property DEVICE_KERNEL_CLOCK_SCOPE_DEVICE:     clDeviceKernelClockCapabilities read new clDeviceKernelClockCapabilities(1 shl 0);
+    public static property DEVICE_KERNEL_CLOCK_SCOPE_WORK_GROUP: clDeviceKernelClockCapabilities read new clDeviceKernelClockCapabilities(1 shl 1);
+    public static property DEVICE_KERNEL_CLOCK_SCOPE_SUB_GROUP:  clDeviceKernelClockCapabilities read new clDeviceKernelClockCapabilities(1 shl 2);
+    
+    public static function operator+(v1, v2: clDeviceKernelClockCapabilities) := new clDeviceKernelClockCapabilities(v1.val or v2.val);
+    public static function operator or(v1, v2: clDeviceKernelClockCapabilities) := new clDeviceKernelClockCapabilities(v1.val or v2.val);
+    
+    public static function operator-(v1, v2: clDeviceKernelClockCapabilities) := new clDeviceKernelClockCapabilities(v1.val and not v2.val);
+    
+    public static procedure operator+=(var v1: clDeviceKernelClockCapabilities; v2: clDeviceKernelClockCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceKernelClockCapabilities; v2: clDeviceKernelClockCapabilities) := v1 := v1-v2;
+    
+    public static function operator in(v1, v2: clDeviceKernelClockCapabilities) := v1.val and v2.val = v1.val;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      var left_val := self.val;
+      if left_val=0 then
+      begin
+        Result := 'clDeviceKernelClockCapabilities[0]';
+        exit;
+      end;
+      if DEVICE_KERNEL_CLOCK_SCOPE_DEVICE in self then
+      begin
+        res += 'DEVICE_KERNEL_CLOCK_SCOPE_DEVICE+';
+        left_val := left_val and not DEVICE_KERNEL_CLOCK_SCOPE_DEVICE.val;
+      end;
+      if DEVICE_KERNEL_CLOCK_SCOPE_WORK_GROUP in self then
+      begin
+        res += 'DEVICE_KERNEL_CLOCK_SCOPE_WORK_GROUP+';
+        left_val := left_val and not DEVICE_KERNEL_CLOCK_SCOPE_WORK_GROUP.val;
+      end;
+      if DEVICE_KERNEL_CLOCK_SCOPE_SUB_GROUP in self then
+      begin
+        res += 'DEVICE_KERNEL_CLOCK_SCOPE_SUB_GROUP+';
+        left_val := left_val and not DEVICE_KERNEL_CLOCK_SCOPE_SUB_GROUP.val;
+      end;
+      if left_val<>0 then
+      begin
+        res += 'clDeviceKernelClockCapabilities[';
         res += self.val.ToString;
         res += ']+';
       end;
