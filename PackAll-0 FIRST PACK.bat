@@ -1,8 +1,6 @@
 ﻿@setlocal enableextensions
 @cd /d "%~dp0"
 
-call DeleteAllTemp.bat NoPause
-
 
 
 IF NOT EXIST "PackAll.exe" (
