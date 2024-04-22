@@ -2,13 +2,13 @@
 
 
 #Delegates
-OpenCL.clCreateContextCallback = procedure(errinfo: string; private_info: System.IntPtr; cb: System.UIntPtr; user_data: System.IntPtr)
-OpenCL.clEventCallback = procedure(event: cl_event; event_command_status: clCommandExecutionStatus; user_data: System.IntPtr)
-OpenCL.clProgramCallback = procedure(program: cl_program; user_data: System.IntPtr)
+OpenCL.clCreateContextCallback = procedure(errinfo: string; private_info: IntPtr; cb: UIntPtr; user_data: IntPtr)
+OpenCL.clEventCallback = procedure(event: cl_event; event_command_status: clCommandExecutionStatus; user_data: IntPtr)
+OpenCL.clProgramCallback = procedure(program: cl_program; user_data: IntPtr)
 OpenCLABC.$delegate? = function(ntv: cl_program; var data: clBool; validate: boolean): clErrorCode
 OpenCLABC._GetPropValueFunc<T> = function(ntv: cl_program; var data: T): clErrorCode
-OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): ValueTuple<cl_event,CLContext -> ()>
-OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure,EnqFunc<T>>
+OpenCLABC_implementation______.EnqFunc<T> = function(prev_res: T; cq: cl_command_queue; ev_l2: EventList): ValueTuple<cl_event, procedure(CLContext)>
+OpenCLABC_implementation______.InvokeParamsFunc<T> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure, function(T, cl_command_queue, EventList): ValueTuple<cl_event, procedure(CLContext)>>
 
 #ExpExecOtp
 Global
@@ -102,95 +102,95 @@ Constant
 Local
 |	FromBytes
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 123
+|	|		ConstQueue<UIntPtr>#0: 123
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueHostQuickFunc<System.UIntPtr,SimpleFunc0Container<System.UIntPtr>>#0: function lambda: System.UIntPtr
+|	|		CommandQueueHostQuickFunc<UIntPtr, SimpleFunc0Container<UIntPtr>>#0: function lambda: UIntPtr
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 123
+|	|		ConstQueue<UIntPtr>#0: 123
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<longword,System.UIntPtr,SimpleFuncContainer<longword,System.UIntPtr>>#0
-|	|			CommandQueueHostQuickFunc<longword,SimpleFunc0Container<longword>>#1: function lambda: longword
-|	|			function lambda(bytes: longword): System.UIntPtr
+|	|		CommandQueueThenQuickConvert<longword, UIntPtr, SimpleFuncContainer<longword, UIntPtr>>#0
+|	|			CommandQueueHostQuickFunc<longword, SimpleFunc0Container<longword>>#1: function lambda: longword
+|	|			function lambda(bytes: longword): UIntPtr
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 123
+|	|		ConstQueue<UIntPtr>#0: 123
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>>#0
-|	|			CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>#1: function lambda: integer
-|	|			function lambda(bytes: integer): System.UIntPtr
+|	|		CommandQueueThenQuickConvert<integer, UIntPtr, SimpleFuncContainer<integer, UIntPtr>>#0
+|	|			CommandQueueHostQuickFunc<integer, SimpleFunc0Container<integer>>#1: function lambda: integer
+|	|			function lambda(bytes: integer): UIntPtr
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 123
+|	|		ConstQueue<UIntPtr>#0: 123
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<uint64,System.UIntPtr,SimpleFuncContainer<uint64,System.UIntPtr>>#0
-|	|			CommandQueueHostQuickFunc<uint64,SimpleFunc0Container<uint64>>#1: function lambda: uint64
-|	|			function lambda(bytes: uint64): System.UIntPtr
+|	|		CommandQueueThenQuickConvert<uint64, UIntPtr, SimpleFuncContainer<uint64, UIntPtr>>#0
+|	|			CommandQueueHostQuickFunc<uint64, SimpleFunc0Container<uint64>>#1: function lambda: uint64
+|	|			function lambda(bytes: uint64): UIntPtr
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 123
+|	|		ConstQueue<UIntPtr>#0: 123
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<int64,System.UIntPtr,SimpleFuncContainer<int64,System.UIntPtr>>#0
-|	|			CommandQueueHostQuickFunc<int64,SimpleFunc0Container<int64>>#1: function lambda: int64
-|	|			function lambda(bytes: int64): System.UIntPtr
+|	|		CommandQueueThenQuickConvert<int64, UIntPtr, SimpleFuncContainer<int64, UIntPtr>>#0
+|	|			CommandQueueHostQuickFunc<int64, SimpleFunc0Container<int64>>#1: function lambda: int64
+|	|			function lambda(bytes: int64): UIntPtr
 |	FromItemCount
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 256
+|	|		ConstQueue<UIntPtr>#0: 256
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<longword,System.UIntPtr,SimpleFuncContainer<longword,System.UIntPtr>>#0
-|	|			CommandQueueHostQuickFunc<longword,SimpleFunc0Container<longword>>#1: function lambda: longword
-|	|			function lambda(item_count: longword): System.UIntPtr
+|	|		CommandQueueThenQuickConvert<longword, UIntPtr, SimpleFuncContainer<longword, UIntPtr>>#0
+|	|			CommandQueueHostQuickFunc<longword, SimpleFunc0Container<longword>>#1: function lambda: longword
+|	|			function lambda(item_count: longword): UIntPtr
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 256
+|	|		ConstQueue<UIntPtr>#0: 256
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>>#0
-|	|			CommandQueueHostQuickFunc<integer,SimpleFunc0Container<integer>>#1: function lambda: integer
-|	|			function lambda(item_count: integer): System.UIntPtr
+|	|		CommandQueueThenQuickConvert<integer, UIntPtr, SimpleFuncContainer<integer, UIntPtr>>#0
+|	|			CommandQueueHostQuickFunc<integer, SimpleFunc0Container<integer>>#1: function lambda: integer
+|	|			function lambda(item_count: integer): UIntPtr
 |	LikeArray
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 4
+|	|		ConstQueue<UIntPtr>#0: 4
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>>#0
-|	|			CommandQueueThenQuickConvert<array of byte,integer,SimpleFuncContainer<array of byte,integer>>#1
-|	|				CommandQueueHostQuickFunc<array of byte,SimpleFunc0Container<array of byte>>#2: function lambda: array of byte
+|	|		CommandQueueThenQuickConvert<integer, UIntPtr, SimpleFuncContainer<integer, UIntPtr>>#0
+|	|			CommandQueueThenQuickConvert<array of byte, integer, SimpleFuncContainer<array of byte, integer>>#1
+|	|				CommandQueueHostQuickFunc<array of byte, SimpleFunc0Container<array of byte>>#2: function lambda: array of byte
 |	|				function lambda(a: array of byte): integer
-|	|			function lambda(item_count: integer): System.UIntPtr
+|	|			function lambda(item_count: integer): UIntPtr
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 6
+|	|		ConstQueue<UIntPtr>#0: 6
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>>#0
-|	|			CommandQueueThenQuickConvert<array [,] of byte,integer,SimpleFuncContainer<array [,] of byte,integer>>#1
-|	|				CommandQueueHostQuickFunc<array [,] of byte,SimpleFunc0Container<array [,] of byte>>#2: function lambda: array [,] of byte
-|	|				function lambda(a: array [,] of byte): integer
-|	|			function lambda(item_count: integer): System.UIntPtr
+|	|		CommandQueueThenQuickConvert<integer, UIntPtr, SimpleFuncContainer<integer, UIntPtr>>#0
+|	|			CommandQueueThenQuickConvert<array[,] of byte, integer, SimpleFuncContainer<array[,] of byte, integer>>#1
+|	|				CommandQueueHostQuickFunc<array[,] of byte, SimpleFunc0Container<array[,] of byte>>#2: function lambda: array[,] of byte
+|	|				function lambda(a: array[,] of byte): integer
+|	|			function lambda(item_count: integer): UIntPtr
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 24
+|	|		ConstQueue<UIntPtr>#0: 24
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>>#0
-|	|			CommandQueueThenQuickConvert<array [,,] of byte,integer,SimpleFuncContainer<array [,,] of byte,integer>>#1
-|	|				CommandQueueHostQuickFunc<array [,,] of byte,SimpleFunc0Container<array [,,] of byte>>#2: function lambda: array [,,] of byte
-|	|				function lambda(a: array [,,] of byte): integer
-|	|			function lambda(item_count: integer): System.UIntPtr
+|	|		CommandQueueThenQuickConvert<integer, UIntPtr, SimpleFuncContainer<integer, UIntPtr>>#0
+|	|			CommandQueueThenQuickConvert<array[,,] of byte, integer, SimpleFuncContainer<array[,,] of byte, integer>>#1
+|	|				CommandQueueHostQuickFunc<array[,,] of byte, SimpleFunc0Container<array[,,] of byte>>#2: function lambda: array[,,] of byte
+|	|				function lambda(a: array[,,] of byte): integer
+|	|			function lambda(item_count: integer): UIntPtr
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 5
+|	|		ConstQueue<UIntPtr>#0: 5
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<longword,System.UIntPtr,SimpleFuncContainer<longword,System.UIntPtr>>#0
-|	|			CommandQueueThenQuickConvert<NativeArrayArea<byte>,longword,SimpleFuncContainer<NativeArrayArea<byte>,longword>>#1
-|	|				CommandQueueHostQuickFunc<NativeArrayArea<byte>,SimpleFunc0Container<NativeArrayArea<byte>>>#2: function lambda: NativeArrayArea<byte>
+|	|		CommandQueueThenQuickConvert<longword, UIntPtr, SimpleFuncContainer<longword, UIntPtr>>#0
+|	|			CommandQueueThenQuickConvert<NativeArrayArea<byte>, longword, SimpleFuncContainer<NativeArrayArea<byte>, longword>>#1
+|	|				CommandQueueHostQuickFunc<NativeArrayArea<byte>, SimpleFunc0Container<NativeArrayArea<byte>>>#2: function lambda: NativeArrayArea<byte>
 |	|				function lambda(a: NativeArrayArea<byte>): longword
-|	|			function lambda(item_count: longword): System.UIntPtr
+|	|			function lambda(item_count: longword): UIntPtr
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 4
+|	|		ConstQueue<UIntPtr>#0: 4
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<longword,System.UIntPtr,SimpleFuncContainer<longword,System.UIntPtr>>#0
-|	|			CommandQueueThenQuickConvert<NativeArray<byte>,longword,SimpleFuncContainer<NativeArray<byte>,longword>>#1
-|	|				CommandQueueHostQuickFunc<NativeArray<byte>,SimpleFunc0Container<NativeArray<byte>>>#2: function lambda: NativeArray<byte>
+|	|		CommandQueueThenQuickConvert<longword, UIntPtr, SimpleFuncContainer<longword, UIntPtr>>#0
+|	|			CommandQueueThenQuickConvert<NativeArray<byte>, longword, SimpleFuncContainer<NativeArray<byte>, longword>>#1
+|	|				CommandQueueHostQuickFunc<NativeArray<byte>, SimpleFunc0Container<NativeArray<byte>>>#2: function lambda: NativeArray<byte>
 |	|				function lambda(a: NativeArray<byte>): longword
-|	|			function lambda(item_count: longword): System.UIntPtr
+|	|			function lambda(item_count: longword): UIntPtr
 |	|	CLKernelArgLocalBytes
-|	|		ConstQueue<System.UIntPtr>#0: 4
+|	|		ConstQueue<UIntPtr>#0: 4
 |	|	CLKernelArgLocalBytes
-|	|		CommandQueueThenQuickConvert<integer,System.UIntPtr,SimpleFuncContainer<integer,System.UIntPtr>>#0
-|	|			CommandQueueThenQuickConvert<CLArray<byte>,integer,SimpleFuncContainer<CLArray<byte>,integer>>#1
-|	|				CommandQueueHostQuickFunc<CLArray<byte>,SimpleFunc0Container<CLArray<byte>>>#2: function lambda: CLArray<byte>
+|	|		CommandQueueThenQuickConvert<integer, UIntPtr, SimpleFuncContainer<integer, UIntPtr>>#0
+|	|			CommandQueueThenQuickConvert<CLArray<byte>, integer, SimpleFuncContainer<CLArray<byte>, integer>>#1
+|	|				CommandQueueHostQuickFunc<CLArray<byte>, SimpleFunc0Container<CLArray<byte>>>#2: function lambda: CLArray<byte>
 |	|				function lambda(a: CLArray<byte>): integer
-|	|			function lambda(item_count: integer): System.UIntPtr
+|	|			function lambda(item_count: integer): UIntPtr
 Private
 |	Managed
 |	|	Array
@@ -206,26 +206,26 @@ Private
 |	|	|		ParameterQueue<array of byte>#0["a"]: Default=[1,2,3,4]
 |	|	Array2
 |	|	|	CLKernelArgPrivateArray2<byte>
-|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]]
+|	|	|		ConstQueue<array[,] of byte>#0: [[1,2,3],[4,5,6]]
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array of byte>#0: array [,] of byte{ [[1,2,3],[4,5,6]] }
+|	|	|		ConstQueue<array of byte>#0: array[,] of byte{ [[1,2,3],[4,5,6]] }
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]]
+|	|	|		ConstQueue<array[,] of byte>#0: [[1,2,3],[4,5,6]]
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]]
+|	|	|		ConstQueue<array[,] of byte>#0: [[1,2,3],[4,5,6]]
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ParameterQueue<array [,] of byte>#0["a2"]: Default=[[1,2,3],[4,5,6]]
+|	|	|		ParameterQueue<array[,] of byte>#0["a2"]: Default=[[1,2,3],[4,5,6]]
 |	|	Array3
 |	|	|	CLKernelArgPrivateArray3<byte>
-|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|		ConstQueue<array[,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array of byte>#0: array [,,] of byte{ [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]] }
+|	|	|		ConstQueue<array of byte>#0: array[,,] of byte{ [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]] }
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|		ConstQueue<array[,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|		ConstQueue<array[,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ParameterQueue<array [,,] of byte>#0["a3"]: Default=[[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|		ParameterQueue<array[,,] of byte>#0["a3"]: Default=[[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
 |	|	ArraySegment
 |	|	|	CLKernelArgPrivateArraySegment<byte>
 |	|	|		ConstQueue<ArraySegment<byte>>#0: [2,3]
@@ -296,15 +296,15 @@ Private
 |	|	|		ParameterQueue<NativeValue<byte>>#0["ntv_val"]: Default=NativeValue<byte>{ 123 }
 |	|	NativeArray
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ParameterQueue<NativeArray<byte>>#0["ntv_arr"]: Default=[1,2,3,4]
+|	|	|		ParameterQueue<NativeArray<byte>>#0["ntv_arr"]: Default=NativeArray<byte>{ 1, 2, 3, 4 }
 |	Value
 |	|	CLKernelArgPrivateValue<integer>
 |	|		ConstQueue<integer>#0: 1
@@ -331,26 +331,26 @@ Generic
 |	|	|		ParameterQueue<array of byte>#0["a"]: Default=[1,2,3,4]
 |	|	Array2
 |	|	|	CLKernelArgPrivateArray2<byte>
-|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]]
+|	|	|		ConstQueue<array[,] of byte>#0: [[1,2,3],[4,5,6]]
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array of byte>#0: array [,] of byte{ [[1,2,3],[4,5,6]] }
+|	|	|		ConstQueue<array of byte>#0: array[,] of byte{ [[1,2,3],[4,5,6]] }
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]]
+|	|	|		ConstQueue<array[,] of byte>#0: [[1,2,3],[4,5,6]]
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array [,] of byte>#0: [[1,2,3],[4,5,6]]
+|	|	|		ConstQueue<array[,] of byte>#0: [[1,2,3],[4,5,6]]
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ParameterQueue<array [,] of byte>#0["a2"]: Default=[[1,2,3],[4,5,6]]
+|	|	|		ParameterQueue<array[,] of byte>#0["a2"]: Default=[[1,2,3],[4,5,6]]
 |	|	Array3
 |	|	|	CLKernelArgPrivateArray3<byte>
-|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|		ConstQueue<array[,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array of byte>#0: array [,,] of byte{ [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]] }
+|	|	|		ConstQueue<array of byte>#0: array[,,] of byte{ [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]] }
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|		ConstQueue<array[,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ConstQueue<array [,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|		ConstQueue<array[,,] of byte>#0: [[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
 |	|	|	CLKernelArgPrivateArray<byte>
-|	|	|		ParameterQueue<array [,,] of byte>#0["a3"]: Default=[[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
+|	|	|		ParameterQueue<array[,,] of byte>#0["a3"]: Default=[[[1,2,3,4],[5,6,7,8],[9,0,1,2]],[[3,4,5,6],[7,8,9,0],[1,2,3,4]]]
 |	|	ArraySegment
 |	|	|	CLKernelArgPrivateArraySegment<byte>
 |	|	|		ConstQueue<ArraySegment<byte>>#0: [2,3]
@@ -421,15 +421,15 @@ Generic
 |	|	|		ParameterQueue<NativeValue<byte>>#0["ntv_val"]: Default=NativeValue<byte>{ 123 }
 |	|	NativeArray
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: [1,2,3,4]
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ParameterQueue<NativeArray<byte>>#0["ntv_arr"]: Default=[1,2,3,4]
+|	|	|		ParameterQueue<NativeArray<byte>>#0["ntv_arr"]: Default=NativeArray<byte>{ 1, 2, 3, 4 }
 |	CL
 |	|	CLMemory
 |	|	|	CLKernelArgGlobalCLMemory
