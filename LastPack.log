@@ -585,6 +585,8 @@ Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/2#CLValue/1.pa
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/3#CLArray/1.pas"
 Tester: Compiling: OK
+Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/4#Native/1.pas"
+Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/05#CLKernel/1.pas"
 Tester: Compiling: OK
 Tester: Compiling "Tests/Exec/CLABC/03#ToString/13#Wrap/06#CLCode/1.pas"
@@ -806,6 +808,8 @@ Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/2#CLValue/
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/3#CLArray/1]
 Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/4#Native/1]
+Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/05#CLKernel/1]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/06#CLCode/1]
@@ -1016,6 +1020,8 @@ Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/2#CLValue/1]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/3#CLArray/1]
+Tester: Done executing
+Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/04#Memory/4#Native/1]
 Tester: Done executing
 Tester: Executing Test[Tests/Exec/CLABC/03#ToString/13#Wrap/05#CLKernel/1]
 Tester: Done executing

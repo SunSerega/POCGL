@@ -832,8 +832,36 @@ type
     
     {$endregion IDisposable}
     
-    public function ToString: string; override :=
-      $'{TypeName(self)}:${Area.ptr.ToString(''X'')}[{Area.sz}]';
+    public function ToString: string; override;
+      const max_bytes = 100;
+    begin
+      var sb := new StringBuilder;
+      TypeName(self, sb);
+      sb += ':$';
+      sb += Area.ptr.ToString('X');
+      sb += '[';
+      sb += Area.sz.ToString;
+      sb += ']{';
+      var sz := Area.sz.ToUInt64;
+      if sz<>0 then
+      begin
+        sb += ' ';
+        var is_clamped := sz>max_bytes;
+        if is_clamped then sz := max_bytes-1;
+        for var i := 0 to sz-1 do
+        begin
+          sb += '$';
+          sb += PByte(pointer(Area.ptr+i))^.ToString('X2');
+          sb += ', ';
+        end;
+        if is_clamped then
+          sb += '…' else
+          sb.Length -= ', '.Length;
+        sb += ' ';
+      end;
+      sb += '}';
+      Result := sb.ToString;
+    end;
     
   end;
   
@@ -873,8 +901,15 @@ type
     
     {$endregion IDisposable}
     
-    public function ToString: string; override :=
-      $'{TypeName(self)}{{ {_ObjectToString(Value)} }}';
+    public function ToString: string; override;
+    begin
+      var sb := new StringBuilder;
+      TypeName(self, sb);
+      sb += '{ ';
+      _ObjectToString(Value, sb);
+      sb += ' }';
+      Result := sb.ToString;
+    end;
     
   end;
   
@@ -1017,19 +1052,27 @@ type
     {$endregion IDisposable}
     
     public function ToString: string; override;
+      const max_items = 30;
     begin
       var sb := new StringBuilder;
-      sb += TypeName(self);
-      sb += '{';
-      if self.Length<>0 then
+      TypeName(self, sb);
+      sb += '[';
+      sb += Length.ToString;
+      sb += ']{';
+      var len := self.Length;
+      if len<>0 then
       begin
         sb += ' ';
-        foreach var x in self do
+        var is_clamped := len>max_items;
+        if is_clamped then len := max_items-1;
+        for var i := 0 to len-1 do
         begin
-          sb += _ObjectToString(x);
+          _ObjectToString(self[i], sb);
           sb += ', ';
         end;
-        sb.Length -= ', '.Length;
+        if is_clamped then
+          sb += '…' else
+          sb.Length -= ', '.Length;
         sb += ' ';
       end;
       sb += '}';
@@ -2970,17 +3013,18 @@ type
       var rt := GetValueRuntimeType(val);
       if typeof(T) <> rt then
       begin
-        if rt<>nil then sb.Append(TypeToTypeName(rt));
+        if rt<>nil then
+          TypeToTypeName(rt, sb);
         sb += '{ ';
       end;
-      sb += _ObjectToString(val);
+      _ObjectToString(val, sb);
       if typeof(T) <> rt then
         sb += ' }';
     end;
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
-      sb += TypeName(self);
+      TypeName(self, sb);
       
       var ind: integer;
       Result := not index.TryGetValue(self, ind);
@@ -2993,55 +3037,6 @@ type
       
       sb += '#';
       sb.Append(ind);
-      
-    end;
-    private static procedure ToStringWriteDelegate(sb: StringBuilder; d: System.Delegate);
-      const lambda='lambda';
-      const sugar_begin='<>';
-      const par_separator='; ';
-    begin
-      if d.Target<>nil then
-      begin
-        sb += _ObjectToString(d.Target);
-        sb += ' => ';
-      end;
-      var mi := d.Method;
-      var rt := mi.ReturnType;
-      if rt=typeof(Void) then rt := nil;
-      
-      sb += if rt=nil then 'procedure' else 'function';
-      sb += ' ';
-      begin
-        var name := mi.Name;
-        if name.StartsWith(sugar_begin) then
-          name := if lambda in name then
-            lambda else name.Substring(sugar_begin.Length);
-        sb += name;
-      end;
-      
-      var pars := mi.GetParameters;
-      if pars.Length<>0 then
-      begin
-        sb += '(';
-        foreach var par in pars do
-        begin
-          var name := par.Name;
-          if name.StartsWith(sugar_begin) then
-            name := name.Substring(sugar_begin.Length);
-          sb += name;
-          sb += ': ';
-          sb += TypeToTypeName(par.ParameterType);
-          sb += par_separator;
-        end;
-        sb.Length -= par_separator.Length;
-        sb += ')';
-      end;
-      
-      if rt<>nil then
-      begin
-        sb += ': ';
-        sb += TypeToTypeName(rt);
-      end;
       
     end;
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
@@ -3401,7 +3396,7 @@ type
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
-      sb += TypeName(self);
+      TypeName(self, sb);
       
       var ind: integer;
       Result := not index.TryGetValue(self, ind);
@@ -3672,7 +3667,7 @@ type
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
     begin
       if write_tabs then sb.Append(#9, tabs);
-      sb += TypeName(self);
+      TypeName(self, sb);
       
       ToStringImpl(sb, tabs+1, index, delayed);
       
@@ -4025,7 +4020,7 @@ type
     public procedure Invoke(c: CLContext) := d();
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleProc0ContainerC = record(ISimpleProc0Container)
@@ -4039,7 +4034,7 @@ type
     public procedure Invoke(c: CLContext) := d(c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -4064,7 +4059,7 @@ type
     public function Invoke(c: CLContext) := d();
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(Delegate(d), sb);
     
   end;
   SimpleFunc0ContainerC<T> = record(ISimpleFunc0Container<T>)
@@ -4078,7 +4073,7 @@ type
     public function Invoke(c: CLContext) := d(c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -4107,7 +4102,7 @@ type
     public procedure Invoke(inp: TInp; c: CLContext) := d(inp);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleProcContainerC<TInp> = record(ISimpleProcContainer<TInp>)
@@ -4121,7 +4116,7 @@ type
     public procedure Invoke(inp: TInp; c: CLContext) := d(inp, c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -4146,7 +4141,7 @@ type
     public function Invoke(inp: TInp; c: CLContext) := d(inp);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleFuncContainerC<TInp,TRes> = record(ISimpleFuncContainer<TInp,TRes>)
@@ -4160,7 +4155,7 @@ type
     public function Invoke(inp: TInp; c: CLContext) := d(inp, c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -4840,7 +4835,7 @@ type
         eh_debug_otp.Write(' = ');
       end;
       
-      eh_debug_otp.Write(TypeName(self));
+      TypeName(self, eh_debug_otp);
       eh_debug_otp.Write('#');
       eh_debug_otp.Write(ind);
       eh_debug_otp.Write(': ');
@@ -5673,7 +5668,7 @@ type
       sb += 'Actions were not called:'#10;
       for var i := 0 to count-1 do
       begin
-        CommandQueueBase.ToStringWriteDelegate(sb, call_list[i]);
+        _ObjectToString(call_list[i], sb);
         sb += #10;
       end;
       
@@ -9202,7 +9197,7 @@ type
       try_do.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, handler);
+      _ObjectToString(handler, sb);
       sb += #10;
       
     end;
@@ -9319,7 +9314,7 @@ type
       try_do.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, handler);
+      _ObjectToString(handler, sb);
       sb += #10;
       
     end;
@@ -9435,7 +9430,7 @@ type
       try_do.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, handler);
+      _ObjectToString(handler, sb);
       sb += #10;
       
     end;
@@ -9463,14 +9458,12 @@ type
     
     protected function Invoke(dep_ok: boolean; inp: CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
     
-    protected static procedure ToStringWriteDelegate(sb: StringBuilder; d: System.Delegate) := CommandQueueBase.ToStringWriteDelegate(sb,d);
-    
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb.Append(#9, tabs);
-      sb += TypeName(self);
+      TypeName(self, sb);
       self.ToStringImpl(sb, tabs+1, index, delayed);
     end;
     

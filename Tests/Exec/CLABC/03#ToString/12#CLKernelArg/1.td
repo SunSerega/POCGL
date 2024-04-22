@@ -274,15 +274,15 @@ Private
 |	Native
 |	|	NativeMemory
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ParameterQueue<NativeMemory>#0["ntv_mem"]: Default=NativeMemory:$*[2]
+|	|	|		ParameterQueue<NativeMemory>#0["ntv_mem"]: Default=NativeMemory:$*[2]{ $00, $00 }
 |	|	NativeValue
 |	|	|	CLKernelArgPrivateNativeValue<byte>
 |	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 123 }
@@ -296,15 +296,15 @@ Private
 |	|	|		ParameterQueue<NativeValue<byte>>#0["ntv_val"]: Default=NativeValue<byte>{ 123 }
 |	|	NativeArray
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>[4]{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>[4]{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>[4]{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>[4]{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ParameterQueue<NativeArray<byte>>#0["ntv_arr"]: Default=NativeArray<byte>{ 1, 2, 3, 4 }
+|	|	|		ParameterQueue<NativeArray<byte>>#0["ntv_arr"]: Default=NativeArray<byte>[4]{ 1, 2, 3, 4 }
 |	Value
 |	|	CLKernelArgPrivateValue<integer>
 |	|		ConstQueue<integer>#0: 1
@@ -399,15 +399,15 @@ Generic
 |	Native
 |	|	NativeMemory
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ParameterQueue<NativeMemory>#0["ntv_mem"]: Default=NativeMemory:$*[2]
+|	|	|		ParameterQueue<NativeMemory>#0["ntv_mem"]: Default=NativeMemory:$*[2]{ $00, $00 }
 |	|	NativeValue
 |	|	|	CLKernelArgPrivateNativeValue<byte>
 |	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 123 }
@@ -421,15 +421,15 @@ Generic
 |	|	|		ParameterQueue<NativeValue<byte>>#0["ntv_val"]: Default=NativeValue<byte>{ 123 }
 |	|	NativeArray
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>[4]{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>[4]{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>[4]{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>{ 1, 2, 3, 4 }
+|	|	|		ConstQueue<NativeArray<byte>>#0: NativeArray<byte>[4]{ 1, 2, 3, 4 }
 |	|	|	CLKernelArgPrivateNativeArray<byte>
-|	|	|		ParameterQueue<NativeArray<byte>>#0["ntv_arr"]: Default=NativeArray<byte>{ 1, 2, 3, 4 }
+|	|	|		ParameterQueue<NativeArray<byte>>#0["ntv_arr"]: Default=NativeArray<byte>[4]{ 1, 2, 3, 4 }
 |	CL
 |	|	CLMemory
 |	|	|	CLKernelArgGlobalCLMemory

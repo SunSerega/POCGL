@@ -303,7 +303,7 @@ type
           wr += '    '#10;
           
           wr += '    public procedure ToStringB(sb: StringBuilder) :='#10;
-          wr += '      CommandQueueBase.ToStringWriteDelegate(sb, d);'#10;
+          wr += '      _ObjectToString(d, sb);'#10;
           wr += '    '#10;
           
           wr += '  end;'#10;

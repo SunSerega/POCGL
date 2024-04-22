@@ -44,6 +44,7 @@ var cl_val := new CLValue<T>(123);
 var cl_arr := new CLArray<T>(4);
 
 begin
+  ntv_mem.Area.FillZero;
   
   {$include All}
   

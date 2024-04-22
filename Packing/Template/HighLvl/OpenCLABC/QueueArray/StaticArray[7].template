@@ -155,7 +155,7 @@
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes> = record(ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>)
@@ -169,7 +169,7 @@
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -217,7 +217,7 @@
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7> = record(ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>)
@@ -231,7 +231,7 @@
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   

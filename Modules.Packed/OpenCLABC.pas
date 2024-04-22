@@ -909,8 +909,36 @@ type
     
     {$endregion IDisposable}
     
-    public function ToString: string; override :=
-      $'{TypeName(self)}:${Area.ptr.ToString(''X'')}[{Area.sz}]';
+    public function ToString: string; override;
+      const max_bytes = 100;
+    begin
+      var sb := new StringBuilder;
+      TypeName(self, sb);
+      sb += ':$';
+      sb += Area.ptr.ToString('X');
+      sb += '[';
+      sb += Area.sz.ToString;
+      sb += ']{';
+      var sz := Area.sz.ToUInt64;
+      if sz<>0 then
+      begin
+        sb += ' ';
+        var is_clamped := sz>max_bytes;
+        if is_clamped then sz := max_bytes-1;
+        for var i := 0 to sz-1 do
+        begin
+          sb += '$';
+          sb += PByte(pointer(Area.ptr+i))^.ToString('X2');
+          sb += ', ';
+        end;
+        if is_clamped then
+          sb += '…' else
+          sb.Length -= ', '.Length;
+        sb += ' ';
+      end;
+      sb += '}';
+      Result := sb.ToString;
+    end;
     
   end;
   
@@ -962,8 +990,15 @@ type
     {$endregion IDisposable}
     
     ///Возвращает строку с основными данными о данном объекте
-    public function ToString: string; override :=
-      $'{TypeName(self)}{{ {_ObjectToString(Value)} }}';
+    public function ToString: string; override;
+    begin
+      var sb := new StringBuilder;
+      TypeName(self, sb);
+      sb += '{ ';
+      _ObjectToString(Value, sb);
+      sb += ' }';
+      Result := sb.ToString;
+    end;
     
   end;
   
@@ -1136,19 +1171,27 @@ type
     
     ///Возвращает строку с основными данными о данном объекте
     public function ToString: string; override;
+      const max_items = 30;
     begin
       var sb := new StringBuilder;
-      sb += TypeName(self);
-      sb += '{';
-      if self.Length<>0 then
+      TypeName(self, sb);
+      sb += '[';
+      sb += Length.ToString;
+      sb += ']{';
+      var len := self.Length;
+      if len<>0 then
       begin
         sb += ' ';
-        foreach var x in self do
+        var is_clamped := len>max_items;
+        if is_clamped then len := max_items-1;
+        for var i := 0 to len-1 do
         begin
-          sb += _ObjectToString(x);
+          _ObjectToString(self[i], sb);
           sb += ', ';
         end;
-        sb.Length -= ', '.Length;
+        if is_clamped then
+          sb += '…' else
+          sb.Length -= ', '.Length;
         sb += ' ';
       end;
       sb += '}';
@@ -6035,17 +6078,18 @@ type
       var rt := GetValueRuntimeType(val);
       if typeof(T) <> rt then
       begin
-        if rt<>nil then sb.Append(TypeToTypeName(rt));
+        if rt<>nil then
+          TypeToTypeName(rt, sb);
         sb += '{ ';
       end;
-      sb += _ObjectToString(val);
+      _ObjectToString(val, sb);
       if typeof(T) <> rt then
         sb += ' }';
     end;
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
-      sb += TypeName(self);
+      TypeName(self, sb);
       
       var ind: integer;
       Result := not index.TryGetValue(self, ind);
@@ -6058,55 +6102,6 @@ type
       
       sb += '#';
       sb.Append(ind);
-      
-    end;
-    private static procedure ToStringWriteDelegate(sb: StringBuilder; d: System.Delegate);
-      const lambda='lambda';
-      const sugar_begin='<>';
-      const par_separator='; ';
-    begin
-      if d.Target<>nil then
-      begin
-        sb += _ObjectToString(d.Target);
-        sb += ' => ';
-      end;
-      var mi := d.Method;
-      var rt := mi.ReturnType;
-      if rt=typeof(Void) then rt := nil;
-      
-      sb += if rt=nil then 'procedure' else 'function';
-      sb += ' ';
-      begin
-        var name := mi.Name;
-        if name.StartsWith(sugar_begin) then
-          name := if lambda in name then
-            lambda else name.Substring(sugar_begin.Length);
-        sb += name;
-      end;
-      
-      var pars := mi.GetParameters;
-      if pars.Length<>0 then
-      begin
-        sb += '(';
-        foreach var par in pars do
-        begin
-          var name := par.Name;
-          if name.StartsWith(sugar_begin) then
-            name := name.Substring(sugar_begin.Length);
-          sb += name;
-          sb += ': ';
-          sb += TypeToTypeName(par.ParameterType);
-          sb += par_separator;
-        end;
-        sb.Length -= par_separator.Length;
-        sb += ')';
-      end;
-      
-      if rt<>nil then
-      begin
-        sb += ': ';
-        sb += TypeToTypeName(rt);
-      end;
       
     end;
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
@@ -6577,7 +6572,7 @@ type
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
-      sb += TypeName(self);
+      TypeName(self, sb);
       
       var ind: integer;
       Result := not index.TryGetValue(self, ind);
@@ -8456,7 +8451,7 @@ type
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
     begin
       if write_tabs then sb.Append(#9, tabs);
-      sb += TypeName(self);
+      TypeName(self, sb);
       
       ToStringImpl(sb, tabs+1, index, delayed);
       
@@ -8965,7 +8960,7 @@ type
     public procedure Invoke(c: CLContext) := d();
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleProc0ContainerC = record(ISimpleProc0Container)
@@ -8979,7 +8974,7 @@ type
     public procedure Invoke(c: CLContext) := d(c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -9004,7 +8999,7 @@ type
     public function Invoke(c: CLContext) := d();
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(Delegate(d), sb);
     
   end;
   SimpleFunc0ContainerC<T> = record(ISimpleFunc0Container<T>)
@@ -9018,7 +9013,7 @@ type
     public function Invoke(c: CLContext) := d(c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -9047,7 +9042,7 @@ type
     public procedure Invoke(inp: TInp; c: CLContext) := d(inp);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleProcContainerC<TInp> = record(ISimpleProcContainer<TInp>)
@@ -9061,7 +9056,7 @@ type
     public procedure Invoke(inp: TInp; c: CLContext) := d(inp, c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -9086,7 +9081,7 @@ type
     public function Invoke(inp: TInp; c: CLContext) := d(inp);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleFuncContainerC<TInp,TRes> = record(ISimpleFuncContainer<TInp,TRes>)
@@ -9100,7 +9095,7 @@ type
     public function Invoke(inp: TInp; c: CLContext) := d(inp, c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -9780,7 +9775,7 @@ type
         eh_debug_otp.Write(' = ');
       end;
       
-      eh_debug_otp.Write(TypeName(self));
+      TypeName(self, eh_debug_otp);
       eh_debug_otp.Write('#');
       eh_debug_otp.Write(ind);
       eh_debug_otp.Write(': ');
@@ -10613,7 +10608,7 @@ type
       sb += 'Actions were not called:'#10;
       for var i := 0 to count-1 do
       begin
-        CommandQueueBase.ToStringWriteDelegate(sb, call_list[i]);
+        _ObjectToString(call_list[i], sb);
         sb += #10;
       end;
       
@@ -12462,7 +12457,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleFunc2ContainerC<TInp1,TInp2,TRes> = record(ISimpleFunc2Container<TInp1,TInp2,TRes>)
@@ -12476,7 +12471,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -12524,7 +12519,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleProc2ContainerC<TInp1,TInp2> = record(ISimpleProc2Container<TInp1,TInp2>)
@@ -12538,7 +12533,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -12886,7 +12881,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes> = record(ISimpleFunc3Container<TInp1,TInp2,TInp3,TRes>)
@@ -12900,7 +12895,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -12948,7 +12943,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleProc3ContainerC<TInp1,TInp2,TInp3> = record(ISimpleProc3Container<TInp1,TInp2,TInp3>)
@@ -12962,7 +12957,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -13327,7 +13322,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes> = record(ISimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>)
@@ -13341,7 +13336,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -13389,7 +13384,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4> = record(ISimpleProc4Container<TInp1,TInp2,TInp3,TInp4>)
@@ -13403,7 +13398,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -13785,7 +13780,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes> = record(ISimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>)
@@ -13799,7 +13794,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -13847,7 +13842,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5> = record(ISimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>)
@@ -13861,7 +13856,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -14260,7 +14255,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes> = record(ISimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>)
@@ -14274,7 +14269,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -14322,7 +14317,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6> = record(ISimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>)
@@ -14336,7 +14331,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -14752,7 +14747,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes> = record(ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>)
@@ -14766,7 +14761,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -14814,7 +14809,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7> = record(ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>)
@@ -14828,7 +14823,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      CommandQueueBase.ToStringWriteDelegate(sb, d);
+      _ObjectToString(d, sb);
     
   end;
   
@@ -16885,7 +16880,7 @@ type
       try_do.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, handler);
+      _ObjectToString(handler, sb);
       sb += #10;
       
     end;
@@ -17002,7 +16997,7 @@ type
       try_do.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, handler);
+      _ObjectToString(handler, sb);
       sb += #10;
       
     end;
@@ -17118,7 +17113,7 @@ type
       try_do.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      ToStringWriteDelegate(sb, handler);
+      _ObjectToString(handler, sb);
       sb += #10;
       
     end;
@@ -17146,14 +17141,12 @@ type
     
     protected function Invoke(dep_ok: boolean; inp: CommandQueue<T>; g: CLTaskGlobalData; l: CLTaskLocalData): QueueResNil; abstract;
     
-    protected static procedure ToStringWriteDelegate(sb: StringBuilder; d: System.Delegate) := CommandQueueBase.ToStringWriteDelegate(sb,d);
-    
     private procedure ToStringImpl(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>); abstract;
     
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb.Append(#9, tabs);
-      sb += TypeName(self);
+      TypeName(self, sb);
       self.ToStringImpl(sb, tabs+1, index, delayed);
     end;
     

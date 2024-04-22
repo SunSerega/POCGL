@@ -53,10 +53,11 @@
 		- 01#CLPlatform
 		- 02#CLDevice
 		- 03#CLContext
-		- 04#CLMemory
+		- 04#Memory
 			- 1#CLMemory
 			- 2#CLValue
 			- 3#CLArray
+			- 4#Native
 		- 05#CLKernel
 		- 06#CLCode
 
