@@ -157,9 +157,9 @@ jobs:
                     echo "Old changes branch not found"
                 fi
                 
-                if git diff --name-only ":!LastPack.log" || git ls-files --others --exclude-standard; then
+                if [[ $(git diff --name-only ":!LastPack.log") || $(git ls-files --others --exclude-standard) ]]; then
                     echo "Changes detected"
-                    workflow_fail=$(git diff --name-only ":!LastPack.log" ":!Log/PullUpstream.log" ":!DataScraping/Reps" || git ls-files --others --exclude-standard)
+                    workflow_fail=$(git diff --name-only ":!LastPack.log" ":!Log/PullUpstream.log" ":!DataScraping/Reps") || $(git ls-files --others --exclude-standard)
                     
                     git checkout -B "ubuntu-pack-changes/$(git rev-parse --abbrev-ref HEAD)"
                     
