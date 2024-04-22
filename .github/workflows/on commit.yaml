@@ -72,17 +72,21 @@ jobs:
                     Write-Host "Old changes branch not found"
                 }
                 
-                if ((git diff --name-only | Where-Object { $_ -ne 'LastPack.log' }) -or (git ls-files --others --exclude-standard)) {
+                if ((git diff --name-only ":!LastPack.log") -or (git ls-files --others --exclude-standard)) {
                     Write-Host "Changes detected"
+                    $workflow_fail = (git diff --name-only ":!LastPack.log" ":!Log/PullUpstream.log" ":!DataScraping/Reps") -or (git ls-files --others --exclude-standard)
+                    
                     git checkout -B "win-pack-changes/$(git rev-parse --abbrev-ref HEAD)"
                     
                     git add -A
                     git commit -m "win changes"
                     git push -f --set-upstream origin "$(git rev-parse --abbrev-ref HEAD)"
                     
-                    if ((git diff --name-only ":!LastPack.log" ":!Log/PullUpstream.log" ":!DataScraping/Reps/OpenCL-Docs") -or (git ls-files --others --exclude-standard)) {
+                    if ($workflow_fail) {
+                        Write-Host "Changes are not upstream-only, failing the workflow"
                         exit 1
                     }
+                    
                 } else {
                     Write-Host "No changes detected"
                 }
@@ -153,17 +157,21 @@ jobs:
                     echo "Old changes branch not found"
                 fi
                 
-                if [[ $(git diff --name-only | grep -v 'LastPack.log') || $(git ls-files --others --exclude-standard) ]]; then
+                if git diff --name-only ":!LastPack.log" || git ls-files --others --exclude-standard; then
                     echo "Changes detected"
+                    workflow_fail=$(git diff --name-only ":!LastPack.log" ":!Log/PullUpstream.log" ":!DataScraping/Reps" || git ls-files --others --exclude-standard)
+                    
                     git checkout -B "ubuntu-pack-changes/$(git rev-parse --abbrev-ref HEAD)"
                     
                     git add -A
                     git commit -m "ubuntu changes"
                     git push -f --set-upstream origin "$(git rev-parse --abbrev-ref HEAD)"
                     
-                    if [[ $(git diff --name-only ":!LastPack.log" ":!Log/PullUpstream.log" ":!DataScraping/Reps/OpenCL-Docs") || $(git ls-files --others --exclude-standard) ]]; then
+                    if [ "$workflow_fail" ]; then
+                        echo "Changes are not upstream-only, failing the workflow"
                         exit 1
                     fi
+                    
                 else
                     echo "No changes detected"
                 fi
