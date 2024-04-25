@@ -2,7 +2,7 @@
 
 
 /* ============================== *\
-		        misc
+|               misc               |
 \* ============================== */
 
 const selected_name_color = "#eaeaea";
@@ -15,7 +15,7 @@ const get_style = (el)=>el.currentStyle || window.getComputedStyle(el);
 var spl_resize_event = [];
 
 /* ============================== *\
-		     page load
+|            page load             |
 \* ============================== */
 
 var root_folder = null;
@@ -235,7 +235,7 @@ const on_end_folder = ()=>{
 }
 
 /* ============================== *\
-	        page display
+|           page display           |
 \* ============================== */
 
 var selected_page = null;
@@ -621,7 +621,7 @@ const fix_element = (page)=>{
 }
 
 /* ============================== *\
-		        init
+|               init               |
 \* ============================== */
 
 {
