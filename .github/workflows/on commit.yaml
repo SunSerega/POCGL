@@ -78,11 +78,11 @@ jobs:
               run: |
               
                 # https://www.intel.com/content/www/us/en/developer/articles/technical/intel-cpu-runtime-for-opencl-applications-with-sycl-support.html
-                Invoke-WebRequest -Uri 'https://registrationcenter-download.intel.com/akdlm/IRC_NAS/f8f09106-6d86-41b5-83c8-02892bbb7f29/w_opencl_runtime_p_2023.1.0.46319.exe' -OutFile 'D:\igfx.exe'
+                Invoke-WebRequest -Uri 'https://registrationcenter-download.intel.com/akdlm/IRC_NAS/0e6849e6-2c56-480b-afcf-be8331d5c4f6-opencl/w_opencl_runtime_p_2024.1.0.968.exe' -OutFile 'D:\igfx.exe'
                 
                 7z x "D:\igfx.exe" -o"D:\igfx" -y
                 
-                D:\igfx\w_opencl_runtime_p_2023.1.0.46319.msi /quiet
+                D:\igfx\w_opencl_runtime_p_2024.1.0.968.msi /quiet
                 
             - name: Download and unpack Pascal compiler
               run: |
