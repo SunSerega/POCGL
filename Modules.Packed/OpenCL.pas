@@ -3344,14 +3344,10 @@ type
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_FD:         clExternalMemoryHandleType read new clExternalMemoryHandleType($2060);
-    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32:      clExternalMemoryHandleType read new clExternalMemoryHandleType($2061);
-    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32_KMT:  clExternalMemoryHandleType read new clExternalMemoryHandleType($2062);
-    public static property EXTERNAL_MEMORY_HANDLE_D3D11_TEXTURE:     clExternalMemoryHandleType read new clExternalMemoryHandleType($2063);
-    public static property EXTERNAL_MEMORY_HANDLE_D3D11_TEXTURE_KMT: clExternalMemoryHandleType read new clExternalMemoryHandleType($2064);
-    public static property EXTERNAL_MEMORY_HANDLE_D3D12_HEAP:        clExternalMemoryHandleType read new clExternalMemoryHandleType($2065);
-    public static property EXTERNAL_MEMORY_HANDLE_D3D12_RESOURCE:    clExternalMemoryHandleType read new clExternalMemoryHandleType($2066);
-    public static property EXTERNAL_MEMORY_HANDLE_DMA_BUF:           clExternalMemoryHandleType read new clExternalMemoryHandleType($2067);
+    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_FD:        clExternalMemoryHandleType read new clExternalMemoryHandleType($2060);
+    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32:     clExternalMemoryHandleType read new clExternalMemoryHandleType($2061);
+    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32_KMT: clExternalMemoryHandleType read new clExternalMemoryHandleType($2062);
+    public static property EXTERNAL_MEMORY_HANDLE_DMA_BUF:          clExternalMemoryHandleType read new clExternalMemoryHandleType($2067);
     
     public function ToString: string; override;
     begin
@@ -3361,14 +3357,6 @@ type
         Result := 'EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32' else
       if EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32_KMT = self then
         Result := 'EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32_KMT' else
-      if EXTERNAL_MEMORY_HANDLE_D3D11_TEXTURE = self then
-        Result := 'EXTERNAL_MEMORY_HANDLE_D3D11_TEXTURE' else
-      if EXTERNAL_MEMORY_HANDLE_D3D11_TEXTURE_KMT = self then
-        Result := 'EXTERNAL_MEMORY_HANDLE_D3D11_TEXTURE_KMT' else
-      if EXTERNAL_MEMORY_HANDLE_D3D12_HEAP = self then
-        Result := 'EXTERNAL_MEMORY_HANDLE_D3D12_HEAP' else
-      if EXTERNAL_MEMORY_HANDLE_D3D12_RESOURCE = self then
-        Result := 'EXTERNAL_MEMORY_HANDLE_D3D12_RESOURCE' else
       if EXTERNAL_MEMORY_HANDLE_DMA_BUF = self then
         Result := 'EXTERNAL_MEMORY_HANDLE_DMA_BUF' else
         Result := $'clExternalMemoryHandleType[{self.val}]';
@@ -3385,7 +3373,6 @@ type
     public static property SEMAPHORE_HANDLE_OPAQUE_WIN32:     clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2056);
     public static property SEMAPHORE_HANDLE_OPAQUE_WIN32_KMT: clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2057);
     public static property SEMAPHORE_HANDLE_SYNC_FD:          clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2058);
-    public static property SEMAPHORE_HANDLE_D3D12_FENCE:      clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2059);
     
     public function ToString: string; override;
     begin
@@ -3397,8 +3384,6 @@ type
         Result := 'SEMAPHORE_HANDLE_OPAQUE_WIN32_KMT' else
       if SEMAPHORE_HANDLE_SYNC_FD = self then
         Result := 'SEMAPHORE_HANDLE_SYNC_FD' else
-      if SEMAPHORE_HANDLE_D3D12_FENCE = self then
-        Result := 'SEMAPHORE_HANDLE_D3D12_FENCE' else
         Result := $'clExternalSemaphoreHandleType[{self.val}]';
     end;
     
@@ -18513,15 +18498,6 @@ type
     public const ExtensionString = 'cl_khr_external_memory_dma_buf';
   end;
   
-  /// id: cl_khr_external_memory_dx
-  /// version: 0.9.3 (provisional)
-  /// core dependency: cl 3.0
-  /// ext dependencies:
-  /// - cl_khr_external_memory (clExternalMemoryKHR)
-  clExternalMemoryDxKHR = static class
-    public const ExtensionString = 'cl_khr_external_memory_dx';
-  end;
-  
   /// id: cl_khr_external_memory_opaque_fd
   /// version: 0.9.3
   /// core dependency: cl 3.0
@@ -19051,16 +19027,6 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSemaphoreHandleForTypeKHR(sema_object: cl_semaphore; device: cl_device_id; handle_type: clExternalSemaphoreHandleType; handle_size: UIntPtr; handle_ptr: IntPtr; handle_size_ret: IntPtr): clErrorCode :=
       ntv_GetSemaphoreHandleForTypeKHR_2(sema_object, device, handle_type, handle_size, handle_ptr, handle_size_ret);
     
-  end;
-  
-  /// id: cl_khr_external_semaphore_dx_fence
-  /// version: 0.9.0 (provisional)
-  /// core dependency: cl 1.2
-  /// ext dependencies:
-  /// - cl_khr_external_semaphore (clExternalSemaphoreKHR)
-  /// - cl_khr_semaphore (clSemaphoreKHR)
-  clExternalSemaphoreDxFenceKHR = static class
-    public const ExtensionString = 'cl_khr_external_semaphore_dx_fence';
   end;
   
   /// id: cl_khr_external_semaphore_opaque_fd

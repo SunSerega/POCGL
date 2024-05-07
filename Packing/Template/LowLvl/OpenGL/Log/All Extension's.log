@@ -12351,6 +12351,10 @@
 # gles2WriteonlyRenderingQCOM (GL_QCOM_writeonly_rendering)
 	Enum [gl::WRITEONLY_RENDERING]
 
+# gles2YcbcrDegammaQCOM (GL_QCOM_ycbcr_degamma)
+	Enum [gl::TEXTURE_Y_DEGAMMA]
+	Enum [gl::TEXTURE_CBCR_DEGAMMA]
+
 # gles2YUVTextureGatherQCOM (GL_QCOM_YUV_texture_gather)
 
 # glsc2TextureCompressionS3tcEXT (GL_EXT_texture_compression_s3tc)

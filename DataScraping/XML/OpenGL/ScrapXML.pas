@@ -45,23 +45,30 @@ type
         
         var spl := l.Split('=').ConvertAll(s->s.Trim);
         if spl.Length<>2 then raise new FormatException(l);
-        var (name, suffixes) := spl;
+        var (names_s, suffixes_s) := spl;
+        var names := names_s.Split('/');
+        var suffixes := suffixes_s.Split('/');
         
-        if name<>'' then
+        if names_s<>'' then foreach var name in names do
         begin
+          if name.Trim<>name then
+            raise new FormatException(name);
           if not known_names.Add(name) then
             raise new InvalidOperationException(name);
         end;
         
-        if suffixes='' then continue;
-        foreach var suffix in suffixes.Split('/') do
+        if suffixes_s<>'' then foreach var suffix in suffixes do
         begin
           if suffix.Trim<>suffix then
             raise new FormatException(suffix);
-          if (name<>'Oculus') and not suffix.StartsWith(name) then
-            raise new InvalidOperationException((suffix,name).ToString);
           new VendorSuffixSource(suffix);
           known_suffixes += suffix;
+        end;
+        
+        if (names_s<>'') and (suffixes_s<>'') then foreach var (name, suffix) in names.Where(name->name.All(char.IsUpper)).Cartesian(suffixes) do
+        begin
+          if not suffix.StartsWith(name) then
+            raise new InvalidOperationException((suffix,name).ToString);
         end;
         
       end;

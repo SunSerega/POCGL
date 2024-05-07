@@ -4818,15 +4818,6 @@
     public const ExtensionString = 'cl_khr_external_memory_dma_buf';
   end;
   
-  /// id: cl_khr_external_memory_dx
-  /// version: 0.9.3 (provisional)
-  /// core dependency: cl 3.0
-  /// ext dependencies:
-  /// - cl_khr_external_memory (clExternalMemoryKHR)
-  clExternalMemoryDxKHR = static class
-    public const ExtensionString = 'cl_khr_external_memory_dx';
-  end;
-  
   /// id: cl_khr_external_memory_opaque_fd
   /// version: 0.9.3
   /// core dependency: cl 3.0
@@ -5356,16 +5347,6 @@
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSemaphoreHandleForTypeKHR(sema_object: cl_semaphore; device: cl_device_id; handle_type: clExternalSemaphoreHandleType; handle_size: UIntPtr; handle_ptr: IntPtr; handle_size_ret: IntPtr): clErrorCode :=
       ntv_GetSemaphoreHandleForTypeKHR_2(sema_object, device, handle_type, handle_size, handle_ptr, handle_size_ret);
     
-  end;
-  
-  /// id: cl_khr_external_semaphore_dx_fence
-  /// version: 0.9.0 (provisional)
-  /// core dependency: cl 1.2
-  /// ext dependencies:
-  /// - cl_khr_external_semaphore (clExternalSemaphoreKHR)
-  /// - cl_khr_semaphore (clSemaphoreKHR)
-  clExternalSemaphoreDxFenceKHR = static class
-    public const ExtensionString = 'cl_khr_external_semaphore_dx_fence';
   end;
   
   /// id: cl_khr_external_semaphore_opaque_fd

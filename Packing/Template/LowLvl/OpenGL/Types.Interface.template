@@ -16272,6 +16272,8 @@
     public static property REFLECTION_MAP:                   glGetTextureParameter read new glGetTextureParameter($8512);
     public static property TEXTURE_UNNORMALIZED_COORDINATES: glGetTextureParameter read new glGetTextureParameter($8F6A);
     public static property SURFACE_COMPRESSION:              glGetTextureParameter read new glGetTextureParameter($96C0);
+    public static property TEXTURE_Y_DEGAMMA:                glGetTextureParameter read new glGetTextureParameter($9710);
+    public static property TEXTURE_CBCR_DEGAMMA:             glGetTextureParameter read new glGetTextureParameter($9711);
     
     public function ToString: string; override;
     begin
@@ -16387,6 +16389,10 @@
         Result := 'TEXTURE_UNNORMALIZED_COORDINATES' else
       if SURFACE_COMPRESSION = self then
         Result := 'SURFACE_COMPRESSION' else
+      if TEXTURE_Y_DEGAMMA = self then
+        Result := 'TEXTURE_Y_DEGAMMA' else
+      if TEXTURE_CBCR_DEGAMMA = self then
+        Result := 'TEXTURE_CBCR_DEGAMMA' else
         Result := $'glGetTextureParameter[{self.val}]';
     end;
     
@@ -23480,6 +23486,8 @@
     public static property DEPTH_STENCIL_TEXTURE_MODE:       glTextureParameterName read new glTextureParameterName($90EA);
     public static property TEXTURE_TILING:                   glTextureParameterName read new glTextureParameterName($9580);
     public static property TEXTURE_FOVEATED_CUTOFF_DENSITY:  glTextureParameterName read new glTextureParameterName($96A0);
+    public static property TEXTURE_Y_DEGAMMA:                glTextureParameterName read new glTextureParameterName($9710);
+    public static property TEXTURE_CBCR_DEGAMMA:             glTextureParameterName read new glTextureParameterName($9711);
     
     public function ToString: string; override;
     begin
@@ -23615,6 +23623,10 @@
         Result := 'TEXTURE_TILING' else
       if TEXTURE_FOVEATED_CUTOFF_DENSITY = self then
         Result := 'TEXTURE_FOVEATED_CUTOFF_DENSITY' else
+      if TEXTURE_Y_DEGAMMA = self then
+        Result := 'TEXTURE_Y_DEGAMMA' else
+      if TEXTURE_CBCR_DEGAMMA = self then
+        Result := 'TEXTURE_CBCR_DEGAMMA' else
         Result := $'glTextureParameterName[{self.val}]';
     end;
     
