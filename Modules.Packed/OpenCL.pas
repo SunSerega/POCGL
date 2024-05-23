@@ -13686,6 +13686,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_loader_info
+  /// version: 1.0.0
   clLoaderInfo = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -13793,6 +13794,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_loader_layers
+  /// version: 1.0.0
   clLoaderLayers = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -13864,6 +13866,7 @@ type
   end;
   
   /// id: cl_amd_device_attribute_query
+  /// version: 0.0.0
   clDeviceAttributeQueryAMD = static class
     public const ExtensionString = 'cl_amd_device_attribute_query';
   end;
@@ -13873,6 +13876,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_APPLE_ContextLoggingFunctions
+  /// version: 0.0.0
   clContextLoggingFunctionsAPPLE = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -13932,6 +13936,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_APPLE_SetMemObjectDestructor
+  /// version: 0.0.0
   clSetMemObjectDestructorAPPLE = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -13950,11 +13955,13 @@ type
   end;
   
   /// id: cl_arm_controlled_kernel_termination
+  /// version: 0.0.0
   clControlledKernelTerminationARM = static class
     public const ExtensionString = 'cl_arm_controlled_kernel_termination';
   end;
   
   /// id: cl_arm_get_core_id
+  /// version: 0.0.0
   /// core dependency: cl 1.2
   clGetCoreIdARM = static class
     public const ExtensionString = 'cl_arm_get_core_id';
@@ -13965,6 +13972,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_arm_import_memory
+  /// version: 0.0.0
   clImportMemoryARM = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -13993,21 +14001,25 @@ type
   end;
   
   /// id: cl_arm_job_slot_selection
+  /// version: 0.0.0
   clJobSlotSelectionARM = static class
     public const ExtensionString = 'cl_arm_job_slot_selection';
   end;
   
   /// id: cl_arm_printf
+  /// version: 0.0.0
   clPrintfARM = static class
     public const ExtensionString = 'cl_arm_printf';
   end;
   
   /// id: cl_arm_protected_memory_allocation
+  /// version: 0.0.0
   clProtectedMemoryAllocationARM = static class
     public const ExtensionString = 'cl_arm_protected_memory_allocation';
   end;
   
   /// id: cl_arm_scheduling_controls
+  /// version: 0.0.0
   clSchedulingControlsARM = static class
     public const ExtensionString = 'cl_arm_scheduling_controls';
   end;
@@ -14017,6 +14029,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_arm_shared_virtual_memory
+  /// version: 0.0.0
   clSharedVirtualMemoryARM = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -14354,6 +14367,7 @@ type
   end;
   
   /// id: cl_ext_cxx_for_opencl
+  /// version: 0.0.0
   clCxxForOpenclEXT = static class
     public const ExtensionString = 'cl_ext_cxx_for_opencl';
   end;
@@ -14363,6 +14377,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_ext_device_fission
+  /// version: 0.0.0
   clDeviceFissionEXT = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -14436,17 +14451,20 @@ type
   end;
   
   /// id: cl_ext_float_atomics
+  /// version: 0.0.0
   clFloatAtomicsEXT = static class
     public const ExtensionString = 'cl_ext_float_atomics';
   end;
   
   /// id: cl_ext_image_from_buffer
+  /// version: 0.0.0
   /// core dependency: cl 3.0
   clImageFromBufferEXT = static class
     public const ExtensionString = 'cl_ext_image_from_buffer';
   end;
   
   /// id: cl_ext_image_raw10_raw12
+  /// version: 0.0.0
   clImageRaw10Raw12EXT = static class
     public const ExtensionString = 'cl_ext_image_raw10_raw12';
   end;
@@ -14456,6 +14474,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_ext_image_requirements_info
+  /// version: 0.0.0
   /// core dependency: cl 3.0
   clImageRequirementsInfoEXT = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -14576,6 +14595,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_ext_migrate_memobject
+  /// version: 0.0.0
   clMigrateMemobjectEXT = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -14685,6 +14705,7 @@ type
   end;
   
   /// id: cl_img_cached_allocations
+  /// version: 0.0.0
   clCachedAllocationsIMG = static class
     public const ExtensionString = 'cl_img_cached_allocations';
   end;
@@ -14694,6 +14715,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_img_cancel_command
+  /// version: 0.0.0
   clCancelCommandIMG = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -14726,6 +14748,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_img_generate_mipmap
+  /// version: 0.0.0
   clGenerateMipmapIMG = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -14903,6 +14926,7 @@ type
   end;
   
   /// id: cl_img_mem_properties
+  /// version: 0.0.0
   clMemPropertiesIMG = static class
     public const ExtensionString = 'cl_img_mem_properties';
   end;
@@ -14912,6 +14936,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_img_use_gralloc_ptr
+  /// version: 0.0.0
   clUseGrallocPtrIMG = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -15117,6 +15142,7 @@ type
   end;
   
   /// id: cl_img_yuv_image
+  /// version: 0.0.0
   clYuvImageIMG = static class
     public const ExtensionString = 'cl_img_yuv_image';
   end;
@@ -15126,6 +15152,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_intel_accelerator
+  /// version: 0.0.0
   clAcceleratorINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -15199,11 +15226,13 @@ type
   end;
   
   /// id: cl_intel_advanced_motion_estimation
+  /// version: 0.0.0
   clAdvancedMotionEstimationINTEL = static class
     public const ExtensionString = 'cl_intel_advanced_motion_estimation';
   end;
   
   /// id: cl_intel_command_queue_families
+  /// version: 0.0.0
   clCommandQueueFamiliesINTEL = static class
     public const ExtensionString = 'cl_intel_command_queue_families';
   end;
@@ -15213,6 +15242,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_intel_create_buffer_with_properties
+  /// version: 0.0.0
   clCreateBufferWithPropertiesINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -15241,26 +15271,31 @@ type
   end;
   
   /// id: cl_intel_create_mem_object_properties
+  /// version: 0.0.0
   clCreateMemObjectPropertiesINTEL = static class
     public const ExtensionString = 'cl_intel_create_mem_object_properties';
   end;
   
   /// id: cl_intel_device_attribute_query
+  /// version: 0.0.0
   clDeviceAttributeQueryINTEL = static class
     public const ExtensionString = 'cl_intel_device_attribute_query';
   end;
   
   /// id: cl_intel_device_partition_by_names
+  /// version: 0.0.0
   clDevicePartitionByNamesINTEL = static class
     public const ExtensionString = 'cl_intel_device_partition_by_names';
   end;
   
   /// id: cl_intel_device_side_avc_motion_estimation
+  /// version: 0.0.0
   clDeviceSideAvcMotionEstimationINTEL = static class
     public const ExtensionString = 'cl_intel_device_side_avc_motion_estimation';
   end;
   
   /// id: cl_intel_driver_diagnostics
+  /// version: 0.0.0
   clDriverDiagnosticsINTEL = static class
     public const ExtensionString = 'cl_intel_driver_diagnostics';
   end;
@@ -15270,6 +15305,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_intel_dx9_media_sharing
+  /// version: 0.0.0
   clDx9MediaSharingINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -15494,41 +15530,49 @@ type
   end;
   
   /// id: cl_intel_egl_image_yuv
+  /// version: 0.0.0
   clEglImageYuvINTEL = static class
     public const ExtensionString = 'cl_intel_egl_image_yuv';
   end;
   
   /// id: cl_intel_exec_by_local_thread
+  /// version: 0.0.0
   clExecByLocalThreadINTEL = static class
     public const ExtensionString = 'cl_intel_exec_by_local_thread';
   end;
   
   /// id: cl_intel_mem_alloc_buffer_location
+  /// version: 0.0.0
   clMemAllocBufferLocationINTEL = static class
     public const ExtensionString = 'cl_intel_mem_alloc_buffer_location';
   end;
   
   /// id: cl_intel_mem_channel_property
+  /// version: 0.0.0
   clMemChannelPropertyINTEL = static class
     public const ExtensionString = 'cl_intel_mem_channel_property';
   end;
   
   /// id: cl_intel_mem_force_host_memory
+  /// version: 0.0.0
   clMemForceHostMemoryINTEL = static class
     public const ExtensionString = 'cl_intel_mem_force_host_memory';
   end;
   
   /// id: cl_intel_motion_estimation
+  /// version: 0.0.0
   clMotionEstimationINTEL = static class
     public const ExtensionString = 'cl_intel_motion_estimation';
   end;
   
   /// id: cl_intel_packed_yuv
+  /// version: 0.0.0
   clPackedYuvINTEL = static class
     public const ExtensionString = 'cl_intel_packed_yuv';
   end;
   
   /// id: cl_intel_planar_yuv
+  /// version: 0.0.0
   clPlanarYuvINTEL = static class
     public const ExtensionString = 'cl_intel_planar_yuv';
   end;
@@ -15538,6 +15582,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_intel_program_scope_host_pipe
+  /// version: 0.0.0
   clProgramScopeHostPipeINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -15707,16 +15752,19 @@ type
   end;
   
   /// id: cl_intel_queue_no_sync_operations
+  /// version: 0.0.0
   clQueueNoSyncOperationsINTEL = static class
     public const ExtensionString = 'cl_intel_queue_no_sync_operations';
   end;
   
   /// id: cl_intel_required_subgroup_size
+  /// version: 0.0.0
   clRequiredSubgroupSizeINTEL = static class
     public const ExtensionString = 'cl_intel_required_subgroup_size';
   end;
   
   /// id: cl_intel_sharing_format_query
+  /// version: 0.0.0
   clSharingFormatQueryINTEL = static class
     public const ExtensionString = 'cl_intel_sharing_format_query';
   end;
@@ -15726,6 +15774,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_intel_sharing_format_query_d3d10
+  /// version: 0.0.0
   clSharingFormatQueryD3d10INTEL = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -15757,6 +15806,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_intel_sharing_format_query_d3d11
+  /// version: 0.0.0
   clSharingFormatQueryD3d11INTEL = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -15788,6 +15838,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_intel_sharing_format_query_dx9
+  /// version: 0.0.0
   clSharingFormatQueryDx9INTEL = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -15819,6 +15870,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_intel_sharing_format_query_gl
+  /// version: 0.0.0
   clSharingFormatQueryGlINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -15850,6 +15902,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_intel_sharing_format_query_va_api
+  /// version: 0.0.0
   clSharingFormatQueryVaApiINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -15877,6 +15930,7 @@ type
   end;
   
   /// id: cl_intel_simultaneous_sharing
+  /// version: 0.0.0
   clSimultaneousSharingINTEL = static class
     public const ExtensionString = 'cl_intel_simultaneous_sharing';
   end;
@@ -15886,6 +15940,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_intel_unified_shared_memory
+  /// version: 0.0.0
   clUnifiedSharedMemoryINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -16129,6 +16184,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_intel_va_api_media_sharing
+  /// version: 0.0.0
   clVaApiMediaSharingINTEL = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -16353,17 +16409,20 @@ type
   end;
   
   /// id: cl_khr_3d_image_writes
+  /// version: 1.0.0
   /// promoted to: cl 2.0
   cl3dImageWritesKHR = static class
     public const ExtensionString = 'cl_khr_3d_image_writes';
   end;
   
   /// id: cl_khr_async_work_group_copy_fence
+  /// version: 1.0.0
   clAsyncWorkGroupCopyFenceKHR = static class
     public const ExtensionString = 'cl_khr_async_work_group_copy_fence';
   end;
   
   /// id: cl_khr_byte_addressable_store
+  /// version: 1.0.0
   /// promoted to: cl 1.1
   clByteAddressableStoreKHR = static class
     public const ExtensionString = 'cl_khr_byte_addressable_store';
@@ -17251,6 +17310,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_create_command_queue
+  /// version: 1.0.0
   /// promoted to: cl 2.0
   clCreateCommandQueueKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -17284,6 +17344,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_d3d10_sharing
+  /// version: 1.0.0
   clD3d10SharingKHR = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -17522,6 +17583,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_d3d11_sharing
+  /// version: 1.0.0
   clD3d11SharingKHR = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -17756,17 +17818,20 @@ type
   end;
   
   /// id: cl_khr_depth_images
+  /// version: 1.0.0
   /// promoted to: cl 2.0
   clDepthImagesKHR = static class
     public const ExtensionString = 'cl_khr_depth_images';
   end;
   
   /// id: cl_khr_device_enqueue_local_arg_types
+  /// version: 1.0.0
   clDeviceEnqueueLocalArgTypesKHR = static class
     public const ExtensionString = 'cl_khr_device_enqueue_local_arg_types';
   end;
   
   /// id: cl_khr_device_uuid
+  /// version: 1.0.0
   clDeviceUuidKHR = static class
     public const ExtensionString = 'cl_khr_device_uuid';
   end;
@@ -17776,6 +17841,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_dx9_media_sharing
+  /// version: 1.0.0
   clDx9MediaSharingKHR = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -18016,6 +18082,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_egl_event
+  /// version: 1.0.0
   clEglEventKHR = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -18038,6 +18105,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_egl_image
+  /// version: 1.0.0
   clEglImageKHR = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -18258,21 +18326,25 @@ type
   end;
   
   /// id: cl_khr_expect_assume
+  /// version: 1.0.0
   clExpectAssumeKHR = static class
     public const ExtensionString = 'cl_khr_expect_assume';
   end;
   
   /// id: cl_khr_extended_async_copies
+  /// version: 1.0.0
   clExtendedAsyncCopiesKHR = static class
     public const ExtensionString = 'cl_khr_extended_async_copies';
   end;
   
   /// id: cl_khr_extended_bit_ops
+  /// version: 1.0.0
   clExtendedBitOpsKHR = static class
     public const ExtensionString = 'cl_khr_extended_bit_ops';
   end;
   
   /// id: cl_khr_extended_versioning
+  /// version: 1.0.0
   /// promoted to: cl 3.0
   clExtendedVersioningKHR = static class
     public const ExtensionString = 'cl_khr_extended_versioning';
@@ -18283,7 +18355,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_external_memory
-  /// version: 0.9.3
+  /// version: 1.0.0
   /// core dependency: cl 3.0
   clExternalMemoryKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -18490,7 +18562,7 @@ type
   end;
   
   /// id: cl_khr_external_memory_dma_buf
-  /// version: 0.9.3
+  /// version: 1.0.0
   /// core dependency: cl 3.0
   /// ext dependencies:
   /// - cl_khr_external_memory (clExternalMemoryKHR)
@@ -18499,7 +18571,7 @@ type
   end;
   
   /// id: cl_khr_external_memory_opaque_fd
-  /// version: 0.9.3
+  /// version: 1.0.0
   /// core dependency: cl 3.0
   /// ext dependencies:
   /// - cl_khr_external_memory (clExternalMemoryKHR)
@@ -18508,7 +18580,7 @@ type
   end;
   
   /// id: cl_khr_external_memory_win32
-  /// version: 0.9.3
+  /// version: 1.0.0
   /// core dependency: cl 3.0
   /// ext dependencies:
   /// - cl_khr_external_memory (clExternalMemoryKHR)
@@ -18521,7 +18593,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_semaphore
-  /// version: 0.9.1
+  /// version: 1.0.0
   /// core dependency: cl 1.2
   clSemaphoreKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -19005,7 +19077,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_external_semaphore
-  /// version: 0.9.0
+  /// version: 1.0.0
   /// core dependency: cl 1.2
   /// ext dependencies:
   /// - cl_khr_semaphore (clSemaphoreKHR)
@@ -19030,7 +19102,7 @@ type
   end;
   
   /// id: cl_khr_external_semaphore_opaque_fd
-  /// version: 0.9.0
+  /// version: 1.0.0
   /// core dependency: cl 1.2
   /// ext dependencies:
   /// - cl_khr_external_semaphore (clExternalSemaphoreKHR)
@@ -19044,7 +19116,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_external_semaphore_sync_fd
-  /// version: 0.9.0
+  /// version: 1.0.0
   /// core dependency: cl 1.2
   /// ext dependencies:
   /// - cl_khr_external_semaphore (clExternalSemaphoreKHR)
@@ -19087,11 +19159,13 @@ type
   end;
   
   /// id: cl_khr_fp16
+  /// version: 1.0.0
   clFp16KHR = static class
     public const ExtensionString = 'cl_khr_fp16';
   end;
   
   /// id: cl_khr_fp64
+  /// version: 1.0.0
   /// promoted to: cl 1.2
   clFp64KHR = static class
     public const ExtensionString = 'cl_khr_fp64';
@@ -19102,6 +19176,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_gl_sharing
+  /// version: 1.0.0
   clGLSharingKHR = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -19453,6 +19528,7 @@ type
   end;
   
   /// id: cl_khr_gl_depth_images
+  /// version: 1.0.0
   /// ext dependencies:
   /// - cl_khr_gl_sharing (clGLSharingKHR)
   clGLDepthImagesKHR = static class
@@ -19464,6 +19540,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_gl_event
+  /// version: 1.0.0
   /// ext dependencies:
   /// - cl_khr_gl_sharing (clGLSharingKHR)
   clGLEventKHR = sealed partial class
@@ -19484,6 +19561,7 @@ type
   end;
   
   /// id: cl_khr_gl_msaa_sharing
+  /// version: 1.0.0
   /// ext dependencies:
   /// - cl_khr_gl_depth_images (clGLDepthImagesKHR)
   /// - cl_khr_gl_sharing (clGLSharingKHR)
@@ -19492,12 +19570,14 @@ type
   end;
   
   /// id: cl_khr_global_int32_base_atomics
+  /// version: 1.0.0
   /// promoted to: cl 1.1
   clGlobalInt32BaseAtomicsKHR = static class
     public const ExtensionString = 'cl_khr_global_int32_base_atomics';
   end;
   
   /// id: cl_khr_global_int32_extended_atomics
+  /// version: 1.0.0
   /// promoted to: cl 1.1
   clGlobalInt32ExtendedAtomicsKHR = static class
     public const ExtensionString = 'cl_khr_global_int32_extended_atomics';
@@ -19508,6 +19588,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_icd
+  /// version: 1.0.0
   clIcdKHR = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -19551,6 +19632,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_il_program
+  /// version: 1.0.0
   /// promoted to: cl 2.1
   clIlProgramKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -19580,22 +19662,26 @@ type
   end;
   
   /// id: cl_khr_image2d_from_buffer
+  /// version: 1.0.0
   /// promoted to: cl 2.0
   clImage2dFromBufferKHR = static class
     public const ExtensionString = 'cl_khr_image2d_from_buffer';
   end;
   
   /// id: cl_khr_initialize_memory
+  /// version: 1.0.0
   clInitializeMemoryKHR = static class
     public const ExtensionString = 'cl_khr_initialize_memory';
   end;
   
   /// id: cl_khr_int64_base_atomics
+  /// version: 1.0.0
   clInt64BaseAtomicsKHR = static class
     public const ExtensionString = 'cl_khr_int64_base_atomics';
   end;
   
   /// id: cl_khr_int64_extended_atomics
+  /// version: 1.0.0
   clInt64ExtendedAtomicsKHR = static class
     public const ExtensionString = 'cl_khr_int64_extended_atomics';
   end;
@@ -19607,29 +19693,33 @@ type
   end;
   
   /// id: cl_khr_kernel_clock
-  /// version: provisional
+  /// version: 0.9.0 (provisional)
   clKernelClockKHR = static class
     public const ExtensionString = 'cl_khr_kernel_clock';
   end;
   
   /// id: cl_khr_local_int32_base_atomics
+  /// version: 1.0.0
   /// promoted to: cl 1.1
   clLocalInt32BaseAtomicsKHR = static class
     public const ExtensionString = 'cl_khr_local_int32_base_atomics';
   end;
   
   /// id: cl_khr_local_int32_extended_atomics
+  /// version: 1.0.0
   /// promoted to: cl 1.1
   clLocalInt32ExtendedAtomicsKHR = static class
     public const ExtensionString = 'cl_khr_local_int32_extended_atomics';
   end;
   
   /// id: cl_khr_mipmap_image
+  /// version: 1.0.0
   clMipmapImageKHR = static class
     public const ExtensionString = 'cl_khr_mipmap_image';
   end;
   
   /// id: cl_khr_mipmap_image_writes
+  /// version: 1.0.0
   /// ext dependencies:
   /// - cl_khr_mipmap_image (clMipmapImageKHR)
   clMipmapImageWritesKHR = static class
@@ -19637,78 +19727,93 @@ type
   end;
   
   /// id: cl_khr_pci_bus_info
+  /// version: 1.0.0
   clPciBusInfoKHR = static class
     public const ExtensionString = 'cl_khr_pci_bus_info';
   end;
   
   /// id: cl_khr_priority_hints
+  /// version: 1.0.0
   clPriorityHintsKHR = static class
     public const ExtensionString = 'cl_khr_priority_hints';
   end;
   
   /// id: cl_khr_select_fprounding_mode
+  /// version: 1.0.0
   /// obsoleted by: cl 1.1
   clSelectFproundingModeKHR = static class
     public const ExtensionString = 'cl_khr_select_fprounding_mode';
   end;
   
   /// id: cl_khr_spir
+  /// version: 1.0.0
   /// obsoleted by: cl_khr_il_program (clIlProgramKHR)
   clSpirKHR = static class
     public const ExtensionString = 'cl_khr_spir';
   end;
   
   /// id: cl_khr_spirv_extended_debug_info
+  /// version: 1.0.0
   clSpirvExtendedDebugInfoKHR = static class
     public const ExtensionString = 'cl_khr_spirv_extended_debug_info';
   end;
   
   /// id: cl_khr_spirv_linkonce_odr
+  /// version: 1.0.0
   clSpirvLinkonceOdrKHR = static class
     public const ExtensionString = 'cl_khr_spirv_linkonce_odr';
   end;
   
   /// id: cl_khr_spirv_no_integer_wrap_decoration
+  /// version: 1.0.0
   clSpirvNoIntegerWrapDecorationKHR = static class
     public const ExtensionString = 'cl_khr_spirv_no_integer_wrap_decoration';
   end;
   
   /// id: cl_khr_srgb_image_writes
+  /// version: 1.0.0
   clSrgbImageWritesKHR = static class
     public const ExtensionString = 'cl_khr_srgb_image_writes';
   end;
   
   /// id: cl_khr_subgroup_ballot
+  /// version: 1.0.0
   clSubgroupBallotKHR = static class
     public const ExtensionString = 'cl_khr_subgroup_ballot';
   end;
   
   /// id: cl_khr_subgroup_clustered_reduce
+  /// version: 1.0.0
   clSubgroupClusteredReduceKHR = static class
     public const ExtensionString = 'cl_khr_subgroup_clustered_reduce';
   end;
   
   /// id: cl_khr_subgroup_extended_types
+  /// version: 1.0.0
   clSubgroupExtendedTypesKHR = static class
     public const ExtensionString = 'cl_khr_subgroup_extended_types';
   end;
   
   /// id: cl_khr_subgroup_named_barrier
+  /// version: 1.0.0
   clSubgroupNamedBarrierKHR = static class
     public const ExtensionString = 'cl_khr_subgroup_named_barrier';
   end;
   
   /// id: cl_khr_subgroup_non_uniform_arithmetic
+  /// version: 1.0.0
   clSubgroupNonUniformArithmeticKHR = static class
     public const ExtensionString = 'cl_khr_subgroup_non_uniform_arithmetic';
   end;
   
   /// id: cl_khr_subgroup_non_uniform_vote
+  /// version: 1.0.0
   clSubgroupNonUniformVoteKHR = static class
     public const ExtensionString = 'cl_khr_subgroup_non_uniform_vote';
   end;
   
   /// id: cl_khr_subgroup_rotate
+  /// version: 1.0.0
   clSubgroupRotateKHR = static class
     public const ExtensionString = 'cl_khr_subgroup_rotate';
   end;
@@ -19718,6 +19823,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_subgroups
+  /// version: 1.0.0
   /// promoted to: cl 2.1
   clSubgroupsKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -19851,11 +19957,13 @@ type
   end;
   
   /// id: cl_khr_subgroup_shuffle
+  /// version: 1.0.0
   clSubgroupShuffleKHR = static class
     public const ExtensionString = 'cl_khr_subgroup_shuffle';
   end;
   
   /// id: cl_khr_subgroup_shuffle_relative
+  /// version: 1.0.0
   clSubgroupShuffleRelativeKHR = static class
     public const ExtensionString = 'cl_khr_subgroup_shuffle_relative';
   end;
@@ -19865,6 +19973,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_suggested_local_work_size
+  /// version: 1.0.0
   clSuggestedLocalWorkSizeKHR = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -19930,6 +20039,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_terminate_context
+  /// version: 1.0.0
   clTerminateContextKHR = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -19948,16 +20058,19 @@ type
   end;
   
   /// id: cl_khr_throttle_hints
+  /// version: 1.0.0
   clThrottleHintsKHR = static class
     public const ExtensionString = 'cl_khr_throttle_hints';
   end;
   
   /// id: cl_khr_work_group_uniform_arithmetic
+  /// version: 1.0.0
   clWorkGroupUniformArithmeticKHR = static class
     public const ExtensionString = 'cl_khr_work_group_uniform_arithmetic';
   end;
   
   /// id: cl_nv_device_attribute_query
+  /// version: 0.0.0
   clDeviceAttributeQueryNV = static class
     public const ExtensionString = 'cl_nv_device_attribute_query';
   end;
@@ -19967,6 +20080,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_pocl_content_size
+  /// version: 0.0.0
   clContentSizePOCL = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -19985,6 +20099,7 @@ type
   end;
   
   /// id: cl_qcom_android_native_buffer_host_ptr
+  /// version: 0.0.0
   clAndroidNativeBufferHostPtrQCOM = static class
     public const ExtensionString = 'cl_qcom_android_native_buffer_host_ptr';
   end;
@@ -19994,6 +20109,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_qcom_ext_host_ptr
+  /// version: 0.0.0
   clExtHostPtrQCOM = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -20077,11 +20193,13 @@ type
   end;
   
   /// id: cl_qcom_ext_host_ptr_iocoherent
+  /// version: 0.0.0
   clExtHostPtrIocoherentQCOM = static class
     public const ExtensionString = 'cl_qcom_ext_host_ptr_iocoherent';
   end;
   
   /// id: cl_qcom_ion_host_ptr
+  /// version: 0.0.0
   clIonHostPtrQCOM = static class
     public const ExtensionString = 'cl_qcom_ion_host_ptr';
   end;
