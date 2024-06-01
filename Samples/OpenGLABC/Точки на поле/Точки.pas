@@ -281,7 +281,7 @@ begin
       
       var fps := timings.Count/total_time.TotalSeconds;
       var form_text := $'{all_shaders[curr_fragment_shader]}: {fps:N2} fps, {1000/fps:N2} mspf, {point_count} points, scale={camera.scale}, pos={camera.pos} data={point_data}';
-//      form_text := $'temp_data={_ObjectToString(temp_data)}, '+form_text;
+//      form_text := $'temp_data={ObjectToString(temp_data)}, '+form_text;
       f.Text := form_text;
       EndFrame;
     end;

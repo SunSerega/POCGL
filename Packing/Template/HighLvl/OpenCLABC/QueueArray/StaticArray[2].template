@@ -110,7 +110,7 @@
     public function Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleFunc2ContainerC<TInp1,TInp2,TRes> = record(ISimpleFunc2Container<TInp1,TInp2,TRes>)
@@ -124,7 +124,7 @@
     public function Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -172,7 +172,7 @@
     public procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleProc2ContainerC<TInp1,TInp2> = record(ISimpleProc2Container<TInp1,TInp2>)
@@ -186,7 +186,7 @@
     public procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   

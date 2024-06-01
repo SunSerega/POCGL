@@ -258,7 +258,7 @@ function SetEvTask(ev: ManualResetEvent) := ProcTask(()->ev.Set());
 function EventTask(ev: ManualResetEvent) := ProcTask(()->ev.WaitOne());
 
 function CombineAsyncTask(self: sequence of AsyncTask; max_cores: integer? := nil): AsyncTask; extensionmethod :=
-  new AsyncTaskMlt(self.ToArray, max_cores);
+  new AsyncTaskMlt(self.Where(t->t<>nil).ToArray, max_cores);
 
 function TaskForEach<T>(self: sequence of T; p: T->(); max_cores: integer := System.Environment.ProcessorCount+1); extensionmethod :=
   self.Select(o->ProcTask(()->p(o))).CombineAsyncTask(max_cores);

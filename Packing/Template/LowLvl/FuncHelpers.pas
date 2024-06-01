@@ -94,7 +94,7 @@ type
     begin
       if not generate_code then
       begin
-        Result := $'({var_arg}, {arr_lvl}, {tname}, {_ObjectToString(enum_to_type_data_rep_c)})';
+        Result := $'({var_arg}, {arr_lvl}, {tname}, {ObjectToString(enum_to_type_data_rep_c)})';
         exit;
       end;
       var res := new StringBuilder;
@@ -548,7 +548,7 @@ type
     {$endif DEBUG}
     
     public function ToString: string; override :=
-      self.pars.Select(\(par_kind,par)->$'{par_kind}: {_ObjectToString(par?.ToString(true,true))}').JoinToString('; ');
+      self.pars.Select(\(par_kind,par)->$'{par_kind}: {ObjectToString(par?.ToString(true,true))}').JoinToString('; ');
     
   end;
   

@@ -252,7 +252,7 @@ type
         ParArrSizeMlt(var pasm): static_len := '%mlt%';
         ParArrSizeDiv(var pasd): static_len := '%div%';
         
-        else raise new NotImplementedException(_ObjectToString(ArrSize));
+        else raise new NotImplementedException(ObjectToString(ArrSize));
       end;
       
       var ptr := self.CalculatedPtr;

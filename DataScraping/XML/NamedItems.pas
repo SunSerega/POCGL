@@ -508,7 +508,7 @@ begin
     type_ind += 1;
     if o=nil then exit;
     
-    if any_done then raise new System.InvalidOperationException($'Multiple non-nil items in {_ObjectToString(t)}');
+    if any_done then raise new System.InvalidOperationException($'Multiple non-nil items in {ObjectToString(t)}');
     any_done := true;
     
     self.Write(type_ind);

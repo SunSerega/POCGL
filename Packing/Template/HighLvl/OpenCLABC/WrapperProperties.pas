@@ -390,8 +390,7 @@ begin
           begin
             wr += '    private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :='#10;
             wr += '      try'#10;
-            //TODO Использовать второй параметр _ObjectToString
-            wr += '        res += _ObjectToString(get_prop());'#10;
+            wr += '        OTS.ObjectToString(get_prop(), res);'#10;
             wr += '      except'#10;
             wr += '        on e: OpenCLException do'#10;
             wr += '          res += e.Code.ToString;'#10;

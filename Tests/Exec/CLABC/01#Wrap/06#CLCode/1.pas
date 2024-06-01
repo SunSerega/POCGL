@@ -3,7 +3,7 @@
 procedure PrintProps(self: CLCode); extensionmethod;
 begin
   $'SourceCode:     {self.SourceCode}'.Println;
-  $'SourceIL:       {_ObjectToString(self.SourceIL)}'.Println;
+  $'SourceIL:       {ObjectToString(self.SourceIL)}'.Println;
   $'HasGlobalInit:  {self.HasGlobalInit}'.Println;
   $'HasGlobalFnlz:  {self.HasGlobalFnlz}'.Println;
 //  $'HostPipeNames:  {self.HostPipeNames}'.Println;

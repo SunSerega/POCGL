@@ -13,7 +13,7 @@ OpenCLABC_implementation______.InvokeParamsFunc<[T]> = function(enq_c: integer; 
 #ExpExecOtp
 CommandQueueQuickArray<integer, array of integer, QueueArrayAsyncInvoker, SimpleFuncContainer<array of integer, array of integer>, QueueArrayWorkConvert<integer, array of integer, SimpleFuncContainer<array of integer, array of integer>>>#0
 	ConstQueue<integer>#1: 5
-	CommandQueueHostQuickFunc<integer, SimpleFunc0Container<integer>>#2: (<>local_variables_class_*UPPER_95=(f=function lambda(x: integer): integer); inp=5) => function lambda: integer
+	CommandQueueHostQuickFunc<integer, SimpleFunc0Container<integer>>#2: ((function lambda(x: integer): integer),5) => function lambda: integer
 	function lambda(a: array of integer): array of integer
 final = ErrHandlerInitial#0: (origin-less) branch invoke
 (total 1 handlers)

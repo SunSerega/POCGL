@@ -193,7 +193,7 @@ type
         if unopt_arr[par_i] then
           if opt_arr[par_i] then
             opt_arr[par_i] := false else
-            Otp($'WARNING: {self} had par#{par_i} as unopt_arr, but it does not need it: {_ObjectToString(types.Select(par->par.ToString(true,true,true)))}');
+            Otp($'WARNING: {self} had par#{par_i} as unopt_arr, but it does not need it: {ObjectToString(types.Select(par->par.ToString(true,true,true)))}');
       end;
       
       {$region Sort}
@@ -700,7 +700,7 @@ type
         foreach var par in possible_par_types index par_i do
         begin
           if is_proc and (par_i=0) then continue;
-          Otp(#9+_ObjectToString(par.Select(p->p.ToString(true,true,true))));
+          Otp(#9+ObjectToString(par.Select(p->p.ToString(true,true,true))));
         end;
         exit;
       end else
@@ -739,7 +739,7 @@ type
       var display_name := self.MakeWriteableName;
       
       if display_name in last_wr_block_func_lnames then
-        raise new InvalidOperationException($'{display_name} added in the same api (lib: {_ObjectToString(lib_name)}) twice: {last_wr_block_func_lnames[display_name]} and {self}');
+        raise new InvalidOperationException($'{display_name} added in the same api (lib: {ObjectToString(lib_name)}) twice: {last_wr_block_func_lnames[display_name]} and {self}');
       last_wr_block_func_lnames.Add(display_name, self);
       
       if is_dynamic then
@@ -2184,7 +2184,7 @@ type
           end;
           
           {$ifdef DEBUG}
-          if l_sb.Length<>l_cap then raise new System.InvalidOperationException((l_sb,l_sb.Length,l_cap,_ObjectToString(max_w),_ObjectToString(tt)).ToString);
+          if l_sb.Length<>l_cap then raise new System.InvalidOperationException((l_sb,l_sb.Length,l_cap,ObjectToString(max_w),ObjectToString(tt)).ToString);
           {$endif DEBUG}
           l_sb.Length -= 1;
           l.Otp(l_sb.ToString);
@@ -2893,7 +2893,7 @@ implementation
     
     private procedure ErrorInfo(f: Func; act: string; i: integer; t: FuncParamT; ppt: List<FuncParamT>);
     begin
-      var err := $'ERROR: {FixerInfo(f)} failed to {act} type [{t.ToString(true,true,true)}] of param#{i} [{f.NativePar[i].name}]: {_ObjectToString(ppt.Select(par->par.ToString(true,true,true)))}';
+      var err := $'ERROR: {FixerInfo(f)} failed to {act} type [{t.ToString(true,true,true)}] of param#{i} [{f.NativePar[i].name}]: {ObjectToString(ppt.Select(par->par.ToString(true,true,true)))}';
       if is_auto_fixer then
         raise new MessageException(err+#10'Broken auto fixer, halt') else
         Otp(err);
@@ -3010,10 +3010,10 @@ implementation
       if unused_t_ovrs.Count<>0 then
       begin
         foreach var ovr in unused_t_ovrs do
-          Otp($'WARNING: {FixerInfo(f)} has not used mask {_ObjectToString(ovr.ItemsSeq.Select(par->par?.ToString(true,true,true)??''*''))}');
+          Otp($'WARNING: {FixerInfo(f)} has not used mask {ObjectToString(ovr.ItemsSeq.Select(par->par?.ToString(true,true,true)??''*''))}');
         Otp('-'*10+$' Func ovrs were '+'-'*10);
         foreach var ovr in org_ovrs do
-          Otp(_ObjectToString(ovr.ItemsSeq.Select(par->par?.ToString(true,true,true))));
+          Otp(ObjectToString(ovr.ItemsSeq.Select(par->par?.ToString(true,true,true))));
       end;
       
       var unlimited_pars := expected_ovr_l.Times
@@ -3021,7 +3021,7 @@ implementation
         .Select(par_i->par_i+integer(f.is_proc))
         .Select(par_i->$'par#{par_i}:{f.NativePar[par_i].name}');
       if unlimited_pars.Any then
-        Otp($'WARNING: {FixerInfo(f)} has not limited pars: {_ObjectToString(unlimited_pars)}');
+        Otp($'WARNING: {FixerInfo(f)} has not limited pars: {ObjectToString(unlimited_pars)}');
       
       self.ReportUsed;
       Result := false;

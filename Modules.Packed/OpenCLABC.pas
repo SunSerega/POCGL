@@ -504,6 +504,23 @@ var eh_debug_otp: System.IO.TextWriter := Console.Out;
 
 type
   
+  {$region TODO OTS}
+  //TODO Заменить на использование внутреннего модуля, вынесенного из PABCSystem
+  
+  OTS = static class
+    
+    public static procedure TypeName(o: object; sb: StringBuilder) := sb += PABCSystem.TypeName(o);
+    public static procedure TypeToTypeName(t: System.Type; sb: StringBuilder) := sb += PABCSystem.TypeToTypeName(t);
+    public static procedure ObjectToString(o: object; sb: StringBuilder) := sb += PABCSystem.ObjectToString(o);
+    
+    public static procedure TypeName(o: object; wr: System.IO.TextWriter) := wr.Write( PABCSystem.TypeName(o) );
+    public static procedure TypeToTypeName(t: System.Type; wr: System.IO.TextWriter) := wr.Write( PABCSystem.TypeToTypeName(t) );
+    public static procedure ObjectToString(o: object; wr: System.IO.TextWriter) := wr.Write( PABCSystem.ObjectToString(o) );
+    
+  end;
+  
+  {$endregion TODO OTS}
+  
   {$region TODO MOVE}
   //TODO Сделать общим для OpenCLABC, OpenGLABC и т.п.
   
@@ -913,7 +930,7 @@ type
       const max_bytes = 100;
     begin
       var sb := new StringBuilder;
-      TypeName(self, sb);
+      OTS.TypeName(self, sb);
       sb += ':$';
       sb += Area.ptr.ToString('X');
       sb += '[';
@@ -993,9 +1010,9 @@ type
     public function ToString: string; override;
     begin
       var sb := new StringBuilder;
-      TypeName(self, sb);
+      OTS.TypeName(self, sb);
       sb += '{ ';
-      _ObjectToString(Value, sb);
+      OTS.ObjectToString(Value, sb);
       sb += ' }';
       Result := sb.ToString;
     end;
@@ -1174,7 +1191,7 @@ type
       const max_items = 30;
     begin
       var sb := new StringBuilder;
-      TypeName(self, sb);
+      OTS.TypeName(self, sb);
       sb += '[';
       sb += Length.ToString;
       sb += ']{';
@@ -1186,7 +1203,7 @@ type
         if is_clamped then len := max_items-1;
         for var i := 0 to len-1 do
         begin
-          _ObjectToString(self[i], sb);
+          OTS.ObjectToString(self[i], sb);
           sb += ', ';
         end;
         if is_clamped then
@@ -1250,10 +1267,10 @@ type
     begin
       var old_size: int64;
       if not mem_uses.TryRemove(mem_obj, old_size) then
-        raise new InvalidOperationException($'{_ObjectToString(mem_obj)} is not one of {_ObjectToString(mem_uses.Keys)}');
+        raise new InvalidOperationException($'{ObjectToString(mem_obj)} is not one of {ObjectToString(mem_uses.Keys)}');
       Interlocked.Add(total_size, -old_size);
       if old_size <> size then
-        raise new InvalidOperationException($'Expected {_ObjectToString(mem_obj)} to have a size of {old_size}, got {size}');
+        raise new InvalidOperationException($'Expected {ObjectToString(mem_obj)} to have a size of {old_size}, got {size}');
     end;
     
     public property CurrentlyUsedAmount: int64 read total_size; override;
@@ -1698,7 +1715,7 @@ type
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(get_prop());
+        OTS.ObjectToString(get_prop(), res);
       except
         on e: OpenCLException do
           res += e.Code.ToString;
@@ -2639,7 +2656,7 @@ type
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(get_prop());
+        OTS.ObjectToString(get_prop(), res);
       except
         on e: OpenCLException do
           res += e.Code.ToString;
@@ -2877,7 +2894,7 @@ type
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(get_prop());
+        OTS.ObjectToString(get_prop(), res);
       except
         on e: OpenCLException do
           res += e.Code.ToString;
@@ -2998,7 +3015,7 @@ type
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(get_prop());
+        OTS.ObjectToString(get_prop(), res);
       except
         on e: OpenCLException do
           res += e.Code.ToString;
@@ -3164,7 +3181,7 @@ type
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(get_prop());
+        OTS.ObjectToString(get_prop(), res);
       except
         on e: OpenCLException do
           res += e.Code.ToString;
@@ -3310,7 +3327,7 @@ type
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
-        res += _ObjectToString(get_prop());
+        OTS.ObjectToString(get_prop(), res);
       except
         on e: OpenCLException do
           res += e.Code.ToString;
@@ -3555,7 +3572,7 @@ type
       var ntv_dvcs := GetAllNtvDevices;
       
       var ec: clErrorCode;
-      self.ntv := cl.CreateContext(nil, ntv_dvcs.Count, ntv_dvcs, nil, IntPtr.Zero, ec);
+      self.ntv := cl.CreateContext(nil, ntv_dvcs.Length, ntv_dvcs, nil, IntPtr.Zero, ec);
       OpenCLABCInternalException.RaiseIfError(ec);
       
       self.main_dvc := main_dvc;
@@ -6079,17 +6096,17 @@ type
       if typeof(T) <> rt then
       begin
         if rt<>nil then
-          TypeToTypeName(rt, sb);
+          OTS.TypeToTypeName(rt, sb);
         sb += '{ ';
       end;
-      _ObjectToString(val, sb);
+      OTS.ObjectToString(val, sb);
       if typeof(T) <> rt then
         sb += ' }';
     end;
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
-      TypeName(self, sb);
+      OTS.TypeName(self, sb);
       
       var ind: integer;
       Result := not index.TryGetValue(self, ind);
@@ -6572,7 +6589,7 @@ type
     
     private function ToStringHeader(sb: StringBuilder; index: Dictionary<object,integer>): boolean;
     begin
-      TypeName(self, sb);
+      OTS.TypeName(self, sb);
       
       var ind: integer;
       Result := not index.TryGetValue(self, ind);
@@ -8451,7 +8468,7 @@ type
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>; write_tabs: boolean := true);
     begin
       if write_tabs then sb.Append(#9, tabs);
-      TypeName(self, sb);
+      OTS.TypeName(self, sb);
       
       ToStringImpl(sb, tabs+1, index, delayed);
       
@@ -8960,7 +8977,7 @@ type
     public procedure Invoke(c: CLContext) := d();
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleProc0ContainerC = record(ISimpleProc0Container)
@@ -8974,7 +8991,7 @@ type
     public procedure Invoke(c: CLContext) := d(c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -8999,7 +9016,7 @@ type
     public function Invoke(c: CLContext) := d();
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(Delegate(d), sb);
+      OTS.ObjectToString(Delegate(d), sb);
     
   end;
   SimpleFunc0ContainerC<T> = record(ISimpleFunc0Container<T>)
@@ -9013,7 +9030,7 @@ type
     public function Invoke(c: CLContext) := d(c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -9042,7 +9059,7 @@ type
     public procedure Invoke(inp: TInp; c: CLContext) := d(inp);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleProcContainerC<TInp> = record(ISimpleProcContainer<TInp>)
@@ -9056,7 +9073,7 @@ type
     public procedure Invoke(inp: TInp; c: CLContext) := d(inp, c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -9081,7 +9098,7 @@ type
     public function Invoke(inp: TInp; c: CLContext) := d(inp);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleFuncContainerC<TInp,TRes> = record(ISimpleFuncContainer<TInp,TRes>)
@@ -9095,7 +9112,7 @@ type
     public function Invoke(inp: TInp; c: CLContext) := d(inp, c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -9775,7 +9792,7 @@ type
         eh_debug_otp.Write(' = ');
       end;
       
-      TypeName(self, eh_debug_otp);
+      OTS.TypeName(self, eh_debug_otp);
       eh_debug_otp.Write('#');
       eh_debug_otp.Write(ind);
       eh_debug_otp.Write(': ');
@@ -10608,7 +10625,7 @@ type
       sb += 'Actions were not called:'#10;
       for var i := 0 to count-1 do
       begin
-        _ObjectToString(call_list[i], sb);
+        OTS.ObjectToString(call_list[i], sb);
         sb += #10;
       end;
       
@@ -12457,7 +12474,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleFunc2ContainerC<TInp1,TInp2,TRes> = record(ISimpleFunc2Container<TInp1,TInp2,TRes>)
@@ -12471,7 +12488,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -12519,7 +12536,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleProc2ContainerC<TInp1,TInp2> = record(ISimpleProc2Container<TInp1,TInp2>)
@@ -12533,7 +12550,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; c: CLContext) := d(inp1,inp2,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -12881,7 +12898,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleFunc3ContainerC<TInp1,TInp2,TInp3,TRes> = record(ISimpleFunc3Container<TInp1,TInp2,TInp3,TRes>)
@@ -12895,7 +12912,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -12943,7 +12960,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleProc3ContainerC<TInp1,TInp2,TInp3> = record(ISimpleProc3Container<TInp1,TInp2,TInp3>)
@@ -12957,7 +12974,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; c: CLContext) := d(inp1,inp2,inp3,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -13322,7 +13339,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleFunc4ContainerC<TInp1,TInp2,TInp3,TInp4,TRes> = record(ISimpleFunc4Container<TInp1,TInp2,TInp3,TInp4,TRes>)
@@ -13336,7 +13353,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -13384,7 +13401,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleProc4ContainerC<TInp1,TInp2,TInp3,TInp4> = record(ISimpleProc4Container<TInp1,TInp2,TInp3,TInp4>)
@@ -13398,7 +13415,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; c: CLContext) := d(inp1,inp2,inp3,inp4,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -13780,7 +13797,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleFunc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TRes> = record(ISimpleFunc5Container<TInp1,TInp2,TInp3,TInp4,TInp5,TRes>)
@@ -13794,7 +13811,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -13842,7 +13859,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleProc5ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5> = record(ISimpleProc5Container<TInp1,TInp2,TInp3,TInp4,TInp5>)
@@ -13856,7 +13873,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -14255,7 +14272,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleFunc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes> = record(ISimpleFunc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TRes>)
@@ -14269,7 +14286,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -14317,7 +14334,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleProc6ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6> = record(ISimpleProc6Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6>)
@@ -14331,7 +14348,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -14747,7 +14764,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleFunc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes> = record(ISimpleFunc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7,TRes>)
@@ -14761,7 +14778,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public function Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -14809,7 +14826,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   SimpleProc7ContainerC<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7> = record(ISimpleProc7Container<TInp1,TInp2,TInp3,TInp4,TInp5,TInp6,TInp7>)
@@ -14823,7 +14840,7 @@ function operator*(m1, m2: WaitMarker); extensionmethod := CommandQueueBase(m1) 
     public procedure Invoke(inp1: TInp1; inp2: TInp2; inp3: TInp3; inp4: TInp4; inp5: TInp5; inp6: TInp6; inp7: TInp7; c: CLContext) := d(inp1,inp2,inp3,inp4,inp5,inp6,inp7,c);
     
     public procedure ToStringB(sb: StringBuilder) :=
-      _ObjectToString(d, sb);
+      OTS.ObjectToString(d, sb);
     
   end;
   
@@ -16880,7 +16897,7 @@ type
       try_do.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      _ObjectToString(handler, sb);
+      OTS.ObjectToString(handler, sb);
       sb += #10;
       
     end;
@@ -16997,7 +17014,7 @@ type
       try_do.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      _ObjectToString(handler, sb);
+      OTS.ObjectToString(handler, sb);
       sb += #10;
       
     end;
@@ -17113,7 +17130,7 @@ type
       try_do.ToString(sb, tabs, index, delayed);
       
       sb.Append(#9, tabs);
-      _ObjectToString(handler, sb);
+      OTS.ObjectToString(handler, sb);
       sb += #10;
       
     end;
@@ -17146,7 +17163,7 @@ type
     private procedure ToString(sb: StringBuilder; tabs: integer; index: Dictionary<object,integer>; delayed: HashSet<CommandQueueBase>);
     begin
       sb.Append(#9, tabs);
-      TypeName(self, sb);
+      OTS.TypeName(self, sb);
       self.ToStringImpl(sb, tabs+1, index, delayed);
     end;
     
