@@ -21,7 +21,7 @@ type
     
     public procedure Enq(o: T) := lock q do
     begin
-      if done then raise new System.InvalidOperationException($'ERROR: Попытка писать {TypeName(o)}[{_ObjectToString(o)}] в завершенную {TypeName(self)}');
+      if done then raise new System.InvalidOperationException($'ERROR: Попытка писать {TypeName(o)}[{ObjectToString(o)}] в завершенную {TypeName(self)}');
       q.Enqueue(o);
       ev.Set;
     end;
