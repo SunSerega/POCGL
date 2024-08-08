@@ -3461,7 +3461,7 @@
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_command_buffer_mutable_dispatch
-  /// version: 0.9.1 (provisional)
+  /// version: 0.9.2 (provisional)
   /// ext dependencies:
   /// - cl_khr_command_buffer (clCommandBufferKHR)
   clCommandBufferMutableDispatchKHR = sealed partial class
@@ -3475,19 +3475,30 @@
     public const ExtensionString = 'cl_khr_command_buffer_mutable_dispatch';
     
     public UpdateMutableCommandsKHR_adr := GetProcAddress('clUpdateMutableCommandsKHR');
-    private ntv_UpdateMutableCommandsKHR_1 := GetProcOrNil&<function(command_buffer: cl_command_buffer; var mutable_config: cl_mutable_base_config): clErrorCode>(UpdateMutableCommandsKHR_adr);
-    private ntv_UpdateMutableCommandsKHR_2 := GetProcOrNil&<function(command_buffer: cl_command_buffer; mutable_config: IntPtr): clErrorCode>(UpdateMutableCommandsKHR_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; mutable_config: array of cl_mutable_base_config): clErrorCode;
-      type PCl_mutable_base_config = ^cl_mutable_base_config;
+    private ntv_UpdateMutableCommandsKHR_1 := GetProcOrNil&<function(command_buffer: cl_command_buffer; num_configs: UInt32; var config_types: clCommandBufferUpdateType; var configs: IntPtr): clErrorCode>(UpdateMutableCommandsKHR_adr);
+    private ntv_UpdateMutableCommandsKHR_2 := GetProcOrNil&<function(command_buffer: cl_command_buffer; num_configs: UInt32; var config_types: clCommandBufferUpdateType; configs: pointer): clErrorCode>(UpdateMutableCommandsKHR_adr);
+    private ntv_UpdateMutableCommandsKHR_3 := GetProcOrNil&<function(command_buffer: cl_command_buffer; num_configs: UInt32; config_types: IntPtr; var configs: IntPtr): clErrorCode>(UpdateMutableCommandsKHR_adr);
+    private ntv_UpdateMutableCommandsKHR_4 := GetProcOrNil&<function(command_buffer: cl_command_buffer; num_configs: UInt32; config_types: IntPtr; configs: pointer): clErrorCode>(UpdateMutableCommandsKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; num_configs: UInt32; config_types: array of clCommandBufferUpdateType; configs: array of IntPtr): clErrorCode;
+      type PClCommandBufferUpdateType = ^clCommandBufferUpdateType;
+      type PIntPtr = ^IntPtr;
     begin
-      Result := if (mutable_config<>nil) and (mutable_config.Length<>0) then
-        ntv_UpdateMutableCommandsKHR_1(command_buffer, mutable_config[0]) else
-        ntv_UpdateMutableCommandsKHR_1(command_buffer, PCl_mutable_base_config(nil)^);
+      Result := if (configs<>nil) and (configs.Length<>0) then
+        if (config_types<>nil) and (config_types.Length<>0) then
+          ntv_UpdateMutableCommandsKHR_1(command_buffer, num_configs, config_types[0], configs[0]) else
+          ntv_UpdateMutableCommandsKHR_1(command_buffer, num_configs, PClCommandBufferUpdateType(nil)^, configs[0]) else
+        if (config_types<>nil) and (config_types.Length<>0) then
+          ntv_UpdateMutableCommandsKHR_1(command_buffer, num_configs, config_types[0], PIntPtr(nil)^) else
+          ntv_UpdateMutableCommandsKHR_1(command_buffer, num_configs, PClCommandBufferUpdateType(nil)^, PIntPtr(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; var mutable_config: cl_mutable_base_config): clErrorCode :=
-      ntv_UpdateMutableCommandsKHR_1(command_buffer, mutable_config);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; mutable_config: IntPtr): clErrorCode :=
-      ntv_UpdateMutableCommandsKHR_2(command_buffer, mutable_config);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; num_configs: UInt32; var config_types: clCommandBufferUpdateType; var configs: IntPtr): clErrorCode :=
+      ntv_UpdateMutableCommandsKHR_1(command_buffer, num_configs, config_types, configs);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; num_configs: UInt32; var config_types: clCommandBufferUpdateType; configs: pointer): clErrorCode :=
+      ntv_UpdateMutableCommandsKHR_2(command_buffer, num_configs, config_types, configs);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; num_configs: UInt32; config_types: IntPtr; var configs: IntPtr): clErrorCode :=
+      ntv_UpdateMutableCommandsKHR_3(command_buffer, num_configs, config_types, configs);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function UpdateMutableCommandsKHR(command_buffer: cl_command_buffer; num_configs: UInt32; config_types: IntPtr; configs: pointer): clErrorCode :=
+      ntv_UpdateMutableCommandsKHR_4(command_buffer, num_configs, config_types, configs);
     
     public GetMutableCommandInfoKHR_adr := GetProcAddress('clGetMutableCommandInfoKHR');
     private ntv_GetMutableCommandInfoKHR_1 := GetProcOrNil&<function(command: cl_mutable_command; param_name: clMutableCommandInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode>(GetMutableCommandInfoKHR_adr);

@@ -30,6 +30,7 @@ procedure PackAllItems;
 
 implementation
 
+uses '../../../Utils/Fixers';
 uses '../../../Utils/CodeGen';
 
 uses BinUtils;
@@ -166,6 +167,27 @@ end;
 
 {$endregion LoadAll}
 
+{$region MarkAllLockedTypes}
+
+procedure MarkAllLockedTypes;
+begin
+  var locked_types_fname := GetFullPathRTA('MiscInput/LockedTypes.dat');
+  if not FileExists(locked_types_fname) then exit;
+  
+  foreach var (names, descr) in FixerUtils.ReadBlockTemplates(ReadLines(locked_types_fname), '#', true) do
+  begin
+    Otp($'WARNIGN: Locking {names.JoinToString} as used and written. Reason:');
+    foreach var descr_l in descr do
+      Otp($'> {descr_l}');
+    
+    foreach var name in names do
+      TypeLookup.FromNameString(name).Use(true);
+  end;
+  
+end;
+
+{$endregion MarkAllLockedTypes}
+
 {$region ApplyFixers}
 
 procedure AddFuncAutoFixersForAllOutParams := Func.AddAutoFixersForAllOutParams;
@@ -271,6 +293,7 @@ initialization
   try
     var unit_name := System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(GetEXEFileName));
     LoadAll(unit_name);
+    MarkAllLockedTypes;
     LoadedBasicType.ReportAllUnusedTypeConverters;
   except
     on e: Exception do

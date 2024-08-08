@@ -5073,14 +5073,18 @@ context: cl_context
 !ppt
 Result:         clErrorCode
 command_buffer: cl_command_buffer
-mutable_config: array of cl_mutable_base_config const / var cl_mutable_base_config const / IntPtr const
+num_configs:    UInt32
+config_types:   array of clCommandBufferUpdateType const / var clCommandBufferUpdateType const / IntPtr const
+configs:        array of IntPtr const / var IntPtr const / pointer const
 !ffo
-3
-	clErrorCode | cl_command_buffer | array of cl_mutable_base_config const |
-	clErrorCode | cl_command_buffer | var cl_mutable_base_config const      |
-	clErrorCode | cl_command_buffer | IntPtr const                          |
-	----------- | ----------------- | ------------------------------------- |
-	            | command_buffer    | mutable_config                        |
+5
+	clErrorCode | cl_command_buffer | UInt32      | array of clCommandBufferUpdateType const | array of IntPtr const |
+	clErrorCode | cl_command_buffer | UInt32      | var clCommandBufferUpdateType const      | var IntPtr const      |
+	clErrorCode | cl_command_buffer | UInt32      | var clCommandBufferUpdateType const      | pointer const         |
+	clErrorCode | cl_command_buffer | UInt32      | IntPtr const                             | var IntPtr const      |
+	clErrorCode | cl_command_buffer | UInt32      | IntPtr const                             | pointer const         |
+	----------- | ----------------- | ----------- | ---------------------------------------- | --------------------- |
+	            | command_buffer    | num_configs | config_types                             | configs               |
 
 # cl::GetICDLoaderInfo + OCLICD
 !ppt

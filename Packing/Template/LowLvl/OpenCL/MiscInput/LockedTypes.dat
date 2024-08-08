@@ -1,0 +1,9 @@
+﻿
+
+
+# cl::mutable_dispatch_config
+
+Used by "cl::UpdateMutableCommands + KHR":
+Can be passed to one of the items in the last, "void**" parameter
+
+

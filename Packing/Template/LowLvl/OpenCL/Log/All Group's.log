@@ -116,9 +116,8 @@
 	COMMAND_BUFFER_STATE_EXECUTABLE[$0001]
 	COMMAND_BUFFER_STATE_PENDING[$0002]
 
-# clCommandBufferStructureType (cl::CommandBufferStructureType) : UInt32
-	STRUCTURE_TYPE_MUTABLE_BASE_CONFIG[0]
-	STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG[$0001]
+# clCommandBufferUpdateType (cl::CommandBufferUpdateType) : UInt32
+	STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG[0]
 
 # clCommandExecutionStatus (cl::CommandExecutionStatus) : Int32
 	COMPLETE[0]

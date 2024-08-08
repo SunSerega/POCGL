@@ -61,20 +61,12 @@
 	sad_adjust_mode: clSadAdjustMode
 	search_path_type: clSearchPathType
 
-# cl_mutable_base_config (cl::mutable_base_config)
-	type: clCommandBufferStructureType
-	next: IntPtr
-	num_mutable_dispatch: UInt32
-	mutable_dispatch_list: ^cl_mutable_dispatch_config
-
 # cl_mutable_dispatch_arg (cl::mutable_dispatch_arg)
 	arg_index: UInt32
 	arg_size: UIntPtr
 	arg_value: IntPtr
 
 # cl_mutable_dispatch_config (cl::mutable_dispatch_config)
-	type: clCommandBufferStructureType
-	next: IntPtr
 	command: cl_mutable_command
 	num_args: UInt32
 	num_svm_args: UInt32

@@ -359,6 +359,8 @@ type
       
       save_ready := Defined.Values.Where(item->item.merged_into=nil).Distinct.ToArray;
       Sort(save_ready, item->item.Name);
+//      foreach var item in save_ready do
+//        Otp($'{typeof(TSelf)}: {item.Name}');
       
       for var i := 0 to save_ready.Length-1 do
         save_ready[i].bin_index := i;

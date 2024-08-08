@@ -20,6 +20,9 @@ Loading Feature items
 Loading Feature fixers canceled: No folder
 Loading Extension items
 Loading Extension fixers
+WARNIGN: Locking cl::mutable_dispatch_config as used and written. Reason:
+> Used by "cl::UpdateMutableCommands + KHR":
+> Can be passed to one of the items in the last, "void**" parameter
 Fixing Group items
 Fixing IdClass items
 Fixing Struct items
@@ -106,7 +109,7 @@ Dumping Delegate items
 PascalBasicType: Packed 12 items
 Group: Packed 113 items
 IdClass: Packed 28 items
-Struct: Packed 17 items
+Struct: Packed 16 items
 Delegate: Packed 7 items
 Func: Packed 241 items
 Feature: Packed 1 items

@@ -393,20 +393,17 @@
   end;
   
   ///
-  clCommandBufferStructureType = record
+  clCommandBufferUpdateType = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property STRUCTURE_TYPE_MUTABLE_BASE_CONFIG:     clCommandBufferStructureType read new clCommandBufferStructureType(0);
-    public static property STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG: clCommandBufferStructureType read new clCommandBufferStructureType($0001);
+    public static property STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG: clCommandBufferUpdateType read new clCommandBufferUpdateType(0);
     
     public function ToString: string; override;
     begin
-      if STRUCTURE_TYPE_MUTABLE_BASE_CONFIG = self then
-        Result := 'STRUCTURE_TYPE_MUTABLE_BASE_CONFIG' else
       if STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG = self then
         Result := 'STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG' else
-        Result := $'clCommandBufferStructureType[{self.val}]';
+        Result := $'clCommandBufferUpdateType[{self.val}]';
     end;
     
   end;
@@ -6193,8 +6190,6 @@
   
   ///
   cl_mutable_dispatch_config = record
-    public &type: clCommandBufferStructureType;
-    public next: IntPtr;
     public command: cl_mutable_command;
     public num_args: UInt32;
     public num_svm_args: UInt32;
@@ -6207,10 +6202,8 @@
     public global_work_size: ^UIntPtr;
     public local_work_size: ^UIntPtr;
     
-    public constructor(&type: clCommandBufferStructureType; next: IntPtr; command: cl_mutable_command; num_args: UInt32; num_svm_args: UInt32; num_exec_infos: UInt32; work_dim: UInt32; arg_list: ^cl_mutable_dispatch_arg; arg_svm_list: ^cl_mutable_dispatch_arg; exec_info_list: ^cl_mutable_dispatch_exec_info; global_work_offset: ^UIntPtr; global_work_size: ^UIntPtr; local_work_size: ^UIntPtr);
+    public constructor(command: cl_mutable_command; num_args: UInt32; num_svm_args: UInt32; num_exec_infos: UInt32; work_dim: UInt32; arg_list: ^cl_mutable_dispatch_arg; arg_svm_list: ^cl_mutable_dispatch_arg; exec_info_list: ^cl_mutable_dispatch_exec_info; global_work_offset: ^UIntPtr; global_work_size: ^UIntPtr; local_work_size: ^UIntPtr);
     begin
-      self.type               := &type;
-      self.next               := next;
       self.command            := command;
       self.num_args           := num_args;
       self.num_svm_args       := num_svm_args;
@@ -6222,23 +6215,6 @@
       self.global_work_offset := global_work_offset;
       self.global_work_size   := global_work_size;
       self.local_work_size    := local_work_size;
-    end;
-    
-  end;
-  
-  ///
-  cl_mutable_base_config = record
-    public &type: clCommandBufferStructureType;
-    public next: IntPtr;
-    public num_mutable_dispatch: UInt32;
-    public mutable_dispatch_list: ^cl_mutable_dispatch_config;
-    
-    public constructor(&type: clCommandBufferStructureType; next: IntPtr; num_mutable_dispatch: UInt32; mutable_dispatch_list: ^cl_mutable_dispatch_config);
-    begin
-      self.type                  := &type;
-      self.next                  := next;
-      self.num_mutable_dispatch  := num_mutable_dispatch;
-      self.mutable_dispatch_list := mutable_dispatch_list;
     end;
     
   end;
