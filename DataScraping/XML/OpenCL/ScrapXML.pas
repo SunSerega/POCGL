@@ -62,7 +62,7 @@ type
     private val_s: string;
     
     public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
-      inherited MakeName&<EnumName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes, '*_E');
+      ItemSourceHelpers.MakeName&<EnumName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes, '*_E');
     
     /// CL_FLT_MAX and stuff
     private static external_enum_names := new HashSet<string>;
@@ -182,7 +182,7 @@ type
     private definitions := new List<XmlNode>;
     
     public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
-      inherited MakeName&<GroupName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes, '*_e');
+      ItemSourceHelpers.MakeName&<GroupName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes, '*_e');
     
     private constructor(gr_name: GroupName; org_name, etype: string);
     begin
@@ -268,7 +268,7 @@ type
     private is_ptr_hungry: boolean;
     
     public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
-      inherited MakeName&<IdClassName>(api, s, api, allow_nil, skip_invalid, nil, VendorSuffixSource.known_suffixes, '*_e','*E');
+      ItemSourceHelpers.MakeName&<IdClassName>(api, s, api, allow_nil, skip_invalid, nil, VendorSuffixSource.known_suffixes, '*_e','*E');
     
     public constructor(name: IdClassName; base_t: string; is_ptr_hungry: boolean);
     begin
@@ -289,7 +289,7 @@ type
     private member_ns: array of XmlNode;
     
     public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
-      inherited MakeName&<StructName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes, '*_e');
+      ItemSourceHelpers.MakeName&<StructName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes, '*_e');
     
     public constructor(n: XmlNode);
     begin
@@ -309,7 +309,7 @@ type
     private par_ns: array of XmlNode;
     
     public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
-      inherited MakeName&<DelegateName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes);
+      ItemSourceHelpers.MakeName&<DelegateName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes);
     
     public constructor(n: XmlNode);
     begin
@@ -333,7 +333,7 @@ type
     private par_ns: array of XmlNode;
     
     public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
-      inherited MakeName&<FuncName>(api, s, api, allow_nil, skip_invalid, false, VendorSuffixSource.known_suffixes, '*E');
+      ItemSourceHelpers.MakeName&<FuncName>(api, s, api, allow_nil, skip_invalid, false, VendorSuffixSource.known_suffixes, '*E');
     
     public constructor(name: FuncName; entry_point_name: string; par_ns: sequence of XmlNode);
     begin
@@ -423,6 +423,49 @@ type
   
   {$region Extension}
   
+  ExtensionHelpers = static class
+    
+    public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
+      ItemSourceHelpers.MakeName&<ExtensionName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes, 'e_*','E_*');
+    
+    private static function MakeFeatureOrExtensionName(s: string): (FeatureName, ExtensionName);
+    begin
+      var f := FeatureSource.MakeName(s, true, true);
+      Result := (f, if f<>nil then nil else ExtensionHelpers.MakeName(s, true, true));
+    end;
+    
+  end;
+  
+  ExtensionDepOptionSource = sealed class
+    private core_dep: FeatureName;
+    private ext_deps: array of ExtensionName;
+    
+    public constructor(deps_s: string);
+    begin
+      self.core_dep := nil;
+      var ext_deps_l := new List<ExtensionName>;
+      
+      foreach var dep_s in deps_s.Split('+') do
+      begin
+        var (f,e) := ExtensionHelpers.MakeFeatureOrExtensionName(dep_s);
+        
+        if f<>nil then
+        begin
+          if core_dep<>nil then
+            raise new System.NotImplementedException;
+          core_dep := f;
+        end;
+        
+        if e<>nil then
+          ext_deps_l += e;
+        
+      end;
+      
+      self.ext_deps := ext_deps_l.ToArray;
+    end;
+    
+  end;
+  
   ExtensionSource = sealed class(ItemSource<ExtensionSource, ExtensionName, Extension>)
     private ext_str: string;
     private rns: sequence of XmlNode;
@@ -430,20 +473,12 @@ type
     private revision: string;
     private provisional: boolean;
     
-    private core_dep: FeatureName;
-    private ext_deps: array of ExtensionName;
+    private dep_options: array of ExtensionDepOptionSource;
     
     private obsolete_by: (FeatureName, ExtensionName);
     private promoted_to: (FeatureName, ExtensionName);
     
-    public static function MakeName(s: string; allow_nil, skip_invalid: boolean) :=
-      inherited MakeName&<ExtensionName>(api, s, api, allow_nil, skip_invalid, true, VendorSuffixSource.known_suffixes, 'e_*','E_*');
-    
-    private static function MakeFeatureOrExtensionName(s: string): (FeatureName, ExtensionName);
-    begin
-      var f := FeatureSource.MakeName(s, true, true);
-      Result := (f, if f<>nil then nil else ExtensionSource.MakeName(s, true, true));
-    end;
+    public static function MakeName(s: string; allow_nil, skip_invalid: boolean) := ExtensionHelpers.MakeName(s, allow_nil, skip_invalid);
     
     public constructor(name: ExtensionName; ext_str: string; rns: sequence of XmlNode; revision, provisional, deps, obsolete_by, promoted_to: string);
     begin
@@ -462,36 +497,18 @@ type
         self.provisional := true;
       end;
       
-      if ext_str='cl_khr_gl_depth_images' then
-      begin
-        ext_str := ext_str;
-      end;
-      
-      self.core_dep := nil;
       if string.IsNullOrEmpty(deps) then
-        ext_deps := System.Array.Empty&<ExtensionName> else
+        self.dep_options := System.Array.Empty&<ExtensionDepOptionSource> else
       begin
-        var ext_deps_l := new List<ExtensionName>;
-        foreach var dep in deps.Split('+') do
-        begin
-          var (f,e) := MakeFeatureOrExtensionName(dep);
-          
-          if f<>nil then
-          begin
-            if core_dep<>nil then
-              raise new System.NotImplementedException;
-            core_dep := f;
-          end;
-          
-          if e<>nil then
-            ext_deps_l += e;
-          
-        end;
-        self.ext_deps := ext_deps_l.ToArray;
+        if '()'.Any(ch->deps.Contains(ch)) then
+          // Need more complex parsing
+          // Prob. convert to DNF after parsing, when it becomes needed
+          raise new NotImplementedException;
+        self.dep_options := deps.Split(',').ConvertAll(deps_opt->new ExtensionDepOptionSource(deps_opt));
       end;
       
-      self.obsolete_by := MakeFeatureOrExtensionName(obsolete_by);
-      self.promoted_to := MakeFeatureOrExtensionName(promoted_to);
+      self.obsolete_by := ExtensionHelpers.MakeFeatureOrExtensionName(obsolete_by);
+      self.promoted_to := ExtensionHelpers.MakeFeatureOrExtensionName(promoted_to);
       
     end;
     
@@ -583,7 +600,7 @@ begin
           else raise new System.NotImplementedException(v);
         end;
       end else
-      if EnumSource.FindOrMakeItem(EnumSource.MakeName(val_str, true, false)) is Enum(var old_e) then
+      if EnumSource.FindOrMakeItem(EnumSource.MakeName(val_str, true, false), true) is Enum(var old_e) then
         val := old_e.Value else
         raise new MessageException($'ERROR: Could not parse value [{val_str}] of {self}');
   end;
@@ -773,7 +790,7 @@ begin
       var ename := enum_n['name'];
       if ename in EnumSource.external_enum_names then
         continue;
-      var e := EnumSource.FindOrMakeItem(EnumSource.MakeName(ename,false,false));
+      var e := EnumSource.FindOrMakeItem(EnumSource.MakeName(ename,false,false), false);
       if not new_enums.Add(e) then
         Otp($'WARNING: {e} was added twice in the same RN') else
       if e not in node_by_enum then
@@ -815,7 +832,7 @@ begin
       end else
       if sz_s.IsInteger then
         sz := new ParArrSizeConst(sz_s.ToInteger) else
-      if EnumSource.FindOrMakeItem(EnumSource.MakeName(sz_s,true,false)) is Enum(var old_e) then
+      if EnumSource.FindOrMakeItem(EnumSource.MakeName(sz_s,true,false), true) is Enum(var old_e) then
         sz := new ParArrSizeConst(old_e.Value) else
         raise new System.FormatException(sz_s);
     end else
@@ -869,9 +886,8 @@ begin
           
           else
           begin
-            var old_e := EnumSource.FindOrMakeItem(EnumSource.MakeName(terminate_s,false,false));
-            if old_e=nil then raise nil;
-            term_by.Add(old_e, e);
+            var terminate_e := EnumSource.FindOrMakeItem(EnumSource.MakeName(terminate_s,false,false), false);
+            term_by.Add(terminate_e, e);
           end;
         end;
         
@@ -939,7 +955,7 @@ begin
       var text_end := $'[{static_len_enum_name}]';
       if not text.EndsWith(text_end) then raise new System.InvalidOperationException;
       text := text.RemoveEnd(text_end);
-      len := new ParArrSizeConst(EnumSource.FindOrMakeItem(EnumSource.MakeName(static_len_enum_name, false, false)).Value);
+      len := new ParArrSizeConst(EnumSource.FindOrMakeItem(EnumSource.MakeName(static_len_enum_name, false, false), false).Value);
     end else
       len := ParArrSizeNotArray.Instance;
     
@@ -1017,8 +1033,7 @@ begin
   
   Result := new Func(self.Name, self.entry_point_name, pars, nil);
   
-  var err_code_gr := GroupSource.FindOrMakeItem(GroupSource.MakeName('cl_error_code',false,false));
-  if err_code_gr=nil then raise nil;
+  var err_code_gr := GroupSource.FindOrMakeItem(GroupSource.MakeName('cl_error_code',false,false), false);
   
   var have_err_ret := pars.Any(par->par.ParType.TypeObj = err_code_gr);
   
@@ -1101,7 +1116,7 @@ end;
           func_n.TryDiscardAttrib('requires');
           
           var name := func_n['name'];
-          Result.funcs += FuncSource.FindOrMakeItem(FuncSource.MakeName(name, false, false));
+          Result.funcs += FuncSource.FindOrMakeItem(FuncSource.MakeName(name, false, false), false);
           
         end;
         {$endregion func}
@@ -1157,11 +1172,13 @@ function ExtensionSource.MakeNewItem :=
     
     self.revision, self.provisional,
     
-    FeatureSource.FindOrMakeItem(self.core_dep),
-    self.ext_deps.ConvertAll(ExtensionSource.FindOrMakeItem),
+    self.dep_options.ConvertAll(dep_opt->new ExtensionDepOption(
+      FeatureSource.FindOrMakeItem(dep_opt.core_dep, true),
+      dep_opt.ext_deps.ConvertAll(name->ExtensionSource.FindOrMakeItem(name, false))
+    )),
     
-    (FeatureSource.FindOrMakeItem(self.obsolete_by[0]), ExtensionSource.FindOrMakeItem(self.obsolete_by[1])),
-    (FeatureSource.FindOrMakeItem(self.promoted_to[0]), ExtensionSource.FindOrMakeItem(self.promoted_to[1]))
+    (FeatureSource.FindOrMakeItem(self.obsolete_by[0], true), ExtensionSource.FindOrMakeItem(self.obsolete_by[1], true)),
+    (FeatureSource.FindOrMakeItem(self.promoted_to[0], true), ExtensionSource.FindOrMakeItem(self.promoted_to[1], true))
     
   );
 

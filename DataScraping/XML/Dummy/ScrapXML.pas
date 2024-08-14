@@ -106,14 +106,14 @@ type
     begin
       if tname=nil then raise nil;
       
-      var gr := GroupSource.FindOrMakeItem(tname);
+      var gr := GroupSource.FindOrMakeItem(tname, true);
       if gr<>nil then
       begin
         Result := new TypeRef(gr);
         exit;
       end;
       
-      var bt := BasicTypeSource.FindOrMakeItem(tname);
+      var bt := BasicTypeSource.FindOrMakeItem(tname, true);
       if bt<>nil then
       begin
         Result := new TypeRef(bt);
@@ -184,7 +184,7 @@ begin
     .ToArray
   );
   
-  Result := new Group(new GroupName('', nil, self.Name), |BasicTypeSource.FindOrMakeItem('enum_base')|, enums);
+  Result := new Group(new GroupName('', nil, self.Name), |BasicTypeSource.FindOrMakeItem('enum_base', false)|, enums);
 end;
 
 {$endregion Group}

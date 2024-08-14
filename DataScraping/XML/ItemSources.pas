@@ -9,19 +9,9 @@ uses ScrapUtils;
 uses NamedItems;
 
 type
-  ItemSource<TSelf, TSourceName, TItem> = abstract class
-  where TSelf: ItemSource<TSelf, TSourceName, TItem>;
-  where TSourceName: class, IEquatable<TSourceName>;
-  where TItem: class;
-    private _name: TSourceName;
-    private ready := default(TItem);
-    private static all_sources := new Dictionary<TSourceName, TSelf>;
+  ItemSourceHelpers = static class
     
-    public static procedure PrintAllNames := all_sources.Keys.PrintLines;
-    
-    static constructor;
-    
-    protected static function MakeName<TFullName>(api, s, api_beg: string; allow_nil, skip_invalid: boolean; api_underscore_sep: boolean?; known_suffixes: HashSet<string>; params suffix_formats: array of string): TFullName;
+    public static function MakeName<TFullName>(api, s, api_beg: string; allow_nil, skip_invalid: boolean; api_underscore_sep: boolean?; known_suffixes: HashSet<string>; params suffix_formats: array of string): TFullName;
       where TFullName: ApiVendorLName<TFullName>;
     begin
       Result := nil;
@@ -49,6 +39,20 @@ type
         TFullName.ParseSuffix(l_name, known_suffixes, suffix_formats);
       Result := TFullName(ctor.Invoke(new object[](api, s, api_beg, api_underscore_sep, extract_suffix)));
     end;
+    
+  end;
+  
+  ItemSource<TSelf, TSourceName, TItem> = abstract class
+  where TSelf: ItemSource<TSelf, TSourceName, TItem>;
+  where TSourceName: class, IEquatable<TSourceName>;
+  where TItem: class;
+    private _name: TSourceName;
+    private ready := default(TItem);
+    private static all_sources := new Dictionary<TSourceName, TSelf>;
+    
+    public static procedure PrintAllNames := all_sources.Keys.PrintLines;
+    
+    static constructor;
     
     protected constructor(name: TSourceName);
     begin
@@ -101,11 +105,24 @@ type
       
     end;
     
-    public static function FindOrMakeItem(name: TSourceName): TItem;
+    public static function FindOrMakeItem(name: TSourceName; allow_nil: boolean; reason: string := nil): TItem;
     begin
-      Result := nil;
-      if name=nil then exit;
+      if reason<>nil then
+        reason := '; Reason: '+reason;
+      
+      if name=nil then
+      begin
+        if not allow_nil then
+          raise new InvalidOperationException($'Requested {TypeToTypeName(typeof(TItem))} for a nil name{reason}');
+        Result := nil;
+        exit;
+      end;
+      
       Result := all_sources.Get(name)?.GetItem;
+      if Result<>nil then exit;
+      if not allow_nil then
+        raise new InvalidOperationException($'Returned a nil {TypeToTypeName(typeof(TItem))} for name [{name}]{reason}');
+      
     end;
     
     protected function MakeNewItem: TItem; abstract;

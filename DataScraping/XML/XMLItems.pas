@@ -1154,6 +1154,19 @@ type
     
   end;
   
+  Extension = class;
+  ExtensionDepOption = record
+    private core_dep: Feature;
+    private ext_deps: array of Extension;
+    
+    public constructor(core_dep: Feature; ext_deps: array of Extension);
+    begin
+      self.core_dep := core_dep;
+      self.ext_deps := ext_deps;
+    end;
+    
+  end;
+  
   Extension = sealed class(NamedItem<Extension, ExtensionName>)
     private ext_str: string;
     private add: RequiredList;
@@ -1161,8 +1174,7 @@ type
     private revision: string;
     private provisional: boolean;
     
-    private core_dep: Feature;
-    private ext_deps: array of Extension;
+    private dep_options: array of ExtensionDepOption;
     
     private obsolete_by: (Feature, Extension);
     private promoted_to: (Feature, Extension);
@@ -1177,8 +1189,7 @@ type
       name: ExtensionName;
       ext_str: string; add: RequiredList;
       revision: string; provisional: boolean;
-      core_dep: Feature;
-      ext_deps: array of Extension;
+      dep_options: array of ExtensionDepOption;
       obsolete_by: (Feature, Extension);
       promoted_to: (Feature, Extension)
     );
@@ -1188,8 +1199,7 @@ type
       self.add := add;
       self.revision := revision;
       self.provisional := provisional;
-      self.core_dep := core_dep;
-      self.ext_deps := ext_deps;
+      self.dep_options := dep_options;
       self.obsolete_by := obsolete_by;
       self.promoted_to := promoted_to;
     end;
@@ -1204,8 +1214,12 @@ type
       bw.WriteNullable(self.revision, bw.Write);
       bw.Write(self.provisional);
       
-      bw.WriteBinIndexOrNil(self.core_dep);
-      bw.WriteBinIndexArr( Extension.DistillAllUnique(self.ext_deps) );
+      bw.Write(self.dep_options.Length);
+      foreach var dep_opt in self.dep_options do
+      begin
+        bw.WriteBinIndexOrNil(dep_opt.core_dep);
+        bw.WriteBinIndexArr( Extension.DistillAllUnique(dep_opt.ext_deps) );
+      end;
       
       bw.WriteAnyBinIndexOrNil(self.obsolete_by);
       bw.WriteAnyBinIndexOrNil(self.promoted_to);

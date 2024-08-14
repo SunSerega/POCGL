@@ -2458,6 +2458,18 @@ type
   
   {$region Extension}
   
+  ExtensionDepOption = record
+    private core_dep_ind: integer?
+    private ext_dep_inds: array of integer;
+    
+    public constructor(br: BinReader);
+    begin
+      self.core_dep_ind := br.ReadIndexOrNil;
+      self.ext_dep_inds := br.ReadInt32Arr;
+    end;
+    
+  end;
+  
   FeatureOrExtensionIndex = record
     public f_ind := default(integer?);
     public e_ind := default(integer?);
@@ -2479,8 +2491,7 @@ type
     private revision: string;
     private provisional: boolean;
     
-    private core_dep_ind: integer?
-    private ext_dep_inds: array of integer;
+    private dep_options: array of ExtensionDepOption;
     
     private obsolete_by: FeatureOrExtensionIndex;
     private promoted_to: FeatureOrExtensionIndex;
@@ -2497,8 +2508,7 @@ type
       Result.revision := br.ReadOrNil(br->br.ReadString);
       Result.provisional := br.ReadBoolean;
       
-      Result.core_dep_ind := br.ReadIndexOrNil;
-      Result.ext_dep_inds := br.ReadInt32Arr;
+      Result.dep_options := br.ReadArr(br->new ExtensionDepOption(br));
       
       Result.obsolete_by := new FeatureOrExtensionIndex(br);
       Result.promoted_to := new FeatureOrExtensionIndex(br);
@@ -2512,11 +2522,13 @@ type
     public property RevisionStr: string read revision;
     public property IsProvisional: boolean read provisional;
     
-    public function HasCoreDependency := core_dep_ind<>nil;
-    public function CoreDependency := Feature.ByIndex(core_dep_ind.Value);
+    public property DepOptionCount: integer read dep_options.Length;
     
-    public function HasExtDependencies := ext_dep_inds.Length<>0;
-    public function ExtDependencies := Extension.MakeLazySeq(ext_dep_inds).ToSeq;
+    public function HasCoreDependency(i: integer) := dep_options[i].core_dep_ind<>nil;
+    public function CoreDependency(i: integer) := Feature.ByIndex(dep_options[i].core_dep_ind.Value);
+    
+    public function HasExtDependencies(i: integer) := dep_options[i].ext_dep_inds.Length<>0;
+    public function ExtDependencies(i: integer) := Extension.MakeLazySeq(dep_options[i].ext_dep_inds).ToSeq;
     
     public property ObsoletedBy: FeatureOrExtensionIndex read obsolete_by;
     public property PromotedTo: FeatureOrExtensionIndex read promoted_to;
@@ -2545,8 +2557,9 @@ type
       if not ApiManager.ShouldKeep(api) then exit;
       Extension.written_c += 1;
       
-      foreach var dep in ExtDependencies do
-        dep.Save;
+      for var dep_opt_i := 0 to DepOptionCount-1 do
+        foreach var dep in ExtDependencies(dep_opt_i) do
+          dep.Save;
       
       var any_funcs := add.Funcs.Any;
       
@@ -2585,81 +2598,137 @@ type
         intr_wr += '  [PCUNotRestore]'#10;
       end;
       
-      intr_wr += '  /// id: ';
-      intr_wr += self.ExtensionString;
-      intr_wr += #10;
-      
-      if (self.RevisionStr<>nil) or (self.IsProvisional) then
+      {$region description}
       begin
-        intr_wr += '  /// version: ';
-        if self.RevisionStr<>nil then
+        var curr_tab := '';
+        
+        var descr_block := (body: Action)->
         begin
-          intr_wr += self.RevisionStr;
+          var old_tab := curr_tab;
+          var own_tab := if curr_tab='' then ' -' else '--'+curr_tab;
+          curr_tab := own_tab;
+          
+          body();
+          
+          if curr_tab <> own_tab then
+            raise new InvalidOperationException;
+          curr_tab := old_tab;
+        end;
+        //TODO #3197
+        var descr_line := procedure(body: Action<Writer>)->
+        begin
+          var wr := intr_wr;
+          
+          wr += '  ///';
+          wr += curr_tab;
+          wr += ' ';
+          
+          body(wr);
+          
+          wr += #10;
+        end;
+        
+        {$region id}
+        
+        descr_line(wr->
+        begin
+          wr += 'id: ';
+          wr += self.ExtensionString;
+        end);
+        
+        {$endregion id}
+        
+        {$region version}
+        
+        if (self.RevisionStr<>nil) or (self.IsProvisional) then descr_line(wr->
+        begin
+          wr += 'version: ';
+          if self.RevisionStr<>nil then
+          begin
+            wr += self.RevisionStr;
+            if self.IsProvisional then
+              wr += ' (provisional)';
+          end else
           if self.IsProvisional then
-            intr_wr += ' (provisional)';
-        end else
-        if self.IsProvisional then
-          intr_wr += 'provisional';
-        intr_wr += #10;
-      end;
-      
-      var write_feature := procedure(wr: Writer; f: Feature)->
-      begin
-        wr += f.Name.SourceAPI;
-        wr += ' ';
-        wr += f.Name.Major;
-        wr += '.';
-        wr += f.Name.Minor;
-      end;
-      if self.HasCoreDependency then
-      begin
-        intr_wr += '  /// core dependency: ';
-        write_feature(intr_wr, self.CoreDependency);
-        intr_wr += #10;
-      end;
-      
-      var write_ext := procedure(wr: Writer; e: Extension)->
-      begin
-        wr += e.ExtensionString;
-        wr += ' (';
-        wr += e.MakeWriteableName;
-        wr += ')';
-      end;
-      if self.HasExtDependencies then
-      begin
-        intr_wr += '  /// ext dependencies:'#10;
-        foreach var e in self.ExtDependencies do
-        begin
-          intr_wr += '  /// - ';
-          write_ext(intr_wr, e);
-          intr_wr += #10;
-        end;
-      end;
-      
-      var write_foe := procedure(wr: Writer; foe: FeatureOrExtensionIndex; header: string)->
-      begin
+            wr += 'provisional';
+        end);
         
-        if foe.f_ind<>nil then
+        {$endregion version}
+        
+        {$region feature/extension references}
+  
+        var write_feature := procedure(wr: Writer; f: Feature)->
         begin
-          wr += '  /// ';
-          wr += header;
-          wr += ': ';
-          write_feature(wr, Feature.ByIndex(foe.f_ind.Value));
-          wr += #10;
+          wr += f.Name.SourceAPI;
+          wr += ' ';
+          wr += f.Name.Major;
+          wr += '.';
+          wr += f.Name.Minor;
+        end;
+        var write_ext := procedure(wr: Writer; e: Extension)->
+        begin
+          wr += e.ExtensionString;
+          wr += ' (';
+          wr += e.MakeWriteableName;
+          wr += ')';
         end;
         
-        if foe.e_ind<>nil then
+        var write_dep_opt := procedure(opt_i: integer)->
         begin
-          wr += '  /// ';
-          wr += header;
-          wr += ': ';
-          write_ext(wr, Extension.ByIndex(foe.e_ind.Value));
-          wr += #10;
+          
+          if self.HasCoreDependency(opt_i) then descr_line(wr->
+          begin
+            wr += 'core dependency: ';
+            write_feature(wr, self.CoreDependency(opt_i));
+          end);
+          
+          if self.HasExtDependencies(opt_i) then
+          begin
+            descr_line(wr->(wr += 'ext dependencies:'));
+            descr_block(()->
+              foreach var e in self.ExtDependencies(opt_i) do
+                descr_line(wr->write_ext(wr, e))
+            );
+          end;
+          
         end;
         
+        case self.DepOptionCount of
+          0: ;
+          1: write_dep_opt(0);
+          else
+            for var opt_i := 0 to self.DepOptionCount-1 do
+            begin
+              descr_line(wr->(wr += $'dependency option {opt_i+1}'));
+              descr_block(()->write_dep_opt(opt_i));
+            end;
+        end;
+        
+        var write_foe := procedure(foe: FeatureOrExtensionIndex; header: string)->
+        begin
+          
+          if foe.f_ind<>nil then descr_line(wr->
+          begin
+            wr += header;
+            wr += ': ';
+            write_feature(wr, Feature.ByIndex(foe.f_ind.Value));
+          end);
+          
+          if foe.e_ind<>nil then descr_line(wr->
+          begin
+            wr += header;
+            wr += ': ';
+            write_ext(wr, Extension.ByIndex(foe.e_ind.Value));
+          end);
+          
+        end;
+        write_foe(self.ObsoletedBy, 'obsoleted by');
+        write_foe(self.PromotedTo, 'promoted to');
+              
+        {$endregion feature/extension references}
+        
       end;
-      write_foe(intr_wr, self.ObsoletedBy, 'obsoleted by');
-      write_foe(intr_wr, self.PromotedTo, 'promoted to');
+      {$endregion description}
       
       intr_wr += '  ';
       intr_wr += display_name;

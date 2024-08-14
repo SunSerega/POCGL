@@ -14330,8 +14330,21 @@ type
     
   end;
   
+  /// id: cl_khr_extended_versioning
+  /// version: 1.0.0
+  /// promoted to: cl 3.0
+  clExtendedVersioningKHR = static class
+    public const ExtensionString = 'cl_khr_extended_versioning';
+  end;
+  
   /// id: cl_ext_cxx_for_opencl
-  /// version: 0.0.0
+  /// version: 1.0.0
+  /// dependency option 1
+  /// - core dependency: cl 3.0
+  /// dependency option 2
+  /// - core dependency: cl 2.0
+  /// - ext dependencies:
+  ///-- - cl_khr_extended_versioning (clExtendedVersioningKHR)
   clCxxForOpenclEXT = static class
     public const ExtensionString = 'cl_ext_cxx_for_opencl';
   end;
@@ -14341,7 +14354,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_ext_device_fission
-  /// version: 0.0.0
+  /// version: 1.0.0
   clDeviceFissionEXT = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -14415,22 +14428,13 @@ type
   end;
   
   /// id: cl_ext_float_atomics
-  /// version: 0.0.0
+  /// version: 1.0.0
+  /// dependency option 1
+  /// - core dependency: cl 2.0
+  /// dependency option 2
+  /// - core dependency: cl 3.0
   clFloatAtomicsEXT = static class
     public const ExtensionString = 'cl_ext_float_atomics';
-  end;
-  
-  /// id: cl_ext_image_from_buffer
-  /// version: 0.0.0
-  /// core dependency: cl 3.0
-  clImageFromBufferEXT = static class
-    public const ExtensionString = 'cl_ext_image_from_buffer';
-  end;
-  
-  /// id: cl_ext_image_raw10_raw12
-  /// version: 0.0.0
-  clImageRaw10Raw12EXT = static class
-    public const ExtensionString = 'cl_ext_image_raw10_raw12';
   end;
   
   {$ifndef DEBUG}
@@ -14438,7 +14442,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_ext_image_requirements_info
-  /// version: 0.0.0
+  /// version: 0.5.0
   /// core dependency: cl 3.0
   clImageRequirementsInfoEXT = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -14554,12 +14558,28 @@ type
     
   end;
   
+  /// id: cl_ext_image_from_buffer
+  /// version: 1.0.0
+  /// core dependency: cl 3.0
+  /// ext dependencies:
+  /// - cl_ext_image_requirements_info (clImageRequirementsInfoEXT)
+  clImageFromBufferEXT = static class
+    public const ExtensionString = 'cl_ext_image_from_buffer';
+  end;
+  
+  /// id: cl_ext_image_raw10_raw12
+  /// version: 1.0.0
+  /// core dependency: cl 1.2
+  clImageRaw10Raw12EXT = static class
+    public const ExtensionString = 'cl_ext_image_raw10_raw12';
+  end;
+  
   {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_ext_migrate_memobject
-  /// version: 0.0.0
+  /// version: 1.0.0
   clMigrateMemobjectEXT = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -18316,13 +18336,6 @@ type
   /// version: 1.0.0
   clExtendedBitOpsKHR = static class
     public const ExtensionString = 'cl_khr_extended_bit_ops';
-  end;
-  
-  /// id: cl_khr_extended_versioning
-  /// version: 1.0.0
-  /// promoted to: cl 3.0
-  clExtendedVersioningKHR = static class
-    public const ExtensionString = 'cl_khr_extended_versioning';
   end;
   
   {$ifndef DEBUG}

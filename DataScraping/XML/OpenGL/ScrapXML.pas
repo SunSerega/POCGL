@@ -88,7 +88,7 @@ type
     begin
       if name='__GLXextFuncPtr' then
         name := name.TrimStart('_');
-      Result := inherited MakeName&<DelegateName>(api, name, api, allow_nil, skip_invalid, false, VendorSuffixSource.known_suffixes, '*E','e*');
+      Result := ItemSourceHelpers.MakeName&<DelegateName>(api, name, api, allow_nil, skip_invalid, false, VendorSuffixSource.known_suffixes, '*E','e*');
     end;
     
     public constructor(api, name, text: string);
@@ -187,7 +187,7 @@ type
         name := name.Substring(api_sep_ind+2);
       end;
       
-      Result := inherited MakeName&<GroupName>(api, name, '', false, false, false, VendorSuffixSource.known_suffixes, '*E');
+      Result := ItemSourceHelpers.MakeName&<GroupName>(api, name, '', false, false, false, VendorSuffixSource.known_suffixes, '*E');
     end;
     
     public static procedure Register(api,name: string; is_bitfield: boolean; ename: EnumName);
@@ -229,7 +229,7 @@ type
       if (context_api='wgl') and l_name.StartsWith('ERROR') then
         api_beg := '';
       
-      Result := inherited MakeName&<EnumName>(own_api, l_name, api_beg, for_lookup, false, api_beg<>'', VendorSuffixSource.known_suffixes, '*_E');
+      Result := ItemSourceHelpers.MakeName&<EnumName>(own_api, l_name, api_beg, for_lookup, false, api_beg<>'', VendorSuffixSource.known_suffixes, '*_E');
       if Result=nil then exit;
       
       if not for_lookup then exit;
@@ -237,7 +237,7 @@ type
       
       if own_api in |'gles1', 'gles2', 'glsc2'| then
       begin
-        Result := inherited MakeName&<EnumName>('gl', l_name, api_beg, for_lookup, false, api_beg<>'', VendorSuffixSource.known_suffixes, '*_E');
+        Result := ItemSourceHelpers.MakeName&<EnumName>('gl', l_name, api_beg, for_lookup, false, api_beg<>'', VendorSuffixSource.known_suffixes, '*_E');
       end;
       
     end;
@@ -330,7 +330,7 @@ type
     public static extra_defined := new HashSet<IdClassName>;
     
     public static function MakeName(api, name: string; skip_invalid: boolean) := if (name=nil) or name.StartsWith('_') then nil else
-      inherited MakeName&<IdClassName>(api, name, '', false, skip_invalid, false, VendorSuffixSource.known_suffixes);
+      ItemSourceHelpers.MakeName&<IdClassName>(api, name, '', false, skip_invalid, false, VendorSuffixSource.known_suffixes);
     
     public static function UseAs(name: IdClassName; t: string): IdClassSource;
     begin
@@ -421,7 +421,7 @@ type
         api := 'gdi';
       end;
       
-      Result := inherited MakeName&<FuncName>(api, name, api_beg, false, false, false, VendorSuffixSource.known_suffixes, '*E');
+      Result := ItemSourceHelpers.MakeName&<FuncName>(api, name, api_beg, false, false, false, VendorSuffixSource.known_suffixes, '*E');
     end;
     private constructor(api: string; n: XmlNode);
     begin
@@ -554,7 +554,7 @@ type
     private add: RequiredListSource;
     
     public static function MakeName(own_api, name, context_api: string; allow_nil: boolean) :=
-      inherited MakeName&<ExtensionName>(own_api, name, context_api, allow_nil, false, true, VendorSuffixSource.known_suffixes, 'e_*','E_*');
+      ItemSourceHelpers.MakeName&<ExtensionName>(own_api, name, context_api, allow_nil, false, true, VendorSuffixSource.known_suffixes, 'e_*','E_*');
     
     public static procedure InitAll(file_api: string; extensions_n: XmlNode) :=
       foreach var extension_n in extensions_n.SubNodes['extension'] do
@@ -642,14 +642,14 @@ function VendorSuffixSource.MakeNewItem :=
     begin
       
       var bt := default(BasicType);
-      var cl := IdClassSource.FindOrMakeItem(IdClassSource.MakeName(api, tname, true));
-      var d := DelegateSource.FindOrMakeItem(DelegateSource.MakeName(api, tname, true, true));
+      var cl := IdClassSource.FindOrMakeItem(IdClassSource.MakeName(api, tname, true), true);
+      var d := DelegateSource.FindOrMakeItem(DelegateSource.MakeName(api, tname, true, true), true);
       
       if (cl<>nil) and (cl.Name not in IdClassSource.extra_defined) then
         raise new InvalidOperationException;
       
       case Ord(cl<>nil)+Ord(d<>nil) of
-        0: bt := BasicTypeSource.FindOrMakeItem(tname);
+        0: bt := BasicTypeSource.FindOrMakeItem(tname, true);
       end;
       
       if bt<>nil then Result := new TypeRef(bt) else
@@ -675,7 +675,7 @@ begin
     .Trim
   ;
   
-  var pars := |new ParData(nil, new TypeRef(BasicTypeSource.FindOrMakeItem('void')), 0, System.Array.Empty&<integer>, ParArrSizeNotArray.Instance, nil)|;
+  var pars := |new ParData(nil, new TypeRef(BasicTypeSource.FindOrMakeItem('void', false)), 0, System.Array.Empty&<integer>, ParArrSizeNotArray.Instance, nil)|;
   
   if params_s in |'','void'| then
   begin
@@ -717,13 +717,13 @@ function GroupSource.MakeNewItem: Group;
 begin
   var castable_to := new List<BasicType>(castable_to_names.Count);
   foreach var tname in castable_to_names do
-    castable_to += BasicTypeSource.FindOrMakeItem(tname);
+    castable_to += BasicTypeSource.FindOrMakeItem(tname, false);
   
   var possible_bitfield := new HashSet<boolean>;
   var enums := new List<Enum>(enum_names.Count);
   foreach var ename in enum_names.Keys do
   begin
-    var e := EnumSource.FindOrMakeItem(ename);
+    var e := EnumSource.FindOrMakeItem(ename, false);
     
     if e.Value<>0 then
       possible_bitfield += enum_names[ename];
@@ -765,9 +765,7 @@ begin
   
   if alias_s<>nil then
   begin
-    var old_e := EnumSource.FindOrMakeItem(EnumSource.MakeName(nil, alias_s, self.Name.ApiName, true));
-    if old_e=nil then
-      raise nil;
+    var old_e := EnumSource.FindOrMakeItem(EnumSource.MakeName(nil, alias_s, self.Name.ApiName, true), false);
     if old_e.Value <> val then
       raise new InvalidOperationException;
     var TODO := 0; //TODO Use enum name end to extract VendorName
@@ -785,7 +783,7 @@ begin
   
   var castable_to := new List<BasicType>(castable_to_names.Count);
   foreach var tname in self.castable_to_names do
-    castable_to += BasicTypeSource.FindOrMakeItem(tname);
+    castable_to += BasicTypeSource.FindOrMakeItem(tname, false);
   
   Result := new IdClass(name, castable_to.ToArray);
 end;
@@ -990,9 +988,7 @@ begin
     
   end;
   
-  var alias := FuncSource.FindOrMakeItem(self.alias_name);
-  if (alias_name<>nil) <> (alias<>nil) then
-    raise new InvalidOperationException(self.ToString);
+  var alias := FuncSource.FindOrMakeItem(self.alias_name, alias_name=nil);
   
   Result := new Func(self.Name, self.entry_point_name, pars, alias);
 end;
@@ -1007,15 +1003,13 @@ begin
   
   foreach var n in self.enum_names do
   begin
-    var e := EnumSource.FindOrMakeItem(n);
-    if e=nil then raise new InvalidOperationException(n.ToString);
+    var e := EnumSource.FindOrMakeItem(n, false);
     Result.enums += e;
   end;
   
   foreach var n in self.func_names do
   begin
-    var f := FuncSource.FindOrMakeItem(n);
-    if f=nil then raise new InvalidOperationException(n.ToString);
+    var f := FuncSource.FindOrMakeItem(n, false);
     Result.funcs += f;
   end;
   
@@ -1067,8 +1061,7 @@ function ExtensionSource.MakeNewItem :=
     self.ext_str, self.add.MakeNewItem,
     nil, false,
     
-    default(Feature),
-    System.Array.Empty&<Extension>,
+    System.Array.Empty&<ExtensionDepOption>,
     
     (default(Feature), default(Extension)),
     (default(Feature), default(Extension))
