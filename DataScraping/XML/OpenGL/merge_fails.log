@@ -1,47 +1,32 @@
-﻿Unable to merge Enum [gl::ZERO + EXT] => Enum [gl::ZERO + /core\]
-Unable to merge Enum [gl::ONE + EXT] => Enum [gl::ONE + /core\]
+﻿Unable to merge Enum [gl::ACTIVE_PROGRAM + EXT] => Enum [gl::ACTIVE_PROGRAM + /core\]
 Unable to merge Enum [gl::ADD + ATI] => Enum [gl::ADD + /core\]
-Unable to merge Enum [gl::TEXTURE_WIDTH + QCOM] => Enum [gl::TEXTURE_WIDTH + /core\]
-Unable to merge Enum [gl::TEXTURE_HEIGHT + QCOM] => Enum [gl::TEXTURE_HEIGHT + /core\]
-Unable to merge Enum [gl::TEXTURE_INTERNAL_FORMAT + QCOM] => Enum [gl::TEXTURE_INTERNAL_FORMAT + /core\]
-Unable to merge Enum [gl::TEXTURE_TARGET + QCOM] => Enum [gl::TEXTURE_TARGET + /core\]
-Unable to merge Enum [gl::HALF_FLOAT + OES] => Enum [gl::HALF_FLOAT + /core\]
-Unable to merge items: Enum [gl::UNSIGNED_INT64 + ARB] Enum [gl::UNSIGNED_INT64 + NV] Enum [gl::UNSIGNED_INT64 + AMD]
-Unable to merge Enum [gl::SET + AMD] => Enum [gl::SET + /core\]
-Unable to merge Enum [gl::RGB + S3TC] => Enum [gl::RGB + /core\]
-Unable to merge Enum [gl::RGBA + S3TC] => Enum [gl::RGBA + /core\]
-Unable to merge Enum [gl::REPLACE + EXT] => Enum [gl::REPLACE + /core\]
-Unable to merge Enum [gl::UNSIGNED_INT_10_10_10_2 + OES] => Enum [gl::UNSIGNED_INT_10_10_10_2 + /core\]
-Unable to merge Enum [gl::RGB4 + S3TC] => Enum [gl::RGB4 + /core\]
-Unable to merge Enum [gl::RGBA4 + S3TC] => Enum [gl::RGBA4 + /core\]
-Unable to merge Enum [gl::TEXTURE_DEPTH + QCOM] => Enum [gl::TEXTURE_DEPTH + /core\]
-Unable to merge items: Enum [gl::INTERLACE + SGIX] Enum [gl::INTERLACE + OML]
-Unable to merge Enum [gl::MULTISAMPLE + 3DFX] => Enum [gl::MULTISAMPLE + /core\]
-Unable to merge Enum [gl::SAMPLE_MASK + EXT] => Enum [gl::SAMPLE_MASK + /core\]
-Unable to merge Enum [gl::SAMPLE_MASK + SGIS] => Enum [gl::SAMPLE_MASK + /core\]
-Unable to merge Enum [gl::SAMPLE_BUFFERS + 3DFX] => Enum [gl::SAMPLE_BUFFERS + /core\]
-Unable to merge Enum [gl::SAMPLES + 3DFX] => Enum [gl::SAMPLES + /core\]
-Unable to merge Enum [gl::SAMPLE_MASK_VALUE + EXT] => Enum [gl::SAMPLE_MASK_VALUE + /core\]
-Unable to merge Enum [gl::SAMPLE_MASK_VALUE + SGIS] => Enum [gl::SAMPLE_MASK_VALUE + /core\]
-Unable to merge items: Enum [gl::CUBIC + HP] Enum [gl::CUBIC + EXT] Enum [gl::CUBIC + IMG]
 Unable to merge items: Enum [gl::AVERAGE + HP] Enum [gl::AVERAGE + EXT]
-Unable to merge items: Enum [gl::CULL_VERTEX + EXT] Enum [gl::CULL_VERTEX + IBM]
-Unable to merge Enum [gl::ACTIVE_PROGRAM + EXT] => Enum [gl::ACTIVE_PROGRAM + /core\]
-Unable to merge items: Enum [gl::CONSERVATIVE_RASTERIZATION + INTEL] Enum [gl::CONSERVATIVE_RASTERIZATION + NV]
-Unable to merge items: Enum [gl::PACK_RESAMPLE + SGIX] Enum [gl::PACK_RESAMPLE + OML]
-Unable to merge items: Enum [gl::UNPACK_RESAMPLE + SGIX] Enum [gl::UNPACK_RESAMPLE + OML]
-Unable to merge items: Enum [gl::RESAMPLE_DECIMATE + SGIX] Enum [gl::RESAMPLE_DECIMATE + OML]
-Unable to merge items: Enum [gl::RESAMPLE_REPLICATE + SGIX] Enum [gl::RESAMPLE_REPLICATE + OML]
-Unable to merge items: Enum [gl::RESAMPLE_ZERO_FILL + SGIX] Enum [gl::RESAMPLE_ZERO_FILL + OML]
-Unable to merge Enum [gl::DEPTH_STENCIL + MESA] => Enum [gl::DEPTH_STENCIL + /core\]
-Unable to merge Enum [gl::UNSIGNED_INT_24_8 + MESA] => Enum [gl::UNSIGNED_INT_24_8 + /core\]
-Unable to merge Enum [gl::TEXTURE_LOD_BIAS + QCOM] => Enum [gl::TEXTURE_LOD_BIAS + /core\]
-Unable to merge Enum [gl::PRIMARY_COLOR + NV] => Enum [gl::PRIMARY_COLOR + /core\]
-Unable to merge items: Enum [gl::DISCARD + NV] Enum [gl::DISCARD + ATI]
-Unable to merge Enum [gl::PRIMITIVE_RESTART + NV] => Enum [gl::PRIMITIVE_RESTART + /core\]
-Unable to merge Enum [gl::PRIMITIVE_RESTART_INDEX + NV] => Enum [gl::PRIMITIVE_RESTART_INDEX + /core\]
-Unable to merge items: Enum [gl::INTERLACE_READ + INGR] Enum [gl::INTERLACE_READ + OML]
 Unable to merge items: Enum [gl::BUFFER_OBJECT + APPLE] Enum [gl::BUFFER_OBJECT + EXT]
+Unable to merge items: Enum [gl::CONSERVATIVE_RASTERIZATION + INTEL] Enum [gl::CONSERVATIVE_RASTERIZATION + NV]
+Unable to merge items: Enum [gl::CUBIC + HP] Enum [gl::CUBIC + EXT] Enum [gl::CUBIC + IMG]
+Unable to merge items: Enum [gl::CULL_VERTEX + EXT] Enum [gl::CULL_VERTEX + IBM]
+Unable to merge Enum [gl::DEPTH_COMPONENT32F + NV] => Enum [gl::DEPTH_COMPONENT32F + /core\]
+Unable to merge Enum [gl::DEPTH_STENCIL + MESA] => Enum [gl::DEPTH_STENCIL + /core\]
+Unable to merge Enum [gl::DEPTH32F_STENCIL8 + NV] => Enum [gl::DEPTH32F_STENCIL8 + /core\]
+Unable to merge items: Enum [gl::DISCARD + NV] Enum [gl::DISCARD + ATI]
+Unable to merge Enum [gl::DOT3_RGB + EXT] => Enum [gl::DOT3_RGB + /core\]
+Unable to merge Enum [gl::DOT3_RGBA + EXT] => Enum [gl::DOT3_RGBA + /core\]
+Unable to merge items: Enum [gl::ELEMENT_ARRAY + ATI] Enum [gl::ELEMENT_ARRAY + APPLE]
+Unable to merge items: Enum [gl::ELEMENT_ARRAY_POINTER + ATI] Enum [gl::ELEMENT_ARRAY_POINTER + APPLE]
+Unable to merge items: Enum [gl::ELEMENT_ARRAY_TYPE + ATI] Enum [gl::ELEMENT_ARRAY_TYPE + APPLE]
+Unable to merge items: Enum [gl::FRAGMENT_PROGRAM + ARB] Enum [gl::FRAGMENT_PROGRAM + NV]
+Unable to merge Enum [gl::FRAGMENT_SHADER + ATI] => Enum [gl::FRAGMENT_SHADER + /core\]
+Unable to merge Enum [gl::FRAMEBUFFER_INCOMPLETE_MULTISAMPLE + IMG] => Enum [gl::FRAMEBUFFER_INCOMPLETE_MULTISAMPLE + /core\]
+Unable to merge Enum [gl::GEOMETRY_INPUT_TYPE + ARB] => Enum [gl::GEOMETRY_INPUT_TYPE + /core\]
+Unable to merge Enum [gl::GEOMETRY_INPUT_TYPE + EXT] => Enum [gl::GEOMETRY_INPUT_TYPE + /core\]
+Unable to merge Enum [gl::GEOMETRY_OUTPUT_TYPE + ARB] => Enum [gl::GEOMETRY_OUTPUT_TYPE + /core\]
+Unable to merge Enum [gl::GEOMETRY_OUTPUT_TYPE + EXT] => Enum [gl::GEOMETRY_OUTPUT_TYPE + /core\]
+Unable to merge Enum [gl::GEOMETRY_VERTICES_OUT + ARB] => Enum [gl::GEOMETRY_VERTICES_OUT + /core\]
+Unable to merge Enum [gl::GEOMETRY_VERTICES_OUT + EXT] => Enum [gl::GEOMETRY_VERTICES_OUT + /core\]
+Unable to merge Enum [gl::HALF_FLOAT + OES] => Enum [gl::HALF_FLOAT + /core\]
+Unable to merge Enum [gl::INT_SAMPLER_BUFFER + AMD] => Enum [gl::INT_SAMPLER_BUFFER + /core\]
+Unable to merge items: Enum [gl::INTERLACE + SGIX] Enum [gl::INTERLACE + OML]
+Unable to merge items: Enum [gl::INTERLACE_READ + INGR] Enum [gl::INTERLACE_READ + OML]
 Unable to merge items: Enum [gl::MATRIX0 + NV] Enum [gl::MATRIX0 + ARB]
 Unable to merge items: Enum [gl::MATRIX1 + NV] Enum [gl::MATRIX1 + ARB]
 Unable to merge items: Enum [gl::MATRIX2 + NV] Enum [gl::MATRIX2 + ARB]
@@ -50,39 +35,54 @@ Unable to merge items: Enum [gl::MATRIX4 + NV] Enum [gl::MATRIX4 + ARB]
 Unable to merge items: Enum [gl::MATRIX5 + NV] Enum [gl::MATRIX5 + ARB]
 Unable to merge items: Enum [gl::MATRIX6 + NV] Enum [gl::MATRIX6 + ARB]
 Unable to merge items: Enum [gl::MATRIX7 + NV] Enum [gl::MATRIX7 + ARB]
-Unable to merge Enum [gl::DOT3_RGB + EXT] => Enum [gl::DOT3_RGB + /core\]
-Unable to merge Enum [gl::DOT3_RGBA + EXT] => Enum [gl::DOT3_RGBA + /core\]
-Unable to merge items: Enum [gl::ELEMENT_ARRAY + ATI] Enum [gl::ELEMENT_ARRAY + APPLE]
-Unable to merge items: Enum [gl::ELEMENT_ARRAY_TYPE + ATI] Enum [gl::ELEMENT_ARRAY_TYPE + APPLE]
-Unable to merge items: Enum [gl::ELEMENT_ARRAY_POINTER + ATI] Enum [gl::ELEMENT_ARRAY_POINTER + APPLE]
+Unable to merge Enum [gl::MAX_SAMPLES + IMG] => Enum [gl::MAX_SAMPLES + /core\]
 Unable to merge Enum [gl::MAX_VERTEX_STREAMS + ATI] => Enum [gl::MAX_VERTEX_STREAMS + /core\]
-Unable to merge Enum [gl::VERTEX_SHADER + EXT] => Enum [gl::VERTEX_SHADER + /core\]
-Unable to merge items: Enum [gl::FRAGMENT_PROGRAM + ARB] Enum [gl::FRAGMENT_PROGRAM + NV]
-Unable to merge Enum [gl::GEOMETRY_VERTICES_OUT + ARB] => Enum [gl::GEOMETRY_VERTICES_OUT + /core\]
-Unable to merge Enum [gl::GEOMETRY_VERTICES_OUT + EXT] => Enum [gl::GEOMETRY_VERTICES_OUT + /core\]
-Unable to merge Enum [gl::GEOMETRY_INPUT_TYPE + ARB] => Enum [gl::GEOMETRY_INPUT_TYPE + /core\]
-Unable to merge Enum [gl::GEOMETRY_INPUT_TYPE + EXT] => Enum [gl::GEOMETRY_INPUT_TYPE + /core\]
-Unable to merge Enum [gl::GEOMETRY_OUTPUT_TYPE + ARB] => Enum [gl::GEOMETRY_OUTPUT_TYPE + /core\]
-Unable to merge Enum [gl::GEOMETRY_OUTPUT_TYPE + EXT] => Enum [gl::GEOMETRY_OUTPUT_TYPE + /core\]
-Unable to merge Enum [gl::FRAGMENT_SHADER + ATI] => Enum [gl::FRAGMENT_SHADER + /core\]
+Unable to merge Enum [gl::MULTISAMPLE + 3DFX] => Enum [gl::MULTISAMPLE + /core\]
+Unable to merge Enum [gl::OBJECT_TYPE + ARB] => Enum [gl::OBJECT_TYPE + /core\]
+Unable to merge Enum [gl::ONE + EXT] => Enum [gl::ONE + /core\]
+Unable to merge items: Enum [gl::PACK_RESAMPLE + SGIX] Enum [gl::PACK_RESAMPLE + OML]
+Unable to merge Enum [gl::PRIMARY_COLOR + NV] => Enum [gl::PRIMARY_COLOR + /core\]
+Unable to merge Enum [gl::PRIMITIVE_RESTART + NV] => Enum [gl::PRIMITIVE_RESTART + /core\]
+Unable to merge Enum [gl::PRIMITIVE_RESTART_INDEX + NV] => Enum [gl::PRIMITIVE_RESTART_INDEX + /core\]
+Unable to merge Enum [gl::RENDERBUFFER_SAMPLES + IMG] => Enum [gl::RENDERBUFFER_SAMPLES + /core\]
+Unable to merge Enum [gl::REPLACE + EXT] => Enum [gl::REPLACE + /core\]
+Unable to merge items: Enum [gl::RESAMPLE_DECIMATE + SGIX] Enum [gl::RESAMPLE_DECIMATE + OML]
+Unable to merge items: Enum [gl::RESAMPLE_REPLICATE + SGIX] Enum [gl::RESAMPLE_REPLICATE + OML]
+Unable to merge items: Enum [gl::RESAMPLE_ZERO_FILL + SGIX] Enum [gl::RESAMPLE_ZERO_FILL + OML]
+Unable to merge Enum [gl::RGB + S3TC] => Enum [gl::RGB + /core\]
+Unable to merge Enum [gl::RGB4 + S3TC] => Enum [gl::RGB4 + /core\]
+Unable to merge Enum [gl::RGBA + S3TC] => Enum [gl::RGBA + /core\]
+Unable to merge Enum [gl::RGBA4 + S3TC] => Enum [gl::RGBA4 + /core\]
+Unable to merge Enum [gl::SAMPLE_BUFFERS + 3DFX] => Enum [gl::SAMPLE_BUFFERS + /core\]
+Unable to merge Enum [gl::SAMPLE_MASK + EXT] => Enum [gl::SAMPLE_MASK + /core\]
+Unable to merge Enum [gl::SAMPLE_MASK + SGIS] => Enum [gl::SAMPLE_MASK + /core\]
+Unable to merge Enum [gl::SAMPLE_MASK_VALUE + EXT] => Enum [gl::SAMPLE_MASK_VALUE + /core\]
+Unable to merge Enum [gl::SAMPLE_MASK_VALUE + SGIS] => Enum [gl::SAMPLE_MASK_VALUE + /core\]
+Unable to merge Enum [gl::SAMPLER_BUFFER + AMD] => Enum [gl::SAMPLER_BUFFER + /core\]
+Unable to merge Enum [gl::SAMPLES + 3DFX] => Enum [gl::SAMPLES + /core\]
+Unable to merge Enum [gl::SET + AMD] => Enum [gl::SET + /core\]
+Unable to merge items: Enum [gl::SHADING_RATE + QCOM] Enum [gl::SHADING_RATE + EXT]
+Unable to merge Enum [gl::TEXTURE_DEPTH + QCOM] => Enum [gl::TEXTURE_DEPTH + /core\]
+Unable to merge Enum [gl::TEXTURE_HEIGHT + QCOM] => Enum [gl::TEXTURE_HEIGHT + /core\]
+Unable to merge Enum [gl::TEXTURE_INTERNAL_FORMAT + QCOM] => Enum [gl::TEXTURE_INTERNAL_FORMAT + /core\]
+Unable to merge Enum [gl::TEXTURE_LOD_BIAS + QCOM] => Enum [gl::TEXTURE_LOD_BIAS + /core\]
+Unable to merge Enum [gl::TEXTURE_SAMPLES + IMG] => Enum [gl::TEXTURE_SAMPLES + /core\]
+Unable to merge Enum [gl::TEXTURE_TARGET + QCOM] => Enum [gl::TEXTURE_TARGET + /core\]
+Unable to merge Enum [gl::TEXTURE_WIDTH + QCOM] => Enum [gl::TEXTURE_WIDTH + /core\]
 Unable to merge Enum [gl::UNIFORM_BUFFER + EXT] => Enum [gl::UNIFORM_BUFFER + /core\]
 Unable to merge Enum [gl::UNIFORM_BUFFER_BINDING + EXT] => Enum [gl::UNIFORM_BUFFER_BINDING + /core\]
-Unable to merge Enum [gl::OBJECT_TYPE + ARB] => Enum [gl::OBJECT_TYPE + /core\]
-Unable to merge Enum [gl::RENDERBUFFER_SAMPLES + IMG] => Enum [gl::RENDERBUFFER_SAMPLES + /core\]
-Unable to merge Enum [gl::DEPTH_COMPONENT32F + NV] => Enum [gl::DEPTH_COMPONENT32F + /core\]
-Unable to merge Enum [gl::DEPTH32F_STENCIL8 + NV] => Enum [gl::DEPTH32F_STENCIL8 + /core\]
-Unable to merge Enum [gl::FRAMEBUFFER_INCOMPLETE_MULTISAMPLE + IMG] => Enum [gl::FRAMEBUFFER_INCOMPLETE_MULTISAMPLE + /core\]
-Unable to merge Enum [gl::MAX_SAMPLES + IMG] => Enum [gl::MAX_SAMPLES + /core\]
-Unable to merge Enum [gl::SAMPLER_BUFFER + AMD] => Enum [gl::SAMPLER_BUFFER + /core\]
-Unable to merge Enum [gl::INT_SAMPLER_BUFFER + AMD] => Enum [gl::INT_SAMPLER_BUFFER + /core\]
+Unable to merge items: Enum [gl::UNPACK_RESAMPLE + SGIX] Enum [gl::UNPACK_RESAMPLE + OML]
+Unable to merge Enum [gl::UNSIGNED_INT_10_10_10_2 + OES] => Enum [gl::UNSIGNED_INT_10_10_10_2 + /core\]
+Unable to merge Enum [gl::UNSIGNED_INT_24_8 + MESA] => Enum [gl::UNSIGNED_INT_24_8 + /core\]
 Unable to merge Enum [gl::UNSIGNED_INT_SAMPLER_BUFFER + AMD] => Enum [gl::UNSIGNED_INT_SAMPLER_BUFFER + /core\]
-Unable to merge Enum [gl::TEXTURE_SAMPLES + IMG] => Enum [gl::TEXTURE_SAMPLES + /core\]
-Unable to merge items: Enum [gl::SHADING_RATE + QCOM] Enum [gl::SHADING_RATE + EXT]
+Unable to merge items: Enum [gl::UNSIGNED_INT64 + ARB] Enum [gl::UNSIGNED_INT64 + NV] Enum [gl::UNSIGNED_INT64 + AMD]
+Unable to merge Enum [gl::VERTEX_SHADER + EXT] => Enum [gl::VERTEX_SHADER + /core\]
+Unable to merge Enum [gl::ZERO + EXT] => Enum [gl::ZERO + /core\]
+Unable to merge Enum [glx::SAMPLE_BUFFERS + 3DFX] => Enum [glx::SAMPLE_BUFFERS + /core\]
+Unable to merge Enum [glx::SAMPLES + 3DFX] => Enum [glx::SAMPLES + /core\]
 Unable to merge items: Enum [wgl::SAMPLE_BUFFERS + ARB] Enum [wgl::SAMPLE_BUFFERS + EXT] Enum [wgl::SAMPLE_BUFFERS + 3DFX]
 Unable to merge items: Enum [wgl::SAMPLES + ARB] Enum [wgl::SAMPLES + EXT] Enum [wgl::SAMPLES + 3DFX]
 Unable to merge items: Enum [wgl::TEXTURE_RECTANGLE + NV] Enum [wgl::TEXTURE_RECTANGLE + ATI]
-Unable to merge Enum [glx::SAMPLE_BUFFERS + 3DFX] => Enum [glx::SAMPLE_BUFFERS + /core\]
-Unable to merge Enum [glx::SAMPLES + 3DFX] => Enum [glx::SAMPLES + /core\]
 No enums in common
 Unable to merge Group [gl::VertexAttribEnum + NV] => Group [gl::VertexAttribEnum + /core\]
 Different param#1
@@ -147,36 +147,6 @@ Different param#3
 Unable to merge Func [gl::GetNamedFramebufferParameteriv + EXT] => Func [gl::GetNamedFramebufferParameteriv + /core\]
 Different param#3
 Unable to merge Func [gl::GetNamedRenderbufferParameteriv + EXT] => Func [gl::GetNamedRenderbufferParameteriv + /core\]
-Different param#1
-Unable to merge Func [gl::GetObjectLabel + EXT] => Func [gl::GetObjectLabel + /core\]
-Different param#3
-Unable to merge Func [gl::GetProgramPipelineiv + EXT] => Func [gl::GetProgramPipelineiv + /core\]
-Different param#1
-Different param#3
-Unable to merge Func [gl::GetProgramiv + ARB] => Func [gl::GetProgramiv + /core\]
-Different param#2
-Different param#3
-Unable to merge Func [gl::GetProgramiv + NV] => Func [gl::GetProgramiv + /core\]
-Different param#2
-Different param#3
-Different param#4
-Different param#5
-Different param#6
-Unable to merge Func [gl::GetTextureImage + EXT] => Func [gl::GetTextureImage + /core\]
-Different param count: 6 vs 5
-Unable to merge Func [gl::GetTextureLevelParameterfv + EXT] => Func [gl::GetTextureLevelParameterfv + /core\]
-Different param count: 6 vs 5
-Unable to merge Func [gl::GetTextureLevelParameteriv + EXT] => Func [gl::GetTextureLevelParameteriv + /core\]
-Different param count: 5 vs 4
-Unable to merge Func [gl::GetTextureParameterIiv + EXT] => Func [gl::GetTextureParameterIiv + /core\]
-Different param count: 5 vs 4
-Unable to merge Func [gl::GetTextureParameterIuiv + EXT] => Func [gl::GetTextureParameterIuiv + /core\]
-Different param count: 5 vs 4
-Unable to merge Func [gl::GetTextureParameterfv + EXT] => Func [gl::GetTextureParameterfv + /core\]
-Different param count: 5 vs 4
-Unable to merge Func [gl::GetTextureParameteriv + EXT] => Func [gl::GetTextureParameteriv + /core\]
-Different param count: 4 vs 8
-Unable to merge Func [gl::GetTransformFeedbackVarying + NV] => Func [gl::GetTransformFeedbackVarying + /core\]
 Different param#4
 Unable to merge Func [gl::GetnMapdv + ARB] => Func [gl::GetnMapdv + /core\]
 Different param#4
@@ -189,6 +159,36 @@ Different param#3
 Unable to merge Func [gl::GetnPixelMapuiv + ARB] => Func [gl::GetnPixelMapuiv + /core\]
 Different param#3
 Unable to merge Func [gl::GetnPixelMapusv + ARB] => Func [gl::GetnPixelMapusv + /core\]
+Different param#1
+Unable to merge Func [gl::GetObjectLabel + EXT] => Func [gl::GetObjectLabel + /core\]
+Different param#1
+Different param#3
+Unable to merge Func [gl::GetProgramiv + ARB] => Func [gl::GetProgramiv + /core\]
+Different param#2
+Different param#3
+Unable to merge Func [gl::GetProgramiv + NV] => Func [gl::GetProgramiv + /core\]
+Different param#3
+Unable to merge Func [gl::GetProgramPipelineiv + EXT] => Func [gl::GetProgramPipelineiv + /core\]
+Different param#2
+Different param#3
+Different param#4
+Different param#5
+Different param#6
+Unable to merge Func [gl::GetTextureImage + EXT] => Func [gl::GetTextureImage + /core\]
+Different param count: 6 vs 5
+Unable to merge Func [gl::GetTextureLevelParameterfv + EXT] => Func [gl::GetTextureLevelParameterfv + /core\]
+Different param count: 6 vs 5
+Unable to merge Func [gl::GetTextureLevelParameteriv + EXT] => Func [gl::GetTextureLevelParameteriv + /core\]
+Different param count: 5 vs 4
+Unable to merge Func [gl::GetTextureParameterfv + EXT] => Func [gl::GetTextureParameterfv + /core\]
+Different param count: 5 vs 4
+Unable to merge Func [gl::GetTextureParameterIiv + EXT] => Func [gl::GetTextureParameterIiv + /core\]
+Different param count: 5 vs 4
+Unable to merge Func [gl::GetTextureParameterIuiv + EXT] => Func [gl::GetTextureParameterIuiv + /core\]
+Different param count: 5 vs 4
+Unable to merge Func [gl::GetTextureParameteriv + EXT] => Func [gl::GetTextureParameteriv + /core\]
+Different param count: 4 vs 8
+Unable to merge Func [gl::GetTransformFeedbackVarying + NV] => Func [gl::GetTransformFeedbackVarying + /core\]
 Different param#2
 Unable to merge Func [gl::Hint + PGI] => Func [gl::Hint + /core\]
 Different param count: 5 vs 4
@@ -208,15 +208,15 @@ Unable to merge Func [gl::TextureBuffer + EXT] => Func [gl::TextureBuffer + /cor
 Different param count: 7 vs 6
 Unable to merge Func [gl::TextureBufferRange + EXT] => Func [gl::TextureBufferRange + /core\]
 Different param count: 5 vs 4
-Unable to merge Func [gl::TextureParameterIiv + EXT] => Func [gl::TextureParameterIiv + /core\]
-Different param count: 5 vs 4
-Unable to merge Func [gl::TextureParameterIuiv + EXT] => Func [gl::TextureParameterIuiv + /core\]
-Different param count: 5 vs 4
 Unable to merge Func [gl::TextureParameterf + EXT] => Func [gl::TextureParameterf + /core\]
 Different param count: 5 vs 4
 Unable to merge Func [gl::TextureParameterfv + EXT] => Func [gl::TextureParameterfv + /core\]
 Different param count: 5 vs 4
 Unable to merge Func [gl::TextureParameteri + EXT] => Func [gl::TextureParameteri + /core\]
+Different param count: 5 vs 4
+Unable to merge Func [gl::TextureParameterIiv + EXT] => Func [gl::TextureParameterIiv + /core\]
+Different param count: 5 vs 4
+Unable to merge Func [gl::TextureParameterIuiv + EXT] => Func [gl::TextureParameterIuiv + /core\]
 Different param count: 5 vs 4
 Unable to merge Func [gl::TextureParameteriv + EXT] => Func [gl::TextureParameteriv + /core\]
 Different param count: 6 vs 5

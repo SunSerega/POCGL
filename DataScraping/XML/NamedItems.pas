@@ -318,7 +318,7 @@ type
           Result := ValueTuple.Create(item.NameApi, item.NameLocal);
         end);
         
-        foreach var g in suffix_less_lookup do
+        foreach var g in suffix_less_lookup.OrderBy(g->g.Key) do
         begin
           var (api, lname) := g.Key;
           var root := g.SingleOrDefault(item->(item as NamedItem<TSelf, TName>).NameSuffix=nil);
@@ -330,16 +330,16 @@ type
               var cap := new TODO_2849<TSelf>(g.First, can_be_alias);
               if g.Skip(1).Any(cap.lambda) then
               begin
-                log_merge_fails.Otp($'Unable to merge items: {g.JoinToString}');
+                log_merge_fails.Otp($'Unable to merge items: {g.Order.JoinToString}');
                 continue;
               end;
               if copy_without_suffix=nil then
-                raise new NotImplementedException($'{TypeToTypeName(typeof(TSelf))} did not implement merge root creator, needed for: {g.JoinToString}');
+                raise new NotImplementedException($'{TypeToTypeName(typeof(TSelf))} did not implement merge root creator, needed for: {g.Order.JoinToString}');
               root := copy_without_suffix(api, lname, g.First);
               if root=nil then raise nil;
             end;
           
-          if root<>nil then foreach var item in g do
+          if root<>nil then foreach var item in g.Order do
           begin
             if item=root then continue;
             if not can_be_alias(item, root, log_merge_fails.Otp) then

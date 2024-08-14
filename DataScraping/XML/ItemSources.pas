@@ -121,22 +121,24 @@ implementation
 
 uses '../../POCGL_Utils';
 
-var source_create_callbacks: Action;
+var source_create_callbacks := new Dictionary<string, Action>;
 
 static constructor ItemSource<TSelf,TSourceName,TItem>.Create;
 begin
 //  Println(TypeToTypeName(typeof(TSelf)));
   
-  source_create_callbacks += ()->
+  source_create_callbacks.Add(typeof(TSelf).Name, ()->
     foreach var s in all_sources.Values do
-      s.GetItem;
+      s.GetItem
+  );
   
 end;
 
 procedure CreateAll;
 begin
   Otp($'Constructing named items');
-  source_create_callbacks();
+  foreach var kvp in source_create_callbacks.OrderBy(kvp->kvp.Key) do
+    kvp.Value();
 end;
 
 end.
