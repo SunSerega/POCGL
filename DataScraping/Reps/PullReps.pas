@@ -1,13 +1,15 @@
 ﻿uses System.Diagnostics;
 
-uses '../../POCGL_Utils';
 uses '../../Utils/AOtp';
 uses '../../Utils/AQueue';
+uses '../../Utils/CLArgs';
+
+uses '../../POCGL_Utils';
 
 const remote_official = '0_official';
 const remote_own = 'SunSerega';
 
-var disable_push := false;
+var branch_per_repo := new Dictionary<string, string>;
 
 procedure ExecCommands(path, nick: string; kinds: array of string; params commands: array of string);
 begin
@@ -31,15 +33,11 @@ begin
   p.BeginErrorReadLine;
   
   foreach var l in p_otp do
-    Otp(l.ConvStr(s->
-    begin
-      if 'https' in s then
-        disable_push := true;
-      Result := s
-        .Replace('github.com:','')
-        .Replace('https://github.com/','')
-        .RegexReplace('\s+', ' ')
-    end));
+    Otp(l.ConvStr(s->s
+      .Replace('github.com:','')
+      .Replace('https://github.com/','')
+      .RegexReplace('\s+', ' ')
+    ));
   
   if p.ExitCode<>0 then
     Halt(p.ExitCode);
@@ -50,6 +48,12 @@ begin
   Otp($'Pulling {nick}');
   var path := GetFullPathRTA(name);
   System.IO.Directory.CreateDirectory(path);
+  
+  if branch_per_repo.Get(name) is string(var branch_override) then
+  begin
+    Otp($'Branch override: {branch} => {branch_override}', 'console only');
+    branch := branch_override;
+  end;
   
   if not FileExists(GetFullPath('.git', path)) then
     ExecCommands(path, nick+'+init', |'console only'|
@@ -67,21 +71,28 @@ begin
     , $'echo [merge-main] && git merge main'
   );
   
-  if not disable_push then
-    ExecCommands(path, nick, |'console only'|
-      , $'echo [push main] && git push {remote_own} main || cd .'
-      , $'echo [push {branch}] && git push {remote_own} {branch} || cd .'
-    );
+  ExecCommands(path, nick, |'console only'|
+    , $'echo [push main] && git push {remote_own} main || cd .'
+    , $'echo [push {branch}] && git push {remote_own} {branch} || cd .'
+  );
   
   Otp($'Done pulling {nick}');
 end;
 
 begin
   try
+    foreach var arg in GetArgs('BranchOverride') do
+    begin
+      var (repo, branch) := arg.Split(|':'|, 2);
+      branch_per_repo.Add(repo, branch);
+    end;
+    
     Seq(
       new class( nick := 'OpenCL', name := 'OpenCL-Docs',     branch := 'custom' ),
       new class( nick := 'OpenGL', name := 'OpenGL-Registry', branch := 'custom' )
     ).ForEach(r->PullRep(r.name, r.branch, r.nick));
+    //TODO Not parallel, because that would break git index
+    
   except
     on e: Exception do ErrOtp(e);
   end;

@@ -21,14 +21,18 @@
 // === К примеру: "Stages= OpenCLABC + Compile + Test + Release"
 // === Лишние пробелы по краям имён стадий допускаются, но "Stages=" должно быть слитно
 // 
+// - "PullUpstreamBranch=Repo:Branch"
+// === Настраивает стадию PullUpstream, чтобы использовать указанную ветку для указанного репозитория
+// 
 
 uses System.Threading;
 uses System.Threading.Tasks;
 uses System.IO;
 
 uses 'Utils/AOtp';
-uses 'Utils/Timers';
 uses 'Utils/ATask';
+uses 'Utils/CLArgs';
+uses 'Utils/Timers';
 uses 'Utils/PathUtils';
 
 {$region SpecialNames}
@@ -147,11 +151,15 @@ var AllStages := HSet(
       
       {$region UpdateReps}
       
+      var args := new List<string>;
+      foreach var arg in GetArgs('PullUpstreamBranch') do
+        args += $'BranchOverride={arg}';
+      
       var T_UpdateReps :=
         TitleTask('Update Reps', '~')
         +
         
-        ExecTask('DataScraping/Reps/PullReps.pas', 'SubReps Update')
+        ExecTask('DataScraping/Reps/PullReps.pas', 'SubReps Update', args.ToArray)
         
       ;
       
