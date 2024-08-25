@@ -6,60 +6,11 @@ on:
         - cron: '0 0 * * *'
     pull_request:
     workflow_dispatch:
-    
-#concurrency:
-#    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-#    cancel-in-progress: false
-#    
+
 permissions:
     contents: write
-    
+
 jobs:
-    update-gh-pages:
-        runs-on: ubuntu-latest
-        
-        steps:
-            - uses: actions/checkout@main
-            
-            - run: |
-            
-                git config --global core.autocrlf false
-                git config --global user.name "sun pack bot"
-                git config --global user.email "sunserega2@gmail.com"
-                git config --global --add url.https://github.com/.insteadOf "git@github.com:"
-                git fetch origin
-                
-                for branch in $(git branch -r | grep 'origin/gh-pages/'); do
-                    branch_name=$(echo $branch | sed 's#origin/gh-pages/##')
-                    echo "Testing legacy branch [$branch]"
-                    
-                    if ! git branch -r | grep -q "origin/$branch_name"; then
-                        echo "Deleting legacy branch [$branch]"
-                        git push origin --delete $(echo $branch | sed 's#origin/##')
-                    fi
-                    
-                done
-                
-                branch_name="gh-pages/$(git rev-parse --abbrev-ref HEAD)"
-                git checkout --orphan "$branch_name"
-                mv ".git" "Packing/Reference/0Release/"
-                cd "Packing/Reference/0Release/"
-                git add .
-                git commit -m "Split off gh-pages"
-                
-                if git show-ref --verify --quiet refs/remotes/origin/$branch_name; then
-                    echo "Remote branch $branch_name found"
-                    if [ -z "$( git diff "origin/$branch_name" )" ]; then
-                        echo "No difference with remote branch"
-                        exit 0
-                    else
-                        echo "Difference found, recreating the branch"
-                    fi
-                else
-                    echo "Creating new remote branch"
-                fi
-                git push -f --set-upstream origin "$branch_name"
-                
     pack-win:
         runs-on: windows-latest
         

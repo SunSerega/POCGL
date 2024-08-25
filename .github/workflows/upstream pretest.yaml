@@ -1,0 +1,508 @@
+﻿name: Upstream pretest
+
+on:
+    push:
+    schedule:
+        - cron: '0 0 * * *'
+    workflow_dispatch:
+
+permissions:
+    contents: write
+
+# There are 2 steps of adding new upstream commits:
+# 1. Add new commits from the PR merge ref (and possibly custom branch): to "pretest/$pr_num" in fork
+# 2. Add commit with submodule ref move + test changes, with this ref move: to "subm-pretest/$org_repo/$pr_num" in POCGL repo
+
+# To only update when source has been updated:
+# - "pretest" references sha of latest merge commit for PR as: meta.pr_merge_sha
+# - "subm-pretest" references sha of latest pretest commit in fork as: meta.fork_pretest_sha
+
+# "pretest" is not updated when only main or custom branch of subm updates
+# - Otherwise all pretest branches would update at the same time, even on unrelated changes
+
+# "pretest" and "subm-pretest" need to be first checked by a separate "git ls-remote" before "git fetch"
+# - Otherwise git fetch would fail fetching them
+
+# "pretest" and "subm-pretest" can be update manually by push, in case anything new needs to be implemented for the new XML spec
+# - In that case, there would be no commit sha reference, so it will be re-tested on the next run of this workflow
+
+jobs:
+    enmr-PRs:
+        runs-on: windows-latest
+        outputs:
+            exec_list: ${{ steps.make_exec_list.outputs.exec_list }}
+            remove_list: ${{ steps.make_exec_list.outputs.remove_list }}
+        
+        steps:
+            -   name: git config
+                run: |
+                
+                    git config --global core.autocrlf false
+                    git config --global user.name "sun pack bot"
+                    git config --global user.email "sunserega2@gmail.com"
+                    git config --global --add url.https://github.com/.insteadOf "git@github.com:"
+            
+            -   name: checkout
+                uses: actions/checkout@main
+                with:
+                    sparse-checkout-cone-mode: false
+                    sparse-checkout: |
+                        .gitmodules
+            
+            -   name: (!) make exec list
+                id: make_exec_list
+                run: |
+                
+                    function Get-GitRemoteBranches() {
+                        param ($url, $pattern)
+                        $reg_pattern = $pattern -replace '\*','(.*)'
+                        $res = @()
+                        foreach ($l in git ls-remote $url $pattern) {
+                            if ($l -notmatch "(^[0-9a-f]{40})\s+($reg_pattern)$") {
+                                throw "Unexpected git ls-remote output: $l"
+                            }
+                            $sha = $matches[1]
+                            $branch = $matches[2]
+                            if ($branch -notmatch "^$reg_pattern$") {
+                                throw "What?"
+                            }
+                            $res += [PSCustomObject]@{
+                                'sha' = $sha;
+                                'branch' = $branch;
+                                'matches' = $matches;
+                            }
+                        }
+                        if (-not $?) { throw "git ls-remote failed" }
+                        return $res
+                    }
+                    
+                    
+                    
+                    Write-Host "=============================="
+                    Write-Host "Bulding open PR list"
+                    $submodules = @()
+                    $submodule_by_repo = @{}
+                    foreach ($config_key in git config --file .gitmodules --name-only --get-regexp '^submodule\..+\.url$') {
+                        $url = git config --file .gitmodules --get $config_key
+                        Write-Host "URL: $url"
+                        
+                        if ($url -notmatch '^git@github\.com:([\w\-]+)/([\w\-]+)\.git$') {
+                            throw "Unexpected url format: $url"
+                        }
+                        $owner = $matches[1]
+                        $name = $matches[2]
+                        $fork_url = "git@github.com:SunSerega/${name}.git"
+                        
+                        $merge_sha_by_pr = @{}
+                        foreach ($l in Get-GitRemoteBranches $url 'refs/pull/*/merge') {
+                            $sha = $l.sha
+                            $pr_num = $l.matches[1]
+                            Write-Host "- Found open PR $pr_num with latest sha $sha"
+                            $merge_sha_by_pr.Add($pr_num, $sha)
+                        }
+                        
+                        $pretest_sha_by_pr = @{}
+                        foreach ($l in Get-GitRemoteBranches $fork_url 'refs/heads/pretest/*') {
+                            $sha = $l.sha
+                            $pr_num = $l.matches[1]
+                            Write-Host "- Found pretest branch for PR $pr_num with latest sha $sha"
+                            $pretest_sha_by_pr.Add($pr_num, $sha)
+                        }
+                        
+                        $subm = [PSCustomObject]@{
+                            'url'               = $url;
+                            'fork_url'          = $fork_url;
+                            'owner'             = $owner;
+                            'name'              = $name;
+                            'repo'              = "$owner/$name"
+                            'merge_sha_by_pr'   = $merge_sha_by_pr;
+                            'pretest_sha_by_pr' = $pretest_sha_by_pr;
+                        }
+                        $submodules += $subm
+                        $submodule_by_repo.Add($subm.repo, $subm)
+                    }
+                    
+                    
+                    
+                    Write-Host "=============================="
+                    Write-Host "Fetching extra data"
+                    $core_pretest_pr_nums = @{}
+                    $core_fetch_specs = @()
+                    $subm_fetch_specs = @{}
+                    foreach ($l in Get-GitRemoteBranches origin 'refs/heads/subm-pretest/*/*/*') {
+                        $subm_owner = $l.matches[1]
+                        $subm_name = $l.matches[2]
+                        $pr_num = $l.matches[3]
+                        $repo = "$subm_owner/$subm_name"
+                        Write-Host "- Found core pretest branch for repo $repo PR $pr_num"
+                        $core_pretest_pr_nums[$repo] += @($pr_num)
+                        if ($pr_num -in $submodule_by_repo[$repo].pretest_sha_by_pr.Keys) {
+                            
+                            $core_pretest_branch = "subm-pretest/$repo/$pr_num"
+                            $core_fetch_specs += "refs/heads/${core_pretest_branch}:${core_pretest_branch}"
+                            
+                            $fork_pretest_branch = "pretest/$pr_num"
+                            $subm_fetch_specs[$repo] += @("refs/heads/${fork_pretest_branch}:${fork_pretest_branch}")
+                            
+                        } else {
+                            Write-Host "--- MISSING FORK PRETEST"
+                        }
+                    }
+                    # To check which pretest branches are up to date and should not be tested
+                    # - Only need commit messages, not files
+                    if ($core_fetch_specs) {
+                        Write-Host "- Fetching core branches"
+                        # Write-Host git fetch --depth=1 --no-tags --filter=tree:0 origin $core_fetch_specs
+                        git fetch --depth=1 --no-tags --filter=tree:0 origin $core_fetch_specs
+                        if (-not $?) { throw "git fetch failed" }
+                    }
+                    foreach ($repo in $submodule_by_repo.Keys) {
+                        if (-not $subm_fetch_specs[$repo]) { continue }
+                        Write-Host "- Fetching branches for $repo"
+                        # Write-Host git fetch --depth=1 --no-tags --filter=tree:0 $submodule_by_repo[$repo].fork_url $subm_fetch_specs[$repo]
+                        git fetch --depth=1 --no-tags --filter=tree:0 $submodule_by_repo[$repo].fork_url $subm_fetch_specs[$repo]
+                        if (-not $?) { throw "git fetch failed" }
+                    }
+                    
+                    
+                    
+                    Write-Host "=============================="
+                    Write-Host "Building exec_list"
+                    $exec_list = @()
+                    foreach ($subm in $submodules) {
+                        Write-Host "subm: $($subm.name)"
+                        
+                        foreach ($pr_num in $subm.merge_sha_by_pr.Keys) {
+                            Write-Host "- PR $pr_num"
+                            
+                            function Is-SkipNeeded() {
+                                if ($pr_num -notin $subm.pretest_sha_by_pr.Keys) { return $false }
+                                if ($pr_num -notin $core_pretest_pr_nums[$subm.repo]) { return $false }
+                                
+                                function Find-MetaSHA() {
+                                    param ($ref, $key)
+                                    $pattern = "^meta\.$key=([0-9a-f]{40})$"
+                                    
+                                    # Write-Host "--- Looking for commit message lines matching [$pattern]"
+                                    $res = @()
+                                    foreach ($l in git log -1 --pretty=format:"%B" $ref) {
+                                        # Write-Host "----- $l"
+                                        if ($l -notmatch $pattern) { continue }
+                                        $sha = $matches[1]
+                                        # Write-Host "------- FOUND: $sha"
+                                        $res += $sha
+                                    }
+                                    if (-not $?) { throw "git log failed" }
+                                    
+                                    return $res
+                                }
+                                
+                                if ($subm.merge_sha_by_pr[$pr_num] -notin (Find-MetaSHA "pretest/$pr_num" 'pr_merge_sha')) { return $false }
+                                if ($subm.pretest_sha_by_pr[$pr_num] -notin (Find-MetaSHA "subm-pretest/$($subm.repo)/$pr_num" 'fork_pretest_sha')) { return $false }
+                                
+                                return $true
+                            }
+                            if (Is-SkipNeeded) { continue }
+                            
+                            Write-Host "--- TEST NOW"
+                            $exec_list += [PSCustomObject]@{
+                                'subm_name' = $subm.name;
+                                'org_repo' = $subm.repo;
+                                'fork_repo' = "SunSerega/$($subm.name)";
+                                'pr_num' = $pr_num;
+                            }
+                        }
+                        
+                    }
+                    
+                    $json = ConvertTo-Json -Compress $exec_list
+                    Write-Host $json
+                    echo "exec_list=$json" >> $env:GITHUB_OUTPUT
+                    
+                    
+                    
+                    Write-Host "=============================="
+                    Write-Host "Building remove_list"
+                    $remove_list = @()
+                    foreach ($subm in $submodules) {
+                        Write-Host "subm: $($subm.name)"
+                        
+                        $subm_rem_pretest_pr_nums = @()
+                        foreach ($pr_num in $subm.pretest_sha_by_pr.Keys) {
+                            Write-Host "- Fork pretest for PR $pr_num"
+                            if ($pr_num -in $subm.merge_sha_by_pr.Keys) { continue }
+                            $subm_rem_pretest_pr_nums += $pr_num
+                            Write-Host "--- REMOVE"
+                        }
+                        
+                        $core_rem_pretest_pr_nums = @()
+                        foreach ($pr_num in $core_pretest_pr_nums[$subm.repo]) {
+                            Write-Host "- Core pretest for PR $pr_num"
+                            if ($pr_num -in $subm.merge_sha_by_pr.Keys) { continue }
+                            $core_rem_pretest_pr_nums += $pr_num
+                        }
+                        
+                        if ($subm_rem_pretest_pr_nums -or $core_rem_pretest_pr_nums) {
+                            $remove_list += [PSCustomObject]@{
+                                'org_repo' = $subm.repo;
+                                'fork_repo' = "SunSerega/$($subm.name)";
+                                'subm_pretest_pr_nums' = $subm_rem_pretest_pr_nums -join ',';
+                                'core_pretest_pr_nums' = $core_rem_pretest_pr_nums -join ',';
+                            }
+                        }
+                        
+                    }
+                    
+                    $json = ConvertTo-Json -Compress $remove_list
+                    Write-Host $json
+                    echo "remove_list=$json" >> $env:GITHUB_OUTPUT
+            
+    pretest-each:
+        runs-on: windows-latest
+        needs: enmr-PRs
+        if: ${{ needs.enmr-PRs.outputs.exec_list != '[]' }}
+        strategy:
+            fail-fast: false
+            matrix:
+                exec-data: ${{ fromJson(needs.enmr-PRs.outputs.exec_list) }}
+        
+        steps:
+            -   name: git config
+                run: |
+                
+                    git config --global core.autocrlf false
+                    git config --global user.name "sun pack bot"
+                    git config --global user.email "sunserega2@gmail.com"
+                    git config --global --add url.https://github.com/.insteadOf "git@github.com:"
+            
+            -   name: checkout main repo
+                uses: actions/checkout@main
+                with:
+                    ref: ${{ github.event.repository.default_branch }}
+                    path: './POCGL'
+                    fetch-depth: 0
+            
+            -   name: checkout subm fork
+                uses: actions/checkout@main
+                with:
+                    ref: 'custom'
+                    path: './fork'
+                    fetch-depth: 0
+                    repository: ${{ matrix.exec-data.fork_repo }}
+                    token: ${{ secrets.POCGL_pretest_upstream_PAT }}
+            
+            -   name: Install OpenCL driver for Intel CPU
+                run: |
+                
+                    # https://www.intel.com/content/www/us/en/developer/articles/technical/intel-cpu-runtime-for-opencl-applications-with-sycl-support.html
+                    Invoke-WebRequest -Uri 'https://registrationcenter-download.intel.com/akdlm/IRC_NAS/0e6849e6-2c56-480b-afcf-be8331d5c4f6-opencl/w_opencl_runtime_p_2024.1.0.968.exe' -OutFile 'D:\igfx.exe'
+                    
+                    7z x "D:\igfx.exe" -o"D:\igfx" -y
+                    
+                    D:\igfx\w_opencl_runtime_p_2024.1.0.968.msi /quiet
+            
+            -   name: Download and unpack Pascal compiler
+                run: |
+                
+                    Invoke-WebRequest -Uri 'https://github.com/SunSerega/pascalabcnet/releases/download/custom-build-tag/PABCNETC.zip' -OutFile 'D:\PABCNETC.zip'
+                    Expand-Archive -Path 'D:\PABCNETC.zip' -DestinationPath 'D:\PABCNETC' -Force
+            
+            -   name: (!) pretest
+                run: |
+                
+                    $subm_name = '${{ matrix.exec-data.subm_name }}'
+                    $org_repo = '${{ matrix.exec-data.org_repo }}'
+                    $fork_repo = '${{ matrix.exec-data.fork_repo }}'
+                    $pr_num = "${{ matrix.exec-data.pr_num }}"
+                    
+                    
+                    
+                    Write-Host "Updating subm fork..."
+                    Push-Location './fork'
+                    git remote add 0_official "git@github.com:${org_repo}.git"
+                    git config --add remote.0_official.fetch '+refs/pull/*:refs/remotes/0_official/pull/*'
+                    git fetch --all 2>&1 | Out-Null
+                    
+                    $fork_main_branch_name = 'custom'
+                    $fork_branch_name = "pretest/$pr_num"
+                    if (&{ git show-ref --verify -q "refs/remotes/origin/$fork_branch_name"; $? }) {
+                        Write-Host "Branch for PR $pr_num exists"
+                        git checkout $fork_branch_name
+                        
+                        Write-Host "Merging latest commits from PR $pr_num"
+                        git merge "remotes/0_official/pull/$pr_num/merge"
+                        if (-not $?) { throw "git merge failed" }
+                        git push
+                        if (-not $?) { throw "git push failed" }
+                        
+                    } else {
+                        Write-Host "Branch for PR $pr_num doesn't exist"
+                        git checkout "remotes/0_official/pull/$pr_num/merge"
+                        if (-not $?) { throw "git checkout failed" }
+                        
+                        Write-Host "Creating:"
+                        git checkout -b $fork_branch_name
+                        if (-not $?) { throw "git checkout -b failed" }
+                        git push --set-upstream origin $fork_branch_name
+                        if (-not $?) { throw "git push failed" }
+                        
+                    }
+                    
+                    Write-Host "Merging with ${fork_main_branch_name}:"
+                    $pr_merge_sha = git rev-parse remotes/0_official/pull/$pr_num/merge
+                    git merge $fork_main_branch_name --no-ff --commit -m @"
+                    Merge $fork_main_branch_name into $fork_branch_name
+                    meta.pr_merge_sha=$pr_merge_sha
+                    "@
+                    if (-not $?) { throw "git merge failed" }
+                    git push
+                    if (-not $?) { throw "git push failed" }
+                    
+                    $fork_pretest_sha = git rev-parse HEAD
+                    Pop-Location
+                    
+                    
+                    
+                    Write-Host "Updating main repo..."
+                    Push-Location './POCGL'
+                    git fetch --all 2>&1 | Out-Null
+                    
+                    $core_main_branch_name = '${{ github.event.repository.default_branch }}'
+                    $core_branch_name = "subm-pretest/$org_repo/$pr_num"
+                    if (&{ git show-ref --verify -q "refs/remotes/origin/$core_branch_name"; $? }) {
+                        Write-Host "Branch for PR $pr_num exists. Merging with ${core_main_branch_name}:"
+                        git checkout $core_branch_name
+                        if (-not $?) { throw "git checkout failed" }
+                        git merge $core_main_branch_name -m "[trivial] Merge $core_branch_name into subm-pretest/... branch"
+                        if (-not $?) { throw "git merge failed" }
+                        git push
+                        if (-not $?) { throw "git push failed" }
+                    } else {
+                        Write-Host "Branch for PR $pr_num doesn't exist. Creating:"
+                        git checkout -b $core_branch_name
+                        if (-not $?) { throw "git checkout -b failed" }
+                        git push --set-upstream origin $core_branch_name
+                        if (-not $?) { throw "git push failed" }
+                    }
+                    
+                    & .\DeleteAllTemp.bat NoPause | Out-Null
+                    
+                    Write-Host "Compile: " -NoNewline
+                    Start-Process -FilePath 'D:\PABCNETC\pabcnetcclear.exe' -ArgumentList '"PackAll.pas"' -Wait -NoNewWindow
+                    
+                    & .\PackAll.exe "Stages= PullUpstream + Reference + Dummy + OpenCL+OpenCLABC + OpenGL+OpenGLABC + Compile + Test + Release" "PullUpstreamBranch=${subm_name}:${fork_branch_name}" "PasCompPath=D:\PABCNETC\pabcnetcclear.exe" SkipFinishedPause
+                    if (-not $?) { throw "PackAll failed" }
+                    
+                    git commit -a --allow-empty -m @"
+                    [trivial] test changes
+                    meta.fork_pretest_sha=$fork_pretest_sha
+                    "@
+                    if (-not $?) { throw "git commit failed" }
+                    git push
+                    if (-not $?) { throw "git push failed" }
+                    
+                    Pop-Location
+            
+    remove-old-pretest:
+        runs-on: windows-latest
+        needs: enmr-PRs
+        if: ${{ needs.enmr-PRs.outputs.remove_list != '[]' }}
+        strategy:
+            fail-fast: false
+            matrix:
+                remove-data: ${{ fromJson(needs.enmr-PRs.outputs.remove_list) }}
+        
+        steps:
+            -   name: git config
+                run: |
+                
+                    git config --global core.autocrlf false
+                    git config --global user.name "sun pack bot"
+                    git config --global user.email "sunserega2@gmail.com"
+                    git config --global --add url.https://github.com/.insteadOf "git@github.com:"
+            
+            -   name: checkout subm fork
+                uses: actions/checkout@main
+                with:
+                    repository: ${{ matrix.remove-data.fork_repo }}
+                    token: ${{ secrets.POCGL_pretest_upstream_PAT }}
+                    sparse-checkout-cone-mode: false
+                    sparse-checkout: '<NOTHING>'
+            
+            -   name: (!) remove old pretest branches
+                run: |
+                
+                    function Split-OrEmpty {
+                        param ( $s )
+                        if (-not $s) { return @() }
+                        return $s -split ','
+                    }
+                    
+                    $org_repo = '${{ matrix.remove-data.org_repo }}'
+                    $fork_repo = '${{ matrix.remove-data.fork_repo }}'
+                    $subm_pretest_pr_nums = Split-OrEmpty '${{ matrix.remove-data.subm_pretest_pr_nums }}'
+                    $core_pretest_pr_nums = Split-OrEmpty '${{ matrix.remove-data.core_pretest_pr_nums }}'
+                    
+                    
+                    
+                    $main_repo_dir = './core'
+                    New-Item -ItemType Directory -Path $main_repo_dir | Out-Null
+                    Push-Location $main_repo_dir
+                    $main_repo_url = '${{ github.server_url }}/${{ github.repository }}'
+                    $main_repo_branch = '${{ github.event.repository.default_branch }}'
+                    Write-Host "Cloning main repo [$main_repo_url]: branch [$main_repo_branch]"
+                    git clone -b $main_repo_branch --filter=tree:0 --no-progress --no-checkout $main_repo_url .
+                    if (-not $?) { throw "git clone failed" }
+                    
+                    # git branch -r
+                    
+                    $core_removed_pr_nums = @()
+                    foreach ($pr_num in $core_pretest_pr_nums) {
+                        Write-Host "Checking if subm-pretest branch for PR $pr_num is trivial"
+                        $branch_name = "subm-pretest/$org_repo/$pr_num"
+                        Write-Host $branch_name
+                        $is_trivial = $true
+                        foreach ($commit_name in git show --pretty=format:"%s" -s "HEAD..origin/$branch_name") {
+                            Write-Host "- $commit_name"
+                            if ($commit_name.StartsWith('[trivial]')) { continue }
+                            Write-Host "--- NOT TRIVIAL"
+                            $is_trivial = $false
+                            # break
+                        }
+                        if (-not $?) { throw "git show failed" }
+                        if ($is_trivial) {
+                            Write-Host "Is trivial, removing..."
+                            git push origin --delete $branch_name                                               # BRANCH DELETE
+                            if (-not $?) { throw "git push --delete failed" }
+                            $core_removed_pr_nums += $pr_num
+                        }
+                        Write-Host '~~~~~'
+                    }
+                    
+                    Pop-Location
+                    
+                    $core_pretest_pr_nums = $core_pretest_pr_nums |
+                        Where-Object { $_ -notin $core_removed_pr_nums }
+                    
+                    
+                    
+                    foreach ($pr_num in $subm_pretest_pr_nums) {
+                        Write-Host "PR $pr_num was closed"
+                        if ($core_pretest_pr_nums -contains $pr_num) {
+                            Write-Host "But main repo is still referencing it"
+                        } else {
+                            Write-Host "Removing..."
+                            git push origin --delete "pretest/$pr_num"                                          # BRANCH DELETE
+                            if (-not $?) { throw "git push --delete failed" }
+                        }
+                        Write-Host '~~~~~'
+                    }
+                    
+                    if ($core_pretest_pr_nums) {
+                        Write-Host "pretest branches for these PRs are dangling:"
+                        foreach ($pr_num in $core_pretest_pr_nums) {
+                            Write-Host "- $pr_num"
+                        }
+                        throw "Some pretest branches in main repo are dangling"
+                    }
+            
