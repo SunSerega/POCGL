@@ -4685,8 +4685,7 @@
     
     public ColorTableParameterfv_adr := GetProcAddress('glColorTableParameterfv');
     private ntv_ColorTableParameterfv_1 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: single)>(ColorTableParameterfv_adr);
-    private ntv_ColorTableParameterfv_2 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: Vec4f)>(ColorTableParameterfv_adr);
-    private ntv_ColorTableParameterfv_3 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; &params: IntPtr)>(ColorTableParameterfv_adr);
+    private ntv_ColorTableParameterfv_2 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; &params: IntPtr)>(ColorTableParameterfv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfv(target: glColorTableTarget; pname: glColorTableParameterPName; &params: array of single);
       type PSingle = ^single;
     begin
@@ -4694,17 +4693,14 @@
         ntv_ColorTableParameterfv_1(target, pname, &params[0]) else
         ntv_ColorTableParameterfv_1(target, pname, PSingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfv(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: Vec4f) :=
-      ntv_ColorTableParameterfv_2(target, pname, &params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfv(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: single) :=
       ntv_ColorTableParameterfv_1(target, pname, &params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfv(target: glColorTableTarget; pname: glColorTableParameterPName; &params: IntPtr) :=
-      ntv_ColorTableParameterfv_3(target, pname, &params);
+      ntv_ColorTableParameterfv_2(target, pname, &params);
     
     public ColorTableParameteriv_adr := GetProcAddress('glColorTableParameteriv');
     private ntv_ColorTableParameteriv_1 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: Int32)>(ColorTableParameteriv_adr);
-    private ntv_ColorTableParameteriv_2 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: Vec4i)>(ColorTableParameteriv_adr);
-    private ntv_ColorTableParameteriv_3 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; &params: IntPtr)>(ColorTableParameteriv_adr);
+    private ntv_ColorTableParameteriv_2 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; &params: IntPtr)>(ColorTableParameteriv_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameteriv(target: glColorTableTarget; pname: glColorTableParameterPName; &params: array of Int32);
       type PInt32 = ^Int32;
     begin
@@ -4712,12 +4708,10 @@
         ntv_ColorTableParameteriv_1(target, pname, &params[0]) else
         ntv_ColorTableParameteriv_1(target, pname, PInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameteriv(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: Vec4i) :=
-      ntv_ColorTableParameteriv_2(target, pname, &params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameteriv(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: Int32) :=
       ntv_ColorTableParameteriv_1(target, pname, &params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameteriv(target: glColorTableTarget; pname: glColorTableParameterPName; &params: IntPtr) :=
-      ntv_ColorTableParameteriv_3(target, pname, &params);
+      ntv_ColorTableParameteriv_2(target, pname, &params);
     
     public CopyColorTable_adr := GetProcAddress('glCopyColorTable');
     private ntv_CopyColorTable_1 := GetProcOrNil&<procedure(target: glColorTableTarget; internalformat: glInternalFormat; x: Int32; y: Int32; width: Int32)>(CopyColorTable_adr);
@@ -29263,8 +29257,7 @@
     
     public ColorTableParameterfvSGI_adr := GetProcAddress('glColorTableParameterfvSGI');
     private ntv_ColorTableParameterfvSGI_1 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: single)>(ColorTableParameterfvSGI_adr);
-    private ntv_ColorTableParameterfvSGI_2 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: Vec4f)>(ColorTableParameterfvSGI_adr);
-    private ntv_ColorTableParameterfvSGI_3 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; &params: IntPtr)>(ColorTableParameterfvSGI_adr);
+    private ntv_ColorTableParameterfvSGI_2 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; &params: IntPtr)>(ColorTableParameterfvSGI_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfvSGI(target: glColorTableTarget; pname: glColorTableParameterPName; &params: array of single);
       type PSingle = ^single;
     begin
@@ -29272,17 +29265,14 @@
         ntv_ColorTableParameterfvSGI_1(target, pname, &params[0]) else
         ntv_ColorTableParameterfvSGI_1(target, pname, PSingle(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfvSGI(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: Vec4f) :=
-      ntv_ColorTableParameterfvSGI_2(target, pname, &params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfvSGI(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: single) :=
       ntv_ColorTableParameterfvSGI_1(target, pname, &params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterfvSGI(target: glColorTableTarget; pname: glColorTableParameterPName; &params: IntPtr) :=
-      ntv_ColorTableParameterfvSGI_3(target, pname, &params);
+      ntv_ColorTableParameterfvSGI_2(target, pname, &params);
     
     public ColorTableParameterivSGI_adr := GetProcAddress('glColorTableParameterivSGI');
     private ntv_ColorTableParameterivSGI_1 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: Int32)>(ColorTableParameterivSGI_adr);
-    private ntv_ColorTableParameterivSGI_2 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: Vec4i)>(ColorTableParameterivSGI_adr);
-    private ntv_ColorTableParameterivSGI_3 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; &params: IntPtr)>(ColorTableParameterivSGI_adr);
+    private ntv_ColorTableParameterivSGI_2 := GetProcOrNil&<procedure(target: glColorTableTarget; pname: glColorTableParameterPName; &params: IntPtr)>(ColorTableParameterivSGI_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterivSGI(target: glColorTableTarget; pname: glColorTableParameterPName; &params: array of Int32);
       type PInt32 = ^Int32;
     begin
@@ -29290,12 +29280,10 @@
         ntv_ColorTableParameterivSGI_1(target, pname, &params[0]) else
         ntv_ColorTableParameterivSGI_1(target, pname, PInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterivSGI(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: Vec4i) :=
-      ntv_ColorTableParameterivSGI_2(target, pname, &params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterivSGI(target: glColorTableTarget; pname: glColorTableParameterPName; var &params: Int32) :=
       ntv_ColorTableParameterivSGI_1(target, pname, &params);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure ColorTableParameterivSGI(target: glColorTableTarget; pname: glColorTableParameterPName; &params: IntPtr) :=
-      ntv_ColorTableParameterivSGI_3(target, pname, &params);
+      ntv_ColorTableParameterivSGI_2(target, pname, &params);
     
     public CopyColorTableSGI_adr := GetProcAddress('glCopyColorTableSGI');
     private ntv_CopyColorTableSGI_1 := GetProcOrNil&<procedure(target: glColorTableTarget; internalformat: glInternalFormat; x: Int32; y: Int32; width: Int32)>(CopyColorTableSGI_adr);

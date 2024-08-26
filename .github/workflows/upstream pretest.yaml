@@ -271,6 +271,7 @@ jobs:
                 run: |
                 
                     git config --global core.autocrlf false
+                    git config --global advice.detachedHead false
                     git config --global user.name "sun pack bot"
                     git config --global user.email "sunserega2@gmail.com"
                     git config --global --add url.https://github.com/.insteadOf "git@github.com:"
@@ -347,6 +348,16 @@ jobs:
                         if (-not $?) { throw "git push failed" }
                         
                     }
+                    
+                    Write-Host "Merging with 0_official/main:"
+                    git merge 0_official/main
+                    if (-not $?) {
+                        Write-Host "git merge failed"
+                        Write-Host "This PR is outdated and cannot be properly tested"
+                        exit 0
+                    }
+                    git push
+                    if (-not $?) { throw "git push failed" }
                     
                     Write-Host "Merging with ${fork_main_branch_name}:"
                     $pr_merge_sha = git rev-parse remotes/0_official/pull/$pr_num/merge

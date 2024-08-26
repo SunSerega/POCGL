@@ -626,12 +626,7 @@ end;
       if gr<>nil then bt := nil;
       
       case Ord(bt<>nil)+Ord(gr<>nil)+Ord(cl<>nil)+Ord(s<>nil)+Ord(d<>nil) of
-        0:
-        begin
-          Otp($'WARNING: [{tname}] is not a defined type');
-          Result := nil;
-          exit;
-        end;
+        0: raise new System.InvalidOperationException($'[{tname}] is not a defined type');
         1: ;
         else raise new System.NotImplementedException(tname);
       end;

@@ -1524,11 +1524,10 @@ table:          IntPtr const
 !ppt
 target: glColorTableTarget
 pname:  glColorTableParameterPName
-params: array of single const / var Vec4f const / var single const / IntPtr const
+params: array of single const / var single const / IntPtr const
 !ffo
-4
+3
 	glColorTableTarget | glColorTableParameterPName | array of single const |
-	glColorTableTarget | glColorTableParameterPName | var Vec4f const       |
 	glColorTableTarget | glColorTableParameterPName | var single const      |
 	glColorTableTarget | glColorTableParameterPName | IntPtr const          |
 	------------------ | -------------------------- | --------------------- |
@@ -1538,11 +1537,10 @@ params: array of single const / var Vec4f const / var single const / IntPtr cons
 !ppt
 target: glColorTableTarget
 pname:  glColorTableParameterPName
-params: array of Int32 const / var Vec4i const / var Int32 const / IntPtr const
+params: array of Int32 const / var Int32 const / IntPtr const
 !ffo
-4
+3
 	glColorTableTarget | glColorTableParameterPName | array of Int32 const |
-	glColorTableTarget | glColorTableParameterPName | var Vec4i const      |
 	glColorTableTarget | glColorTableParameterPName | var Int32 const      |
 	glColorTableTarget | glColorTableParameterPName | IntPtr const         |
 	------------------ | -------------------------- | -------------------- |
@@ -38947,11 +38945,10 @@ table:          IntPtr const
 !ppt
 target: glColorTableTarget
 pname:  glColorTableParameterPName
-params: array of single const / var Vec4f const / var single const / IntPtr const
+params: array of single const / var single const / IntPtr const
 !ffo
-4
+3
 	glColorTableTarget | glColorTableParameterPName | array of single const |
-	glColorTableTarget | glColorTableParameterPName | var Vec4f const       |
 	glColorTableTarget | glColorTableParameterPName | var single const      |
 	glColorTableTarget | glColorTableParameterPName | IntPtr const          |
 	------------------ | -------------------------- | --------------------- |
@@ -38961,11 +38958,10 @@ params: array of single const / var Vec4f const / var single const / IntPtr cons
 !ppt
 target: glColorTableTarget
 pname:  glColorTableParameterPName
-params: array of Int32 const / var Vec4i const / var Int32 const / IntPtr const
+params: array of Int32 const / var Int32 const / IntPtr const
 !ffo
-4
+3
 	glColorTableTarget | glColorTableParameterPName | array of Int32 const |
-	glColorTableTarget | glColorTableParameterPName | var Vec4i const      |
 	glColorTableTarget | glColorTableParameterPName | var Int32 const      |
 	glColorTableTarget | glColorTableParameterPName | IntPtr const         |
 	------------------ | -------------------------- | -------------------- |

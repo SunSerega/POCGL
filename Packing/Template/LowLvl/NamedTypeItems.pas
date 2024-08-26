@@ -2620,7 +2620,7 @@ type
           r.OutputT.MarkReferenced;
       end;
     
-    public function EnmrBindings(pars: array of LoadedParData): sequence of EnumToTypeBindingInfo;
+    public function EnmrBindings(func_name_context: ApiVendorLName; pars: array of LoadedParData): sequence of EnumToTypeBindingInfo;
     begin
       
       if Enums.Any(r->r.HasInput) then
@@ -2632,7 +2632,7 @@ type
           and par.CalculatedReadonlyLvls.SequenceEqual(|1|)
         );
         if data_par_i=-1 then
-          raise new InvalidOperationException;
+          raise new InvalidOperationException($'Cannot find ett input par in [{func_name_context}] needed for {ObjectToString(Enums.Where(r->r.HasInput).Select(r->r.Enum))}');
         var size_par_i := data_par_i-1;
         if not pars[size_par_i].Name.EndsWith('_value_size') then
           raise new NotImplementedException;
@@ -2648,7 +2648,7 @@ type
           and not par.CalculatedReadonlyLvls.Any
         );
         if data_par_i=-1 then
-          raise new InvalidOperationException;
+          raise new InvalidOperationException($'Cannot find ett output par in [{func_name_context}] needed for {ObjectToString(Enums.Where(r->r.HasOutput).Select(r->r.Enum))}');
         var size_par_i := data_par_i-1;
         if not pars[size_par_i].Name.EndsWith('_value_size') then
           raise new NotImplementedException;

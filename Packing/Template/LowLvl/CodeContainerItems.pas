@@ -165,7 +165,7 @@ type
         
         var is_enum_to_type_data := false;
         if ntv_pars.Select(par->par.CalculatedDirectType as Group).Select(gr->gr?.Body as ObjInfoEnumsInGroup).SingleOrDefault(gr_body->gr_body<>nil) is ObjInfoEnumsInGroup(var gr_body) then
-          is_enum_to_type_data := gr_body.EnmrBindings(self.ntv_pars).Any(b->b.data_par_ind=par_i);
+          is_enum_to_type_data := gr_body.EnmrBindings(self.name, self.ntv_pars).Any(b->b.data_par_ind=par_i);
         
         Result := par.MakePPT(self.ToString, par_i=0, is_enum_to_type_data);
       end);
@@ -277,7 +277,7 @@ type
         
         {$region Find}
         
-        var enum_to_type_bindings := enum_to_type_gr_body.EnmrBindings(self.ntv_pars).ToArray;
+        var enum_to_type_bindings := enum_to_type_gr_body.EnmrBindings(self.name, self.ntv_pars).ToArray;
         if enum_to_type_bindings.Length=0 then
           raise new InvalidOperationException;
         
