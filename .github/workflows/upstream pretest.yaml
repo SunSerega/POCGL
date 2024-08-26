@@ -9,6 +9,10 @@ on:
 permissions:
     contents: write
 
+concurrency:
+   group: ${{ github.workflow }}
+   cancel-in-progress: false
+
 # There are 2 steps of adding new upstream commits:
 # 1. Add new commits from the PR merge ref (and possibly custom branch): to "pretest/$pr_num" in fork
 # 2. Add commit with submodule ref move + test changes, with this ref move: to "subm-pretest/$org_repo/$pr_num" in POCGL repo
