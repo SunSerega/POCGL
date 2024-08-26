@@ -2979,7 +2979,7 @@ implementation
         raise new MessageException($'ERROR: {FixerInfo(f)} had wrong param count');
       
       for var i := 0 to changes.Length-1 do
-        foreach var (is_add, t) in changes[i].changes_maker() do
+        foreach var (is_add, t) in changes[i].changes_maker().OrderBy(\(is_add, t) -> is_add) do
           if is_add then
           begin
             if t in f.possible_par_types[i+ind_nudge] then
@@ -2991,12 +2991,16 @@ implementation
               if t.var_arg and ((t.tname='IntPtr') or t.IsGeneric) then
                 if ppt.Remove(new FuncParamT(t.is_const, false, 0, KnownDirectTypes.IntPtr)) then
                   ppt.Add(new FuncParamT(t.is_const, false, 0, KnownDirectTypes.Pointer));
+              if not is_auto_fixer then
+                f.changed_by_fixer := true;
             end;
           end else
           begin
             if f.possible_par_types[i+ind_nudge].Remove(t) then
               self.ReportUsed else
               ErrorInfo(f, 'remove', i+ind_nudge, t, f.possible_par_types[i+ind_nudge]);
+            if not is_auto_fixer then
+              f.changed_by_fixer := true;
           end;
       
       if is_auto_fixer then
@@ -3093,6 +3097,7 @@ implementation
         Otp($'WARNING: {FixerInfo(f)} has not limited pars: {ObjectToString(unlimited_pars)}');
       
       self.ReportUsed;
+      f.changed_by_fixer := true;
       Result := false;
     end;
     
