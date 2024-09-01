@@ -13827,6 +13827,11 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function InitLayer(num_entries: UInt32; target_dispatch: cl_icd_dispatch; num_entries_ret: IntPtr; layer_dispatch_ret: IntPtr): clErrorCode :=
       ntv_InitLayer_4(num_entries, target_dispatch, num_entries_ret, layer_dispatch_ret);
     
+    public DeinitLayer_adr := GetProcAddress('clDeinitLayer');
+    private ntv_DeinitLayer_1 := GetProcOrNil&<function: clErrorCode>(DeinitLayer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DeinitLayer: clErrorCode :=
+      ntv_DeinitLayer_1;
+    
   end;
   
   /// id: cl_amd_device_attribute_query

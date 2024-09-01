@@ -10,10 +10,12 @@
 
 # clLoaderLayers (cl_loader_layers)
 	Enum [cl::LAYER_API_VERSION_100]
+	Enum [cl::LAYER_API_VERSION_110]
 	Enum [cl::LAYER_API_VERSION]
 	Enum [cl::LAYER_NAME]
 	Func [cl::GetLayerInfo]
 	Func [cl::InitLayer]
+	Func [cl::DeinitLayer]
 
 # clDeviceAttributeQueryAMD (cl_amd_device_attribute_query)
 	Enum [cl::DEVICE_PREFERRED_WORK_GROUP_SIZE]

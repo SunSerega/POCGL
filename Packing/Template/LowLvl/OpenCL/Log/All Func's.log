@@ -516,6 +516,13 @@ errcode_ret: var clErrorCode
 	-------- | ---------- | --------------- |
 	         | context    | errcode_ret     |
 
+# cl::DeinitLayer
+!ppt
+Result: clErrorCode
+!ffo
+1
+	clErrorCode |
+
 # cl::EnqueueAcquireGLObjects
 !ppt
 Result:                  clErrorCode
