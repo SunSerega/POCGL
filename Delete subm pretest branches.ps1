@@ -1,4 +1,4 @@
-try {
+﻿try {
 	
 	function Delete-Branches {
 		param (
@@ -14,6 +14,11 @@ try {
 		$branch_del = @()
 		foreach ($branch in git branch -r --list "$remote/$pattern") {
 			$branch = $branch.Trim().SubString($remote.Length+1)
+			if ($branch.EndsWith('960')) { continue }
+			if ($branch.EndsWith('962')) { continue }
+			if ($branch.EndsWith('1159')) { continue }
+			if ($branch.EndsWith('1215')) { continue }
+			if ($branch.EndsWith('1223')) { continue }
 			Write-Host "Deleting branch: $branch"
 			$branch_del += $branch
 		}
