@@ -6095,6 +6095,22 @@
       var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<clMemProperties>);
       Result := GetMemObjectInfo(memobj, clMemInfo.MEM_PROPERTIES, param_value_sz,param_value,IntPtr.Zero);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo_MEM_DEVICE_PTR(memobj: cl_mem; var param_value: UInt64; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<UInt64>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetMemObjectInfo(memobj, clMemInfo.MEM_DEVICE_PTR, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo_MEM_DEVICE_PTRS(memobj: cl_mem; var param_value: cl_mem_device_address_pair; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<cl_mem_device_address_pair>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetMemObjectInfo(memobj, clMemInfo.MEM_DEVICE_PTRS, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo_MEM_DX9_MEDIA_ADAPTER_TYPE(memobj: cl_mem; var param_value: clDx9MediaAdapterType; param_value_validate_size: boolean := false): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<clDx9MediaAdapterType>);
@@ -7119,6 +7135,11 @@
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<clBool>);
       Result := SetKernelExecInfo(kernel, clKernelExecInfo.KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM, param_value_sz,param_value);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo_KERNEL_EXEC_INFO_DEVICE_PTRS(kernel: cl_kernel; param_value: UInt64): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<UInt64>);
+      Result := SetKernelExecInfo(kernel, clKernelExecInfo.KERNEL_EXEC_INFO_DEVICE_PTRS, param_value_sz,param_value);
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo_KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE(kernel: cl_kernel; param_value: UInt32): clErrorCode;
     begin

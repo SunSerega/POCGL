@@ -686,6 +686,29 @@
     
   end;
   
+  {$ifndef DEBUG}
+  [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
+  /// id: cl_ext_buffer_device_address
+  /// version: 0.1.0
+  clBufferDeviceAddressEXT = sealed partial class
+    public constructor(pl: cl_platform_id);
+    private constructor := raise new System.NotSupportedException;
+    public static PlatformLess := new clBufferDeviceAddressEXT(default(cl_platform_id));
+    private function GetProcAddress(name: string): IntPtr;
+    private static function GetProcOrNil<T>(fadr: IntPtr) :=
+      fadr=IntPtr.Zero ? default(T) :
+        Marshal.GetDelegateForFunctionPointer&<T>(fadr);
+    public const ExtensionString = 'cl_ext_buffer_device_address';
+    
+    public SetKernelArgDevicePointerEXT_adr := GetProcAddress('clSetKernelArgDevicePointerEXT');
+    private ntv_SetKernelArgDevicePointerEXT_1 := GetProcOrNil&<function(kernel: cl_kernel; arg_index: UInt32; arg_value: IntPtr): clErrorCode>(SetKernelArgDevicePointerEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SetKernelArgDevicePointerEXT(kernel: cl_kernel; arg_index: UInt32; arg_value: IntPtr): clErrorCode :=
+      ntv_SetKernelArgDevicePointerEXT_1(kernel, arg_index, arg_value);
+    
+  end;
+  
   /// id: cl_khr_extended_versioning
   /// version: 1.0.0
   /// promoted to: cl 3.0

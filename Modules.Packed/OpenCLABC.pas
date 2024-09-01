@@ -2974,19 +2974,29 @@ type
     begin
       cl.GetMemObjectInfo_MEM_USES_SVM_POINTER_ARM(self.ntv, Result).RaiseIfError;
     end;
+    private function GetDevicePtr: UInt64;
+    begin
+      cl.GetMemObjectInfo_MEM_DEVICE_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDevicePtrs: cl_mem_device_address_pair;
+    begin
+      cl.GetMemObjectInfo_MEM_DEVICE_PTRS(self.ntv, Result).RaiseIfError;
+    end;
     
-    public property Flags:               clMemFlags               read GetFlags;
-    public property HostPtr:             IntPtr                   read GetHostPtr;
-    public property UsesSvmPointer:      clBool                   read GetUsesSvmPointer;
-    public property Properties:          array of clMemProperties read GetProperties;
-    public property Dx9MediaAdapterType: clDx9MediaAdapterType    read GetDx9MediaAdapterType;
-    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info      read GetDx9MediaSurfaceInfo;
-    public property D3d10Resource:       IntPtr                   read GetD3d10Resource;
-    public property D3d11Resource:       IntPtr                   read GetD3d11Resource;
-    public property Dx9Resource:         IntPtr                   read GetDx9Resource;
-    public property Dx9SharedHandle:     IntPtr                   read GetDx9SharedHandle;
-    public property VaApiMediaSurface:   IntPtr                   read GetVaApiMediaSurface;
-    public property UsesSvmPointerArm:   clBool                   read GetUsesSvmPointerArm;
+    public property Flags:               clMemFlags                 read GetFlags;
+    public property HostPtr:             IntPtr                     read GetHostPtr;
+    public property UsesSvmPointer:      clBool                     read GetUsesSvmPointer;
+    public property Properties:          array of clMemProperties   read GetProperties;
+    public property Dx9MediaAdapterType: clDx9MediaAdapterType      read GetDx9MediaAdapterType;
+    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info        read GetDx9MediaSurfaceInfo;
+    public property D3d10Resource:       IntPtr                     read GetD3d10Resource;
+    public property D3d11Resource:       IntPtr                     read GetD3d11Resource;
+    public property Dx9Resource:         IntPtr                     read GetDx9Resource;
+    public property Dx9SharedHandle:     IntPtr                     read GetDx9SharedHandle;
+    public property VaApiMediaSurface:   IntPtr                     read GetVaApiMediaSurface;
+    public property UsesSvmPointerArm:   clBool                     read GetUsesSvmPointerArm;
+    public property DevicePtr:           UInt64                     read GetDevicePtr;
+    public property DevicePtrs:          cl_mem_device_address_pair read GetDevicePtrs;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -3008,7 +3018,9 @@ type
       res += 'Dx9Resource         = '; AddProp(res, GetDx9Resource        ); res += #10;
       res += 'Dx9SharedHandle     = '; AddProp(res, GetDx9SharedHandle    ); res += #10;
       res += 'VaApiMediaSurface   = '; AddProp(res, GetVaApiMediaSurface  ); res += #10;
-      res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  );
+      res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  ); res += #10;
+      res += 'DevicePtr           = '; AddProp(res, GetDevicePtr          ); res += #10;
+      res += 'DevicePtrs          = '; AddProp(res, GetDevicePtrs         );
     end;
     public function ToString: string; override;
     begin
@@ -3108,21 +3120,31 @@ type
     begin
       cl.GetMemObjectInfo_MEM_OFFSET(self.ntv, Result).RaiseIfError;
     end;
+    private function GetDevicePtr: UInt64;
+    begin
+      cl.GetMemObjectInfo_MEM_DEVICE_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDevicePtrs: cl_mem_device_address_pair;
+    begin
+      cl.GetMemObjectInfo_MEM_DEVICE_PTRS(self.ntv, Result).RaiseIfError;
+    end;
     
-    public property Flags:               clMemFlags               read GetFlags;
-    public property HostPtr:             IntPtr                   read GetHostPtr;
-    public property UsesSvmPointer:      clBool                   read GetUsesSvmPointer;
-    public property Properties:          array of clMemProperties read GetProperties;
-    public property Dx9MediaAdapterType: clDx9MediaAdapterType    read GetDx9MediaAdapterType;
-    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info      read GetDx9MediaSurfaceInfo;
-    public property D3d10Resource:       IntPtr                   read GetD3d10Resource;
-    public property D3d11Resource:       IntPtr                   read GetD3d11Resource;
-    public property Dx9Resource:         IntPtr                   read GetDx9Resource;
-    public property Dx9SharedHandle:     IntPtr                   read GetDx9SharedHandle;
-    public property VaApiMediaSurface:   IntPtr                   read GetVaApiMediaSurface;
-    public property UsesSvmPointerArm:   clBool                   read GetUsesSvmPointerArm;
-    public property AssociatedMemobject: cl_mem                   read GetAssociatedMemobject;
-    public property Offset:              UIntPtr                  read GetOffset;
+    public property Flags:               clMemFlags                 read GetFlags;
+    public property HostPtr:             IntPtr                     read GetHostPtr;
+    public property UsesSvmPointer:      clBool                     read GetUsesSvmPointer;
+    public property Properties:          array of clMemProperties   read GetProperties;
+    public property Dx9MediaAdapterType: clDx9MediaAdapterType      read GetDx9MediaAdapterType;
+    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info        read GetDx9MediaSurfaceInfo;
+    public property D3d10Resource:       IntPtr                     read GetD3d10Resource;
+    public property D3d11Resource:       IntPtr                     read GetD3d11Resource;
+    public property Dx9Resource:         IntPtr                     read GetDx9Resource;
+    public property Dx9SharedHandle:     IntPtr                     read GetDx9SharedHandle;
+    public property VaApiMediaSurface:   IntPtr                     read GetVaApiMediaSurface;
+    public property UsesSvmPointerArm:   clBool                     read GetUsesSvmPointerArm;
+    public property AssociatedMemobject: cl_mem                     read GetAssociatedMemobject;
+    public property Offset:              UIntPtr                    read GetOffset;
+    public property DevicePtr:           UInt64                     read GetDevicePtr;
+    public property DevicePtrs:          cl_mem_device_address_pair read GetDevicePtrs;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -3146,7 +3168,9 @@ type
       res += 'VaApiMediaSurface   = '; AddProp(res, GetVaApiMediaSurface  ); res += #10;
       res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  ); res += #10;
       res += 'AssociatedMemobject = '; AddProp(res, GetAssociatedMemobject); res += #10;
-      res += 'Offset              = '; AddProp(res, GetOffset             );
+      res += 'Offset              = '; AddProp(res, GetOffset             ); res += #10;
+      res += 'DevicePtr           = '; AddProp(res, GetDevicePtr          ); res += #10;
+      res += 'DevicePtrs          = '; AddProp(res, GetDevicePtrs         );
     end;
     public function ToString: string; override;
     begin
@@ -3224,21 +3248,31 @@ type
     begin
       cl.GetMemObjectInfo_MEM_OFFSET(self.ntv, Result).RaiseIfError;
     end;
+    private function GetDevicePtr: UInt64;
+    begin
+      cl.GetMemObjectInfo_MEM_DEVICE_PTR(self.ntv, Result).RaiseIfError;
+    end;
+    private function GetDevicePtrs: cl_mem_device_address_pair;
+    begin
+      cl.GetMemObjectInfo_MEM_DEVICE_PTRS(self.ntv, Result).RaiseIfError;
+    end;
     
-    public property Flags:               clMemFlags               read GetFlags;
-    public property HostPtr:             IntPtr                   read GetHostPtr;
-    public property UsesSvmPointer:      clBool                   read GetUsesSvmPointer;
-    public property Properties:          array of clMemProperties read GetProperties;
-    public property Dx9MediaAdapterType: clDx9MediaAdapterType    read GetDx9MediaAdapterType;
-    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info      read GetDx9MediaSurfaceInfo;
-    public property D3d10Resource:       IntPtr                   read GetD3d10Resource;
-    public property D3d11Resource:       IntPtr                   read GetD3d11Resource;
-    public property Dx9Resource:         IntPtr                   read GetDx9Resource;
-    public property Dx9SharedHandle:     IntPtr                   read GetDx9SharedHandle;
-    public property VaApiMediaSurface:   IntPtr                   read GetVaApiMediaSurface;
-    public property UsesSvmPointerArm:   clBool                   read GetUsesSvmPointerArm;
-    public property AssociatedMemobject: cl_mem                   read GetAssociatedMemobject;
-    public property Offset:              UIntPtr                  read GetOffset;
+    public property Flags:               clMemFlags                 read GetFlags;
+    public property HostPtr:             IntPtr                     read GetHostPtr;
+    public property UsesSvmPointer:      clBool                     read GetUsesSvmPointer;
+    public property Properties:          array of clMemProperties   read GetProperties;
+    public property Dx9MediaAdapterType: clDx9MediaAdapterType      read GetDx9MediaAdapterType;
+    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info        read GetDx9MediaSurfaceInfo;
+    public property D3d10Resource:       IntPtr                     read GetD3d10Resource;
+    public property D3d11Resource:       IntPtr                     read GetD3d11Resource;
+    public property Dx9Resource:         IntPtr                     read GetDx9Resource;
+    public property Dx9SharedHandle:     IntPtr                     read GetDx9SharedHandle;
+    public property VaApiMediaSurface:   IntPtr                     read GetVaApiMediaSurface;
+    public property UsesSvmPointerArm:   clBool                     read GetUsesSvmPointerArm;
+    public property AssociatedMemobject: cl_mem                     read GetAssociatedMemobject;
+    public property Offset:              UIntPtr                    read GetOffset;
+    public property DevicePtr:           UInt64                     read GetDevicePtr;
+    public property DevicePtrs:          cl_mem_device_address_pair read GetDevicePtrs;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -3262,7 +3296,9 @@ type
       res += 'VaApiMediaSurface   = '; AddProp(res, GetVaApiMediaSurface  ); res += #10;
       res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  ); res += #10;
       res += 'AssociatedMemobject = '; AddProp(res, GetAssociatedMemobject); res += #10;
-      res += 'Offset              = '; AddProp(res, GetOffset             );
+      res += 'Offset              = '; AddProp(res, GetOffset             ); res += #10;
+      res += 'DevicePtr           = '; AddProp(res, GetDevicePtr          ); res += #10;
+      res += 'DevicePtrs          = '; AddProp(res, GetDevicePtrs         );
     end;
     public function ToString: string; override;
     begin

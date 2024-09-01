@@ -46,6 +46,10 @@
 	ext_host_ptr: cl_mem_ext_host_ptr
 	anb_ptr: IntPtr
 
+# cl_mem_device_address_pair (cl::mem_device_address_pair)
+	device: cl_device_id
+	address: UInt64
+
 # cl_mem_ext_host_ptr (cl::mem_ext_host_ptr)
 	allocation_type: clAllocationType
 	host_cache_policy: clHostCachePolicy

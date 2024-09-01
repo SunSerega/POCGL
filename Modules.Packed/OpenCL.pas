@@ -3869,6 +3869,7 @@ type
     
     public static property KERNEL_EXEC_INFO_SVM_PTRS:                        clKernelExecInfo read new clKernelExecInfo($11B6);
     public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM:           clKernelExecInfo read new clKernelExecInfo($11B7);
+    public static property KERNEL_EXEC_INFO_DEVICE_PTRS:                     clKernelExecInfo read new clKernelExecInfo($11BB);
     public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE:            clKernelExecInfo read new clKernelExecInfo($41E5);
     public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER:   clKernelExecInfo read new clKernelExecInfo($41E6);
     public static property KERNEL_EXEC_INFO_WARP_COUNT_LIMIT:                clKernelExecInfo read new clKernelExecInfo($41E8);
@@ -3884,6 +3885,8 @@ type
         Result := 'KERNEL_EXEC_INFO_SVM_PTRS' else
       if KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM = self then
         Result := 'KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM' else
+      if KERNEL_EXEC_INFO_DEVICE_PTRS = self then
+        Result := 'KERNEL_EXEC_INFO_DEVICE_PTRS' else
       if KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE = self then
         Result := 'KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE' else
       if KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER = self then
@@ -4144,6 +4147,8 @@ type
     public static property MEM_USE_GRALLOC_PTR:           clMemFlags read new clMemFlags(1 shl 28);
     public static property MEM_EXT_HOST_PTR:              clMemFlags read new clMemFlags(1 shl 29);
     public static property MEM_PROTECTED_ALLOC:           clMemFlags read new clMemFlags(1 shl 36);
+    public static property MEM_DEVICE_SHARED_ADDRESS:     clMemFlags read new clMemFlags(1 shl 41);
+    public static property MEM_DEVICE_PRIVATE_ADDRESS:    clMemFlags read new clMemFlags(1 shl 42);
     
     public static function operator+(v1, v2: clMemFlags) := new clMemFlags(v1.val or v2.val);
     public static function operator or(v1, v2: clMemFlags) := new clMemFlags(v1.val or v2.val);
@@ -4264,6 +4269,16 @@ type
         res += 'MEM_PROTECTED_ALLOC+';
         left_val := left_val and not MEM_PROTECTED_ALLOC.val;
       end;
+      if MEM_DEVICE_SHARED_ADDRESS in self then
+      begin
+        res += 'MEM_DEVICE_SHARED_ADDRESS+';
+        left_val := left_val and not MEM_DEVICE_SHARED_ADDRESS.val;
+      end;
+      if MEM_DEVICE_PRIVATE_ADDRESS in self then
+      begin
+        res += 'MEM_DEVICE_PRIVATE_ADDRESS+';
+        left_val := left_val and not MEM_DEVICE_PRIVATE_ADDRESS.val;
+      end;
       if left_val<>0 then
       begin
         res += 'clMemFlags[';
@@ -4292,6 +4307,8 @@ type
     public static property MEM_OFFSET:                 clMemInfo read new clMemInfo($1108);
     public static property MEM_USES_SVM_POINTER:       clMemInfo read new clMemInfo($1109);
     public static property MEM_PROPERTIES:             clMemInfo read new clMemInfo($110A);
+    public static property MEM_DEVICE_PTR:             clMemInfo read new clMemInfo($110B);
+    public static property MEM_DEVICE_PTRS:            clMemInfo read new clMemInfo($110C);
     public static property MEM_DX9_MEDIA_ADAPTER_TYPE: clMemInfo read new clMemInfo($2028);
     public static property MEM_DX9_MEDIA_SURFACE_INFO: clMemInfo read new clMemInfo($2029);
     public static property MEM_D3D10_RESOURCE:         clMemInfo read new clMemInfo($4015);
@@ -4325,6 +4342,10 @@ type
         Result := 'MEM_USES_SVM_POINTER' else
       if MEM_PROPERTIES = self then
         Result := 'MEM_PROPERTIES' else
+      if MEM_DEVICE_PTR = self then
+        Result := 'MEM_DEVICE_PTR' else
+      if MEM_DEVICE_PTRS = self then
+        Result := 'MEM_DEVICE_PTRS' else
       if MEM_DX9_MEDIA_ADAPTER_TYPE = self then
         Result := 'MEM_DX9_MEDIA_ADAPTER_TYPE' else
       if MEM_DX9_MEDIA_SURFACE_INFO = self then
@@ -6163,6 +6184,19 @@ type
     begin
       self.ext_host_ptr := ext_host_ptr;
       self.anb_ptr      := anb_ptr;
+    end;
+    
+  end;
+  
+  ///
+  cl_mem_device_address_pair = record
+    public device: cl_device_id;
+    public address: UInt64;
+    
+    public constructor(device: cl_device_id; address: UInt64);
+    begin
+      self.device  := device;
+      self.address := address;
     end;
     
   end;
@@ -12469,6 +12503,22 @@ type
       var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<clMemProperties>);
       Result := GetMemObjectInfo(memobj, clMemInfo.MEM_PROPERTIES, param_value_sz,param_value,IntPtr.Zero);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo_MEM_DEVICE_PTR(memobj: cl_mem; var param_value: UInt64; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<UInt64>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetMemObjectInfo(memobj, clMemInfo.MEM_DEVICE_PTR, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo_MEM_DEVICE_PTRS(memobj: cl_mem; var param_value: cl_mem_device_address_pair; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<cl_mem_device_address_pair>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetMemObjectInfo(memobj, clMemInfo.MEM_DEVICE_PTRS, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo_MEM_DX9_MEDIA_ADAPTER_TYPE(memobj: cl_mem; var param_value: clDx9MediaAdapterType; param_value_validate_size: boolean := false): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<clDx9MediaAdapterType>);
@@ -13494,6 +13544,11 @@ type
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<clBool>);
       Result := SetKernelExecInfo(kernel, clKernelExecInfo.KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM, param_value_sz,param_value);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo_KERNEL_EXEC_INFO_DEVICE_PTRS(kernel: cl_kernel; param_value: UInt64): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<UInt64>);
+      Result := SetKernelExecInfo(kernel, clKernelExecInfo.KERNEL_EXEC_INFO_DEVICE_PTRS, param_value_sz,param_value);
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo_KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE(kernel: cl_kernel; param_value: UInt32): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<UInt32>);
@@ -14308,6 +14363,29 @@ type
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SetKernelExecInfoARM(kernel: cl_kernel; param_name: clKernelExecInfoARM; param_value_size: UIntPtr; param_value: pointer): clErrorCode :=
       ntv_SetKernelExecInfoARM_2(kernel, param_name, param_value_size, param_value);
+    
+  end;
+  
+  {$ifndef DEBUG}
+  [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
+  /// id: cl_ext_buffer_device_address
+  /// version: 0.1.0
+  clBufferDeviceAddressEXT = sealed partial class
+    public constructor(pl: cl_platform_id);
+    private constructor := raise new System.NotSupportedException;
+    public static PlatformLess := new clBufferDeviceAddressEXT(default(cl_platform_id));
+    private function GetProcAddress(name: string): IntPtr;
+    private static function GetProcOrNil<T>(fadr: IntPtr) :=
+      fadr=IntPtr.Zero ? default(T) :
+        Marshal.GetDelegateForFunctionPointer&<T>(fadr);
+    public const ExtensionString = 'cl_ext_buffer_device_address';
+    
+    public SetKernelArgDevicePointerEXT_adr := GetProcAddress('clSetKernelArgDevicePointerEXT');
+    private ntv_SetKernelArgDevicePointerEXT_1 := GetProcOrNil&<function(kernel: cl_kernel; arg_index: UInt32; arg_value: IntPtr): clErrorCode>(SetKernelArgDevicePointerEXT_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SetKernelArgDevicePointerEXT(kernel: cl_kernel; arg_index: UInt32; arg_value: IntPtr): clErrorCode :=
+      ntv_SetKernelArgDevicePointerEXT_1(kernel, arg_index, arg_value);
     
   end;
   
@@ -20364,6 +20442,10 @@ function clImportMemoryARM.GetProcAddress(name: string) := pl.GetProcAddress(nam
 type clSharedVirtualMemoryARM = sealed partial class(cl_extension_base) end;
 constructor clSharedVirtualMemoryARM.Create(pl: cl_platform_id) := inherited Create(pl);
 function clSharedVirtualMemoryARM.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clBufferDeviceAddressEXT = sealed partial class(cl_extension_base) end;
+constructor clBufferDeviceAddressEXT.Create(pl: cl_platform_id) := inherited Create(pl);
+function clBufferDeviceAddressEXT.GetProcAddress(name: string) := pl.GetProcAddress(name);
 
 type clDeviceFissionEXT = sealed partial class(cl_extension_base) end;
 constructor clDeviceFissionEXT.Create(pl: cl_platform_id) := inherited Create(pl);

@@ -895,6 +895,12 @@ clBool
 --- MEM_PROPERTIES
 !output
 array of clMemProperties
+--- MEM_DEVICE_PTR
+!output
+UInt64
+--- MEM_DEVICE_PTRS
+!output
+cl_mem_device_address_pair
 --- MEM_DX9_MEDIA_ADAPTER_TYPE
 !output
 clDx9MediaAdapterType
@@ -1101,6 +1107,9 @@ array of IntPtr
 --- KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM
 !input
 clBool
+--- KERNEL_EXEC_INFO_DEVICE_PTRS
+!input
+UInt64
 --- KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE
 !input
 UInt32

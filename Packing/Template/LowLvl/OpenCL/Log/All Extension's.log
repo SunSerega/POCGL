@@ -131,6 +131,14 @@
 	Func [cl::SetKernelArgSVMPointer + ARM]
 	Func [cl::SetKernelExecInfo + ARM]
 
+# clBufferDeviceAddressEXT (cl_ext_buffer_device_address)
+	Enum [cl::MEM_DEVICE_PTR]
+	Enum [cl::MEM_DEVICE_PTRS]
+	Enum [cl::KERNEL_EXEC_INFO_DEVICE_PTRS]
+	Enum [cl::MEM_DEVICE_SHARED_ADDRESS]
+	Enum [cl::MEM_DEVICE_PRIVATE_ADDRESS]
+	Func [cl::SetKernelArgDevicePointer + EXT]
+
 # clCxxForOpenclEXT (cl_ext_cxx_for_opencl)
 	Enum [cl::DEVICE_CXX_FOR_OPENCL_NUMERIC_VERSION]
 

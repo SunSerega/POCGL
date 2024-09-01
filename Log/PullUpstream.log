@@ -1,13 +1,13 @@
 ﻿~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Runing SubReps Update
 SubReps Update: Pulling OpenCL
-SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull-own]: && git pull SunSerega custom) && (echo [fetch-main] && git fetch 0_official main:main) && (echo [merge-main] && git merge main)"
+SubReps Update: cmd /c "(echo [checkout] && git checkout pretest/1159 2>&1) && (echo [pull-own]: && git pull SunSerega pretest/1159) && (echo [fetch-main] && git fetch 0_official main:main) && (echo [merge-main] && git merge main)"
 SubReps Update: OpenCL[OUT] : [checkout]
-SubReps Update: OpenCL[OUT] : Your branch is up to date with 'SunSerega/custom'.
-SubReps Update: OpenCL[OUT] : Already on 'custom'
+SubReps Update: OpenCL[OUT] : Your branch is up to date with 'SunSerega/pretest/1159'.
+SubReps Update: OpenCL[OUT] : Already on 'pretest/1159'
 SubReps Update: OpenCL[OUT] : [pull-own]:
 SubReps Update: OpenCL[ERR] : From SunSerega/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch custom -> FETCH_HEAD
+SubReps Update: OpenCL[ERR] : * branch pretest/1159 -> FETCH_HEAD
 SubReps Update: OpenCL[OUT] : Already up to date.
 SubReps Update: OpenCL[OUT] : [fetch-main]
 SubReps Update: OpenCL[OUT] : [merge-main]
@@ -44,15 +44,15 @@ ScrapXML[OpenCL]: Parsing "cl"
 ScrapXML[OpenCL]: Constructing named items
 ScrapXML[OpenCL]: Saving as binary
 ScrapXML[OpenCL]: VendorSuffix: Saved 11 items
-ScrapXML[OpenCL]: Enum: Saved 1130 items
+ScrapXML[OpenCL]: Enum: Saved 1135 items
 ScrapXML[OpenCL]: BasicType: Saved 30 items
 ScrapXML[OpenCL]: Group: Saved 121 items
 ScrapXML[OpenCL]: IdClass: Saved 18 items
-ScrapXML[OpenCL]: Struct: Saved 15 items
+ScrapXML[OpenCL]: Struct: Saved 16 items
 ScrapXML[OpenCL]: Delegate: Saved 8 items
-ScrapXML[OpenCL]: Func: Saved 241 items
+ScrapXML[OpenCL]: Func: Saved 242 items
 ScrapXML[OpenCL]: Feature: Saved 7 items
-ScrapXML[OpenCL]: Extension: Saved 133 items
+ScrapXML[OpenCL]: Extension: Saved 134 items
 ScrapXML[OpenCL]: Done
 Finished runing ScrapXML[OpenCL]
 Runing ScrapXML[OpenGL]

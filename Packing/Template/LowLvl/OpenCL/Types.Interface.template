@@ -3837,6 +3837,7 @@
     
     public static property KERNEL_EXEC_INFO_SVM_PTRS:                        clKernelExecInfo read new clKernelExecInfo($11B6);
     public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM:           clKernelExecInfo read new clKernelExecInfo($11B7);
+    public static property KERNEL_EXEC_INFO_DEVICE_PTRS:                     clKernelExecInfo read new clKernelExecInfo($11BB);
     public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE:            clKernelExecInfo read new clKernelExecInfo($41E5);
     public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER:   clKernelExecInfo read new clKernelExecInfo($41E6);
     public static property KERNEL_EXEC_INFO_WARP_COUNT_LIMIT:                clKernelExecInfo read new clKernelExecInfo($41E8);
@@ -3852,6 +3853,8 @@
         Result := 'KERNEL_EXEC_INFO_SVM_PTRS' else
       if KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM = self then
         Result := 'KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM' else
+      if KERNEL_EXEC_INFO_DEVICE_PTRS = self then
+        Result := 'KERNEL_EXEC_INFO_DEVICE_PTRS' else
       if KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE = self then
         Result := 'KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE' else
       if KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER = self then
@@ -4112,6 +4115,8 @@
     public static property MEM_USE_GRALLOC_PTR:           clMemFlags read new clMemFlags(1 shl 28);
     public static property MEM_EXT_HOST_PTR:              clMemFlags read new clMemFlags(1 shl 29);
     public static property MEM_PROTECTED_ALLOC:           clMemFlags read new clMemFlags(1 shl 36);
+    public static property MEM_DEVICE_SHARED_ADDRESS:     clMemFlags read new clMemFlags(1 shl 41);
+    public static property MEM_DEVICE_PRIVATE_ADDRESS:    clMemFlags read new clMemFlags(1 shl 42);
     
     public static function operator+(v1, v2: clMemFlags) := new clMemFlags(v1.val or v2.val);
     public static function operator or(v1, v2: clMemFlags) := new clMemFlags(v1.val or v2.val);
@@ -4232,6 +4237,16 @@
         res += 'MEM_PROTECTED_ALLOC+';
         left_val := left_val and not MEM_PROTECTED_ALLOC.val;
       end;
+      if MEM_DEVICE_SHARED_ADDRESS in self then
+      begin
+        res += 'MEM_DEVICE_SHARED_ADDRESS+';
+        left_val := left_val and not MEM_DEVICE_SHARED_ADDRESS.val;
+      end;
+      if MEM_DEVICE_PRIVATE_ADDRESS in self then
+      begin
+        res += 'MEM_DEVICE_PRIVATE_ADDRESS+';
+        left_val := left_val and not MEM_DEVICE_PRIVATE_ADDRESS.val;
+      end;
       if left_val<>0 then
       begin
         res += 'clMemFlags[';
@@ -4260,6 +4275,8 @@
     public static property MEM_OFFSET:                 clMemInfo read new clMemInfo($1108);
     public static property MEM_USES_SVM_POINTER:       clMemInfo read new clMemInfo($1109);
     public static property MEM_PROPERTIES:             clMemInfo read new clMemInfo($110A);
+    public static property MEM_DEVICE_PTR:             clMemInfo read new clMemInfo($110B);
+    public static property MEM_DEVICE_PTRS:            clMemInfo read new clMemInfo($110C);
     public static property MEM_DX9_MEDIA_ADAPTER_TYPE: clMemInfo read new clMemInfo($2028);
     public static property MEM_DX9_MEDIA_SURFACE_INFO: clMemInfo read new clMemInfo($2029);
     public static property MEM_D3D10_RESOURCE:         clMemInfo read new clMemInfo($4015);
@@ -4293,6 +4310,10 @@
         Result := 'MEM_USES_SVM_POINTER' else
       if MEM_PROPERTIES = self then
         Result := 'MEM_PROPERTIES' else
+      if MEM_DEVICE_PTR = self then
+        Result := 'MEM_DEVICE_PTR' else
+      if MEM_DEVICE_PTRS = self then
+        Result := 'MEM_DEVICE_PTRS' else
       if MEM_DX9_MEDIA_ADAPTER_TYPE = self then
         Result := 'MEM_DX9_MEDIA_ADAPTER_TYPE' else
       if MEM_DX9_MEDIA_SURFACE_INFO = self then
@@ -6131,6 +6152,19 @@
     begin
       self.ext_host_ptr := ext_host_ptr;
       self.anb_ptr      := anb_ptr;
+    end;
+    
+  end;
+  
+  ///
+  cl_mem_device_address_pair = record
+    public device: cl_device_id;
+    public address: UInt64;
+    
+    public constructor(device: cl_device_id; address: UInt64);
+    begin
+      self.device  := device;
+      self.address := address;
     end;
     
   end;
