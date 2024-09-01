@@ -149,8 +149,6 @@ Enum [gl::CONTEXT_RELEASE_BEHAVIOR_FLUSH] was not grouped
 Enum [gl::CONTEXT_ROBUST_ACCESS] was not grouped
 Enum [gl::CONTINUOUS] was not grouped
 Enum [gl::CONTRAST] was not grouped
-Enum [gl::COPY_READ_BUFFER_BINDING] was not grouped
-Enum [gl::COPY_WRITE_BUFFER_BINDING] was not grouped
 Enum [gl::COUNTER_RANGE] was not grouped
 Enum [gl::COUNTER_TYPE] was not grouped
 Enum [gl::COVERAGE_ALL_FRAGMENTS] was not grouped
@@ -252,7 +250,6 @@ Enum [gl::DRAW_BUFFER7] was not grouped
 Enum [gl::DRAW_BUFFER8] was not grouped
 Enum [gl::DRAW_BUFFER9] was not grouped
 Enum [gl::DRAW_INDIRECT_ADDRESS] was not grouped
-Enum [gl::DRAW_INDIRECT_BUFFER_BINDING] was not grouped
 Enum [gl::DRAW_INDIRECT_LENGTH] was not grouped
 Enum [gl::DRAW_INDIRECT_UNIFIED] was not grouped
 Enum [gl::DS_BIAS] was not grouped
@@ -611,7 +608,6 @@ Enum [gl::MAX_CLIENT_WAIT_TIMEOUT_WEBGL] was not referenced
 Enum [gl::MAX_COARSE_FRAGMENT_SAMPLES] was not grouped
 Enum [gl::MAX_COLOR_FRAMEBUFFER_SAMPLES] was not grouped
 Enum [gl::MAX_COLOR_FRAMEBUFFER_STORAGE_SAMPLES] was not grouped
-Enum [gl::MAX_COMBINED_ATOMIC_COUNTER_BUFFERS] was not grouped
 Enum [gl::MAX_COMBINED_CLIP_AND_CULL_DISTANCES] was not grouped
 Enum [gl::MAX_COMBINED_DIMENSIONS] was not grouped
 Enum [gl::MAX_COMBINED_IMAGE_UNIFORMS] was not grouped
@@ -637,13 +633,11 @@ Enum [gl::MAX_DEPTH_STENCIL_FRAMEBUFFER_SAMPLES] was not grouped
 Enum [gl::MAX_DETACHED_BUFFERS] was not grouped
 Enum [gl::MAX_DETACHED_TEXTURES] was not grouped
 Enum [gl::MAX_DRAW_MESH_TASKS_COUNT] was not grouped
-Enum [gl::MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS] was not grouped
 Enum [gl::MAX_FRAGMENT_BINDABLE_UNIFORMS] was not grouped
 Enum [gl::MAX_FRAGMENT_IMAGE_UNIFORMS] was not grouped
 Enum [gl::MAX_FRAGMENT_INTERPOLATION_OFFSET] was not grouped
 Enum [gl::MAX_FRAGMENT_PROGRAM_LOCAL_PARAMETERS] was not grouped
 Enum [gl::MAX_GENERAL_COMBINERS] was not grouped
-Enum [gl::MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS] was not grouped
 Enum [gl::MAX_GEOMETRY_BINDABLE_UNIFORMS] was not grouped
 Enum [gl::MAX_GEOMETRY_IMAGE_UNIFORMS] was not grouped
 Enum [gl::MAX_GEOMETRY_OUTPUT_VERTICES] was not grouped
@@ -748,14 +742,12 @@ Enum [gl::MAX_TASK_UNIFORM_BLOCKS] was not grouped
 Enum [gl::MAX_TASK_UNIFORM_COMPONENTS] was not grouped
 Enum [gl::MAX_TASK_WORK_GROUP_INVOCATIONS] was not grouped
 Enum [gl::MAX_TASK_WORK_GROUP_SIZE] was not grouped
-Enum [gl::MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS] was not grouped
 Enum [gl::MAX_TESS_CONTROL_IMAGE_UNIFORMS] was not grouped
 Enum [gl::MAX_TESS_CONTROL_INPUT_COMPONENTS] was not grouped
 Enum [gl::MAX_TESS_CONTROL_OUTPUT_COMPONENTS] was not grouped
 Enum [gl::MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS] was not grouped
 Enum [gl::MAX_TESS_CONTROL_TOTAL_OUTPUT_COMPONENTS] was not grouped
 Enum [gl::MAX_TESS_CONTROL_UNIFORM_COMPONENTS] was not grouped
-Enum [gl::MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS] was not grouped
 Enum [gl::MAX_TESS_EVALUATION_IMAGE_UNIFORMS] was not grouped
 Enum [gl::MAX_TESS_EVALUATION_INPUT_COMPONENTS] was not grouped
 Enum [gl::MAX_TESS_EVALUATION_OUTPUT_COMPONENTS] was not grouped
@@ -768,12 +760,10 @@ Enum [gl::MAX_TEXTURE_MAX_ANISOTROPY] was not grouped
 Enum [gl::MAX_TEXTURE_UNITS] was not grouped
 Enum [gl::MAX_TRACK_MATRICES] was not grouped
 Enum [gl::MAX_TRACK_MATRIX_STACK_DEPTH] was not grouped
-Enum [gl::MAX_TRANSFORM_FEEDBACK_BUFFERS] was not grouped
 Enum [gl::MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS] was not grouped
 Enum [gl::MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS] was not grouped
 Enum [gl::MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS] was not grouped
 Enum [gl::MAX_VERTEX_ARRAY_RANGE_ELEMENT] was not grouped
-Enum [gl::MAX_VERTEX_ATOMIC_COUNTER_BUFFERS] was not grouped
 Enum [gl::MAX_VERTEX_ATTRIB_STRIDE] was not grouped
 Enum [gl::MAX_VERTEX_BINDABLE_UNIFORMS] was not grouped
 Enum [gl::MAX_VERTEX_IMAGE_UNIFORMS] was not grouped
@@ -782,7 +772,6 @@ Enum [gl::MAX_VERTEX_SHADER_INVARIANTS] was not grouped
 Enum [gl::MAX_VERTEX_SHADER_LOCAL_CONSTANTS] was not grouped
 Enum [gl::MAX_VERTEX_SHADER_LOCALS] was not grouped
 Enum [gl::MAX_VERTEX_SHADER_VARIANTS] was not grouped
-Enum [gl::MAX_VERTEX_STREAMS] was not grouped
 Enum [gl::MAX_VERTEX_UNITS] was not grouped
 Enum [gl::MAX_VERTEX_VARYING_COMPONENTS] was not grouped
 Enum [gl::MAX_VIEWS] was not grouped
@@ -982,7 +971,6 @@ Enum [gl::PALETTE8_RGB8] was not grouped
 Enum [gl::PALETTE8_RGBA4] was not grouped
 Enum [gl::PALETTE8_RGBA8] was not grouped
 Enum [gl::PARALLEL_ARRAYS] was not grouped
-Enum [gl::PARAMETER_BUFFER_BINDING] was not grouped
 Enum [gl::PARTIAL_SUCCESS] was not grouped
 Enum [gl::PASS_THROUGH] was not grouped
 Enum [gl::PATH_COVER_DEPTH_FUNC] was not grouped
@@ -1109,7 +1097,6 @@ Enum [gl::PURGED_CONTEXT_RESET] was not grouped
 Enum [gl::PVRIC_SIGNATURE_MISMATCH] was not grouped
 Enum [gl::QUAD_MESH] was not grouped
 Enum [gl::QUADS_FOLLOW_PROVOKING_VERTEX_CONVENTION] was not grouped
-Enum [gl::QUERY_BUFFER_BINDING] was not grouped
 Enum [gl::QUERY_OBJECT] was not grouped
 Enum [gl::QUERY_RESOURCE_BUFFEROBJECT] was not grouped
 Enum [gl::QUERY_RESOURCE_MEMTYPE_VIDMEM] was not grouped
@@ -1338,7 +1325,6 @@ Enum [gl::TEXTURE_BINDING_EXTERNAL] was not grouped
 Enum [gl::TEXTURE_BINDING_RENDERBUFFER] was not grouped
 Enum [gl::TEXTURE_BLUE_TYPE] was not grouped
 Enum [gl::TEXTURE_BORDER_VALUES] was not grouped
-Enum [gl::TEXTURE_BUFFER_BINDING] was not grouped
 Enum [gl::TEXTURE_BUFFER_DATA_STORE_BINDING] was not grouped
 Enum [gl::TEXTURE_BUFFER_FORMAT] was not grouped
 Enum [gl::TEXTURE_BUFFER_OFFSET] was not grouped
@@ -1498,7 +1484,6 @@ Enum [gl::VERSION_ES_CL_1_0] was not grouped
 Enum [gl::VERSION_ES_CL_1_1] was not grouped
 Enum [gl::VERSION_ES_CM_1_1] was not grouped
 Enum [gl::VERTEX_ARRAY_ADDRESS] was not grouped
-Enum [gl::VERTEX_ARRAY_BUFFER_BINDING] was not grouped
 Enum [gl::VERTEX_ARRAY_LENGTH] was not grouped
 Enum [gl::VERTEX_ARRAY_LIST] was not grouped
 Enum [gl::VERTEX_ARRAY_LIST_STRIDE] was not grouped
