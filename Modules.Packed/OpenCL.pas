@@ -306,6 +306,7 @@ type
     public static property UNORM_INT_101010_2: clChannelType read new clChannelType($10E0);
     public static property UNSIGNED_INT_RAW10: clChannelType read new clChannelType($10E3);
     public static property UNSIGNED_INT_RAW12: clChannelType read new clChannelType($10E4);
+    public static property UNORM_INT_2_101010: clChannelType read new clChannelType($10E5);
     
     public function ToString: string; override;
     begin
@@ -347,6 +348,8 @@ type
         Result := 'UNSIGNED_INT_RAW10' else
       if UNSIGNED_INT_RAW12 = self then
         Result := 'UNSIGNED_INT_RAW12' else
+      if UNORM_INT_2_101010 = self then
+        Result := 'UNORM_INT_2_101010' else
         Result := $'clChannelType[{self.val}]';
     end;
     
@@ -3341,10 +3344,11 @@ type
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_FD:        clExternalMemoryHandleType read new clExternalMemoryHandleType($2060);
-    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32:     clExternalMemoryHandleType read new clExternalMemoryHandleType($2061);
-    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32_KMT: clExternalMemoryHandleType read new clExternalMemoryHandleType($2062);
-    public static property EXTERNAL_MEMORY_HANDLE_DMA_BUF:          clExternalMemoryHandleType read new clExternalMemoryHandleType($2067);
+    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_FD:         clExternalMemoryHandleType read new clExternalMemoryHandleType($2060);
+    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32:      clExternalMemoryHandleType read new clExternalMemoryHandleType($2061);
+    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32_KMT:  clExternalMemoryHandleType read new clExternalMemoryHandleType($2062);
+    public static property EXTERNAL_MEMORY_HANDLE_DMA_BUF:           clExternalMemoryHandleType read new clExternalMemoryHandleType($2067);
+    public static property EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32_NAME: clExternalMemoryHandleType read new clExternalMemoryHandleType($2069);
     
     public function ToString: string; override;
     begin
@@ -3356,6 +3360,8 @@ type
         Result := 'EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32_KMT' else
       if EXTERNAL_MEMORY_HANDLE_DMA_BUF = self then
         Result := 'EXTERNAL_MEMORY_HANDLE_DMA_BUF' else
+      if EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32_NAME = self then
+        Result := 'EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32_NAME' else
         Result := $'clExternalMemoryHandleType[{self.val}]';
     end;
     
@@ -3366,10 +3372,11 @@ type
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
     
-    public static property SEMAPHORE_HANDLE_OPAQUE_FD:        clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2055);
-    public static property SEMAPHORE_HANDLE_OPAQUE_WIN32:     clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2056);
-    public static property SEMAPHORE_HANDLE_OPAQUE_WIN32_KMT: clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2057);
-    public static property SEMAPHORE_HANDLE_SYNC_FD:          clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2058);
+    public static property SEMAPHORE_HANDLE_OPAQUE_FD:         clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2055);
+    public static property SEMAPHORE_HANDLE_OPAQUE_WIN32:      clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2056);
+    public static property SEMAPHORE_HANDLE_OPAQUE_WIN32_KMT:  clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2057);
+    public static property SEMAPHORE_HANDLE_SYNC_FD:           clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2058);
+    public static property SEMAPHORE_HANDLE_OPAQUE_WIN32_NAME: clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2068);
     
     public function ToString: string; override;
     begin
@@ -3381,6 +3388,8 @@ type
         Result := 'SEMAPHORE_HANDLE_OPAQUE_WIN32_KMT' else
       if SEMAPHORE_HANDLE_SYNC_FD = self then
         Result := 'SEMAPHORE_HANDLE_SYNC_FD' else
+      if SEMAPHORE_HANDLE_OPAQUE_WIN32_NAME = self then
+        Result := 'SEMAPHORE_HANDLE_OPAQUE_WIN32_NAME' else
         Result := $'clExternalSemaphoreHandleType[{self.val}]';
     end;
     
@@ -14586,6 +14595,13 @@ type
     public const ExtensionString = 'cl_ext_image_raw10_raw12';
   end;
   
+  /// id: cl_ext_image_unorm_int_2_101010
+  /// version: 1.0.0
+  /// core dependency: cl 1.2
+  clImageUnormInt2101010EXT = static class
+    public const ExtensionString = 'cl_ext_image_unorm_int_2_101010';
+  end;
+  
   {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
@@ -18580,7 +18596,7 @@ type
   end;
   
   /// id: cl_khr_external_memory_win32
-  /// version: 1.0.0
+  /// version: 1.1.0
   /// core dependency: cl 3.0
   /// ext dependencies:
   /// - cl_khr_external_memory (clExternalMemoryKHR)
@@ -19149,7 +19165,7 @@ type
   end;
   
   /// id: cl_khr_external_semaphore_win32
-  /// version: 0.9.0 (provisional)
+  /// version: 0.9.1 (provisional)
   /// core dependency: cl 1.2
   /// ext dependencies:
   /// - cl_khr_external_semaphore (clExternalSemaphoreKHR)

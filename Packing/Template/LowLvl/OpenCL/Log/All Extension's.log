@@ -188,6 +188,9 @@
 	Enum [cl::IMAGE_REQUIREMENTS_MAX_ARRAY_SIZE]
 	Func [cl::GetImageRequirementsInfo + EXT]
 
+# clImageUnormInt2101010EXT (cl_ext_image_unorm_int_2_101010)
+	Enum [cl::UNORM_INT_2_101010]
+
 # clMigrateMemobjectEXT (cl_ext_migrate_memobject)
 	Enum [cl::MIGRATE_MEM_OBJECT_HOST]
 	Enum [cl::COMMAND_MIGRATE_MEM_OBJECT]
@@ -825,6 +828,7 @@
 # clExternalMemoryWin32KHR (cl_khr_external_memory_win32)
 	Enum [cl::EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32]
 	Enum [cl::EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32_KMT]
+	Enum [cl::EXTERNAL_MEMORY_HANDLE_OPAQUE_WIN32_NAME]
 
 # clExternalSemaphoreKHR (cl_khr_external_semaphore)
 	Enum [cl::SEMAPHORE_EXPORT_HANDLE_TYPES_LIST_END]
@@ -846,6 +850,7 @@
 # clExternalSemaphoreWin32KHR (cl_khr_external_semaphore_win32)
 	Enum [cl::SEMAPHORE_HANDLE_OPAQUE_WIN32]
 	Enum [cl::SEMAPHORE_HANDLE_OPAQUE_WIN32_KMT]
+	Enum [cl::SEMAPHORE_HANDLE_OPAQUE_WIN32_NAME]
 
 # clFp16KHR (cl_khr_fp16)
 	Enum [cl::DEVICE_HALF_FP_CONFIG]

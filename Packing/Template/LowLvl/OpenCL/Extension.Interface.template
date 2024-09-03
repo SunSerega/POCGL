@@ -930,6 +930,13 @@
     public const ExtensionString = 'cl_ext_image_raw10_raw12';
   end;
   
+  /// id: cl_ext_image_unorm_int_2_101010
+  /// version: 1.0.0
+  /// core dependency: cl 1.2
+  clImageUnormInt2101010EXT = static class
+    public const ExtensionString = 'cl_ext_image_unorm_int_2_101010';
+  end;
+  
   {$ifndef DEBUG}
   [System.Security.SuppressUnmanagedCodeSecurity]
   {$endif DEBUG}
@@ -4924,7 +4931,7 @@
   end;
   
   /// id: cl_khr_external_memory_win32
-  /// version: 1.0.0
+  /// version: 1.1.0
   /// core dependency: cl 3.0
   /// ext dependencies:
   /// - cl_khr_external_memory (clExternalMemoryKHR)
@@ -5493,7 +5500,7 @@
   end;
   
   /// id: cl_khr_external_semaphore_win32
-  /// version: 0.9.0 (provisional)
+  /// version: 0.9.1 (provisional)
   /// core dependency: cl 1.2
   /// ext dependencies:
   /// - cl_khr_external_semaphore (clExternalSemaphoreKHR)
