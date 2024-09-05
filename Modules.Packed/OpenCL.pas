@@ -3107,6 +3107,7 @@ type
     public static property INCOMPATIBLE_COMMAND_QUEUE:                clErrorCode read new clErrorCode(-1140);
     public static property INVALID_MUTABLE_COMMAND:                   clErrorCode read new clErrorCode(-1141);
     public static property INVALID_SEMAPHORE:                         clErrorCode read new clErrorCode(-1142);
+    public static property INVALID_INSTANCE:                          clErrorCode read new clErrorCode(-1154);
     public static property KERNEL_EXECUTION_ERROR:                    clErrorCode read new clErrorCode(-9999);
     public static property GRALLOC_RESOURCE_NOT_ACQUIRED:             clErrorCode read new clErrorCode($40D4);
     public static property INVALID_GRALLOC_OBJECT:                    clErrorCode read new clErrorCode($40D5);
@@ -3309,6 +3310,8 @@ type
         Result := 'INVALID_MUTABLE_COMMAND' else
       if INVALID_SEMAPHORE = self then
         Result := 'INVALID_SEMAPHORE' else
+      if INVALID_INSTANCE = self then
+        Result := 'INVALID_INSTANCE' else
       if KERNEL_EXECUTION_ERROR = self then
         Result := 'KERNEL_EXECUTION_ERROR' else
       if GRALLOC_RESOURCE_NOT_ACQUIRED = self then
@@ -3716,6 +3719,24 @@ type
       if IMPORT_ANDROID_HARDWARE_BUFFER_LAYER_INDEX = self then
         Result := 'IMPORT_ANDROID_HARDWARE_BUFFER_LAYER_INDEX' else
         Result := $'clImportProperties[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  clInstanceProperties = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    public constructor(val: Int32) := self.val := new IntPtr(val);
+    public constructor(val: Int64) := self.val := new IntPtr(val);
+    
+    public static property INSTANCE_PROPERTIES_LIST_END: clInstanceProperties read new clInstanceProperties(0);
+    
+    public function ToString: string; override;
+    begin
+      if INSTANCE_PROPERTIES_LIST_END = self then
+        Result := 'INSTANCE_PROPERTIES_LIST_END' else
+        Result := $'clInstanceProperties[{self.val}]';
     end;
     
   end;
@@ -4693,6 +4714,7 @@ type
     public static property PLATFORM_EXTENSIONS_WITH_VERSION:             clPlatformInfo read new clPlatformInfo($0907);
     public static property PLATFORM_COMMAND_BUFFER_CAPABILITIES:         clPlatformInfo read new clPlatformInfo($0908);
     public static property PLATFORM_ICD_SUFFIX:                          clPlatformInfo read new clPlatformInfo($0920);
+    public static property PLATFORM_UNLOADABLE:                          clPlatformInfo read new clPlatformInfo($0921);
     public static property PLATFORM_SEMAPHORE_TYPES:                     clPlatformInfo read new clPlatformInfo($2036);
     public static property PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES:       clPlatformInfo read new clPlatformInfo($2037);
     public static property PLATFORM_SEMAPHORE_EXPORT_HANDLE_TYPES:       clPlatformInfo read new clPlatformInfo($2038);
@@ -4720,6 +4742,8 @@ type
         Result := 'PLATFORM_COMMAND_BUFFER_CAPABILITIES' else
       if PLATFORM_ICD_SUFFIX = self then
         Result := 'PLATFORM_ICD_SUFFIX' else
+      if PLATFORM_UNLOADABLE = self then
+        Result := 'PLATFORM_UNLOADABLE' else
       if PLATFORM_SEMAPHORE_TYPES = self then
         Result := 'PLATFORM_SEMAPHORE_TYPES' else
       if PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES = self then
@@ -5694,6 +5718,24 @@ type
     public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_icd_dispatch[{self.val}]';
+    
+  end;
+  
+  ///
+  cl_instance = record
+    public val: IntPtr;
+    
+    public constructor(val: IntPtr) := self.val := val;
+    public constructor(val: Int32) := self.val := new IntPtr(val);
+    public constructor(val: Int64) := self.val := new IntPtr(val);
+    
+    public static property Zero: cl_instance read default(cl_instance);
+    
+    private static val_sz := Marshal.SizeOf&<IntPtr>;
+    public static property Size: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
+    
+    public function ToString: string; override := $'cl_instance[{self.val}]';
     
   end;
   
@@ -12810,6 +12852,14 @@ type
         Marshal.FreeHGlobal(param_value_temp_res);
       end;
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo_PLATFORM_UNLOADABLE(platform: cl_platform_id; var param_value: clBool; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clBool>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetPlatformInfo(platform, clPlatformInfo.PLATFORM_UNLOADABLE, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo_PLATFORM_SEMAPHORE_TYPES(platform: cl_platform_id; var param_value: array of clSemaphoreType): clErrorCode;
     begin
       var param_value_sz: UIntPtr;
@@ -13779,7 +13829,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_loader_layers
-  /// version: 1.0.0
+  /// version: 2.0.0
   clLoaderLayers = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -13847,6 +13897,11 @@ type
       ntv_InitLayer_3(num_entries, target_dispatch, num_entries_ret, layer_dispatch_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function InitLayer(num_entries: UInt32; target_dispatch: cl_icd_dispatch; num_entries_ret: IntPtr; layer_dispatch_ret: IntPtr): clErrorCode :=
       ntv_InitLayer_4(num_entries, target_dispatch, num_entries_ret, layer_dispatch_ret);
+    
+    public DeinitLayer_adr := GetProcAddress('clDeinitLayer');
+    private ntv_DeinitLayer_1 := GetProcOrNil&<function: clErrorCode>(DeinitLayer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DeinitLayer: clErrorCode :=
+      ntv_DeinitLayer_1;
     
   end;
   
@@ -19696,7 +19751,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_icd
-  /// version: 1.0.0
+  /// version: 2.0.0
   clIcdKHR = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -19732,6 +19787,69 @@ type
       ntv_IcdGetPlatformIDsKHR_3(num_entries, platforms, num_platforms);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdGetPlatformIDsKHR(num_entries: UInt32; platforms: IntPtr; num_platforms: IntPtr): clErrorCode :=
       ntv_IcdGetPlatformIDsKHR_4(num_entries, platforms, num_platforms);
+    
+    public IcdGetFunctionAddressForPlatformKHR_adr := GetProcAddress('clIcdGetFunctionAddressForPlatformKHR');
+    private ntv_IcdGetFunctionAddressForPlatformKHR_1 := GetProcOrNil&<function(platform: cl_platform_id; func_name: IntPtr): IntPtr>(IcdGetFunctionAddressForPlatformKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdGetFunctionAddressForPlatformKHR(platform: cl_platform_id; func_name: string): IntPtr;
+    begin
+      var func_name_str_ptr := Marshal.StringToHGlobalAnsi(func_name);
+      try
+        Result := ntv_IcdGetFunctionAddressForPlatformKHR_1(platform, func_name_str_ptr);
+      finally
+        Marshal.FreeHGlobal(func_name_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdGetFunctionAddressForPlatformKHR(platform: cl_platform_id; func_name: IntPtr): IntPtr :=
+      ntv_IcdGetFunctionAddressForPlatformKHR_1(platform, func_name);
+    
+    public IcdSetPlatformDispatchDataKHR_adr := GetProcAddress('clIcdSetPlatformDispatchDataKHR');
+    private ntv_IcdSetPlatformDispatchDataKHR_1 := GetProcOrNil&<function(platform: cl_platform_id; dispatch_data: IntPtr): clErrorCode>(IcdSetPlatformDispatchDataKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdSetPlatformDispatchDataKHR(platform: cl_platform_id; dispatch_data: IntPtr): clErrorCode :=
+      ntv_IcdSetPlatformDispatchDataKHR_1(platform, dispatch_data);
+    
+    public IcdCreateInstancePlatformKHR_adr := GetProcAddress('clIcdCreateInstancePlatformKHR');
+    private ntv_IcdCreateInstancePlatformKHR_1 := GetProcOrNil&<function(platform: cl_platform_id; var errcode_ret: clErrorCode): cl_platform_id>(IcdCreateInstancePlatformKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdCreateInstancePlatformKHR(platform: cl_platform_id; var errcode_ret: clErrorCode): cl_platform_id :=
+      ntv_IcdCreateInstancePlatformKHR_1(platform, errcode_ret);
+    
+    public IcdDestroyInstancePlatformKHR_adr := GetProcAddress('clIcdDestroyInstancePlatformKHR');
+    private ntv_IcdDestroyInstancePlatformKHR_1 := GetProcOrNil&<function(platform: cl_platform_id): clErrorCode>(IcdDestroyInstancePlatformKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdDestroyInstancePlatformKHR(platform: cl_platform_id): clErrorCode :=
+      ntv_IcdDestroyInstancePlatformKHR_1(platform);
+    
+    public CreateInstanceKHR_adr := GetProcAddress('clCreateInstanceKHR');
+    private ntv_CreateInstanceKHR_1 := GetProcOrNil&<function(var properties: clInstanceProperties; var errcode_ret: clErrorCode): cl_instance>(CreateInstanceKHR_adr);
+    private ntv_CreateInstanceKHR_2 := GetProcOrNil&<function(properties: IntPtr; var errcode_ret: clErrorCode): cl_instance>(CreateInstanceKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateInstanceKHR(properties: array of clInstanceProperties; var errcode_ret: clErrorCode): cl_instance;
+      type PClInstanceProperties = ^clInstanceProperties;
+    begin
+      Result := if (properties<>nil) and (properties.Length<>0) then
+        ntv_CreateInstanceKHR_1(properties[0], errcode_ret) else
+        ntv_CreateInstanceKHR_1(PClInstanceProperties(nil)^, errcode_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateInstanceKHR(var properties: clInstanceProperties; var errcode_ret: clErrorCode): cl_instance :=
+      ntv_CreateInstanceKHR_1(properties, errcode_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateInstanceKHR(properties: IntPtr; var errcode_ret: clErrorCode): cl_instance :=
+      ntv_CreateInstanceKHR_2(properties, errcode_ret);
+    
+    public DestroyInstanceKHR_adr := GetProcAddress('clDestroyInstanceKHR');
+    private ntv_DestroyInstanceKHR_1 := GetProcOrNil&<function(instance: cl_instance): clErrorCode>(DestroyInstanceKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DestroyInstanceKHR(instance: cl_instance): clErrorCode :=
+      ntv_DestroyInstanceKHR_1(instance);
+    
+    public GetPlatformIDsForInstanceKHR_adr := GetProcAddress('clGetPlatformIDsForInstanceKHR');
+    private ntv_GetPlatformIDsForInstanceKHR_1 := GetProcOrNil&<function(instance: cl_instance; num_entries: UInt32; var platforms: cl_platform_id; var num_platforms: UInt32): clErrorCode>(GetPlatformIDsForInstanceKHR_adr);
+    private ntv_GetPlatformIDsForInstanceKHR_2 := GetProcOrNil&<function(instance: cl_instance; num_entries: UInt32; var platforms: cl_platform_id; num_platforms: IntPtr): clErrorCode>(GetPlatformIDsForInstanceKHR_adr);
+    private ntv_GetPlatformIDsForInstanceKHR_3 := GetProcOrNil&<function(instance: cl_instance; num_entries: UInt32; platforms: IntPtr; var num_platforms: UInt32): clErrorCode>(GetPlatformIDsForInstanceKHR_adr);
+    private ntv_GetPlatformIDsForInstanceKHR_4 := GetProcOrNil&<function(instance: cl_instance; num_entries: UInt32; platforms: IntPtr; num_platforms: IntPtr): clErrorCode>(GetPlatformIDsForInstanceKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPlatformIDsForInstanceKHR(instance: cl_instance; num_entries: UInt32; var platforms: cl_platform_id; var num_platforms: UInt32): clErrorCode :=
+      ntv_GetPlatformIDsForInstanceKHR_1(instance, num_entries, platforms, num_platforms);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPlatformIDsForInstanceKHR(instance: cl_instance; num_entries: UInt32; var platforms: cl_platform_id; num_platforms: IntPtr): clErrorCode :=
+      ntv_GetPlatformIDsForInstanceKHR_2(instance, num_entries, platforms, num_platforms);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPlatformIDsForInstanceKHR(instance: cl_instance; num_entries: UInt32; platforms: IntPtr; var num_platforms: UInt32): clErrorCode :=
+      ntv_GetPlatformIDsForInstanceKHR_3(instance, num_entries, platforms, num_platforms);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPlatformIDsForInstanceKHR(instance: cl_instance; num_entries: UInt32; platforms: IntPtr; num_platforms: IntPtr): clErrorCode :=
+      ntv_GetPlatformIDsForInstanceKHR_4(instance, num_entries, platforms, num_platforms);
     
   end;
   

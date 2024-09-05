@@ -3075,6 +3075,7 @@
     public static property INCOMPATIBLE_COMMAND_QUEUE:                clErrorCode read new clErrorCode(-1140);
     public static property INVALID_MUTABLE_COMMAND:                   clErrorCode read new clErrorCode(-1141);
     public static property INVALID_SEMAPHORE:                         clErrorCode read new clErrorCode(-1142);
+    public static property INVALID_INSTANCE:                          clErrorCode read new clErrorCode(-1154);
     public static property KERNEL_EXECUTION_ERROR:                    clErrorCode read new clErrorCode(-9999);
     public static property GRALLOC_RESOURCE_NOT_ACQUIRED:             clErrorCode read new clErrorCode($40D4);
     public static property INVALID_GRALLOC_OBJECT:                    clErrorCode read new clErrorCode($40D5);
@@ -3277,6 +3278,8 @@
         Result := 'INVALID_MUTABLE_COMMAND' else
       if INVALID_SEMAPHORE = self then
         Result := 'INVALID_SEMAPHORE' else
+      if INVALID_INSTANCE = self then
+        Result := 'INVALID_INSTANCE' else
       if KERNEL_EXECUTION_ERROR = self then
         Result := 'KERNEL_EXECUTION_ERROR' else
       if GRALLOC_RESOURCE_NOT_ACQUIRED = self then
@@ -3684,6 +3687,24 @@
       if IMPORT_ANDROID_HARDWARE_BUFFER_LAYER_INDEX = self then
         Result := 'IMPORT_ANDROID_HARDWARE_BUFFER_LAYER_INDEX' else
         Result := $'clImportProperties[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  clInstanceProperties = record
+    public val: IntPtr;
+    public constructor(val: IntPtr) := self.val := val;
+    public constructor(val: Int32) := self.val := new IntPtr(val);
+    public constructor(val: Int64) := self.val := new IntPtr(val);
+    
+    public static property INSTANCE_PROPERTIES_LIST_END: clInstanceProperties read new clInstanceProperties(0);
+    
+    public function ToString: string; override;
+    begin
+      if INSTANCE_PROPERTIES_LIST_END = self then
+        Result := 'INSTANCE_PROPERTIES_LIST_END' else
+        Result := $'clInstanceProperties[{self.val}]';
     end;
     
   end;
@@ -4661,6 +4682,7 @@
     public static property PLATFORM_EXTENSIONS_WITH_VERSION:             clPlatformInfo read new clPlatformInfo($0907);
     public static property PLATFORM_COMMAND_BUFFER_CAPABILITIES:         clPlatformInfo read new clPlatformInfo($0908);
     public static property PLATFORM_ICD_SUFFIX:                          clPlatformInfo read new clPlatformInfo($0920);
+    public static property PLATFORM_UNLOADABLE:                          clPlatformInfo read new clPlatformInfo($0921);
     public static property PLATFORM_SEMAPHORE_TYPES:                     clPlatformInfo read new clPlatformInfo($2036);
     public static property PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES:       clPlatformInfo read new clPlatformInfo($2037);
     public static property PLATFORM_SEMAPHORE_EXPORT_HANDLE_TYPES:       clPlatformInfo read new clPlatformInfo($2038);
@@ -4688,6 +4710,8 @@
         Result := 'PLATFORM_COMMAND_BUFFER_CAPABILITIES' else
       if PLATFORM_ICD_SUFFIX = self then
         Result := 'PLATFORM_ICD_SUFFIX' else
+      if PLATFORM_UNLOADABLE = self then
+        Result := 'PLATFORM_UNLOADABLE' else
       if PLATFORM_SEMAPHORE_TYPES = self then
         Result := 'PLATFORM_SEMAPHORE_TYPES' else
       if PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES = self then
@@ -5662,6 +5686,24 @@
     public property ValSize: integer read integer(val_sz);
     
     public function ToString: string; override := $'cl_icd_dispatch[{self.val}]';
+    
+  end;
+  
+  ///%cl_instance%
+  cl_instance = record
+    public val: IntPtr;
+    
+    public constructor(val: IntPtr) := self.val := val;
+    public constructor(val: Int32) := self.val := new IntPtr(val);
+    public constructor(val: Int64) := self.val := new IntPtr(val);
+    
+    public static property Zero: cl_instance read default(cl_instance);
+    
+    private static val_sz := Marshal.SizeOf&<IntPtr>;
+    public static property Size: integer read val_sz;
+    public property ValSize: integer read integer(val_sz);
+    
+    public function ToString: string; override := $'cl_instance[{self.val}]';
     
   end;
   

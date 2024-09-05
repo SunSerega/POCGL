@@ -114,7 +114,7 @@
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_loader_layers
-  /// version: 1.0.0
+  /// version: 2.0.0
   clLoaderLayers = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -182,6 +182,11 @@
       ntv_InitLayer_3(num_entries, target_dispatch, num_entries_ret, layer_dispatch_ret);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function InitLayer(num_entries: UInt32; target_dispatch: cl_icd_dispatch; num_entries_ret: IntPtr; layer_dispatch_ret: IntPtr): clErrorCode :=
       ntv_InitLayer_4(num_entries, target_dispatch, num_entries_ret, layer_dispatch_ret);
+    
+    public DeinitLayer_adr := GetProcAddress('clDeinitLayer');
+    private ntv_DeinitLayer_1 := GetProcOrNil&<function: clErrorCode>(DeinitLayer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DeinitLayer: clErrorCode :=
+      ntv_DeinitLayer_1;
     
   end;
   
@@ -6031,7 +6036,7 @@
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_icd
-  /// version: 1.0.0
+  /// version: 2.0.0
   clIcdKHR = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -6067,6 +6072,69 @@
       ntv_IcdGetPlatformIDsKHR_3(num_entries, platforms, num_platforms);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdGetPlatformIDsKHR(num_entries: UInt32; platforms: IntPtr; num_platforms: IntPtr): clErrorCode :=
       ntv_IcdGetPlatformIDsKHR_4(num_entries, platforms, num_platforms);
+    
+    public IcdGetFunctionAddressForPlatformKHR_adr := GetProcAddress('clIcdGetFunctionAddressForPlatformKHR');
+    private ntv_IcdGetFunctionAddressForPlatformKHR_1 := GetProcOrNil&<function(platform: cl_platform_id; func_name: IntPtr): IntPtr>(IcdGetFunctionAddressForPlatformKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdGetFunctionAddressForPlatformKHR(platform: cl_platform_id; func_name: string): IntPtr;
+    begin
+      var func_name_str_ptr := Marshal.StringToHGlobalAnsi(func_name);
+      try
+        Result := ntv_IcdGetFunctionAddressForPlatformKHR_1(platform, func_name_str_ptr);
+      finally
+        Marshal.FreeHGlobal(func_name_str_ptr);
+      end;
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdGetFunctionAddressForPlatformKHR(platform: cl_platform_id; func_name: IntPtr): IntPtr :=
+      ntv_IcdGetFunctionAddressForPlatformKHR_1(platform, func_name);
+    
+    public IcdSetPlatformDispatchDataKHR_adr := GetProcAddress('clIcdSetPlatformDispatchDataKHR');
+    private ntv_IcdSetPlatformDispatchDataKHR_1 := GetProcOrNil&<function(platform: cl_platform_id; dispatch_data: IntPtr): clErrorCode>(IcdSetPlatformDispatchDataKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdSetPlatformDispatchDataKHR(platform: cl_platform_id; dispatch_data: IntPtr): clErrorCode :=
+      ntv_IcdSetPlatformDispatchDataKHR_1(platform, dispatch_data);
+    
+    public IcdCreateInstancePlatformKHR_adr := GetProcAddress('clIcdCreateInstancePlatformKHR');
+    private ntv_IcdCreateInstancePlatformKHR_1 := GetProcOrNil&<function(platform: cl_platform_id; var errcode_ret: clErrorCode): cl_platform_id>(IcdCreateInstancePlatformKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdCreateInstancePlatformKHR(platform: cl_platform_id; var errcode_ret: clErrorCode): cl_platform_id :=
+      ntv_IcdCreateInstancePlatformKHR_1(platform, errcode_ret);
+    
+    public IcdDestroyInstancePlatformKHR_adr := GetProcAddress('clIcdDestroyInstancePlatformKHR');
+    private ntv_IcdDestroyInstancePlatformKHR_1 := GetProcOrNil&<function(platform: cl_platform_id): clErrorCode>(IcdDestroyInstancePlatformKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdDestroyInstancePlatformKHR(platform: cl_platform_id): clErrorCode :=
+      ntv_IcdDestroyInstancePlatformKHR_1(platform);
+    
+    public CreateInstanceKHR_adr := GetProcAddress('clCreateInstanceKHR');
+    private ntv_CreateInstanceKHR_1 := GetProcOrNil&<function(var properties: clInstanceProperties; var errcode_ret: clErrorCode): cl_instance>(CreateInstanceKHR_adr);
+    private ntv_CreateInstanceKHR_2 := GetProcOrNil&<function(properties: IntPtr; var errcode_ret: clErrorCode): cl_instance>(CreateInstanceKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateInstanceKHR(properties: array of clInstanceProperties; var errcode_ret: clErrorCode): cl_instance;
+      type PClInstanceProperties = ^clInstanceProperties;
+    begin
+      Result := if (properties<>nil) and (properties.Length<>0) then
+        ntv_CreateInstanceKHR_1(properties[0], errcode_ret) else
+        ntv_CreateInstanceKHR_1(PClInstanceProperties(nil)^, errcode_ret);
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateInstanceKHR(var properties: clInstanceProperties; var errcode_ret: clErrorCode): cl_instance :=
+      ntv_CreateInstanceKHR_1(properties, errcode_ret);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateInstanceKHR(properties: IntPtr; var errcode_ret: clErrorCode): cl_instance :=
+      ntv_CreateInstanceKHR_2(properties, errcode_ret);
+    
+    public DestroyInstanceKHR_adr := GetProcAddress('clDestroyInstanceKHR');
+    private ntv_DestroyInstanceKHR_1 := GetProcOrNil&<function(instance: cl_instance): clErrorCode>(DestroyInstanceKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DestroyInstanceKHR(instance: cl_instance): clErrorCode :=
+      ntv_DestroyInstanceKHR_1(instance);
+    
+    public GetPlatformIDsForInstanceKHR_adr := GetProcAddress('clGetPlatformIDsForInstanceKHR');
+    private ntv_GetPlatformIDsForInstanceKHR_1 := GetProcOrNil&<function(instance: cl_instance; num_entries: UInt32; var platforms: cl_platform_id; var num_platforms: UInt32): clErrorCode>(GetPlatformIDsForInstanceKHR_adr);
+    private ntv_GetPlatformIDsForInstanceKHR_2 := GetProcOrNil&<function(instance: cl_instance; num_entries: UInt32; var platforms: cl_platform_id; num_platforms: IntPtr): clErrorCode>(GetPlatformIDsForInstanceKHR_adr);
+    private ntv_GetPlatformIDsForInstanceKHR_3 := GetProcOrNil&<function(instance: cl_instance; num_entries: UInt32; platforms: IntPtr; var num_platforms: UInt32): clErrorCode>(GetPlatformIDsForInstanceKHR_adr);
+    private ntv_GetPlatformIDsForInstanceKHR_4 := GetProcOrNil&<function(instance: cl_instance; num_entries: UInt32; platforms: IntPtr; num_platforms: IntPtr): clErrorCode>(GetPlatformIDsForInstanceKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPlatformIDsForInstanceKHR(instance: cl_instance; num_entries: UInt32; var platforms: cl_platform_id; var num_platforms: UInt32): clErrorCode :=
+      ntv_GetPlatformIDsForInstanceKHR_1(instance, num_entries, platforms, num_platforms);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPlatformIDsForInstanceKHR(instance: cl_instance; num_entries: UInt32; var platforms: cl_platform_id; num_platforms: IntPtr): clErrorCode :=
+      ntv_GetPlatformIDsForInstanceKHR_2(instance, num_entries, platforms, num_platforms);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPlatformIDsForInstanceKHR(instance: cl_instance; num_entries: UInt32; platforms: IntPtr; var num_platforms: UInt32): clErrorCode :=
+      ntv_GetPlatformIDsForInstanceKHR_3(instance, num_entries, platforms, num_platforms);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetPlatformIDsForInstanceKHR(instance: cl_instance; num_entries: UInt32; platforms: IntPtr; num_platforms: IntPtr): clErrorCode :=
+      ntv_GetPlatformIDsForInstanceKHR_4(instance, num_entries, platforms, num_platforms);
     
   end;
   

@@ -98,11 +98,11 @@ Dumping IdClass items
 Dumping Struct items
 Dumping Delegate items
 PascalBasicType: Packed 12 items
-Group: Packed 113 items
-IdClass: Packed 28 items
+Group: Packed 114 items
+IdClass: Packed 29 items
 Struct: Packed 16 items
 Delegate: Packed 7 items
-Func: Packed 241 items
+Func: Packed 249 items
 Feature: Packed 1 items
 Extension: Packed 133 items
 Cleanup

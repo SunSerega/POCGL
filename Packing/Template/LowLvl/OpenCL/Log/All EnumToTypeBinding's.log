@@ -987,6 +987,9 @@ clPlatformCommandBufferCapabilities
 --- PLATFORM_ICD_SUFFIX
 !output
 string
+--- PLATFORM_UNLOADABLE
+!output
+clBool
 --- PLATFORM_SEMAPHORE_TYPES
 !output
 array of clSemaphoreType

@@ -9,6 +9,7 @@
 # cl_event
 # cl_GLsync
 # cl_icd_dispatch
+# cl_instance
 # cl_kernel
 # cl_mem
 # cl_mutable_command

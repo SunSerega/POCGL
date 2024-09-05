@@ -23,6 +23,8 @@
 
 # cl_icd_dispatch (cl::icd_dispatch) : IntPtr
 
+# cl_instance (cl::instance) : IntPtr
+
 # cl_kernel (cl::kernel) : IntPtr
 
 # cl_mem (cl::mem) : IntPtr

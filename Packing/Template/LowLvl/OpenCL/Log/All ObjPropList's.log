@@ -119,6 +119,9 @@ UInt32
 !type
 UInt32
 
+# clInstanceProperties
+INSTANCE_PROPERTIES_LIST_END
+
 # clMemProperties
 --- MEM_DEVICE_HANDLE_LIST
 !type

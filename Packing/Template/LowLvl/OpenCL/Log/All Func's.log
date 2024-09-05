@@ -516,6 +516,13 @@ errcode_ret: var clErrorCode
 	-------- | ---------- | --------------- |
 	         | context    | errcode_ret     |
 
+# cl::DeinitLayer
+!ppt
+Result: clErrorCode
+!ffo
+1
+	clErrorCode |
+
 # cl::EnqueueAcquireGLObjects
 !ppt
 Result:                  clErrorCode
@@ -2121,7 +2128,7 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-23
+24
 	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | var T                                      | var UIntPtr          |
 	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | var T                                      | IntPtr               |
 	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | pointer                                    | var UIntPtr          |
@@ -2137,6 +2144,7 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_EXTENSIONS_WITH_VERSION             | UInt32           | var cl_name_version                        | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_COMMAND_BUFFER_CAPABILITIES         | *                | var clPlatformCommandBufferCapabilities    | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_ICD_SUFFIX                          | *                | var string                                 | *                    |
+	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_UNLOADABLE                          | *                | var clBool                                 | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_SEMAPHORE_TYPES                     | *                | var array of clSemaphoreType               | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_SEMAPHORE_TYPES                     | UInt32           | var clSemaphoreType                        | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES       | *                | var array of clExternalSemaphoreHandleType | *                    |
@@ -4302,6 +4310,19 @@ errcode_ret: var clErrorCode
 	------ | ---------- | ------------- | ----------- | ---------- | ----------------------------------- | --------------- |
 	       | context    | egldisplay    | eglimage    | flags      | properties                          | errcode_ret     |
 
+# cl::CreateInstance + KHR
+!ppt
+Result:      cl_instance
+properties:  array of clInstanceProperties const / var clInstanceProperties const / IntPtr const
+errcode_ret: var clErrorCode
+!ffo
+3
+	cl_instance | array of clInstanceProperties const | var clErrorCode |
+	cl_instance | var clInstanceProperties const      | var clErrorCode |
+	cl_instance | IntPtr const                        | var clErrorCode |
+	----------- | ----------------------------------- | --------------- |
+	            | properties                          | errcode_ret     |
+
 # cl::CreateProgramWithIL + KHR
 !ppt
 Result:      cl_program
@@ -4330,6 +4351,16 @@ errcode_ret: var clErrorCode
 	cl_semaphore | cl_context | IntPtr const                         | var clErrorCode |
 	------------ | ---------- | ------------------------------------ | --------------- |
 	             | context    | sema_props                           | errcode_ret     |
+
+# cl::DestroyInstance + KHR
+!ppt
+Result:   clErrorCode
+instance: cl_instance
+!ffo
+1
+	clErrorCode | cl_instance |
+	----------- | ----------- |
+	            | instance    |
 
 # cl::EnqueueAcquireD3D10Objects + KHR
 !ppt
@@ -4981,6 +5012,22 @@ param_value_size_ret: var UIntPtr / IntPtr
 	----------- | ------------------ | -------------------------------------------------------- | ---------------- | -------------------------------- | -------------------- |
 	            | command            | param_name                                               | param_value_size | param_value                      | param_value_size_ret |
 
+# cl::GetPlatformIDsForInstance + KHR
+!ppt
+Result:        clErrorCode
+instance:      cl_instance
+num_entries:   UInt32
+platforms:     var cl_platform_id / IntPtr
+num_platforms: var UInt32 / IntPtr
+!ffo
+4
+	clErrorCode | cl_instance | UInt32      | var cl_platform_id | var UInt32    |
+	clErrorCode | cl_instance | UInt32      | var cl_platform_id | IntPtr        |
+	clErrorCode | cl_instance | UInt32      | IntPtr             | var UInt32    |
+	clErrorCode | cl_instance | UInt32      | IntPtr             | IntPtr        |
+	----------- | ----------- | ----------- | ------------------ | ------------- |
+	            | instance    | num_entries | platforms          | num_platforms |
+
 # cl::GetSemaphoreHandleForType + KHR
 !ppt
 Result:          clErrorCode
@@ -5024,6 +5071,39 @@ param_value_size_ret: var UIntPtr / IntPtr
 	----------- | ------------ | --------------------------------------------- | ---------------- | ------------------------------------------ | -------------------- |
 	            | sema_object  | param_name                                    | param_value_size | param_value                                | param_value_size_ret |
 
+# cl::IcdCreateInstancePlatform + KHR
+!ppt
+Result:      cl_platform_id
+platform:    cl_platform_id
+errcode_ret: var clErrorCode
+!ffo
+1
+	cl_platform_id | cl_platform_id | var clErrorCode |
+	-------------- | -------------- | --------------- |
+	               | platform       | errcode_ret     |
+
+# cl::IcdDestroyInstancePlatform + KHR
+!ppt
+Result:   clErrorCode
+platform: cl_platform_id
+!ffo
+1
+	clErrorCode | cl_platform_id |
+	----------- | -------------- |
+	            | platform       |
+
+# cl::IcdGetFunctionAddressForPlatform + KHR
+!ppt
+Result:    IntPtr
+platform:  cl_platform_id
+func_name: string const / IntPtr const
+!ffo
+2
+	IntPtr | cl_platform_id | string const |
+	IntPtr | cl_platform_id | IntPtr const |
+	------ | -------------- | ------------ |
+	       | platform       | func_name    |
+
 # cl::IcdGetPlatformIDs + KHR
 !ppt
 Result:        clErrorCode
@@ -5039,6 +5119,17 @@ num_platforms: array of UInt32 / var UInt32 / IntPtr
 	clErrorCode | UInt32      | IntPtr                  | IntPtr          |
 	----------- | ----------- | ----------------------- | --------------- |
 	            | num_entries | platforms               | num_platforms   |
+
+# cl::IcdSetPlatformDispatchData + KHR
+!ppt
+Result:        clErrorCode
+platform:      cl_platform_id
+dispatch_data: IntPtr
+!ffo
+1
+	clErrorCode | cl_platform_id | IntPtr        |
+	----------- | -------------- | ------------- |
+	            | platform       | dispatch_data |
 
 # cl::ReImportSemaphoreSyncFd + KHR
 !ppt
