@@ -1294,9 +1294,9 @@ cl_command_queue
 --- MUTABLE_COMMAND_COMMAND_BUFFER
 !output
 cl_command_buffer
---- MUTABLE_DISPATCH_PROPERTIES_ARRAY
+--- MUTABLE_COMMAND_PROPERTIES_ARRAY
 !output
-array of clNDRangeKernelCommandProperties
+array of clCommandProperties
 --- MUTABLE_DISPATCH_KERNEL
 !output
 cl_kernel

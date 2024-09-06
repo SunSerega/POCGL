@@ -39,10 +39,6 @@ cl::DeviceSVMCapabilities
 !rename
 cl::DeviceOnDeviceEnqueueCapabilities
 
-# cl::NdrangeKernelCommandProperties
-!rename
-cl::NDRangeKernelCommandProperties
-
 # cl::D3d[%v:10,11%]Device[%end:Set,Source%]
 !rename
 cl::D3D{%v%}Device{%end%}

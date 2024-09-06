@@ -7,13 +7,13 @@ Compiling "DataScraping/Reps/PullReps.pas"
 Compiling: OK
 Runing SubReps Update
 SubReps Update: Pulling OpenCL
-SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull-own]: && git pull SunSerega custom) && (echo [fetch-main] && git fetch 0_official main:main) && (echo [merge-main] && git merge main)"
+SubReps Update: cmd /c "(echo [checkout] && git checkout pretest/1215 2>&1) && (echo [pull-own]: && git pull SunSerega pretest/1215) && (echo [fetch-main] && git fetch 0_official main:main) && (echo [merge-main] && git merge main)"
 SubReps Update: OpenCL[OUT] : [checkout]
-SubReps Update: OpenCL[OUT] : Your branch is up to date with 'SunSerega/custom'.
-SubReps Update: OpenCL[OUT] : Already on 'custom'
+SubReps Update: OpenCL[OUT] : Your branch is up to date with 'SunSerega/pretest/1215'.
+SubReps Update: OpenCL[OUT] : Already on 'pretest/1215'
 SubReps Update: OpenCL[OUT] : [pull-own]:
 SubReps Update: OpenCL[ERR] : From SunSerega/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch custom -> FETCH_HEAD
+SubReps Update: OpenCL[ERR] : * branch pretest/1215 -> FETCH_HEAD
 SubReps Update: OpenCL[OUT] : Already up to date.
 SubReps Update: OpenCL[OUT] : [fetch-main]
 SubReps Update: OpenCL[OUT] : [merge-main]

@@ -439,6 +439,25 @@
   end;
   
   ///
+  clCommandProperties = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property MUTABLE_DISPATCH_UPDATABLE_FIELDS: clCommandProperties read new clCommandProperties($12B1);
+    public static property MUTABLE_DISPATCH_ASSERTS:          clCommandProperties read new clCommandProperties($12B8);
+    
+    public function ToString: string; override;
+    begin
+      if MUTABLE_DISPATCH_UPDATABLE_FIELDS = self then
+        Result := 'MUTABLE_DISPATCH_UPDATABLE_FIELDS' else
+      if MUTABLE_DISPATCH_ASSERTS = self then
+        Result := 'MUTABLE_DISPATCH_ASSERTS' else
+        Result := $'clCommandProperties[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
   clCommandQueueCapabilities = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -4450,7 +4469,7 @@
     
     public static property MUTABLE_COMMAND_COMMAND_QUEUE:       clMutableCommandInfo read new clMutableCommandInfo($12A0);
     public static property MUTABLE_COMMAND_COMMAND_BUFFER:      clMutableCommandInfo read new clMutableCommandInfo($12A1);
-    public static property MUTABLE_DISPATCH_PROPERTIES_ARRAY:   clMutableCommandInfo read new clMutableCommandInfo($12A2);
+    public static property MUTABLE_COMMAND_PROPERTIES_ARRAY:    clMutableCommandInfo read new clMutableCommandInfo($12A2);
     public static property MUTABLE_DISPATCH_KERNEL:             clMutableCommandInfo read new clMutableCommandInfo($12A3);
     public static property MUTABLE_DISPATCH_DIMENSIONS:         clMutableCommandInfo read new clMutableCommandInfo($12A4);
     public static property MUTABLE_DISPATCH_GLOBAL_WORK_OFFSET: clMutableCommandInfo read new clMutableCommandInfo($12A5);
@@ -4464,8 +4483,8 @@
         Result := 'MUTABLE_COMMAND_COMMAND_QUEUE' else
       if MUTABLE_COMMAND_COMMAND_BUFFER = self then
         Result := 'MUTABLE_COMMAND_COMMAND_BUFFER' else
-      if MUTABLE_DISPATCH_PROPERTIES_ARRAY = self then
-        Result := 'MUTABLE_DISPATCH_PROPERTIES_ARRAY' else
+      if MUTABLE_COMMAND_PROPERTIES_ARRAY = self then
+        Result := 'MUTABLE_COMMAND_PROPERTIES_ARRAY' else
       if MUTABLE_DISPATCH_KERNEL = self then
         Result := 'MUTABLE_DISPATCH_KERNEL' else
       if MUTABLE_DISPATCH_DIMENSIONS = self then
@@ -4546,25 +4565,6 @@
       end;
       res.Length -= 1;
       Result := res.ToString;
-    end;
-    
-  end;
-  
-  ///
-  clNDRangeKernelCommandProperties = record
-    public val: UInt64;
-    public constructor(val: UInt64) := self.val := val;
-    
-    public static property MUTABLE_DISPATCH_UPDATABLE_FIELDS: clNDRangeKernelCommandProperties read new clNDRangeKernelCommandProperties($12B1);
-    public static property MUTABLE_DISPATCH_ASSERTS:          clNDRangeKernelCommandProperties read new clNDRangeKernelCommandProperties($12B8);
-    
-    public function ToString: string; override;
-    begin
-      if MUTABLE_DISPATCH_UPDATABLE_FIELDS = self then
-        Result := 'MUTABLE_DISPATCH_UPDATABLE_FIELDS' else
-      if MUTABLE_DISPATCH_ASSERTS = self then
-        Result := 'MUTABLE_DISPATCH_ASSERTS' else
-        Result := $'clNDRangeKernelCommandProperties[{self.val}]';
     end;
     
   end;

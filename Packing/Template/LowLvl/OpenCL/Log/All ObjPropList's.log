@@ -9,6 +9,14 @@ clCommandBufferFlags
 !type
 clMutableDispatchAsserts
 
+# clCommandProperties
+--- MUTABLE_DISPATCH_UPDATABLE_FIELDS
+!type
+clMutableDispatchFields
+--- MUTABLE_DISPATCH_ASSERTS
+!type
+clMutableDispatchAsserts
+
 # clContextProperties
 --- CONTEXT_PLATFORM
 !type
@@ -126,14 +134,6 @@ IntPtr
 --- MEM_DEVICE_ID
 !type
 IntPtr
-
-# clNDRangeKernelCommandProperties
---- MUTABLE_DISPATCH_UPDATABLE_FIELDS
-!type
-clMutableDispatchFields
---- MUTABLE_DISPATCH_ASSERTS
-!type
-clMutableDispatchAsserts
 
 # clQueueProperties
 --- QUEUE_PRIORITY
