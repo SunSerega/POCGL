@@ -116,6 +116,7 @@ type
 begin
   try
     
+    HTML.Pack('Index',          'index.html');
     HTML.Pack('Native Interop', 'Гайд по использованию OpenGL и OpenCL.html');
     HTML.Pack('GL ABC',         'Справка OpenGLABC.html');
     HTML.Pack('CL ABC',         'Справка OpenCLABC.html');
