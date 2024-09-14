@@ -469,6 +469,7 @@ jobs:
                         
                         # expecting fast-forward when possible
                         Write-Host "--- Merging with ${b_core_main}:"
+                        $need_commit_even_minimal = $false
                         git merge $b_core_main -m "[trivial] Merge $b_core_main into subm-pretest/..."
                         if (-not $?) {
                             Write-Host "----- Simple merge failed, trying to fix submodule conflict"
@@ -482,6 +483,7 @@ jobs:
                             git commit --no-edit
                             if (-not $?) { throw "git commit (after merge) failed" }
                             
+                            $need_commit_even_minimal = $true
                         }
                         git push
                         if (-not $?) { throw "git push failed" }
@@ -546,6 +548,17 @@ jobs:
                         git push
                         if (-not $?) { throw "git push failed" }
                         
+                    } elseif ($need_commit_even_minimal) {
+                        Write-Host "- Found insignificant changes after merge conflict"
+                        git diff
+                        
+                        git commit -a --amend --no-edit
+                        if (-not $?) { throw "git commit failed" }
+                        git push --force-with-lease
+                        if (-not $?) { throw "git push failed" }
+                        
+                    } else {
+                        Write-Host "- Didn't find any significant changes"
                     }
                     
                     $core_pretest_sha = git rev-parse HEAD
