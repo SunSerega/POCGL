@@ -476,8 +476,11 @@ jobs:
                             git reset "DataScraping/Reps/$subm_name"
                             if (-not $?) { throw "git reset failed" }
                             
+                            git add *.log
+                            if (-not $?) { throw "git add (unmerged *.log files) failed" }
+                            
                             git commit --no-edit
-                            if (-not $?) { throw "git commit failed" }
+                            if (-not $?) { throw "git commit (after merge) failed" }
                             
                         }
                         git push
