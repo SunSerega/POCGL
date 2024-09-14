@@ -7,6 +7,12 @@ PascalABC.Net wrappers for OpenCL and OpenGL
 
 ---
 
+# Reference
+
+Documentation can be found on [GitHub Pages](https://sunserega.github.io/POCGL).
+
+---
+
 # Packing (Building)
 
 When packing the first time: Execute `PackAll-0 FIRST PACK.bat`.  

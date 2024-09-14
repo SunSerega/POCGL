@@ -58,7 +58,7 @@ type
     begin
       self._name := name;
       if name in all_sources then
-        raise new InvalidOperationException(self.ToString);
+        raise new InvalidOperationException($'Added {self} multiple times');
       all_sources.Add(name, TSelf(self));
     end;
     protected constructor := raise new System.InvalidOperationException;
