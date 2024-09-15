@@ -168,13 +168,21 @@ type
     public property VendorSuffix: string read vendor_suffix;
     public property LocalName: string read name;
     
-    public function Equals(other: TSelf) :=
-      not ReferenceEquals(other,nil) and (self.api=other.api) and (self.vendor_suffix=other.vendor_suffix) and (self.name=other.name);
-    public static function operator=(n1,n2: ApiVendorLName<TSelf>) :=
-      if ReferenceEquals(n1, nil) then
-        ReferenceEquals(n2, nil) else
-        n1.Equals(n2);
+    public static function operator=(n1,n2: ApiVendorLName<TSelf>): boolean;
+    begin
+      Result := ReferenceEquals(n1, n2);
+      if Result then exit;
+      
+      if ReferenceEquals(n1, nil) then exit;
+      if ReferenceEquals(n2, nil) then exit;
+      if n1.api <> n2.api then exit;
+      if n1.vendor_suffix <> n2.vendor_suffix then exit;
+      if n1.name <> n2.name then exit;
+      
+      Result := true;
+    end;
     public static function operator<>(n1,n2: ApiVendorLName<TSelf>) := not(n1=n2);
+    public function Equals(other: TSelf) := self = other;
     public function Equals(obj: object): boolean; override :=
       (obj is TSelf(var other)) and (self=other);
     

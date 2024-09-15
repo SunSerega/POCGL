@@ -1028,27 +1028,22 @@ begin
   
   Result := new Func(self.Name, self.entry_point_name, pars, nil);
   
-  var err_code_gr := GroupSource.FindOrMakeItem(GroupSource.MakeName('cl_error_code',false,false), false);
-  
-  var have_err_ret := pars.Any(par->par.ParType.TypeObj = err_code_gr);
-  
-  var need_err_ret: boolean;
+  var need_err_ret_count: integer;
   if self.Name.LocalName.StartsWith('LogMessagesTo') and (self.Name.VendorSuffix='APPLE') then
-    need_err_ret := false else
+    need_err_ret_count := 0 else
   if self.Name.LocalName.StartsWith('SVM') then
-    need_err_ret := false else
+    need_err_ret_count := 0 else
   if self.Name.LocalName.StartsWith('GetExtensionFunctionAddress') then
-    need_err_ret := false else
-    need_err_ret := true;
+    need_err_ret_count := 0 else
+  if self.Name = FuncSource.MakeName('clCreateProgramWithBinary', false, false) then
+    need_err_ret_count := 2 else
+    need_err_ret_count := 1;
   
-  if have_err_ret<>need_err_ret then
-  begin
-    
-    if need_err_ret then
-      Otp($'WARNING: {Result} does not return errors') else
-      Otp($'WARNING: {Result} should not return errors');
-    
-  end;
+  var err_code_gr := GroupSource.FindOrMakeItem(GroupSource.MakeName('cl_error_code',false,false), false);
+  var err_ret_count := pars.Count(par->par.ParType.TypeObj = err_code_gr);
+  
+  if err_ret_count<>need_err_ret_count then
+    Otp($'WARNING: {Result} was expected to have {need_err_ret_count} err return parameters, but found {err_ret_count}');
   
 end;
 
