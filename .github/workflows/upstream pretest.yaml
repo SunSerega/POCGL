@@ -19,18 +19,22 @@ concurrency:
 # 1. Add new commits from the PR head ref (and, if needed, main/custom branches): to "pretest/$pr_num" in fork
 # 2. Add commit with test changes: to "subm-pretest/$org_repo/$pr_num" in POCGL repo
 
-# To only update when source has been updated:
-# - "pretest" references sha of latest PR commit as: meta.pr_head_sha
-# - "pretest" references sha of latest "subm-pretest" commit as: meta.core_pretest_sha
+# The latest commit on "pretest" branch references sha of other commits:
+# - meta.pr_head_sha: Latest PR commit
+# - meta.core_pretest_sha: Latest "subm-pretest" commit
+# - meta.trivial_core_sha: Latest core main commit
+
+# "pretest" and "subm-pretest" can be update manually by push, in case anything new needs to be implemented for the new XML spec
+# - In that case, "meta.pr_head_sha" or "meta.core_pretest_sha" would be missing or invalid, causing related PR to be re-tested on the next run of this workflow
+
+# "meta.trivial_core_sha" only exists when changes on "subm-pretest" are trivial
+# - This is to reset the trivial relative changes, in case core main branch is force-pushed
 
 # "pretest" is not updated when only main or custom branch of subm updates
 # - Otherwise all pretest branches would update at the same time, even on unrelated changes
 
 # "pretest" needs to be first checked by a separate "git ls-remote" before "git fetch"
-# - Otherwise git fetch would fail fetching the missing branches
-
-# "pretest" and "subm-pretest" can be update manually by push, in case anything new needs to be implemented for the new XML spec
-# - In that case, there would be no commit sha reference, so it will be re-tested on the next run of this workflow
+# - Otherwise git fetch would fail fetching pretest branches that weren't created yet
 
 jobs:
     enmr-PRs:
@@ -180,10 +184,11 @@ jobs:
                         foreach ($pr_num in $subm.head_sha_by_pr.Keys) {
                             Write-Host "- PR $pr_num"
                             
-                            function Is-SkipNeeded() {
-                                if ($pr_num -notin $subm.pretest_prs) { return $false }
-                                if ($pr_num -notin $core_pretest_pr_nums[$subm.repo].Keys) { return $false }
-                                $extra_debug = $true
+                            # Do full reset if core was trivial but the main branch was force-pushed
+                            $core_reset = $false
+                            
+                            if (($pr_num -in $subm.pretest_prs) -and ($pr_num -in $core_pretest_pr_nums[$subm.repo].Keys)) {
+                                $extra_debug = $false
                                 
                                 $pr_head_sha_found = $false
                                 $core_pretest_sha_found = $false
@@ -214,23 +219,50 @@ jobs:
                                             Write-Host "----- SHA unexpected"
                                         }
                                         
+                                    } elseif ($key -eq 'trivial_core_sha') {
+                                        
+                                        if ($extra_debug) {
+                                            $head_sha = git rev-parse HEAD
+                                            Write-Host "----- HEAD is at $head_sha"
+                                        }
+                                        
+                                        $old_head_fwd_c = git rev-list --count $sha..HEAD
+                                        if (-not $?) { throw "git rev-list failed" }
+                                        
+                                        if ($old_head_fwd_c -ne 0) {
+                                            if ($extra_debug) {
+                                                Write-Host "----- Old HEAD is $old_head_fwd_c commits forward"
+                                            }
+                                            $core_reset = $true
+                                        } elseif ($extra_debug) {
+                                            Write-Host "----- Old HEAD is strictly older"
+                                        }
+                                        
                                     } elseif ($extra_debug) {
                                         Write-Host "----- Key unexpected"
                                     }
                                     
                                 }
                                 
-                                return $pr_head_sha_found -and $core_pretest_sha_found
+                                if (-not $core_pretest_sha_found) {
+                                    # Instead of simple reset, need to re-test newly-added changes on core side
+                                    $core_reset = $false
+                                } elseif ($core_reset) {
+                                    # If we are reseting the core pretest branch, imagine the old one doesn't even exist
+                                    $core_pretest_sha_found = $false
+                                }
+                                
+                                if ($pr_head_sha_found -and $core_pretest_sha_found) { continue }
                             }
-                            if (Is-SkipNeeded) { continue }
                             
                             Write-Host "--- TEST NOW"
                             $exec_list += [PSCustomObject]@{
-                                '!id'       = $pr_num;
-                                'subm_name' = $subm.name;
-                                'org_repo'  = $subm.repo;
-                                'fork_repo' = "SunSerega/$($subm.name)";
-                                'pr_num'    = $pr_num;
+                                '!id'           = $pr_num;
+                                'subm_name'     = $subm.name;
+                                'org_repo'      = $subm.repo;
+                                'fork_repo'     = "SunSerega/$($subm.name)";
+                                'pr_num'        = $pr_num;
+                                'core_reset'    = $core_reset;
                             }
                         }
                         
@@ -321,7 +353,8 @@ jobs:
                     $subm_name = '${{ matrix.exec-data.subm_name }}'
                     $org_repo = '${{ matrix.exec-data.org_repo }}'
                     $fork_repo = '${{ matrix.exec-data.fork_repo }}'
-                    $pr_num = "${{ matrix.exec-data.pr_num }}"
+                    $pr_num = '${{ matrix.exec-data.pr_num }}'
+                    $core_reset = '${{ matrix.exec-data.core_reset }}' -eq 'true'
                     
                     
                     
@@ -446,21 +479,29 @@ jobs:
                     Push-Location './POCGL'
                     git fetch --all 2>&1 | Out-Null
                     
+                    $is_trivial = $false
                     if (&{ git show-ref --verify -q "refs/remotes/origin/$b_core_subm_pretest"; $? }) {
                         Write-Host "- Branch for PR $pr_num exists"
                         git checkout $b_core_subm_pretest
                         if (-not $?) { throw "git checkout failed" }
                         
                         $need_force_push = $false
-                        Write-Host "--- Deleting the latest [trivial] commits:"
-                        while ($true) {
-                            ($commit_name = (git log -1 --pretty=format:"%B" HEAD) -join "`n")
-                            if (-not $?) { throw "git log failed" }
-                            if (-not $commit_name.Contains("[trivial]")) { break }
-                            Write-Host "====="
-                            git reset --hard HEAD~1
+                        if ($core_reset) {
+                            Write-Host "--- Performing reset to $b_core_main"
+                            git reset --hard $b_core_main
                             if (-not $?) { throw "git reset failed" }
                             $need_force_push = $true
+                        } else {
+                            Write-Host "--- Deleting the latest [trivial] commits:"
+                            while ($true) {
+                                ($commit_name = (git log -1 --pretty=format:"%B" HEAD) -join "`n")
+                                if (-not $?) { throw "git log failed" }
+                                if (-not $commit_name.Contains("[trivial]")) { break }
+                                Write-Host "====="
+                                git reset --hard HEAD~1
+                                if (-not $?) { throw "git reset failed" }
+                                $need_force_push = $true
+                            }
                         }
                         if ($need_force_push) {
                             git push -f
@@ -488,6 +529,10 @@ jobs:
                         git push
                         if (-not $?) { throw "git push failed" }
                         
+                        if (-not(git diff --name-only "HEAD..$b_core_main")) {
+                            $is_trivial = $true
+                        }
+                        
                     } else {
                         Write-Host "- Branch for PR $pr_num doesn't exist"
                         
@@ -497,6 +542,7 @@ jobs:
                         git push --set-upstream origin $b_core_subm_pretest
                         if (-not $?) { throw "git push failed" }
                         
+                        $is_trivial = $true
                     }
                     
                     if (-not $?) { throw "git rev-parse failed" }
@@ -562,6 +608,7 @@ jobs:
                     }
                     
                     $core_pretest_sha = git rev-parse HEAD
+                    $core_main_sha = git rev-parse $b_core_main
                     Pop-Location
                     
                     
@@ -573,11 +620,18 @@ jobs:
                     $pr_head_sha = git rev-parse "remotes/0_official/pull/$pr_num/head"
                     if (-not $?) { throw "git rev-parse failed" }
                     
-                    git commit --allow-empty -m @"
-                    Add pretest meta
-                    meta.pr_head_sha=$pr_head_sha
-                    meta.core_pretest_sha=$core_pretest_sha
-                    "@
+                    $meta_commit_message = @()
+                    $meta_commit_message += 'Add pretest meta'
+                    $meta_commit_message += "meta.pr_head_sha=$pr_head_sha"
+                    $meta_commit_message += "meta.core_pretest_sha=$core_pretest_sha"
+                    if ($is_trivial) {
+                        Write-Host "- All changes are trivial, adding meta.trivial_core_sha=$core_main_sha"
+                        $meta_commit_message += "meta.trivial_core_sha=$core_main_sha"
+                    } else {
+                        Write-Host "- Not all changes are trivial"
+                    }
+                    
+                    git commit --allow-empty -m ($meta_commit_message -join "`n")
                     if (-not $?) { throw "git commit failed" }
                     git push
                     if (-not $?) { throw "git push failed" }
