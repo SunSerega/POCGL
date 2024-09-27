@@ -294,6 +294,8 @@ type
     
     public constructor(fname: string; timed: boolean := false; req_kinds: OtpKind? := nil; bad_kinds: OtpKind? := nil);
     begin
+      fname := System.IO.Path.GetFullPath(fname);
+      System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fname));
       self.bu_fname   := fname+'.backup';
       self.main_sw    := new System.IO.StreamWriter(fname, false, enc);
       self.backup_sw  := new System.IO.StreamWriter(bu_fname, false, enc);
