@@ -23,11 +23,6 @@
 !possible_par_types
  *	| *	| *	| *	| *	| *	| +array of T +var T	|
 
-# glx::GetProcAddress
-# glx::GetProcAddress+ARB
-!possible_par_types
- *	| -array of Byte const -var Byte const +string const	|
-
 
 
 # gl::GetActiveUniformsiv

@@ -40836,12 +40836,12 @@ win: glx_window
 !ppt
 Result: string const
 dpy:    x_display_ptr
-name:   Int32
+name:   glxStringName
 !ffo
 1
-	string const | x_display_ptr | Int32 |
-	------------ | ------------- | ----- |
-	             | dpy           | name  |
+	string const | x_display_ptr | glxStringName |
+	------------ | ------------- | ------------- |
+	             | dpy           | name          |
 
 # glx::GetConfig
 !ppt
@@ -41001,15 +41001,15 @@ value:     array of Int32 / var Int32 / IntPtr
 !ppt
 dpy:       x_display_ptr
 draw:      glx_drawable
-attribute: Int32
+attribute: glxDrawableAttrib
 value:     array of UInt32 / var UInt32 / IntPtr
 !ffo
 3
-	x_display_ptr | glx_drawable | Int32     | array of UInt32 |
-	x_display_ptr | glx_drawable | Int32     | var UInt32      |
-	x_display_ptr | glx_drawable | Int32     | IntPtr          |
-	------------- | ------------ | --------- | --------------- |
-	dpy           | draw         | attribute | value           |
+	x_display_ptr | glx_drawable | glxDrawableAttrib | array of UInt32 |
+	x_display_ptr | glx_drawable | glxDrawableAttrib | var UInt32      |
+	x_display_ptr | glx_drawable | glxDrawableAttrib | IntPtr          |
+	------------- | ------------ | ----------------- | --------------- |
+	dpy           | draw         | attribute         | value           |
 
 # glx::QueryExtension
 !ppt
@@ -41043,12 +41043,12 @@ screen: Int32
 Result: string const
 dpy:    x_display_ptr
 screen: Int32
-name:   Int32
+name:   glxStringName
 !ffo
 1
-	string const | x_display_ptr | Int32  | Int32 |
-	------------ | ------------- | ------ | ----- |
-	             | dpy           | screen | name  |
+	string const | x_display_ptr | Int32  | glxStringName |
+	------------ | ------------- | ------ | ------------- |
+	             | dpy           | screen | name          |
 
 # glx::QueryVersion
 !ppt

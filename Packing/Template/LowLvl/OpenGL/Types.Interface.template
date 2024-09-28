@@ -25631,6 +25631,65 @@
   end;
   
   ///
+  glxDrawableAttrib = record
+    public val: Int32;
+    public constructor(val: Int32) := self.val := val;
+    
+    public static property SWAP_INTERVAL:      glxDrawableAttrib read new glxDrawableAttrib($20F1);
+    public static property MAX_SWAP_INTERVAL:  glxDrawableAttrib read new glxDrawableAttrib($20F2);
+    public static property FBCONFIG_ID:        glxDrawableAttrib read new glxDrawableAttrib($8013);
+    public static property PRESERVED_CONTENTS: glxDrawableAttrib read new glxDrawableAttrib($801B);
+    public static property LARGEST_PBUFFER:    glxDrawableAttrib read new glxDrawableAttrib($801C);
+    public static property WIDTH:              glxDrawableAttrib read new glxDrawableAttrib($801D);
+    public static property HEIGHT:             glxDrawableAttrib read new glxDrawableAttrib($801E);
+    public static property EVENT_MASK:         glxDrawableAttrib read new glxDrawableAttrib($801F);
+    
+    public function ToString: string; override;
+    begin
+      if SWAP_INTERVAL = self then
+        Result := 'SWAP_INTERVAL' else
+      if MAX_SWAP_INTERVAL = self then
+        Result := 'MAX_SWAP_INTERVAL' else
+      if FBCONFIG_ID = self then
+        Result := 'FBCONFIG_ID' else
+      if PRESERVED_CONTENTS = self then
+        Result := 'PRESERVED_CONTENTS' else
+      if LARGEST_PBUFFER = self then
+        Result := 'LARGEST_PBUFFER' else
+      if WIDTH = self then
+        Result := 'WIDTH' else
+      if HEIGHT = self then
+        Result := 'HEIGHT' else
+      if EVENT_MASK = self then
+        Result := 'EVENT_MASK' else
+        Result := $'glxDrawableAttrib[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  glxStringName = record
+    public val: Int32;
+    public constructor(val: Int32) := self.val := val;
+    
+    public static property VENDOR:     glxStringName read new glxStringName($0001);
+    public static property VERSION:    glxStringName read new glxStringName($0002);
+    public static property EXTENSIONS: glxStringName read new glxStringName($0003);
+    
+    public function ToString: string; override;
+    begin
+      if VENDOR = self then
+        Result := 'VENDOR' else
+      if VERSION = self then
+        Result := 'VERSION' else
+      if EXTENSIONS = self then
+        Result := 'EXTENSIONS' else
+        Result := $'glxStringName[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
   wglColorBuffer = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;

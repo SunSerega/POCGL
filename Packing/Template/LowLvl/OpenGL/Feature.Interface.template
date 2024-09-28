@@ -11905,9 +11905,9 @@
       ntv_DestroyWindow_1(dpy, win);
     
     // added in glx1.1
-    private static function ntv_GetClientString_1(dpy: x_display_ptr; name: Int32): IntPtr;
+    private static function ntv_GetClientString_1(dpy: x_display_ptr; name: glxStringName): IntPtr;
       external 'libGL.so.1' name 'glXGetClientString';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetClientString(dpy: x_display_ptr; name: Int32): string :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetClientString(dpy: x_display_ptr; name: glxStringName): string :=
       Marshal.PtrToStringAnsi(ntv_GetClientString_1(dpy, name));
     
     // added in glx1.0
@@ -12031,20 +12031,20 @@
       ntv_QueryContext_2(dpy, ctx, attribute, value);
     
     // added in glx1.3
-    private static procedure ntv_QueryDrawable_1(dpy: x_display_ptr; draw: glx_drawable; attribute: Int32; var value: UInt32);
+    private static procedure ntv_QueryDrawable_1(dpy: x_display_ptr; draw: glx_drawable; attribute: glxDrawableAttrib; var value: UInt32);
       external 'libGL.so.1' name 'glXQueryDrawable';
-    private static procedure ntv_QueryDrawable_2(dpy: x_display_ptr; draw: glx_drawable; attribute: Int32; value: IntPtr);
+    private static procedure ntv_QueryDrawable_2(dpy: x_display_ptr; draw: glx_drawable; attribute: glxDrawableAttrib; value: IntPtr);
       external 'libGL.so.1' name 'glXQueryDrawable';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure QueryDrawable(dpy: x_display_ptr; draw: glx_drawable; attribute: Int32; value: array of UInt32);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure QueryDrawable(dpy: x_display_ptr; draw: glx_drawable; attribute: glxDrawableAttrib; value: array of UInt32);
       type PUInt32 = ^UInt32;
     begin
       if (value<>nil) and (value.Length<>0) then
         ntv_QueryDrawable_1(dpy, draw, attribute, value[0]) else
         ntv_QueryDrawable_1(dpy, draw, attribute, PUInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure QueryDrawable(dpy: x_display_ptr; draw: glx_drawable; attribute: Int32; var value: UInt32) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure QueryDrawable(dpy: x_display_ptr; draw: glx_drawable; attribute: glxDrawableAttrib; var value: UInt32) :=
       ntv_QueryDrawable_1(dpy, draw, attribute, value);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure QueryDrawable(dpy: x_display_ptr; draw: glx_drawable; attribute: Int32; value: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure QueryDrawable(dpy: x_display_ptr; draw: glx_drawable; attribute: glxDrawableAttrib; value: IntPtr) :=
       ntv_QueryDrawable_2(dpy, draw, attribute, value);
     
     // added in glx1.0
@@ -12083,9 +12083,9 @@
       Marshal.PtrToStringAnsi(ntv_QueryExtensionsString_1(dpy, screen));
     
     // added in glx1.1
-    private static function ntv_QueryServerString_1(dpy: x_display_ptr; screen: Int32; name: Int32): IntPtr;
+    private static function ntv_QueryServerString_1(dpy: x_display_ptr; screen: Int32; name: glxStringName): IntPtr;
       external 'libGL.so.1' name 'glXQueryServerString';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function QueryServerString(dpy: x_display_ptr; screen: Int32; name: Int32): string :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function QueryServerString(dpy: x_display_ptr; screen: Int32; name: glxStringName): string :=
       Marshal.PtrToStringAnsi(ntv_QueryServerString_1(dpy, screen, name));
     
     // added in glx1.0

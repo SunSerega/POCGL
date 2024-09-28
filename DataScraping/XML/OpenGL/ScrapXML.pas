@@ -860,8 +860,8 @@ begin
   {$region Kind}
   if self.kinds_s<>nil then
   begin
-    if self.context_api<>'gl' then
-      raise new System.InvalidOperationException;
+//    if self.context_api<>'gl' then
+//      raise new System.InvalidOperationException;
     
     var all_kinds := kinds_s.Split(',');
     foreach var kind_s in all_kinds do

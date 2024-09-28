@@ -4467,6 +4467,119 @@
 	DOUBLEBUFFER_DONTCARE[1 shl 30]
 	STEREO_DONTCARE[1 shl 31]
 
+# glxBindToTextureTargetMask (glx::BindToTextureTargetMask) :  (Bitfield)
+	TEXTURE_1D_BIT[1 shl 0]
+	TEXTURE_2D_BIT[1 shl 1]
+	TEXTURE_RECTANGLE_BIT[1 shl 2]
+
+# glxContextAttribs (glx::ContextAttribs) : 
+	CONTEXT_MAJOR_VERSION[$2091]
+	CONTEXT_MINOR_VERSION[$2092]
+	CONTEXT_FLAGS[$2094]
+	CONTEXT_RELEASE_BEHAVIOR[$2097]
+	CONTEXT_OPENGL_NO_ERROR[$31B3]
+	RENDER_TYPE[$8011]
+	CONTEXT_RESET_NOTIFICATION_STRATEGY[$8256]
+	CONTEXT_PROFILE_MASK[$9126]
+
+# glxContextFlags (glx::ContextFlags) :  (Bitfield)
+	CONTEXT_DEBUG_BIT[1 shl 0]
+	CONTEXT_FORWARD_COMPATIBLE_BIT[1 shl 1]
+	CONTEXT_ROBUST_ACCESS_BIT[1 shl 2]
+	CONTEXT_RESET_ISOLATION_BIT[1 shl 3]
+
+# glxContextProfileMask (glx::ContextProfileMask) :  (Bitfield)
+	CONTEXT_CORE_PROFILE_BIT[1 shl 0]
+	CONTEXT_COMPATIBILITY_PROFILE_BIT[1 shl 1]
+	CONTEXT_ES_PROFILE_BIT[1 shl 2]
+	CONTEXT_ES2_PROFILE_BIT[1 shl 2]
+
+# glxContextReleaseBehavior (glx::ContextReleaseBehavior) : 
+	CONTEXT_RELEASE_BEHAVIOR_NONE[0]
+	CONTEXT_RELEASE_BEHAVIOR_FLUSH[$2098]
+
+# glxDrawableAttrib (glx::DrawableAttrib) : Int32
+	SWAP_INTERVAL[$20F1]
+	MAX_SWAP_INTERVAL[$20F2]
+	FBCONFIG_ID[$8013]
+	PRESERVED_CONTENTS[$801B]
+	LARGEST_PBUFFER[$801C]
+	WIDTH[$801D]
+	HEIGHT[$801E]
+	EVENT_MASK[$801F]
+
+# glxDrawableTypeMask (glx::DrawableTypeMask) :  (Bitfield)
+	WINDOW_BIT[1 shl 0]
+	PIXMAP_BIT[1 shl 1]
+	PBUFFER_BIT[1 shl 2]
+
+# glxErrorCode (glx::ErrorCode) : 
+	BAD_SCREEN[$0001]
+	BAD_ATTRIBUTE[$0002]
+	NO_EXTENSION[$0003]
+	BAD_VISUAL[$0004]
+	BAD_CONTEXT[$0005]
+	BAD_VALUE[$0006]
+	BAD_ENUM[$0007]
+	BAD_HYPERPIPE_CONFIG[$005B]
+	BAD_HYPERPIPE[$005C]
+
+# glxEventMask (glx::EventMask) :  (Bitfield)
+	STEREO_NOTIFY_MASK[1 shl 0]
+	BUFFER_SWAP_COMPLETE_INTEL_MASK[1 shl 26]
+	PBUFFER_CLOBBER_MASK[1 shl 27]
+	BUFFER_CLOBBER_MASK[1 shl 27]
+
+# glxHyperpipeAttrib (glx::HyperpipeAttrib) :  (Bitfield)
+	PIPE_RECT[1 shl 0]
+	PIPE_RECT_LIMITS[1 shl 1]
+	HYPERPIPE_STEREO[$0003]
+	HYPERPIPE_PIXEL_AVERAGE[1 shl 2]
+
+# glxHyperpipeTypeMask (glx::HyperpipeTypeMask) :  (Bitfield)
+	HYPERPIPE_DISPLAY_PIPE[1 shl 0]
+	HYPERPIPE_RENDER_PIPE[1 shl 1]
+
+# glxMesa3DFXMode (glx::Mesa3DFXMode) : 
+	3DFX_WINDOW_MODE[$0001]
+	3DFX_FULLSCREEN_MODE[$0002]
+
+# glxPbufferClobberMask (glx::PbufferClobberMask) :  (Bitfield)
+	FRONT_LEFT_BUFFER_BIT[1 shl 0]
+	FRONT_RIGHT_BUFFER_BIT[1 shl 1]
+	BACK_LEFT_BUFFER_BIT[1 shl 2]
+	BACK_RIGHT_BUFFER_BIT[1 shl 3]
+	AUX_BUFFERS_BIT[1 shl 4]
+	DEPTH_BUFFER_BIT[1 shl 5]
+	STENCIL_BUFFER_BIT[1 shl 6]
+	ACCUM_BUFFER_BIT[1 shl 7]
+	SAMPLE_BUFFERS_BIT[1 shl 8]
+
+# glxRenderType (glx::RenderType) : 
+	RGBA_UNSIGNED_FLOAT_TYPE[$20B1]
+	RGBA_FLOAT_TYPE[$20B9]
+	RGBA_TYPE[$8014]
+	COLOR_INDEX_TYPE[$8015]
+
+# glxRenderTypeMask (glx::RenderTypeMask) :  (Bitfield)
+	RGBA_BIT[1 shl 0]
+	COLOR_INDEX_BIT[1 shl 1]
+	RGBA_FLOAT_BIT[1 shl 2]
+	RGBA_UNSIGNED_FLOAT_BIT[1 shl 3]
+
+# glxResetNotificationStrategy (glx::ResetNotificationStrategy) : 
+	LOSE_CONTEXT_ON_RESET[$8252]
+	NO_RESET_NOTIFICATION[$8261]
+
+# glxStringName (glx::StringName) : Int32
+	VENDOR[$0001]
+	VERSION[$0002]
+	EXTENSIONS[$0003]
+
+# glxSyncType (glx::SyncType) :  (Bitfield)
+	SYNC_FRAME[0]
+	SYNC_SWAP[1 shl 0]
+
 # wglAccelerationType (wgl::AccelerationType) : 
 	NO_ACCELERATION[$2025]
 	GENERIC_ACCELERATION[$2026]
