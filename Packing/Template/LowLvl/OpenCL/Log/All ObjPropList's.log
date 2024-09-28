@@ -77,7 +77,7 @@ clPrintfCallbackArm
 UIntPtr
 --- CONTEXT_SHOW_DIAGNOSTICS
 !type
-clContextPropertyDiagnosticsLevel
+clDiagnosticVerboseLevel
 
 # clDevicePartitionProperty
 --- DEVICE_PARTITION_EQUALLY

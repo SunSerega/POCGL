@@ -2366,6 +2366,46 @@
     begin
       Result := ntv_GetMemAllocInfoINTEL_2(context, ptr, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetMemAllocInfoINTEL_MEM_ALLOC_FLAGS_INTEL(context: cl_context; ptr: IntPtr; var param_value: clMemAllocFlagsINTEL; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clMemAllocFlagsINTEL>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetMemAllocInfoINTEL(context, ptr, clMemInfoINTEL.MEM_ALLOC_FLAGS_INTEL, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetMemAllocInfoINTEL_MEM_ALLOC_TYPE(context: cl_context; ptr: IntPtr; var param_value: clUnifiedSharedMemoryType; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clUnifiedSharedMemoryType>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetMemAllocInfoINTEL(context, ptr, clMemInfoINTEL.MEM_ALLOC_TYPE, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetMemAllocInfoINTEL_MEM_ALLOC_BASE_PTR(context: cl_context; ptr: IntPtr; var param_value: IntPtr; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<IntPtr>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetMemAllocInfoINTEL(context, ptr, clMemInfoINTEL.MEM_ALLOC_BASE_PTR, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetMemAllocInfoINTEL_MEM_ALLOC_SIZE(context: cl_context; ptr: IntPtr; var param_value: UIntPtr; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetMemAllocInfoINTEL(context, ptr, clMemInfoINTEL.MEM_ALLOC_SIZE, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetMemAllocInfoINTEL_MEM_ALLOC_DEVICE(context: cl_context; ptr: IntPtr; var param_value: cl_device_id; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<cl_device_id>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetMemAllocInfoINTEL(context, ptr, clMemInfoINTEL.MEM_ALLOC_DEVICE, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetMemAllocInfoINTEL_MEM_ALLOC_BUFFER_LOCATION(context: cl_context; ptr: IntPtr; var param_value: UInt32; param_value_validate_size: boolean := false): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<UInt32>);
@@ -4798,7 +4838,7 @@
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_external_memory
-  /// version: 1.0.0
+  /// version: 1.0.1
   /// core dependency: cl 3.0
   clExternalMemoryKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -5520,7 +5560,7 @@
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_external_semaphore
-  /// version: 1.0.0
+  /// version: 1.0.1
   /// core dependency: cl 1.2
   /// ext dependencies:
   /// - cl_khr_semaphore (clSemaphoreKHR)

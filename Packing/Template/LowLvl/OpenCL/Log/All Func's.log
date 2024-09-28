@@ -2044,38 +2044,33 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-29
-	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | var T                         | var UIntPtr          |
-	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | var T                         | IntPtr               |
-	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | pointer                       | var UIntPtr          |
-	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | pointer                       | IntPtr               |
-	clErrorCode | cl_mem | clMemInfo.MEM_TYPE                   | *                | var clMemObjectType           | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_FLAGS                  | *                | var clMemFlags                | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_SIZE                   | *                | var UIntPtr                   | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_HOST_PTR               | *                | var IntPtr                    | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_MAP_COUNT              | *                | var UInt32                    | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_REFERENCE_COUNT        | *                | var UInt32                    | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_CONTEXT                | *                | var cl_context                | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_ASSOCIATED_MEMOBJECT   | *                | var cl_mem                    | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_OFFSET                 | *                | var UIntPtr                   | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_USES_SVM_POINTER       | *                | var clBool                    | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_PROPERTIES             | *                | var array of clMemProperties  | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_PROPERTIES             | UInt32           | var clMemProperties           | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_DX9_MEDIA_ADAPTER_TYPE | *                | var clDx9MediaAdapterType     | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_DX9_MEDIA_SURFACE_INFO | *                | var cl_dx9_surface_info       | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_D3D10_RESOURCE         | *                | var IntPtr                    | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_D3D11_RESOURCE         | *                | var IntPtr                    | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_DX9_RESOURCE           | *                | var IntPtr                    | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_DX9_SHARED_HANDLE      | *                | var IntPtr                    | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_VA_API_MEDIA_SURFACE   | *                | var IntPtr                    | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_USES_SVM_POINTER_ARM   | *                | var clBool                    | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_ALLOC_FLAGS_INTEL      | *                | var clMemAllocFlagsINTEL      | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_ALLOC_TYPE             | *                | var clUnifiedSharedMemoryType | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_ALLOC_BASE_PTR         | *                | var IntPtr                    | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_ALLOC_SIZE             | *                | var UIntPtr                   | *                    |
-	clErrorCode | cl_mem | clMemInfo.MEM_ALLOC_DEVICE           | *                | var cl_device_id              | *                    |
-	----------- | ------ | ------------------------------------ | ---------------- | ----------------------------- | -------------------- |
-	            | memobj | param_name                           | param_value_size | param_value                   | param_value_size_ret |
+24
+	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | var T                        | var UIntPtr          |
+	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | var T                        | IntPtr               |
+	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | pointer                      | var UIntPtr          |
+	clErrorCode | cl_mem | clMemInfo                            | UIntPtr          | pointer                      | IntPtr               |
+	clErrorCode | cl_mem | clMemInfo.MEM_TYPE                   | *                | var clMemObjectType          | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_FLAGS                  | *                | var clMemFlags               | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_SIZE                   | *                | var UIntPtr                  | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_HOST_PTR               | *                | var IntPtr                   | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_MAP_COUNT              | *                | var UInt32                   | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_REFERENCE_COUNT        | *                | var UInt32                   | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_CONTEXT                | *                | var cl_context               | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_ASSOCIATED_MEMOBJECT   | *                | var cl_mem                   | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_OFFSET                 | *                | var UIntPtr                  | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_USES_SVM_POINTER       | *                | var clBool                   | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_PROPERTIES             | *                | var array of clMemProperties | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_PROPERTIES             | UInt32           | var clMemProperties          | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_DX9_MEDIA_ADAPTER_TYPE | *                | var clDx9MediaAdapterType    | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_DX9_MEDIA_SURFACE_INFO | *                | var cl_dx9_surface_info      | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_D3D10_RESOURCE         | *                | var IntPtr                   | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_D3D11_RESOURCE         | *                | var IntPtr                   | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_DX9_RESOURCE           | *                | var IntPtr                   | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_DX9_SHARED_HANDLE      | *                | var IntPtr                   | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_VA_API_MEDIA_SURFACE   | *                | var IntPtr                   | *                    |
+	clErrorCode | cl_mem | clMemInfo.MEM_USES_SVM_POINTER_ARM   | *                | var clBool                   | *                    |
+	----------- | ------ | ------------------------------------ | ---------------- | ---------------------------- | -------------------- |
+	            | memobj | param_name                           | param_value_size | param_value                  | param_value_size_ret |
 
 # cl::GetPipeInfo
 !ppt
@@ -3583,14 +3578,19 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-5
-	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | var T       | var UIntPtr          |
-	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | var T       | IntPtr               |
-	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL.MEM_ALLOC_BUFFER_LOCATION | *                | var UInt32  | *                    |
-	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | pointer     | var UIntPtr          |
-	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | pointer     | IntPtr               |
-	----------- | ---------- | ------------ | ---------------------------------------- | ---------------- | ----------- | -------------------- |
-	            | context    | ptr          | param_name                               | param_value_size | param_value | param_value_size_ret |
+10
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | var T                         | var UIntPtr          |
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | var T                         | IntPtr               |
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL.MEM_ALLOC_FLAGS_INTEL     | *                | var clMemAllocFlagsINTEL      | *                    |
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL.MEM_ALLOC_TYPE            | *                | var clUnifiedSharedMemoryType | *                    |
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL.MEM_ALLOC_BASE_PTR        | *                | var IntPtr                    | *                    |
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL.MEM_ALLOC_SIZE            | *                | var UIntPtr                   | *                    |
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL.MEM_ALLOC_DEVICE          | *                | var cl_device_id              | *                    |
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL.MEM_ALLOC_BUFFER_LOCATION | *                | var UInt32                    | *                    |
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | pointer                       | var UIntPtr          |
+	clErrorCode | cl_context | IntPtr const | clMemInfoINTEL                           | UIntPtr          | pointer                       | IntPtr               |
+	----------- | ---------- | ------------ | ---------------------------------------- | ---------------- | ----------------------------- | -------------------- |
+	            | context    | ptr          | param_name                               | param_value_size | param_value                   | param_value_size_ret |
 
 # cl::GetSupportedD3D10TextureFormats + INTEL
 !ppt

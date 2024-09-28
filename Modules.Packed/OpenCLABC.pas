@@ -2974,44 +2974,19 @@ type
     begin
       cl.GetMemObjectInfo_MEM_USES_SVM_POINTER_ARM(self.ntv, Result).RaiseIfError;
     end;
-    private function GetAllocFlagsIntel: clMemAllocFlagsINTEL;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_FLAGS_INTEL(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetAllocType: clUnifiedSharedMemoryType;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_TYPE(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetAllocBasePtr: IntPtr;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_BASE_PTR(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetAllocSize: UIntPtr;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_SIZE(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetAllocDevice: cl_device_id;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_DEVICE(self.ntv, Result).RaiseIfError;
-    end;
     
-    public property Flags:               clMemFlags                read GetFlags;
-    public property HostPtr:             IntPtr                    read GetHostPtr;
-    public property UsesSvmPointer:      clBool                    read GetUsesSvmPointer;
-    public property Properties:          array of clMemProperties  read GetProperties;
-    public property Dx9MediaAdapterType: clDx9MediaAdapterType     read GetDx9MediaAdapterType;
-    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info       read GetDx9MediaSurfaceInfo;
-    public property D3d10Resource:       IntPtr                    read GetD3d10Resource;
-    public property D3d11Resource:       IntPtr                    read GetD3d11Resource;
-    public property Dx9Resource:         IntPtr                    read GetDx9Resource;
-    public property Dx9SharedHandle:     IntPtr                    read GetDx9SharedHandle;
-    public property VaApiMediaSurface:   IntPtr                    read GetVaApiMediaSurface;
-    public property UsesSvmPointerArm:   clBool                    read GetUsesSvmPointerArm;
-    public property AllocFlagsIntel:     clMemAllocFlagsINTEL      read GetAllocFlagsIntel;
-    public property AllocType:           clUnifiedSharedMemoryType read GetAllocType;
-    public property AllocBasePtr:        IntPtr                    read GetAllocBasePtr;
-    public property AllocSize:           UIntPtr                   read GetAllocSize;
-    public property AllocDevice:         cl_device_id              read GetAllocDevice;
+    public property Flags:               clMemFlags               read GetFlags;
+    public property HostPtr:             IntPtr                   read GetHostPtr;
+    public property UsesSvmPointer:      clBool                   read GetUsesSvmPointer;
+    public property Properties:          array of clMemProperties read GetProperties;
+    public property Dx9MediaAdapterType: clDx9MediaAdapterType    read GetDx9MediaAdapterType;
+    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info      read GetDx9MediaSurfaceInfo;
+    public property D3d10Resource:       IntPtr                   read GetD3d10Resource;
+    public property D3d11Resource:       IntPtr                   read GetD3d11Resource;
+    public property Dx9Resource:         IntPtr                   read GetDx9Resource;
+    public property Dx9SharedHandle:     IntPtr                   read GetDx9SharedHandle;
+    public property VaApiMediaSurface:   IntPtr                   read GetVaApiMediaSurface;
+    public property UsesSvmPointerArm:   clBool                   read GetUsesSvmPointerArm;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -3033,12 +3008,7 @@ type
       res += 'Dx9Resource         = '; AddProp(res, GetDx9Resource        ); res += #10;
       res += 'Dx9SharedHandle     = '; AddProp(res, GetDx9SharedHandle    ); res += #10;
       res += 'VaApiMediaSurface   = '; AddProp(res, GetVaApiMediaSurface  ); res += #10;
-      res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  ); res += #10;
-      res += 'AllocFlagsIntel     = '; AddProp(res, GetAllocFlagsIntel    ); res += #10;
-      res += 'AllocType           = '; AddProp(res, GetAllocType          ); res += #10;
-      res += 'AllocBasePtr        = '; AddProp(res, GetAllocBasePtr       ); res += #10;
-      res += 'AllocSize           = '; AddProp(res, GetAllocSize          ); res += #10;
-      res += 'AllocDevice         = '; AddProp(res, GetAllocDevice        );
+      res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  );
     end;
     public function ToString: string; override;
     begin
@@ -3130,26 +3100,6 @@ type
     begin
       cl.GetMemObjectInfo_MEM_USES_SVM_POINTER_ARM(self.ntv, Result).RaiseIfError;
     end;
-    private function GetAllocFlagsIntel: clMemAllocFlagsINTEL;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_FLAGS_INTEL(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetAllocType: clUnifiedSharedMemoryType;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_TYPE(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetAllocBasePtr: IntPtr;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_BASE_PTR(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetAllocSize: UIntPtr;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_SIZE(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetAllocDevice: cl_device_id;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_DEVICE(self.ntv, Result).RaiseIfError;
-    end;
     private function GetAssociatedMemobject: cl_mem;
     begin
       cl.GetMemObjectInfo_MEM_ASSOCIATED_MEMOBJECT(self.ntv, Result).RaiseIfError;
@@ -3159,25 +3109,20 @@ type
       cl.GetMemObjectInfo_MEM_OFFSET(self.ntv, Result).RaiseIfError;
     end;
     
-    public property Flags:               clMemFlags                read GetFlags;
-    public property HostPtr:             IntPtr                    read GetHostPtr;
-    public property UsesSvmPointer:      clBool                    read GetUsesSvmPointer;
-    public property Properties:          array of clMemProperties  read GetProperties;
-    public property Dx9MediaAdapterType: clDx9MediaAdapterType     read GetDx9MediaAdapterType;
-    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info       read GetDx9MediaSurfaceInfo;
-    public property D3d10Resource:       IntPtr                    read GetD3d10Resource;
-    public property D3d11Resource:       IntPtr                    read GetD3d11Resource;
-    public property Dx9Resource:         IntPtr                    read GetDx9Resource;
-    public property Dx9SharedHandle:     IntPtr                    read GetDx9SharedHandle;
-    public property VaApiMediaSurface:   IntPtr                    read GetVaApiMediaSurface;
-    public property UsesSvmPointerArm:   clBool                    read GetUsesSvmPointerArm;
-    public property AllocFlagsIntel:     clMemAllocFlagsINTEL      read GetAllocFlagsIntel;
-    public property AllocType:           clUnifiedSharedMemoryType read GetAllocType;
-    public property AllocBasePtr:        IntPtr                    read GetAllocBasePtr;
-    public property AllocSize:           UIntPtr                   read GetAllocSize;
-    public property AllocDevice:         cl_device_id              read GetAllocDevice;
-    public property AssociatedMemobject: cl_mem                    read GetAssociatedMemobject;
-    public property Offset:              UIntPtr                   read GetOffset;
+    public property Flags:               clMemFlags               read GetFlags;
+    public property HostPtr:             IntPtr                   read GetHostPtr;
+    public property UsesSvmPointer:      clBool                   read GetUsesSvmPointer;
+    public property Properties:          array of clMemProperties read GetProperties;
+    public property Dx9MediaAdapterType: clDx9MediaAdapterType    read GetDx9MediaAdapterType;
+    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info      read GetDx9MediaSurfaceInfo;
+    public property D3d10Resource:       IntPtr                   read GetD3d10Resource;
+    public property D3d11Resource:       IntPtr                   read GetD3d11Resource;
+    public property Dx9Resource:         IntPtr                   read GetDx9Resource;
+    public property Dx9SharedHandle:     IntPtr                   read GetDx9SharedHandle;
+    public property VaApiMediaSurface:   IntPtr                   read GetVaApiMediaSurface;
+    public property UsesSvmPointerArm:   clBool                   read GetUsesSvmPointerArm;
+    public property AssociatedMemobject: cl_mem                   read GetAssociatedMemobject;
+    public property Offset:              UIntPtr                  read GetOffset;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -3200,11 +3145,6 @@ type
       res += 'Dx9SharedHandle     = '; AddProp(res, GetDx9SharedHandle    ); res += #10;
       res += 'VaApiMediaSurface   = '; AddProp(res, GetVaApiMediaSurface  ); res += #10;
       res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  ); res += #10;
-      res += 'AllocFlagsIntel     = '; AddProp(res, GetAllocFlagsIntel    ); res += #10;
-      res += 'AllocType           = '; AddProp(res, GetAllocType          ); res += #10;
-      res += 'AllocBasePtr        = '; AddProp(res, GetAllocBasePtr       ); res += #10;
-      res += 'AllocSize           = '; AddProp(res, GetAllocSize          ); res += #10;
-      res += 'AllocDevice         = '; AddProp(res, GetAllocDevice        ); res += #10;
       res += 'AssociatedMemobject = '; AddProp(res, GetAssociatedMemobject); res += #10;
       res += 'Offset              = '; AddProp(res, GetOffset             );
     end;
@@ -3276,26 +3216,6 @@ type
     begin
       cl.GetMemObjectInfo_MEM_USES_SVM_POINTER_ARM(self.ntv, Result).RaiseIfError;
     end;
-    private function GetAllocFlagsIntel: clMemAllocFlagsINTEL;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_FLAGS_INTEL(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetAllocType: clUnifiedSharedMemoryType;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_TYPE(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetAllocBasePtr: IntPtr;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_BASE_PTR(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetAllocSize: UIntPtr;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_SIZE(self.ntv, Result).RaiseIfError;
-    end;
-    private function GetAllocDevice: cl_device_id;
-    begin
-      cl.GetMemObjectInfo_MEM_ALLOC_DEVICE(self.ntv, Result).RaiseIfError;
-    end;
     private function GetAssociatedMemobject: cl_mem;
     begin
       cl.GetMemObjectInfo_MEM_ASSOCIATED_MEMOBJECT(self.ntv, Result).RaiseIfError;
@@ -3305,25 +3225,20 @@ type
       cl.GetMemObjectInfo_MEM_OFFSET(self.ntv, Result).RaiseIfError;
     end;
     
-    public property Flags:               clMemFlags                read GetFlags;
-    public property HostPtr:             IntPtr                    read GetHostPtr;
-    public property UsesSvmPointer:      clBool                    read GetUsesSvmPointer;
-    public property Properties:          array of clMemProperties  read GetProperties;
-    public property Dx9MediaAdapterType: clDx9MediaAdapterType     read GetDx9MediaAdapterType;
-    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info       read GetDx9MediaSurfaceInfo;
-    public property D3d10Resource:       IntPtr                    read GetD3d10Resource;
-    public property D3d11Resource:       IntPtr                    read GetD3d11Resource;
-    public property Dx9Resource:         IntPtr                    read GetDx9Resource;
-    public property Dx9SharedHandle:     IntPtr                    read GetDx9SharedHandle;
-    public property VaApiMediaSurface:   IntPtr                    read GetVaApiMediaSurface;
-    public property UsesSvmPointerArm:   clBool                    read GetUsesSvmPointerArm;
-    public property AllocFlagsIntel:     clMemAllocFlagsINTEL      read GetAllocFlagsIntel;
-    public property AllocType:           clUnifiedSharedMemoryType read GetAllocType;
-    public property AllocBasePtr:        IntPtr                    read GetAllocBasePtr;
-    public property AllocSize:           UIntPtr                   read GetAllocSize;
-    public property AllocDevice:         cl_device_id              read GetAllocDevice;
-    public property AssociatedMemobject: cl_mem                    read GetAssociatedMemobject;
-    public property Offset:              UIntPtr                   read GetOffset;
+    public property Flags:               clMemFlags               read GetFlags;
+    public property HostPtr:             IntPtr                   read GetHostPtr;
+    public property UsesSvmPointer:      clBool                   read GetUsesSvmPointer;
+    public property Properties:          array of clMemProperties read GetProperties;
+    public property Dx9MediaAdapterType: clDx9MediaAdapterType    read GetDx9MediaAdapterType;
+    public property Dx9MediaSurfaceInfo: cl_dx9_surface_info      read GetDx9MediaSurfaceInfo;
+    public property D3d10Resource:       IntPtr                   read GetD3d10Resource;
+    public property D3d11Resource:       IntPtr                   read GetD3d11Resource;
+    public property Dx9Resource:         IntPtr                   read GetDx9Resource;
+    public property Dx9SharedHandle:     IntPtr                   read GetDx9SharedHandle;
+    public property VaApiMediaSurface:   IntPtr                   read GetVaApiMediaSurface;
+    public property UsesSvmPointerArm:   clBool                   read GetUsesSvmPointerArm;
+    public property AssociatedMemobject: cl_mem                   read GetAssociatedMemobject;
+    public property Offset:              UIntPtr                  read GetOffset;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -3346,11 +3261,6 @@ type
       res += 'Dx9SharedHandle     = '; AddProp(res, GetDx9SharedHandle    ); res += #10;
       res += 'VaApiMediaSurface   = '; AddProp(res, GetVaApiMediaSurface  ); res += #10;
       res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  ); res += #10;
-      res += 'AllocFlagsIntel     = '; AddProp(res, GetAllocFlagsIntel    ); res += #10;
-      res += 'AllocType           = '; AddProp(res, GetAllocType          ); res += #10;
-      res += 'AllocBasePtr        = '; AddProp(res, GetAllocBasePtr       ); res += #10;
-      res += 'AllocSize           = '; AddProp(res, GetAllocSize          ); res += #10;
-      res += 'AllocDevice         = '; AddProp(res, GetAllocDevice        ); res += #10;
       res += 'AssociatedMemobject = '; AddProp(res, GetAssociatedMemobject); res += #10;
       res += 'Offset              = '; AddProp(res, GetOffset             );
     end;

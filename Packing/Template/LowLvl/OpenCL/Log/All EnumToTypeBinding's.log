@@ -919,21 +919,6 @@ IntPtr
 --- MEM_USES_SVM_POINTER_ARM
 !output
 clBool
---- MEM_ALLOC_FLAGS_INTEL
-!output
-clMemAllocFlagsINTEL
---- MEM_ALLOC_TYPE
-!output
-clUnifiedSharedMemoryType
---- MEM_ALLOC_BASE_PTR
-!output
-IntPtr
---- MEM_ALLOC_SIZE
-!output
-UIntPtr
---- MEM_ALLOC_DEVICE
-!output
-cl_device_id
 
 # cl.GetPipeInfo
 2
@@ -1206,6 +1191,21 @@ UInt32
 4
 5
 6
+--- MEM_ALLOC_FLAGS_INTEL
+!output
+clMemAllocFlagsINTEL
+--- MEM_ALLOC_TYPE
+!output
+clUnifiedSharedMemoryType
+--- MEM_ALLOC_BASE_PTR
+!output
+IntPtr
+--- MEM_ALLOC_SIZE
+!output
+UIntPtr
+--- MEM_ALLOC_DEVICE
+!output
+cl_device_id
 --- MEM_ALLOC_BUFFER_LOCATION
 !output
 UInt32
