@@ -1551,7 +1551,7 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-206
+207
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | var T                                                     | var UIntPtr          |
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | var T                                                     | IntPtr               |
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | pointer                                                   | var UIntPtr          |
@@ -1687,6 +1687,7 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT          | *                | var cl_device_integer_dot_product_acceleration_properties | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED | *                | var cl_device_integer_dot_product_acceleration_properties | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_KERNEL_CLOCK_CAPABILITIES                                 | *                | var clDeviceKernelClockCapabilities                       | *                    |
+	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES                 | *                | var clCommandQueueProperties                              | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_COMMAND_BUFFER_CAPABILITIES                               | *                | var clDeviceCommandBufferCapabilities                     | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES                  | *                | var clCommandQueueProperties                              | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_COMMAND_BUFFER_NUM_SYNC_DEVICES                           | *                | var UInt32                                                | *                    |

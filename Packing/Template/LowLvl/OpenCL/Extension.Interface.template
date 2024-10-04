@@ -2820,7 +2820,7 @@
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_command_buffer
-  /// version: 0.9.5 (provisional)
+  /// version: 0.9.6 (provisional)
   /// core dependency: cl 1.2
   clCommandBufferKHR = sealed partial class
     public constructor(pl: cl_platform_id);

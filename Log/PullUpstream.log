@@ -1,13 +1,13 @@
 ﻿~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Update Reps ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Runing SubReps Update
 SubReps Update: Pulling OpenCL
-SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull-own]: && git pull SunSerega custom) && (echo [fetch-main] && git fetch 0_official main:main) && (echo [merge-main] && git merge main)"
+SubReps Update: cmd /c "(echo [checkout] && git checkout pretest/850 2>&1) && (echo [pull-own]: && git pull SunSerega pretest/850) && (echo [fetch-main] && git fetch 0_official main:main) && (echo [merge-main] && git merge main)"
 SubReps Update: OpenCL[OUT] : [checkout]
-SubReps Update: OpenCL[OUT] : Your branch is up to date with 'SunSerega/custom'.
-SubReps Update: OpenCL[OUT] : Already on 'custom'
+SubReps Update: OpenCL[OUT] : Your branch is up to date with 'SunSerega/pretest/850'.
+SubReps Update: OpenCL[OUT] : Already on 'pretest/850'
 SubReps Update: OpenCL[OUT] : [pull-own]:
 SubReps Update: OpenCL[ERR] : From SunSerega/OpenCL-Docs
-SubReps Update: OpenCL[ERR] : * branch custom -> FETCH_HEAD
+SubReps Update: OpenCL[ERR] : * branch pretest/850 -> FETCH_HEAD
 SubReps Update: OpenCL[OUT] : Already up to date.
 SubReps Update: OpenCL[OUT] : [fetch-main]
 SubReps Update: OpenCL[OUT] : [merge-main]
@@ -17,7 +17,7 @@ SubReps Update: Pulling OpenGL
 SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull-own]: && git pull SunSerega custom) && (echo [fetch-main] && git fetch 0_official main:main) && (echo [merge-main] && git merge main)"
 SubReps Update: OpenGL[OUT] : [checkout]
 SubReps Update: OpenGL[OUT] : Your branch is up to date with 'SunSerega/custom'.
-SubReps Update: OpenGL[OUT] : Already on 'custom'
+SubReps Update: OpenGL[OUT] : Switched to branch 'custom'
 SubReps Update: OpenGL[OUT] : [pull-own]:
 SubReps Update: OpenGL[ERR] : From SunSerega/OpenGL-Registry
 SubReps Update: OpenGL[ERR] : * branch custom -> FETCH_HEAD
