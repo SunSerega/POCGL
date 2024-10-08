@@ -188,7 +188,7 @@ jobs:
                             $core_reset = $false
                             
                             if (($pr_num -in $subm.pretest_prs) -and ($pr_num -in $core_pretest_pr_nums[$subm.repo].Keys)) {
-                                $extra_debug = $false
+                                $extra_debug = $true
                                 
                                 $pr_head_sha_found = $false
                                 $core_pretest_sha_found = $false

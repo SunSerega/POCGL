@@ -1,11 +1,11 @@
 ﻿
 //*****************************************************************************************************\\
-// Copyright (©) Sergey Latchenko ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
+// Copyright (©) Sun Serega ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
 // This code is distributed under the Unlicense
 // For details see LICENSE file or this:
 // https://github.com/SunSerega/POCGL/blob/master/LICENSE
 //*****************************************************************************************************\\
-// Copyright (©) Сергей Латченко ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
+// Copyright (©) Sun Serega ( github.com/SunSerega | forum.mmcs.sfedu.ru/u/sun_serega )
 // Данный код распространяется с лицензией Unlicense
 // Подробнее в файле LICENSE или тут:
 // https://github.com/SunSerega/POCGL/blob/master/LICENSE
