@@ -56,6 +56,7 @@ jobs:
             -   name: checkout
                 uses: actions/checkout@main
                 with:
+                    fetch-depth: 0
                     sparse-checkout-cone-mode: false
                     sparse-checkout: |
                         .gitmodules
@@ -144,6 +145,9 @@ jobs:
                     
                     Write-Host "=============================="
                     Write-Host "Fetching extra data"
+                    Write-Host "- Fetching core history"
+                    # To check if trivial_core_sha was force-pushed, we need all branches and their relationships in core repo
+                    git fetch --all
                     $core_pretest_pr_nums = @{}
                     $subm_fetch_specs = @{}
                     foreach ($l in Get-GitRemoteBranches origin 'refs/heads/subm-pretest/*/*/*') {
@@ -163,6 +167,7 @@ jobs:
                             Write-Host "--- MISSING FORK PRETEST"
                         }
                     }
+                    Write-Host "- Fetching subm pretest branches"
                     # To check which pretest branches are up to date and should not be tested
                     # - Only need commit messages, not files
                     foreach ($repo in $submodule_by_repo.Keys) {
@@ -172,6 +177,11 @@ jobs:
                         git fetch --depth=1 --no-tags --filter=tree:0 $submodule_by_repo[$repo].fork_url $subm_fetch_specs[$repo]
                         if (-not $?) { throw "git fetch failed" }
                     }
+                    
+                    
+                    
+                    # Write-Host "=============================="
+                    # git --no-pager log --graph --pretty=oneline --abbrev-commit --all
                     
                     
                     
@@ -226,7 +236,7 @@ jobs:
                                             Write-Host "----- HEAD is at $head_sha"
                                         }
                                         
-                                        $old_head_fwd_c = git rev-list --count $sha..HEAD
+                                        $old_head_fwd_c = git rev-list --count "$head_sha..$sha"
                                         if (-not $?) { throw "git rev-list failed" }
                                         
                                         if ($old_head_fwd_c -ne 0) {
