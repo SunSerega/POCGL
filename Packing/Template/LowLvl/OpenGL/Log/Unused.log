@@ -2003,24 +2003,11 @@ Enum [wgl::BIND_TO_VIDEO_RGB] was not grouped
 Enum [wgl::BIND_TO_VIDEO_RGB_AND_DEPTH] was not grouped
 Enum [wgl::BIND_TO_VIDEO_RGBA] was not grouped
 Enum [wgl::COLOR_SAMPLES] was not grouped
-Enum [wgl::COLORSPACE] was not grouped
-Enum [wgl::COLORSPACE_LINEAR] was not grouped
-Enum [wgl::COLORSPACE_SRGB] was not grouped
-Enum [wgl::CONTEXT_FLAGS] was not grouped
-Enum [wgl::CONTEXT_LAYER_PLANE] was not grouped
-Enum [wgl::CONTEXT_MAJOR_VERSION] was not grouped
-Enum [wgl::CONTEXT_MINOR_VERSION] was not grouped
 Enum [wgl::CONTEXT_MULTIGPU_ATTRIB] was not grouped
 Enum [wgl::CONTEXT_MULTIGPU_ATTRIB_AFR] was not grouped
 Enum [wgl::CONTEXT_MULTIGPU_ATTRIB_MULTI_DISPLAY_MULTICAST] was not grouped
 Enum [wgl::CONTEXT_MULTIGPU_ATTRIB_MULTICAST] was not grouped
 Enum [wgl::CONTEXT_MULTIGPU_ATTRIB_SINGLE] was not grouped
-Enum [wgl::CONTEXT_OPENGL_NO_ERROR] was not grouped
-Enum [wgl::CONTEXT_PROFILE_MASK] was not grouped
-Enum [wgl::CONTEXT_RELEASE_BEHAVIOR] was not grouped
-Enum [wgl::CONTEXT_RELEASE_BEHAVIOR_FLUSH] was not grouped
-Enum [wgl::CONTEXT_RELEASE_BEHAVIOR_NONE] was not grouped
-Enum [wgl::CONTEXT_RESET_NOTIFICATION_STRATEGY] was not grouped
 Enum [wgl::COVERAGE_SAMPLES] was not grouped
 Enum [wgl::DEPTH_COMPONENT] was not grouped
 Enum [wgl::DEPTH_FLOAT] was not grouped
@@ -2032,7 +2019,6 @@ Enum [wgl::ERROR_INVALID_PROFILE] was not grouped
 Enum [wgl::ERROR_INVALID_VERSION] was not grouped
 Enum [wgl::ERROR_MISSING_AFFINITY_MASK] was not grouped
 Enum [wgl::FLOAT_COMPONENTS] was not grouped
-Enum [wgl::FRAMEBUFFER_SRGB_CAPABLE] was not grouped
 Enum [wgl::GENLOCK_SOURCE_DIGITAL_FIELD] was not grouped
 Enum [wgl::GENLOCK_SOURCE_DIGITAL_SYNC] was not grouped
 Enum [wgl::GENLOCK_SOURCE_EDGE_BOTH] was not grouped
@@ -2043,11 +2029,9 @@ Enum [wgl::GENLOCK_SOURCE_EXTERNAL_SYNC] was not grouped
 Enum [wgl::GENLOCK_SOURCE_EXTERNAL_TTL] was not grouped
 Enum [wgl::GENLOCK_SOURCE_MULTIVIEW] was not grouped
 Enum [wgl::GPU_FASTEST_TARGET_GPUS] was not grouped
-Enum [wgl::LOSE_CONTEXT_ON_RESET] was not grouped
 Enum [wgl::MAX_PBUFFER_HEIGHT] was not grouped
 Enum [wgl::MAX_PBUFFER_PIXELS] was not grouped
 Enum [wgl::MAX_PBUFFER_WIDTH] was not grouped
-Enum [wgl::NO_RESET_NOTIFICATION] was not grouped
 Enum [wgl::OPTIMAL_PBUFFER_HEIGHT] was not grouped
 Enum [wgl::OPTIMAL_PBUFFER_WIDTH] was not grouped
 Enum [wgl::PBUFFER_LARGEST] was not grouped
@@ -2057,15 +2041,11 @@ Enum [wgl::TEXTURE_FLOAT_RG] was not grouped
 Enum [wgl::TEXTURE_FLOAT_RGB] was not grouped
 Enum [wgl::TEXTURE_FLOAT_RGBA] was not grouped
 Enum [wgl::TRANSPARENT_VALUE] was not grouped
-Enum [wgl::TYPE_RGBA_FLOAT] was not grouped
-Enum [wgl::TYPE_RGBA_UNSIGNED_FLOAT] was not grouped
 Enum [wgl::SAMPLE_BUFFERS + 3DFX] was not grouped
 Enum [wgl::SAMPLES + 3DFX] was not grouped
 Enum [wgl::SAMPLE_BUFFERS + ARB] was not grouped
-Enum [wgl::SAMPLES + ARB] was not grouped
 Enum [wgl::TEXTURE_RECTANGLE + ATI] was not grouped
 Enum [wgl::SAMPLE_BUFFERS + EXT] was not grouped
-Enum [wgl::SAMPLES + EXT] was not grouped
 Enum [wgl::TEXTURE_RECTANGLE + NV] was not grouped
 Enum [gles2::ACTIVE_PROGRAM] was not grouped
 LoadedBasicType [_GPU_DEVICE] was not referenced
@@ -2089,8 +2069,11 @@ LoadedBasicType [Screen] was not referenced
 LoadedBasicType [XID] was not referenced
 Group [gl::TraceMask] was not referenced
 Group [wgl::AccelerationType] was not referenced
+Group [wgl::Colorspace] was not referenced
 Group [wgl::ContextFlagsMask] was not referenced
 Group [wgl::ContextProfileMask] was not referenced
+Group [wgl::ContextReleaseBehavior] was not referenced
+Group [wgl::ContextResetNotificationStrategy] was not referenced
 Group [wgl::PBufferCubeMapFace] was not referenced
 Group [wgl::PBufferTextureFormat] was not referenced
 Group [wgl::PBufferTextureTarget] was not referenced

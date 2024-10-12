@@ -25747,6 +25747,43 @@
   end;
   
   ///
+  wglContextAttribs = record
+    public val: Int32;
+    public constructor(val: Int32) := self.val := val;
+    
+    public static property CONTEXT_MAJOR_VERSION:               wglContextAttribs read new wglContextAttribs($2091);
+    public static property CONTEXT_MINOR_VERSION:               wglContextAttribs read new wglContextAttribs($2092);
+    public static property CONTEXT_LAYER_PLANE:                 wglContextAttribs read new wglContextAttribs($2093);
+    public static property CONTEXT_FLAGS:                       wglContextAttribs read new wglContextAttribs($2094);
+    public static property CONTEXT_RELEASE_BEHAVIOR:            wglContextAttribs read new wglContextAttribs($2097);
+    public static property CONTEXT_OPENGL_NO_ERROR:             wglContextAttribs read new wglContextAttribs($31B3);
+    public static property CONTEXT_RESET_NOTIFICATION_STRATEGY: wglContextAttribs read new wglContextAttribs($8256);
+    public static property CONTEXT_PROFILE_MASK:                wglContextAttribs read new wglContextAttribs($9126);
+    
+    public function ToString: string; override;
+    begin
+      if CONTEXT_MAJOR_VERSION = self then
+        Result := 'CONTEXT_MAJOR_VERSION' else
+      if CONTEXT_MINOR_VERSION = self then
+        Result := 'CONTEXT_MINOR_VERSION' else
+      if CONTEXT_LAYER_PLANE = self then
+        Result := 'CONTEXT_LAYER_PLANE' else
+      if CONTEXT_FLAGS = self then
+        Result := 'CONTEXT_FLAGS' else
+      if CONTEXT_RELEASE_BEHAVIOR = self then
+        Result := 'CONTEXT_RELEASE_BEHAVIOR' else
+      if CONTEXT_OPENGL_NO_ERROR = self then
+        Result := 'CONTEXT_OPENGL_NO_ERROR' else
+      if CONTEXT_RESET_NOTIFICATION_STRATEGY = self then
+        Result := 'CONTEXT_RESET_NOTIFICATION_STRATEGY' else
+      if CONTEXT_PROFILE_MASK = self then
+        Result := 'CONTEXT_PROFILE_MASK' else
+        Result := $'wglContextAttribs[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
   wglContextAttribute = record
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
@@ -26265,48 +26302,52 @@
     public val: Int32;
     public constructor(val: Int32) := self.val := val;
     
-    public static property NUMBER_PIXEL_FORMATS:    wglPixelFormatAttribute read new wglPixelFormatAttribute($2000);
-    public static property DRAW_TO_WINDOW:          wglPixelFormatAttribute read new wglPixelFormatAttribute($2001);
-    public static property DRAW_TO_BITMAP:          wglPixelFormatAttribute read new wglPixelFormatAttribute($2002);
-    public static property ACCELERATION:            wglPixelFormatAttribute read new wglPixelFormatAttribute($2003);
-    public static property NEED_PALETTE:            wglPixelFormatAttribute read new wglPixelFormatAttribute($2004);
-    public static property NEED_SYSTEM_PALETTE:     wglPixelFormatAttribute read new wglPixelFormatAttribute($2005);
-    public static property SWAP_LAYER_BUFFERS:      wglPixelFormatAttribute read new wglPixelFormatAttribute($2006);
-    public static property SWAP_METHOD:             wglPixelFormatAttribute read new wglPixelFormatAttribute($2007);
-    public static property NUMBER_OVERLAYS:         wglPixelFormatAttribute read new wglPixelFormatAttribute($2008);
-    public static property NUMBER_UNDERLAYS:        wglPixelFormatAttribute read new wglPixelFormatAttribute($2009);
-    public static property TRANSPARENT:             wglPixelFormatAttribute read new wglPixelFormatAttribute($200A);
-    public static property SHARE_DEPTH:             wglPixelFormatAttribute read new wglPixelFormatAttribute($200C);
-    public static property SHARE_STENCIL:           wglPixelFormatAttribute read new wglPixelFormatAttribute($200D);
-    public static property SHARE_ACCUM:             wglPixelFormatAttribute read new wglPixelFormatAttribute($200E);
-    public static property SUPPORT_GDI:             wglPixelFormatAttribute read new wglPixelFormatAttribute($200F);
-    public static property SUPPORT_OPENGL:          wglPixelFormatAttribute read new wglPixelFormatAttribute($2010);
-    public static property DOUBLE_BUFFER:           wglPixelFormatAttribute read new wglPixelFormatAttribute($2011);
-    public static property STEREO:                  wglPixelFormatAttribute read new wglPixelFormatAttribute($2012);
-    public static property PIXEL_TYPE:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2013);
-    public static property COLOR_BITS:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2014);
-    public static property RED_BITS:                wglPixelFormatAttribute read new wglPixelFormatAttribute($2015);
-    public static property RED_SHIFT:               wglPixelFormatAttribute read new wglPixelFormatAttribute($2016);
-    public static property GREEN_BITS:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2017);
-    public static property GREEN_SHIFT:             wglPixelFormatAttribute read new wglPixelFormatAttribute($2018);
-    public static property BLUE_BITS:               wglPixelFormatAttribute read new wglPixelFormatAttribute($2019);
-    public static property BLUE_SHIFT:              wglPixelFormatAttribute read new wglPixelFormatAttribute($201A);
-    public static property ALPHA_BITS:              wglPixelFormatAttribute read new wglPixelFormatAttribute($201B);
-    public static property ALPHA_SHIFT:             wglPixelFormatAttribute read new wglPixelFormatAttribute($201C);
-    public static property ACCUM_BITS:              wglPixelFormatAttribute read new wglPixelFormatAttribute($201D);
-    public static property ACCUM_RED_BITS:          wglPixelFormatAttribute read new wglPixelFormatAttribute($201E);
-    public static property ACCUM_GREEN_BITS:        wglPixelFormatAttribute read new wglPixelFormatAttribute($201F);
-    public static property ACCUM_BLUE_BITS:         wglPixelFormatAttribute read new wglPixelFormatAttribute($2020);
-    public static property ACCUM_ALPHA_BITS:        wglPixelFormatAttribute read new wglPixelFormatAttribute($2021);
-    public static property DEPTH_BITS:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2022);
-    public static property STENCIL_BITS:            wglPixelFormatAttribute read new wglPixelFormatAttribute($2023);
-    public static property AUX_BUFFERS:             wglPixelFormatAttribute read new wglPixelFormatAttribute($2024);
-    public static property DRAW_TO_PBUFFER:         wglPixelFormatAttribute read new wglPixelFormatAttribute($202D);
-    public static property TRANSPARENT_RED_VALUE:   wglPixelFormatAttribute read new wglPixelFormatAttribute($2037);
-    public static property TRANSPARENT_GREEN_VALUE: wglPixelFormatAttribute read new wglPixelFormatAttribute($2038);
-    public static property TRANSPARENT_BLUE_VALUE:  wglPixelFormatAttribute read new wglPixelFormatAttribute($2039);
-    public static property TRANSPARENT_ALPHA_VALUE: wglPixelFormatAttribute read new wglPixelFormatAttribute($203A);
-    public static property TRANSPARENT_INDEX_VALUE: wglPixelFormatAttribute read new wglPixelFormatAttribute($203B);
+    public static property NUMBER_PIXEL_FORMATS:     wglPixelFormatAttribute read new wglPixelFormatAttribute($2000);
+    public static property DRAW_TO_WINDOW:           wglPixelFormatAttribute read new wglPixelFormatAttribute($2001);
+    public static property DRAW_TO_BITMAP:           wglPixelFormatAttribute read new wglPixelFormatAttribute($2002);
+    public static property ACCELERATION:             wglPixelFormatAttribute read new wglPixelFormatAttribute($2003);
+    public static property NEED_PALETTE:             wglPixelFormatAttribute read new wglPixelFormatAttribute($2004);
+    public static property NEED_SYSTEM_PALETTE:      wglPixelFormatAttribute read new wglPixelFormatAttribute($2005);
+    public static property SWAP_LAYER_BUFFERS:       wglPixelFormatAttribute read new wglPixelFormatAttribute($2006);
+    public static property SWAP_METHOD:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2007);
+    public static property NUMBER_OVERLAYS:          wglPixelFormatAttribute read new wglPixelFormatAttribute($2008);
+    public static property NUMBER_UNDERLAYS:         wglPixelFormatAttribute read new wglPixelFormatAttribute($2009);
+    public static property TRANSPARENT:              wglPixelFormatAttribute read new wglPixelFormatAttribute($200A);
+    public static property SHARE_DEPTH:              wglPixelFormatAttribute read new wglPixelFormatAttribute($200C);
+    public static property SHARE_STENCIL:            wglPixelFormatAttribute read new wglPixelFormatAttribute($200D);
+    public static property SHARE_ACCUM:              wglPixelFormatAttribute read new wglPixelFormatAttribute($200E);
+    public static property SUPPORT_GDI:              wglPixelFormatAttribute read new wglPixelFormatAttribute($200F);
+    public static property SUPPORT_OPENGL:           wglPixelFormatAttribute read new wglPixelFormatAttribute($2010);
+    public static property DOUBLE_BUFFER:            wglPixelFormatAttribute read new wglPixelFormatAttribute($2011);
+    public static property STEREO:                   wglPixelFormatAttribute read new wglPixelFormatAttribute($2012);
+    public static property PIXEL_TYPE:               wglPixelFormatAttribute read new wglPixelFormatAttribute($2013);
+    public static property COLOR_BITS:               wglPixelFormatAttribute read new wglPixelFormatAttribute($2014);
+    public static property RED_BITS:                 wglPixelFormatAttribute read new wglPixelFormatAttribute($2015);
+    public static property RED_SHIFT:                wglPixelFormatAttribute read new wglPixelFormatAttribute($2016);
+    public static property GREEN_BITS:               wglPixelFormatAttribute read new wglPixelFormatAttribute($2017);
+    public static property GREEN_SHIFT:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2018);
+    public static property BLUE_BITS:                wglPixelFormatAttribute read new wglPixelFormatAttribute($2019);
+    public static property BLUE_SHIFT:               wglPixelFormatAttribute read new wglPixelFormatAttribute($201A);
+    public static property ALPHA_BITS:               wglPixelFormatAttribute read new wglPixelFormatAttribute($201B);
+    public static property ALPHA_SHIFT:              wglPixelFormatAttribute read new wglPixelFormatAttribute($201C);
+    public static property ACCUM_BITS:               wglPixelFormatAttribute read new wglPixelFormatAttribute($201D);
+    public static property ACCUM_RED_BITS:           wglPixelFormatAttribute read new wglPixelFormatAttribute($201E);
+    public static property ACCUM_GREEN_BITS:         wglPixelFormatAttribute read new wglPixelFormatAttribute($201F);
+    public static property ACCUM_BLUE_BITS:          wglPixelFormatAttribute read new wglPixelFormatAttribute($2020);
+    public static property ACCUM_ALPHA_BITS:         wglPixelFormatAttribute read new wglPixelFormatAttribute($2021);
+    public static property DEPTH_BITS:               wglPixelFormatAttribute read new wglPixelFormatAttribute($2022);
+    public static property STENCIL_BITS:             wglPixelFormatAttribute read new wglPixelFormatAttribute($2023);
+    public static property AUX_BUFFERS:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2024);
+    public static property DRAW_TO_PBUFFER:          wglPixelFormatAttribute read new wglPixelFormatAttribute($202D);
+    public static property TRANSPARENT_RED_VALUE:    wglPixelFormatAttribute read new wglPixelFormatAttribute($2037);
+    public static property TRANSPARENT_GREEN_VALUE:  wglPixelFormatAttribute read new wglPixelFormatAttribute($2038);
+    public static property TRANSPARENT_BLUE_VALUE:   wglPixelFormatAttribute read new wglPixelFormatAttribute($2039);
+    public static property TRANSPARENT_ALPHA_VALUE:  wglPixelFormatAttribute read new wglPixelFormatAttribute($203A);
+    public static property TRANSPARENT_INDEX_VALUE:  wglPixelFormatAttribute read new wglPixelFormatAttribute($203B);
+    public static property SAMPLES_ARB:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2042);
+    public static property SAMPLES_EXT:              wglPixelFormatAttribute read new wglPixelFormatAttribute($2042);
+    public static property FRAMEBUFFER_SRGB_CAPABLE: wglPixelFormatAttribute read new wglPixelFormatAttribute($20A9);
+    public static property COLORSPACE:               wglPixelFormatAttribute read new wglPixelFormatAttribute($309D);
     
     public function ToString: string; override;
     begin
@@ -26394,6 +26435,12 @@
         Result := 'TRANSPARENT_ALPHA_VALUE' else
       if TRANSPARENT_INDEX_VALUE = self then
         Result := 'TRANSPARENT_INDEX_VALUE' else
+      if SAMPLES_ARB = self then
+        Result := 'SAMPLES_ARB' else
+      if FRAMEBUFFER_SRGB_CAPABLE = self then
+        Result := 'FRAMEBUFFER_SRGB_CAPABLE' else
+      if COLORSPACE = self then
+        Result := 'COLORSPACE' else
         Result := $'wglPixelFormatAttribute[{self.val}]';
     end;
     

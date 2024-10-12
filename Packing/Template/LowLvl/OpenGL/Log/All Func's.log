@@ -42786,32 +42786,32 @@ iBuffer:  wglColorBuffer
 !ppt
 Result:        glBool32
 hdc:           gdi_device_context
-piAttribIList: array of Int32 const / var Int32 const / IntPtr const
+piAttribIList: array of wglPixelFormatAttribute const / var wglPixelFormatAttribute const / IntPtr const
 pfAttribFList: array of single const / var single const / IntPtr const
 nMaxFormats:   UInt32
 piFormats:     array of Int32 / var Int32 / IntPtr
 nNumFormats:   array of UInt32 / var UInt32 / IntPtr
 !ffo
 17
-	glBool32 | gdi_device_context | array of Int32 const | array of single const | UInt32      | array of Int32 | array of UInt32 |
-	glBool32 | gdi_device_context | var Int32 const      | var single const      | UInt32      | var Int32      | var UInt32      |
-	glBool32 | gdi_device_context | var Int32 const      | var single const      | UInt32      | var Int32      | IntPtr          |
-	glBool32 | gdi_device_context | var Int32 const      | var single const      | UInt32      | IntPtr         | var UInt32      |
-	glBool32 | gdi_device_context | var Int32 const      | var single const      | UInt32      | IntPtr         | IntPtr          |
-	glBool32 | gdi_device_context | var Int32 const      | IntPtr const          | UInt32      | var Int32      | var UInt32      |
-	glBool32 | gdi_device_context | var Int32 const      | IntPtr const          | UInt32      | var Int32      | IntPtr          |
-	glBool32 | gdi_device_context | var Int32 const      | IntPtr const          | UInt32      | IntPtr         | var UInt32      |
-	glBool32 | gdi_device_context | var Int32 const      | IntPtr const          | UInt32      | IntPtr         | IntPtr          |
-	glBool32 | gdi_device_context | IntPtr const         | var single const      | UInt32      | var Int32      | var UInt32      |
-	glBool32 | gdi_device_context | IntPtr const         | var single const      | UInt32      | var Int32      | IntPtr          |
-	glBool32 | gdi_device_context | IntPtr const         | var single const      | UInt32      | IntPtr         | var UInt32      |
-	glBool32 | gdi_device_context | IntPtr const         | var single const      | UInt32      | IntPtr         | IntPtr          |
-	glBool32 | gdi_device_context | IntPtr const         | IntPtr const          | UInt32      | var Int32      | var UInt32      |
-	glBool32 | gdi_device_context | IntPtr const         | IntPtr const          | UInt32      | var Int32      | IntPtr          |
-	glBool32 | gdi_device_context | IntPtr const         | IntPtr const          | UInt32      | IntPtr         | var UInt32      |
-	glBool32 | gdi_device_context | IntPtr const         | IntPtr const          | UInt32      | IntPtr         | IntPtr          |
-	-------- | ------------------ | -------------------- | --------------------- | ----------- | -------------- | --------------- |
-	         | hdc                | piAttribIList        | pfAttribFList         | nMaxFormats | piFormats      | nNumFormats     |
+	glBool32 | gdi_device_context | array of wglPixelFormatAttribute const | array of single const | UInt32      | array of Int32 | array of UInt32 |
+	glBool32 | gdi_device_context | var wglPixelFormatAttribute const      | var single const      | UInt32      | var Int32      | var UInt32      |
+	glBool32 | gdi_device_context | var wglPixelFormatAttribute const      | var single const      | UInt32      | var Int32      | IntPtr          |
+	glBool32 | gdi_device_context | var wglPixelFormatAttribute const      | var single const      | UInt32      | IntPtr         | var UInt32      |
+	glBool32 | gdi_device_context | var wglPixelFormatAttribute const      | var single const      | UInt32      | IntPtr         | IntPtr          |
+	glBool32 | gdi_device_context | var wglPixelFormatAttribute const      | IntPtr const          | UInt32      | var Int32      | var UInt32      |
+	glBool32 | gdi_device_context | var wglPixelFormatAttribute const      | IntPtr const          | UInt32      | var Int32      | IntPtr          |
+	glBool32 | gdi_device_context | var wglPixelFormatAttribute const      | IntPtr const          | UInt32      | IntPtr         | var UInt32      |
+	glBool32 | gdi_device_context | var wglPixelFormatAttribute const      | IntPtr const          | UInt32      | IntPtr         | IntPtr          |
+	glBool32 | gdi_device_context | IntPtr const                           | var single const      | UInt32      | var Int32      | var UInt32      |
+	glBool32 | gdi_device_context | IntPtr const                           | var single const      | UInt32      | var Int32      | IntPtr          |
+	glBool32 | gdi_device_context | IntPtr const                           | var single const      | UInt32      | IntPtr         | var UInt32      |
+	glBool32 | gdi_device_context | IntPtr const                           | var single const      | UInt32      | IntPtr         | IntPtr          |
+	glBool32 | gdi_device_context | IntPtr const                           | IntPtr const          | UInt32      | var Int32      | var UInt32      |
+	glBool32 | gdi_device_context | IntPtr const                           | IntPtr const          | UInt32      | var Int32      | IntPtr          |
+	glBool32 | gdi_device_context | IntPtr const                           | IntPtr const          | UInt32      | IntPtr         | var UInt32      |
+	glBool32 | gdi_device_context | IntPtr const                           | IntPtr const          | UInt32      | IntPtr         | IntPtr          |
+	-------- | ------------------ | -------------------------------------- | --------------------- | ----------- | -------------- | --------------- |
+	         | hdc                | piAttribIList                          | pfAttribFList         | nMaxFormats | piFormats      | nNumFormats     |
 
 # wgl::CreateBufferRegion + ARB
 !ppt
@@ -42830,14 +42830,14 @@ uType:       wglColorBufferMask
 Result:        gdi_rendering_context
 hDC:           gdi_device_context
 hShareContext: gdi_rendering_context
-attribList:    array of Int32 const / var Int32 const / IntPtr const
+attribList:    array of wglContextAttribs const / var wglContextAttribs const / IntPtr const
 !ffo
 3
-	gdi_rendering_context | gdi_device_context | gdi_rendering_context | array of Int32 const |
-	gdi_rendering_context | gdi_device_context | gdi_rendering_context | var Int32 const      |
-	gdi_rendering_context | gdi_device_context | gdi_rendering_context | IntPtr const         |
-	--------------------- | ------------------ | --------------------- | -------------------- |
-	                      | hDC                | hShareContext         | attribList           |
+	gdi_rendering_context | gdi_device_context | gdi_rendering_context | array of wglContextAttribs const |
+	gdi_rendering_context | gdi_device_context | gdi_rendering_context | var wglContextAttribs const      |
+	gdi_rendering_context | gdi_device_context | gdi_rendering_context | IntPtr const                     |
+	--------------------- | ------------------ | --------------------- | -------------------------------- |
+	                      | hDC                | hShareContext         | attribList                       |
 
 # wgl::CreatePbuffer + ARB
 !ppt
