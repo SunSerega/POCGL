@@ -22,5 +22,6 @@ Func [cl.GetCommandBufferInfoKHR] was not used
 Func [cl.GetGLContextInfoKHR] was not used
 Func [cl.GetMutableCommandInfoKHR] was not used
 Func [cl.GetSemaphoreInfoKHR] was not used
+Func [cl.GetSVMPointerInfoKHR] was not used
 Func [cl.GetICDLoaderInfoOCLICD] was not used
 Func [cl.GetDeviceImageInfoQCOM] was not used

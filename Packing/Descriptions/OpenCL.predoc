@@ -1941,6 +1941,7 @@ type
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT:          clDeviceInfo read new clDeviceInfo($1074);
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED: clDeviceInfo read new clDeviceInfo($1075);
     public static property DEVICE_KERNEL_CLOCK_CAPABILITIES:                                 clDeviceInfo read new clDeviceInfo($1076);
+    public static property DEVICE_SVM_TYPE_CAPABILITIES:                                     clDeviceInfo read new clDeviceInfo($1077);
     public static property DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES:                 clDeviceInfo read new clDeviceInfo($129A);
     public static property DEVICE_COMMAND_BUFFER_CAPABILITIES:                               clDeviceInfo read new clDeviceInfo($12A9);
     public static property DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES:                  clDeviceInfo read new clDeviceInfo($12AA);
@@ -2266,6 +2267,8 @@ type
         Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED' else
       if DEVICE_KERNEL_CLOCK_CAPABILITIES = self then
         Result := 'DEVICE_KERNEL_CLOCK_CAPABILITIES' else
+      if DEVICE_SVM_TYPE_CAPABILITIES = self then
+        Result := 'DEVICE_SVM_TYPE_CAPABILITIES' else
       if DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES = self then
         Result := 'DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES' else
       if DEVICE_COMMAND_BUFFER_CAPABILITIES = self then
@@ -3980,6 +3983,7 @@ type
     
     public static property KERNEL_EXEC_INFO_SVM_PTRS:                        clKernelExecInfo read new clKernelExecInfo($11B6);
     public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM:           clKernelExecInfo read new clKernelExecInfo($11B7);
+    public static property KERNEL_EXEC_INFO_SVM_INDIRECT_ACCESS:             clKernelExecInfo read new clKernelExecInfo($11BB);
     public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE:            clKernelExecInfo read new clKernelExecInfo($41E5);
     public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER:   clKernelExecInfo read new clKernelExecInfo($41E6);
     public static property KERNEL_EXEC_INFO_WARP_COUNT_LIMIT:                clKernelExecInfo read new clKernelExecInfo($41E8);
@@ -3996,6 +4000,8 @@ type
         Result := 'KERNEL_EXEC_INFO_SVM_PTRS' else
       if KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM = self then
         Result := 'KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM' else
+      if KERNEL_EXEC_INFO_SVM_INDIRECT_ACCESS = self then
+        Result := 'KERNEL_EXEC_INFO_SVM_INDIRECT_ACCESS' else
       if KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE = self then
         Result := 'KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE' else
       if KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER = self then
@@ -4803,6 +4809,7 @@ type
     public static property PLATFORM_NUMERIC_VERSION:                     clPlatformInfo read new clPlatformInfo($0906);
     public static property PLATFORM_EXTENSIONS_WITH_VERSION:             clPlatformInfo read new clPlatformInfo($0907);
     public static property PLATFORM_COMMAND_BUFFER_CAPABILITIES:         clPlatformInfo read new clPlatformInfo($0908);
+    public static property PLATFORM_SVM_TYPE_CAPABILITIES:               clPlatformInfo read new clPlatformInfo($0909);
     public static property PLATFORM_ICD_SUFFIX:                          clPlatformInfo read new clPlatformInfo($0920);
     public static property PLATFORM_SEMAPHORE_TYPES:                     clPlatformInfo read new clPlatformInfo($2036);
     public static property PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES:       clPlatformInfo read new clPlatformInfo($2037);
@@ -4829,6 +4836,8 @@ type
         Result := 'PLATFORM_EXTENSIONS_WITH_VERSION' else
       if PLATFORM_COMMAND_BUFFER_CAPABILITIES = self then
         Result := 'PLATFORM_COMMAND_BUFFER_CAPABILITIES' else
+      if PLATFORM_SVM_TYPE_CAPABILITIES = self then
+        Result := 'PLATFORM_SVM_TYPE_CAPABILITIES' else
       if PLATFORM_ICD_SUFFIX = self then
         Result := 'PLATFORM_ICD_SUFFIX' else
       if PLATFORM_SEMAPHORE_TYPES = self then
@@ -5225,6 +5234,216 @@ type
   end;
   
   ///
+  clSvmAllocAccessFlags = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property SVM_ALLOC_ACCESS_HOST_NOREAD:    clSvmAllocAccessFlags read new clSvmAllocAccessFlags(1 shl 0);
+    public static property SVM_ALLOC_ACCESS_HOST_NOWRITE:   clSvmAllocAccessFlags read new clSvmAllocAccessFlags(1 shl 1);
+    public static property SVM_ALLOC_ACCESS_DEVICE_NOREAD:  clSvmAllocAccessFlags read new clSvmAllocAccessFlags(1 shl 8);
+    public static property SVM_ALLOC_ACCESS_DEVICE_NOWRITE: clSvmAllocAccessFlags read new clSvmAllocAccessFlags(1 shl 9);
+    
+    public static function operator+(v1, v2: clSvmAllocAccessFlags) := new clSvmAllocAccessFlags(v1.val or v2.val);
+    public static function operator or(v1, v2: clSvmAllocAccessFlags) := new clSvmAllocAccessFlags(v1.val or v2.val);
+    
+    public static function operator-(v1, v2: clSvmAllocAccessFlags) := new clSvmAllocAccessFlags(v1.val and not v2.val);
+    
+    public static procedure operator+=(var v1: clSvmAllocAccessFlags; v2: clSvmAllocAccessFlags) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clSvmAllocAccessFlags; v2: clSvmAllocAccessFlags) := v1 := v1-v2;
+    
+    public static function operator in(v1, v2: clSvmAllocAccessFlags) := v1.val and v2.val = v1.val;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      var left_val := self.val;
+      if left_val=0 then
+      begin
+        Result := 'clSvmAllocAccessFlags[0]';
+        exit;
+      end;
+      if SVM_ALLOC_ACCESS_HOST_NOREAD in self then
+      begin
+        res += 'SVM_ALLOC_ACCESS_HOST_NOREAD+';
+        left_val := left_val and not SVM_ALLOC_ACCESS_HOST_NOREAD.val;
+      end;
+      if SVM_ALLOC_ACCESS_HOST_NOWRITE in self then
+      begin
+        res += 'SVM_ALLOC_ACCESS_HOST_NOWRITE+';
+        left_val := left_val and not SVM_ALLOC_ACCESS_HOST_NOWRITE.val;
+      end;
+      if SVM_ALLOC_ACCESS_DEVICE_NOREAD in self then
+      begin
+        res += 'SVM_ALLOC_ACCESS_DEVICE_NOREAD+';
+        left_val := left_val and not SVM_ALLOC_ACCESS_DEVICE_NOREAD.val;
+      end;
+      if SVM_ALLOC_ACCESS_DEVICE_NOWRITE in self then
+      begin
+        res += 'SVM_ALLOC_ACCESS_DEVICE_NOWRITE+';
+        left_val := left_val and not SVM_ALLOC_ACCESS_DEVICE_NOWRITE.val;
+      end;
+      if left_val<>0 then
+      begin
+        res += 'clSvmAllocAccessFlags[';
+        res += self.val.ToString;
+        res += ']+';
+      end;
+      res.Length -= 1;
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
+  clSvmAllocProperties = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property SVM_ALLOC_ASSOCIATED_DEVICE_HANDLE: clSvmAllocProperties read new clSvmAllocProperties($2078);
+    public static property SVM_ALLOC_ACCESS_FLAGS:             clSvmAllocProperties read new clSvmAllocProperties($2079);
+    public static property SVM_ALLOC_ALIGNMENT:                clSvmAllocProperties read new clSvmAllocProperties($207A);
+    
+    public function ToString: string; override;
+    begin
+      if SVM_ALLOC_ASSOCIATED_DEVICE_HANDLE = self then
+        Result := 'SVM_ALLOC_ASSOCIATED_DEVICE_HANDLE' else
+      if SVM_ALLOC_ACCESS_FLAGS = self then
+        Result := 'SVM_ALLOC_ACCESS_FLAGS' else
+      if SVM_ALLOC_ALIGNMENT = self then
+        Result := 'SVM_ALLOC_ALIGNMENT' else
+        Result := $'clSvmAllocProperties[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  clSvmCapabilities = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property SVM_CAPABILITY_SINGLE_ADDRESS_SPACE:     clSvmCapabilities read new clSvmCapabilities(1 shl 0);
+    public static property SVM_CAPABILITY_SYSTEM_ALLOCATED:         clSvmCapabilities read new clSvmCapabilities(1 shl 1);
+    public static property SVM_CAPABILITY_DEVICE_OWNED:             clSvmCapabilities read new clSvmCapabilities(1 shl 2);
+    public static property SVM_CAPABILITY_DEVICE_UNASSOCIATED:      clSvmCapabilities read new clSvmCapabilities(1 shl 3);
+    public static property SVM_CAPABILITY_CONTEXT_ACCESS:           clSvmCapabilities read new clSvmCapabilities(1 shl 4);
+    public static property SVM_CAPABILITY_HOST_OWNED:               clSvmCapabilities read new clSvmCapabilities(1 shl 5);
+    public static property SVM_CAPABILITY_HOST_READ:                clSvmCapabilities read new clSvmCapabilities(1 shl 6);
+    public static property SVM_CAPABILITY_HOST_WRITE:               clSvmCapabilities read new clSvmCapabilities(1 shl 7);
+    public static property SVM_CAPABILITY_HOST_MAP:                 clSvmCapabilities read new clSvmCapabilities(1 shl 8);
+    public static property SVM_CAPABILITY_DEVICE_READ:              clSvmCapabilities read new clSvmCapabilities(1 shl 9);
+    public static property SVM_CAPABILITY_DEVICE_WRITE:             clSvmCapabilities read new clSvmCapabilities(1 shl 10);
+    public static property SVM_CAPABILITY_DEVICE_ATOMIC_ACCESS:     clSvmCapabilities read new clSvmCapabilities(1 shl 11);
+    public static property SVM_CAPABILITY_CONCURRENT_ACCESS:        clSvmCapabilities read new clSvmCapabilities(1 shl 12);
+    public static property SVM_CAPABILITY_CONCURRENT_ATOMIC_ACCESS: clSvmCapabilities read new clSvmCapabilities(1 shl 13);
+    public static property SVM_CAPABILITY_INDIRECT_ACCESS:          clSvmCapabilities read new clSvmCapabilities(1 shl 14);
+    
+    public static function operator+(v1, v2: clSvmCapabilities) := new clSvmCapabilities(v1.val or v2.val);
+    public static function operator or(v1, v2: clSvmCapabilities) := new clSvmCapabilities(v1.val or v2.val);
+    
+    public static function operator-(v1, v2: clSvmCapabilities) := new clSvmCapabilities(v1.val and not v2.val);
+    
+    public static procedure operator+=(var v1: clSvmCapabilities; v2: clSvmCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clSvmCapabilities; v2: clSvmCapabilities) := v1 := v1-v2;
+    
+    public static function operator in(v1, v2: clSvmCapabilities) := v1.val and v2.val = v1.val;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      var left_val := self.val;
+      if left_val=0 then
+      begin
+        Result := 'clSvmCapabilities[0]';
+        exit;
+      end;
+      if SVM_CAPABILITY_SINGLE_ADDRESS_SPACE in self then
+      begin
+        res += 'SVM_CAPABILITY_SINGLE_ADDRESS_SPACE+';
+        left_val := left_val and not SVM_CAPABILITY_SINGLE_ADDRESS_SPACE.val;
+      end;
+      if SVM_CAPABILITY_SYSTEM_ALLOCATED in self then
+      begin
+        res += 'SVM_CAPABILITY_SYSTEM_ALLOCATED+';
+        left_val := left_val and not SVM_CAPABILITY_SYSTEM_ALLOCATED.val;
+      end;
+      if SVM_CAPABILITY_DEVICE_OWNED in self then
+      begin
+        res += 'SVM_CAPABILITY_DEVICE_OWNED+';
+        left_val := left_val and not SVM_CAPABILITY_DEVICE_OWNED.val;
+      end;
+      if SVM_CAPABILITY_DEVICE_UNASSOCIATED in self then
+      begin
+        res += 'SVM_CAPABILITY_DEVICE_UNASSOCIATED+';
+        left_val := left_val and not SVM_CAPABILITY_DEVICE_UNASSOCIATED.val;
+      end;
+      if SVM_CAPABILITY_CONTEXT_ACCESS in self then
+      begin
+        res += 'SVM_CAPABILITY_CONTEXT_ACCESS+';
+        left_val := left_val and not SVM_CAPABILITY_CONTEXT_ACCESS.val;
+      end;
+      if SVM_CAPABILITY_HOST_OWNED in self then
+      begin
+        res += 'SVM_CAPABILITY_HOST_OWNED+';
+        left_val := left_val and not SVM_CAPABILITY_HOST_OWNED.val;
+      end;
+      if SVM_CAPABILITY_HOST_READ in self then
+      begin
+        res += 'SVM_CAPABILITY_HOST_READ+';
+        left_val := left_val and not SVM_CAPABILITY_HOST_READ.val;
+      end;
+      if SVM_CAPABILITY_HOST_WRITE in self then
+      begin
+        res += 'SVM_CAPABILITY_HOST_WRITE+';
+        left_val := left_val and not SVM_CAPABILITY_HOST_WRITE.val;
+      end;
+      if SVM_CAPABILITY_HOST_MAP in self then
+      begin
+        res += 'SVM_CAPABILITY_HOST_MAP+';
+        left_val := left_val and not SVM_CAPABILITY_HOST_MAP.val;
+      end;
+      if SVM_CAPABILITY_DEVICE_READ in self then
+      begin
+        res += 'SVM_CAPABILITY_DEVICE_READ+';
+        left_val := left_val and not SVM_CAPABILITY_DEVICE_READ.val;
+      end;
+      if SVM_CAPABILITY_DEVICE_WRITE in self then
+      begin
+        res += 'SVM_CAPABILITY_DEVICE_WRITE+';
+        left_val := left_val and not SVM_CAPABILITY_DEVICE_WRITE.val;
+      end;
+      if SVM_CAPABILITY_DEVICE_ATOMIC_ACCESS in self then
+      begin
+        res += 'SVM_CAPABILITY_DEVICE_ATOMIC_ACCESS+';
+        left_val := left_val and not SVM_CAPABILITY_DEVICE_ATOMIC_ACCESS.val;
+      end;
+      if SVM_CAPABILITY_CONCURRENT_ACCESS in self then
+      begin
+        res += 'SVM_CAPABILITY_CONCURRENT_ACCESS+';
+        left_val := left_val and not SVM_CAPABILITY_CONCURRENT_ACCESS.val;
+      end;
+      if SVM_CAPABILITY_CONCURRENT_ATOMIC_ACCESS in self then
+      begin
+        res += 'SVM_CAPABILITY_CONCURRENT_ATOMIC_ACCESS+';
+        left_val := left_val and not SVM_CAPABILITY_CONCURRENT_ATOMIC_ACCESS.val;
+      end;
+      if SVM_CAPABILITY_INDIRECT_ACCESS in self then
+      begin
+        res += 'SVM_CAPABILITY_INDIRECT_ACCESS+';
+        left_val := left_val and not SVM_CAPABILITY_INDIRECT_ACCESS.val;
+      end;
+      if left_val<>0 then
+      begin
+        res += 'clSvmCapabilities[';
+        res += self.val.ToString;
+        res += ']+';
+      end;
+      res.Length -= 1;
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
   clSvmMemFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -5329,6 +5548,40 @@ type
       end;
       res.Length -= 1;
       Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
+  clSvmPointerInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property SVM_INFO_TYPE_INDEX:               clSvmPointerInfo read new clSvmPointerInfo($2088);
+    public static property SVM_INFO_CAPABILITIES:             clSvmPointerInfo read new clSvmPointerInfo($2089);
+    public static property SVM_INFO_PROPERTIES:               clSvmPointerInfo read new clSvmPointerInfo($208A);
+    public static property SVM_INFO_ACCESS_FLAGS:             clSvmPointerInfo read new clSvmPointerInfo($208B);
+    public static property SVM_INFO_BASE_PTR:                 clSvmPointerInfo read new clSvmPointerInfo($419B);
+    public static property SVM_INFO_SIZE:                     clSvmPointerInfo read new clSvmPointerInfo($419C);
+    public static property SVM_INFO_ASSOCIATED_DEVICE_HANDLE: clSvmPointerInfo read new clSvmPointerInfo($419D);
+    
+    public function ToString: string; override;
+    begin
+      if SVM_INFO_TYPE_INDEX = self then
+        Result := 'SVM_INFO_TYPE_INDEX' else
+      if SVM_INFO_CAPABILITIES = self then
+        Result := 'SVM_INFO_CAPABILITIES' else
+      if SVM_INFO_PROPERTIES = self then
+        Result := 'SVM_INFO_PROPERTIES' else
+      if SVM_INFO_ACCESS_FLAGS = self then
+        Result := 'SVM_INFO_ACCESS_FLAGS' else
+      if SVM_INFO_BASE_PTR = self then
+        Result := 'SVM_INFO_BASE_PTR' else
+      if SVM_INFO_SIZE = self then
+        Result := 'SVM_INFO_SIZE' else
+      if SVM_INFO_ASSOCIATED_DEVICE_HANDLE = self then
+        Result := 'SVM_INFO_ASSOCIATED_DEVICE_HANDLE' else
+        Result := $'clSvmPointerInfo[{self.val}]';
     end;
     
   end;
@@ -12878,6 +13131,16 @@ type
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_SVM_TYPE_CAPABILITIES(device: cl_device_id; var param_value: clSvmCapabilities; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetDeviceInfo_DEVICE_SVM_TYPE_CAPABILITIES', CallDebug.Wrap(device), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clSvmCapabilities>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetDeviceInfo(device, clDeviceInfo.DEVICE_SVM_TYPE_CAPABILITIES, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES(device: cl_device_id; var param_value: clCommandQueueProperties; param_value_validate_size: boolean := false): clErrorCode;
     begin
       {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetDeviceInfo_DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES', CallDebug.Wrap(device), CallDebug.WrapVarArg(param_value)); try{$endif}
@@ -15136,6 +15399,16 @@ type
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo_PLATFORM_SVM_TYPE_CAPABILITIES(platform: cl_platform_id; var param_value: clSvmCapabilities; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetPlatformInfo_PLATFORM_SVM_TYPE_CAPABILITIES', CallDebug.Wrap(platform), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clSvmCapabilities>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetPlatformInfo(platform, clPlatformInfo.PLATFORM_SVM_TYPE_CAPABILITIES, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo_PLATFORM_ICD_SUFFIX(platform: cl_platform_id; var param_value: string): clErrorCode;
     begin
       {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetPlatformInfo_PLATFORM_ICD_SUFFIX', CallDebug.Wrap(platform), CallDebug.WrapVarArg(param_value)); try{$endif}
@@ -16142,6 +16415,13 @@ type
       {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.SetKernelExecInfo_KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM', CallDebug.Wrap(kernel), CallDebug.Wrap(param_value)); try{$endif}
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<clBool>);
       Result := SetKernelExecInfo(kernel, clKernelExecInfo.KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM, param_value_sz,param_value);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo_KERNEL_EXEC_INFO_SVM_INDIRECT_ACCESS(kernel: cl_kernel; param_value: clBool): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.SetKernelExecInfo_KERNEL_EXEC_INFO_SVM_INDIRECT_ACCESS', CallDebug.Wrap(kernel), CallDebug.Wrap(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clBool>);
+      Result := SetKernelExecInfo(kernel, clKernelExecInfo.KERNEL_EXEC_INFO_SVM_INDIRECT_ACCESS, param_value_sz,param_value);
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo_KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE(kernel: cl_kernel; param_value: UInt32): clErrorCode;
@@ -26071,6 +26351,223 @@ type
     public const ExtensionString = 'cl_khr_throttle_hints';
   end;
   
+  {$ifndef DEBUG}
+  [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
+  /// id: cl_khr_unified_svm
+  /// version: 0.2.0 (provisional)
+  /// core dependency: cl 2.0
+  clUnifiedSvmKHR = sealed partial class
+    public constructor(pl: cl_platform_id);
+    private constructor := raise new System.NotSupportedException;
+    public static PlatformLess := new clUnifiedSvmKHR(default(cl_platform_id));
+    private function GetProcAddress(name: string): IntPtr;
+    private static function GetProcOrNil<T>(fadr: IntPtr) :=
+      fadr=IntPtr.Zero ? default(T) :
+        Marshal.GetDelegateForFunctionPointer&<T>(fadr);
+    public const ExtensionString = 'cl_khr_unified_svm';
+    
+    public SVMAllocWithPropertiesKHR_adr := GetProcAddress('clSVMAllocWithPropertiesKHR');
+    private ntv_SVMAllocWithPropertiesKHR_1 := GetProcOrNil&<function(context: cl_context; var properties: clSvmAllocProperties; svm_type_index: UInt32; size: UIntPtr; var errcode_ret: clErrorCode): IntPtr>(SVMAllocWithPropertiesKHR_adr);
+    private ntv_SVMAllocWithPropertiesKHR_2 := GetProcOrNil&<function(context: cl_context; properties: IntPtr; svm_type_index: UInt32; size: UIntPtr; var errcode_ret: clErrorCode): IntPtr>(SVMAllocWithPropertiesKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SVMAllocWithPropertiesKHR(context: cl_context; properties: array of clSvmAllocProperties; svm_type_index: UInt32; size: UIntPtr; var errcode_ret: clErrorCode): IntPtr;
+      type PClSvmAllocProperties = ^clSvmAllocProperties;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.SVMAllocWithPropertiesKHR', CallDebug.Wrap(context), CallDebug.Wrap(properties), CallDebug.Wrap(svm_type_index), CallDebug.Wrap(size), CallDebug.WrapVarArg(errcode_ret)); try{$endif}
+      Result := if (properties<>nil) and (properties.Length<>0) then
+        ntv_SVMAllocWithPropertiesKHR_1(context, properties[0], svm_type_index, size, errcode_ret) else
+        ntv_SVMAllocWithPropertiesKHR_1(context, PClSvmAllocProperties(nil)^, svm_type_index, size, errcode_ret);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SVMAllocWithPropertiesKHR(context: cl_context; var properties: clSvmAllocProperties; svm_type_index: UInt32; size: UIntPtr; var errcode_ret: clErrorCode): IntPtr;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.SVMAllocWithPropertiesKHR', CallDebug.Wrap(context), CallDebug.WrapVarArg(properties), CallDebug.Wrap(svm_type_index), CallDebug.Wrap(size), CallDebug.WrapVarArg(errcode_ret)); try{$endif}
+      Result := ntv_SVMAllocWithPropertiesKHR_1(context, properties, svm_type_index, size, errcode_ret);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SVMAllocWithPropertiesKHR(context: cl_context; properties: IntPtr; svm_type_index: UInt32; size: UIntPtr; var errcode_ret: clErrorCode): IntPtr;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.SVMAllocWithPropertiesKHR', CallDebug.Wrap(context), CallDebug.Wrap(properties), CallDebug.Wrap(svm_type_index), CallDebug.Wrap(size), CallDebug.WrapVarArg(errcode_ret)); try{$endif}
+      Result := ntv_SVMAllocWithPropertiesKHR_2(context, properties, svm_type_index, size, errcode_ret);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    
+    public SVMFreeWithPropertiesKHR_adr := GetProcAddress('clSVMFreeWithPropertiesKHR');
+    private ntv_SVMFreeWithPropertiesKHR_1 := GetProcOrNil&<function(context: cl_context; var properties: UInt64; flags: UInt64; ptr: IntPtr): clErrorCode>(SVMFreeWithPropertiesKHR_adr);
+    private ntv_SVMFreeWithPropertiesKHR_2 := GetProcOrNil&<function(context: cl_context; properties: IntPtr; flags: UInt64; ptr: IntPtr): clErrorCode>(SVMFreeWithPropertiesKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SVMFreeWithPropertiesKHR(context: cl_context; properties: array of UInt64; flags: UInt64; ptr: IntPtr): clErrorCode;
+      type PUInt64 = ^UInt64;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.SVMFreeWithPropertiesKHR', CallDebug.Wrap(context), CallDebug.Wrap(properties), CallDebug.Wrap(flags), CallDebug.Wrap(ptr)); try{$endif}
+      Result := if (properties<>nil) and (properties.Length<>0) then
+        ntv_SVMFreeWithPropertiesKHR_1(context, properties[0], flags, ptr) else
+        ntv_SVMFreeWithPropertiesKHR_1(context, PUInt64(nil)^, flags, ptr);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SVMFreeWithPropertiesKHR(context: cl_context; var properties: UInt64; flags: UInt64; ptr: IntPtr): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.SVMFreeWithPropertiesKHR', CallDebug.Wrap(context), CallDebug.WrapVarArg(properties), CallDebug.Wrap(flags), CallDebug.Wrap(ptr)); try{$endif}
+      Result := ntv_SVMFreeWithPropertiesKHR_1(context, properties, flags, ptr);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SVMFreeWithPropertiesKHR(context: cl_context; properties: IntPtr; flags: UInt64; ptr: IntPtr): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.SVMFreeWithPropertiesKHR', CallDebug.Wrap(context), CallDebug.Wrap(properties), CallDebug.Wrap(flags), CallDebug.Wrap(ptr)); try{$endif}
+      Result := ntv_SVMFreeWithPropertiesKHR_2(context, properties, flags, ptr);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    
+    public GetSVMPointerInfoKHR_adr := GetProcAddress('clGetSVMPointerInfoKHR');
+    private ntv_GetSVMPointerInfoKHR_1 := GetProcOrNil&<function(context: cl_context; device: cl_device_id; ptr: IntPtr; param_name: clSvmPointerInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode>(GetSVMPointerInfoKHR_adr);
+    private ntv_GetSVMPointerInfoKHR_2 := GetProcOrNil&<function(context: cl_context; device: cl_device_id; ptr: IntPtr; param_name: clSvmPointerInfo; param_value_size: UIntPtr; var param_value: Byte; param_value_size_ret: IntPtr): clErrorCode>(GetSVMPointerInfoKHR_adr);
+    private ntv_GetSVMPointerInfoKHR_3 := GetProcOrNil&<function(context: cl_context; device: cl_device_id; ptr: IntPtr; param_name: clSvmPointerInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode>(GetSVMPointerInfoKHR_adr);
+    private ntv_GetSVMPointerInfoKHR_4 := GetProcOrNil&<function(context: cl_context; device: cl_device_id; ptr: IntPtr; param_name: clSvmPointerInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode>(GetSVMPointerInfoKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMPointerInfoKHR<T>(context: cl_context; device: cl_device_id; ptr: IntPtr; param_name: clSvmPointerInfo; param_value_size: UIntPtr; var param_value: T; var param_value_size_ret: UIntPtr): clErrorCode; where T: record;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMPointerInfoKHR', CallDebug.Wrap(context), CallDebug.Wrap(device), CallDebug.Wrap(ptr), CallDebug.Wrap(param_name), CallDebug.Wrap(param_value_size), CallDebug.WrapVarArg(param_value), CallDebug.WrapVarArg(param_value_size_ret)); try{$endif}
+      Result := ntv_GetSVMPointerInfoKHR_1(context, device, ptr, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMPointerInfoKHR<T>(context: cl_context; device: cl_device_id; ptr: IntPtr; param_name: clSvmPointerInfo; param_value_size: UIntPtr; var param_value: T; param_value_size_ret: IntPtr): clErrorCode; where T: record;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMPointerInfoKHR', CallDebug.Wrap(context), CallDebug.Wrap(device), CallDebug.Wrap(ptr), CallDebug.Wrap(param_name), CallDebug.Wrap(param_value_size), CallDebug.WrapVarArg(param_value), CallDebug.Wrap(param_value_size_ret)); try{$endif}
+      Result := ntv_GetSVMPointerInfoKHR_2(context, device, ptr, param_name, param_value_size, PByte(pointer(@param_value))^, param_value_size_ret);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMPointerInfoKHR_SVM_INFO_TYPE_INDEX(context: cl_context; device: cl_device_id; ptr: IntPtr; var param_value: UInt32; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMPointerInfoKHR_SVM_INFO_TYPE_INDEX', CallDebug.Wrap(context), CallDebug.Wrap(device), CallDebug.Wrap(ptr), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<UInt32>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetSVMPointerInfoKHR(context, device, ptr, clSvmPointerInfo.SVM_INFO_TYPE_INDEX, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMPointerInfoKHR_SVM_INFO_CAPABILITIES(context: cl_context; device: cl_device_id; ptr: IntPtr; var param_value: clSvmCapabilities; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMPointerInfoKHR_SVM_INFO_CAPABILITIES', CallDebug.Wrap(context), CallDebug.Wrap(device), CallDebug.Wrap(ptr), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clSvmCapabilities>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetSVMPointerInfoKHR(context, device, ptr, clSvmPointerInfo.SVM_INFO_CAPABILITIES, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMPointerInfoKHR_SVM_INFO_PROPERTIES(context: cl_context; device: cl_device_id; ptr: IntPtr; var param_value: clSvmAllocProperties; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMPointerInfoKHR_SVM_INFO_PROPERTIES', CallDebug.Wrap(context), CallDebug.Wrap(device), CallDebug.Wrap(ptr), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clSvmAllocProperties>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetSVMPointerInfoKHR(context, device, ptr, clSvmPointerInfo.SVM_INFO_PROPERTIES, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMPointerInfoKHR_SVM_INFO_ACCESS_FLAGS(context: cl_context; device: cl_device_id; ptr: IntPtr; var param_value: clSvmAllocAccessFlags; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMPointerInfoKHR_SVM_INFO_ACCESS_FLAGS', CallDebug.Wrap(context), CallDebug.Wrap(device), CallDebug.Wrap(ptr), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clSvmAllocAccessFlags>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetSVMPointerInfoKHR(context, device, ptr, clSvmPointerInfo.SVM_INFO_ACCESS_FLAGS, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMPointerInfoKHR_SVM_INFO_BASE_PTR(context: cl_context; device: cl_device_id; ptr: IntPtr; var param_value: IntPtr; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMPointerInfoKHR_SVM_INFO_BASE_PTR', CallDebug.Wrap(context), CallDebug.Wrap(device), CallDebug.Wrap(ptr), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<IntPtr>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetSVMPointerInfoKHR(context, device, ptr, clSvmPointerInfo.SVM_INFO_BASE_PTR, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMPointerInfoKHR_SVM_INFO_SIZE(context: cl_context; device: cl_device_id; ptr: IntPtr; var param_value: UIntPtr; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMPointerInfoKHR_SVM_INFO_SIZE', CallDebug.Wrap(context), CallDebug.Wrap(device), CallDebug.Wrap(ptr), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetSVMPointerInfoKHR(context, device, ptr, clSvmPointerInfo.SVM_INFO_SIZE, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMPointerInfoKHR_SVM_INFO_ASSOCIATED_DEVICE_HANDLE(context: cl_context; device: cl_device_id; ptr: IntPtr; var param_value: cl_device_id; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMPointerInfoKHR_SVM_INFO_ASSOCIATED_DEVICE_HANDLE', CallDebug.Wrap(context), CallDebug.Wrap(device), CallDebug.Wrap(ptr), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<cl_device_id>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetSVMPointerInfoKHR(context, device, ptr, clSvmPointerInfo.SVM_INFO_ASSOCIATED_DEVICE_HANDLE, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMPointerInfoKHR(context: cl_context; device: cl_device_id; ptr: IntPtr; param_name: clSvmPointerInfo; param_value_size: UIntPtr; param_value: pointer; var param_value_size_ret: UIntPtr): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMPointerInfoKHR', CallDebug.Wrap(context), CallDebug.Wrap(device), CallDebug.Wrap(ptr), CallDebug.Wrap(param_name), CallDebug.Wrap(param_value_size), CallDebug.Wrap(param_value), CallDebug.WrapVarArg(param_value_size_ret)); try{$endif}
+      Result := ntv_GetSVMPointerInfoKHR_3(context, device, ptr, param_name, param_value_size, param_value, param_value_size_ret);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMPointerInfoKHR(context: cl_context; device: cl_device_id; ptr: IntPtr; param_name: clSvmPointerInfo; param_value_size: UIntPtr; param_value: pointer; param_value_size_ret: IntPtr): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMPointerInfoKHR', CallDebug.Wrap(context), CallDebug.Wrap(device), CallDebug.Wrap(ptr), CallDebug.Wrap(param_name), CallDebug.Wrap(param_value_size), CallDebug.Wrap(param_value), CallDebug.Wrap(param_value_size_ret)); try{$endif}
+      Result := ntv_GetSVMPointerInfoKHR_4(context, device, ptr, param_name, param_value_size, param_value, param_value_size_ret);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    
+    public GetSVMSuggestedTypeIndexKHR_adr := GetProcAddress('clGetSVMSuggestedTypeIndexKHR');
+    private ntv_GetSVMSuggestedTypeIndexKHR_1 := GetProcOrNil&<function(context: cl_context; required_capabilities: clSvmCapabilities; desired_capabilities: clSvmCapabilities; var properties: clSvmAllocProperties; size: UIntPtr; var suggested_svm_type_index: UInt32): clErrorCode>(GetSVMSuggestedTypeIndexKHR_adr);
+    private ntv_GetSVMSuggestedTypeIndexKHR_2 := GetProcOrNil&<function(context: cl_context; required_capabilities: clSvmCapabilities; desired_capabilities: clSvmCapabilities; var properties: clSvmAllocProperties; size: UIntPtr; suggested_svm_type_index: IntPtr): clErrorCode>(GetSVMSuggestedTypeIndexKHR_adr);
+    private ntv_GetSVMSuggestedTypeIndexKHR_3 := GetProcOrNil&<function(context: cl_context; required_capabilities: clSvmCapabilities; desired_capabilities: clSvmCapabilities; properties: IntPtr; size: UIntPtr; var suggested_svm_type_index: UInt32): clErrorCode>(GetSVMSuggestedTypeIndexKHR_adr);
+    private ntv_GetSVMSuggestedTypeIndexKHR_4 := GetProcOrNil&<function(context: cl_context; required_capabilities: clSvmCapabilities; desired_capabilities: clSvmCapabilities; properties: IntPtr; size: UIntPtr; suggested_svm_type_index: IntPtr): clErrorCode>(GetSVMSuggestedTypeIndexKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMSuggestedTypeIndexKHR(context: cl_context; required_capabilities: clSvmCapabilities; desired_capabilities: clSvmCapabilities; properties: array of clSvmAllocProperties; size: UIntPtr; var suggested_svm_type_index: UInt32): clErrorCode;
+      type PClSvmAllocProperties = ^clSvmAllocProperties;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMSuggestedTypeIndexKHR', CallDebug.Wrap(context), CallDebug.Wrap(required_capabilities), CallDebug.Wrap(desired_capabilities), CallDebug.Wrap(properties), CallDebug.Wrap(size), CallDebug.WrapVarArg(suggested_svm_type_index)); try{$endif}
+      Result := if (properties<>nil) and (properties.Length<>0) then
+        ntv_GetSVMSuggestedTypeIndexKHR_1(context, required_capabilities, desired_capabilities, properties[0], size, suggested_svm_type_index) else
+        ntv_GetSVMSuggestedTypeIndexKHR_1(context, required_capabilities, desired_capabilities, PClSvmAllocProperties(nil)^, size, suggested_svm_type_index);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMSuggestedTypeIndexKHR(context: cl_context; required_capabilities: clSvmCapabilities; desired_capabilities: clSvmCapabilities; properties: array of clSvmAllocProperties; size: UIntPtr; suggested_svm_type_index: IntPtr): clErrorCode;
+      type PClSvmAllocProperties = ^clSvmAllocProperties;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMSuggestedTypeIndexKHR', CallDebug.Wrap(context), CallDebug.Wrap(required_capabilities), CallDebug.Wrap(desired_capabilities), CallDebug.Wrap(properties), CallDebug.Wrap(size), CallDebug.Wrap(suggested_svm_type_index)); try{$endif}
+      Result := if (properties<>nil) and (properties.Length<>0) then
+        ntv_GetSVMSuggestedTypeIndexKHR_2(context, required_capabilities, desired_capabilities, properties[0], size, suggested_svm_type_index) else
+        ntv_GetSVMSuggestedTypeIndexKHR_2(context, required_capabilities, desired_capabilities, PClSvmAllocProperties(nil)^, size, suggested_svm_type_index);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMSuggestedTypeIndexKHR(context: cl_context; required_capabilities: clSvmCapabilities; desired_capabilities: clSvmCapabilities; var properties: clSvmAllocProperties; size: UIntPtr; var suggested_svm_type_index: UInt32): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMSuggestedTypeIndexKHR', CallDebug.Wrap(context), CallDebug.Wrap(required_capabilities), CallDebug.Wrap(desired_capabilities), CallDebug.WrapVarArg(properties), CallDebug.Wrap(size), CallDebug.WrapVarArg(suggested_svm_type_index)); try{$endif}
+      Result := ntv_GetSVMSuggestedTypeIndexKHR_1(context, required_capabilities, desired_capabilities, properties, size, suggested_svm_type_index);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMSuggestedTypeIndexKHR(context: cl_context; required_capabilities: clSvmCapabilities; desired_capabilities: clSvmCapabilities; var properties: clSvmAllocProperties; size: UIntPtr; suggested_svm_type_index: IntPtr): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMSuggestedTypeIndexKHR', CallDebug.Wrap(context), CallDebug.Wrap(required_capabilities), CallDebug.Wrap(desired_capabilities), CallDebug.WrapVarArg(properties), CallDebug.Wrap(size), CallDebug.Wrap(suggested_svm_type_index)); try{$endif}
+      Result := ntv_GetSVMSuggestedTypeIndexKHR_2(context, required_capabilities, desired_capabilities, properties, size, suggested_svm_type_index);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMSuggestedTypeIndexKHR(context: cl_context; required_capabilities: clSvmCapabilities; desired_capabilities: clSvmCapabilities; properties: IntPtr; size: UIntPtr; var suggested_svm_type_index: UInt32): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMSuggestedTypeIndexKHR', CallDebug.Wrap(context), CallDebug.Wrap(required_capabilities), CallDebug.Wrap(desired_capabilities), CallDebug.Wrap(properties), CallDebug.Wrap(size), CallDebug.WrapVarArg(suggested_svm_type_index)); try{$endif}
+      Result := ntv_GetSVMSuggestedTypeIndexKHR_3(context, required_capabilities, desired_capabilities, properties, size, suggested_svm_type_index);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function GetSVMSuggestedTypeIndexKHR(context: cl_context; required_capabilities: clSvmCapabilities; desired_capabilities: clSvmCapabilities; properties: IntPtr; size: UIntPtr; suggested_svm_type_index: IntPtr): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clUnifiedSvmKHR.GetSVMSuggestedTypeIndexKHR', CallDebug.Wrap(context), CallDebug.Wrap(required_capabilities), CallDebug.Wrap(desired_capabilities), CallDebug.Wrap(properties), CallDebug.Wrap(size), CallDebug.Wrap(suggested_svm_type_index)); try{$endif}
+      Result := ntv_GetSVMSuggestedTypeIndexKHR_4(context, required_capabilities, desired_capabilities, properties, size, suggested_svm_type_index);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    
+  end;
+  
   /// id: cl_khr_work_group_uniform_arithmetic
   /// version: 1.0.0
   clWorkGroupUniformArithmeticKHR = static class
@@ -26452,6 +26949,10 @@ function clSuggestedLocalWorkSizeKHR.GetProcAddress(name: string) := pl.GetProcA
 type clTerminateContextKHR = sealed partial class(cl_extension_base) end;
 constructor clTerminateContextKHR.Create(pl: cl_platform_id) := inherited Create(pl);
 function clTerminateContextKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clUnifiedSvmKHR = sealed partial class(cl_extension_base) end;
+constructor clUnifiedSvmKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clUnifiedSvmKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
 
 type clContentSizePOCL = sealed partial class(cl_extension_base) end;
 constructor clContentSizePOCL.Create(pl: cl_platform_id) := inherited Create(pl);

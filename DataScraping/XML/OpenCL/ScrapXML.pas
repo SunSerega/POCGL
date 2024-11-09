@@ -1034,7 +1034,7 @@ begin
   var need_err_ret_count: integer;
   if self.Name.LocalName.StartsWith('LogMessagesTo') and (self.Name.VendorSuffix='APPLE') then
     need_err_ret_count := 0 else
-  if self.Name.LocalName.StartsWith('SVM') then
+  if self.Name.LocalName.StartsWith('SVM') and not self.Name.LocalName.EndsWith('WithProperties') then
     need_err_ret_count := 0 else
   if self.Name.LocalName.StartsWith('GetExtensionFunctionAddress') then
     need_err_ret_count := 0 else

@@ -177,6 +177,10 @@ type clTerminateContextKHR = sealed partial class(cl_extension_base) end;
 constructor clTerminateContextKHR.Create(pl: cl_platform_id) := inherited Create(pl);
 function clTerminateContextKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
 
+type clUnifiedSvmKHR = sealed partial class(cl_extension_base) end;
+constructor clUnifiedSvmKHR.Create(pl: cl_platform_id) := inherited Create(pl);
+function clUnifiedSvmKHR.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
 type clContentSizePOCL = sealed partial class(cl_extension_base) end;
 constructor clContentSizePOCL.Create(pl: cl_platform_id) := inherited Create(pl);
 function clContentSizePOCL.GetProcAddress(name: string) := pl.GetProcAddress(name);

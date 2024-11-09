@@ -1795,6 +1795,7 @@
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT:          clDeviceInfo read new clDeviceInfo($1074);
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED: clDeviceInfo read new clDeviceInfo($1075);
     public static property DEVICE_KERNEL_CLOCK_CAPABILITIES:                                 clDeviceInfo read new clDeviceInfo($1076);
+    public static property DEVICE_SVM_TYPE_CAPABILITIES:                                     clDeviceInfo read new clDeviceInfo($1077);
     public static property DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES:                 clDeviceInfo read new clDeviceInfo($129A);
     public static property DEVICE_COMMAND_BUFFER_CAPABILITIES:                               clDeviceInfo read new clDeviceInfo($12A9);
     public static property DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES:                  clDeviceInfo read new clDeviceInfo($12AA);
@@ -2120,6 +2121,8 @@
         Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED' else
       if DEVICE_KERNEL_CLOCK_CAPABILITIES = self then
         Result := 'DEVICE_KERNEL_CLOCK_CAPABILITIES' else
+      if DEVICE_SVM_TYPE_CAPABILITIES = self then
+        Result := 'DEVICE_SVM_TYPE_CAPABILITIES' else
       if DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES = self then
         Result := 'DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES' else
       if DEVICE_COMMAND_BUFFER_CAPABILITIES = self then
@@ -3834,6 +3837,7 @@
     
     public static property KERNEL_EXEC_INFO_SVM_PTRS:                        clKernelExecInfo read new clKernelExecInfo($11B6);
     public static property KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM:           clKernelExecInfo read new clKernelExecInfo($11B7);
+    public static property KERNEL_EXEC_INFO_SVM_INDIRECT_ACCESS:             clKernelExecInfo read new clKernelExecInfo($11BB);
     public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE:            clKernelExecInfo read new clKernelExecInfo($41E5);
     public static property KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER:   clKernelExecInfo read new clKernelExecInfo($41E6);
     public static property KERNEL_EXEC_INFO_WARP_COUNT_LIMIT:                clKernelExecInfo read new clKernelExecInfo($41E8);
@@ -3850,6 +3854,8 @@
         Result := 'KERNEL_EXEC_INFO_SVM_PTRS' else
       if KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM = self then
         Result := 'KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM' else
+      if KERNEL_EXEC_INFO_SVM_INDIRECT_ACCESS = self then
+        Result := 'KERNEL_EXEC_INFO_SVM_INDIRECT_ACCESS' else
       if KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE = self then
         Result := 'KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE' else
       if KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER = self then
@@ -4657,6 +4663,7 @@
     public static property PLATFORM_NUMERIC_VERSION:                     clPlatformInfo read new clPlatformInfo($0906);
     public static property PLATFORM_EXTENSIONS_WITH_VERSION:             clPlatformInfo read new clPlatformInfo($0907);
     public static property PLATFORM_COMMAND_BUFFER_CAPABILITIES:         clPlatformInfo read new clPlatformInfo($0908);
+    public static property PLATFORM_SVM_TYPE_CAPABILITIES:               clPlatformInfo read new clPlatformInfo($0909);
     public static property PLATFORM_ICD_SUFFIX:                          clPlatformInfo read new clPlatformInfo($0920);
     public static property PLATFORM_SEMAPHORE_TYPES:                     clPlatformInfo read new clPlatformInfo($2036);
     public static property PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES:       clPlatformInfo read new clPlatformInfo($2037);
@@ -4683,6 +4690,8 @@
         Result := 'PLATFORM_EXTENSIONS_WITH_VERSION' else
       if PLATFORM_COMMAND_BUFFER_CAPABILITIES = self then
         Result := 'PLATFORM_COMMAND_BUFFER_CAPABILITIES' else
+      if PLATFORM_SVM_TYPE_CAPABILITIES = self then
+        Result := 'PLATFORM_SVM_TYPE_CAPABILITIES' else
       if PLATFORM_ICD_SUFFIX = self then
         Result := 'PLATFORM_ICD_SUFFIX' else
       if PLATFORM_SEMAPHORE_TYPES = self then
@@ -5079,6 +5088,216 @@
   end;
   
   ///
+  clSvmAllocAccessFlags = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property SVM_ALLOC_ACCESS_HOST_NOREAD:    clSvmAllocAccessFlags read new clSvmAllocAccessFlags(1 shl 0);
+    public static property SVM_ALLOC_ACCESS_HOST_NOWRITE:   clSvmAllocAccessFlags read new clSvmAllocAccessFlags(1 shl 1);
+    public static property SVM_ALLOC_ACCESS_DEVICE_NOREAD:  clSvmAllocAccessFlags read new clSvmAllocAccessFlags(1 shl 8);
+    public static property SVM_ALLOC_ACCESS_DEVICE_NOWRITE: clSvmAllocAccessFlags read new clSvmAllocAccessFlags(1 shl 9);
+    
+    public static function operator+(v1, v2: clSvmAllocAccessFlags) := new clSvmAllocAccessFlags(v1.val or v2.val);
+    public static function operator or(v1, v2: clSvmAllocAccessFlags) := new clSvmAllocAccessFlags(v1.val or v2.val);
+    
+    public static function operator-(v1, v2: clSvmAllocAccessFlags) := new clSvmAllocAccessFlags(v1.val and not v2.val);
+    
+    public static procedure operator+=(var v1: clSvmAllocAccessFlags; v2: clSvmAllocAccessFlags) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clSvmAllocAccessFlags; v2: clSvmAllocAccessFlags) := v1 := v1-v2;
+    
+    public static function operator in(v1, v2: clSvmAllocAccessFlags) := v1.val and v2.val = v1.val;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      var left_val := self.val;
+      if left_val=0 then
+      begin
+        Result := 'clSvmAllocAccessFlags[0]';
+        exit;
+      end;
+      if SVM_ALLOC_ACCESS_HOST_NOREAD in self then
+      begin
+        res += 'SVM_ALLOC_ACCESS_HOST_NOREAD+';
+        left_val := left_val and not SVM_ALLOC_ACCESS_HOST_NOREAD.val;
+      end;
+      if SVM_ALLOC_ACCESS_HOST_NOWRITE in self then
+      begin
+        res += 'SVM_ALLOC_ACCESS_HOST_NOWRITE+';
+        left_val := left_val and not SVM_ALLOC_ACCESS_HOST_NOWRITE.val;
+      end;
+      if SVM_ALLOC_ACCESS_DEVICE_NOREAD in self then
+      begin
+        res += 'SVM_ALLOC_ACCESS_DEVICE_NOREAD+';
+        left_val := left_val and not SVM_ALLOC_ACCESS_DEVICE_NOREAD.val;
+      end;
+      if SVM_ALLOC_ACCESS_DEVICE_NOWRITE in self then
+      begin
+        res += 'SVM_ALLOC_ACCESS_DEVICE_NOWRITE+';
+        left_val := left_val and not SVM_ALLOC_ACCESS_DEVICE_NOWRITE.val;
+      end;
+      if left_val<>0 then
+      begin
+        res += 'clSvmAllocAccessFlags[';
+        res += self.val.ToString;
+        res += ']+';
+      end;
+      res.Length -= 1;
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
+  clSvmAllocProperties = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property SVM_ALLOC_ASSOCIATED_DEVICE_HANDLE: clSvmAllocProperties read new clSvmAllocProperties($2078);
+    public static property SVM_ALLOC_ACCESS_FLAGS:             clSvmAllocProperties read new clSvmAllocProperties($2079);
+    public static property SVM_ALLOC_ALIGNMENT:                clSvmAllocProperties read new clSvmAllocProperties($207A);
+    
+    public function ToString: string; override;
+    begin
+      if SVM_ALLOC_ASSOCIATED_DEVICE_HANDLE = self then
+        Result := 'SVM_ALLOC_ASSOCIATED_DEVICE_HANDLE' else
+      if SVM_ALLOC_ACCESS_FLAGS = self then
+        Result := 'SVM_ALLOC_ACCESS_FLAGS' else
+      if SVM_ALLOC_ALIGNMENT = self then
+        Result := 'SVM_ALLOC_ALIGNMENT' else
+        Result := $'clSvmAllocProperties[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  clSvmCapabilities = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property SVM_CAPABILITY_SINGLE_ADDRESS_SPACE:     clSvmCapabilities read new clSvmCapabilities(1 shl 0);
+    public static property SVM_CAPABILITY_SYSTEM_ALLOCATED:         clSvmCapabilities read new clSvmCapabilities(1 shl 1);
+    public static property SVM_CAPABILITY_DEVICE_OWNED:             clSvmCapabilities read new clSvmCapabilities(1 shl 2);
+    public static property SVM_CAPABILITY_DEVICE_UNASSOCIATED:      clSvmCapabilities read new clSvmCapabilities(1 shl 3);
+    public static property SVM_CAPABILITY_CONTEXT_ACCESS:           clSvmCapabilities read new clSvmCapabilities(1 shl 4);
+    public static property SVM_CAPABILITY_HOST_OWNED:               clSvmCapabilities read new clSvmCapabilities(1 shl 5);
+    public static property SVM_CAPABILITY_HOST_READ:                clSvmCapabilities read new clSvmCapabilities(1 shl 6);
+    public static property SVM_CAPABILITY_HOST_WRITE:               clSvmCapabilities read new clSvmCapabilities(1 shl 7);
+    public static property SVM_CAPABILITY_HOST_MAP:                 clSvmCapabilities read new clSvmCapabilities(1 shl 8);
+    public static property SVM_CAPABILITY_DEVICE_READ:              clSvmCapabilities read new clSvmCapabilities(1 shl 9);
+    public static property SVM_CAPABILITY_DEVICE_WRITE:             clSvmCapabilities read new clSvmCapabilities(1 shl 10);
+    public static property SVM_CAPABILITY_DEVICE_ATOMIC_ACCESS:     clSvmCapabilities read new clSvmCapabilities(1 shl 11);
+    public static property SVM_CAPABILITY_CONCURRENT_ACCESS:        clSvmCapabilities read new clSvmCapabilities(1 shl 12);
+    public static property SVM_CAPABILITY_CONCURRENT_ATOMIC_ACCESS: clSvmCapabilities read new clSvmCapabilities(1 shl 13);
+    public static property SVM_CAPABILITY_INDIRECT_ACCESS:          clSvmCapabilities read new clSvmCapabilities(1 shl 14);
+    
+    public static function operator+(v1, v2: clSvmCapabilities) := new clSvmCapabilities(v1.val or v2.val);
+    public static function operator or(v1, v2: clSvmCapabilities) := new clSvmCapabilities(v1.val or v2.val);
+    
+    public static function operator-(v1, v2: clSvmCapabilities) := new clSvmCapabilities(v1.val and not v2.val);
+    
+    public static procedure operator+=(var v1: clSvmCapabilities; v2: clSvmCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clSvmCapabilities; v2: clSvmCapabilities) := v1 := v1-v2;
+    
+    public static function operator in(v1, v2: clSvmCapabilities) := v1.val and v2.val = v1.val;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      var left_val := self.val;
+      if left_val=0 then
+      begin
+        Result := 'clSvmCapabilities[0]';
+        exit;
+      end;
+      if SVM_CAPABILITY_SINGLE_ADDRESS_SPACE in self then
+      begin
+        res += 'SVM_CAPABILITY_SINGLE_ADDRESS_SPACE+';
+        left_val := left_val and not SVM_CAPABILITY_SINGLE_ADDRESS_SPACE.val;
+      end;
+      if SVM_CAPABILITY_SYSTEM_ALLOCATED in self then
+      begin
+        res += 'SVM_CAPABILITY_SYSTEM_ALLOCATED+';
+        left_val := left_val and not SVM_CAPABILITY_SYSTEM_ALLOCATED.val;
+      end;
+      if SVM_CAPABILITY_DEVICE_OWNED in self then
+      begin
+        res += 'SVM_CAPABILITY_DEVICE_OWNED+';
+        left_val := left_val and not SVM_CAPABILITY_DEVICE_OWNED.val;
+      end;
+      if SVM_CAPABILITY_DEVICE_UNASSOCIATED in self then
+      begin
+        res += 'SVM_CAPABILITY_DEVICE_UNASSOCIATED+';
+        left_val := left_val and not SVM_CAPABILITY_DEVICE_UNASSOCIATED.val;
+      end;
+      if SVM_CAPABILITY_CONTEXT_ACCESS in self then
+      begin
+        res += 'SVM_CAPABILITY_CONTEXT_ACCESS+';
+        left_val := left_val and not SVM_CAPABILITY_CONTEXT_ACCESS.val;
+      end;
+      if SVM_CAPABILITY_HOST_OWNED in self then
+      begin
+        res += 'SVM_CAPABILITY_HOST_OWNED+';
+        left_val := left_val and not SVM_CAPABILITY_HOST_OWNED.val;
+      end;
+      if SVM_CAPABILITY_HOST_READ in self then
+      begin
+        res += 'SVM_CAPABILITY_HOST_READ+';
+        left_val := left_val and not SVM_CAPABILITY_HOST_READ.val;
+      end;
+      if SVM_CAPABILITY_HOST_WRITE in self then
+      begin
+        res += 'SVM_CAPABILITY_HOST_WRITE+';
+        left_val := left_val and not SVM_CAPABILITY_HOST_WRITE.val;
+      end;
+      if SVM_CAPABILITY_HOST_MAP in self then
+      begin
+        res += 'SVM_CAPABILITY_HOST_MAP+';
+        left_val := left_val and not SVM_CAPABILITY_HOST_MAP.val;
+      end;
+      if SVM_CAPABILITY_DEVICE_READ in self then
+      begin
+        res += 'SVM_CAPABILITY_DEVICE_READ+';
+        left_val := left_val and not SVM_CAPABILITY_DEVICE_READ.val;
+      end;
+      if SVM_CAPABILITY_DEVICE_WRITE in self then
+      begin
+        res += 'SVM_CAPABILITY_DEVICE_WRITE+';
+        left_val := left_val and not SVM_CAPABILITY_DEVICE_WRITE.val;
+      end;
+      if SVM_CAPABILITY_DEVICE_ATOMIC_ACCESS in self then
+      begin
+        res += 'SVM_CAPABILITY_DEVICE_ATOMIC_ACCESS+';
+        left_val := left_val and not SVM_CAPABILITY_DEVICE_ATOMIC_ACCESS.val;
+      end;
+      if SVM_CAPABILITY_CONCURRENT_ACCESS in self then
+      begin
+        res += 'SVM_CAPABILITY_CONCURRENT_ACCESS+';
+        left_val := left_val and not SVM_CAPABILITY_CONCURRENT_ACCESS.val;
+      end;
+      if SVM_CAPABILITY_CONCURRENT_ATOMIC_ACCESS in self then
+      begin
+        res += 'SVM_CAPABILITY_CONCURRENT_ATOMIC_ACCESS+';
+        left_val := left_val and not SVM_CAPABILITY_CONCURRENT_ATOMIC_ACCESS.val;
+      end;
+      if SVM_CAPABILITY_INDIRECT_ACCESS in self then
+      begin
+        res += 'SVM_CAPABILITY_INDIRECT_ACCESS+';
+        left_val := left_val and not SVM_CAPABILITY_INDIRECT_ACCESS.val;
+      end;
+      if left_val<>0 then
+      begin
+        res += 'clSvmCapabilities[';
+        res += self.val.ToString;
+        res += ']+';
+      end;
+      res.Length -= 1;
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
   clSvmMemFlags = record
     public val: UInt64;
     public constructor(val: UInt64) := self.val := val;
@@ -5183,6 +5402,40 @@
       end;
       res.Length -= 1;
       Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
+  clSvmPointerInfo = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property SVM_INFO_TYPE_INDEX:               clSvmPointerInfo read new clSvmPointerInfo($2088);
+    public static property SVM_INFO_CAPABILITIES:             clSvmPointerInfo read new clSvmPointerInfo($2089);
+    public static property SVM_INFO_PROPERTIES:               clSvmPointerInfo read new clSvmPointerInfo($208A);
+    public static property SVM_INFO_ACCESS_FLAGS:             clSvmPointerInfo read new clSvmPointerInfo($208B);
+    public static property SVM_INFO_BASE_PTR:                 clSvmPointerInfo read new clSvmPointerInfo($419B);
+    public static property SVM_INFO_SIZE:                     clSvmPointerInfo read new clSvmPointerInfo($419C);
+    public static property SVM_INFO_ASSOCIATED_DEVICE_HANDLE: clSvmPointerInfo read new clSvmPointerInfo($419D);
+    
+    public function ToString: string; override;
+    begin
+      if SVM_INFO_TYPE_INDEX = self then
+        Result := 'SVM_INFO_TYPE_INDEX' else
+      if SVM_INFO_CAPABILITIES = self then
+        Result := 'SVM_INFO_CAPABILITIES' else
+      if SVM_INFO_PROPERTIES = self then
+        Result := 'SVM_INFO_PROPERTIES' else
+      if SVM_INFO_ACCESS_FLAGS = self then
+        Result := 'SVM_INFO_ACCESS_FLAGS' else
+      if SVM_INFO_BASE_PTR = self then
+        Result := 'SVM_INFO_BASE_PTR' else
+      if SVM_INFO_SIZE = self then
+        Result := 'SVM_INFO_SIZE' else
+      if SVM_INFO_ASSOCIATED_DEVICE_HANDLE = self then
+        Result := 'SVM_INFO_ASSOCIATED_DEVICE_HANDLE' else
+        Result := $'clSvmPointerInfo[{self.val}]';
     end;
     
   end;

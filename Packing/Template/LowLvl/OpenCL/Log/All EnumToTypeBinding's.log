@@ -429,6 +429,9 @@ cl_device_integer_dot_product_acceleration_properties
 --- DEVICE_KERNEL_CLOCK_CAPABILITIES
 !output
 clDeviceKernelClockCapabilities
+--- DEVICE_SVM_TYPE_CAPABILITIES
+!output
+clSvmCapabilities
 --- DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES
 !output
 clCommandQueueProperties
@@ -975,6 +978,9 @@ array of cl_name_version
 --- PLATFORM_COMMAND_BUFFER_CAPABILITIES
 !output
 clPlatformCommandBufferCapabilities
+--- PLATFORM_SVM_TYPE_CAPABILITIES
+!output
+clSvmCapabilities
 --- PLATFORM_ICD_SUFFIX
 !output
 string
@@ -1105,6 +1111,9 @@ array of clSamplerProperties
 !input
 array of IntPtr
 --- KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM
+!input
+clBool
+--- KERNEL_EXEC_INFO_SVM_INDIRECT_ACCESS
 !input
 clBool
 --- KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE
@@ -1355,6 +1364,34 @@ array of cl_device_id
 --- SEMAPHORE_EXPORTABLE
 !output
 clBool
+
+# cl.GetSVMPointerInfoKHR
+4
+!output
+5
+6
+7
+--- SVM_INFO_TYPE_INDEX
+!output
+UInt32
+--- SVM_INFO_CAPABILITIES
+!output
+clSvmCapabilities
+--- SVM_INFO_PROPERTIES
+!output
+clSvmAllocProperties
+--- SVM_INFO_ACCESS_FLAGS
+!output
+clSvmAllocAccessFlags
+--- SVM_INFO_BASE_PTR
+!output
+IntPtr
+--- SVM_INFO_SIZE
+!output
+UIntPtr
+--- SVM_INFO_ASSOCIATED_DEVICE_HANDLE
+!output
+cl_device_id
 
 # cl.GetICDLoaderInfoOCLICD
 1

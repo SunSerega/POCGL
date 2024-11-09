@@ -1551,7 +1551,7 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-207
+208
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | var T                                                     | var UIntPtr          |
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | var T                                                     | IntPtr               |
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | pointer                                                   | var UIntPtr          |
@@ -1687,6 +1687,7 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT          | *                | var cl_device_integer_dot_product_acceleration_properties | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED | *                | var cl_device_integer_dot_product_acceleration_properties | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_KERNEL_CLOCK_CAPABILITIES                                 | *                | var clDeviceKernelClockCapabilities                       | *                    |
+	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_SVM_TYPE_CAPABILITIES                                     | *                | var clSvmCapabilities                                     | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES                 | *                | var clCommandQueueProperties                              | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_COMMAND_BUFFER_CAPABILITIES                               | *                | var clDeviceCommandBufferCapabilities                     | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES                  | *                | var clCommandQueueProperties                              | *                    |
@@ -2118,7 +2119,7 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-23
+24
 	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | var T                                      | var UIntPtr          |
 	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | var T                                      | IntPtr               |
 	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | pointer                                    | var UIntPtr          |
@@ -2133,6 +2134,7 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_EXTENSIONS_WITH_VERSION             | *                | var array of cl_name_version               | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_EXTENSIONS_WITH_VERSION             | UInt32           | var cl_name_version                        | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_COMMAND_BUFFER_CAPABILITIES         | *                | var clPlatformCommandBufferCapabilities    | *                    |
+	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_SVM_TYPE_CAPABILITIES               | *                | var clSvmCapabilities                      | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_ICD_SUFFIX                          | *                | var string                                 | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_SEMAPHORE_TYPES                     | *                | var array of clSemaphoreType               | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_SEMAPHORE_TYPES                     | UInt32           | var clSemaphoreType                        | *                    |
@@ -2536,11 +2538,12 @@ param_name:       clKernelExecInfo
 param_value_size: UIntPtr
 param_value:      pointer const
 !ffo
-15
+16
 	clErrorCode | cl_kernel | clKernelExecInfo                                                  | UIntPtr          | var TInp const        |
 	clErrorCode | cl_kernel | clKernelExecInfo.KERNEL_EXEC_INFO_SVM_PTRS                        | *                | array of IntPtr const |
 	clErrorCode | cl_kernel | clKernelExecInfo.KERNEL_EXEC_INFO_SVM_PTRS                        | UInt32           | var IntPtr const      |
 	clErrorCode | cl_kernel | clKernelExecInfo.KERNEL_EXEC_INFO_SVM_FINE_GRAIN_SYSTEM           | *                | clBool const          |
+	clErrorCode | cl_kernel | clKernelExecInfo.KERNEL_EXEC_INFO_SVM_INDIRECT_ACCESS             | *                | clBool const          |
 	clErrorCode | cl_kernel | clKernelExecInfo.KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE            | *                | UInt32 const          |
 	clErrorCode | cl_kernel | clKernelExecInfo.KERNEL_EXEC_INFO_WORKGROUP_BATCH_SIZE_MODIFIER   | *                | Int32 const           |
 	clErrorCode | cl_kernel | clKernelExecInfo.KERNEL_EXEC_INFO_WARP_COUNT_LIMIT                | *                | UInt32 const          |
@@ -5039,6 +5042,52 @@ param_value_size_ret: var UIntPtr / IntPtr
 	----------- | ------------ | --------------------------------------------- | ---------------- | ------------------------------------------ | -------------------- |
 	            | sema_object  | param_name                                    | param_value_size | param_value                                | param_value_size_ret |
 
+# cl::GetSVMPointerInfo + KHR
+!ppt
+Result:               clErrorCode
+context:              cl_context
+device:               cl_device_id
+ptr:                  IntPtr const
+param_name:           clSvmPointerInfo
+param_value_size:     UIntPtr
+param_value:          pointer
+param_value_size_ret: var UIntPtr / IntPtr
+!ffo
+11
+	clErrorCode | cl_context | cl_device_id | IntPtr const | clSvmPointerInfo                                   | UIntPtr          | var T                     | var UIntPtr          |
+	clErrorCode | cl_context | cl_device_id | IntPtr const | clSvmPointerInfo                                   | UIntPtr          | var T                     | IntPtr               |
+	clErrorCode | cl_context | cl_device_id | IntPtr const | clSvmPointerInfo.SVM_INFO_TYPE_INDEX               | *                | var UInt32                | *                    |
+	clErrorCode | cl_context | cl_device_id | IntPtr const | clSvmPointerInfo.SVM_INFO_CAPABILITIES             | *                | var clSvmCapabilities     | *                    |
+	clErrorCode | cl_context | cl_device_id | IntPtr const | clSvmPointerInfo.SVM_INFO_PROPERTIES               | *                | var clSvmAllocProperties  | *                    |
+	clErrorCode | cl_context | cl_device_id | IntPtr const | clSvmPointerInfo.SVM_INFO_ACCESS_FLAGS             | *                | var clSvmAllocAccessFlags | *                    |
+	clErrorCode | cl_context | cl_device_id | IntPtr const | clSvmPointerInfo.SVM_INFO_BASE_PTR                 | *                | var IntPtr                | *                    |
+	clErrorCode | cl_context | cl_device_id | IntPtr const | clSvmPointerInfo.SVM_INFO_SIZE                     | *                | var UIntPtr               | *                    |
+	clErrorCode | cl_context | cl_device_id | IntPtr const | clSvmPointerInfo.SVM_INFO_ASSOCIATED_DEVICE_HANDLE | *                | var cl_device_id          | *                    |
+	clErrorCode | cl_context | cl_device_id | IntPtr const | clSvmPointerInfo                                   | UIntPtr          | pointer                   | var UIntPtr          |
+	clErrorCode | cl_context | cl_device_id | IntPtr const | clSvmPointerInfo                                   | UIntPtr          | pointer                   | IntPtr               |
+	----------- | ---------- | ------------ | ------------ | -------------------------------------------------- | ---------------- | ------------------------- | -------------------- |
+	            | context    | device       | ptr          | param_name                                         | param_value_size | param_value               | param_value_size_ret |
+
+# cl::GetSVMSuggestedTypeIndex + KHR
+!ppt
+Result:                   clErrorCode
+context:                  cl_context
+required_capabilities:    clSvmCapabilities
+desired_capabilities:     clSvmCapabilities
+properties:               array of clSvmAllocProperties const / var clSvmAllocProperties const / IntPtr const
+size:                     UIntPtr
+suggested_svm_type_index: var UInt32 / IntPtr
+!ffo
+6
+	clErrorCode | cl_context | clSvmCapabilities     | clSvmCapabilities    | array of clSvmAllocProperties const | UIntPtr | var UInt32               |
+	clErrorCode | cl_context | clSvmCapabilities     | clSvmCapabilities    | array of clSvmAllocProperties const | UIntPtr | IntPtr                   |
+	clErrorCode | cl_context | clSvmCapabilities     | clSvmCapabilities    | var clSvmAllocProperties const      | UIntPtr | var UInt32               |
+	clErrorCode | cl_context | clSvmCapabilities     | clSvmCapabilities    | var clSvmAllocProperties const      | UIntPtr | IntPtr                   |
+	clErrorCode | cl_context | clSvmCapabilities     | clSvmCapabilities    | IntPtr const                        | UIntPtr | var UInt32               |
+	clErrorCode | cl_context | clSvmCapabilities     | clSvmCapabilities    | IntPtr const                        | UIntPtr | IntPtr                   |
+	----------- | ---------- | --------------------- | -------------------- | ----------------------------------- | ------- | ------------------------ |
+	            | context    | required_capabilities | desired_capabilities | properties                          | size    | suggested_svm_type_index |
+
 # cl::IcdGetPlatformIDs + KHR
 !ppt
 Result:        clErrorCode
@@ -5134,6 +5183,37 @@ sema_object: cl_semaphore
 	clErrorCode | cl_semaphore |
 	----------- | ------------ |
 	            | sema_object  |
+
+# cl::SVMAllocWithProperties + KHR
+!ppt
+Result:         IntPtr
+context:        cl_context
+properties:     array of clSvmAllocProperties const / var clSvmAllocProperties const / IntPtr const
+svm_type_index: UInt32
+size:           UIntPtr
+errcode_ret:    var clErrorCode
+!ffo
+3
+	IntPtr | cl_context | array of clSvmAllocProperties const | UInt32         | UIntPtr | var clErrorCode |
+	IntPtr | cl_context | var clSvmAllocProperties const      | UInt32         | UIntPtr | var clErrorCode |
+	IntPtr | cl_context | IntPtr const                        | UInt32         | UIntPtr | var clErrorCode |
+	------ | ---------- | ----------------------------------- | -------------- | ------- | --------------- |
+	       | context    | properties                          | svm_type_index | size    | errcode_ret     |
+
+# cl::SVMFreeWithProperties + KHR
+!ppt
+Result:     clErrorCode
+context:    cl_context
+properties: array of UInt64 const / var UInt64 const / IntPtr const
+flags:      UInt64
+ptr:        IntPtr
+!ffo
+3
+	clErrorCode | cl_context | array of UInt64 const | UInt64 | IntPtr |
+	clErrorCode | cl_context | var UInt64 const      | UInt64 | IntPtr |
+	clErrorCode | cl_context | IntPtr const          | UInt64 | IntPtr |
+	----------- | ---------- | --------------------- | ------ | ------ |
+	            | context    | properties            | flags  | ptr    |
 
 # cl::TerminateContext + KHR
 !ppt

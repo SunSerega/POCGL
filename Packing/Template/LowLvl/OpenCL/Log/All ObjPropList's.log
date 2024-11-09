@@ -190,6 +190,17 @@ cl_device_id
 !list_end
 SEMAPHORE_DEVICE_HANDLE_LIST_END
 
+# clSvmAllocProperties
+--- SVM_ALLOC_ASSOCIATED_DEVICE_HANDLE
+!type
+cl_device_id
+--- SVM_ALLOC_ACCESS_FLAGS
+!type
+clSvmAllocAccessFlags
+--- SVM_ALLOC_ALIGNMENT
+!type
+UIntPtr
+
 # clDevicePartitionPropertyEXT
 PROPERTIES_LIST_END
 --- DEVICE_PARTITION_EQUALLY + EXT
