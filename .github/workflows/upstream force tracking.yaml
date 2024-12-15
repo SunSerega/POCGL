@@ -1,0 +1,201 @@
+﻿name: Upstream PR force-push tracking
+
+on:
+    push:
+        branches-ignore:
+            - 'subm-pretest/**'
+    schedule:
+        - cron: '30 * * * *'
+    workflow_dispatch:
+
+permissions:
+    contents: write
+
+concurrency:
+    group: ${{ github.workflow }}
+    cancel-in-progress: false
+
+# Upstream pretest needs PR history with no force-pushes
+# Otherwise force-pushed changes appear as conflicts, even if they are trivial
+# This workflow maintains a force-tracking branch for each PR head branch
+
+jobs:
+    enmr_subm:
+        runs-on: windows-latest
+        outputs:
+            subm_list: ${{ steps.make_subm_list.outputs.subm_list }}
+        
+        steps:
+            -   name: git config
+                run: |
+                
+                    git config --global gc.auto 0
+                    git config --global core.autocrlf false
+                    git config --global user.name "sun pack bot"
+                    git config --global user.email "sunserega2@gmail.com"
+                    git config --global --add url.https://github.com/.insteadOf "git@github.com:"
+            
+            -   name: Checkout
+                uses: actions/checkout@main
+                with:
+                    sparse-checkout-cone-mode: false
+                    sparse-checkout: |
+                        .gitmodules
+            
+            -   name: (!) Make submodule list
+                id: make_subm_list
+                run: |
+                
+                    $subm_list = @()
+                    foreach ($config_key in git config --file .gitmodules --name-only --get-regexp '^submodule\..+\.url$') {
+                        $repo_url = git config --file .gitmodules --get $config_key
+                        Write-Host "Repo URL: $repo_url"
+                        
+                        if ($repo_url -notmatch '^git@github\.com:([\w\-]+)/([\w\-]+)\.git$') {
+                            throw "Unexpected URL format: $repo_url"
+                        }
+                        $repo_owner = $matches[1]
+                        $repo_name = $matches[2]
+                        
+                        $fork_repo = "SunSerega/${repo_name}"
+                        $fork_url = "git@github.com:${fork_repo}.git"
+                        
+                        $subm_list += [PSCustomObject]@{
+                            '!id'           = $repo_name;
+                            'repo_url'      = $repo_url;
+                            'repo_owner'    = $repo_owner;
+                            'repo_name'     = $repo_name;
+                            'fork_repo'     = $fork_repo;
+                            'fork_url'      = $fork_url;
+                        }
+                    }
+                    
+                    $json = ConvertTo-Json -Compress $subm_list
+                    Write-Host $json
+                    echo "subm_list=$json" >> $env:GITHUB_OUTPUT
+            
+    update-force-tracking:
+        runs-on: windows-latest
+        needs: enmr_subm
+        strategy:
+            fail-fast: false
+            matrix:
+                subm-data: ${{ fromJson(needs.enmr_subm.outputs.subm_list) }}
+        
+        steps:
+            -   name: git config
+                run: |
+                
+                    git config --global gc.auto 0
+                    git config --global core.autocrlf false
+                    git config --global advice.detachedHead false
+                    git config --global user.name "sun pack bot"
+                    git config --global user.email "sunserega2@gmail.com"
+                    git config --global --add url.https://github.com/.insteadOf "git@github.com:"
+            
+            -   name: checkout subm fork
+                uses: actions/checkout@main
+                with:
+                    ref: 'custom'
+                    fetch-depth: 0
+                    repository: ${{ matrix.subm-data.fork_repo }}
+                    token: ${{ secrets.POCGL_pretest_upstream_PAT }}
+            
+            -   name: (!) Update force-tracking
+                run: |
+                
+                    git remote add upstream ${{ matrix.subm-data.repo_url }}
+                    if (-not $?) { throw "git remote add failed" }
+                    git config --replace-all remote.upstream.fetch '+refs/pull/*:refs/remotes/upstream/pull/*'
+                    if (-not $?) { throw "git config failed" }
+                    git fetch upstream 2>&1 | Out-Null
+                    if (-not $?) { throw "git fetch failed" }
+                    
+                    $l_open_prs = @()
+                    foreach ($b_pr_merge in git branch --format='%(refname:short)' -r --list 'upstream/pull/*/merge') {
+                        Write-Host "PR merge branch: $b_pr_merge"
+                        
+                        if ($b_pr_merge -notmatch '^upstream/pull/(\d+)/merge$') {
+                            throw "Unexpected merge branch format: $b_pr_merge"
+                        }
+                        $pr_num = $matches[1]
+                        
+                        $l_open_prs += $pr_num
+                    }
+                    if (-not $?) { throw "git branch failed" }
+                    
+                    $l_force_tracking = @()
+                    foreach ($b_pr_ft in git branch --format='%(refname:short)' -r --list 'origin/force-tracking/*') {
+                        Write-Host "PR force-tracking branch: $b_pr_ft"
+                        
+                        if ($b_pr_ft -notmatch '^origin/force-tracking/(\d+)$') {
+                            throw "Unexpected force-tracking branch format: $b_pr_ft"
+                        }
+                        $pr_num = $matches[1]
+                        
+                        $l_force_tracking += $pr_num
+                    }
+                    if (-not $?) { throw "git branch failed" }
+                    
+                    $l_legacy_ft = @()
+                    foreach ($pr_num in $l_force_tracking) {
+                        if ($pr_num -in $l_open_prs) { continue }
+                        Write-Host "Delete force-tracking branch for PR $pr_num"
+                        $l_legacy_ft += "force-tracking/$pr_num"
+                    }
+                    if ($l_legacy_ft) {
+                        git push origin --delete $l_legacy_ft
+                        if (-not $?) { throw "git push failed" }
+                    }
+                    
+                    foreach ($pr_num in $l_open_prs) {
+                        $b_upstream = "pull/$pr_num/head"
+                        $b_r_upstream = "upstream/$b_upstream"
+                        $b_ft = "force-tracking/$pr_num"
+                        $b_r_ft = "origin/$b_ft"
+                        
+                        if ($pr_num -notin $l_force_tracking) {
+                            Write-Host "Create force-tracking branch for PR $pr_num"
+                            git checkout -b $b_ft $b_r_upstream 2>&1 | Out-Null
+                            if (-not $?) { throw "git checkout failed" }
+                            git push --set-upstream origin $b_ft 2>&1 | Out-Null
+                            if (-not $?) { throw "git push failed" }
+                            continue
+                        }
+                        # Write-Host "Checkout force-tracking branch for PR $pr_num"
+                        git checkout --track $b_r_ft 2>&1 | Out-Null
+                        if (-not $?) { throw "git checkout failed" }
+                        
+                        $upstream_fwd_c = git rev-list --count "HEAD..$b_r_upstream"
+                        if (-not $?) { throw "git rev-list failed" }
+                        if ($upstream_fwd_c -eq 0) {
+                            # Write-Host "No upstream changes for PR $pr_num"
+                            continue
+                        }
+                        Write-Host "Upstream changes for PR ${pr_num}: $upstream_fwd_c new commits"
+                        
+                        $ft_fwd_c = git rev-list --count "$b_r_upstream..HEAD"
+                        if (-not $?) { throw "git rev-list failed" }
+                        if ($ft_fwd_c -eq 0) {
+                            Write-Host "Force-tracking branch is inline under upstream, fast-forwarding"
+                            git reset --hard $b_r_upstream
+                            if (-not $?) { throw "git reset failed" }
+                            git push
+                            if (-not $?) { throw "git push failed" }
+                            continue
+                        }
+                        Write-Host "Force-tracking branch has $ft_fwd_c unique commits, merging"
+                        
+                        git merge --no-commit $b_r_upstream
+                        if (-not $?) {
+                            Write-Host "Conflicts detected, ignoring"
+                        }
+                        Remove-Item -Recurse -Exclude '.\.git' .\*
+                        git checkout $b_r_upstream -- .
+                        git add .
+                        if (-not $?) { throw "git add failed" }
+                        git commit --no-edit
+                        if (-not $?) { throw "git commit failed" }
+                        git push
+                        if (-not $?) { throw "git push failed" }
+                    }

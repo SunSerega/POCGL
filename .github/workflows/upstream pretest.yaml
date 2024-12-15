@@ -3,7 +3,7 @@
 on:
     push:
         branches-ignore:
-          - 'subm-pretest/**'
+            - 'subm-pretest/**'
     schedule:
         - cron: '0 0 * * *'
     workflow_dispatch:
@@ -12,8 +12,8 @@ permissions:
     contents: write
 
 concurrency:
-   group: ${{ github.workflow }}
-   cancel-in-progress: false
+    group: ${{ github.workflow }}
+    cancel-in-progress: false
 
 # There are 2 steps of adding new upstream commits:
 # 1. Add new commits from the PR head ref (and, if needed, main/custom branches): to "pretest/$pr_num" in fork
@@ -95,27 +95,20 @@ jobs:
                     $submodules = @()
                     $submodule_by_repo = @{}
                     foreach ($config_key in git config --file .gitmodules --name-only --get-regexp '^submodule\..+\.url$') {
-                        $url = git config --file .gitmodules --get $config_key
-                        Write-Host "URL: $url"
+                        $repo_url = git config --file .gitmodules --get $config_key
+                        Write-Host "Repo URL: $repo_url"
                         
-                        if ($url -notmatch '^git@github\.com:([\w\-]+)/([\w\-]+)\.git$') {
-                            throw "Unexpected url format: $url"
+                        if ($repo_url -notmatch '^git@github\.com:([\w\-]+)/([\w\-]+)\.git$') {
+                            throw "Unexpected URL format: $repo_url"
                         }
-                        $owner = $matches[1]
-                        $name = $matches[2]
-                        $fork_url = "git@github.com:SunSerega/${name}.git"
-                        
-                        $mergeable_prs = @()
-                        foreach ($l in Get-GitRemoteBranches $url 'refs/pull/*/merge') {
-                            $pr_num = $l.matches[1]
-                            $mergeable_prs += $pr_num
-                        }
+                        $repo_owner = $matches[1]
+                        $repo_name = $matches[2]
+                        $fork_url = "git@github.com:SunSerega/${repo_name}.git"
                         
                         $head_sha_by_pr = @{}
-                        foreach ($l in Get-GitRemoteBranches $url 'refs/pull/*/head') {
+                        foreach ($l in Get-GitRemoteBranches $fork_url 'refs/heads/force-tracking/*') {
                             $sha = $l.sha
                             $pr_num = $l.matches[1]
-                            if ($pr_num -notin $mergeable_prs) { continue }
                             Write-Host "- Found open PR $pr_num with latest sha $sha"
                             $head_sha_by_pr.Add($pr_num, $sha)
                         }
@@ -129,11 +122,11 @@ jobs:
                         }
                         
                         $subm = [PSCustomObject]@{
-                            'url'               = $url;
+                            'url'               = $repo_url;
                             'fork_url'          = $fork_url;
-                            'owner'             = $owner;
-                            'name'              = $name;
-                            'repo'              = "$owner/$name"
+                            'owner'             = $repo_owner;
+                            'name'              = $repo_name;
+                            'repo'              = "$repo_owner/$repo_name"
                             'head_sha_by_pr'    = $head_sha_by_pr;
                             'pretest_prs'       = $pretest_prs;
                         }
@@ -230,9 +223,8 @@ jobs:
                                         }
                                         
                                     } elseif ($key -eq 'trivial_core_sha') {
-                                        
+                                        $head_sha = git rev-parse HEAD
                                         if ($extra_debug) {
-                                            $head_sha = git rev-parse HEAD
                                             Write-Host "----- HEAD is at $head_sha"
                                         }
                                         
@@ -374,8 +366,8 @@ jobs:
                     $b_fork_main = 'custom'
                     $b_fork_pretest = "pretest/$pr_num"
                     
-                    $b_fork_merged_pr_head = "$pr_num/merged_pr_head" # $pr_num/head + main
-                    $b_fork_virgin_merge_test = "$pr_num/virgin_merge_test" # $b_merged_pr_head + custom
+                    $b_fork_merged_pr_head = "$pr_num/merged_pr_head" # force-tracking/$pr_num + main
+                    $b_fork_virgin_merge_test = "$pr_num/virgin_merge_test" # $b_fork_merged_pr_head + custom
                     
                     $b_core_main = '${{ github.event.repository.default_branch }}'
                     $b_core_subm_pretest = "subm-pretest/$org_repo/$pr_num"
@@ -386,11 +378,12 @@ jobs:
                     Write-Host "Updating subm fork..."
                     Push-Location './fork'
                     git remote add $remote_official "git@github.com:${org_repo}.git"
-                    git config --add "remote.$remote_official.fetch" "+refs/pull/*:refs/remotes/$remote_official/pull/*"
-                    git fetch --all 2>&1 | Out-Null
+                    if (-not $?) { throw "git remote add failed" }
+                    git fetch $remote_official main 2>&1 | Out-Null
+                    if (-not $?) { throw "git fetch failed" }
                     
                     Write-Host "- Creating $b_fork_merged_pr_head"
-                    git checkout "remotes/$remote_official/pull/$pr_num/head"
+                    git checkout "remotes/origin/force-tracking/$pr_num"
                     if (-not $?) { throw "git checkout failed" }
                     git checkout -b $b_fork_merged_pr_head
                     if (-not $?) { throw "git checkout -b failed" }
@@ -428,7 +421,7 @@ jobs:
                         if (-not $?) { throw "git merge failed" }
                         
                         Write-Host "--- Merging with PR head:"
-                        git merge "remotes/$remote_official/pull/$pr_num/head"
+                        git merge "remotes/origin/force-tracking/$pr_num"
                         if (-not $?) { throw "git merge failed" }
                         
                         Write-Host "--- Merging with ${b_fork_upstream_main}:"
@@ -627,7 +620,7 @@ jobs:
                     Write-Host "Adding meta to fork repo..."
                     Push-Location './fork'
                     
-                    $pr_head_sha = git rev-parse "remotes/0_official/pull/$pr_num/head"
+                    $pr_head_sha = git rev-parse "remotes/origin/force-tracking/$pr_num"
                     if (-not $?) { throw "git rev-parse failed" }
                     
                     $meta_commit_message = @()
