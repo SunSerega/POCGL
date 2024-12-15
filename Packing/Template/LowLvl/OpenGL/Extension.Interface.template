@@ -33220,16 +33220,16 @@
     public const ExtensionString = 'WGL_ARB_create_context';
     
     public CreateContextAttribsARB_adr := GetProcAddress('wglCreateContextAttribsARB');
-    private ntv_CreateContextAttribsARB_1 := GetProcOrNil&<function(hDC: gdi_device_context; hShareContext: gdi_rendering_context; var attribList: Int32): gdi_rendering_context>(CreateContextAttribsARB_adr);
+    private ntv_CreateContextAttribsARB_1 := GetProcOrNil&<function(hDC: gdi_device_context; hShareContext: gdi_rendering_context; var attribList: wglContextAttribs): gdi_rendering_context>(CreateContextAttribsARB_adr);
     private ntv_CreateContextAttribsARB_2 := GetProcOrNil&<function(hDC: gdi_device_context; hShareContext: gdi_rendering_context; attribList: IntPtr): gdi_rendering_context>(CreateContextAttribsARB_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateContextAttribsARB(hDC: gdi_device_context; hShareContext: gdi_rendering_context; attribList: array of Int32): gdi_rendering_context;
-      type PInt32 = ^Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateContextAttribsARB(hDC: gdi_device_context; hShareContext: gdi_rendering_context; attribList: array of wglContextAttribs): gdi_rendering_context;
+      type PWglContextAttribs = ^wglContextAttribs;
     begin
       Result := if (attribList<>nil) and (attribList.Length<>0) then
         ntv_CreateContextAttribsARB_1(hDC, hShareContext, attribList[0]) else
-        ntv_CreateContextAttribsARB_1(hDC, hShareContext, PInt32(nil)^);
+        ntv_CreateContextAttribsARB_1(hDC, hShareContext, PWglContextAttribs(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateContextAttribsARB(hDC: gdi_device_context; hShareContext: gdi_rendering_context; var attribList: Int32): gdi_rendering_context :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateContextAttribsARB(hDC: gdi_device_context; hShareContext: gdi_rendering_context; var attribList: wglContextAttribs): gdi_rendering_context :=
       ntv_CreateContextAttribsARB_1(hDC, hShareContext, attribList);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function CreateContextAttribsARB(hDC: gdi_device_context; hShareContext: gdi_rendering_context; attribList: IntPtr): gdi_rendering_context :=
       ntv_CreateContextAttribsARB_2(hDC, hShareContext, attribList);
@@ -33440,14 +33440,14 @@
       ntv_GetPixelFormatAttribfvARB_4(hdc, iPixelFormat, iLayerPlane, nAttributes, piAttributes, pfValues);
     
     public ChoosePixelFormatARB_adr := GetProcAddress('wglChoosePixelFormatARB');
-    private ntv_ChoosePixelFormatARB_1 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): glBool32>(ChoosePixelFormatARB_adr);
-    private ntv_ChoosePixelFormatARB_2 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: IntPtr): glBool32>(ChoosePixelFormatARB_adr);
-    private ntv_ChoosePixelFormatARB_3 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: IntPtr; var nNumFormats: UInt32): glBool32>(ChoosePixelFormatARB_adr);
-    private ntv_ChoosePixelFormatARB_4 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: IntPtr; nNumFormats: IntPtr): glBool32>(ChoosePixelFormatARB_adr);
-    private ntv_ChoosePixelFormatARB_5 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: Int32; pfAttribFList: IntPtr; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): glBool32>(ChoosePixelFormatARB_adr);
-    private ntv_ChoosePixelFormatARB_6 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: Int32; pfAttribFList: IntPtr; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: IntPtr): glBool32>(ChoosePixelFormatARB_adr);
-    private ntv_ChoosePixelFormatARB_7 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: Int32; pfAttribFList: IntPtr; nMaxFormats: UInt32; piFormats: IntPtr; var nNumFormats: UInt32): glBool32>(ChoosePixelFormatARB_adr);
-    private ntv_ChoosePixelFormatARB_8 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: Int32; pfAttribFList: IntPtr; nMaxFormats: UInt32; piFormats: IntPtr; nNumFormats: IntPtr): glBool32>(ChoosePixelFormatARB_adr);
+    private ntv_ChoosePixelFormatARB_1 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): glBool32>(ChoosePixelFormatARB_adr);
+    private ntv_ChoosePixelFormatARB_2 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: IntPtr): glBool32>(ChoosePixelFormatARB_adr);
+    private ntv_ChoosePixelFormatARB_3 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: IntPtr; var nNumFormats: UInt32): glBool32>(ChoosePixelFormatARB_adr);
+    private ntv_ChoosePixelFormatARB_4 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: IntPtr; nNumFormats: IntPtr): glBool32>(ChoosePixelFormatARB_adr);
+    private ntv_ChoosePixelFormatARB_5 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; pfAttribFList: IntPtr; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): glBool32>(ChoosePixelFormatARB_adr);
+    private ntv_ChoosePixelFormatARB_6 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; pfAttribFList: IntPtr; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: IntPtr): glBool32>(ChoosePixelFormatARB_adr);
+    private ntv_ChoosePixelFormatARB_7 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; pfAttribFList: IntPtr; nMaxFormats: UInt32; piFormats: IntPtr; var nNumFormats: UInt32): glBool32>(ChoosePixelFormatARB_adr);
+    private ntv_ChoosePixelFormatARB_8 := GetProcOrNil&<function(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; pfAttribFList: IntPtr; nMaxFormats: UInt32; piFormats: IntPtr; nNumFormats: IntPtr): glBool32>(ChoosePixelFormatARB_adr);
     private ntv_ChoosePixelFormatARB_9 := GetProcOrNil&<function(hdc: gdi_device_context; piAttribIList: IntPtr; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): glBool32>(ChoosePixelFormatARB_adr);
     private ntv_ChoosePixelFormatARB_10 := GetProcOrNil&<function(hdc: gdi_device_context; piAttribIList: IntPtr; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: IntPtr): glBool32>(ChoosePixelFormatARB_adr);
     private ntv_ChoosePixelFormatARB_11 := GetProcOrNil&<function(hdc: gdi_device_context; piAttribIList: IntPtr; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: IntPtr; var nNumFormats: UInt32): glBool32>(ChoosePixelFormatARB_adr);
@@ -33456,9 +33456,10 @@
     private ntv_ChoosePixelFormatARB_14 := GetProcOrNil&<function(hdc: gdi_device_context; piAttribIList: IntPtr; pfAttribFList: IntPtr; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: IntPtr): glBool32>(ChoosePixelFormatARB_adr);
     private ntv_ChoosePixelFormatARB_15 := GetProcOrNil&<function(hdc: gdi_device_context; piAttribIList: IntPtr; pfAttribFList: IntPtr; nMaxFormats: UInt32; piFormats: IntPtr; var nNumFormats: UInt32): glBool32>(ChoosePixelFormatARB_adr);
     private ntv_ChoosePixelFormatARB_16 := GetProcOrNil&<function(hdc: gdi_device_context; piAttribIList: IntPtr; pfAttribFList: IntPtr; nMaxFormats: UInt32; piFormats: IntPtr; nNumFormats: IntPtr): glBool32>(ChoosePixelFormatARB_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; piAttribIList: array of Int32; pfAttribFList: array of single; nMaxFormats: UInt32; piFormats: array of Int32; nNumFormats: array of UInt32): glBool32;
-      type PInt32 = ^Int32;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; piAttribIList: array of wglPixelFormatAttribute; pfAttribFList: array of single; nMaxFormats: UInt32; piFormats: array of Int32; nNumFormats: array of UInt32): glBool32;
+      type PWglPixelFormatAttribute = ^wglPixelFormatAttribute;
       type PSingle = ^single;
+      type PInt32 = ^Int32;
       type PUInt32 = ^UInt32;
     begin
       Result := if (piAttribIList<>nil) and (piAttribIList.Length<>0) then
@@ -33480,34 +33481,34 @@
         if (pfAttribFList<>nil) and (pfAttribFList.Length<>0) then
           if (nNumFormats<>nil) and (nNumFormats.Length<>0) then
             if (piFormats<>nil) and (piFormats.Length<>0) then
-              ntv_ChoosePixelFormatARB_1(hdc, PInt32(nil)^, pfAttribFList[0], nMaxFormats, piFormats[0], nNumFormats[0]) else
-              ntv_ChoosePixelFormatARB_1(hdc, PInt32(nil)^, pfAttribFList[0], nMaxFormats, PInt32(nil)^, nNumFormats[0]) else
+              ntv_ChoosePixelFormatARB_1(hdc, PWglPixelFormatAttribute(nil)^, pfAttribFList[0], nMaxFormats, piFormats[0], nNumFormats[0]) else
+              ntv_ChoosePixelFormatARB_1(hdc, PWglPixelFormatAttribute(nil)^, pfAttribFList[0], nMaxFormats, PInt32(nil)^, nNumFormats[0]) else
             if (piFormats<>nil) and (piFormats.Length<>0) then
-              ntv_ChoosePixelFormatARB_1(hdc, PInt32(nil)^, pfAttribFList[0], nMaxFormats, piFormats[0], PUInt32(nil)^) else
-              ntv_ChoosePixelFormatARB_1(hdc, PInt32(nil)^, pfAttribFList[0], nMaxFormats, PInt32(nil)^, PUInt32(nil)^) else
+              ntv_ChoosePixelFormatARB_1(hdc, PWglPixelFormatAttribute(nil)^, pfAttribFList[0], nMaxFormats, piFormats[0], PUInt32(nil)^) else
+              ntv_ChoosePixelFormatARB_1(hdc, PWglPixelFormatAttribute(nil)^, pfAttribFList[0], nMaxFormats, PInt32(nil)^, PUInt32(nil)^) else
           if (nNumFormats<>nil) and (nNumFormats.Length<>0) then
             if (piFormats<>nil) and (piFormats.Length<>0) then
-              ntv_ChoosePixelFormatARB_1(hdc, PInt32(nil)^, PSingle(nil)^, nMaxFormats, piFormats[0], nNumFormats[0]) else
-              ntv_ChoosePixelFormatARB_1(hdc, PInt32(nil)^, PSingle(nil)^, nMaxFormats, PInt32(nil)^, nNumFormats[0]) else
+              ntv_ChoosePixelFormatARB_1(hdc, PWglPixelFormatAttribute(nil)^, PSingle(nil)^, nMaxFormats, piFormats[0], nNumFormats[0]) else
+              ntv_ChoosePixelFormatARB_1(hdc, PWglPixelFormatAttribute(nil)^, PSingle(nil)^, nMaxFormats, PInt32(nil)^, nNumFormats[0]) else
             if (piFormats<>nil) and (piFormats.Length<>0) then
-              ntv_ChoosePixelFormatARB_1(hdc, PInt32(nil)^, PSingle(nil)^, nMaxFormats, piFormats[0], PUInt32(nil)^) else
-              ntv_ChoosePixelFormatARB_1(hdc, PInt32(nil)^, PSingle(nil)^, nMaxFormats, PInt32(nil)^, PUInt32(nil)^);
+              ntv_ChoosePixelFormatARB_1(hdc, PWglPixelFormatAttribute(nil)^, PSingle(nil)^, nMaxFormats, piFormats[0], PUInt32(nil)^) else
+              ntv_ChoosePixelFormatARB_1(hdc, PWglPixelFormatAttribute(nil)^, PSingle(nil)^, nMaxFormats, PInt32(nil)^, PUInt32(nil)^);
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): glBool32 :=
       ntv_ChoosePixelFormatARB_1(hdc, piAttribIList, pfAttribFList, nMaxFormats, piFormats, nNumFormats);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: IntPtr): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: IntPtr): glBool32 :=
       ntv_ChoosePixelFormatARB_2(hdc, piAttribIList, pfAttribFList, nMaxFormats, piFormats, nNumFormats);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: IntPtr; var nNumFormats: UInt32): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: IntPtr; var nNumFormats: UInt32): glBool32 :=
       ntv_ChoosePixelFormatARB_3(hdc, piAttribIList, pfAttribFList, nMaxFormats, piFormats, nNumFormats);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: Int32; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: IntPtr; nNumFormats: IntPtr): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; var pfAttribFList: single; nMaxFormats: UInt32; piFormats: IntPtr; nNumFormats: IntPtr): glBool32 :=
       ntv_ChoosePixelFormatARB_4(hdc, piAttribIList, pfAttribFList, nMaxFormats, piFormats, nNumFormats);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: Int32; pfAttribFList: IntPtr; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; pfAttribFList: IntPtr; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): glBool32 :=
       ntv_ChoosePixelFormatARB_5(hdc, piAttribIList, pfAttribFList, nMaxFormats, piFormats, nNumFormats);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: Int32; pfAttribFList: IntPtr; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: IntPtr): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; pfAttribFList: IntPtr; nMaxFormats: UInt32; var piFormats: Int32; nNumFormats: IntPtr): glBool32 :=
       ntv_ChoosePixelFormatARB_6(hdc, piAttribIList, pfAttribFList, nMaxFormats, piFormats, nNumFormats);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: Int32; pfAttribFList: IntPtr; nMaxFormats: UInt32; piFormats: IntPtr; var nNumFormats: UInt32): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; pfAttribFList: IntPtr; nMaxFormats: UInt32; piFormats: IntPtr; var nNumFormats: UInt32): glBool32 :=
       ntv_ChoosePixelFormatARB_7(hdc, piAttribIList, pfAttribFList, nMaxFormats, piFormats, nNumFormats);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: Int32; pfAttribFList: IntPtr; nMaxFormats: UInt32; piFormats: IntPtr; nNumFormats: IntPtr): glBool32 :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; var piAttribIList: wglPixelFormatAttribute; pfAttribFList: IntPtr; nMaxFormats: UInt32; piFormats: IntPtr; nNumFormats: IntPtr): glBool32 :=
       ntv_ChoosePixelFormatARB_8(hdc, piAttribIList, pfAttribFList, nMaxFormats, piFormats, nNumFormats);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function ChoosePixelFormatARB(hdc: gdi_device_context; piAttribIList: IntPtr; var pfAttribFList: single; nMaxFormats: UInt32; var piFormats: Int32; var nNumFormats: UInt32): glBool32 :=
       ntv_ChoosePixelFormatARB_9(hdc, piAttribIList, pfAttribFList, nMaxFormats, piFormats, nNumFormats);

@@ -14,13 +14,13 @@ SubReps Update: OpenCL[OUT] : [merge-main]
 SubReps Update: OpenCL[OUT] : Already up to date.
 SubReps Update: Done pulling OpenCL
 SubReps Update: Pulling OpenGL
-SubReps Update: cmd /c "(echo [checkout] && git checkout custom 2>&1) && (echo [pull-own]: && git pull SunSerega custom) && (echo [fetch-main] && git fetch 0_official main:main) && (echo [merge-main] && git merge main)"
+SubReps Update: cmd /c "(echo [checkout] && git checkout pretest/569 2>&1) && (echo [pull-own]: && git pull SunSerega pretest/569) && (echo [fetch-main] && git fetch 0_official main:main) && (echo [merge-main] && git merge main)"
 SubReps Update: OpenGL[OUT] : [checkout]
-SubReps Update: OpenGL[OUT] : Your branch is up to date with 'SunSerega/custom'.
-SubReps Update: OpenGL[OUT] : Already on 'custom'
+SubReps Update: OpenGL[OUT] : Your branch is up to date with 'SunSerega/pretest/569'.
+SubReps Update: OpenGL[OUT] : Already on 'pretest/569'
 SubReps Update: OpenGL[OUT] : [pull-own]:
 SubReps Update: OpenGL[ERR] : From SunSerega/OpenGL-Registry
-SubReps Update: OpenGL[ERR] : * branch custom -> FETCH_HEAD
+SubReps Update: OpenGL[ERR] : * branch pretest/569 -> FETCH_HEAD
 SubReps Update: OpenGL[OUT] : Already up to date.
 SubReps Update: OpenGL[OUT] : [fetch-main]
 SubReps Update: OpenGL[OUT] : [merge-main]
@@ -64,7 +64,7 @@ ScrapXML[OpenGL]: Saving as binary
 ScrapXML[OpenGL]: VendorSuffix: Saved 35 items
 ScrapXML[OpenGL]: Enum: Saved 4772 items
 ScrapXML[OpenGL]: BasicType: Saved 116 items
-ScrapXML[OpenGL]: Group: Saved 323 items
+ScrapXML[OpenGL]: Group: Saved 327 items
 ScrapXML[OpenGL]: IdClass: Saved 15 items
 ScrapXML[OpenGL]: Delegate: Saved 5 items
 ScrapXML[OpenGL]: Func: Saved 3575 items
