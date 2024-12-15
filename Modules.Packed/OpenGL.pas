@@ -14795,6 +14795,7 @@ type
     public static property POST_COLOR_MATRIX_COLOR_TABLE:                                       glGetPName read new glGetPName($80D2);
     public static property MAX_ELEMENTS_VERTICES:                                               glGetPName read new glGetPName($80E8);
     public static property MAX_ELEMENTS_INDICES:                                                glGetPName read new glGetPName($80E9);
+    public static property PARAMETER_BUFFER_BINDING:                                            glGetPName read new glGetPName($80EF);
     public static property POINT_SIZE_MIN:                                                      glGetPName read new glGetPName($8126);
     public static property POINT_SIZE_MAX:                                                      glGetPName read new glGetPName($8127);
     public static property POINT_FADE_THRESHOLD_SIZE:                                           glGetPName read new glGetPName($8128);
@@ -14919,6 +14920,7 @@ type
     public static property MAX_TEXTURE_IMAGE_UNITS:                                             glGetPName read new glGetPName($8872);
     public static property ARRAY_BUFFER_BINDING:                                                glGetPName read new glGetPName($8894);
     public static property ELEMENT_ARRAY_BUFFER_BINDING:                                        glGetPName read new glGetPName($8895);
+    public static property VERTEX_ARRAY_BUFFER_BINDING:                                         glGetPName read new glGetPName($8896);
     public static property PIXEL_PACK_BUFFER_BINDING:                                           glGetPName read new glGetPName($88ED);
     public static property PIXEL_UNPACK_BUFFER_BINDING:                                         glGetPName read new glGetPName($88EF);
     public static property MAX_DUAL_SOURCE_DRAW_BUFFERS:                                        glGetPName read new glGetPName($88FC);
@@ -14953,6 +14955,7 @@ type
     public static property TEXTURE_BINDING_1D_ARRAY:                                            glGetPName read new glGetPName($8C1C);
     public static property TEXTURE_BINDING_2D_ARRAY:                                            glGetPName read new glGetPName($8C1D);
     public static property MAX_GEOMETRY_TEXTURE_IMAGE_UNITS:                                    glGetPName read new glGetPName($8C29);
+    public static property TEXTURE_BUFFER_BINDING:                                              glGetPName read new glGetPName($8C2A);
     public static property MAX_TEXTURE_BUFFER_SIZE:                                             glGetPName read new glGetPName($8C2B);
     public static property TEXTURE_BINDING_BUFFER:                                              glGetPName read new glGetPName($8C2C);
     public static property TRANSFORM_FEEDBACK_BUFFER_START:                                     glGetPName read new glGetPName($8C84);
@@ -14979,8 +14982,13 @@ type
     public static property TIMESTAMP:                                                           glGetPName read new glGetPName($8E28);
     public static property PROVOKING_VERTEX:                                                    glGetPName read new glGetPName($8E4F);
     public static property MAX_SAMPLE_MASK_WORDS:                                               glGetPName read new glGetPName($8E59);
+    public static property MAX_TRANSFORM_FEEDBACK_BUFFERS:                                      glGetPName read new glGetPName($8E70);
+    public static property MAX_VERTEX_STREAMS:                                                  glGetPName read new glGetPName($8E71);
     public static property MAX_TESS_CONTROL_UNIFORM_BLOCKS:                                     glGetPName read new glGetPName($8E89);
     public static property MAX_TESS_EVALUATION_UNIFORM_BLOCKS:                                  glGetPName read new glGetPName($8E8A);
+    public static property COPY_READ_BUFFER_BINDING:                                            glGetPName read new glGetPName($8F36);
+    public static property COPY_WRITE_BUFFER_BINDING:                                           glGetPName read new glGetPName($8F37);
+    public static property DRAW_INDIRECT_BUFFER_BINDING:                                        glGetPName read new glGetPName($8F43);
     public static property FETCH_PER_SAMPLE:                                                    glGetPName read new glGetPName($8F65);
     public static property FRAGMENT_SHADER_FRAMEBUFFER_FETCH_MRT:                               glGetPName read new glGetPName($8F66);
     public static property FRAGMENT_SHADING_RATE_NON_TRIVIAL_COMBINERS_SUPPORTED:               glGetPName read new glGetPName($8F6F);
@@ -15011,11 +15019,19 @@ type
     public static property MAX_GEOMETRY_OUTPUT_COMPONENTS:                                      glGetPName read new glGetPName($9124);
     public static property MAX_FRAGMENT_INPUT_COMPONENTS:                                       glGetPName read new glGetPName($9125);
     public static property CONTEXT_PROFILE_MASK:                                                glGetPName read new glGetPName($9126);
+    public static property QUERY_BUFFER_BINDING:                                                glGetPName read new glGetPName($9193);
     public static property TEXTURE_BUFFER_OFFSET_ALIGNMENT:                                     glGetPName read new glGetPName($919F);
     public static property MAX_COMPUTE_UNIFORM_BLOCKS:                                          glGetPName read new glGetPName($91BB);
     public static property MAX_COMPUTE_TEXTURE_IMAGE_UNITS:                                     glGetPName read new glGetPName($91BC);
     public static property MAX_COMPUTE_WORK_GROUP_COUNT:                                        glGetPName read new glGetPName($91BE);
     public static property MAX_COMPUTE_WORK_GROUP_SIZE:                                         glGetPName read new glGetPName($91BF);
+    public static property ATOMIC_COUNTER_BUFFER_BINDING:                                       glGetPName read new glGetPName($92C1);
+    public static property MAX_VERTEX_ATOMIC_COUNTER_BUFFERS:                                   glGetPName read new glGetPName($92CC);
+    public static property MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS:                             glGetPName read new glGetPName($92CD);
+    public static property MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS:                          glGetPName read new glGetPName($92CE);
+    public static property MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS:                                 glGetPName read new glGetPName($92CF);
+    public static property MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS:                                 glGetPName read new glGetPName($92D0);
+    public static property MAX_COMBINED_ATOMIC_COUNTER_BUFFERS:                                 glGetPName read new glGetPName($92D1);
     public static property MAX_VERTEX_ATOMIC_COUNTERS:                                          glGetPName read new glGetPName($92D2);
     public static property MAX_TESS_CONTROL_ATOMIC_COUNTERS:                                    glGetPName read new glGetPName($92D3);
     public static property MAX_TESS_EVALUATION_ATOMIC_COUNTERS:                                 glGetPName read new glGetPName($92D4);
@@ -15660,6 +15676,8 @@ type
         Result := 'MAX_ELEMENTS_VERTICES' else
       if MAX_ELEMENTS_INDICES = self then
         Result := 'MAX_ELEMENTS_INDICES' else
+      if PARAMETER_BUFFER_BINDING = self then
+        Result := 'PARAMETER_BUFFER_BINDING' else
       if POINT_SIZE_MIN = self then
         Result := 'POINT_SIZE_MIN' else
       if POINT_SIZE_MAX = self then
@@ -15906,6 +15924,8 @@ type
         Result := 'ARRAY_BUFFER_BINDING' else
       if ELEMENT_ARRAY_BUFFER_BINDING = self then
         Result := 'ELEMENT_ARRAY_BUFFER_BINDING' else
+      if VERTEX_ARRAY_BUFFER_BINDING = self then
+        Result := 'VERTEX_ARRAY_BUFFER_BINDING' else
       if PIXEL_PACK_BUFFER_BINDING = self then
         Result := 'PIXEL_PACK_BUFFER_BINDING' else
       if PIXEL_UNPACK_BUFFER_BINDING = self then
@@ -15972,6 +15992,8 @@ type
         Result := 'TEXTURE_BINDING_2D_ARRAY' else
       if MAX_GEOMETRY_TEXTURE_IMAGE_UNITS = self then
         Result := 'MAX_GEOMETRY_TEXTURE_IMAGE_UNITS' else
+      if TEXTURE_BUFFER_BINDING = self then
+        Result := 'TEXTURE_BUFFER_BINDING' else
       if MAX_TEXTURE_BUFFER_SIZE = self then
         Result := 'MAX_TEXTURE_BUFFER_SIZE' else
       if TEXTURE_BINDING_BUFFER = self then
@@ -16024,10 +16046,20 @@ type
         Result := 'PROVOKING_VERTEX' else
       if MAX_SAMPLE_MASK_WORDS = self then
         Result := 'MAX_SAMPLE_MASK_WORDS' else
+      if MAX_TRANSFORM_FEEDBACK_BUFFERS = self then
+        Result := 'MAX_TRANSFORM_FEEDBACK_BUFFERS' else
+      if MAX_VERTEX_STREAMS = self then
+        Result := 'MAX_VERTEX_STREAMS' else
       if MAX_TESS_CONTROL_UNIFORM_BLOCKS = self then
         Result := 'MAX_TESS_CONTROL_UNIFORM_BLOCKS' else
       if MAX_TESS_EVALUATION_UNIFORM_BLOCKS = self then
         Result := 'MAX_TESS_EVALUATION_UNIFORM_BLOCKS' else
+      if COPY_READ_BUFFER_BINDING = self then
+        Result := 'COPY_READ_BUFFER_BINDING' else
+      if COPY_WRITE_BUFFER_BINDING = self then
+        Result := 'COPY_WRITE_BUFFER_BINDING' else
+      if DRAW_INDIRECT_BUFFER_BINDING = self then
+        Result := 'DRAW_INDIRECT_BUFFER_BINDING' else
       if FETCH_PER_SAMPLE = self then
         Result := 'FETCH_PER_SAMPLE' else
       if FRAGMENT_SHADER_FRAMEBUFFER_FETCH_MRT = self then
@@ -16088,6 +16120,8 @@ type
         Result := 'MAX_FRAGMENT_INPUT_COMPONENTS' else
       if CONTEXT_PROFILE_MASK = self then
         Result := 'CONTEXT_PROFILE_MASK' else
+      if QUERY_BUFFER_BINDING = self then
+        Result := 'QUERY_BUFFER_BINDING' else
       if TEXTURE_BUFFER_OFFSET_ALIGNMENT = self then
         Result := 'TEXTURE_BUFFER_OFFSET_ALIGNMENT' else
       if MAX_COMPUTE_UNIFORM_BLOCKS = self then
@@ -16098,6 +16132,20 @@ type
         Result := 'MAX_COMPUTE_WORK_GROUP_COUNT' else
       if MAX_COMPUTE_WORK_GROUP_SIZE = self then
         Result := 'MAX_COMPUTE_WORK_GROUP_SIZE' else
+      if ATOMIC_COUNTER_BUFFER_BINDING = self then
+        Result := 'ATOMIC_COUNTER_BUFFER_BINDING' else
+      if MAX_VERTEX_ATOMIC_COUNTER_BUFFERS = self then
+        Result := 'MAX_VERTEX_ATOMIC_COUNTER_BUFFERS' else
+      if MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS = self then
+        Result := 'MAX_TESS_CONTROL_ATOMIC_COUNTER_BUFFERS' else
+      if MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS = self then
+        Result := 'MAX_TESS_EVALUATION_ATOMIC_COUNTER_BUFFERS' else
+      if MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS = self then
+        Result := 'MAX_GEOMETRY_ATOMIC_COUNTER_BUFFERS' else
+      if MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS = self then
+        Result := 'MAX_FRAGMENT_ATOMIC_COUNTER_BUFFERS' else
+      if MAX_COMBINED_ATOMIC_COUNTER_BUFFERS = self then
+        Result := 'MAX_COMBINED_ATOMIC_COUNTER_BUFFERS' else
       if MAX_VERTEX_ATOMIC_COUNTERS = self then
         Result := 'MAX_VERTEX_ATOMIC_COUNTERS' else
       if MAX_TESS_CONTROL_ATOMIC_COUNTERS = self then
