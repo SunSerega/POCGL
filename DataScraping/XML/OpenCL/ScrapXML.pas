@@ -226,6 +226,9 @@ type
       end;
       if throw_away then exit;
       
+      if gr_name=nil then
+        raise new InvalidOperationException($'<require> node with etype="{etype}" had no group attribute:{#10}{n.FullXmlText}');
+      
       var gr_s := FindOrMakeSource(gr_name, nil);
       if gr_s<>nil then
       begin

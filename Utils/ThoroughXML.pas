@@ -73,6 +73,8 @@ type
     public property Tag: string read _raw.Name;
     public property Text: string read GetContent(()->_raw.InnerText);
     
+    public property FullXmlText: string read _raw.OuterXml;
+    
     public function IterateParents: sequence of XmlNode;
     begin
       var curr := self;

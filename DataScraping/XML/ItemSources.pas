@@ -56,6 +56,8 @@ type
     
     protected constructor(name: TSourceName);
     begin
+      if name=nil then
+        raise nil;
       self._name := name;
       if name in all_sources then
         raise new InvalidOperationException($'Added {self} multiple times');
