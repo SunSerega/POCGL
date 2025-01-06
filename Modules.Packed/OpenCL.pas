@@ -1828,6 +1828,55 @@ type
   end;
   
   ///
+  clDeviceImageTilingCapabilities = record
+    public val: UInt64;
+    public constructor(val: UInt64) := self.val := val;
+    
+    public static property DEVICE_IMAGE_TILING_DEVICE_ACCESS: clDeviceImageTilingCapabilities read new clDeviceImageTilingCapabilities(1 shl 0);
+    public static property DEVICE_IMAGE_TILING_HOST_ACCESS:   clDeviceImageTilingCapabilities read new clDeviceImageTilingCapabilities(1 shl 1);
+    
+    public static function operator+(v1, v2: clDeviceImageTilingCapabilities) := new clDeviceImageTilingCapabilities(v1.val or v2.val);
+    public static function operator or(v1, v2: clDeviceImageTilingCapabilities) := new clDeviceImageTilingCapabilities(v1.val or v2.val);
+    
+    public static function operator-(v1, v2: clDeviceImageTilingCapabilities) := new clDeviceImageTilingCapabilities(v1.val and not v2.val);
+    
+    public static procedure operator+=(var v1: clDeviceImageTilingCapabilities; v2: clDeviceImageTilingCapabilities) := v1 := v1+v2;
+    public static procedure operator-=(var v1: clDeviceImageTilingCapabilities; v2: clDeviceImageTilingCapabilities) := v1 := v1-v2;
+    
+    public static function operator in(v1, v2: clDeviceImageTilingCapabilities) := v1.val and v2.val = v1.val;
+    
+    public function ToString: string; override;
+    begin
+      var res := new StringBuilder;
+      var left_val := self.val;
+      if left_val=0 then
+      begin
+        Result := 'clDeviceImageTilingCapabilities[0]';
+        exit;
+      end;
+      if DEVICE_IMAGE_TILING_DEVICE_ACCESS in self then
+      begin
+        res += 'DEVICE_IMAGE_TILING_DEVICE_ACCESS+';
+        left_val := left_val and not DEVICE_IMAGE_TILING_DEVICE_ACCESS.val;
+      end;
+      if DEVICE_IMAGE_TILING_HOST_ACCESS in self then
+      begin
+        res += 'DEVICE_IMAGE_TILING_HOST_ACCESS+';
+        left_val := left_val and not DEVICE_IMAGE_TILING_HOST_ACCESS.val;
+      end;
+      if left_val<>0 then
+      begin
+        res += 'clDeviceImageTilingCapabilities[';
+        res += self.val.ToString;
+        res += ']+';
+      end;
+      res.Length -= 1;
+      Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
   clDeviceInfo = record
     public val: UInt32;
     public constructor(val: UInt32) := self.val := val;
@@ -2029,6 +2078,7 @@ type
     public static property DEVICE_SINGLE_FP_ATOMIC_CAPABILITIES:                             clDeviceInfo read new clDeviceInfo($4231);
     public static property DEVICE_DOUBLE_FP_ATOMIC_CAPABILITIES:                             clDeviceInfo read new clDeviceInfo($4232);
     public static property DEVICE_HALF_FP_ATOMIC_CAPABILITIES:                               clDeviceInfo read new clDeviceInfo($4233);
+    public static property DEVICE_IMAGE_TILING_CAPABILITIES:                                 clDeviceInfo read new clDeviceInfo($4234);
     public static property DEVICE_IP_VERSION:                                                clDeviceInfo read new clDeviceInfo($4250);
     public static property DEVICE_ID:                                                        clDeviceInfo read new clDeviceInfo($4251);
     public static property DEVICE_NUM_SLICES:                                                clDeviceInfo read new clDeviceInfo($4252);
@@ -2431,6 +2481,8 @@ type
         Result := 'DEVICE_DOUBLE_FP_ATOMIC_CAPABILITIES' else
       if DEVICE_HALF_FP_ATOMIC_CAPABILITIES = self then
         Result := 'DEVICE_HALF_FP_ATOMIC_CAPABILITIES' else
+      if DEVICE_IMAGE_TILING_CAPABILITIES = self then
+        Result := 'DEVICE_IMAGE_TILING_CAPABILITIES' else
       if DEVICE_IP_VERSION = self then
         Result := 'DEVICE_IP_VERSION' else
       if DEVICE_ID = self then
@@ -3708,6 +3760,7 @@ type
     public static property IMAGE_DX9_PLANE:         clImageInfo read new clImageInfo($4075);
     public static property IMAGE_VA_API_PLANE:      clImageInfo read new clImageInfo($4099);
     public static property EGL_YUV_PLANE:           clImageInfo read new clImageInfo($4107);
+    public static property IMAGE_TILING:            clImageInfo read new clImageInfo($4236);
     
     public function ToString: string; override;
     begin
@@ -3745,6 +3798,8 @@ type
         Result := 'IMAGE_VA_API_PLANE' else
       if EGL_YUV_PLANE = self then
         Result := 'EGL_YUV_PLANE' else
+      if IMAGE_TILING = self then
+        Result := 'IMAGE_TILING' else
         Result := $'clImageInfo[{self.val}]';
     end;
     
@@ -3808,6 +3863,25 @@ type
       if IMAGE_REQUIREMENTS_MAX_ARRAY_SIZE = self then
         Result := 'IMAGE_REQUIREMENTS_MAX_ARRAY_SIZE' else
         Result := $'clImageRequirementsInfo[{self.val}]';
+    end;
+    
+  end;
+  
+  ///
+  clImageTiling = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property IMAGE_TILING_LINEAR:  clImageTiling read new clImageTiling($0001);
+    public static property IMAGE_TILING_OPTIMAL: clImageTiling read new clImageTiling($0002);
+    
+    public function ToString: string; override;
+    begin
+      if IMAGE_TILING_LINEAR = self then
+        Result := 'IMAGE_TILING_LINEAR' else
+      if IMAGE_TILING_OPTIMAL = self then
+        Result := 'IMAGE_TILING_OPTIMAL' else
+        Result := $'clImageTiling[{self.val}]';
     end;
     
   end;
@@ -4576,6 +4650,7 @@ type
     public static property MEM_ALLOC_FLAGS_IMG:           clMemProperties read new clMemProperties($40D7);
     public static property MEM_LOCALLY_UNCACHED_RESOURCE: clMemProperties read new clMemProperties($4218);
     public static property MEM_DEVICE_ID:                 clMemProperties read new clMemProperties($4219);
+    public static property MEM_IMAGE_TILING:              clMemProperties read new clMemProperties($4235);
     public static property MEM_DEVICE_PRIVATE_ADDRESS:    clMemProperties read new clMemProperties($5000);
     
     public function ToString: string; override;
@@ -4590,6 +4665,8 @@ type
         Result := 'MEM_LOCALLY_UNCACHED_RESOURCE' else
       if MEM_DEVICE_ID = self then
         Result := 'MEM_DEVICE_ID' else
+      if MEM_IMAGE_TILING = self then
+        Result := 'MEM_IMAGE_TILING' else
       if MEM_DEVICE_PRIVATE_ADDRESS = self then
         Result := 'MEM_DEVICE_PRIVATE_ADDRESS' else
         Result := $'clMemProperties[{self.val}]';
@@ -13618,6 +13695,16 @@ type
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_IMAGE_TILING_CAPABILITIES(device: cl_device_id; var param_value: clDeviceImageTilingCapabilities; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetDeviceInfo_DEVICE_IMAGE_TILING_CAPABILITIES', CallDebug.Wrap(device), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clDeviceImageTilingCapabilities>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetDeviceInfo(device, clDeviceInfo.DEVICE_IMAGE_TILING_CAPABILITIES, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_IP_VERSION(device: cl_device_id; var param_value: UInt32; param_value_validate_size: boolean := false): clErrorCode;
     begin
       {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetDeviceInfo_DEVICE_IP_VERSION', CallDebug.Wrap(device), CallDebug.WrapVarArg(param_value)); try{$endif}
@@ -14114,6 +14201,16 @@ type
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<Int32>);
       var param_value_ret_size: UIntPtr;
       Result := GetImageInfo(image, clImageInfo.EGL_YUV_PLANE, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetImageInfo_IMAGE_TILING(image: cl_mem; var param_value: clImageTiling; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetImageInfo_IMAGE_TILING', CallDebug.Wrap(image), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clImageTiling>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetImageInfo(image, clImageInfo.IMAGE_TILING, param_value_sz,param_value,param_value_ret_size);
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
@@ -17701,6 +17798,13 @@ type
   /// core dependency: cl 1.2
   clImageRaw10Raw12EXT = static class
     public const ExtensionString = 'cl_ext_image_raw10_raw12';
+  end;
+  
+  /// id: cl_ext_image_tiling_control
+  /// version: 0.2.0
+  /// core dependency: cl 3.0
+  clImageTilingControlEXT = static class
+    public const ExtensionString = 'cl_ext_image_tiling_control';
   end;
   
   /// id: cl_ext_image_unorm_int_2_101010

@@ -2477,6 +2477,10 @@ type
     begin
       cl.GetDeviceInfo_DEVICE_KERNEL_CLOCK_CAPABILITIES(self.ntv, Result).RaiseIfError;
     end;
+    private function GetImageTilingCapabilities: clDeviceImageTilingCapabilities;
+    begin
+      cl.GetDeviceInfo_DEVICE_IMAGE_TILING_CAPABILITIES(self.ntv, Result).RaiseIfError;
+    end;
     
     public property &Type:                                               clDeviceType                                          read GetType;
     public property VendorId:                                            clKhronosVendorId                                     read GetVendorId;
@@ -2658,6 +2662,7 @@ type
     public property FeatureCapabilities:                                 clDeviceFeatureCapabilities                           read GetFeatureCapabilities;
     public property MemoryCapabilities:                                  clMemAllocFlagsIMG                                    read GetMemoryCapabilities;
     public property KernelClockCapabilities:                             clDeviceKernelClockCapabilities                       read GetKernelClockCapabilities;
+    public property ImageTilingCapabilities:                             clDeviceImageTilingCapabilities                       read GetImageTilingCapabilities;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -2847,7 +2852,8 @@ type
       res += 'NumThreadsPerEu                                     = '; AddProp(res, GetNumThreadsPerEu                                    ); res += #10;
       res += 'FeatureCapabilities                                 = '; AddProp(res, GetFeatureCapabilities                                ); res += #10;
       res += 'MemoryCapabilities                                  = '; AddProp(res, GetMemoryCapabilities                                 ); res += #10;
-      res += 'KernelClockCapabilities                             = '; AddProp(res, GetKernelClockCapabilities                            );
+      res += 'KernelClockCapabilities                             = '; AddProp(res, GetKernelClockCapabilities                            ); res += #10;
+      res += 'ImageTilingCapabilities                             = '; AddProp(res, GetImageTilingCapabilities                            );
     end;
     public function ToString: string; override;
     begin

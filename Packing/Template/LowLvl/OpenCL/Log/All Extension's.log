@@ -194,6 +194,15 @@
 	Enum [cl::IMAGE_REQUIREMENTS_MAX_ARRAY_SIZE]
 	Func [cl::GetImageRequirementsInfo + EXT]
 
+# clImageTilingControlEXT (cl_ext_image_tiling_control)
+	Enum [cl::IMAGE_TILING_LINEAR]
+	Enum [cl::DEVICE_IMAGE_TILING_DEVICE_ACCESS]
+	Enum [cl::IMAGE_TILING_OPTIMAL]
+	Enum [cl::DEVICE_IMAGE_TILING_HOST_ACCESS]
+	Enum [cl::DEVICE_IMAGE_TILING_CAPABILITIES]
+	Enum [cl::MEM_IMAGE_TILING]
+	Enum [cl::IMAGE_TILING]
+
 # clImageUnormInt2101010EXT (cl_ext_image_unorm_int_2_101010)
 	Enum [cl::UNORM_INT_2_101010]
 

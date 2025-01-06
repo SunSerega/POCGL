@@ -594,6 +594,9 @@ clDeviceFpAtomicCapabilities
 --- DEVICE_HALF_FP_ATOMIC_CAPABILITIES
 !output
 clDeviceFpAtomicCapabilities
+--- DEVICE_IMAGE_TILING_CAPABILITIES
+!output
+clDeviceImageTilingCapabilities
 --- DEVICE_IP_VERSION
 !output
 UInt32
@@ -736,6 +739,9 @@ UInt32
 --- EGL_YUV_PLANE
 !output
 Int32
+--- IMAGE_TILING
+!output
+clImageTiling
 
 # cl.GetKernelArgInfo
 3

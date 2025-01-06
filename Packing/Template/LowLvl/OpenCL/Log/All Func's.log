@@ -1552,7 +1552,7 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-207
+208
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | var T                                                     | var UIntPtr          |
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | var T                                                     | IntPtr               |
 	clErrorCode | cl_device_id | clDeviceInfo                                                                  | UIntPtr          | pointer                                                   | var UIntPtr          |
@@ -1753,6 +1753,7 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_SINGLE_FP_ATOMIC_CAPABILITIES                             | *                | var clDeviceFpAtomicCapabilities                          | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_DOUBLE_FP_ATOMIC_CAPABILITIES                             | *                | var clDeviceFpAtomicCapabilities                          | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_HALF_FP_ATOMIC_CAPABILITIES                               | *                | var clDeviceFpAtomicCapabilities                          | *                    |
+	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_IMAGE_TILING_CAPABILITIES                                 | *                | var clDeviceImageTilingCapabilities                       | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_IP_VERSION                                                | *                | var UInt32                                                | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_ID                                                        | *                | var UInt32                                                | *                    |
 	clErrorCode | cl_device_id | clDeviceInfo.DEVICE_NUM_SLICES                                                | *                | var UInt32                                                | *                    |
@@ -1887,7 +1888,7 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-21
+22
 	clErrorCode | cl_mem | clImageInfo                         | UIntPtr          | var T               | var UIntPtr          |
 	clErrorCode | cl_mem | clImageInfo                         | UIntPtr          | var T               | IntPtr               |
 	clErrorCode | cl_mem | clImageInfo.IMAGE_FORMAT            | *                | var cl_image_format | *                    |
@@ -1907,6 +1908,7 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_mem | clImageInfo.IMAGE_DX9_PLANE         | *                | var UInt32          | *                    |
 	clErrorCode | cl_mem | clImageInfo.IMAGE_VA_API_PLANE      | *                | var UInt32          | *                    |
 	clErrorCode | cl_mem | clImageInfo.EGL_YUV_PLANE           | *                | var Int32           | *                    |
+	clErrorCode | cl_mem | clImageInfo.IMAGE_TILING            | *                | var clImageTiling   | *                    |
 	clErrorCode | cl_mem | clImageInfo                         | UIntPtr          | pointer             | var UIntPtr          |
 	clErrorCode | cl_mem | clImageInfo                         | UIntPtr          | pointer             | IntPtr               |
 	----------- | ------ | ----------------------------------- | ---------------- | ------------------- | -------------------- |
