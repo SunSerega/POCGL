@@ -171,7 +171,7 @@ begin
     AOtp.Otp(l);
   end;
   if l_err=nil then l_err := e->
-  AOtp.ErrOtp(new MessageException($'Error in {nick??fname}: {e}'));
+    AOtp.ErrOtp(new MessageException($'Error in {nick??fname}: {e}'));
   
   var p := new Process;
   var pek := if nick=nil then nil else new SubProcessEmergencyKiller(p);

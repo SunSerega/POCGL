@@ -367,6 +367,8 @@ procedure StartBgThread(p: ()->());
 procedure Otp(line: OtpLine);
 procedure Otp(line: string; kind: OtpKind);
 procedure Otp(line: string; kinds: array of string);
+/// Остановка других потоков и подпроцессов, довывод асинхронного вывода и вывод ошибки
+/// На случай ThreadAbortException - после вызова ErrOtp в потоке больше ничего быть не должно
 procedure ErrOtp(e: Exception);
 
 function IsSeparateExecution: boolean;
@@ -385,8 +387,8 @@ begin
       Otp(l);
 end;
 
-var in_err_state := false;
-var in_err_state_lock := new object;
+var err_state := 0;
+function is_in_err_state := err_state <> 0;
 
 var sec_thrs := new List<Thread>;
 
@@ -395,7 +397,7 @@ begin
   var thr := Thread.CurrentThread;
   
   lock sec_thrs do sec_thrs += thr;
-  if in_err_state then thr.Abort;
+  if is_in_err_state then thr.Abort;
   
 end;
 
@@ -417,10 +419,17 @@ procedure Otp(line: string; kind: OtpKind) :=
 procedure Otp(line: string; kinds: array of string) :=
   Otp(line, new OtpKind(kinds));
 
-/// Остановка других потоков и подпроцессов, довывод асинхронного вывода и вывод ошибки
-/// На случай ThreadAbortException - после вызова ErrOtp в потоке больше ничего быть не должно
 procedure ErrOtp(e: Exception);
 begin
+  var EternalSleep := procedure->
+  begin
+    Thread.CurrentThread.IsBackground := true;
+    Thread.CurrentThread.Suspend;
+  end;
+  
+  if Interlocked.Exchange(err_state, 1) = 1 then
+    EternalSleep;
+  
 //  Otp(e.ToString);
   
   foreach var h in EmergencyHandler.All do
@@ -429,15 +438,11 @@ begin
   if e is ParentHaltException then
     Halt;
   
-  var EternalSleep := procedure->
-  begin
-    Thread.CurrentThread.IsBackground := true;
-    Thread.CurrentThread.Suspend;
-  end;
-  
   if e is ThreadAbortException then
   begin
-    Thread.ResetAbort;
+    try
+      Thread.ResetAbort;
+    except end;
     EternalSleep;
   end;
 //  Console.Error.WriteLine($'pre err {e}');
@@ -445,15 +450,7 @@ begin
   // Обычно это из за попытки писать в закрытый пайп, при аварийном завершении родителя
   // Даём время родителю убить данный процесс через sec_proc_halt_strs
   if e.GetType = typeof(System.IO.IOException) then Sleep(100);
-  lock in_err_state_lock do
-  begin
-    if in_err_state then
-    begin
-      Monitor.Exit(in_err_state_lock);
-      EternalSleep;
-    end;
-    in_err_state := true;
-  end;
+  
 //  Otp($'Thread {Thread.CurrentThread.ManagedThreadId} runs ErrOtp');
 //  Otp(System.Environment.StackTrace);
 //  Otp(e.ToString);
