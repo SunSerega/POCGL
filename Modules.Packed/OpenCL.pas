@@ -1338,7 +1338,6 @@ type
     public static property COMMAND_BUFFER_CAPABILITY_KERNEL_PRINTF:       clDeviceCommandBufferCapabilities read new clDeviceCommandBufferCapabilities(1 shl 0);
     public static property COMMAND_BUFFER_CAPABILITY_DEVICE_SIDE_ENQUEUE: clDeviceCommandBufferCapabilities read new clDeviceCommandBufferCapabilities(1 shl 1);
     public static property COMMAND_BUFFER_CAPABILITY_SIMULTANEOUS_USE:    clDeviceCommandBufferCapabilities read new clDeviceCommandBufferCapabilities(1 shl 2);
-    public static property COMMAND_BUFFER_CAPABILITY_OUT_OF_ORDER:        clDeviceCommandBufferCapabilities read new clDeviceCommandBufferCapabilities(1 shl 3);
     public static property COMMAND_BUFFER_CAPABILITY_MULTIPLE_QUEUE:      clDeviceCommandBufferCapabilities read new clDeviceCommandBufferCapabilities(1 shl 4);
     
     public static function operator+(v1, v2: clDeviceCommandBufferCapabilities) := new clDeviceCommandBufferCapabilities(v1.val or v2.val);
@@ -1374,11 +1373,6 @@ type
       begin
         res += 'COMMAND_BUFFER_CAPABILITY_SIMULTANEOUS_USE+';
         left_val := left_val and not COMMAND_BUFFER_CAPABILITY_SIMULTANEOUS_USE.val;
-      end;
-      if COMMAND_BUFFER_CAPABILITY_OUT_OF_ORDER in self then
-      begin
-        res += 'COMMAND_BUFFER_CAPABILITY_OUT_OF_ORDER+';
-        left_val := left_val and not COMMAND_BUFFER_CAPABILITY_OUT_OF_ORDER.val;
       end;
       if COMMAND_BUFFER_CAPABILITY_MULTIPLE_QUEUE in self then
       begin
@@ -1833,6 +1827,7 @@ type
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_8BIT:          clDeviceInfo read new clDeviceInfo($1074);
     public static property DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED: clDeviceInfo read new clDeviceInfo($1075);
     public static property DEVICE_KERNEL_CLOCK_CAPABILITIES:                                 clDeviceInfo read new clDeviceInfo($1076);
+    public static property DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES:                 clDeviceInfo read new clDeviceInfo($129A);
     public static property DEVICE_COMMAND_BUFFER_CAPABILITIES:                               clDeviceInfo read new clDeviceInfo($12A9);
     public static property DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES:                  clDeviceInfo read new clDeviceInfo($12AA);
     public static property DEVICE_COMMAND_BUFFER_NUM_SYNC_DEVICES:                           clDeviceInfo read new clDeviceInfo($12AB);
@@ -2157,6 +2152,8 @@ type
         Result := 'DEVICE_INTEGER_DOT_PRODUCT_ACCELERATION_PROPERTIES_4x8BIT_PACKED' else
       if DEVICE_KERNEL_CLOCK_CAPABILITIES = self then
         Result := 'DEVICE_KERNEL_CLOCK_CAPABILITIES' else
+      if DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES = self then
+        Result := 'DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES' else
       if DEVICE_COMMAND_BUFFER_CAPABILITIES = self then
         Result := 'DEVICE_COMMAND_BUFFER_CAPABILITIES' else
       if DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES = self then
@@ -11002,6 +10999,14 @@ type
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES(device: cl_device_id; var param_value: clCommandQueueProperties; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clCommandQueueProperties>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetDeviceInfo(device, clDeviceInfo.DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetDeviceInfo_DEVICE_COMMAND_BUFFER_CAPABILITIES(device: cl_device_id; var param_value: clDeviceCommandBufferCapabilities; param_value_validate_size: boolean := false): clErrorCode;
     begin
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<clDeviceCommandBufferCapabilities>);
@@ -16445,7 +16450,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_command_buffer
-  /// version: 0.9.5 (provisional)
+  /// version: 0.9.6 (provisional)
   /// core dependency: cl 1.2
   clCommandBufferKHR = sealed partial class
     public constructor(pl: cl_platform_id);

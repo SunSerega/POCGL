@@ -2122,6 +2122,10 @@ type
     begin
       cl.GetDeviceInfo_DEVICE_COMMAND_BUFFER_CAPABILITIES(self.ntv, Result).RaiseIfError;
     end;
+    private function GetCommandBufferSupportedQueueProperties: clCommandQueueProperties;
+    begin
+      cl.GetDeviceInfo_DEVICE_COMMAND_BUFFER_SUPPORTED_QUEUE_PROPERTIES(self.ntv, Result).RaiseIfError;
+    end;
     private function GetCommandBufferRequiredQueueProperties: clCommandQueueProperties;
     begin
       cl.GetDeviceInfo_DEVICE_COMMAND_BUFFER_REQUIRED_QUEUE_PROPERTIES(self.ntv, Result).RaiseIfError;
@@ -2482,6 +2486,7 @@ type
     public property IntegerDotProductAccelerationProperties8bit:         cl_device_integer_dot_product_acceleration_properties read GetIntegerDotProductAccelerationProperties8bit;
     public property IntegerDotProductAccelerationProperties4x8bitPacked: cl_device_integer_dot_product_acceleration_properties read GetIntegerDotProductAccelerationProperties4x8bitPacked;
     public property CommandBufferCapabilities:                           clDeviceCommandBufferCapabilities                     read GetCommandBufferCapabilities;
+    public property CommandBufferSupportedQueueProperties:               clCommandQueueProperties                              read GetCommandBufferSupportedQueueProperties;
     public property CommandBufferRequiredQueueProperties:                clCommandQueueProperties                              read GetCommandBufferRequiredQueueProperties;
     public property CommandBufferNumSyncDevices:                         UInt32                                                read GetCommandBufferNumSyncDevices;
     public property CommandBufferSyncDevices:                            array of cl_device_id                                 read GetCommandBufferSyncDevices;
@@ -2671,6 +2676,7 @@ type
       res += 'IntegerDotProductAccelerationProperties8bit         = '; AddProp(res, GetIntegerDotProductAccelerationProperties8bit        ); res += #10;
       res += 'IntegerDotProductAccelerationProperties4x8bitPacked = '; AddProp(res, GetIntegerDotProductAccelerationProperties4x8bitPacked); res += #10;
       res += 'CommandBufferCapabilities                           = '; AddProp(res, GetCommandBufferCapabilities                          ); res += #10;
+      res += 'CommandBufferSupportedQueueProperties               = '; AddProp(res, GetCommandBufferSupportedQueueProperties              ); res += #10;
       res += 'CommandBufferRequiredQueueProperties                = '; AddProp(res, GetCommandBufferRequiredQueueProperties               ); res += #10;
       res += 'CommandBufferNumSyncDevices                         = '; AddProp(res, GetCommandBufferNumSyncDevices                        ); res += #10;
       res += 'CommandBufferSyncDevices                            = '; AddProp(res, GetCommandBufferSyncDevices                           ); res += #10;
