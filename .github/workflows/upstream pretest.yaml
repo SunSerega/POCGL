@@ -519,7 +519,10 @@ jobs:
                             Write-Host "----- Simple merge failed, trying to fix submodule conflict"
                             
                             git reset "DataScraping/Reps/$subm_name"
-                            if (-not $?) { throw "git reset failed" }
+                            if (-not $?) { throw "git reset $subm_name failed" }
+                            
+                            git reset 'DataScraping/XML/*/funcs.bin'
+                            if (-not $?) { throw "git reset funcs.bin failed" }
                             
                             git add *.log
                             if (-not $?) { throw "git add (unmerged *.log files) failed" }
