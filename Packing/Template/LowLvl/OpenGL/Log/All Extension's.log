@@ -11702,6 +11702,9 @@
 
 # gles2StereoViewRenderingNV (GL_NV_stereo_view_rendering)
 
+# gles2TextureBarrierNV (GL_NV_texture_barrier)
+	Func [gl::TextureBarrier + NV]
+
 # gles2TextureBorderClampNV (GL_NV_texture_border_clamp)
 	Enum [gl::TEXTURE_BORDER_COLOR]
 	Enum [gl::CLAMP_TO_BORDER]

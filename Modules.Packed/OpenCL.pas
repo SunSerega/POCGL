@@ -20358,7 +20358,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_command_buffer
-  /// version: 0.9.6 (provisional)
+  /// version: 0.9.7 (provisional)
   /// core dependency: cl 1.2
   clCommandBufferKHR = sealed partial class
     public constructor(pl: cl_platform_id);
@@ -21742,7 +21742,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_command_buffer_multi_device
-  /// version: 0.9.1 (provisional)
+  /// version: 0.9.2 (provisional)
   /// ext dependencies:
   /// - cl_khr_command_buffer (clCommandBufferKHR)
   clCommandBufferMultiDeviceKHR = sealed partial class
