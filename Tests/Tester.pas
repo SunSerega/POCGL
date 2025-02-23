@@ -845,8 +845,8 @@ type
       
       var anon_names := |
         '<>local_variables_class_', '<>lambda',
-        'cl_command_queue[', 'cl_mem[', 'cl_kernel[',
-        'CLPlatform[', 'CLDevice[', 'CLContext[', 'CLCodeLib[', 'CLProgramCode[', 'NativeMemory:$', 'CLMemory[', 'CLMemorySubSegment[', 'CLValue<byte>[', 'CLArray<byte>[',
+        'cl_platform_id[', 'cl_device_id[', 'cl_context[', 'cl_mem[', 'cl_program[', 'cl_kernel[', 'cl_command_queue[', 'cl_event[',
+        'CLPlatform[', 'CLDevice[', 'CLContext[', 'CLCodeLib[', 'NativeMemory:$', 'CLMemory[', 'CLMemorySubSegment[', 'CLValue<byte>[', 'CLArray<byte>[', 'CLProgramCode[',
         ':строка ', ':line '
       |;
       var inds := new integer[anon_names.Length];

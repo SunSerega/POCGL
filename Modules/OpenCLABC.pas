@@ -11561,8 +11561,8 @@ type
           raise new OpenCLABCInternalException($'Not all memory objects were disposed: ' + left_mem_objs.JoinToString);
       end;
       
-      gen_debug_otp.Close;
-      eh_debug_otp.Close;
+      gen_debug_otp.Flush;
+      eh_debug_otp.Flush;
     end;
   end;
   

@@ -97,14 +97,6 @@
       var total_call_count := all_thread_lists.Values.Sum(l->l.Count);
       gen_debug_otp.WriteLine($'[CallDebug]: {total_call_count} total calls made');
       
-      //TODO Prob remove, this is too verbose for succesfull test
-      foreach var thread in all_thread_lists.Keys.OrderBy(thread->all_thread_lists[thread][0].time) do
-      begin
-        gen_debug_otp.WriteLine($'- Thread [{thread.Name}]');
-        foreach var r in all_thread_lists[thread] do
-          gen_debug_otp.WriteLine($'--- {r.call}');
-      end;
-      
     end;
     
   end;

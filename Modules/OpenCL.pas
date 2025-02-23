@@ -93,4 +93,26 @@ procedure clErrorCode.RaiseIfError :=
 
 {$endregion Инициализаторы расширений}
 
+{$ifdef ForceMaxDebug}
+type
+  FinalDebugChecks = static class
+    private static checked := false;
+    public static procedure Check;
+    begin
+      if checked then exit;
+      checked := true;
+      
+      {$ifdef CallDebug}
+      //TODO Call count is not consistent
+//      CallDebug.FinallyReport;
+      {$endif CallDebug}
+      
+      gen_debug_otp.Flush;
+    end;
+  end;
+  
+initialization
+finalization
+  FinalDebugChecks.Check;
+{$endif ForceMaxDebug}
 end.

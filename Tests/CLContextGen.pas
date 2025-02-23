@@ -5,7 +5,7 @@ try
   var custom_otp := new System.IO.StreamWriter('CLContextGen.log', false, new System.Text.UTF8Encoding(true));
   OpenCLABC.gen_debug_otp := custom_otp;
   OpenCLABC.eh_debug_otp := custom_otp;
-  OpenCLABC.gen_debug_otp := custom_otp;
+  OpenCL.gen_debug_otp := custom_otp;
   {$endif ForceMaxDebug}
   
   var dir := 'CLContext';

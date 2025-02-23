@@ -37524,9 +37524,9 @@ end;
       var prev_ev := l.AttachInvokeActions(g{$ifdef EventDebug}, l{$endif});
       var res_ev: cl_event;
       InvokeImpl(api_block, g.GetCQ(false), ntv_mem_objs, prev_ev, res_ev);
-        //TODO Проверить и сделать всё релевантное из EnqueueableCore
-        // - В частности что если enq_ev=0 из за предыдущих ошибок? Может ли тут NV тоже отказываться давать ивент?
-        // - И сделать issue в OpenCL-Docs об этом, типа кто прав (или оба?)
+      //TODO Проверить и сделать всё релевантное из EnqueueableCore
+      // - В частности что если enq_ev=0 из за предыдущих ошибок? Может ли тут NV тоже отказываться давать ивент?
+      // - И сделать issue в OpenCL-Docs об этом, типа кто прав (или оба?)
       {$ifdef EventDebug}
       EventDebug.RegisterEventRetain(res_ev, $'Enq by {TypeName(self)}, waiting on: {prev_ev.evs?.Take(prev_ev.count).JoinToString}');
       {$endif EventDebug}
@@ -37992,8 +37992,6 @@ type
       ExecDebug.FinallyReport;
       {$endif ExecDebug}
       
-//      OpenCL.CallDebug.FinallyReport;
-      
       if QueueResNil.created_count<>0 then
         gen_debug_otp.WriteLine($'[QueueResNil]: {QueueResNil.created_count}');
       if QueueResT.created_count.Count<>0 then
@@ -38011,8 +38009,8 @@ type
           raise new OpenCLABCInternalException($'Not all memory objects were disposed: ' + left_mem_objs.JoinToString);
       end;
       
-      gen_debug_otp.Close;
-      eh_debug_otp.Close;
+      gen_debug_otp.Flush;
+      eh_debug_otp.Flush;
     end;
   end;
   
