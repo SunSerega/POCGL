@@ -9,9 +9,10 @@ end;
 
 try
   System.Globalization.CultureInfo.DefaultThreadCurrentUICulture := System.Globalization.CultureInfo.CurrentUICulture;
+  System.Threading.Thread.CurrentThread.Name := $'Main thread of TestExecutor';
   
   System.AppDomain.CurrentDomain.UnhandledException += (o,e)->
-  OnException(Exception(e.ExceptionObject));
+    OnException(Exception(e.ExceptionObject));
   
   var original_input := Console.In;
   Console.SetIn(new System.IO.StringReader(''));
@@ -24,7 +25,8 @@ try
     ep := System.Reflection.Assembly.LoadFile(executable).EntryPoint;
     if ep=nil then raise new System.NullReferenceException;
   except
-    on e: Exception do OnException(e, 'Load');
+    on e: Exception do
+      OnException(e, 'Load');
   end;
   
   if 'PauseWhenLoaded' in CommandLineArgs then
@@ -36,10 +38,12 @@ try
       var max_exec_time := GetArgs('MaxExecTime').Single.ToInteger;
 //      max_exec_time -= max_exec_time div 10;
       Sleep(max_exec_time);
-      OnException(new System.TimeoutException($'More then {max_exec_time} milliseconds passed'), 'ExecutionTimeOut');
+      OnException(new System.TimeoutException($'More than {max_exec_time} milliseconds passed'), 'ExecutionTimeOut');
     except
-      on e: Exception do OnException(e);
+      on e: Exception do
+        OnException(e);
     end);
+    halt_thr.Name := $'Halt thread of TestExecutor';
     halt_thr.IsBackground := true;
     halt_thr.Start;
   end;
@@ -47,10 +51,12 @@ try
   try
     ep.Invoke(nil, new object[0]);
   except
-    on e: System.Reflection.TargetInvocationException do OnException(e.InnerException, 'Execution');
+    on e: System.Reflection.TargetInvocationException do
+      OnException(e.InnerException, 'Execution');
 //    on e: Exception do OnException(e, 'Execution');
   end;
   
 except
-  on e: Exception do OnException(e);
+  on e: Exception do
+    OnException(e);
 end;

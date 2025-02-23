@@ -1,23 +1,28 @@
 ﻿## uses OpenCLABC;
 
-procedure PrintProps(self: CLCode); extensionmethod;
+procedure PrintProps(self: CLProgramCode); extensionmethod;
 begin
+  Println(self.GetType);
+  
   $'SourceCode:     {self.SourceCode}'.Println;
-  $'SourceIL:       {ObjectToString(self.SourceIL)}'.Println;
-  $'HasGlobalInit:  {self.HasGlobalInit}'.Println;
-  $'HasGlobalFnlz:  {self.HasGlobalFnlz}'.Println;
+  
+  // Missing before 2.1
+//  $'SourceIL:       {ObjectToString(self.SourceIL)}'.Println;
+  
+  // Missing before 2.2
+//  $'HasGlobalInit:  {self.HasGlobalInit}'.Println;
+//  $'HasGlobalFnlz:  {self.HasGlobalFnlz}'.Println;
+  
+  // Intel extension
 //  $'HostPipeNames:  {self.HostPipeNames}'.Println;
+  
+  self.GetAllKernels.PrintLines;
 end;
 
 var code := new CLProgramCode('kernel void k(int x) {}');
-
-Println(code.GetType);
 code.PrintProps;
-code.GetAllKernels.PrintLines;
 
 var code2 := new CLProgramCode(code.Native);
 (code=code2).Println;
 Arr(code).Contains(code2).Println;
-Println(code2.GetType);
 code2.PrintProps;
-code2.GetAllKernels.PrintLines;

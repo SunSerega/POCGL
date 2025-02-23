@@ -64,16 +64,15 @@ type
       var t_otp := p.StandardOutput.ReadToEndAsync;
       var t_err := p.StandardError.ReadToEndAsync;
       var otp := t_otp.Result.Replace(#13#10,#10).Trim(#10);
-      var err := t_err.Result.Replace(#13#10,#10).Trim(#10).Split(|#10|,2);
+      var err := t_err.Result.Replace(#13#10,#10).Trim(#10);
+      var err_spl := err.Split(|#10|,2);
       p.WaitForExit;
       DeleteFile(executor);
-      case err[0] of
-        
-        '', '%ExecutionException%':
-        Result := (otp, err.Last);
-        
-        else raise new FatalTestingException(err.Last);
-      end;
+      
+      if (err='') or (err_spl[0] = '%ExecutionException%') then
+        Result := (otp, err_spl.Last) else
+        raise new FatalTestingException(err);
+      
     end;
     
   end;

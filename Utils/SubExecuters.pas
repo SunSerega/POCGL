@@ -154,8 +154,8 @@ function GetUsedModules(fname: string) := GetUsedModules(fname, System.Array.Emp
 
 type SubexecReadCanceledException = sealed class(Exception) end;
 procedure RunFile(fname, nick: string; on_timer: Timer->(); l_otp: OtpLine->(); l_err: Exception->(); params pars: array of string);
-// Если менять - то в SubExecutables тоже
-const OutputPipeIdStr = 'OutputPipeId';
+  // Если менять - то в SubExecutables тоже
+  const OutputPipeIdStr = 'OutputPipeId';
 begin
   nick := nick?.Replace('error', 'errоr');
   fname := GetFullPath(fname);

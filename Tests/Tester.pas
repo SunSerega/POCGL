@@ -427,7 +427,7 @@ type
     {$region core test info}
     
     own_timer: TestingItemTimer;
-    pas_fname, test_dir, td_fname: string;
+    pas_fname, fwoe, test_dir, td_fname: string;
     stop_test := false;
     loaded_tests: array of ExecutingTest := nil;
     first_test_exec := true;
@@ -554,7 +554,7 @@ type
     end;
     static procedure GenCLContext;
     begin
-      if 'OpenCLABC' not in allowed_modules then exit;
+      if not ['OpenCL','OpenCLABC'].Any(m->m in allowed_modules) then exit;
       
       var sw := Stopwatch.StartNew;
       CompilePasFile('Tests/CLContextGen.pas',
@@ -618,6 +618,9 @@ type
       try
         var t := new TestInfo;
         t.pas_fname := pas_fname;
+        t.fwoe := GetRelativePath(
+          System.IO.Path.ChangeExtension(pas_fname, nil).Replace('error','errоr')
+        );
         t.test_dir := dir_path;
         t.td_fname := System.IO.Path.ChangeExtension(pas_fname, '.td');
         if unused_test_files.Remove(t.td_fname) then
@@ -721,9 +724,6 @@ type
       all_loaded.Where(t->t.test_comp)
       .TaskForEach(t->
       try
-        var fwoe := GetRelativePath(
-          System.IO.Path.ChangeExtension(t.pas_fname, nil).Replace('error','errоr').Replace('\','/')
-        );
         
         var comp_err: string := nil;
         CompilePasFile(t.pas_fname,
@@ -737,14 +737,14 @@ type
         begin
           
           if t.comp_expected.parts=nil then
-            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe":{#10*2}{comp_err}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{t.fwoe}.exe":{#10*2}{comp_err}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
               begin
                 t.all_settings['#ExpErr'] := comp_err;
                 t.used_settings += '#ExpErr';
                 t.resave_settings := true;
-                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
+                Otp($'%WARNING: Settings updated for "{t.fwoe}.td"', lk_pack_stage_unspecific);
               end;
               
               DialogResult.No: ;
@@ -753,14 +753,14 @@ type
             end else
             
           if not t.comp_expected.Matches(comp_err) then
-            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.comp_expected}{#10*2}Current error:{#10*2}{comp_err}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{t.fwoe}.exe"{#10}Expected:{#10*2}{t.comp_expected}{#10*2}Current error:{#10*2}{comp_err}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
               begin
                 t.all_settings['#ExpErr'] := comp_err;
                 t.used_settings += '#ExpErr';
                 t.resave_settings := true;
-                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
+                Otp($'%WARNING: Settings updated for "{t.fwoe}.td"', lk_pack_stage_unspecific);
               end;
               
               DialogResult.No: ;
@@ -773,13 +773,13 @@ type
         begin
           
           if t.comp_expected.parts<>nil then
-            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{t.comp_expected}{#10*2}Remove error from expected?', 'Missing error', MessageBoxButtons.YesNoCancel) of
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{t.fwoe}.exe"{#10}Expected:{#10*2}{t.comp_expected}{#10*2}Remove error from expected?', 'Missing error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
               begin
                 if not t.all_settings.Remove('#ExpErr') then raise new System.InvalidOperationException;
                 t.resave_settings := true;
-                Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
+                Otp($'%WARNING: Settings updated for "{t.fwoe}.td"', lk_pack_stage_unspecific);
               end;
               
               DialogResult.No: ;
@@ -789,7 +789,7 @@ type
           
           begin
             
-            var dom := System.AppDomain.CreateDomain($'Getting delegate count of {fwoe}');
+            var dom := System.AppDomain.CreateDomain($'Getting delegate count of {t.fwoe}');
             dom.SetData('fname', System.IO.Path.ChangeExtension(t.pas_fname, '.exe'));
             dom.DoCallBack(DelegateCounter.FindDelegatesInBin);
             if dom.GetData('err') is string(var e) then
@@ -846,7 +846,7 @@ type
       var anon_names := |
         '<>local_variables_class_', '<>lambda',
         'cl_command_queue[', 'cl_mem[', 'cl_kernel[',
-        'CLPlatform[', 'CLDevice[', 'CLContext[', 'CLProgramCode[', 'NativeMemory:$', 'CLMemory[', 'CLMemorySubSegment[', 'CLValue<byte>[', 'CLArray<byte>[',
+        'CLPlatform[', 'CLDevice[', 'CLContext[', 'CLCodeLib[', 'CLProgramCode[', 'NativeMemory:$', 'CLMemory[', 'CLMemorySubSegment[', 'CLValue<byte>[', 'CLArray<byte>[',
         ':строка ', ':line '
       |;
       var inds := new integer[anon_names.Length];
@@ -885,10 +885,6 @@ type
     
     procedure Execute :=
     try
-      var fwoe := GetRelativePath(
-        System.IO.Path.ChangeExtension(pas_fname, nil).Replace('error','errоr').Replace('\','/')
-      );
-      
       if stop_test then
       begin
         Otp($'WARNING: Test[{fwoe}] wasn''t executed because of prior errоrs or changes to .td');
@@ -903,13 +899,13 @@ type
       foreach var fname in delete_before_exec do
         if FileExists(fname) then
           System.IO.File.Delete(fname) else
-          Otp($'WARNING: [{GetRelativePath(fname)}] did not exist, but Test[{GetRelativePath(fwoe)}] asked to delete it', lk_console_only);
+          Otp($'WARNING: [{GetRelativePath(fname)}] did not exist, but Test[{fwoe}] asked to delete it', lk_console_only);
       
       for var test_i := 0 to self.test_exec-1 do
         self.RunWithMultitestValue(exec_multitest_id, test_i, ()->
         begin
           
-          Otp($'Executing Test[{GetRelativePath(fwoe)}]', exec_lk);
+          Otp($'Executing Test[{fwoe}]', exec_lk);
           var res, err: string;
           own_timer.AddExec(new SimpleTimer(()->
           begin
@@ -1023,6 +1019,7 @@ type
       on e: FatalTestingException do
       begin
         stop_test := true;
+        Otp($'Fatal exception in Test[{fwoe}]:');
         Otp(e.ToString);
       end;
     end;

@@ -11,13 +11,12 @@ OpenCLABC_implementation______.EnqFunc<[T]> = function(prev_res: [T]; cq: cl_com
 OpenCLABC_implementation______.InvokeParamsFunc<[T]> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure, function([T], cl_command_queue, EventList): ValueTuple<cl_event, procedure(CLContext)>>
 
 #ExpExecOtp
-OpenCLABC.CLProgramCode
-SourceCode:     kernel void k(int x) {}
+-create-library 
+-cl-unsafe-math-optimizations -cl-kernel-arg-info 
+-cl-unsafe-math-optimizations 
 CLKernel[k] from CLProgramCode[*]
-True
-True
-OpenCLABC.CLProgramCode
-SourceCode:     kernel void k(int x) {}
+CLKernel[k] from CLProgramCode[*]
+CLCodeLib[*]
 CLKernel[k] from CLProgramCode[*]
 
 #ReqModules
