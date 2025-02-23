@@ -551,7 +551,6 @@ jobs:
                         $is_trivial = $true
                     }
                     
-                    if (-not $?) { throw "git rev-parse failed" }
                     Pop-Location
                     
                     
@@ -560,12 +559,8 @@ jobs:
                         Write-Host "=============================="
                         Write-Host "Installing OpenCL driver for Intel CPU"
                         
-                        # https://www.intel.com/content/www/us/en/developer/articles/technical/intel-cpu-runtime-for-opencl-applications-with-sycl-support.html
-                        Invoke-WebRequest -Uri 'https://registrationcenter-download.intel.com/akdlm/IRC_NAS/0e6849e6-2c56-480b-afcf-be8331d5c4f6-opencl/w_opencl_runtime_p_2024.1.0.968.exe' -OutFile 'D:\igfx.exe'
+                        & './POCGL/Install Windows OpenCL for CPU.ps1' 'D:'
                         
-                        7z x "D:\igfx.exe" -o"D:\igfx" -y
-                        
-                        D:\igfx\w_opencl_runtime_p_2024.1.0.968.msi /quiet
                     }
                     
                     & {
