@@ -1819,7 +1819,7 @@ type
   
   CLProgramOptions = abstract class(CLCodeOptions)
     
-    public auto property MathDenormsAreZero: boolean := false;
+    public auto property MathDenormsAreZero: boolean := true;
     
     public auto property OptSignedZero: boolean := false;
     
@@ -1894,7 +1894,7 @@ type
     
     public auto property OptOnlyUniformWorkGroups: boolean := false;
     
-    public auto property OptCanUseMAD: boolean := false;
+    public auto property OptCanUseMAD: boolean := true;
     
     public property OptUnsafeMath: boolean
     read MathDenormsAreZero and OptCanUseMAD and not OptSignedZero
