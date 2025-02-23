@@ -3,6 +3,8 @@
 
 unit OpenGL;
 
+{%../Common/DebugHeader.pas%}
+
 {$zerobasedstrings}
 
 interface
@@ -11,19 +13,29 @@ uses System;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
+{$ifdef ForceMaxDebug}
+var gen_debug_otp: System.IO.TextWriter := Console.Out;
+{$endif ForceMaxDebug}
+
 type
-  DummyEnum = UInt32;
-  DummyFlags = UInt32;
+  
+  {$region DEBUG}
+  
+  {%../Common/DebugTypes.pas%}
+  
+  {$endregion DEBUG}
   
   {$region Вспомогательные типы}
+  
+  DummyEnum = UInt32;
+  DummyFlags = UInt32;
   
   {%Types.Interface!Pack Essentials.pas%}
   
   {$endregion Вспомогательные типы}
   
-  {$region Особые типы}
+  {$region Особые типы} {%!!}glErrorCode = record procedure RaiseIfError; end;{%}
   
-  {%!!}glErrorCode = record procedure RaiseIfError; end;{%}
   OpenGLException = sealed class(Exception)
     private ec: glErrorCode;
     public property Code: glErrorCode read ec;

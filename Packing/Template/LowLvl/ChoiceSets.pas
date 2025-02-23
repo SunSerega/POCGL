@@ -14,6 +14,14 @@ type
     public property FlagCount: integer read flags.Length;
     public property Flag[i: integer]: boolean read (state and flags[i]) <> 0;
     
+    public static function operator=(c1,c2: MultiBooleanChoice): boolean;
+    begin
+      if not ReferenceEquals(c1.flags, c2.flags) then
+        raise new System.InvalidOperationException;
+      Result := c1.state = c2.state;
+    end;
+    public static function operator<>(c1,c2: MultiBooleanChoice) := not(c1=c2);
+    
   end;
   
   MultiBooleanChoiceSet = record
@@ -50,6 +58,17 @@ type
       end;
     end;
     public function Enmr := Enmr(0,0);
+    
+    public function First: MultiBooleanChoice;
+    begin
+      Result.flags := self.flags;
+      Result.state := 0;
+    end;
+    public function Last: MultiBooleanChoice;
+    begin
+      Result.flags := self.flags;
+      Result.state := self.size-1;
+    end;
     
   end;
   

@@ -14,6 +14,18 @@
 ///Внутренний модуль POCGL для тестирования кодогенераторов
 unit Dummy;
 
+{$region DEBUG}{$ifdef DEBUG}
+
+// Регистрация всех вызовов, их параметров и результатов
+{ $define CallDebug}
+
+{ $define ForceMaxDebug}
+{$ifdef ForceMaxDebug}
+  {$define CallDebug}
+{$endif ForceMaxDebug}
+
+{$endif DEBUG}{$endregion DEBUG}
+
 {$zerobasedstrings}
 
 interface
@@ -22,24 +34,130 @@ uses System;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
+{$ifdef ForceMaxDebug}
+var gen_debug_otp: System.IO.TextWriter := Console.Out;
+{$endif ForceMaxDebug}
+
 type
   
-  {$region Особые типы}
+  {$region DEBUG}
   
-  ///Базовый тип перечислений
-  EnumBase = UInt32;
+  {$region CallDebug}{$ifdef CallDebug}
   
-  ///Абстрактное понятие загрузчика адресов функций api
-  DummyLoader = abstract class
+  ///
+  CallRecord = sealed class
+    private time: TimeSpan;
+    private call: string;
     
-    ///Фунция получения адреса функции api
-    public function GetProcAddress(name: string): IntPtr; abstract;
+    private constructor(sw: Stopwatch; call: string);
+    begin
+      self.time := sw.Elapsed;
+      self.call := call;
+    end;
+    
+    private procedure Add(tail: string) :=
+      self.call += tail;
     
   end;
   
-  {$endregion Особые типы}
+  ///
+  CallDebug = static class
+    private static sw := Stopwatch.StartNew;
+    
+    private static all_thread_lists := new System.Collections.Concurrent.ConcurrentDictionary<System.Threading.Thread, List<CallRecord>>;
+    private static active_call_count := 0;
+    
+    private static function GetCurrThreadList :=
+      all_thread_lists.GetOrAdd(System.Threading.Thread.CurrentThread, t->new List<CallRecord>);
+    
+    private static procedure RegisterCallDataHeader(name: string; par: array of string) :=
+      GetCurrThreadList.Add(new CallRecord(sw, $'{name}({par.JoinToString('', '')})'));
+    private static procedure RegisterCallDataResult(res: string) :=
+      GetCurrThreadList[^1].Add($' -> {res}');
+    
+    private static function Wrap(o: object) := ObjectToString(o);
+    private static function Wrap(o: pointer) := if o=nil then 'nil' else IntPtr(o).ToString('X'+IntPtr.Size*2);
+    private static function WrapVarArg<T>(var arg: T) := if @arg=nil then 'nil' else Wrap(arg);
+    
+    private static temp_lock := new object;
+    
+    private [ThreadStatic] static in_call: integer; // One public method may call another
+    // Not saving call name, because EnumToType call can have a suffix
+    private static procedure RegisterCallBegin(name: string; params par: array of string);
+    begin
+      System.Threading.Interlocked.Increment(active_call_count);
+//      System.IO.File.AppendAllLines('temp.log', [name, Environment.StackTrace] + par);
+      in_call += 1;
+      if in_call = 1 then
+        RegisterCallDataHeader(name, par);
+      System.Threading.Monitor.Enter(temp_lock);
+    end;
+    private static procedure RegisterCallResult(res: string) :=
+      if in_call = 1 then RegisterCallDataResult(res);
+    private static procedure RegisterCallEnd;
+    begin
+      System.Threading.Monitor.Exit(temp_lock);
+      System.Threading.Interlocked.Decrement(active_call_count);
+      in_call -= 1;
+//      System.IO.File.AppendAllLines('temp.log', ['---']);
+    end;
+    
+    public static procedure ReportCalls(otp: System.IO.TextWriter := Console.Out) := lock otp do
+    begin
+      otp.WriteLine(System.Environment.StackTrace);
+      
+      var newest_report := TimeSpan.Zero;
+      foreach var thread in all_thread_lists.Keys.OrderBy(thread->all_thread_lists[thread][0].time) do
+      begin
+        var l := all_thread_lists[thread];
+        if l[0].time>newest_report then
+          otp.WriteLine;
+        otp.WriteLine($'Logging calls on thread {thread.ManagedThreadId} [{thread.Name}]');
+        foreach var r in l do
+          otp.WriteLine($'{r.time}: {r.call}');
+        newest_report := |newest_report, l[^1].time|.Max;
+        otp.WriteLine('-'*30);
+      end;
+      
+      otp.WriteLine('='*40);
+      otp.Flush;
+    end;
+    
+    public static procedure FinallyReport;
+    begin
+      if all_thread_lists.Count=0 then exit;
+      
+      if active_call_count<>0 then
+        lock output do
+        begin
+          ReportCalls(Console.Error);
+          Sleep(1000);
+          raise new InvalidOperationException($'Some call is still executing');
+        end;
+      
+      var total_call_count := all_thread_lists.Values.Sum(l->l.Count);
+      gen_debug_otp.WriteLine($'[CallDebug]: {total_call_count} total calls made');
+      
+      //TODO Prob remove, this is too verbose for succesfull test
+      foreach var thread in all_thread_lists.Keys.OrderBy(thread->all_thread_lists[thread][0].time) do
+      begin
+        gen_debug_otp.WriteLine($'- Thread [{thread.Name}]');
+        foreach var r in all_thread_lists[thread] do
+          gen_debug_otp.WriteLine($'--- {r.call}');
+      end;
+      
+    end;
+    
+  end;
+  
+  {$endif CallDebug}{$region CallDebug}
+  
+  {$endregion DEBUG}
   
   {$region Вспомогательные типы}
+  
+  ///Базовый тип перечислений
+  EnumBase = UInt32;
   
   ///
   Multichoise1 = record
@@ -93,6 +211,18 @@ type
   
   {$endregion Вспомогательные типы}
   
+  {$region Особые типы}
+  
+  ///Абстрактное понятие загрузчика адресов функций api
+  DummyLoader = abstract class
+    
+    ///Фунция получения адреса функции api
+    public function GetProcAddress(name: string): IntPtr; abstract;
+    
+  end;
+  
+  {$endregion Особые типы}
+  
   {$region Подпрограммы ядра}
   
   {$ifndef DEBUG}
@@ -105,54 +235,78 @@ type
     // added in dum1.0
     private static procedure ntv_f1NoParam_1;
       external 'dummy.dll' name 'f1NoParam';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f1NoParam :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f1NoParam;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f1NoParam'); try{$endif}
       ntv_f1NoParam_1;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dum1.0
     private static function ntv_f1NoParamResult_1: UIntPtr;
       external 'dummy.dll' name 'f1NoParamResult';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f1NoParamResult: UIntPtr :=
-      ntv_f1NoParamResult_1;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f1NoParamResult: UIntPtr;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f1NoParamResult'); try{$endif}
+      Result := ntv_f1NoParamResult_1;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dum1.0
     private static procedure ntv_f2ParamString_1(s: IntPtr);
       external 'dummy.dll' name 'f2ParamString';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f2ParamString(s: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f2ParamString(s: IntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f2ParamString', CallDebug.Wrap(s)); try{$endif}
       ntv_f2ParamString_1(s);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dum1.0
     private static procedure ntv_f2ParamStringRO_1(s: IntPtr);
       external 'dummy.dll' name 'f2ParamStringRO';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f2ParamStringRO(s: string);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f2ParamStringRO', CallDebug.Wrap(s)); try{$endif}
       var s_str_ptr := Marshal.StringToHGlobalAnsi(s);
       try
         ntv_f2ParamStringRO_1(s_str_ptr);
       finally
         Marshal.FreeHGlobal(s_str_ptr);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f2ParamStringRO(s: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f2ParamStringRO(s: IntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f2ParamStringRO', CallDebug.Wrap(s)); try{$endif}
       ntv_f2ParamStringRO_1(s);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dum1.0
     private static function ntv_f3ResultString_1: IntPtr;
       external 'dummy.dll' name 'f3ResultString';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f3ResultString: string;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f3ResultString'); try{$endif}
       var Result_str_ptr := ntv_f3ResultString_1;
       try
         Result := Marshal.PtrToStringAnsi(Result_str_ptr);
       finally
         Marshal.FreeHGlobal(Result_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     
     // added in dum1.0
     private static function ntv_f3ResultStringRO_1: IntPtr;
       external 'dummy.dll' name 'f3ResultStringRO';
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f3ResultStringRO: string :=
-      Marshal.PtrToStringAnsi(ntv_f3ResultStringRO_1);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f3ResultStringRO: string;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f3ResultStringRO'); try{$endif}
+      Result := Marshal.PtrToStringAnsi(ntv_f3ResultStringRO_1);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dum1.0
     private static procedure ntv_f4Generic_1(var data: Byte);
@@ -162,16 +316,24 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4Generic<T>(data: array of T); where T: record;
       type PT = ^T;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f4Generic', CallDebug.Wrap(data)); try{$endif}
       if (data<>nil) and (data.Length<>0) then
         f4Generic(data[0]) else
         f4Generic(PT(nil)^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4Generic<T>(var data: T); where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f4Generic', CallDebug.WrapVarArg(data)); try{$endif}
       ntv_f4Generic_1(PByte(pointer(@data))^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4Generic(data: pointer) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4Generic(data: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f4Generic', CallDebug.Wrap(data)); try{$endif}
       ntv_f4Generic_2(data);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dum1.0
     private static procedure ntv_f4GenericRO_1(var data: Byte);
@@ -181,16 +343,24 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericRO<T>(data: array of T); where T: record;
       type PT = ^T;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f4GenericRO', CallDebug.Wrap(data)); try{$endif}
       if (data<>nil) and (data.Length<>0) then
         f4GenericRO(data[0]) else
         f4GenericRO(PT(nil)^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericRO<T>(var data: T); where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f4GenericRO', CallDebug.WrapVarArg(data)); try{$endif}
       ntv_f4GenericRO_1(PByte(pointer(@data))^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericRO(data: pointer) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericRO(data: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f4GenericRO', CallDebug.Wrap(data)); try{$endif}
       ntv_f4GenericRO_2(data);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dum1.0
     private static procedure ntv_f4GenericWOVarArg_1(var data: Byte);
@@ -204,12 +374,18 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericWOVarArg<T>(data: array of T); where T: record;
       type PT = ^T;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f4GenericWOVarArg', CallDebug.Wrap(data)); try{$endif}
       if (data<>nil) and (data.Length<>0) then
         temp_f4GenericWOVarArg_1(data[0]) else
         temp_f4GenericWOVarArg_1(PT(nil)^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericWOVarArg(data: pointer) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericWOVarArg(data: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f4GenericWOVarArg', CallDebug.Wrap(data)); try{$endif}
       ntv_f4GenericWOVarArg_2(data);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dum1.0
     private static procedure ntv_f4GenericWOVarArgRO_1(var data: Byte);
@@ -223,12 +399,18 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericWOVarArgRO<T>(data: array of T); where T: record;
       type PT = ^T;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f4GenericWOVarArgRO', CallDebug.Wrap(data)); try{$endif}
       if (data<>nil) and (data.Length<>0) then
         temp_f4GenericWOVarArgRO_1(data[0]) else
         temp_f4GenericWOVarArgRO_1(PT(nil)^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericWOVarArgRO(data: pointer) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f4GenericWOVarArgRO(data: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f4GenericWOVarArgRO', CallDebug.Wrap(data)); try{$endif}
       ntv_f4GenericWOVarArgRO_2(data);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dum1.0
     private static procedure ntv_f5Arrrrrray_1(a: pointer);
@@ -237,6 +419,7 @@ type
       external 'dummy.dll' name 'f5Arrrrrray';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5Arrrrrray(a: array of array of array of array of array of UIntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5Arrrrrray', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5Arrrrrray_1(nil);
@@ -296,9 +479,11 @@ type
              foreach var arr_el3 in arr_el2 do if arr_el3<>nil then
                foreach var arr_el4 in arr_el3 do Marshal.FreeHGlobal(arr_el4);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5Arrrrrray(a: array of array of array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5Arrrrrray', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5Arrrrrray_1(nil);
@@ -349,9 +534,11 @@ type
            foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
              foreach var arr_el3 in arr_el2 do Marshal.FreeHGlobal(arr_el3);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5Arrrrrray(a: array of array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5Arrrrrray', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5Arrrrrray_1(nil);
@@ -393,9 +580,11 @@ type
          foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
            foreach var arr_el2 in arr_el1 do Marshal.FreeHGlobal(arr_el2);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5Arrrrrray(a: array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5Arrrrrray', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5Arrrrrray_1(nil);
@@ -428,11 +617,20 @@ type
       finally
          foreach var arr_el1 in a_temp_arr do Marshal.FreeHGlobal(arr_el1);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5Arrrrrray(var a: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5Arrrrrray(var a: IntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5Arrrrrray', CallDebug.WrapVarArg(a)); try{$endif}
       ntv_f5Arrrrrray_2(a);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5Arrrrrray(a: pointer) :=
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5Arrrrrray(a: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5Arrrrrray', CallDebug.Wrap(a)); try{$endif}
       ntv_f5Arrrrrray_1(a);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dum1.0
     private static procedure ntv_f5ArrrrrrayOfGeneric_1(a: pointer);
@@ -441,6 +639,7 @@ type
       external 'dummy.dll' name 'f5ArrrrrrayOfGeneric';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfGeneric<T>(a: array of array of array of array of array of T); where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5ArrrrrrayOfGeneric', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5ArrrrrrayOfGeneric_1(nil);
@@ -500,9 +699,11 @@ type
              foreach var arr_el3 in arr_el2 do if arr_el3<>nil then
                foreach var arr_el4 in arr_el3 do Marshal.FreeHGlobal(arr_el4);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfGeneric(a: array of array of array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5ArrrrrrayOfGeneric', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5ArrrrrrayOfGeneric_1(nil);
@@ -553,9 +754,11 @@ type
            foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
              foreach var arr_el3 in arr_el2 do Marshal.FreeHGlobal(arr_el3);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfGeneric(a: array of array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5ArrrrrrayOfGeneric', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5ArrrrrrayOfGeneric_1(nil);
@@ -597,9 +800,11 @@ type
          foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
            foreach var arr_el2 in arr_el1 do Marshal.FreeHGlobal(arr_el2);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfGeneric(a: array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5ArrrrrrayOfGeneric', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5ArrrrrrayOfGeneric_1(nil);
@@ -632,11 +837,20 @@ type
       finally
          foreach var arr_el1 in a_temp_arr do Marshal.FreeHGlobal(arr_el1);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfGeneric(var a: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfGeneric(var a: IntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5ArrrrrrayOfGeneric', CallDebug.WrapVarArg(a)); try{$endif}
       ntv_f5ArrrrrrayOfGeneric_2(a);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfGeneric(a: pointer) :=
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfGeneric(a: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5ArrrrrrayOfGeneric', CallDebug.Wrap(a)); try{$endif}
       ntv_f5ArrrrrrayOfGeneric_1(a);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dum1.0
     private static procedure ntv_f5ArrrrrrayOfString_1(s: pointer);
@@ -645,6 +859,7 @@ type
       external 'dummy.dll' name 'f5ArrrrrrayOfString';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfString(s: array of array of array of array of string);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5ArrrrrrayOfString', CallDebug.Wrap(s)); try{$endif}
       if (s=nil) or (s.Length=0) then
       begin
         ntv_f5ArrrrrrayOfString_1(nil);
@@ -695,9 +910,11 @@ type
              foreach var arr_el3 in arr_el2 do if arr_el3<>nil then
                foreach var arr_el4 in arr_el3 do Marshal.FreeHGlobal(arr_el4);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfString(s: array of array of array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5ArrrrrrayOfString', CallDebug.Wrap(s)); try{$endif}
       if (s=nil) or (s.Length=0) then
       begin
         ntv_f5ArrrrrrayOfString_1(nil);
@@ -748,9 +965,11 @@ type
            foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
              foreach var arr_el3 in arr_el2 do Marshal.FreeHGlobal(arr_el3);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfString(s: array of array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5ArrrrrrayOfString', CallDebug.Wrap(s)); try{$endif}
       if (s=nil) or (s.Length=0) then
       begin
         ntv_f5ArrrrrrayOfString_1(nil);
@@ -792,9 +1011,11 @@ type
          foreach var arr_el1 in s_temp_arr do if arr_el1<>nil then
            foreach var arr_el2 in arr_el1 do Marshal.FreeHGlobal(arr_el2);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfString(s: array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5ArrrrrrayOfString', CallDebug.Wrap(s)); try{$endif}
       if (s=nil) or (s.Length=0) then
       begin
         ntv_f5ArrrrrrayOfString_1(nil);
@@ -827,11 +1048,20 @@ type
       finally
          foreach var arr_el1 in s_temp_arr do Marshal.FreeHGlobal(arr_el1);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfString(var s: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfString(var s: IntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5ArrrrrrayOfString', CallDebug.WrapVarArg(s)); try{$endif}
       ntv_f5ArrrrrrayOfString_2(s);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfString(s: pointer) :=
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f5ArrrrrrayOfString(s: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f5ArrrrrrayOfString', CallDebug.Wrap(s)); try{$endif}
       ntv_f5ArrrrrrayOfString_1(s);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dum1.0
     private static function ntv_f6Mix_1(s1: IntPtr; s2: IntPtr; var gen: Byte; var gen_ro: Byte): IntPtr;
@@ -846,6 +1076,7 @@ type
       type PT = ^T;
       type PT2 = ^T2;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.Wrap(gen), CallDebug.Wrap(gen_ro)); try{$endif}
       Result := if (gen_ro<>nil) and (gen_ro.Length<>0) then
         if (gen<>nil) and (gen.Length<>0) then
           f6Mix(s1, s2, gen[0], gen_ro[0]) else
@@ -853,11 +1084,13 @@ type
         if (gen<>nil) and (gen.Length<>0) then
           f6Mix(s1, s2, gen[0], PT2(nil)^) else
           f6Mix(s1, s2, PT(nil)^, PT2(nil)^);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f6Mix<T,T2>(s1: IntPtr; s2: IntPtr; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
       type PT = ^T;
       type PT2 = ^T2;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.Wrap(gen), CallDebug.Wrap(gen_ro)); try{$endif}
       Result := if (gen_ro<>nil) and (gen_ro.Length<>0) then
         if (gen<>nil) and (gen.Length<>0) then
           f6Mix(s1, s2, gen[0], gen_ro[0]) else
@@ -865,78 +1098,95 @@ type
         if (gen<>nil) and (gen.Length<>0) then
           f6Mix(s1, s2, gen[0], PT2(nil)^) else
           f6Mix(s1, s2, PT(nil)^, PT2(nil)^);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f6Mix<T,T2>(s1: IntPtr; s2: string; var gen: T; var gen_ro: T2): string; where T, T2: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.WrapVarArg(gen), CallDebug.WrapVarArg(gen_ro)); try{$endif}
       var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
         Result := f6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f6Mix<T>(s1: IntPtr; s2: string; var gen: T; gen_ro: pointer): string; where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.WrapVarArg(gen), CallDebug.Wrap(gen_ro)); try{$endif}
       var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
         Result := f6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f6Mix<T2>(s1: IntPtr; s2: string; gen: pointer; var gen_ro: T2): string; where T2: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.Wrap(gen), CallDebug.WrapVarArg(gen_ro)); try{$endif}
       var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
         Result := f6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f6Mix(s1: IntPtr; s2: string; gen: pointer; gen_ro: pointer): string;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.Wrap(gen), CallDebug.Wrap(gen_ro)); try{$endif}
       var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
         Result := f6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f6Mix<T,T2>(s1: IntPtr; s2: IntPtr; var gen: T; var gen_ro: T2): string; where T, T2: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.WrapVarArg(gen), CallDebug.WrapVarArg(gen_ro)); try{$endif}
       var Result_str_ptr := ntv_f6Mix_1(s1, s2, PByte(pointer(@gen))^, PByte(pointer(@gen_ro))^);
       try
         Result := Marshal.PtrToStringAnsi(Result_str_ptr);
       finally
         Marshal.FreeHGlobal(Result_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f6Mix<T>(s1: IntPtr; s2: IntPtr; var gen: T; gen_ro: pointer): string; where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.WrapVarArg(gen), CallDebug.Wrap(gen_ro)); try{$endif}
       var Result_str_ptr := ntv_f6Mix_2(s1, s2, PByte(pointer(@gen))^, gen_ro);
       try
         Result := Marshal.PtrToStringAnsi(Result_str_ptr);
       finally
         Marshal.FreeHGlobal(Result_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f6Mix<T2>(s1: IntPtr; s2: IntPtr; gen: pointer; var gen_ro: T2): string; where T2: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.Wrap(gen), CallDebug.WrapVarArg(gen_ro)); try{$endif}
       var Result_str_ptr := ntv_f6Mix_3(s1, s2, gen, PByte(pointer(@gen_ro))^);
       try
         Result := Marshal.PtrToStringAnsi(Result_str_ptr);
       finally
         Marshal.FreeHGlobal(Result_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function f6Mix(s1: IntPtr; s2: IntPtr; gen: pointer; gen_ro: pointer): string;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.Wrap(gen), CallDebug.Wrap(gen_ro)); try{$endif}
       var Result_str_ptr := ntv_f6Mix_4(s1, s2, gen, gen_ro);
       try
         Result := Marshal.PtrToStringAnsi(Result_str_ptr);
       finally
         Marshal.FreeHGlobal(Result_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     
     // added in dum1.0
@@ -958,40 +1208,61 @@ type
       external 'dummy.dll' name 'f7EnumToType';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType<TInp,T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where TInp, T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.WrapVarArg(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.WrapVarArg(otp_value), CallDebug.WrapVarArg(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_1(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType<TInp,T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; otp_value_size_ret: IntPtr); where TInp, T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.WrapVarArg(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.WrapVarArg(otp_value), CallDebug.Wrap(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_2(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType<TInp>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr); where TInp: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.WrapVarArg(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.Wrap(otp_value), CallDebug.WrapVarArg(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_3(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, otp_value, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType<TInp>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr); where TInp: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.WrapVarArg(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.Wrap(otp_value), CallDebug.Wrap(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_4(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, otp_value, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType<T>(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.Wrap(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.WrapVarArg(otp_value), CallDebug.WrapVarArg(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_5(choise, inp_value_size, inp_value, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType<T>(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: T; otp_value_size_ret: IntPtr); where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.Wrap(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.WrapVarArg(otp_value), CallDebug.Wrap(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_6(choise, inp_value_size, inp_value, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.Wrap(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.Wrap(otp_value), CallDebug.WrapVarArg(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_7(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr) :=
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.Wrap(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.Wrap(otp_value), CallDebug.Wrap(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_8(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType_Choise1_1_InpFlat(inp_value: UIntPtr; var otp_value: string);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType_Choise1_1_InpFlat', CallDebug.Wrap(inp_value), CallDebug.WrapVarArg(otp_value)); try{$endif}
       var inp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       var otp_value_sz: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_1_InpFlat, inp_value_sz,inp_value, UIntPtr.Zero,nil,otp_value_sz);
       if otp_value_sz = UIntPtr.Zero then
       begin
-        otp_value := nil;
+        otp_value := '';
         exit;
       end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
@@ -1001,15 +1272,17 @@ type
       finally
         Marshal.FreeHGlobal(otp_value_temp_res);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType_Choise1_2_InpArr(inp_value: array of UIntPtr; var otp_value: string);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType_Choise1_2_InpArr', CallDebug.Wrap(inp_value), CallDebug.WrapVarArg(otp_value)); try{$endif}
       var inp_value_sz := new UIntPtr(inp_value.Length*Marshal.SizeOf&<UIntPtr>);
       var otp_value_sz: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value[0], UIntPtr.Zero,nil,otp_value_sz);
       if otp_value_sz = UIntPtr.Zero then
       begin
-        otp_value := nil;
+        otp_value := '';
         exit;
       end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
@@ -1019,15 +1292,17 @@ type
       finally
         Marshal.FreeHGlobal(otp_value_temp_res);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType_Choise1_2_InpArr(inp_value_count: UInt32; var inp_value: UIntPtr; var otp_value: string);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType_Choise1_2_InpArr', CallDebug.Wrap(inp_value_count), CallDebug.WrapVarArg(inp_value), CallDebug.WrapVarArg(otp_value)); try{$endif}
       var inp_value_sz := new UIntPtr(inp_value_count*Marshal.SizeOf&<UIntPtr>);
       var otp_value_sz: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value, UIntPtr.Zero,nil,otp_value_sz);
       if otp_value_sz = UIntPtr.Zero then
       begin
-        otp_value := nil;
+        otp_value := '';
         exit;
       end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
@@ -1037,35 +1312,43 @@ type
       finally
         Marshal.FreeHGlobal(otp_value_temp_res);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType_Choise1_3_OtpFlat(var otp_value: UIntPtr; otp_value_validate_size: boolean := false);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType_Choise1_3_OtpFlat', CallDebug.WrapVarArg(otp_value)); try{$endif}
       var otp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       var otp_value_ret_size: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_3_OtpFlat, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
       if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType_Choise1_4_OtpArr(var otp_value: array of UIntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType_Choise1_4_OtpArr', CallDebug.WrapVarArg(otp_value)); try{$endif}
       var otp_value_sz: UIntPtr;
       ntv_f7EnumToType_7(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
       if otp_value_sz = UIntPtr.Zero then
       begin
-        otp_value := nil;
+        otp_value := &Array.Empty&<UIntPtr>;
         exit;
       end;
       var otp_value_temp_res := new UIntPtr[otp_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
       f7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],IntPtr.Zero);
       otp_value := otp_value_temp_res;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType_Choise1_4_OtpArr(otp_value_count: UInt32; var otp_value: UIntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType_Choise1_4_OtpArr', CallDebug.Wrap(otp_value_count), CallDebug.WrapVarArg(otp_value)); try{$endif}
       var otp_value_sz := new UIntPtr(otp_value_count*Marshal.SizeOf&<UIntPtr>);
       f7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,IntPtr.Zero);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType_Choise1_5_OtpStaticArr(var otp_value: array of UIntPtr; otp_value_validate_size: boolean := false);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType_Choise1_5_OtpStaticArr', CallDebug.WrapVarArg(otp_value)); try{$endif}
       var otp_value_sz := new UIntPtr(3*Marshal.SizeOf&<UIntPtr>);
       var otp_value_temp_res := new UIntPtr[3];
       var otp_value_ret_size: UIntPtr;
@@ -1073,22 +1356,26 @@ type
       otp_value := otp_value_temp_res;
       if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType_Choise1_5_OtpStaticArr(otp_value_count: UInt32; var otp_value: UIntPtr; otp_value_validate_size: boolean := false);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType_Choise1_5_OtpStaticArr', CallDebug.Wrap(otp_value_count), CallDebug.WrapVarArg(otp_value)); try{$endif}
       var otp_value_sz := new UIntPtr(otp_value_count*Marshal.SizeOf&<UIntPtr>);
       var otp_value_ret_size: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
       if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToType_Choise1_6_OtpString(var otp_value: string);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToType_Choise1_6_OtpString', CallDebug.WrapVarArg(otp_value)); try{$endif}
       var otp_value_sz: UIntPtr;
       ntv_f7EnumToType_7(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
       if otp_value_sz = UIntPtr.Zero then
       begin
-        otp_value := nil;
+        otp_value := '';
         exit;
       end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
@@ -1098,6 +1385,7 @@ type
       finally
         Marshal.FreeHGlobal(otp_value_temp_res);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     
     // added in dum1.0
@@ -1107,25 +1395,37 @@ type
       external 'dummy.dll' name 'f7EnumToTypeInputOnly';
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToTypeInputOnly<TInp>(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: TInp); where TInp: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToTypeInputOnly', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.WrapVarArg(inp_value)); try{$endif}
       ntv_f7EnumToTypeInputOnly_1(choise, inp_value_size, PByte(pointer(@inp_value))^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToTypeInputOnly_Choise2_1_InpFlat(inp_value: UIntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToTypeInputOnly_Choise2_1_InpFlat', CallDebug.Wrap(inp_value)); try{$endif}
       var inp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       f7EnumToTypeInputOnly(Multichoise2.Choise2_1_InpFlat, inp_value_sz,inp_value);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToTypeInputOnly_Choise2_2_InpArr(inp_value: array of UIntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToTypeInputOnly_Choise2_2_InpArr', CallDebug.Wrap(inp_value)); try{$endif}
       var inp_value_sz := new UIntPtr(inp_value.Length*Marshal.SizeOf&<UIntPtr>);
       f7EnumToTypeInputOnly(Multichoise2.Choise2_2_InpArr, inp_value_sz,inp_value[0]);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToTypeInputOnly_Choise2_2_InpArr(inp_value_count: UInt32; var inp_value: UIntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToTypeInputOnly_Choise2_2_InpArr', CallDebug.Wrap(inp_value_count), CallDebug.WrapVarArg(inp_value)); try{$endif}
       var inp_value_sz := new UIntPtr(inp_value_count*Marshal.SizeOf&<UIntPtr>);
       f7EnumToTypeInputOnly(Multichoise2.Choise2_2_InpArr, inp_value_sz,inp_value);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToTypeInputOnly(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: pointer) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static procedure f7EnumToTypeInputOnly(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dum.f7EnumToTypeInputOnly', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.Wrap(inp_value)); try{$endif}
       ntv_f7EnumToTypeInputOnly_2(choise, inp_value_size, inp_value);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
   end;
   
@@ -1145,54 +1445,78 @@ type
     // added in dyn1.0
     public f1NoParam_adr := GetProcAddress('f1NoParam');
     private ntv_f1NoParam_1 := GetProcOrNil&<procedure>(f1NoParam_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f1NoParam :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f1NoParam;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f1NoParam'); try{$endif}
       ntv_f1NoParam_1;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dyn1.0
     public f1NoParamResult_adr := GetProcAddress('f1NoParamResult');
     private ntv_f1NoParamResult_1 := GetProcOrNil&<function: UIntPtr>(f1NoParamResult_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f1NoParamResult: UIntPtr :=
-      ntv_f1NoParamResult_1;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f1NoParamResult: UIntPtr;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f1NoParamResult'); try{$endif}
+      Result := ntv_f1NoParamResult_1;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dyn1.0
     public f2ParamString_adr := GetProcAddress('f2ParamString');
     private ntv_f2ParamString_1 := GetProcOrNil&<procedure(s: IntPtr)>(f2ParamString_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f2ParamString(s: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f2ParamString(s: IntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f2ParamString', CallDebug.Wrap(s)); try{$endif}
       ntv_f2ParamString_1(s);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dyn1.0
     public f2ParamStringRO_adr := GetProcAddress('f2ParamStringRO');
     private ntv_f2ParamStringRO_1 := GetProcOrNil&<procedure(s: IntPtr)>(f2ParamStringRO_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f2ParamStringRO(s: string);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f2ParamStringRO', CallDebug.Wrap(s)); try{$endif}
       var s_str_ptr := Marshal.StringToHGlobalAnsi(s);
       try
         ntv_f2ParamStringRO_1(s_str_ptr);
       finally
         Marshal.FreeHGlobal(s_str_ptr);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f2ParamStringRO(s: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f2ParamStringRO(s: IntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f2ParamStringRO', CallDebug.Wrap(s)); try{$endif}
       ntv_f2ParamStringRO_1(s);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dyn1.0
     public f3ResultString_adr := GetProcAddress('f3ResultString');
     private ntv_f3ResultString_1 := GetProcOrNil&<function: IntPtr>(f3ResultString_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f3ResultString: string;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f3ResultString'); try{$endif}
       var Result_str_ptr := ntv_f3ResultString_1;
       try
         Result := Marshal.PtrToStringAnsi(Result_str_ptr);
       finally
         Marshal.FreeHGlobal(Result_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     
     // added in dyn1.0
     public f3ResultStringRO_adr := GetProcAddress('f3ResultStringRO');
     private ntv_f3ResultStringRO_1 := GetProcOrNil&<function: IntPtr>(f3ResultStringRO_adr);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f3ResultStringRO: string :=
-      Marshal.PtrToStringAnsi(ntv_f3ResultStringRO_1);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f3ResultStringRO: string;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f3ResultStringRO'); try{$endif}
+      Result := Marshal.PtrToStringAnsi(ntv_f3ResultStringRO_1);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dyn1.0
     public f4Generic_adr := GetProcAddress('f4Generic');
@@ -1201,16 +1525,24 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4Generic<T>(data: array of T); where T: record;
       type PT = ^T;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f4Generic', CallDebug.Wrap(data)); try{$endif}
       if (data<>nil) and (data.Length<>0) then
         f4Generic(data[0]) else
         f4Generic(PT(nil)^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4Generic<T>(var data: T); where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f4Generic', CallDebug.WrapVarArg(data)); try{$endif}
       ntv_f4Generic_1(PByte(pointer(@data))^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4Generic(data: pointer) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4Generic(data: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f4Generic', CallDebug.Wrap(data)); try{$endif}
       ntv_f4Generic_2(data);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dyn1.0
     public f4GenericRO_adr := GetProcAddress('f4GenericRO');
@@ -1219,16 +1551,24 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericRO<T>(data: array of T); where T: record;
       type PT = ^T;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f4GenericRO', CallDebug.Wrap(data)); try{$endif}
       if (data<>nil) and (data.Length<>0) then
         f4GenericRO(data[0]) else
         f4GenericRO(PT(nil)^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericRO<T>(var data: T); where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f4GenericRO', CallDebug.WrapVarArg(data)); try{$endif}
       ntv_f4GenericRO_1(PByte(pointer(@data))^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericRO(data: pointer) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericRO(data: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f4GenericRO', CallDebug.Wrap(data)); try{$endif}
       ntv_f4GenericRO_2(data);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dyn1.0
     public f4GenericWOVarArg_adr := GetProcAddress('f4GenericWOVarArg');
@@ -1241,12 +1581,18 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericWOVarArg<T>(data: array of T); where T: record;
       type PT = ^T;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f4GenericWOVarArg', CallDebug.Wrap(data)); try{$endif}
       if (data<>nil) and (data.Length<>0) then
         temp_f4GenericWOVarArg_1(data[0]) else
         temp_f4GenericWOVarArg_1(PT(nil)^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericWOVarArg(data: pointer) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericWOVarArg(data: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f4GenericWOVarArg', CallDebug.Wrap(data)); try{$endif}
       ntv_f4GenericWOVarArg_2(data);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dyn1.0
     public f4GenericWOVarArgRO_adr := GetProcAddress('f4GenericWOVarArgRO');
@@ -1259,12 +1605,18 @@ type
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericWOVarArgRO<T>(data: array of T); where T: record;
       type PT = ^T;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f4GenericWOVarArgRO', CallDebug.Wrap(data)); try{$endif}
       if (data<>nil) and (data.Length<>0) then
         temp_f4GenericWOVarArgRO_1(data[0]) else
         temp_f4GenericWOVarArgRO_1(PT(nil)^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericWOVarArgRO(data: pointer) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f4GenericWOVarArgRO(data: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f4GenericWOVarArgRO', CallDebug.Wrap(data)); try{$endif}
       ntv_f4GenericWOVarArgRO_2(data);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dyn1.0
     public f5Arrrrrray_adr := GetProcAddress('f5Arrrrrray');
@@ -1272,6 +1624,7 @@ type
     private ntv_f5Arrrrrray_2 := GetProcOrNil&<procedure(var a: IntPtr)>(f5Arrrrrray_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5Arrrrrray(a: array of array of array of array of array of UIntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5Arrrrrray', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5Arrrrrray_1(nil);
@@ -1331,9 +1684,11 @@ type
              foreach var arr_el3 in arr_el2 do if arr_el3<>nil then
                foreach var arr_el4 in arr_el3 do Marshal.FreeHGlobal(arr_el4);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5Arrrrrray(a: array of array of array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5Arrrrrray', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5Arrrrrray_1(nil);
@@ -1384,9 +1739,11 @@ type
            foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
              foreach var arr_el3 in arr_el2 do Marshal.FreeHGlobal(arr_el3);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5Arrrrrray(a: array of array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5Arrrrrray', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5Arrrrrray_1(nil);
@@ -1428,9 +1785,11 @@ type
          foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
            foreach var arr_el2 in arr_el1 do Marshal.FreeHGlobal(arr_el2);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5Arrrrrray(a: array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5Arrrrrray', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5Arrrrrray_1(nil);
@@ -1463,11 +1822,20 @@ type
       finally
          foreach var arr_el1 in a_temp_arr do Marshal.FreeHGlobal(arr_el1);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5Arrrrrray(var a: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5Arrrrrray(var a: IntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5Arrrrrray', CallDebug.WrapVarArg(a)); try{$endif}
       ntv_f5Arrrrrray_2(a);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5Arrrrrray(a: pointer) :=
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5Arrrrrray(a: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5Arrrrrray', CallDebug.Wrap(a)); try{$endif}
       ntv_f5Arrrrrray_1(a);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dyn1.0
     public f5ArrrrrrayOfGeneric_adr := GetProcAddress('f5ArrrrrrayOfGeneric');
@@ -1475,6 +1843,7 @@ type
     private ntv_f5ArrrrrrayOfGeneric_2 := GetProcOrNil&<procedure(var a: IntPtr)>(f5ArrrrrrayOfGeneric_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfGeneric<T>(a: array of array of array of array of array of T); where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5ArrrrrrayOfGeneric', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5ArrrrrrayOfGeneric_1(nil);
@@ -1534,9 +1903,11 @@ type
              foreach var arr_el3 in arr_el2 do if arr_el3<>nil then
                foreach var arr_el4 in arr_el3 do Marshal.FreeHGlobal(arr_el4);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfGeneric(a: array of array of array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5ArrrrrrayOfGeneric', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5ArrrrrrayOfGeneric_1(nil);
@@ -1587,9 +1958,11 @@ type
            foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
              foreach var arr_el3 in arr_el2 do Marshal.FreeHGlobal(arr_el3);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfGeneric(a: array of array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5ArrrrrrayOfGeneric', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5ArrrrrrayOfGeneric_1(nil);
@@ -1631,9 +2004,11 @@ type
          foreach var arr_el1 in a_temp_arr do if arr_el1<>nil then
            foreach var arr_el2 in arr_el1 do Marshal.FreeHGlobal(arr_el2);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfGeneric(a: array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5ArrrrrrayOfGeneric', CallDebug.Wrap(a)); try{$endif}
       if (a=nil) or (a.Length=0) then
       begin
         ntv_f5ArrrrrrayOfGeneric_1(nil);
@@ -1666,11 +2041,20 @@ type
       finally
          foreach var arr_el1 in a_temp_arr do Marshal.FreeHGlobal(arr_el1);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfGeneric(var a: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfGeneric(var a: IntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5ArrrrrrayOfGeneric', CallDebug.WrapVarArg(a)); try{$endif}
       ntv_f5ArrrrrrayOfGeneric_2(a);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfGeneric(a: pointer) :=
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfGeneric(a: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5ArrrrrrayOfGeneric', CallDebug.Wrap(a)); try{$endif}
       ntv_f5ArrrrrrayOfGeneric_1(a);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dyn1.0
     public f5ArrrrrrayOfString_adr := GetProcAddress('f5ArrrrrrayOfString');
@@ -1678,6 +2062,7 @@ type
     private ntv_f5ArrrrrrayOfString_2 := GetProcOrNil&<procedure(var s: IntPtr)>(f5ArrrrrrayOfString_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfString(s: array of array of array of array of string);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5ArrrrrrayOfString', CallDebug.Wrap(s)); try{$endif}
       if (s=nil) or (s.Length=0) then
       begin
         ntv_f5ArrrrrrayOfString_1(nil);
@@ -1728,9 +2113,11 @@ type
              foreach var arr_el3 in arr_el2 do if arr_el3<>nil then
                foreach var arr_el4 in arr_el3 do Marshal.FreeHGlobal(arr_el4);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfString(s: array of array of array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5ArrrrrrayOfString', CallDebug.Wrap(s)); try{$endif}
       if (s=nil) or (s.Length=0) then
       begin
         ntv_f5ArrrrrrayOfString_1(nil);
@@ -1781,9 +2168,11 @@ type
            foreach var arr_el2 in arr_el1 do if arr_el2<>nil then
              foreach var arr_el3 in arr_el2 do Marshal.FreeHGlobal(arr_el3);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfString(s: array of array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5ArrrrrrayOfString', CallDebug.Wrap(s)); try{$endif}
       if (s=nil) or (s.Length=0) then
       begin
         ntv_f5ArrrrrrayOfString_1(nil);
@@ -1825,9 +2214,11 @@ type
          foreach var arr_el1 in s_temp_arr do if arr_el1<>nil then
            foreach var arr_el2 in arr_el1 do Marshal.FreeHGlobal(arr_el2);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfString(s: array of array of IntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5ArrrrrrayOfString', CallDebug.Wrap(s)); try{$endif}
       if (s=nil) or (s.Length=0) then
       begin
         ntv_f5ArrrrrrayOfString_1(nil);
@@ -1860,11 +2251,20 @@ type
       finally
          foreach var arr_el1 in s_temp_arr do Marshal.FreeHGlobal(arr_el1);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfString(var s: IntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfString(var s: IntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5ArrrrrrayOfString', CallDebug.WrapVarArg(s)); try{$endif}
       ntv_f5ArrrrrrayOfString_2(s);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfString(s: pointer) :=
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f5ArrrrrrayOfString(s: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f5ArrrrrrayOfString', CallDebug.Wrap(s)); try{$endif}
       ntv_f5ArrrrrrayOfString_1(s);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in dyn1.0
     public f6Mix_adr := GetProcAddress('f6Mix');
@@ -1876,6 +2276,7 @@ type
       type PT = ^T;
       type PT2 = ^T2;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.Wrap(gen), CallDebug.Wrap(gen_ro)); try{$endif}
       Result := if (gen_ro<>nil) and (gen_ro.Length<>0) then
         if (gen<>nil) and (gen.Length<>0) then
           f6Mix(s1, s2, gen[0], gen_ro[0]) else
@@ -1883,11 +2284,13 @@ type
         if (gen<>nil) and (gen.Length<>0) then
           f6Mix(s1, s2, gen[0], PT2(nil)^) else
           f6Mix(s1, s2, PT(nil)^, PT2(nil)^);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f6Mix<T,T2>(s1: IntPtr; s2: IntPtr; gen: array of T; gen_ro: array of T2): string; where T, T2: record;
       type PT = ^T;
       type PT2 = ^T2;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.Wrap(gen), CallDebug.Wrap(gen_ro)); try{$endif}
       Result := if (gen_ro<>nil) and (gen_ro.Length<>0) then
         if (gen<>nil) and (gen.Length<>0) then
           f6Mix(s1, s2, gen[0], gen_ro[0]) else
@@ -1895,78 +2298,95 @@ type
         if (gen<>nil) and (gen.Length<>0) then
           f6Mix(s1, s2, gen[0], PT2(nil)^) else
           f6Mix(s1, s2, PT(nil)^, PT2(nil)^);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f6Mix<T,T2>(s1: IntPtr; s2: string; var gen: T; var gen_ro: T2): string; where T, T2: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.WrapVarArg(gen), CallDebug.WrapVarArg(gen_ro)); try{$endif}
       var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
         Result := f6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f6Mix<T>(s1: IntPtr; s2: string; var gen: T; gen_ro: pointer): string; where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.WrapVarArg(gen), CallDebug.Wrap(gen_ro)); try{$endif}
       var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
         Result := f6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f6Mix<T2>(s1: IntPtr; s2: string; gen: pointer; var gen_ro: T2): string; where T2: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.Wrap(gen), CallDebug.WrapVarArg(gen_ro)); try{$endif}
       var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
         Result := f6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f6Mix(s1: IntPtr; s2: string; gen: pointer; gen_ro: pointer): string;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.Wrap(gen), CallDebug.Wrap(gen_ro)); try{$endif}
       var s2_str_ptr := Marshal.StringToHGlobalAnsi(s2);
       try
         Result := f6Mix(s1, s2_str_ptr, gen, gen_ro);
       finally
         Marshal.FreeHGlobal(s2_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f6Mix<T,T2>(s1: IntPtr; s2: IntPtr; var gen: T; var gen_ro: T2): string; where T, T2: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.WrapVarArg(gen), CallDebug.WrapVarArg(gen_ro)); try{$endif}
       var Result_str_ptr := ntv_f6Mix_1(s1, s2, PByte(pointer(@gen))^, PByte(pointer(@gen_ro))^);
       try
         Result := Marshal.PtrToStringAnsi(Result_str_ptr);
       finally
         Marshal.FreeHGlobal(Result_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f6Mix<T>(s1: IntPtr; s2: IntPtr; var gen: T; gen_ro: pointer): string; where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.WrapVarArg(gen), CallDebug.Wrap(gen_ro)); try{$endif}
       var Result_str_ptr := ntv_f6Mix_2(s1, s2, PByte(pointer(@gen))^, gen_ro);
       try
         Result := Marshal.PtrToStringAnsi(Result_str_ptr);
       finally
         Marshal.FreeHGlobal(Result_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f6Mix<T2>(s1: IntPtr; s2: IntPtr; gen: pointer; var gen_ro: T2): string; where T2: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.Wrap(gen), CallDebug.WrapVarArg(gen_ro)); try{$endif}
       var Result_str_ptr := ntv_f6Mix_3(s1, s2, gen, PByte(pointer(@gen_ro))^);
       try
         Result := Marshal.PtrToStringAnsi(Result_str_ptr);
       finally
         Marshal.FreeHGlobal(Result_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] function f6Mix(s1: IntPtr; s2: IntPtr; gen: pointer; gen_ro: pointer): string;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f6Mix', CallDebug.Wrap(s1), CallDebug.Wrap(s2), CallDebug.Wrap(gen), CallDebug.Wrap(gen_ro)); try{$endif}
       var Result_str_ptr := ntv_f6Mix_4(s1, s2, gen, gen_ro);
       try
         Result := Marshal.PtrToStringAnsi(Result_str_ptr);
       finally
         Marshal.FreeHGlobal(Result_str_ptr);
       end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     
     // added in dyn1.0
@@ -1981,40 +2401,61 @@ type
     private ntv_f7EnumToType_8 := GetProcOrNil&<procedure(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr)>(f7EnumToType_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType<TInp,T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where TInp, T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.WrapVarArg(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.WrapVarArg(otp_value), CallDebug.WrapVarArg(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_1(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType<TInp,T>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; var otp_value: T; otp_value_size_ret: IntPtr); where TInp, T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.WrapVarArg(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.WrapVarArg(otp_value), CallDebug.Wrap(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_2(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType<TInp>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr); where TInp: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.WrapVarArg(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.Wrap(otp_value), CallDebug.WrapVarArg(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_3(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, otp_value, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType<TInp>(choise: Multichoise1; inp_value_size: UIntPtr; var inp_value: TInp; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr); where TInp: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.WrapVarArg(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.Wrap(otp_value), CallDebug.Wrap(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_4(choise, inp_value_size, PByte(pointer(@inp_value))^, otp_value_size, otp_value, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType<T>(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: T; var otp_value_size_ret: UIntPtr); where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.Wrap(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.WrapVarArg(otp_value), CallDebug.WrapVarArg(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_5(choise, inp_value_size, inp_value, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType<T>(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; var otp_value: T; otp_value_size_ret: IntPtr); where T: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.Wrap(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.WrapVarArg(otp_value), CallDebug.Wrap(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_6(choise, inp_value_size, inp_value, otp_value_size, PByte(pointer(@otp_value))^, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; var otp_value_size_ret: UIntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.Wrap(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.Wrap(otp_value), CallDebug.WrapVarArg(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_7(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr) :=
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType(choise: Multichoise1; inp_value_size: UIntPtr; inp_value: pointer; otp_value_size: UIntPtr; otp_value: pointer; otp_value_size_ret: IntPtr);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.Wrap(inp_value), CallDebug.Wrap(otp_value_size), CallDebug.Wrap(otp_value), CallDebug.Wrap(otp_value_size_ret)); try{$endif}
       ntv_f7EnumToType_8(choise, inp_value_size, inp_value, otp_value_size, otp_value, otp_value_size_ret);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType_Choise1_1_InpFlat(inp_value: UIntPtr; var otp_value: string);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType_Choise1_1_InpFlat', CallDebug.Wrap(inp_value), CallDebug.WrapVarArg(otp_value)); try{$endif}
       var inp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       var otp_value_sz: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_1_InpFlat, inp_value_sz,inp_value, UIntPtr.Zero,nil,otp_value_sz);
       if otp_value_sz = UIntPtr.Zero then
       begin
-        otp_value := nil;
+        otp_value := '';
         exit;
       end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
@@ -2024,15 +2465,17 @@ type
       finally
         Marshal.FreeHGlobal(otp_value_temp_res);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType_Choise1_2_InpArr(inp_value: array of UIntPtr; var otp_value: string);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType_Choise1_2_InpArr', CallDebug.Wrap(inp_value), CallDebug.WrapVarArg(otp_value)); try{$endif}
       var inp_value_sz := new UIntPtr(inp_value.Length*Marshal.SizeOf&<UIntPtr>);
       var otp_value_sz: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value[0], UIntPtr.Zero,nil,otp_value_sz);
       if otp_value_sz = UIntPtr.Zero then
       begin
-        otp_value := nil;
+        otp_value := '';
         exit;
       end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
@@ -2042,15 +2485,17 @@ type
       finally
         Marshal.FreeHGlobal(otp_value_temp_res);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType_Choise1_2_InpArr(inp_value_count: UInt32; var inp_value: UIntPtr; var otp_value: string);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType_Choise1_2_InpArr', CallDebug.Wrap(inp_value_count), CallDebug.WrapVarArg(inp_value), CallDebug.WrapVarArg(otp_value)); try{$endif}
       var inp_value_sz := new UIntPtr(inp_value_count*Marshal.SizeOf&<UIntPtr>);
       var otp_value_sz: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_2_InpArr, inp_value_sz,inp_value, UIntPtr.Zero,nil,otp_value_sz);
       if otp_value_sz = UIntPtr.Zero then
       begin
-        otp_value := nil;
+        otp_value := '';
         exit;
       end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
@@ -2060,35 +2505,43 @@ type
       finally
         Marshal.FreeHGlobal(otp_value_temp_res);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType_Choise1_3_OtpFlat(var otp_value: UIntPtr; otp_value_validate_size: boolean := false);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType_Choise1_3_OtpFlat', CallDebug.WrapVarArg(otp_value)); try{$endif}
       var otp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       var otp_value_ret_size: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_3_OtpFlat, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
       if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType_Choise1_4_OtpArr(var otp_value: array of UIntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType_Choise1_4_OtpArr', CallDebug.WrapVarArg(otp_value)); try{$endif}
       var otp_value_sz: UIntPtr;
       ntv_f7EnumToType_7(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
       if otp_value_sz = UIntPtr.Zero then
       begin
-        otp_value := nil;
+        otp_value := &Array.Empty&<UIntPtr>;
         exit;
       end;
       var otp_value_temp_res := new UIntPtr[otp_value_sz.ToUInt64 div Marshal.SizeOf&<UIntPtr>];
       f7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value_temp_res[0],IntPtr.Zero);
       otp_value := otp_value_temp_res;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType_Choise1_4_OtpArr(otp_value_count: UInt32; var otp_value: UIntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType_Choise1_4_OtpArr', CallDebug.Wrap(otp_value_count), CallDebug.WrapVarArg(otp_value)); try{$endif}
       var otp_value_sz := new UIntPtr(otp_value_count*Marshal.SizeOf&<UIntPtr>);
       f7EnumToType(Multichoise1.Choise1_4_OtpArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,IntPtr.Zero);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType_Choise1_5_OtpStaticArr(var otp_value: array of UIntPtr; otp_value_validate_size: boolean := false);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType_Choise1_5_OtpStaticArr', CallDebug.WrapVarArg(otp_value)); try{$endif}
       var otp_value_sz := new UIntPtr(3*Marshal.SizeOf&<UIntPtr>);
       var otp_value_temp_res := new UIntPtr[3];
       var otp_value_ret_size: UIntPtr;
@@ -2096,22 +2549,26 @@ type
       otp_value := otp_value_temp_res;
       if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType_Choise1_5_OtpStaticArr(otp_value_count: UInt32; var otp_value: UIntPtr; otp_value_validate_size: boolean := false);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType_Choise1_5_OtpStaticArr', CallDebug.Wrap(otp_value_count), CallDebug.WrapVarArg(otp_value)); try{$endif}
       var otp_value_sz := new UIntPtr(otp_value_count*Marshal.SizeOf&<UIntPtr>);
       var otp_value_ret_size: UIntPtr;
       f7EnumToType(Multichoise1.Choise1_5_OtpStaticArr, UIntPtr.Zero,nil, otp_value_sz,otp_value,otp_value_ret_size);
       if otp_value_validate_size and (otp_value_ret_size<>otp_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {otp_value_ret_size} instead of {otp_value_sz}');
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToType_Choise1_6_OtpString(var otp_value: string);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToType_Choise1_6_OtpString', CallDebug.WrapVarArg(otp_value)); try{$endif}
       var otp_value_sz: UIntPtr;
       ntv_f7EnumToType_7(Multichoise1.Choise1_6_OtpString, UIntPtr.Zero,nil, UIntPtr.Zero,nil,otp_value_sz);
       if otp_value_sz = UIntPtr.Zero then
       begin
-        otp_value := nil;
+        otp_value := '';
         exit;
       end;
       var otp_value_temp_res := Marshal.AllocHGlobal(IntPtr(otp_value_sz.ToPointer));
@@ -2121,6 +2578,7 @@ type
       finally
         Marshal.FreeHGlobal(otp_value_temp_res);
       end;
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     
     // added in dyn1.0
@@ -2129,25 +2587,37 @@ type
     private ntv_f7EnumToTypeInputOnly_2 := GetProcOrNil&<procedure(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: pointer)>(f7EnumToTypeInputOnly_adr);
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToTypeInputOnly<TInp>(choise: Multichoise2; inp_value_size: UIntPtr; var inp_value: TInp); where TInp: record;
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToTypeInputOnly', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.WrapVarArg(inp_value)); try{$endif}
       ntv_f7EnumToTypeInputOnly_1(choise, inp_value_size, PByte(pointer(@inp_value))^);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToTypeInputOnly_Choise2_1_InpFlat(inp_value: UIntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToTypeInputOnly_Choise2_1_InpFlat', CallDebug.Wrap(inp_value)); try{$endif}
       var inp_value_sz := new UIntPtr(Marshal.SizeOf&<UIntPtr>);
       f7EnumToTypeInputOnly(Multichoise2.Choise2_1_InpFlat, inp_value_sz,inp_value);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToTypeInputOnly_Choise2_2_InpArr(inp_value: array of UIntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToTypeInputOnly_Choise2_2_InpArr', CallDebug.Wrap(inp_value)); try{$endif}
       var inp_value_sz := new UIntPtr(inp_value.Length*Marshal.SizeOf&<UIntPtr>);
       f7EnumToTypeInputOnly(Multichoise2.Choise2_2_InpArr, inp_value_sz,inp_value[0]);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToTypeInputOnly_Choise2_2_InpArr(inp_value_count: UInt32; var inp_value: UIntPtr);
     begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToTypeInputOnly_Choise2_2_InpArr', CallDebug.Wrap(inp_value_count), CallDebug.WrapVarArg(inp_value)); try{$endif}
       var inp_value_sz := new UIntPtr(inp_value_count*Marshal.SizeOf&<UIntPtr>);
       f7EnumToTypeInputOnly(Multichoise2.Choise2_2_InpArr, inp_value_sz,inp_value);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
-    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToTypeInputOnly(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: pointer) :=
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] procedure f7EnumToTypeInputOnly(choise: Multichoise2; inp_value_size: UIntPtr; inp_value: pointer);
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('dyn.f7EnumToTypeInputOnly', CallDebug.Wrap(choise), CallDebug.Wrap(inp_value_size), CallDebug.Wrap(inp_value)); try{$endif}
       ntv_f7EnumToTypeInputOnly_2(choise, inp_value_size, inp_value);
+      {$ifdef CallDebug}finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
   end;
   

@@ -1,1 +1,1072 @@
-﻿
+﻿# SpecializeShader(gl_shader, IntPtr, UInt32, array of UInt32, array of UInt32)
+
+# type PUInt32
+
+# SpecializeShader(gl_shader, string, UInt32, UInt32, UInt32)
+
+# SpecializeShader(gl_shader, string, UInt32, UInt32, IntPtr)
+
+# SpecializeShader(gl_shader, string, UInt32, IntPtr, UInt32)
+
+# SpecializeShader(gl_shader, string, UInt32, IntPtr, IntPtr)
+
+# SpecializeShader(gl_shader, IntPtr, UInt32, UInt32, UInt32)
+
+# SpecializeShader(gl_shader, IntPtr, UInt32, UInt32, IntPtr)
+
+# SpecializeShader(gl_shader, IntPtr, UInt32, IntPtr, UInt32)
+
+# SpecializeShader(gl_shader, IntPtr, UInt32, IntPtr, IntPtr)
+
+# StencilFunc(glStencilFunction, Int32, UInt32)
+
+# StencilFuncSeparate(glTriangleFace, glStencilFunction, Int32, UInt32)
+
+# StencilMask(UInt32)
+
+# StencilMaskSeparate(glTriangleFace, UInt32)
+
+# StencilOp(glStencilOp, glStencilOp, glStencilOp)
+
+# StencilOpSeparate(glTriangleFace, glStencilOp, glStencilOp, glStencilOp)
+
+# TexBuffer(glTextureTarget, glSizedInternalFormat, gl_buffer)
+
+# TexBufferRange(glTextureTarget, glSizedInternalFormat, gl_buffer, IntPtr, UIntPtr)
+
+# TexCoordP1ui(glTexCoordPointerType, UInt32)
+
+# TexCoordP1uiv(glTexCoordPointerType, array of UInt32)
+
+# TexCoordP1uiv(glTexCoordPointerType, UInt32)
+
+# TexCoordP1uiv(glTexCoordPointerType, IntPtr)
+
+# TexCoordP2ui(glTexCoordPointerType, UInt32)
+
+# TexCoordP2uiv(glTexCoordPointerType, array of UInt32)
+
+# TexCoordP2uiv(glTexCoordPointerType, UInt32)
+
+# TexCoordP2uiv(glTexCoordPointerType, IntPtr)
+
+# TexCoordP3ui(glTexCoordPointerType, UInt32)
+
+# TexCoordP3uiv(glTexCoordPointerType, array of UInt32)
+
+# TexCoordP3uiv(glTexCoordPointerType, UInt32)
+
+# TexCoordP3uiv(glTexCoordPointerType, IntPtr)
+
+# TexCoordP4ui(glTexCoordPointerType, UInt32)
+
+# TexCoordP4uiv(glTexCoordPointerType, array of UInt32)
+
+# TexCoordP4uiv(glTexCoordPointerType, UInt32)
+
+# TexCoordP4uiv(glTexCoordPointerType, IntPtr)
+
+# TexImage1D(glTextureTarget, Int32, glInternalFormat, Int32, Int32, glPixelFormat, glPixelType, IntPtr)
+
+# TexImage2D(glTextureTarget, Int32, glInternalFormat, Int32, Int32, Int32, glPixelFormat, glPixelType, IntPtr)
+
+# TexImage2DMultisample(glTextureTarget, Int32, glInternalFormat, Int32, Int32, glBool8)
+
+# TexImage3D(glTextureTarget, Int32, glInternalFormat, Int32, Int32, Int32, Int32, glPixelFormat, glPixelType, IntPtr)
+
+# TexImage3DMultisample(glTextureTarget, Int32, glInternalFormat, Int32, Int32, Int32, glBool8)
+
+# TexParameterf(glTextureTarget, glTextureParameterName, single)
+
+# TexParameterfv(glTextureTarget, glTextureParameterName, array of single)
+
+# type PSingle
+
+# TexParameterfv(glTextureTarget, glTextureParameterName, single)
+
+# TexParameterfv(glTextureTarget, glTextureParameterName, IntPtr)
+
+# TexParameteri(glTextureTarget, glTextureParameterName, glConvolutionBorderMode)
+
+# TexParameteri(glTextureTarget, glTextureParameterName, glDepthStencilTextureMode)
+
+# TexParameteri(glTextureTarget, glTextureParameterName, glFoveationConfigBit)
+
+# TexParameteri(glTextureTarget, glTextureParameterName, glMapTextureFormat)
+
+# TexParameteri(glTextureTarget, glTextureParameterName, glTextureCompareMode)
+
+# TexParameteri(glTextureTarget, glTextureParameterName, glTextureMagFilter)
+
+# TexParameteri(glTextureTarget, glTextureParameterName, glTextureMinFilter)
+
+# TexParameteri(glTextureTarget, glTextureParameterName, glTextureSwizzle)
+
+# TexParameteri(glTextureTarget, glTextureParameterName, glTextureWrapMode)
+
+# TexParameteri(glTextureTarget, glTextureParameterName, Int32)
+
+# TexParameterIiv(glTextureTarget, glTextureParameterName, array of Int32)
+
+# type PInt32
+
+# TexParameterIiv(glTextureTarget, glTextureParameterName, Int32)
+
+# TexParameterIiv(glTextureTarget, glTextureParameterName, IntPtr)
+
+# TexParameterIuiv(glTextureTarget, glTextureParameterName, array of UInt32)
+
+# TexParameterIuiv(glTextureTarget, glTextureParameterName, UInt32)
+
+# TexParameterIuiv(glTextureTarget, glTextureParameterName, IntPtr)
+
+# TexParameteriv(glTextureTarget, glTextureParameterName, array of Int32)
+
+# TexParameteriv(glTextureTarget, glTextureParameterName, Int32)
+
+# TexParameteriv(glTextureTarget, glTextureParameterName, IntPtr)
+
+# TexStorage1D(glTextureTarget, Int32, glSizedInternalFormat, Int32)
+
+# TexStorage2D(glTextureTarget, Int32, glSizedInternalFormat, Int32, Int32)
+
+# TexStorage2DMultisample(glTextureTarget, Int32, glSizedInternalFormat, Int32, Int32, glBool8)
+
+# TexStorage3D(glTextureTarget, Int32, glSizedInternalFormat, Int32, Int32, Int32)
+
+# TexStorage3DMultisample(glTextureTarget, Int32, glSizedInternalFormat, Int32, Int32, Int32, glBool8)
+
+# TexSubImage1D(glTextureTarget, Int32, Int32, Int32, glPixelFormat, glPixelType, IntPtr)
+
+# TexSubImage2D(glTextureTarget, Int32, Int32, Int32, Int32, Int32, glPixelFormat, glPixelType, IntPtr)
+
+# TexSubImage3D(glTextureTarget, Int32, Int32, Int32, Int32, Int32, Int32, Int32, glPixelFormat, glPixelType, IntPtr)
+
+# private ntv_TextureBarrier_1
+
+# TextureBarrier
+
+# TextureBuffer(gl_texture, glSizedInternalFormat, gl_buffer)
+
+# TextureBufferRange(gl_texture, glSizedInternalFormat, gl_buffer, IntPtr, UIntPtr)
+
+# TextureParameterf(gl_texture, glTextureParameterName, single)
+
+# TextureParameterfv(gl_texture, glTextureParameterName, array of single)
+
+# TextureParameterfv(gl_texture, glTextureParameterName, single)
+
+# TextureParameterfv(gl_texture, glTextureParameterName, IntPtr)
+
+# TextureParameteri(gl_texture, glTextureParameterName, glConvolutionBorderMode)
+
+# TextureParameteri(gl_texture, glTextureParameterName, glDepthStencilTextureMode)
+
+# TextureParameteri(gl_texture, glTextureParameterName, glFoveationConfigBit)
+
+# TextureParameteri(gl_texture, glTextureParameterName, glMapTextureFormat)
+
+# TextureParameteri(gl_texture, glTextureParameterName, glTextureCompareMode)
+
+# TextureParameteri(gl_texture, glTextureParameterName, glTextureMagFilter)
+
+# TextureParameteri(gl_texture, glTextureParameterName, glTextureMinFilter)
+
+# TextureParameteri(gl_texture, glTextureParameterName, glTextureSwizzle)
+
+# TextureParameteri(gl_texture, glTextureParameterName, glTextureWrapMode)
+
+# TextureParameteri(gl_texture, glTextureParameterName, Int32)
+
+# TextureParameterIiv(gl_texture, glTextureParameterName, array of Int32)
+
+# TextureParameterIiv(gl_texture, glTextureParameterName, Int32)
+
+# TextureParameterIiv(gl_texture, glTextureParameterName, IntPtr)
+
+# TextureParameterIuiv(gl_texture, glTextureParameterName, array of UInt32)
+
+# TextureParameterIuiv(gl_texture, glTextureParameterName, UInt32)
+
+# TextureParameterIuiv(gl_texture, glTextureParameterName, IntPtr)
+
+# TextureParameteriv(gl_texture, glTextureParameterName, array of Int32)
+
+# TextureParameteriv(gl_texture, glTextureParameterName, Int32)
+
+# TextureParameteriv(gl_texture, glTextureParameterName, IntPtr)
+
+# TextureStorage1D(gl_texture, Int32, glSizedInternalFormat, Int32)
+
+# TextureStorage2D(gl_texture, Int32, glSizedInternalFormat, Int32, Int32)
+
+# TextureStorage2DMultisample(gl_texture, Int32, glSizedInternalFormat, Int32, Int32, glBool8)
+
+# TextureStorage3D(gl_texture, Int32, glSizedInternalFormat, Int32, Int32, Int32)
+
+# TextureStorage3DMultisample(gl_texture, Int32, glSizedInternalFormat, Int32, Int32, Int32, glBool8)
+
+# TextureSubImage1D(gl_texture, Int32, Int32, Int32, glPixelFormat, glPixelType, IntPtr)
+
+# TextureSubImage2D(gl_texture, Int32, Int32, Int32, Int32, Int32, glPixelFormat, glPixelType, IntPtr)
+
+# TextureSubImage3D(gl_texture, Int32, Int32, Int32, Int32, Int32, Int32, Int32, glPixelFormat, glPixelType, IntPtr)
+
+# TextureView(gl_texture, glTextureTarget, gl_texture, glSizedInternalFormat, UInt32, UInt32, UInt32, UInt32)
+
+# TransformFeedbackBufferBase(gl_transform_feedback, UInt32, gl_buffer)
+
+# TransformFeedbackBufferRange(gl_transform_feedback, UInt32, gl_buffer, IntPtr, UIntPtr)
+
+# TransformFeedbackVaryings(gl_program, Int32, array of string, glTransformFeedbackBufferMode)
+
+# TransformFeedbackVaryings(gl_program, Int32, IntPtr, glTransformFeedbackBufferMode)
+
+# TransformFeedbackVaryings(gl_program, Int32, pointer, glTransformFeedbackBufferMode)
+
+# Uniform1d(Int32, double)
+
+# Uniform1dv(Int32, Int32, array of double)
+
+# type PDouble
+
+# Uniform1dv(Int32, Int32, double)
+
+# Uniform1dv(Int32, Int32, IntPtr)
+
+# Uniform1f(Int32, single)
+
+# Uniform1fv(Int32, Int32, array of single)
+
+# Uniform1fv(Int32, Int32, single)
+
+# Uniform1fv(Int32, Int32, IntPtr)
+
+# Uniform1i(Int32, Int32)
+
+# Uniform1iv(Int32, Int32, array of Int32)
+
+# Uniform1iv(Int32, Int32, Int32)
+
+# Uniform1iv(Int32, Int32, IntPtr)
+
+# Uniform1ui(Int32, UInt32)
+
+# Uniform1uiv(Int32, Int32, array of UInt32)
+
+# Uniform1uiv(Int32, Int32, UInt32)
+
+# Uniform1uiv(Int32, Int32, IntPtr)
+
+# Uniform2d(Int32, double, double)
+
+# Uniform2dv(Int32, Int32, array of double)
+
+# Uniform2dv(Int32, Int32, Vec2d)
+
+# Uniform2dv(Int32, Int32, double)
+
+# Uniform2dv(Int32, Int32, IntPtr)
+
+# Uniform2f(Int32, single, single)
+
+# Uniform2fv(Int32, Int32, array of single)
+
+# Uniform2fv(Int32, Int32, Vec2f)
+
+# Uniform2fv(Int32, Int32, single)
+
+# Uniform2fv(Int32, Int32, IntPtr)
+
+# Uniform2i(Int32, Int32, Int32)
+
+# Uniform2iv(Int32, Int32, array of Int32)
+
+# Uniform2iv(Int32, Int32, Vec2i)
+
+# Uniform2iv(Int32, Int32, Int32)
+
+# Uniform2iv(Int32, Int32, IntPtr)
+
+# Uniform2ui(Int32, UInt32, UInt32)
+
+# Uniform2uiv(Int32, Int32, array of UInt32)
+
+# Uniform2uiv(Int32, Int32, Vec2ui)
+
+# Uniform2uiv(Int32, Int32, UInt32)
+
+# Uniform2uiv(Int32, Int32, IntPtr)
+
+# Uniform3d(Int32, double, double, double)
+
+# Uniform3dv(Int32, Int32, array of double)
+
+# Uniform3dv(Int32, Int32, Vec3d)
+
+# Uniform3dv(Int32, Int32, double)
+
+# Uniform3dv(Int32, Int32, IntPtr)
+
+# Uniform3f(Int32, single, single, single)
+
+# Uniform3fv(Int32, Int32, array of single)
+
+# Uniform3fv(Int32, Int32, Vec3f)
+
+# Uniform3fv(Int32, Int32, single)
+
+# Uniform3fv(Int32, Int32, IntPtr)
+
+# Uniform3i(Int32, Int32, Int32, Int32)
+
+# Uniform3iv(Int32, Int32, array of Int32)
+
+# Uniform3iv(Int32, Int32, Vec3i)
+
+# Uniform3iv(Int32, Int32, Int32)
+
+# Uniform3iv(Int32, Int32, IntPtr)
+
+# Uniform3ui(Int32, UInt32, UInt32, UInt32)
+
+# Uniform3uiv(Int32, Int32, array of UInt32)
+
+# Uniform3uiv(Int32, Int32, Vec3ui)
+
+# Uniform3uiv(Int32, Int32, UInt32)
+
+# Uniform3uiv(Int32, Int32, IntPtr)
+
+# Uniform4d(Int32, double, double, double, double)
+
+# Uniform4dv(Int32, Int32, array of double)
+
+# Uniform4dv(Int32, Int32, Vec4d)
+
+# Uniform4dv(Int32, Int32, double)
+
+# Uniform4dv(Int32, Int32, IntPtr)
+
+# Uniform4f(Int32, single, single, single, single)
+
+# Uniform4fv(Int32, Int32, array of single)
+
+# Uniform4fv(Int32, Int32, Vec4f)
+
+# Uniform4fv(Int32, Int32, single)
+
+# Uniform4fv(Int32, Int32, IntPtr)
+
+# Uniform4i(Int32, Int32, Int32, Int32, Int32)
+
+# Uniform4iv(Int32, Int32, array of Int32)
+
+# Uniform4iv(Int32, Int32, Vec4i)
+
+# Uniform4iv(Int32, Int32, Int32)
+
+# Uniform4iv(Int32, Int32, IntPtr)
+
+# Uniform4ui(Int32, UInt32, UInt32, UInt32, UInt32)
+
+# Uniform4uiv(Int32, Int32, array of UInt32)
+
+# Uniform4uiv(Int32, Int32, Vec4ui)
+
+# Uniform4uiv(Int32, Int32, UInt32)
+
+# Uniform4uiv(Int32, Int32, IntPtr)
+
+# UniformBlockBinding(gl_program, UInt32, UInt32)
+
+# UniformMatrix2dv(Int32, Int32, glBool8, array of double)
+
+# UniformMatrix2dv(Int32, Int32, glBool8, Mtr2d)
+
+# UniformMatrix2dv(Int32, Int32, glBool8, double)
+
+# UniformMatrix2dv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix2fv(Int32, Int32, glBool8, array of single)
+
+# UniformMatrix2fv(Int32, Int32, glBool8, Mtr2f)
+
+# UniformMatrix2fv(Int32, Int32, glBool8, single)
+
+# UniformMatrix2fv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix2x3dv(Int32, Int32, glBool8, array of double)
+
+# UniformMatrix2x3dv(Int32, Int32, glBool8, Mtr2x3d)
+
+# UniformMatrix2x3dv(Int32, Int32, glBool8, double)
+
+# UniformMatrix2x3dv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix2x3fv(Int32, Int32, glBool8, array of single)
+
+# UniformMatrix2x3fv(Int32, Int32, glBool8, Mtr2x3f)
+
+# UniformMatrix2x3fv(Int32, Int32, glBool8, single)
+
+# UniformMatrix2x3fv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix2x4dv(Int32, Int32, glBool8, array of double)
+
+# UniformMatrix2x4dv(Int32, Int32, glBool8, Mtr2x4d)
+
+# UniformMatrix2x4dv(Int32, Int32, glBool8, double)
+
+# UniformMatrix2x4dv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix2x4fv(Int32, Int32, glBool8, array of single)
+
+# UniformMatrix2x4fv(Int32, Int32, glBool8, Mtr2x4f)
+
+# UniformMatrix2x4fv(Int32, Int32, glBool8, single)
+
+# UniformMatrix2x4fv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix3dv(Int32, Int32, glBool8, array of double)
+
+# UniformMatrix3dv(Int32, Int32, glBool8, Mtr3d)
+
+# UniformMatrix3dv(Int32, Int32, glBool8, double)
+
+# UniformMatrix3dv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix3fv(Int32, Int32, glBool8, array of single)
+
+# UniformMatrix3fv(Int32, Int32, glBool8, Mtr3f)
+
+# UniformMatrix3fv(Int32, Int32, glBool8, single)
+
+# UniformMatrix3fv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix3x2dv(Int32, Int32, glBool8, array of double)
+
+# UniformMatrix3x2dv(Int32, Int32, glBool8, Mtr3x2d)
+
+# UniformMatrix3x2dv(Int32, Int32, glBool8, double)
+
+# UniformMatrix3x2dv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix3x2fv(Int32, Int32, glBool8, array of single)
+
+# UniformMatrix3x2fv(Int32, Int32, glBool8, Mtr3x2f)
+
+# UniformMatrix3x2fv(Int32, Int32, glBool8, single)
+
+# UniformMatrix3x2fv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix3x4dv(Int32, Int32, glBool8, array of double)
+
+# UniformMatrix3x4dv(Int32, Int32, glBool8, Mtr3x4d)
+
+# UniformMatrix3x4dv(Int32, Int32, glBool8, double)
+
+# UniformMatrix3x4dv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix3x4fv(Int32, Int32, glBool8, array of single)
+
+# UniformMatrix3x4fv(Int32, Int32, glBool8, Mtr3x4f)
+
+# UniformMatrix3x4fv(Int32, Int32, glBool8, single)
+
+# UniformMatrix3x4fv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix4dv(Int32, Int32, glBool8, array of double)
+
+# UniformMatrix4dv(Int32, Int32, glBool8, Mtr4d)
+
+# UniformMatrix4dv(Int32, Int32, glBool8, double)
+
+# UniformMatrix4dv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix4fv(Int32, Int32, glBool8, array of single)
+
+# UniformMatrix4fv(Int32, Int32, glBool8, Mtr4f)
+
+# UniformMatrix4fv(Int32, Int32, glBool8, single)
+
+# UniformMatrix4fv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix4x2dv(Int32, Int32, glBool8, array of double)
+
+# UniformMatrix4x2dv(Int32, Int32, glBool8, Mtr4x2d)
+
+# UniformMatrix4x2dv(Int32, Int32, glBool8, double)
+
+# UniformMatrix4x2dv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix4x2fv(Int32, Int32, glBool8, array of single)
+
+# UniformMatrix4x2fv(Int32, Int32, glBool8, Mtr4x2f)
+
+# UniformMatrix4x2fv(Int32, Int32, glBool8, single)
+
+# UniformMatrix4x2fv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix4x3dv(Int32, Int32, glBool8, array of double)
+
+# UniformMatrix4x3dv(Int32, Int32, glBool8, Mtr4x3d)
+
+# UniformMatrix4x3dv(Int32, Int32, glBool8, double)
+
+# UniformMatrix4x3dv(Int32, Int32, glBool8, IntPtr)
+
+# UniformMatrix4x3fv(Int32, Int32, glBool8, array of single)
+
+# UniformMatrix4x3fv(Int32, Int32, glBool8, Mtr4x3f)
+
+# UniformMatrix4x3fv(Int32, Int32, glBool8, single)
+
+# UniformMatrix4x3fv(Int32, Int32, glBool8, IntPtr)
+
+# UniformSubroutinesuiv(glShaderType, Int32, array of UInt32)
+
+# UniformSubroutinesuiv(glShaderType, Int32, UInt32)
+
+# UniformSubroutinesuiv(glShaderType, Int32, IntPtr)
+
+# UnmapBuffer(glBufferTarget)
+
+# UnmapNamedBuffer(gl_buffer)
+
+# UseProgram(gl_program)
+
+# UseProgramStages(gl_program_pipeline, glUseProgramStageMask, gl_program)
+
+# ValidateProgram(gl_program)
+
+# ValidateProgramPipeline(gl_program_pipeline)
+
+# VertexArrayAttribBinding(gl_vertex_array, UInt32, UInt32)
+
+# VertexArrayAttribFormat(gl_vertex_array, UInt32, Int32, glVertexAttribType, glBool8, UInt32)
+
+# VertexArrayAttribIFormat(gl_vertex_array, UInt32, Int32, glVertexAttribIType, UInt32)
+
+# VertexArrayAttribLFormat(gl_vertex_array, UInt32, Int32, glVertexAttribLType, UInt32)
+
+# VertexArrayBindingDivisor(gl_vertex_array, UInt32, UInt32)
+
+# VertexArrayElementBuffer(gl_vertex_array, gl_buffer)
+
+# VertexArrayVertexBuffer(gl_vertex_array, UInt32, gl_buffer, IntPtr, Int32)
+
+# VertexArrayVertexBuffers(gl_vertex_array, UInt32, Int32, array of gl_buffer, array of IntPtr, array of Int32)
+
+# type PGl_buffer
+
+# type PIntPtr
+
+# VertexArrayVertexBuffers(gl_vertex_array, UInt32, Int32, gl_buffer, IntPtr, Int32)
+
+# VertexArrayVertexBuffers(gl_vertex_array, UInt32, Int32, gl_buffer, IntPtr, IntPtr)
+
+# VertexArrayVertexBuffers(gl_vertex_array, UInt32, Int32, gl_buffer, pointer, Int32)
+
+# VertexArrayVertexBuffers(gl_vertex_array, UInt32, Int32, gl_buffer, pointer, IntPtr)
+
+# VertexArrayVertexBuffers(gl_vertex_array, UInt32, Int32, IntPtr, IntPtr, Int32)
+
+# VertexArrayVertexBuffers(gl_vertex_array, UInt32, Int32, IntPtr, IntPtr, IntPtr)
+
+# VertexArrayVertexBuffers(gl_vertex_array, UInt32, Int32, IntPtr, pointer, Int32)
+
+# VertexArrayVertexBuffers(gl_vertex_array, UInt32, Int32, IntPtr, pointer, IntPtr)
+
+# VertexAttrib1d(UInt32, double)
+
+# VertexAttrib1dv(UInt32, array of double)
+
+# VertexAttrib1dv(UInt32, double)
+
+# VertexAttrib1dv(UInt32, IntPtr)
+
+# VertexAttrib1f(UInt32, single)
+
+# VertexAttrib1fv(UInt32, array of single)
+
+# VertexAttrib1fv(UInt32, single)
+
+# VertexAttrib1fv(UInt32, IntPtr)
+
+# VertexAttrib1s(UInt32, Int16)
+
+# VertexAttrib1sv(UInt32, array of Int16)
+
+# type PInt16
+
+# VertexAttrib1sv(UInt32, Int16)
+
+# VertexAttrib1sv(UInt32, IntPtr)
+
+# VertexAttrib2d(UInt32, double, double)
+
+# VertexAttrib2dv(UInt32, array of double)
+
+# VertexAttrib2dv(UInt32, Vec2d)
+
+# VertexAttrib2dv(UInt32, double)
+
+# VertexAttrib2dv(UInt32, IntPtr)
+
+# VertexAttrib2f(UInt32, single, single)
+
+# VertexAttrib2fv(UInt32, array of single)
+
+# VertexAttrib2fv(UInt32, Vec2f)
+
+# VertexAttrib2fv(UInt32, single)
+
+# VertexAttrib2fv(UInt32, IntPtr)
+
+# VertexAttrib2s(UInt32, Int16, Int16)
+
+# VertexAttrib2sv(UInt32, array of Int16)
+
+# VertexAttrib2sv(UInt32, Vec2s)
+
+# VertexAttrib2sv(UInt32, Int16)
+
+# VertexAttrib2sv(UInt32, IntPtr)
+
+# VertexAttrib3d(UInt32, double, double, double)
+
+# VertexAttrib3dv(UInt32, array of double)
+
+# VertexAttrib3dv(UInt32, Vec3d)
+
+# VertexAttrib3dv(UInt32, double)
+
+# VertexAttrib3dv(UInt32, IntPtr)
+
+# VertexAttrib3f(UInt32, single, single, single)
+
+# VertexAttrib3fv(UInt32, array of single)
+
+# VertexAttrib3fv(UInt32, Vec3f)
+
+# VertexAttrib3fv(UInt32, single)
+
+# VertexAttrib3fv(UInt32, IntPtr)
+
+# VertexAttrib3s(UInt32, Int16, Int16, Int16)
+
+# VertexAttrib3sv(UInt32, array of Int16)
+
+# VertexAttrib3sv(UInt32, Vec3s)
+
+# VertexAttrib3sv(UInt32, Int16)
+
+# VertexAttrib3sv(UInt32, IntPtr)
+
+# VertexAttrib4bv(UInt32, array of SByte)
+
+# type PSByte
+
+# VertexAttrib4bv(UInt32, Vec4b)
+
+# VertexAttrib4bv(UInt32, SByte)
+
+# VertexAttrib4bv(UInt32, IntPtr)
+
+# VertexAttrib4d(UInt32, double, double, double, double)
+
+# VertexAttrib4dv(UInt32, array of double)
+
+# VertexAttrib4dv(UInt32, Vec4d)
+
+# VertexAttrib4dv(UInt32, double)
+
+# VertexAttrib4dv(UInt32, IntPtr)
+
+# VertexAttrib4f(UInt32, single, single, single, single)
+
+# VertexAttrib4fv(UInt32, array of single)
+
+# VertexAttrib4fv(UInt32, Vec4f)
+
+# VertexAttrib4fv(UInt32, single)
+
+# VertexAttrib4fv(UInt32, IntPtr)
+
+# VertexAttrib4iv(UInt32, array of Int32)
+
+# VertexAttrib4iv(UInt32, Vec4i)
+
+# VertexAttrib4iv(UInt32, Int32)
+
+# VertexAttrib4iv(UInt32, IntPtr)
+
+# VertexAttrib4Nbv(UInt32, array of SByte)
+
+# VertexAttrib4Nbv(UInt32, Vec4b)
+
+# VertexAttrib4Nbv(UInt32, SByte)
+
+# VertexAttrib4Nbv(UInt32, IntPtr)
+
+# VertexAttrib4Niv(UInt32, array of Int32)
+
+# VertexAttrib4Niv(UInt32, Vec4i)
+
+# VertexAttrib4Niv(UInt32, Int32)
+
+# VertexAttrib4Niv(UInt32, IntPtr)
+
+# VertexAttrib4Nsv(UInt32, array of Int16)
+
+# VertexAttrib4Nsv(UInt32, Vec4s)
+
+# VertexAttrib4Nsv(UInt32, Int16)
+
+# VertexAttrib4Nsv(UInt32, IntPtr)
+
+# VertexAttrib4Nub(UInt32, Byte, Byte, Byte, Byte)
+
+# VertexAttrib4Nubv(UInt32, array of Byte)
+
+# type PByte
+
+# VertexAttrib4Nubv(UInt32, Vec4ub)
+
+# VertexAttrib4Nubv(UInt32, Byte)
+
+# VertexAttrib4Nubv(UInt32, IntPtr)
+
+# VertexAttrib4Nuiv(UInt32, array of UInt32)
+
+# VertexAttrib4Nuiv(UInt32, Vec4ui)
+
+# VertexAttrib4Nuiv(UInt32, UInt32)
+
+# VertexAttrib4Nuiv(UInt32, IntPtr)
+
+# VertexAttrib4Nusv(UInt32, array of UInt16)
+
+# type PUInt16
+
+# VertexAttrib4Nusv(UInt32, Vec4us)
+
+# VertexAttrib4Nusv(UInt32, UInt16)
+
+# VertexAttrib4Nusv(UInt32, IntPtr)
+
+# VertexAttrib4s(UInt32, Int16, Int16, Int16, Int16)
+
+# VertexAttrib4sv(UInt32, array of Int16)
+
+# VertexAttrib4sv(UInt32, Vec4s)
+
+# VertexAttrib4sv(UInt32, Int16)
+
+# VertexAttrib4sv(UInt32, IntPtr)
+
+# VertexAttrib4ubv(UInt32, array of Byte)
+
+# VertexAttrib4ubv(UInt32, Vec4ub)
+
+# VertexAttrib4ubv(UInt32, Byte)
+
+# VertexAttrib4ubv(UInt32, IntPtr)
+
+# VertexAttrib4uiv(UInt32, array of UInt32)
+
+# VertexAttrib4uiv(UInt32, Vec4ui)
+
+# VertexAttrib4uiv(UInt32, UInt32)
+
+# VertexAttrib4uiv(UInt32, IntPtr)
+
+# VertexAttrib4usv(UInt32, array of UInt16)
+
+# VertexAttrib4usv(UInt32, Vec4us)
+
+# VertexAttrib4usv(UInt32, UInt16)
+
+# VertexAttrib4usv(UInt32, IntPtr)
+
+# VertexAttribBinding(UInt32, UInt32)
+
+# VertexAttribDivisor(UInt32, UInt32)
+
+# VertexAttribFormat(UInt32, Int32, glVertexAttribType, glBool8, UInt32)
+
+# VertexAttribI1i(UInt32, Int32)
+
+# VertexAttribI1iv(UInt32, array of Int32)
+
+# VertexAttribI1iv(UInt32, Int32)
+
+# VertexAttribI1iv(UInt32, IntPtr)
+
+# VertexAttribI1ui(UInt32, UInt32)
+
+# VertexAttribI1uiv(UInt32, array of UInt32)
+
+# VertexAttribI1uiv(UInt32, UInt32)
+
+# VertexAttribI1uiv(UInt32, IntPtr)
+
+# VertexAttribI2i(UInt32, Int32, Int32)
+
+# VertexAttribI2iv(UInt32, array of Int32)
+
+# VertexAttribI2iv(UInt32, Vec2i)
+
+# VertexAttribI2iv(UInt32, Int32)
+
+# VertexAttribI2iv(UInt32, IntPtr)
+
+# VertexAttribI2ui(UInt32, UInt32, UInt32)
+
+# VertexAttribI2uiv(UInt32, array of UInt32)
+
+# VertexAttribI2uiv(UInt32, Vec2ui)
+
+# VertexAttribI2uiv(UInt32, UInt32)
+
+# VertexAttribI2uiv(UInt32, IntPtr)
+
+# VertexAttribI3i(UInt32, Int32, Int32, Int32)
+
+# VertexAttribI3iv(UInt32, array of Int32)
+
+# VertexAttribI3iv(UInt32, Vec3i)
+
+# VertexAttribI3iv(UInt32, Int32)
+
+# VertexAttribI3iv(UInt32, IntPtr)
+
+# VertexAttribI3ui(UInt32, UInt32, UInt32, UInt32)
+
+# VertexAttribI3uiv(UInt32, array of UInt32)
+
+# VertexAttribI3uiv(UInt32, Vec3ui)
+
+# VertexAttribI3uiv(UInt32, UInt32)
+
+# VertexAttribI3uiv(UInt32, IntPtr)
+
+# VertexAttribI4bv(UInt32, array of SByte)
+
+# VertexAttribI4bv(UInt32, Vec4b)
+
+# VertexAttribI4bv(UInt32, SByte)
+
+# VertexAttribI4bv(UInt32, IntPtr)
+
+# VertexAttribI4i(UInt32, Int32, Int32, Int32, Int32)
+
+# VertexAttribI4iv(UInt32, array of Int32)
+
+# VertexAttribI4iv(UInt32, Vec4i)
+
+# VertexAttribI4iv(UInt32, Int32)
+
+# VertexAttribI4iv(UInt32, IntPtr)
+
+# VertexAttribI4sv(UInt32, array of Int16)
+
+# VertexAttribI4sv(UInt32, Vec4s)
+
+# VertexAttribI4sv(UInt32, Int16)
+
+# VertexAttribI4sv(UInt32, IntPtr)
+
+# VertexAttribI4ubv(UInt32, array of Byte)
+
+# VertexAttribI4ubv(UInt32, Vec4ub)
+
+# VertexAttribI4ubv(UInt32, Byte)
+
+# VertexAttribI4ubv(UInt32, IntPtr)
+
+# VertexAttribI4ui(UInt32, UInt32, UInt32, UInt32, UInt32)
+
+# VertexAttribI4uiv(UInt32, array of UInt32)
+
+# VertexAttribI4uiv(UInt32, Vec4ui)
+
+# VertexAttribI4uiv(UInt32, UInt32)
+
+# VertexAttribI4uiv(UInt32, IntPtr)
+
+# VertexAttribI4usv(UInt32, array of UInt16)
+
+# VertexAttribI4usv(UInt32, Vec4us)
+
+# VertexAttribI4usv(UInt32, UInt16)
+
+# VertexAttribI4usv(UInt32, IntPtr)
+
+# VertexAttribIFormat(UInt32, Int32, glVertexAttribIType, UInt32)
+
+# VertexAttribIPointer(UInt32, Int32, glVertexAttribIType, Int32, IntPtr)
+
+# VertexAttribL1d(UInt32, double)
+
+# VertexAttribL1dv(UInt32, array of double)
+
+# VertexAttribL1dv(UInt32, double)
+
+# VertexAttribL1dv(UInt32, IntPtr)
+
+# VertexAttribL2d(UInt32, double, double)
+
+# VertexAttribL2dv(UInt32, array of double)
+
+# VertexAttribL2dv(UInt32, Vec2d)
+
+# VertexAttribL2dv(UInt32, double)
+
+# VertexAttribL2dv(UInt32, IntPtr)
+
+# VertexAttribL3d(UInt32, double, double, double)
+
+# VertexAttribL3dv(UInt32, array of double)
+
+# VertexAttribL3dv(UInt32, Vec3d)
+
+# VertexAttribL3dv(UInt32, double)
+
+# VertexAttribL3dv(UInt32, IntPtr)
+
+# VertexAttribL4d(UInt32, double, double, double, double)
+
+# VertexAttribL4dv(UInt32, array of double)
+
+# VertexAttribL4dv(UInt32, Vec4d)
+
+# VertexAttribL4dv(UInt32, double)
+
+# VertexAttribL4dv(UInt32, IntPtr)
+
+# VertexAttribLFormat(UInt32, Int32, glVertexAttribLType, UInt32)
+
+# VertexAttribLPointer(UInt32, Int32, glVertexAttribLType, Int32, IntPtr)
+
+# VertexAttribP1ui(UInt32, glVertexAttribPointerType, glBool8, UInt32)
+
+# VertexAttribP1uiv(UInt32, glVertexAttribPointerType, glBool8, array of UInt32)
+
+# VertexAttribP1uiv(UInt32, glVertexAttribPointerType, glBool8, UInt32)
+
+# VertexAttribP1uiv(UInt32, glVertexAttribPointerType, glBool8, IntPtr)
+
+# VertexAttribP2ui(UInt32, glVertexAttribPointerType, glBool8, UInt32)
+
+# VertexAttribP2uiv(UInt32, glVertexAttribPointerType, glBool8, array of UInt32)
+
+# VertexAttribP2uiv(UInt32, glVertexAttribPointerType, glBool8, UInt32)
+
+# VertexAttribP2uiv(UInt32, glVertexAttribPointerType, glBool8, IntPtr)
+
+# VertexAttribP3ui(UInt32, glVertexAttribPointerType, glBool8, UInt32)
+
+# VertexAttribP3uiv(UInt32, glVertexAttribPointerType, glBool8, array of UInt32)
+
+# VertexAttribP3uiv(UInt32, glVertexAttribPointerType, glBool8, UInt32)
+
+# VertexAttribP3uiv(UInt32, glVertexAttribPointerType, glBool8, IntPtr)
+
+# VertexAttribP4ui(UInt32, glVertexAttribPointerType, glBool8, UInt32)
+
+# VertexAttribP4uiv(UInt32, glVertexAttribPointerType, glBool8, array of UInt32)
+
+# VertexAttribP4uiv(UInt32, glVertexAttribPointerType, glBool8, UInt32)
+
+# VertexAttribP4uiv(UInt32, glVertexAttribPointerType, glBool8, IntPtr)
+
+# VertexAttribPointer(UInt32, Int32, glVertexAttribPointerType, glBool8, Int32, IntPtr)
+
+# VertexBindingDivisor(UInt32, UInt32)
+
+# VertexP2ui(glVertexPointerType, UInt32)
+
+# VertexP2uiv(glVertexPointerType, array of UInt32)
+
+# VertexP2uiv(glVertexPointerType, UInt32)
+
+# VertexP2uiv(glVertexPointerType, IntPtr)
+
+# VertexP3ui(glVertexPointerType, UInt32)
+
+# VertexP3uiv(glVertexPointerType, array of UInt32)
+
+# VertexP3uiv(glVertexPointerType, UInt32)
+
+# VertexP3uiv(glVertexPointerType, IntPtr)
+
+# VertexP4ui(glVertexPointerType, UInt32)
+
+# VertexP4uiv(glVertexPointerType, array of UInt32)
+
+# VertexP4uiv(glVertexPointerType, UInt32)
+
+# VertexP4uiv(glVertexPointerType, IntPtr)
+
+# Viewport(Int32, Int32, Int32, Int32)
+
+# ViewportArrayv(UInt32, Int32, array of single)
+
+# ViewportArrayv(UInt32, Int32, single)
+
+# ViewportArrayv(UInt32, Int32, IntPtr)
+
+# ViewportIndexedf(UInt32, single, single, single, single)
+
+# ViewportIndexedfv(UInt32, array of single)
+
+# ViewportIndexedfv(UInt32, single)
+
+# ViewportIndexedfv(UInt32, IntPtr)
+
+# WaitSync(gl_sync, glSyncBehaviorFlags, UInt64)
+
+# SpecializeShaderARB(gl_shader, IntPtr, UInt32, array of UInt32, array of UInt32)
+
+# SpecializeShaderARB(gl_shader, string, UInt32, UInt32, UInt32)
+
+# SpecializeShaderARB(gl_shader, string, UInt32, UInt32, IntPtr)
+
+# SpecializeShaderARB(gl_shader, string, UInt32, IntPtr, UInt32)
+
+# SpecializeShaderARB(gl_shader, string, UInt32, IntPtr, IntPtr)
+
+# SpecializeShaderARB(gl_shader, IntPtr, UInt32, UInt32, UInt32)
+
+# SpecializeShaderARB(gl_shader, IntPtr, UInt32, UInt32, IntPtr)
+
+# SpecializeShaderARB(gl_shader, IntPtr, UInt32, IntPtr, UInt32)
+
+# SpecializeShaderARB(gl_shader, IntPtr, UInt32, IntPtr, IntPtr)
+
+# GetShadingRateImagePaletteNV(UInt32, UInt32, IntPtr)
+
+# GetShadingRateSampleLocationivNV(DummyEnum, UInt32, UInt32, Int32)
+
+# GetShadingRateSampleLocationivNV(DummyEnum, UInt32, UInt32, IntPtr)
+
+# ShadingRateImageBarrierNV(glBool8)
+
+# ShadingRateImagePaletteNV(UInt32, UInt32, Int32, array of DummyEnum)
+
+# type PDummyEnum
+
+# ShadingRateImagePaletteNV(UInt32, UInt32, Int32, DummyEnum)
+
+# ShadingRateImagePaletteNV(UInt32, UInt32, Int32, IntPtr)
+
+# ShadingRateSampleOrderNV(DummyEnum)
+
+# ShadingRateSampleOrderCustomNV(DummyEnum, UInt32, array of Int32)
+
+# ShadingRateSampleOrderCustomNV(DummyEnum, UInt32, Int32)
+
+# ShadingRateSampleOrderCustomNV(DummyEnum, UInt32, IntPtr)
+

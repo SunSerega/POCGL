@@ -656,18 +656,22 @@ type
     end;
     
     private static in_wr_block := false;
-    private static last_lib_name := default(string);
-    private static last_wr_block_func_lnames := new Dictionary<string, Func>;
-    public static procedure DefineWriteBlock(lib_name: string; write_funcs: Action);
+    private static curr_code_container_name := default(string);
+    private static curr_lib_name := default(string);
+    private static curr_wr_block_func_lnames := new Dictionary<string, Func>;
+    public static procedure DefineWriteBlock(code_container_name, lib_name: string; write_funcs: Action);
     begin
       if in_wr_block then
         raise new InvalidOperationException;
       in_wr_block := true;
-      last_lib_name := lib_name;
+      curr_code_container_name := code_container_name;
+      curr_lib_name := lib_name;
       
       write_funcs();
       
-      last_wr_block_func_lnames.Clear;
+      curr_code_container_name := nil;
+      curr_lib_name := nil;
+      curr_wr_block_func_lnames.Clear;
       in_wr_block := false;
     end;
     
@@ -678,7 +682,8 @@ type
     begin
       if not in_wr_block then
         raise new InvalidOperationException;
-      var lib_name := last_lib_name;
+      var code_container_name := curr_code_container_name;
+      var lib_name := curr_lib_name;
       var is_dynamic := lib_name=nil;
       
 //      InitOverloads;
@@ -738,73 +743,14 @@ type
       
       var display_name := self.MakeWriteableName;
       
-      if display_name in last_wr_block_func_lnames then
-        raise new InvalidOperationException($'{display_name} added in the same api (lib: {ObjectToString(lib_name)}) twice: {last_wr_block_func_lnames[display_name]} and {self}');
-      last_wr_block_func_lnames.Add(display_name, self);
+      if display_name in curr_wr_block_func_lnames then
+        raise new InvalidOperationException($'{display_name} added in the same api (lib: {ObjectToString(lib_name)}) twice: {curr_wr_block_func_lnames[display_name]} and {self}');
+      curr_wr_block_func_lnames.Add(display_name, self);
       
       if is_dynamic then
         wr += $'    public {display_name}_adr := GetProcAddress(''{entry_point_name}'');' + #10;
       
       {$endregion MiscInit}
-      
-      {$region WriteOvrT}
-      
-      var WriteOvrT := procedure(wr: Writer; pars: System.Collections.Generic.IReadOnlyList<FuncParamT>; par_names: array of string; generic_names: ICollection<string>; name: string)->
-      begin
-        
-        if not is_dynamic and (name<>nil) then wr += 'static ';
-        wr += if self.is_proc then 'procedure' else 'function';
-        
-        if name<>nil then
-        begin
-          wr += ' ';
-          if name in pas_keywords then
-            wr += '&';
-          wr += name;
-          if (generic_names<>nil) and (generic_names.Count<>0) then
-          begin
-            wr += '<';
-            wr += generic_names.JoinToString(',');
-            wr += '>';
-          end;
-        end;
-        
-        if pars.Skip(1).Any(p->p<>nil) then
-        begin
-          wr += '(';
-          var first_par := true;
-          for var par_i := 1 to pars.Count-1 do
-          begin
-            var par := pars[par_i];
-            if par=nil then continue;
-            if first_par then
-              first_par := false else
-              wr += '; ';
-            if par.var_arg then wr += 'var ';
-            wr += par_names[par_i];
-            wr += ': ';
-            loop par.arr_lvl do wr += 'array of ';
-            var tname := par.tname;
-            if tname.ToLower in Func.last_wr_block_func_lnames then wr += 'OpenGL.';
-            wr += tname;
-            if par.default_val<>nil then
-            begin
-              wr += ' := ';
-              wr += par.default_val;
-            end;
-          end;
-          wr += ')';
-        end;
-        
-        if not is_proc then
-        begin
-          wr += ': ';
-          wr += pars[0].ToString(true, write_const := false);
-        end;
-        
-      end;
-      
-      {$endregion WriteOvrT}
       
       {$region MakeParMarshlers}
       var all_par_marshalers_per_ovr := new List<array of FuncParamMarshalStep>(all_overloads.Count);
@@ -1131,7 +1077,7 @@ type
                 end;
               end;
               
-              old_md.AddCallTo(ovr_call_kind, new_md, step_marshal_choices.Enmr.Last);
+              old_md.AddCallTo(ovr_call_kind, new_md, step_marshal_choices.Last);
             end;
             
           end;
@@ -1148,6 +1094,68 @@ type
       {$endregion MakeMethodList}
       
       {$region Code generation}
+      
+      {$region WriteOvrT}
+      
+      var WriteOvrT := procedure(wr: Writer; pars: System.Collections.Generic.IReadOnlyList<FuncParamT>; par_names: array of string; generic_names: ICollection<string>; name: string)->
+      begin
+        
+        if not is_dynamic and (name<>nil) then wr += 'static ';
+        wr += if self.is_proc then 'procedure' else 'function';
+        
+        if name<>nil then
+        begin
+          wr += ' ';
+          if name in pas_keywords then
+            wr += '&';
+          wr += name;
+          if (generic_names<>nil) and (generic_names.Count<>0) then
+          begin
+            wr += '<';
+            wr += generic_names.JoinToString(',');
+            wr += '>';
+          end;
+        end;
+        
+        if pars.Skip(1).Any(p->p<>nil) then
+        begin
+          wr += '(';
+          var first_par := true;
+          var write_par_sep := procedure->
+            if first_par then
+              first_par := false else
+              wr += '; ';
+          for var par_i := 1 to pars.Count-1 do
+          begin
+            var par := pars[par_i];
+            if par=nil then continue;
+            write_par_sep;
+            if par.var_arg then wr += 'var ';
+            wr += par_names[par_i];
+            wr += ': ';
+            loop par.arr_lvl do wr += 'array of ';
+            var tname := par.tname;
+            if tname.ToLower in Func.curr_wr_block_func_lnames then
+              wr += 'OpenGL.';
+            wr += tname;
+            if par.default_val<>nil then
+            begin
+              wr += ' := ';
+              wr += par.default_val;
+            end;
+          end;
+          wr += ')';
+        end;
+        
+        if not is_proc then
+        begin
+          wr += ': ';
+          wr += pars[0].ToString(true, write_const := false);
+        end;
+        
+      end;
+      
+      {$endregion WriteOvrT}
       
       begin
         var all_method_names := new HashSet<string>;
@@ -1169,6 +1177,8 @@ type
         var par_names := ntv_pars.ConvertAll(par->
         begin
           Result := par.Name;
+          if Result?.ToLower = 'result' then
+            Result := '_'+Result else
           if Result in pas_keywords then
             Result := '&'+Result;
         end);
@@ -1195,11 +1205,11 @@ type
             wr += '    private ';
             WriteOvrT(wr, ovr.ItemsSeq,par_names,nil, md.FinalName(nil));
             wr += ';'#10;
-            wr += '      external ''';
-            wr += Func.last_lib_name;
-            wr += ''' name ''';
+            wr += '      external '#39;
+            wr += lib_name;
+            wr += #39' name '#39;
             wr += entry_point_name;
-            wr += ''';'#10;
+            wr += #39';'#10;
             
           end;
           
@@ -1213,11 +1223,10 @@ type
             .Select(par->par.tname)
             .Distinct.ToArray;
           
-          var mw := new ManagedMethodWriter(md, ovr, generic_names);
+          var mw := new ManagedMethodWriter(md, par_names, ovr, generic_names);
           
-          var validate_size_par_names := new List<string>;
+          var need_validate_size_par := false;
           mw.InitWriters(
-            par_i->par_names[par_i],
             
             {$region Res}
             (par_kind, par, par_name)->
@@ -1394,8 +1403,7 @@ type
                 {$region String}
                 begin
                   if not par.is_const then
-                    // Cannot determine string size
-                    raise new NotImplementedException(self.ToString);
+                    raise new NotImplementedException($'Cannot determine returned string size for parameter [{par_name}] in {self}');
                   
                   mw.MarkRequireBlock;
                   
@@ -1435,10 +1443,10 @@ type
                 MPK_ArrayNeedCopy:
                 {$region ArrayNeedCopy}
                 begin
-                  mw.MarkRequireBlock;
                   if not par.is_const then
-                    // How to calculate size?
-                    raise new NotImplementedException(self.ToString);
+                    raise new NotImplementedException($'Cannot determine returned array size for parameter [{par_name}] in {self}');
+                  
+                  mw.MarkRequireBlock;
                   
                   Result := new FuncParWriter(FPWO_Multiline,
                     wr->
@@ -1793,8 +1801,11 @@ type
               var returned_sz_name := default(string);
               if is_output_data and (data_par.enum_to_type_data_rep_c<>nil) then
               begin
+                if need_validate_size_par then
+                  raise new InvalidOperationException;
+                need_validate_size_par := true;
                 validate_size_par_name := data_par_name+'_validate_size';
-                validate_size_par_names += validate_size_par_name;
+                mw.AddValidateSizePar(validate_size_par_name);
                 returned_sz_name := data_par_name+'_ret_size';
               end;
               
@@ -1849,7 +1860,15 @@ type
                       begin
                         wr.WriteTabs;
                         wr += data_par_name;
-                        wr += ' := nil;'#10;
+                        wr += ' := ';
+                        if data_par.IsString then
+                          wr += #39#39 else
+                        begin
+                          wr += '&Array.Empty&<';
+                          wr += data_par.tname;
+                          wr += '>';
+                        end;
+                        wr += ';'#10;
                         wr.WriteTabs;
                         wr += 'exit;'#10;
                       end);
@@ -2043,18 +2062,18 @@ type
           wr += if md.IsPublic then 'public' else 'private';
           wr += ' [MethodImpl(MethodImplOptions.AggressiveInlining)] ';
           var pars := ovr.ItemsSeq.ToArray;
-          if validate_size_par_names.Any then
+          if need_validate_size_par then
           begin
             var boolean_t := TypeLookup.FromName('boolean');
             boolean_t.Use(true);
             var vs_par := new FuncParamT(true, false, 0, boolean_t);
             vs_par.default_val := 'false';
-            pars := pars + ArrFill(validate_size_par_names.Count, vs_par);
+            pars := pars + [vs_par];
           end;
           //TODO #2886
-          WriteOvrT(wr, pars as object as System.Collections.Generic.IReadOnlyList<FuncParamT>, par_names+validate_size_par_names.ToArray, generic_names, md.FinalName(nil));
+          WriteOvrT(wr, pars as object as System.Collections.Generic.IReadOnlyList<FuncParamT>, mw.FinalInpParNames, generic_names, md.FinalName(nil));
           
-          mw.Write(wr);
+          mw.Write(code_container_name, wr);
         end
         {$endregion Managed};
         
@@ -2350,14 +2369,17 @@ type
         {$region WriteAPI}
         var WriteAPI := procedure(api_funcs: sequence of Func; add_ver, depr_ver: Func->string)->
         begin
+          var display_name := api;
+          if depr_ver<>nil then
+            display_name += 'D';
+          
           intr_wr += '  {$ifndef DEBUG}'#10;
           intr_wr += '  [System.Security.SuppressUnmanagedCodeSecurity]'#10;
           intr_wr += '  {$endif DEBUG}'#10;
           intr_wr += '  [PCUNotRestore]'#10;
           intr_wr += '  ///'#10;
           intr_wr += '  ';
-          intr_wr += api;
-          if depr_ver<>nil then intr_wr += 'D';
+          intr_wr += display_name;
           intr_wr += ' = ';
           intr_wr += class_type;
           intr_wr += ' class'#10;
@@ -2413,7 +2435,7 @@ type
           
           intr_wr += '    '#10;
           
-          Func.DefineWriteBlock(lib_name, ()->
+          Func.DefineWriteBlock(display_name, lib_name, ()->
             foreach var f in api_funcs.OrderBy(f->f.Name) do
               begin
                 var curr_add_ver := add_ver(f);
@@ -2809,13 +2831,13 @@ type
         intr_wr += '        Marshal.GetDelegateForFunctionPointer&<T>(fadr);'#10;
       end;
       
-      intr_wr += '    public const ExtensionString = ''';
+      intr_wr += '    public const ExtensionString = '#39;
       intr_wr += self.ExtensionString;
-      intr_wr += ''';'+#10;
+      intr_wr += #39';'+#10;
       if any_funcs then
         intr_wr += '    '+#10;
       
-      Func.DefineWriteBlock(lib_name, ()->
+      Func.DefineWriteBlock(display_name, lib_name, ()->
         foreach var f in Added.Funcs do
         begin
           f.Write(intr_wr);

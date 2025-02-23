@@ -3,6 +3,8 @@
 
 unit Dummy;
 
+{%../Common/DebugHeader.pas%}
+
 {$zerobasedstrings}
 
 interface
@@ -11,11 +13,27 @@ uses System;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
+{$ifdef ForceMaxDebug}
+var gen_debug_otp: System.IO.TextWriter := Console.Out;
+{$endif ForceMaxDebug}
+
 type
   
-  {$region Особые типы}
+  {$region DEBUG}
+  
+  {%../Common/DebugTypes.pas%}
+  
+  {$endregion DEBUG}
+  
+  {$region Вспомогательные типы}
   
   EnumBase = UInt32;
+  
+  {%Types.Interface!Pack Essentials.pas%}
+  
+  {$endregion Вспомогательные типы}
+  
+  {$region Особые типы}
   
   DummyLoader = abstract class
     
@@ -24,12 +42,6 @@ type
   end;
   
   {$endregion Особые типы}
-  
-  {$region Вспомогательные типы}
-  
-  {%Types.Interface!Pack Essentials.pas%}
-  
-  {$endregion Вспомогательные типы}
   
   {$region Подпрограммы ядра}
   

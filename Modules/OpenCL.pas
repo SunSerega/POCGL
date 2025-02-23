@@ -3,6 +3,8 @@
 
 unit OpenCL;
 
+{%../Common/DebugHeader.pas%}
+
 {$zerobasedstrings}
 
 interface
@@ -11,7 +13,17 @@ uses System;
 uses System.Runtime.InteropServices;
 uses System.Runtime.CompilerServices;
 
+{$ifdef ForceMaxDebug}
+var gen_debug_otp: System.IO.TextWriter := Console.Out;
+{$endif ForceMaxDebug}
+
 type
+  
+  {$region DEBUG}
+  
+  {%../Common/DebugTypes.pas%}
+  
+  {$endregion DEBUG}
   
   {$region Вспомогательные типы}
   
@@ -19,8 +31,8 @@ type
   
   {$endregion Вспомогательные типы}
   
-  {$region Особые типы}
-  {%!!}clErrorCode = record procedure RaiseIfError; end;{%}
+  {$region Особые типы} {%!!}clErrorCode = record procedure RaiseIfError; end;{%}
+  
   OpenCLException = sealed class(Exception)
     private ec: clErrorCode;
     public property Code: clErrorCode read ec;

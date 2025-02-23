@@ -3304,7 +3304,7 @@ type
     private static _all: IList<CLPlatform>;
     private static function MakeAll: IList<CLPlatform>;
     begin
-      Result := nil;
+      Result := &Array.Empty&<CLPlatform>;
       
       var c: UInt32;
       begin
@@ -3358,11 +3358,13 @@ type
     
     public static function GetAllFor(pl: CLPlatform; t: clDeviceType): array of CLDevice;
     begin
+      Result := &Array.Empty&<CLDevice>;
       
       var c: UInt32;
       var ec := cl.GetDeviceIDs(pl.ntv, t, 0, IntPtr.Zero, c);
       if ec=clErrorCode.DEVICE_NOT_FOUND then exit;
       OpenCLABCInternalException.RaiseIfError(ec);
+      if c=0 then exit;
       
       var all := new cl_device_id[c];
       OpenCLABCInternalException.RaiseIfError(
@@ -3447,12 +3449,11 @@ type
       Result := nil;
       
       var pls := CLPlatform.All;
-      if pls=nil then exit;
       
       foreach var pl in pls do
       begin
         var dvcs := CLDevice.GetAllFor(pl);
-        if dvcs=nil then continue;
+        if dvcs.Length=0 then continue;
         Result := new CLContext(dvcs);
         exit;
       end;
@@ -3460,7 +3461,7 @@ type
       foreach var pl in pls do
       begin
         var dvcs := CLDevice.GetAllFor(pl, clDeviceType.DEVICE_TYPE_ALL);
-        if dvcs=nil then continue;
+        if dvcs.Length=0 then continue;
         Result := new CLContext(dvcs);
         exit;
       end;
@@ -3589,7 +3590,7 @@ type
   
   CLProgramOptions = abstract class(CLCodeOptions)
     
-    public auto property MathDenormsAreZero: boolean := false;
+    public auto property MathDenormsAreZero: boolean := true;
     
     public auto property OptSignedZero: boolean := false;
     
@@ -3664,7 +3665,7 @@ type
     
     public auto property OptOnlyUniformWorkGroups: boolean := false;
     
-    public auto property OptCanUseMAD: boolean := false;
+    public auto property OptCanUseMAD: boolean := true;
     
     public property OptUnsafeMath: boolean
     read MathDenormsAreZero and OptCanUseMAD and not OptSignedZero
@@ -4275,9 +4276,11 @@ type
     
     public function GetAllKernels: array of CLKernel;
     begin
+      Result := &Array.Empty&<CLKernel>;
       
       var c: UInt32;
       OpenCLABCInternalException.RaiseIfError( cl.CreateKernelsInProgram(ntv, 0, IntPtr.Zero, c) );
+      if c=0 then exit;
       
       var res := new cl_kernel[c];
       OpenCLABCInternalException.RaiseIfError( cl.CreateKernelsInProgram(ntv, c, res[0], IntPtr.Zero) );
@@ -5924,9 +5927,11 @@ type
     begin
       if props[0] not in GetSSM then
         raise new NotSupportedException($'%Err:CLDevice:SplitNotSupported%');
+      Result := &Array.Empty&<CLSubDevice>;
       
       var c: UInt32;
       OpenCLABCInternalException.RaiseIfError( cl.CreateSubDevices(self.ntv, props, 0, IntPtr.Zero, c) );
+      if c=0 then exit;
       
       var res := new cl_device_id[c];
       OpenCLABCInternalException.RaiseIfError( cl.CreateSubDevices(self.ntv, props, c, res[0], IntPtr.Zero) );
@@ -6272,7 +6277,7 @@ type
     ///Указанное значение будет использоваться если при запуске очереди значение параметра небыло установлено
     public constructor(name: string; def: T);
     begin
-      inherited Create(def, new CommandQueueBase[](self));
+      inherited Create(def, [CommandQueueBase(self)]);
       self.name := name;
     end;
     private constructor := raise new OpenCLABCInternalException;
@@ -10362,6 +10367,7 @@ type
       finally
         res.SetComplete(err_handler.HadError);
       end);
+      thr.Name := $'OpenCLABC thread: Execute background work and set event {res}';
       thr.IsBackground := true;
       thr.Start;
       
@@ -11558,7 +11564,7 @@ type
       var qr := q.InvokeToNil(g, new CLTaskLocalData);
       g.FinishInvoke;
       
-      var mre := qr.ResEv.ToMRE({$ifdef EventDebug}$'CLTaskNil.FinishExecution'{$endif});
+      var mre := qr.ResEv.ToMRE({$ifdef EventDebug}$'{TypeName(self)}.FinishExecution'{$endif});
       var thr := new Thread(()->
       begin
         if mre<>nil then mre.Wait;
@@ -11566,6 +11572,7 @@ type
         g.FinishExecution(self.err_lst);
         self.wh.Set;
       end);
+      thr.Name := $'OpenCLABC thread: Execute {TypeName(self)} for Queue with hash {q.GetHashCode}';
       thr.IsBackground := true;
       thr.Start;
       
@@ -11591,7 +11598,7 @@ type
       var qr := q.InvokeToAny(g, new CLTaskLocalData);
       g.FinishInvoke;
       
-      var mre := qr.ResEv.ToMRE({$ifdef EventDebug}$'CLTask<{typeof(T)}>.FinishExecution'{$endif});
+      var mre := qr.ResEv.ToMRE({$ifdef EventDebug}$'{TypeName(self)}.FinishExecution'{$endif});
       var thr := new Thread(()->
       begin
         if mre<>nil then mre.Wait;
@@ -11599,6 +11606,7 @@ type
         g.FinishExecution(self.err_lst);
         self.wh.Set;
       end);
+      thr.Name := $'OpenCLABC thread: Execute {TypeName(self)} for Queue with hash {q.GetHashCode}';
       thr.IsBackground := true;
       thr.Start;
       
@@ -37516,9 +37524,9 @@ end;
       var prev_ev := l.AttachInvokeActions(g{$ifdef EventDebug}, l{$endif});
       var res_ev: cl_event;
       InvokeImpl(api_block, g.GetCQ(false), ntv_mem_objs, prev_ev, res_ev);
-  	  //TODO Проверить и сделать всё релевантное из EnqueueableCore
-  	  // - В частности что если enq_ev=0 из за предыдущих ошибок? Может ли тут NV тоже отказываться давать ивент?
-  	  // - И сделать issue в OpenCL-Docs об этом, типа кто прав (или оба?)
+        //TODO Проверить и сделать всё релевантное из EnqueueableCore
+        // - В частности что если enq_ev=0 из за предыдущих ошибок? Может ли тут NV тоже отказываться давать ивент?
+        // - И сделать issue в OpenCL-Docs об этом, типа кто прав (или оба?)
       {$ifdef EventDebug}
       EventDebug.RegisterEventRetain(res_ev, $'Enq by {TypeName(self)}, waiting on: {prev_ev.evs?.Take(prev_ev.count).JoinToString}');
       {$endif EventDebug}
@@ -37639,17 +37647,30 @@ begin
   
   foreach var pl in CLPlatform.All do
   begin
+    var pl_name := pl.Properties.Name;
     var dvcs := CLDevice.GetAllFor(pl, clDeviceType.DEVICE_TYPE_ALL).ToList;
     
     var keep := new boolean[dvcs.Count];
-    var thrs := ArrGen(dvcs.Count, i->new Thread(()->
     begin
-      keep[i] := nil <> CLContext.Create(dvcs[i]).TestSanity(test_size)
-    end));
-    foreach var thr in thrs do thr.IsBackground := true;
-    foreach var thr in thrs do thr.Start;
-    Thread.Sleep(test_max_time);
-    foreach var thr in thrs do thr.Abort;
+      var done_c := 0;
+      var done_wh := new ManualResetEventSlim(false);
+      var thrs := ArrGen(dvcs.Count, i->
+      begin
+        var thr := new Thread(()->
+        begin
+          keep[i] := nil <> CLContext.Create(dvcs[i]).TestSanity(test_size);
+          if Interlocked.Increment(done_c) = dvcs.Count then
+            done_wh.Set;
+        end);
+        var dvc_name := dvcs[i].Properties.Name;
+        thr.Name := $'OpenCLABC thread: Testing platform {pl_name} device {dvc_name} to see if it can run anything';
+        thr.IsBackground := true;
+        Result := thr;
+      end);
+      foreach var thr in thrs do thr.Start;
+      done_wh.Wait(test_max_time);
+      foreach var thr in thrs do thr.Abort;
+    end;
     
     for var i := 0 to dvcs.Count-1 do
       if not keep[i] then dvcs[i] := nil;
@@ -37970,6 +37991,8 @@ type
       {$ifdef ExecDebug}
       ExecDebug.FinallyReport;
       {$endif ExecDebug}
+      
+//      OpenCL.CallDebug.FinallyReport;
       
       if QueueResNil.created_count<>0 then
         gen_debug_otp.WriteLine($'[QueueResNil]: {QueueResNil.created_count}');

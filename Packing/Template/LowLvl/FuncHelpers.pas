@@ -567,7 +567,7 @@ type
     // - Replace call_to with newly discovered native MethodImplData
     private call_by := new List<MethodImplData>;
     
-    private step_marshal_choice := default(MultiBooleanChoice);
+    private step_marshal_choice := default(MultiBooleanChoice?);
     // Used for:
     // - Check: if step is the same, pass pars as is
     // - Get callable name for a given step
@@ -615,7 +615,7 @@ type
         raise new InvalidOperationException;
       Result.Item1 := ArrFill(self.par_groups.Length, MSK_FlatForward);
       Result.Item2 := new MethodImplData(self.name, self);
-      Result.Item3 := MultiBooleanChoiceSet.Create(self.par_groups.Length).Enmr.First;
+      Result.Item3 := MultiBooleanChoiceSet.Create(self.par_groups.Length).First;
     end;
     
     private created_ovr := default(FuncOverload);
@@ -690,7 +690,7 @@ type
       final_name := (IsFinalCall?'ntv_':'temp_') + self.name;
       
       if cache=nil then
-        raise new InvalidOperationException($'Name for {final_name} was not inited');
+        raise new InvalidOperationException($'Name cache for {final_name} was not inited');
       
       Result := (1).Step
         .Select(i->$'{final_name}_{i}')
@@ -716,13 +716,12 @@ type
       if step_marshal_choice.FlagCount <> self.par_groups.Length then
         raise new InvalidOperationException;
       {$endif DEBUG}
-      if self.step_marshal_choice=default(MultiBooleanChoice) then
+      if self.step_marshal_choice=nil then
         self.step_marshal_choice := step_marshal_choice else
       begin
         {$ifdef DEBUG}
-        for var i := 0 to step_marshal_choice.FlagCount-1 do
-          if self.step_marshal_choice.Flag[i]<>step_marshal_choice.Flag[i] then
-            raise new InvalidOperationException;
+        if self.step_marshal_choice.Value <> step_marshal_choice then
+          raise new System.InvalidOperationException;
         {$endif DEBUG}
       end;
     end;
@@ -791,23 +790,25 @@ type
     FPWO_Multiline
   );
   
+  FuncCallHandler = procedure(step_kind: MarshalStepKind; call_pars: array of FuncParamT; write_par: Writer->());
   FuncParWriteContainer = sealed class(Writer)
     private wr: Writer;
-    private is_proc, need_block: boolean;
+    private is_proc, need_block, need_register_call: boolean;
     private tab: integer;
     
-    public constructor(wr: Writer; is_proc, need_block: boolean; base_tab: integer);
+    public constructor(wr: Writer; is_proc, need_block, need_register_call: boolean; base_tab: integer);
     begin
       self.wr := wr;
       self.is_proc := is_proc;
       self.need_block := need_block;
+      self.need_register_call := need_register_call;
       self.tab := base_tab;
     end;
     
     public procedure Write(s: string); override := wr += s;
     
-    public procedure Flush; override := raise new InvalidOperationException;
-    public procedure Close; override := raise new InvalidOperationException;
+    public procedure Flush; override := wr.Flush;
+    public procedure Close; override := wr.Close;
     
     public procedure WriteTabs(d_tab: integer := 0) :=
       loop tab+d_tab do
@@ -841,22 +842,25 @@ type
     
     public procedure WriteResAssign(write_assigned_value: FuncParWriteContainer->());
     begin
-      
       WriteTabs;
       if need_block and not is_proc then
         wr += 'Result := ';
       write_assigned_value(self);
       wr += ';'#10;
-      
     end;
-    public procedure WriteResAssign(assigned_value_str: string) :=
-      WriteResAssign(wr->(wr += assigned_value_str));
     
-    private event on_call: procedure(step_kind: MarshalStepKind; call_pars: array of FuncParamT; write_par: Writer->());
+    private curr_call_handler: FuncCallHandler;
+    public procedure DefineCallHandler(use: FuncParWriteContainer->(); handler: FuncCallHandler);
+    begin
+      var old_handler := curr_call_handler;
+      curr_call_handler := handler;
+      use(self);
+      curr_call_handler := old_handler;
+    end;
     public procedure MakeCall(step_kind: MarshalStepKind; call_pars: array of FuncParamT; write_par: Writer->() := nil) :=
-      on_call(step_kind, call_pars, write_par);
+      curr_call_handler(step_kind, call_pars, write_par);
     public procedure MakeCall(step_kind: MarshalStepKind; call_pars: array of FuncParamT; par_str: string) :=
-      on_call(step_kind, call_pars, wr->(wr += par_str));
+      curr_call_handler(step_kind, call_pars, wr->(wr += par_str));
     
   end;
   
@@ -865,45 +869,57 @@ type
   
   ManagedMethodWriter = sealed class
     private md: MethodImplData;
+    private inp_par_names: array of string;
     private ovr: FuncOverload;
     private generic_names: array of string;
+    private pointer_types := new HashSet<string>;
     private uncalled := new HashSet<MarshalCallKind>;
     
     private is_proc: boolean;
+    private need_register_call: boolean;
     private need_block := false;
     
-    public constructor(md: MethodImplData; ovr: FuncOverload; generic_names: array of string);
+    public constructor(md: MethodImplData; inp_par_names: array of string; ovr: FuncOverload; generic_names: array of string);
     begin
       self.md := md;
+      self.inp_par_names := inp_par_names;
       self.ovr := ovr;
       self.generic_names := generic_names;
       
       self.is_proc := ovr[0]=nil;
       uncalled.UnionWith( md.call_to.Keys );
       
-      if generic_names.Any then
-        need_block := true;
-      
-      if md.call_to.Count>1 then
-        need_block := true;
+      self.need_register_call := self.md.IsPublic;
+      if need_register_call or generic_names.Any then
+        self.need_block := true;
       
     end;
     private constructor := raise new InvalidOperationException;
     
-    public procedure MarkRequireBlock := need_block := true;
-    
-    private pointer_types := new HashSet<string>;
+    private procedure VerifyNotStarted;
+    begin
+      if self.write_step_procs=nil then exit;
+      raise new InvalidOperationException('ManagedMethodWriter config changed after starting the codegen. Move this call up the stack');
+    end;
+    public procedure MarkRequireBlock;
+    begin
+      VerifyNotStarted;
+      need_block := true;
+    end;
     public procedure AddPointerType(tname: string);
     begin
-      MarkRequireBlock;
+      VerifyNotStarted;
       pointer_types += tname;
+      need_block := true;
     end;
+    public procedure AddValidateSizePar(pname: string) :=
+      self.inp_par_names := self.inp_par_names + [pname];
     
     private step_write_procs: array of FuncParWriterProc;
     private ordered_step_inds: array of integer;
-    public procedure InitWriters(par_name_at: integer->string
-      ; make_res_writer, make_par_writer: function(par_kind: MarshalParamKind; par: FuncParamT; par_name: string): FuncParWriter
-      ; make_ett_writer: function(pars: array of ValueTuple<MarshalParamKind, FuncParamT, string>): FuncParWriter
+    public procedure InitWriters(
+      make_res_writer, make_par_writer: function(par_kind: MarshalParamKind; par: FuncParamT; par_name: string): FuncParWriter;
+      make_ett_writer: function(pars: array of ValueTuple<MarshalParamKind, FuncParamT, string>): FuncParWriter
     );
     begin
       var step_write_procs := new List<FuncParWriterProc>;
@@ -911,8 +927,12 @@ type
       
       var par_done_c := 0;
       foreach var step in md.par_groups index step_i do
-        if not md.step_marshal_choice.Flag[step_i] then
+        if not md.step_marshal_choice.Value.Flag[step_i] then
         begin
+          // Parameter passed as-is, without any marshaling
+          // - Only marshaling some of the parameters allows to save on private overload count
+          if step.pars.Length<>1 then
+            raise new Exception('not a problem but first find why');
           var pars := step.pars.ConvertAll(\(par_kind,par)->par);
           if par_done_c=0 then
           begin
@@ -921,7 +941,7 @@ type
           end else
           begin
             step_write_orders += FPWO_InPlace;
-            var par_names := ArrGen(step.pars.Length, par_i->par_name_at(par_done_c+par_i));
+            var par_names := ArrGen(step.pars.Length, par_i->inp_par_names[par_done_c+par_i]);
             step_write_procs += wr->wr.MakeCall(MSK_FlatForward, pars, wr->
               wr.WriteSeparated(par_names, (wr,par_name)->(wr += par_name), ', ')
             );
@@ -930,9 +950,13 @@ type
         end else
         if step.pars.Any(\(par_kind,par)->par_kind=MPK_EnumToTypeBody) then
         begin
+          // ETT parameter group - processed in a special way
+          // - It has to accept multiple parameters as an input bundle
+          if par_done_c=0 then
+            raise new NotSupportedException('ETT cannot be a return value');
           var (order, proc) :=
             make_ett_writer(step.pars.ConvertAll((\(par_kind,par), par_i)->
-              ValueTuple.Create(par_kind, par, par_name_at(par_done_c+par_i))
+              ValueTuple.Create(par_kind, par, inp_par_names[par_done_c+par_i])
             ));
           step_write_orders += order;
           step_write_procs += proc;
@@ -940,8 +964,9 @@ type
         end else
           foreach var (par_kind, par) in step.pars do
           begin
-            var (order, proc) :=
-              (par_done_c=0?make_res_writer:make_par_writer)(par_kind, par, par_name_at(par_done_c));
+            // Regular marshaled parameter
+            var make_writer := if par_done_c=0 then make_res_writer else make_par_writer;
+            var (order, proc) := make_writer(par_kind, par, inp_par_names[par_done_c]);
             step_write_orders += order;
             step_write_procs += proc;
             par_done_c += 1;
@@ -959,88 +984,91 @@ type
       
     end;
     
+    public function FinalInpParNames := self.inp_par_names;
+    
     private write_step_procs: array of Action<Writer> := nil;
     private step_kinds: array of MarshalStepKind := nil;
     private call_pars: array of array of FuncParamT;
-    private procedure ExecuteMarshalCore(wr: Writer; tab, left_c: integer);
+    private procedure ExecuteMarshalCore(wr: FuncParWriteContainer; left_c: integer);
     begin
+      var tab := wr.tab;
       
       left_c -= 1;
       var step_i := ordered_step_inds[left_c];
       var write_proc := step_write_procs[step_i];
       
-      var wr_cont := new FuncParWriteContainer(wr, is_proc, need_block, tab);
-      
-      wr_cont.on_call += (step_kind, call_par_arr, write_step_proc)->
-      begin
-        write_step_procs[step_i] := write_step_proc;
-        step_kinds[step_i] := step_kind;
-        call_pars[step_i] := call_par_arr;
-        if (step_i=0) and (write_step_proc<>nil) then
-          raise new InvalidOperationException;
-        
-        if left_c <> 0 then
-          ExecuteMarshalCore(wr, wr_cont.tab, left_c) else
+      wr.DefineCallHandler(write_proc,
+        (step_kind, call_par_arr, write_step_proc)->
         begin
-          var ovr_step_kind := new MarshalCallKind(step_kinds);
+          write_step_procs[step_i] := write_step_proc;
+          step_kinds[step_i] := step_kind;
+          call_pars[step_i] := call_par_arr;
+          if (step_i=0) and (write_step_proc<>nil) then
+            raise new InvalidOperationException;
           
-          var called_md: MethodImplData;
-          if not md.call_to.TryGetValue(ovr_step_kind, called_md) then
-            raise new InvalidOperationException($'{md.FinalName(nil)}({md.MakeOverload}) tried to call undefined{#10}({ovr_step_kind}); defined:'+
-              md.call_to.Keys.Select(k->$'{#10}({k}) => {md.call_to[k]}').JoinToString('')
-            );
-          uncalled.Remove(ovr_step_kind);
-          
-          if not called_md.MakeOverload.ItemsSeq.SequenceEqual(call_pars.SelectMany(a->a)) then
+          if left_c <> 0 then
+            ExecuteMarshalCore(wr, left_c) else
           begin
-            Otp($'ERORR: {md.FinalName(nil)} ({md.MakeOverload}) + ({ovr_step_kind}) reported wrong param types:');
-            Otp($'Got: {new FuncOverload(call_pars.SelectMany(a->a).ToArray)}');
-            Otp($'Exp: {called_md.MakeOverload}');
+            var ovr_step_kind := new MarshalCallKind(step_kinds);
+            
+            var called_md: MethodImplData;
+            if not md.call_to.TryGetValue(ovr_step_kind, called_md) then
+              raise new InvalidOperationException($'{md.FinalName(nil)}({md.MakeOverload}) tried to call undefined{#10}({ovr_step_kind}); defined:'+
+                md.call_to.Keys.Select(k->$'{#10}({k}) => {md.call_to[k]}').JoinToString('')
+              );
+            uncalled.Remove(ovr_step_kind);
+            
+            if not called_md.MakeOverload.ItemsSeq.SequenceEqual(call_pars.SelectMany(a->a)) then
+            begin
+              Otp($'ERORR: {md.FinalName(nil)} ({md.MakeOverload}) + ({ovr_step_kind}) reported wrong param types:');
+              Otp($'Got: {new FuncOverload(call_pars.SelectMany(a->a).ToArray)}');
+              Otp($'Exp: {called_md.MakeOverload}');
+            end;
+            
+            wr += called_md.FinalName(nil);
+            if write_step_procs.Any(wsp->wsp<>nil) then
+            begin
+              wr += '(';
+              wr.WriteSeparated((1..write_step_procs.Length-1).Where(step_i->write_step_procs[step_i]<>nil),
+                (wr,step_i)->write_step_procs[step_i](wr), ', '
+              );
+              wr += ')';
+            end;
+            
           end;
           
-          wr += called_md.FinalName(nil);
-          if write_step_procs.Any(wsp->wsp<>nil) then
-          begin
-            wr += '(';
-            wr.WriteSeparated((1..write_step_procs.Length-1).Where(step_i->write_step_procs[step_i]<>nil),
-              (wr,step_i)->write_step_procs[step_i](wr), ', '
-            );
-            wr += ')';
-          end;
-          
-        end;
-        
-        write_step_procs[step_i] := nil;
-        step_kinds[step_i] := MSK_Invalid;
-        call_pars[step_i] := nil;
-      end;
+          write_step_procs[step_i] := nil;
+          step_kinds[step_i] := MSK_Invalid;
+          call_pars[step_i] := nil;
+        end
+      );
       
-      write_proc(wr_cont);
-      
-      if wr_cont.tab<>tab then
+      if wr.tab<>tab then
         Otp('ERROR: Tab lvl was not reset');
     end;
-    private procedure ExecuteMarshalCore(wr: Writer);
+    private procedure ExecuteMarshalCore(wr: FuncParWriteContainer);
     begin
       self.write_step_procs := new Action<Writer>[step_write_procs.Length];
       self.step_kinds := new MarshalStepKind[step_write_procs.Length];
       SetLength(self.call_pars, step_write_procs.Length);
       
-      ExecuteMarshalCore(wr, 3, step_kinds.Length);
+      ExecuteMarshalCore(wr, step_kinds.Length);
       
       self.write_step_procs := nil;
       self.step_kinds := nil;
       self.call_pars := nil;
     end;
     
-    public procedure Write(wr: Writer);
+    public procedure Write(code_container_name: string; ntv_wr: Writer);
     begin
+      var wr := new FuncParWriteContainer(ntv_wr, is_proc, need_block, need_register_call, 2);
       
-      {$region Finish header}
+      {$region Finish header + Write begin}
       
       if need_block then
       begin
         wr += ';';
+        
         if generic_names.Any then
         begin
           wr += ' where ';
@@ -1048,41 +1076,69 @@ type
           wr += ': record;';
         end;
         wr += #10;
-      end else
-      begin
-        wr += ' :='#10;
-      end;
-      
-      {$endregion Finish header}
-      
-      {$region Write body}
-      
-      if need_block then
-      begin
+        
         foreach var tname in pointer_types do
         begin
-          wr += '      type P';
+          wr.WriteTabs(+1);
+          wr += 'type P';
           wr += tname.First.ToUpper;
           wr += tname.SubString(1);
           wr += ' = ^';
           wr += tname;
           wr += ';'#10;
         end;
-        wr += '    begin'#10;
+        
+        wr.BeginBlock('begin');
+        
+        if need_register_call then
+        begin
+          wr.WriteTabs;
+          wr += '{$ifdef CallDebug}CallDebug.RegisterCallBegin('#39;
+          wr += code_container_name;
+          wr += '.';
+          wr += self.md.FinalName(nil);
+          wr += #39;
+          for var par_i := 1 to ovr.ItemsSeq.Count-1 do
+          begin
+            if ovr[par_i]=nil then continue;
+            wr += ', CallDebug.Wrap';
+            if ovr[par_i].var_arg then
+              wr += 'VarArg';
+            wr += '(';
+            wr += self.inp_par_names[par_i];
+            wr += ')';
+          end;
+          wr += '); try{$endif}'#10;
+        end;
+        
+      end else
+      begin
+        wr += ' :='#10;
+        wr.BeginBlock(nil);
       end;
+      
+      {$endregion Finish header + Write begin}
       
       ExecuteMarshalCore(wr);
       
-      if need_block then
+      {$region Write end}
+      
+      if need_block and need_register_call then
       begin
-        wr += '    end;'#10;
+        wr.WriteTabs;
+        wr += '{$ifdef CallDebug}';
+        if not is_proc then
+          wr += 'CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); ';
+        wr += 'finally CallDebug.RegisterCallEnd; end;{$endif}'#10;
       end;
+      
+      wr.EndBlock(need_block);
+      
+      {$endregion Write end}
       
       {$ifdef DEBUG}
       wr.Flush;
       {$endif DEBUG}
-      
-      {$endregion Write body}
       
       {$region Sanity checks}
       
