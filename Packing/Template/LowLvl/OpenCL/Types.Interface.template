@@ -3842,6 +3842,7 @@
     public static property KERNEL_EXEC_INFO_INDIRECT_DEVICE_ACCESS:          clKernelExecInfo read new clKernelExecInfo($4201);
     public static property KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS:          clKernelExecInfo read new clKernelExecInfo($4202);
     public static property KERNEL_EXEC_INFO_USM_PTRS:                        clKernelExecInfo read new clKernelExecInfo($4203);
+    public static property KERNEL_EXEC_INFO_DEVICE_PTRS:                     clKernelExecInfo read new clKernelExecInfo($5002);
     
     public function ToString: string; override;
     begin
@@ -3865,6 +3866,8 @@
         Result := 'KERNEL_EXEC_INFO_INDIRECT_SHARED_ACCESS' else
       if KERNEL_EXEC_INFO_USM_PTRS = self then
         Result := 'KERNEL_EXEC_INFO_USM_PTRS' else
+      if KERNEL_EXEC_INFO_DEVICE_PTRS = self then
+        Result := 'KERNEL_EXEC_INFO_DEVICE_PTRS' else
         Result := $'clKernelExecInfo[{self.val}]';
     end;
     
@@ -4095,6 +4098,7 @@
     public static property MEM_USE_HOST_PTR:              clMemFlags read new clMemFlags(1 shl 3);
     public static property MEM_ALLOC_HOST_PTR:            clMemFlags read new clMemFlags(1 shl 4);
     public static property MEM_COPY_HOST_PTR:             clMemFlags read new clMemFlags(1 shl 5);
+    public static property MEM_IMMUTABLE:                 clMemFlags read new clMemFlags(1 shl 6);
     public static property MEM_HOST_WRITE_ONLY:           clMemFlags read new clMemFlags(1 shl 7);
     public static property MEM_HOST_READ_ONLY:            clMemFlags read new clMemFlags(1 shl 8);
     public static property MEM_HOST_NO_ACCESS:            clMemFlags read new clMemFlags(1 shl 9);
@@ -4158,6 +4162,11 @@
       begin
         res += 'MEM_COPY_HOST_PTR+';
         left_val := left_val and not MEM_COPY_HOST_PTR.val;
+      end;
+      if MEM_IMMUTABLE in self then
+      begin
+        res += 'MEM_IMMUTABLE+';
+        left_val := left_val and not MEM_IMMUTABLE.val;
       end;
       if MEM_HOST_WRITE_ONLY in self then
       begin
@@ -4265,6 +4274,7 @@
     public static property MEM_DX9_SHARED_HANDLE:      clMemInfo read new clMemInfo($4074);
     public static property MEM_VA_API_MEDIA_SURFACE:   clMemInfo read new clMemInfo($4098);
     public static property MEM_USES_SVM_POINTER_ARM:   clMemInfo read new clMemInfo($40B7);
+    public static property MEM_DEVICE_ADDRESS:         clMemInfo read new clMemInfo($5001);
     
     public function ToString: string; override;
     begin
@@ -4306,6 +4316,8 @@
         Result := 'MEM_VA_API_MEDIA_SURFACE' else
       if MEM_USES_SVM_POINTER_ARM = self then
         Result := 'MEM_USES_SVM_POINTER_ARM' else
+      if MEM_DEVICE_ADDRESS = self then
+        Result := 'MEM_DEVICE_ADDRESS' else
         Result := $'clMemInfo[{self.val}]';
     end;
     
@@ -4407,6 +4419,7 @@
     public static property MEM_ALLOC_FLAGS_IMG:           clMemProperties read new clMemProperties($40D7);
     public static property MEM_LOCALLY_UNCACHED_RESOURCE: clMemProperties read new clMemProperties($4218);
     public static property MEM_DEVICE_ID:                 clMemProperties read new clMemProperties($4219);
+    public static property MEM_DEVICE_PRIVATE_ADDRESS:    clMemProperties read new clMemProperties($5000);
     
     public function ToString: string; override;
     begin
@@ -4420,6 +4433,8 @@
         Result := 'MEM_LOCALLY_UNCACHED_RESOURCE' else
       if MEM_DEVICE_ID = self then
         Result := 'MEM_DEVICE_ID' else
+      if MEM_DEVICE_PRIVATE_ADDRESS = self then
+        Result := 'MEM_DEVICE_PRIVATE_ADDRESS' else
         Result := $'clMemProperties[{self.val}]';
     end;
     

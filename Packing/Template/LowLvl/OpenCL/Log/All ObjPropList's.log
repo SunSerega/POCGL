@@ -134,6 +134,9 @@ IntPtr
 --- MEM_DEVICE_ID
 !type
 IntPtr
+--- MEM_DEVICE_PRIVATE_ADDRESS
+!type
+clBool
 
 # clQueueProperties
 --- QUEUE_PRIORITY

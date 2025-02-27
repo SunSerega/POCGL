@@ -8345,6 +8345,16 @@
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetMemObjectInfo_MEM_DEVICE_ADDRESS(memobj: cl_mem; var param_value: UInt64; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetMemObjectInfo_MEM_DEVICE_ADDRESS', CallDebug.Wrap(memobj), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<UInt64>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetMemObjectInfo(memobj, clMemInfo.MEM_DEVICE_ADDRESS, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in cl2.0
     private static function ntv_GetPipeInfo_1(pipe: cl_mem; param_name: clPipeInfo; param_value_size: UIntPtr; var param_value: Byte; var param_value_size_ret: UIntPtr): clErrorCode;
@@ -9699,6 +9709,13 @@
       {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.SetKernelExecInfo_KERNEL_EXEC_INFO_USM_PTRS', CallDebug.Wrap(kernel), CallDebug.Wrap(param_value_count), CallDebug.WrapVarArg(param_value)); try{$endif}
       var param_value_sz := new UIntPtr(param_value_count*Marshal.SizeOf&<IntPtr>);
       Result := SetKernelExecInfo(kernel, clKernelExecInfo.KERNEL_EXEC_INFO_USM_PTRS, param_value_sz,param_value);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo_KERNEL_EXEC_INFO_DEVICE_PTRS(kernel: cl_kernel; param_value: UInt64): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.SetKernelExecInfo_KERNEL_EXEC_INFO_DEVICE_PTRS', CallDebug.Wrap(kernel), CallDebug.Wrap(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<UInt64>);
+      Result := SetKernelExecInfo(kernel, clKernelExecInfo.KERNEL_EXEC_INFO_DEVICE_PTRS, param_value_sz,param_value);
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function SetKernelExecInfo(kernel: cl_kernel; param_name: clKernelExecInfo; param_value_size: UIntPtr; param_value: pointer): clErrorCode;

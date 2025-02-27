@@ -922,6 +922,9 @@ IntPtr
 --- MEM_USES_SVM_POINTER_ARM
 !output
 clBool
+--- MEM_DEVICE_ADDRESS
+!output
+UInt64
 
 # cl.GetPipeInfo
 2
@@ -1128,6 +1131,9 @@ clBool
 --- KERNEL_EXEC_INFO_USM_PTRS
 !input
 array of IntPtr
+--- KERNEL_EXEC_INFO_DEVICE_PTRS
+!input
+UInt64
 
 # cl.SetKernelExecInfoARM
 2

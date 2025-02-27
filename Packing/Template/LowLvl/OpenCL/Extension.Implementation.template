@@ -25,6 +25,10 @@ type clSharedVirtualMemoryARM = sealed partial class(cl_extension_base) end;
 constructor clSharedVirtualMemoryARM.Create(pl: cl_platform_id) := inherited Create(pl);
 function clSharedVirtualMemoryARM.GetProcAddress(name: string) := pl.GetProcAddress(name);
 
+type clBufferDeviceAddressEXT = sealed partial class(cl_extension_base) end;
+constructor clBufferDeviceAddressEXT.Create(pl: cl_platform_id) := inherited Create(pl);
+function clBufferDeviceAddressEXT.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
 type clDeviceFissionEXT = sealed partial class(cl_extension_base) end;
 constructor clDeviceFissionEXT.Create(pl: cl_platform_id) := inherited Create(pl);
 function clDeviceFissionEXT.GetProcAddress(name: string) := pl.GetProcAddress(name);

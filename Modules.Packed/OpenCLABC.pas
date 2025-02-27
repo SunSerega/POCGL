@@ -2980,6 +2980,10 @@ type
     begin
       cl.GetMemObjectInfo_MEM_USES_SVM_POINTER_ARM(self.ntv, Result).RaiseIfError;
     end;
+    private function GetDeviceAddress: UInt64;
+    begin
+      cl.GetMemObjectInfo_MEM_DEVICE_ADDRESS(self.ntv, Result).RaiseIfError;
+    end;
     
     public property Flags:               clMemFlags               read GetFlags;
     public property HostPtr:             IntPtr                   read GetHostPtr;
@@ -2993,6 +2997,7 @@ type
     public property Dx9SharedHandle:     IntPtr                   read GetDx9SharedHandle;
     public property VaApiMediaSurface:   IntPtr                   read GetVaApiMediaSurface;
     public property UsesSvmPointerArm:   clBool                   read GetUsesSvmPointerArm;
+    public property DeviceAddress:       UInt64                   read GetDeviceAddress;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -3014,7 +3019,8 @@ type
       res += 'Dx9Resource         = '; AddProp(res, GetDx9Resource        ); res += #10;
       res += 'Dx9SharedHandle     = '; AddProp(res, GetDx9SharedHandle    ); res += #10;
       res += 'VaApiMediaSurface   = '; AddProp(res, GetVaApiMediaSurface  ); res += #10;
-      res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  );
+      res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  ); res += #10;
+      res += 'DeviceAddress       = '; AddProp(res, GetDeviceAddress      );
     end;
     public function ToString: string; override;
     begin
@@ -3114,6 +3120,10 @@ type
     begin
       cl.GetMemObjectInfo_MEM_OFFSET(self.ntv, Result).RaiseIfError;
     end;
+    private function GetDeviceAddress: UInt64;
+    begin
+      cl.GetMemObjectInfo_MEM_DEVICE_ADDRESS(self.ntv, Result).RaiseIfError;
+    end;
     
     public property Flags:               clMemFlags               read GetFlags;
     public property HostPtr:             IntPtr                   read GetHostPtr;
@@ -3129,6 +3139,7 @@ type
     public property UsesSvmPointerArm:   clBool                   read GetUsesSvmPointerArm;
     public property AssociatedMemobject: cl_mem                   read GetAssociatedMemobject;
     public property Offset:              UIntPtr                  read GetOffset;
+    public property DeviceAddress:       UInt64                   read GetDeviceAddress;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -3152,7 +3163,8 @@ type
       res += 'VaApiMediaSurface   = '; AddProp(res, GetVaApiMediaSurface  ); res += #10;
       res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  ); res += #10;
       res += 'AssociatedMemobject = '; AddProp(res, GetAssociatedMemobject); res += #10;
-      res += 'Offset              = '; AddProp(res, GetOffset             );
+      res += 'Offset              = '; AddProp(res, GetOffset             ); res += #10;
+      res += 'DeviceAddress       = '; AddProp(res, GetDeviceAddress      );
     end;
     public function ToString: string; override;
     begin
@@ -3230,6 +3242,10 @@ type
     begin
       cl.GetMemObjectInfo_MEM_OFFSET(self.ntv, Result).RaiseIfError;
     end;
+    private function GetDeviceAddress: UInt64;
+    begin
+      cl.GetMemObjectInfo_MEM_DEVICE_ADDRESS(self.ntv, Result).RaiseIfError;
+    end;
     
     public property Flags:               clMemFlags               read GetFlags;
     public property HostPtr:             IntPtr                   read GetHostPtr;
@@ -3245,6 +3261,7 @@ type
     public property UsesSvmPointerArm:   clBool                   read GetUsesSvmPointerArm;
     public property AssociatedMemobject: cl_mem                   read GetAssociatedMemobject;
     public property Offset:              UIntPtr                  read GetOffset;
+    public property DeviceAddress:       UInt64                   read GetDeviceAddress;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -3268,7 +3285,8 @@ type
       res += 'VaApiMediaSurface   = '; AddProp(res, GetVaApiMediaSurface  ); res += #10;
       res += 'UsesSvmPointerArm   = '; AddProp(res, GetUsesSvmPointerArm  ); res += #10;
       res += 'AssociatedMemobject = '; AddProp(res, GetAssociatedMemobject); res += #10;
-      res += 'Offset              = '; AddProp(res, GetOffset             );
+      res += 'Offset              = '; AddProp(res, GetOffset             ); res += #10;
+      res += 'DeviceAddress       = '; AddProp(res, GetDeviceAddress      );
     end;
     public function ToString: string; override;
     begin
