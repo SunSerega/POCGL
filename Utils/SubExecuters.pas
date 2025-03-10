@@ -123,7 +123,7 @@ begin
   begin
     var uses_s := uses_m.Groups[2].Value.Trim;
 //    Console.WriteLine($'<{prev.JoinToString('';'')}> Looking at file [{fname}]: "{uses_m}" ({uses_s})');
-    foreach var unit_m in uses_s.Matches('(?:\w+\s+in\s+)?''([^'']+)''|([\w\.]+)') do
+    foreach var unit_m in uses_s.Matches('(?:\w+\s+in\s+)?''([^'']+)''|(\w+(\s*\.\s*\w+)*)') do
     begin
       var unit_s := unit_m.Groups[1].Value+unit_m.Groups[2].Value;
       unit_s := unit_s.Trim;
