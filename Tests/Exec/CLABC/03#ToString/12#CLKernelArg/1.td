@@ -15,90 +15,90 @@ Global
 |	CL
 |	|	CLMemory
 |	|	|	CLKernelArgGlobalCLMemory
-|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgGlobalCLMemory
-|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgGlobalCLMemory
-|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgGlobalCLMemory
-|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgGlobalCLMemory
-|	|	|		ParameterQueue<CLMemory>#0["cl_mem"]: Default=CLMemory[*] of size 1
+|	|	|		ParameterQueue<CLMemory>#0["cl_mem"]: Default=CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgGlobalCLMemory
 |	|	|		CLMemoryCCQ#0
-|	|	|			ConstQueue<CLMemory>#1: CLMemory[*] of size 1
+|	|	|			ConstQueue<CLMemory>#1: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	CLValue
 |	|	|	CLKernelArgGlobalCLValue<byte>
-|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgGlobalCLValue<byte>
-|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgGlobalCLValue<byte>
-|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgGlobalCLValue<byte>
-|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgGlobalCLValue<byte>
-|	|	|		ParameterQueue<CLValue<byte>>#0["cl_val"]: Default=CLValue<byte>[*]
+|	|	|		ParameterQueue<CLValue<byte>>#0["cl_val"]: Default=CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgGlobalCLValue<byte>
 |	|	|		CLValueCCQ<byte>#0
-|	|	|			ConstQueue<CLValue<byte>>#1: CLValue<byte>[*]
+|	|	|			ConstQueue<CLValue<byte>>#1: CLValue<byte>[@[1..*0..9A..F]]
 |	|	CLArray
 |	|	|	CLKernelArgGlobalCLArray<byte>
-|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgGlobalCLArray<byte>
-|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgGlobalCLArray<byte>
-|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgGlobalCLArray<byte>
-|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgGlobalCLArray<byte>
-|	|	|		ParameterQueue<CLArray<byte>>#0["cl_arr"]: Default=CLArray<byte>[*] of length 4
+|	|	|		ParameterQueue<CLArray<byte>>#0["cl_arr"]: Default=CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgGlobalCLArray<byte>
 |	|	|		CLArrayCCQ<byte>#0
-|	|	|			ConstQueue<CLArray<byte>>#1: CLArray<byte>[*] of length 4
+|	|	|			ConstQueue<CLArray<byte>>#1: CLArray<byte>[@[1..*0..9A..F]] of length 4
 Constant
 |	CL
 |	|	CLMemory
 |	|	|	CLKernelArgConstantCLMemory
-|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgConstantCLMemory
-|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgConstantCLMemory
-|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgConstantCLMemory
-|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgConstantCLMemory
-|	|	|		ParameterQueue<CLMemory>#0["cl_mem"]: Default=CLMemory[*] of size 1
+|	|	|		ParameterQueue<CLMemory>#0["cl_mem"]: Default=CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgConstantCLMemory
 |	|	|		CLMemoryCCQ#0
-|	|	|			ConstQueue<CLMemory>#1: CLMemory[*] of size 1
+|	|	|			ConstQueue<CLMemory>#1: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	CLValue
 |	|	|	CLKernelArgConstantCLValue<byte>
-|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgConstantCLValue<byte>
-|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgConstantCLValue<byte>
-|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgConstantCLValue<byte>
-|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgConstantCLValue<byte>
-|	|	|		ParameterQueue<CLValue<byte>>#0["cl_val"]: Default=CLValue<byte>[*]
+|	|	|		ParameterQueue<CLValue<byte>>#0["cl_val"]: Default=CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgConstantCLValue<byte>
 |	|	|		CLValueCCQ<byte>#0
-|	|	|			ConstQueue<CLValue<byte>>#1: CLValue<byte>[*]
+|	|	|			ConstQueue<CLValue<byte>>#1: CLValue<byte>[@[1..*0..9A..F]]
 |	|	CLArray
 |	|	|	CLKernelArgConstantCLArray<byte>
-|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgConstantCLArray<byte>
-|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgConstantCLArray<byte>
-|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgConstantCLArray<byte>
-|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgConstantCLArray<byte>
-|	|	|		ParameterQueue<CLArray<byte>>#0["cl_arr"]: Default=CLArray<byte>[*] of length 4
+|	|	|		ParameterQueue<CLArray<byte>>#0["cl_arr"]: Default=CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgConstantCLArray<byte>
 |	|	|		CLArrayCCQ<byte>#0
-|	|	|			ConstQueue<CLArray<byte>>#1: CLArray<byte>[*] of length 4
+|	|	|			ConstQueue<CLArray<byte>>#1: CLArray<byte>[@[1..*0..9A..F]] of length 4
 Local
 |	FromBytes
 |	|	CLKernelArgLocalBytes
@@ -274,15 +274,15 @@ Private
 |	Native
 |	|	NativeMemory
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$@[1..*0..9A..F][2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$@[1..*0..9A..F][2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$@[1..*0..9A..F][2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$@[1..*0..9A..F][2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ParameterQueue<NativeMemory>#0["ntv_mem"]: Default=NativeMemory:$*[2]{ $00, $00 }
+|	|	|		ParameterQueue<NativeMemory>#0["ntv_mem"]: Default=NativeMemory:$@[1..*0..9A..F][2]{ $00, $00 }
 |	|	NativeValue
 |	|	|	CLKernelArgPrivateNativeValue<byte>
 |	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 123 }
@@ -399,15 +399,15 @@ Generic
 |	Native
 |	|	NativeMemory
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$@[1..*0..9A..F][2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$@[1..*0..9A..F][2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$@[1..*0..9A..F][2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$*[2]{ $00, $00 }
+|	|	|		ConstQueue<NativeMemory>#0: NativeMemory:$@[1..*0..9A..F][2]{ $00, $00 }
 |	|	|	CLKernelArgPrivateNativeMemory
-|	|	|		ParameterQueue<NativeMemory>#0["ntv_mem"]: Default=NativeMemory:$*[2]{ $00, $00 }
+|	|	|		ParameterQueue<NativeMemory>#0["ntv_mem"]: Default=NativeMemory:$@[1..*0..9A..F][2]{ $00, $00 }
 |	|	NativeValue
 |	|	|	CLKernelArgPrivateNativeValue<byte>
 |	|	|		ConstQueue<NativeValue<byte>>#0: NativeValue<byte>{ 123 }
@@ -433,46 +433,46 @@ Generic
 |	CL
 |	|	CLMemory
 |	|	|	CLKernelArgGlobalCLMemory
-|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgGlobalCLMemory
-|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgGlobalCLMemory
-|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgGlobalCLMemory
-|	|	|		ConstQueue<CLMemory>#0: CLMemory[*] of size 1
+|	|	|		ConstQueue<CLMemory>#0: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgGlobalCLMemory
-|	|	|		ParameterQueue<CLMemory>#0["cl_mem"]: Default=CLMemory[*] of size 1
+|	|	|		ParameterQueue<CLMemory>#0["cl_mem"]: Default=CLMemory[@[1..*0..9A..F]] of size 1
 |	|	|	CLKernelArgGlobalCLMemory
 |	|	|		CLMemoryCCQ#0
-|	|	|			ConstQueue<CLMemory>#1: CLMemory[*] of size 1
+|	|	|			ConstQueue<CLMemory>#1: CLMemory[@[1..*0..9A..F]] of size 1
 |	|	CLValue
 |	|	|	CLKernelArgGlobalCLValue<byte>
-|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgGlobalCLValue<byte>
-|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgGlobalCLValue<byte>
-|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgGlobalCLValue<byte>
-|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[*]
+|	|	|		ConstQueue<CLValue<byte>>#0: CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgGlobalCLValue<byte>
-|	|	|		ParameterQueue<CLValue<byte>>#0["cl_val"]: Default=CLValue<byte>[*]
+|	|	|		ParameterQueue<CLValue<byte>>#0["cl_val"]: Default=CLValue<byte>[@[1..*0..9A..F]]
 |	|	|	CLKernelArgGlobalCLValue<byte>
 |	|	|		CLValueCCQ<byte>#0
-|	|	|			ConstQueue<CLValue<byte>>#1: CLValue<byte>[*]
+|	|	|			ConstQueue<CLValue<byte>>#1: CLValue<byte>[@[1..*0..9A..F]]
 |	|	CLArray
 |	|	|	CLKernelArgGlobalCLArray<byte>
-|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgGlobalCLArray<byte>
-|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgGlobalCLArray<byte>
-|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgGlobalCLArray<byte>
-|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[*] of length 4
+|	|	|		ConstQueue<CLArray<byte>>#0: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgGlobalCLArray<byte>
-|	|	|		ParameterQueue<CLArray<byte>>#0["cl_arr"]: Default=CLArray<byte>[*] of length 4
+|	|	|		ParameterQueue<CLArray<byte>>#0["cl_arr"]: Default=CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	|	|	CLKernelArgGlobalCLArray<byte>
 |	|	|		CLArrayCCQ<byte>#0
-|	|	|			ConstQueue<CLArray<byte>>#1: CLArray<byte>[*] of length 4
+|	|	|			ConstQueue<CLArray<byte>>#1: CLArray<byte>[@[1..*0..9A..F]] of length 4
 |	Value
 |	|	CLKernelArgPrivateValue<integer>
 |	|		ConstQueue<integer>#0: 1

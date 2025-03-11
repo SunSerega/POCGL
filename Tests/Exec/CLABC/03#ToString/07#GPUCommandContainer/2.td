@@ -13,7 +13,7 @@ OpenCLABC_implementation______.InvokeParamsFunc<[T]> = function(enq_c: integer; 
 #ExpExecOtp
 SimpleSyncQueueArray<integer>#0
 	CLArrayCCQ<byte>#1
-		ConstQueue<CLArray<byte>>#2: CLArray<byte>[*] of length 1
+		ConstQueue<CLArray<byte>>#2: CLArray<byte>[@[1..*0..9A..F]] of length 1
 		CLArrayCommandWriteValue<byte>
 			val: 1
 			ind: ConstQueue<integer>#3: 2
@@ -21,7 +21,7 @@ SimpleSyncQueueArray<integer>#0
 
 SimpleSyncQueueArray<integer>#0
 	CLArrayCCQ<byte>#1
-		ConstQueue<CLArray<byte>>#2: CLArray<byte>[*] of length 1
+		ConstQueue<CLArray<byte>>#2: CLArray<byte>[@[1..*0..9A..F]] of length 1
 		CLArrayCommandWriteValueQ<byte>
 			val: ConstQueue<byte>#3: 1
 			ind: ConstQueue<integer>#4: 2

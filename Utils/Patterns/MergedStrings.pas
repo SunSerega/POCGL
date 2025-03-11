@@ -33,6 +33,7 @@ type
     public static function operator*(s1, s2: MergedString) := AllMerges(s1, s2).First;
     
     public static function operator in(s1, s2: MergedString): boolean;
+    public function Contains(other: MergedString): boolean := other in self;
     
     public static function Compare(s1, s2: MergedString): integer;
     public function CompareTo(other: MergedString) := Compare(self, other);
@@ -86,7 +87,11 @@ type
     public constructor(c: integer) := Create(c, c);
     public constructor := exit;
     
+    public static function AtLeast(c: integer) := new MergedStringLength(c, StringIndex.Invalid);
+    public static function Any := AtLeast(0);
+    
     public static function operator implicit(c: integer): MergedStringLength := new MergedStringLength(c);
+    public static function operator implicit(c: IntRange): MergedStringLength := new MergedStringLength(c.Low, c.High);
     
     public function Contains(c: integer): boolean;
     begin
@@ -116,6 +121,97 @@ type
   end;
   
   {$endregion MergedStringLength}
+  
+  {$region MergedStringBuilder}
+  
+  MergedStringBuilder = sealed partial class
+    
+    public procedure AddSolid(literal: string);
+    
+    public procedure AddWild(len: MergedStringLength; allowed: sequence of char);
+    
+    public function ToMergedString: MergedString;
+    
+    public static function Build(act: MergedStringBuilder->()): MergedString;
+    begin
+      var b := new MergedStringBuilder;
+      act(b);
+      Result := b.ToMergedString;
+    end;
+    
+  end;
+  
+  MergedStringBuilderTextReplacer = sealed class
+    private reg: Regex;
+    private on_match: (&Match,MergedStringBuilder)->();
+    
+    public constructor(reg: Regex; on_match: (&Match,MergedStringBuilder)->());
+    begin
+      self.reg := reg;
+      self.on_match := on_match;
+    end;
+    public constructor(reg: string; on_match: (&Match,MergedStringBuilder)->()) :=
+      Create(new Regex(reg), on_match);
+    
+  end;
+  MergedStringBuilder = sealed partial class
+    
+    public static function Replace(text: string; check_repl_valid: boolean; params replacers: array of MergedStringBuilderTextReplacer): MergedString;
+    begin
+      var matches := new &Match[replacers.Length];
+      for var i := 0 to matches.Length-1 do
+        matches[i] := replacers[i].reg.Match(text);
+      
+      var b := new MergedStringBuilder;
+      var text_beg := 0;
+      while true do
+      begin
+        var found_ind := false;
+        var text_ind, match_ind: integer;
+        for var i := 0 to matches.Length-1 do
+        begin
+          if not matches[i].Success then continue;
+          if found_ind and (matches[i].Index >= text_ind) then continue;
+          text_ind := matches[i].Index;
+          match_ind := i;
+          found_ind := true;
+        end;
+        if not found_ind then break;
+        
+        if text_beg<>text_ind then
+          b.AddSolid( text.SubString(text_beg, text_ind-text_beg) );
+        text_beg := text_ind;
+        
+        if check_repl_valid then
+        begin
+          var ms := Build(b->replacers[match_ind].on_match(matches[match_ind], b));
+          if matches[match_ind].Value not in ms then
+            raise new System.InvalidOperationException($'{#10}{matches[match_ind].Value}{#10}==={#10}not in{#10}==={#10}{ms}{#10}===');
+        end;
+        replacers[match_ind].on_match(matches[match_ind], b);
+        text_beg += matches[match_ind].Length;
+        
+        for var i := 0 to matches.Length-1 do
+        begin
+          if not matches[i].Success then continue;
+          if matches[i].Index >= text_beg then continue;
+          matches[i] := replacers[i].reg.Match(text, text_beg);
+        end;
+      end;
+      if text_beg<>text.Length then
+        b.AddSolid( text.Substring(text_beg) );
+      
+      Result := b.ToMergedString;
+      if check_repl_valid then
+      begin
+        if text not in Result then
+          raise new System.InvalidOperationException($'{#10}{text}{#10}==={#10}not in{#10}==={#10}{Result}{#10}===');
+      end;
+    end;
+    
+  end;
+  
+  {$endregion MergedStringBuilder}
   
   {$region MergedStringCost}
   
@@ -293,6 +389,11 @@ implementation
     private allowed: HashSet<char>;
     private static allowed_anything := (char.MinValue..char.MaxValue).ToHashSet;
     
+    private const wild_beg = '@[';
+    private const wild_end = ']';
+    private const count_chs_sep = '*';
+    private const range_sep = '..';
+    
     {$region constructor's}
     
     public constructor(count: MergedStringLength; allowed: HashSet<char>);
@@ -389,11 +490,6 @@ implementation
     {$endregion constructor's}
     
     public property Length: MergedStringLength read count; override;
-    
-    private const wild_beg = '@[';
-    private const wild_end = ']';
-    private const count_chs_sep = '*';
-    private const range_sep = '..';
     
     public function TryApply(text: StringSection; c_min, c_max: integer): sequence of StringSection; override;
     begin
@@ -540,6 +636,8 @@ type
         cap := cap + parts[i].Length;
       end;
       
+      if parts.Pairwise((p1,p2)->(p1 is MergedStringPartSolid) and (p2 is MergedStringPartSolid)).Any(b->b) then
+        raise new System.InvalidOperationException(self.ToString);
     end;
     
     private static function MakeParts(pattern: StringSection; escape_sym: char): sequence of MergedStringPart;
@@ -708,6 +806,26 @@ begin
 end;
 
 {$endregion MergedString.Create}
+
+{$region MergedStringBuilder}
+
+type
+  MergedStringBuilder = sealed partial class
+    private parts := new List<MergedStringPart>;
+  end;
+  
+procedure MergedStringBuilder.AddSolid(literal: string) :=
+  if (parts.Count<>0) and (parts[^1] is MergedStringPartSolid(var mps)) then
+    mps.val += literal else
+    parts += new MergedStringPartSolid(literal) as MergedStringPart;
+
+procedure MergedStringBuilder.AddWild(len: MergedStringLength; allowed: sequence of char) := parts +=
+  new MergedStringPartWild(len, allowed.ToHashSet) as MergedStringPart;
+
+function MergedStringBuilder.ToMergedString :=
+  new MergedString(self.parts.ToArray);
+
+{$endregion MergedStringBuilder}
 
 {$region MergedString.operator's}
 

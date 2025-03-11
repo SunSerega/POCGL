@@ -19,7 +19,7 @@ SimpleAsyncQueueArray<Object>#0
 		CommandQueueHostThreadedFunc<integer, SimpleFunc0Container<integer>>#3: function lambda: integer
 
 CLMemoryCCQ#0
-	ConstQueue<CLMemory>#1: CLMemory[*] of size 1
+	ConstQueue<CLMemory>#1: CLMemory[@[1..*0..9A..F]] of size 1
 	QueueCommand<CLMemory>
 		CommandQueueHostThreadedFunc<integer, SimpleFunc0Container<integer>>#2: function lambda: integer
 

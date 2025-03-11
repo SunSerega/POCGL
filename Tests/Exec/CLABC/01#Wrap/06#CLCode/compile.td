@@ -14,10 +14,10 @@ OpenCLABC_implementation______.InvokeParamsFunc<[T]> = function(enq_c: integer; 
 -create-library 
 -cl-unsafe-math-optimizations -cl-kernel-arg-info 
 -cl-unsafe-math-optimizations 
-CLKernel[k] from CLProgramCode[*]
-CLKernel[k] from CLProgramCode[*]
-CLCodeLib[*]
-CLKernel[k] from CLProgramCode[*]
+CLKernel[k] from CLProgramCode[@[1..*0..9A..F]]
+CLKernel[k] from CLProgramCode[@[1..*0..9A..F]]
+CLCodeLib[@[1..*0..9A..F]]
+CLKernel[k] from CLProgramCode[@[1..*0..9A..F]]
 
 #ReqModules
 OpenCLABC

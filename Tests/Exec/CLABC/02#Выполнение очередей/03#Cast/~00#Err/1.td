@@ -12,8 +12,8 @@ OpenCLABC_implementation______.InvokeParamsFunc<[T]> = function(enq_c: integer; 
 
 #ExpExecErr
 System.InvalidCastException: .Cast не может преобразовывать integer в word
-   at OpenCLABC.CommandQueueBase.Cast[T]() in *\\POCGL\\Tests\\LibSource\\OpenCLABC.pas:line *
-   at 1.Program.$Main() in *\\POCGL\\Tests\\Exec\\CLABC\\02#Выполнение очередей\\03#Cast\\~00#Err\\1.pas:line *
+   at OpenCLABC.CommandQueueBase.Cast[T]() in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\LibSource\OpenCLABC.pas:line @[1..*0..9]
+   at 1.Program.$Main() in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\03#Cast\~00#Err\1.pas:line @[1..*0..9]
    at 1.Program.Main()
 
 #ReqModules

@@ -526,6 +526,8 @@ type
         if not escaped then
           res += ch;
       end;
+      if escaped then
+        res += escape_sym;
     end;
     public function Unescape(escape_sym: char): string;
     begin

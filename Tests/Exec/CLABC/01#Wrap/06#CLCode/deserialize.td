@@ -11,8 +11,8 @@ OpenCLABC_implementation______.EnqFunc<[T]> = function(prev_res: [T]; cq: cl_com
 OpenCLABC_implementation______.InvokeParamsFunc<[T]> = function(enq_c: integer; o_const: boolean; g: CLTaskGlobalData; enq_evs: DoubleList<EventList>; par_err_handlers: DoubleList<ErrHandler>): ValueTuple<procedure, function([T], cl_command_queue, EventList): ValueTuple<cl_event, procedure(CLContext)>>
 
 #ExpExecOtp
-CLKernel[k1] from CLProgramCode[*]
-CLKernel[k2] from CLProgramCode[*]
+CLKernel[k1] from CLProgramCode[@[1..*0..9A..F]]
+CLKernel[k2] from CLProgramCode[@[1..*0..9A..F]]
 
 #ReqModules
 OpenCLABC

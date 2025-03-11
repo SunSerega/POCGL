@@ -13,6 +13,7 @@ uses '../Utils/Timers';
 uses '../Utils/Fixers';
 uses '../Utils/SubExecuters';
 uses '../Utils/Testing/Testing';
+uses '../Utils/Patterns/MergedStrings';
 
 {$reference System.Windows.Forms.dll}
 type MessageBox               = System.Windows.Forms.MessageBox;
@@ -30,86 +31,6 @@ var auto_update := false;
 
 type
   TestCanceledException = sealed class(Exception) end;
-  
-  //TODO Replace with MergedString
-  // - But only after Intellisense memory leaks are fixed...
-  {$region ExpectedText}
-  
-  ExpectedTextPart = sealed class
-    s: string;
-    constructor(s: string) := self.s := s;
-    
-    function NextInds(text: string; ind: integer): sequence of integer?;
-    begin
-      
-      while ind+s.Length <= text.Length do
-      begin
-        ind := text.IndexOf(s, ind);
-        if ind=-1 then exit;
-        yield ind+s.Length;
-        ind += 1;
-      end;
-      
-    end;
-    
-  end;
-  
-  ExpectedText = sealed class
-    parts: List<ExpectedTextPart>;
-    
-    constructor(text: string);
-    begin
-      if text=nil then exit;
-      parts := new List<ExpectedTextPart>;
-      var ind1 := 0;
-      while true do
-      begin
-        var ind2 := text.IndexOf('*', ind1);
-        if ind2=-1 then break;
-        parts += new ExpectedTextPart(text.SubString(ind1, ind2-ind1));
-        ind1 := ind2;
-        while (ind1<text.Length) and (text[ind1] = '*') do
-          ind1 += 1;
-      end;
-      parts += new ExpectedTextPart(text.Remove(0, ind1));
-    end;
-    
-    function Matches(text: string): boolean;
-    begin
-      if text=nil then
-      begin
-        Result := parts=nil;
-        exit;
-      end;
-      Result := false;
-      if parts=nil then exit;
-      
-      case parts.Count of
-        0: Result := text.Length=0;
-        1: Result := text=parts[0].s;
-        else
-        begin
-          if not text.StartsWith(parts[0].s) then exit;
-          var min_ind := parts[0].s.Length;
-          
-          for var i := 1 to parts.Count-2 do
-          begin
-            var next_min_ind := parts[i].NextInds(text, min_ind).FirstOrDefault;
-            if next_min_ind=nil then exit;
-            min_ind := next_min_ind.Value;
-          end;
-          
-          Result := text.Length = parts[parts.Count-1].NextInds(text, min_ind).LastOrDefault;
-        end;
-      end;
-      
-    end;
-    
-    public function ToString: string; override := parts?.Select(part->part.s).JoinToString('*');
-    
-  end;
-  
-  {$endregion ExpectedText}
   
   {$region DelegateCounter}
   
@@ -412,6 +333,8 @@ type
     
     {$region global testing info}
     
+    const escape_sym: char = '⚠';
+    
     static lk_console_only := new OtpKind('console only');
     static lk_pack_stage_unspecific := new OtpKind('pack stage unspecific');
     
@@ -454,10 +377,10 @@ type
     test_exec: integer;
     
     req_modules: IList<string>;
-    comp_expected: ExpectedText;
+    comp_expected_err: MergedString;
     exec_expected: array of record
-      otp: ExpectedText;
-      err: ExpectedText;
+      otp: MergedString;
+      err: MergedString;
     end;
     delete_before_exec: array of string;
     
@@ -587,7 +510,7 @@ type
       req_modules := new List<string>;
       foreach var l in ReadLines(pas_fname).Select(l->l.TrimStart('#').TrimStart) do
         if l.StartsWith('uses') then
-          foreach var m in l.Substring('uses'.Length).ToWords(',',' ',';') do
+          foreach var m in l.Substring('uses'.Length).ToWords(', ;'.ToCharArray) do
             if m in valid_modules then
               req_modules.Add(m);
       all_settings['#ReqModules'] := req_modules.JoinToString('+');
@@ -600,6 +523,18 @@ type
       if all_settings.TryGetValue(name, Result) then
         used_settings += name else
         Result := def;
+    end;
+    function ExtractSettingMergedStr(name: string; def: MergedString := nil): MergedString;
+    begin
+      Result := nil;
+      var str := ExtractSettingStr(name);
+      if str=nil then exit;
+      Result := MergedString.Parse(str, escape_sym);
+      
+      var resaved_str := Result.ToString(escape_sym);
+      if resaved_str = str then exit;
+      resave_settings := true;
+      Otp($'%WARNING: MergedString in settings was resaved for "{fwoe}.td"', lk_pack_stage_unspecific);
     end;
     
     static procedure LoadAll(dir_path: string; params test_modes: array of string) :=
@@ -632,8 +567,8 @@ type
             raise new TestCanceledException;
           end;
           
-          if ReadAllText(t.pas_fname, enc).Contains('unit') then
-            mark_skip();
+          if ReadAllText(t.pas_fname, enc).Contains('unit ') then
+            mark_skip() else
           
           case auto_update ? DialogResult.No : MessageBox.Show($'File {GetRelativePath(t.td_fname)} not found'+#10'Mark .pas file as test-ignored?', 'New .pas file', MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) of
             
@@ -679,7 +614,7 @@ type
         if t.test_comp then
         begin
           
-          t.comp_expected := new ExpectedText( t.ExtractSettingStr('#ExpErr') );
+          t.comp_expected_err := t.ExtractSettingMergedStr('#ExpErr');
           
         end;
         
@@ -691,8 +626,8 @@ type
           begin
             var sn := '';
             if t.test_exec<>1 then sn += i;
-            t.exec_expected[i].otp := new ExpectedText( t.ExtractSettingStr('#ExpExecOtp'+sn) );
-            t.exec_expected[i].err := new ExpectedText( t.ExtractSettingStr('#ExpExecErr'+sn) );
+            t.exec_expected[i].otp := t.ExtractSettingMergedStr('#ExpExecOtp'+sn);
+            t.exec_expected[i].err := t.ExtractSettingMergedStr('#ExpExecErr'+sn);
           end;
           
           t.delete_before_exec := t.ExtractSettingStr('#DeleteBeforeExec', '').ToWords(#10).ConvertAll(fname->GetFullPath(fname, t.test_dir));
@@ -736,11 +671,13 @@ type
         if comp_err<>nil then
         begin
           
-          if t.comp_expected.parts=nil then
+          if t.comp_expected_err=nil then
             case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{t.fwoe}.exe":{#10*2}{comp_err}{#10*2}Add this to expected errors?', 'Unexpected error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
               begin
+                // Not merged with t.comp_expected_err, because InsertAnyTextParts is not used here
+                // In other words, compilation error are typically not merged string, but literals
                 t.all_settings['#ExpErr'] := comp_err;
                 t.used_settings += '#ExpErr';
                 t.resave_settings := true;
@@ -752,8 +689,8 @@ type
               DialogResult.Cancel: Halt(-1);
             end else
             
-          if not t.comp_expected.Matches(comp_err) then
-            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{t.fwoe}.exe"{#10}Expected:{#10*2}{t.comp_expected}{#10*2}Current error:{#10*2}{comp_err}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
+          if comp_err not in t.comp_expected_err then
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{t.fwoe}.exe"{#10}Expected:{#10*2}{t.comp_expected_err}{#10*2}Current error:{#10*2}{comp_err}{#10*2}Replace expected error?', 'Wrong error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
               begin
@@ -772,8 +709,8 @@ type
         end else
         begin
           
-          if t.comp_expected.parts<>nil then
-            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{t.fwoe}.exe"{#10}Expected:{#10*2}{t.comp_expected}{#10*2}Remove error from expected?', 'Missing error', MessageBoxButtons.YesNoCancel) of
+          if t.comp_expected_err<>nil then
+            case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{t.fwoe}.exe"{#10}Expected:{#10*2}{t.comp_expected_err}{#10*2}Remove error from expected?', 'Missing error', MessageBoxButtons.YesNoCancel) of
               
               DialogResult.Yes:
               begin
@@ -839,48 +776,29 @@ type
     raise new MessageException($'ERROR: Wait {file_type} [{GetRelativePath(wait_test)}] of test [{GetRelativePath(self.td_fname)}] wasn''t found');
     
     internal static pocgl_base_dir := System.IO.Path.GetDirectoryName(GetCurrentDir);
-    static function InsertAnyTextParts(text: string): string;
+    static function InsertAnyTextParts(text: string): MergedString;
     begin
-      var res := new StringBuilder;
       
-      var anon_names := |
-        '<>local_variables_class_', '<>lambda',
-        'cl_platform_id[', 'cl_device_id[', 'cl_context[', 'cl_mem[', 'cl_program[', 'cl_kernel[', 'cl_command_queue[', 'cl_event[',
-        'CLPlatform[', 'CLDevice[', 'CLContext[', 'CLCodeLib[', 'NativeMemory:$', 'CLMemory[', 'CLMemorySubSegment[', 'CLValue<byte>[', 'CLArray<byte>[', 'CLProgramCode[',
-        ':строка ', ':line '
-      |;
-      var inds := new integer[anon_names.Length];
-      var in_anon_name := false;
-      foreach var ch in text do
+      var make_pocgl_base_dir_ms := procedure(m: &Match; b: MergedStringBuilder) ->
       begin
-        if in_anon_name then
-        begin
-          if (ch in '0'..'9') or (ch in 'A'..'F') then continue;
-          in_anon_name := false;
-          res += '*';
-        end;
-        
-        for var i := 0 to inds.Length-1 do
-        begin
-          if anon_names[i][inds[i]] = ch then
-          begin
-            inds[i] += 1;
-            if inds[i] = anon_names[i].Length then
-            begin
-              in_anon_name := true;
-              inds.Fill(0);
-              break;
-            end;
-          end else
-            inds[i] := 0;
-        end;
-        
-        res += ch;
+        b.AddWild(1, 'A'..'Z');
+        b.AddSolid(':');
+        b.AddWild(MergedStringLength.Any, ('a'..'z')+('A'..'Z')+('0'..'9')+'\');
       end;
-      if in_anon_name then
-        res += '*';
       
-      Result := res.ToString.Replace(pocgl_base_dir, '*').Replace(pocgl_base_dir.ToLower, '*');
+      var cl_wraps := [
+        'cl_platform_id[', 'cl_device_id[', 'cl_context[', 'cl_mem[', 'cl_program[', 'cl_kernel[', 'cl_command_queue[', 'cl_event[',
+        'CLPlatform[', 'CLDevice[', 'CLContext[', 'CLCodeLib[', 'NativeMemory:$', 'CLMemory[', 'CLMemorySubSegment[', 'CLValue<byte>[', 'CLArray<byte>[', 'CLProgramCode['
+      ];
+      
+      //TODO #3251
+      Result := MergedStringBuilder.Replace(text, true,
+        new MergedStringBuilderTextReplacer(new Regex(Regex.Escape(pocgl_base_dir), RegexOptions.IgnoreCase), make_pocgl_base_dir_ms),
+        new MergedStringBuilderTextReplacer($'(?<=(?:{cl_wraps.Select(Regex.Escape).JoinToString(''|'')}))[0-9A-F]+', procedure(m,b)->b.AddWild(MergedStringLength.AtLeast(1), ('0'..'9')+('A'..'F'))),
+        new MergedStringBuilderTextReplacer($'(?<=<>(?:local_variables_class_|lambda))[0-9]+', procedure(m,b)->b.AddWild(MergedStringLength.AtLeast(1), '0'..'9')),
+        new MergedStringBuilderTextReplacer($'(?<=:(?:line) )[0-9]+', procedure(m,b)->b.AddWild(MergedStringLength.AtLeast(1), '0'..'9'))
+      );
+      
     end;
     
     procedure Execute :=
@@ -918,13 +836,13 @@ type
           
           if not string.IsNullOrWhiteSpace(err) then
           begin
-            if exec_expected[test_i].err.parts=nil then
+            if exec_expected[test_i].err=nil then
             begin
               case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe":{#10*2}{err}{#10*2}Add this to expected errors?', 'Unexpected exec error', MessageBoxButtons.YesNoCancel) of
                 
                 DialogResult.Yes:
                 begin
-                  all_settings['#ExpExecErr'+sn] := InsertAnyTextParts(err);
+                  all_settings['#ExpExecErr'+sn] := InsertAnyTextParts(err).ToString(escape_sym);
                   used_settings += '#ExpExecErr'+sn;
                   resave_settings := true;
                   Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
@@ -937,13 +855,13 @@ type
               stop_test := true;
             end else
               
-            if not exec_expected[test_i].err.Matches(err) then
+            if err not in exec_expected[test_i].err then
             begin
               case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{exec_expected[test_i].err}{#10*2}Current error:{#10*2}{err}{#10*2}Replace expected error?', 'Wrong exec error', MessageBoxButtons.YesNoCancel) of
                 
                 DialogResult.Yes:
                 begin
-                  all_settings['#ExpExecErr'+sn] := InsertAnyTextParts(err);
+                  all_settings['#ExpExecErr'+sn] := (exec_expected[test_i].err * InsertAnyTextParts(err)).ToString(escape_sym);
                   used_settings += '#ExpExecErr'+sn;
                   resave_settings := true;
                   Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
@@ -956,7 +874,7 @@ type
               stop_test := true;
             end;
             
-            if exec_expected[test_i].otp.parts<>nil then
+            if exec_expected[test_i].otp<>nil then
             begin
               if not all_settings.Remove('#ExpExecOtp'+sn) then raise new System.InvalidOperationException;
               resave_settings := true;
@@ -965,7 +883,7 @@ type
           end else
           begin
             
-            if exec_expected[test_i].err.parts<>nil then
+            if exec_expected[test_i].err<>nil then
             begin
               case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{exec_expected[test_i].err}{#10*2}Remove error from expected?', 'Missing exec error', MessageBoxButtons.YesNoCancel) of
                 
@@ -983,21 +901,21 @@ type
               stop_test := true;
             end;
             
-            if exec_expected[test_i].otp.parts=nil then
+            if exec_expected[test_i].otp=nil then
             begin
-              all_settings['#ExpExecOtp'+sn] := InsertAnyTextParts(res);
+              all_settings['#ExpExecOtp'+sn] := InsertAnyTextParts(res).ToString(escape_sym);
               used_settings += '#ExpExecOtp'+sn;
               resave_settings := true;
               Otp($'WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
               stop_test := true;
             end else
-            if not exec_expected[test_i].otp.Matches(res) then
+            if res not in exec_expected[test_i].otp then
             begin
               case auto_update ? DialogResult.Yes : MessageBox.Show($'In "{fwoe}.exe"{#10}Expected:{#10*2}{exec_expected[test_i].otp}{#10*2}Current output:{#10*2}{res}{#10*2}Replace expected output?', 'Wrong output', MessageBoxButtons.YesNoCancel) of
                 
                 DialogResult.Yes:
                 begin
-                  all_settings['#ExpExecOtp'+sn] := InsertAnyTextParts(res);
+                  all_settings['#ExpExecOtp'+sn] := (exec_expected[test_i].otp * InsertAnyTextParts(res)).ToString(escape_sym);
                   used_settings += '#ExpExecOtp'+sn;
                   resave_settings := true;
                   Otp($'%WARNING: Settings updated for "{fwoe}.td"', lk_pack_stage_unspecific);
@@ -1099,7 +1017,7 @@ type
             sw.WriteLine;
             sw.WriteLine(key);
             if not string.IsNullOrWhiteSpace(val) then
-              sw.WriteLine(val.Replace('\','\\').RegexReplace('(^|\n)#','$1\#'));
+              sw.WriteLine(val.Replace(escape_sym,escape_sym*2).RegexReplace('(^|\n)#',$'$1{escape_sym}#'));
           end;
         
         sw.WriteLine;
@@ -1125,7 +1043,8 @@ type
   
 begin
   try
-//    TestInfo.auto_update := true;
+//    auto_update := true;
+    FixerUtils.esc_sym := TestInfo.escape_sym;
     
     (**)
     TestInfo.LoadCLA;

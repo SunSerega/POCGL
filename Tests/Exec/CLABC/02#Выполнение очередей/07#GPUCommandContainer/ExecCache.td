@@ -39,8 +39,8 @@ origin = ErrHandlerBranchCombinator#2: CLKernelCommandExec1 origin+par+enq union
 (total 6 handlers)
    at System.Environment.GetStackTrace(Exception e, Boolean needFileInfo)
    at System.Environment.get_StackTrace()
-   at OpenCLABC.ExecDebug.ReportExecCache(TextWriter otp) in *\\POCGL\\Tests\\LibSource\\OpenCLABC.pas:line *
-   at ExecCache.Program.$Main() in *\\POCGL\\Tests\\Exec\\CLABC\\02#Выполнение очередей\\07#GPUCommandContainer\\ExecCache.pas:line *
+   at OpenCLABC.ExecDebug.ReportExecCache(TextWriter otp) in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\LibSource\OpenCLABC.pas:line @[1..*0..9]
+   at ExecCache.Program.$Main() in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\07#GPUCommandContainer\ExecCache.pas:line @[1..*0..9]
    at ExecCache.Program.Main()
    at System.RuntimeMethodHandle.InvokeMethod(Object target, Object[] arguments, Signature sig, Boolean constructor)
    at System.Reflection.RuntimeMethodInfo.UnsafeInvokeInternal(Object obj, Object[] parameters, Object[] arguments)
@@ -48,21 +48,21 @@ origin = ErrHandlerBranchCombinator#2: CLKernelCommandExec1 origin+par+enq union
    at TestExecutor.Program.$Main()
    at TestExecutor.Program.Main()
 Logging caching tries of CLKernelCommandExec1#1:
-For CLKernel[k1] from CLProgramCode[*] made cl_kernel[*]
-For CLKernel[k1] from CLProgramCode[*] taken cl_kernel[*]
-For CLKernel[k1] from CLProgramCode[*] taken cl_kernel[*]
-For CLKernel[k1] from CLProgramCode[*] returned cl_kernel[*]
+For CLKernel[k1] from CLProgramCode[@[1..*0..9A..F]] made cl_kernel[@[1..*0..9A..F]]
+For CLKernel[k1] from CLProgramCode[@[1..*0..9A..F]] taken cl_kernel[@[1..*0..9A..F]]
+For CLKernel[k1] from CLProgramCode[@[1..*0..9A..F]] taken cl_kernel[@[1..*0..9A..F]]
+For CLKernel[k1] from CLProgramCode[@[1..*0..9A..F]] returned cl_kernel[@[1..*0..9A..F]]
 ------------------------------
 Logging caching tries of CLKernelCommandExec1#2:
-For CLKernel[k2] from CLProgramCode[*] made cl_kernel[*]
-For CLKernel[k2] from CLProgramCode[*] taken cl_kernel[*]
-For CLKernel[k2] from CLProgramCode[*] taken cl_kernel[*]
-For CLKernel[k2] from CLProgramCode[*] returned cl_kernel[*]
+For CLKernel[k2] from CLProgramCode[@[1..*0..9A..F]] made cl_kernel[@[1..*0..9A..F]]
+For CLKernel[k2] from CLProgramCode[@[1..*0..9A..F]] taken cl_kernel[@[1..*0..9A..F]]
+For CLKernel[k2] from CLProgramCode[@[1..*0..9A..F]] taken cl_kernel[@[1..*0..9A..F]]
+For CLKernel[k2] from CLProgramCode[@[1..*0..9A..F]] returned cl_kernel[@[1..*0..9A..F]]
 ------------------------------
 Logging caching tries of CLKernelCommandExec1#3:
-For CLKernel[k3] from CLProgramCode[*] made cl_kernel[*]
-For CLKernel[k3] from CLProgramCode[*] taken cl_kernel[*]
-For CLKernel[k3] from CLProgramCode[*] returned cl_kernel[*]
+For CLKernel[k3] from CLProgramCode[@[1..*0..9A..F]] made cl_kernel[@[1..*0..9A..F]]
+For CLKernel[k3] from CLProgramCode[@[1..*0..9A..F]] taken cl_kernel[@[1..*0..9A..F]]
+For CLKernel[k3] from CLProgramCode[@[1..*0..9A..F]] returned cl_kernel[@[1..*0..9A..F]]
 ------------------------------
 ========================================
 [EventDebug]: 6 event's created

@@ -12,18 +12,18 @@ OpenCLABC_implementation______.InvokeParamsFunc<[T]> = function(enq_c: integer; 
 
 #ExpExecErr
 System.AggregateException: При выполнении очереди было вызвано 1 исключений. Используйте try чтоб получить больше информации ---> System.Exception: TestOK
-   at 1Q.Program.<>lambda*() in *\\POCGL\\Tests\\Exec\\CLABC\\02#Выполнение очередей\\08#HostExec\\~00#Err\\1Q.pas:line *
-   at OpenCLABC_implementation______.SimpleProc0Container.Invoke(CLContext c) in *\\POCGL\\Tests\\LibSource\\OpenCLABC.pas:line *
-   at OpenCLABC_implementation______.OpenCLABC_implementation______.Invoke(ISimpleProc0Container self, CLTaskGlobalData insta_call_g, ErrHandler err_handler, String err_test_reason, CLContext c) in *\\POCGL\\Tests\\LibSource\\OpenCLABC.pas:line *
+   at 1Q.Program.<>lambda@[1..*0..9]() in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1Q.pas:line @[1..*0..9]
+   at OpenCLABC_implementation______.SimpleProc0Container.Invoke(CLContext c) in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\LibSource\OpenCLABC.pas:line @[1..*0..9]
+   at OpenCLABC_implementation______.OpenCLABC_implementation______.Invoke(ISimpleProc0Container self, CLTaskGlobalData insta_call_g, ErrHandler err_handler, String err_test_reason, CLContext c) in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\LibSource\OpenCLABC.pas:line @[1..*0..9]
    --- End of inner exception stack trace ---
-   at OpenCLABC.CLTaskBase.Wait() in *\\POCGL\\Tests\\LibSource\\OpenCLABC.pas:line *
-   at OpenCLABC.CLContext.SyncInvoke(CommandQueueNil q, ParameterQueueSetter[] parameters) in *\\POCGL\\Tests\\LibSource\\OpenCLABC.pas:line *
-   at 1Q.Program.$Main() in *\\POCGL\\Tests\\Exec\\CLABC\\02#Выполнение очередей\\08#HostExec\\~00#Err\\1Q.pas:line *
+   at OpenCLABC.CLTaskBase.Wait() in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\LibSource\OpenCLABC.pas:line @[1..*0..9]
+   at OpenCLABC.CLContext.SyncInvoke(CommandQueueNil q, ParameterQueueSetter[] parameters) in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\LibSource\OpenCLABC.pas:line @[1..*0..9]
+   at 1Q.Program.$Main() in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1Q.pas:line @[1..*0..9]
    at 1Q.Program.Main()
 ---> (Inner Exception #0) System.Exception: TestOK
-   at 1Q.Program.<>lambda*() in *\\POCGL\\Tests\\Exec\\CLABC\\02#Выполнение очередей\\08#HostExec\\~00#Err\\1Q.pas:line *
-   at OpenCLABC_implementation______.SimpleProc0Container.Invoke(CLContext c) in *\\POCGL\\Tests\\LibSource\\OpenCLABC.pas:line *
-   at OpenCLABC_implementation______.OpenCLABC_implementation______.Invoke(ISimpleProc0Container self, CLTaskGlobalData insta_call_g, ErrHandler err_handler, String err_test_reason, CLContext c) in *\\POCGL\\Tests\\LibSource\\OpenCLABC.pas:line *<---
+   at 1Q.Program.<>lambda@[1..*0..9]() in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\Exec\CLABC\02#Выполнение очередей\08#HostExec\~00#Err\1Q.pas:line @[1..*0..9]
+   at OpenCLABC_implementation______.SimpleProc0Container.Invoke(CLContext c) in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\LibSource\OpenCLABC.pas:line @[1..*0..9]
+   at OpenCLABC_implementation______.OpenCLABC_implementation______.Invoke(ISimpleProc0Container self, CLTaskGlobalData insta_call_g, ErrHandler err_handler, String err_test_reason, CLContext c) in @[1*A..Z]:@[*0..9A..Z\a..z]\POCGL\Tests\LibSource\OpenCLABC.pas:line @[1..*0..9]<---
 
 #ReqModules
 OpenCLABC

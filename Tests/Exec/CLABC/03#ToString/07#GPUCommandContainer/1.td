@@ -12,7 +12,7 @@ OpenCLABC_implementation______.InvokeParamsFunc<[T]> = function(enq_c: integer; 
 
 #ExpExecOtp
 CLKernelCCQ#0
-	ConstQueue<CLKernel>#1: CLKernel[k] from CLProgramCode[*]
+	ConstQueue<CLKernel>#1: CLKernel[k] from CLProgramCode[@[1..*0..9A..F]]
 	CLKernelCommandExec2
 		sz1: ConstQueue<integer>#2: 1
 		sz2: ConstQueue<integer>#3: 1

@@ -13,12 +13,12 @@ OpenCLABC_implementation______.InvokeParamsFunc<[T]> = function(enq_c: integer; 
 #ExpExecOtp
 OpenCLABC.CLProgramCode
 SourceCode:     kernel void k(int x) {}
-CLKernel[k] from CLProgramCode[*]
+CLKernel[k] from CLProgramCode[@[1..*0..9A..F]]
 True
 True
 OpenCLABC.CLProgramCode
 SourceCode:     kernel void k(int x) {}
-CLKernel[k] from CLProgramCode[*]
+CLKernel[k] from CLProgramCode[@[1..*0..9A..F]]
 
 #ReqModules
 OpenCLABC
