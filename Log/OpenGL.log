@@ -57,7 +57,7 @@ Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Struct: Pa
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Delegate: Packed 4 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Func: Packed 3254 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Feature: Packed 4 items
-Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Extension: Packed 744 items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Extension: Packed 745 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Cleanup
 Template[OpenGL]: Finished runing TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]
 Finished runing Template[OpenGL]

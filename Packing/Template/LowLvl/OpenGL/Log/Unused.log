@@ -138,6 +138,7 @@ Enum [gl::CONSERVATIVE_RASTER_MODE] was not grouped
 Enum [gl::CONSERVATIVE_RASTER_MODE_POST_SNAP] was not grouped
 Enum [gl::CONSERVATIVE_RASTER_MODE_PRE_SNAP] was not grouped
 Enum [gl::CONSERVATIVE_RASTER_MODE_PRE_SNAP_TRIANGLES] was not grouped
+Enum [gl::CONST_BW_TILING] was not grouped
 Enum [gl::CONST_EYE] was not grouped
 Enum [gl::CONSTANT_BORDER] was not grouped
 Enum [gl::CONSTANT_COLOR0] was not grouped

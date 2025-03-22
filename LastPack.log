@@ -74,14 +74,14 @@ ScrapXML[OpenGL]: Parsing "glx"
 ScrapXML[OpenGL]: Constructing named items
 ScrapXML[OpenGL]: Saving as binary
 ScrapXML[OpenGL]: VendorSuffix: Saved 35 items
-ScrapXML[OpenGL]: Enum: Saved 4772 items
+ScrapXML[OpenGL]: Enum: Saved 4773 items
 ScrapXML[OpenGL]: BasicType: Saved 116 items
 ScrapXML[OpenGL]: Group: Saved 323 items
 ScrapXML[OpenGL]: IdClass: Saved 15 items
 ScrapXML[OpenGL]: Delegate: Saved 5 items
 ScrapXML[OpenGL]: Func: Saved 3575 items
 ScrapXML[OpenGL]: Feature: Saved 32 items
-ScrapXML[OpenGL]: Extension: Saved 1146 items
+ScrapXML[OpenGL]: Extension: Saved 1148 items
 ScrapXML[OpenGL]: Done
 Finished runing ScrapXML[OpenGL]
 =================================== References ===================================
@@ -365,7 +365,7 @@ Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Struct: Pa
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Delegate: Packed 4 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Func: Packed 3254 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Feature: Packed 4 items
-Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Extension: Packed 744 items
+Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Extension: Packed 745 items
 Template[OpenGL]: TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]: Cleanup
 Template[OpenGL]: Finished runing TemplateCommand[LowLvl/OpenGL/Pack Essentials.exe]
 Finished runing Template[OpenGL]

@@ -80989,6 +80989,11 @@ type
     public const ExtensionString = 'GL_MESA_shader_integer_functions';
   end;
   
+  /// id: GL_MESA_texture_const_bandwidth
+  glTextureConstBandwidthMESA = static class
+    public const ExtensionString = 'GL_MESA_texture_const_bandwidth';
+  end;
+  
   /// id: GL_MESA_tile_raster_order
   glTileRasterOrderMESA = static class
     public const ExtensionString = 'GL_MESA_tile_raster_order';

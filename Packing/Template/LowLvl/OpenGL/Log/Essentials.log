@@ -99,5 +99,5 @@ Struct: Packed 4 items
 Delegate: Packed 4 items
 Func: Packed 3254 items
 Feature: Packed 4 items
-Extension: Packed 744 items
+Extension: Packed 745 items
 Cleanup

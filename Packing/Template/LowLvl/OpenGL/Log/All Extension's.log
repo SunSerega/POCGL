@@ -5383,6 +5383,9 @@
 
 # glShaderIntegerFunctionsMESA (GL_MESA_shader_integer_functions)
 
+# glTextureConstBandwidthMESA (GL_MESA_texture_const_bandwidth)
+	Enum [gl::CONST_BW_TILING]
+
 # glTileRasterOrderMESA (GL_MESA_tile_raster_order)
 	Enum [gl::TILE_RASTER_ORDER_FIXED]
 	Enum [gl::TILE_RASTER_ORDER_INCREASING_X]
@@ -10917,6 +10920,9 @@
 	Func [gl::GetSamplerParameterfv]
 
 # gles2ShaderIntegerFunctionsMESA (GL_MESA_shader_integer_functions)
+
+# gles2TextureConstBandwidthMESA (GL_MESA_texture_const_bandwidth)
+	Enum [gl::CONST_BW_TILING]
 
 # gles2BindlessTextureNV (GL_NV_bindless_texture)
 	Func [gl::GetTextureHandle + NV]
