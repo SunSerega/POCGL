@@ -477,7 +477,12 @@ type
     end;
     static procedure GenCLContext;
     begin
-      if not ['OpenCL','OpenCLABC'].Any(m->m in allowed_modules) then exit;
+      // If OpenCLABC is not tested, leave cl_contexts as nil
+      // Without a debug OpenCLABC.pcu, CLContextGen.pas cannot be compiled
+      // But also these contexts can only ever be used by tests with OpenCLABC in uses
+      // And if only OpenCLABC is tested, debug OpenCL.pcu is still generated
+      if 'OpenCLABC' not in allowed_modules then
+        exit;
       
       var sw := Stopwatch.StartNew;
       CompilePasFile('Tests/CLContextGen.pas',
