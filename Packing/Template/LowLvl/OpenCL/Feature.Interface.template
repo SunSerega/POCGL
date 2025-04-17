@@ -4840,6 +4840,16 @@
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo_CONTEXT_PERF_HINT(context: cl_context; var param_value: clPerfHint; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetContextInfo_CONTEXT_PERF_HINT', CallDebug.Wrap(context), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clPerfHint>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetContextInfo(context, clContextInfo.CONTEXT_PERF_HINT, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     
     // added in cl2.1
     private static function ntv_GetDeviceAndHostTimer_1(device: cl_device_id; var device_timestamp: UInt64; var host_timestamp: UInt64): clErrorCode;

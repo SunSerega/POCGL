@@ -915,6 +915,8 @@
 	Enum [cl::PLATFORM_NOT_FOUND]
 	Enum [cl::PLATFORM_ICD_SUFFIX]
 	Func [cl::IcdGetPlatformIDs + KHR]
+	Func [cl::IcdGetFunctionAddressForPlatform + KHR]
+	Func [cl::IcdSetPlatformDispatchData + KHR]
 
 # clIlProgramKHR (cl_khr_il_program)
 	Enum [cl::DEVICE_IL_VERSION]
@@ -1078,5 +1080,12 @@
 
 # clIonHostPtrQCOM (cl_qcom_ion_host_ptr)
 	Enum [cl::MEM_ION_HOST_PTR]
+
+# clPerfHintQCOM (cl_qcom_perf_hint)
+	Enum [cl::CONTEXT_PERF_HINT]
+	Enum [cl::PERF_HINT_HIGH]
+	Enum [cl::PERF_HINT_NORMAL]
+	Enum [cl::PERF_HINT_LOW]
+	Func [cl::SetPerfHint + QCOM]
 
 

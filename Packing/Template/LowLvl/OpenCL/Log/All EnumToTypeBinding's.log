@@ -62,6 +62,9 @@ clBool
 --- CONTEXT_VA_API_DISPLAY
 !output
 IntPtr
+--- CONTEXT_PERF_HINT
+!output
+clPerfHint
 
 # cl.GetDeviceInfo
 2

@@ -2892,11 +2892,16 @@ type
     begin
       cl.GetContextInfo_CONTEXT_VA_API_DISPLAY(self.ntv, Result).RaiseIfError;
     end;
+    private function GetPerfHint: clPerfHint;
+    begin
+      cl.GetContextInfo_CONTEXT_PERF_HINT(self.ntv, Result).RaiseIfError;
+    end;
     
     public property Properties:                 OpenCL.clContextProperties read GetProperties;
     public property D3d10PreferSharedResources: clBool                     read GetD3d10PreferSharedResources;
     public property D3d11PreferSharedResources: clBool                     read GetD3d11PreferSharedResources;
     public property VaApiDisplay:               IntPtr                     read GetVaApiDisplay;
+    public property PerfHint:                   clPerfHint                 read GetPerfHint;
     
     private static procedure AddProp<T>(res: StringBuilder; get_prop: ()->T) :=
       try
@@ -2910,7 +2915,8 @@ type
       res += 'Properties                 = '; AddProp(res, GetProperties                ); res += #10;
       res += 'D3d10PreferSharedResources = '; AddProp(res, GetD3d10PreferSharedResources); res += #10;
       res += 'D3d11PreferSharedResources = '; AddProp(res, GetD3d11PreferSharedResources); res += #10;
-      res += 'VaApiDisplay               = '; AddProp(res, GetVaApiDisplay              );
+      res += 'VaApiDisplay               = '; AddProp(res, GetVaApiDisplay              ); res += #10;
+      res += 'PerfHint                   = '; AddProp(res, GetPerfHint                  );
     end;
     public function ToString: string; override;
     begin

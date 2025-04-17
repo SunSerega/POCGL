@@ -185,4 +185,8 @@ type clExtHostPtrQCOM = sealed partial class(cl_extension_base) end;
 constructor clExtHostPtrQCOM.Create(pl: cl_platform_id) := inherited Create(pl);
 function clExtHostPtrQCOM.GetProcAddress(name: string) := pl.GetProcAddress(name);
 
+type clPerfHintQCOM = sealed partial class(cl_extension_base) end;
+constructor clPerfHintQCOM.Create(pl: cl_platform_id) := inherited Create(pl);
+function clPerfHintQCOM.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
 

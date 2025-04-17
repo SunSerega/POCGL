@@ -734,9 +734,10 @@ end;
           end;
           
         end else
-        if type_n.Text.StartsWith('#define ') then
+        if type_n.Text.Contains('#define ') then
         begin
-          var tname := type_n.SubNodes['name'].Single.Text;
+          type_n.TryDiscardAttrib('requires');
+          var tname := type_n['name'] ?? type_n.SubNodes['name'].Single.Text;
           unreq_type_names += tname;
           if not BasicTypeSource.enum_abusing_type_tag.Add(tname) then
             raise new System.InvalidOperationException;
@@ -1037,6 +1038,8 @@ begin
   if self.Name.LocalName.StartsWith('SVM') then
     need_err_ret_count := 0 else
   if self.Name.LocalName.StartsWith('GetExtensionFunctionAddress') then
+    need_err_ret_count := 0 else
+  if self.Name.LocalName = 'IcdGetFunctionAddressForPlatform' then
     need_err_ret_count := 0 else
   if self.Name = FuncSource.MakeName('clCreateProgramWithBinary', false, false) then
     need_err_ret_count := 2 else

@@ -1494,7 +1494,7 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-12
+13
 	clErrorCode | cl_context | clContextInfo                                       | UIntPtr          | var T                     | var UIntPtr          |
 	clErrorCode | cl_context | clContextInfo                                       | UIntPtr          | var T                     | IntPtr               |
 	clErrorCode | cl_context | clContextInfo                                       | UIntPtr          | pointer                   | var UIntPtr          |
@@ -1507,6 +1507,7 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_context | clContextInfo.CONTEXT_D3D10_PREFER_SHARED_RESOURCES | *                | var clBool                | *                    |
 	clErrorCode | cl_context | clContextInfo.CONTEXT_D3D11_PREFER_SHARED_RESOURCES | *                | var clBool                | *                    |
 	clErrorCode | cl_context | clContextInfo.CONTEXT_VA_API_DISPLAY                | *                | var IntPtr                | *                    |
+	clErrorCode | cl_context | clContextInfo.CONTEXT_PERF_HINT                     | *                | var clPerfHint            | *                    |
 	----------- | ---------- | --------------------------------------------------- | ---------------- | ------------------------- | -------------------- |
 	            | context    | param_name                                          | param_value_size | param_value               | param_value_size_ret |
 
@@ -5039,6 +5040,18 @@ param_value_size_ret: var UIntPtr / IntPtr
 	----------- | ------------ | --------------------------------------------- | ---------------- | ------------------------------------------ | -------------------- |
 	            | sema_object  | param_name                                    | param_value_size | param_value                                | param_value_size_ret |
 
+# cl::IcdGetFunctionAddressForPlatform + KHR
+!ppt
+Result:    IntPtr
+platform:  cl_platform_id
+func_name: string const / IntPtr const
+!ffo
+2
+	IntPtr | cl_platform_id | string const |
+	IntPtr | cl_platform_id | IntPtr const |
+	------ | -------------- | ------------ |
+	       | platform       | func_name    |
+
 # cl::IcdGetPlatformIDs + KHR
 !ppt
 Result:        clErrorCode
@@ -5054,6 +5067,17 @@ num_platforms: array of UInt32 / var UInt32 / IntPtr
 	clErrorCode | UInt32      | IntPtr                  | IntPtr          |
 	----------- | ----------- | ----------------------- | --------------- |
 	            | num_entries | platforms               | num_platforms   |
+
+# cl::IcdSetPlatformDispatchData + KHR
+!ppt
+Result:        clErrorCode
+platform:      cl_platform_id
+dispatch_data: IntPtr
+!ffo
+1
+	clErrorCode | cl_platform_id | IntPtr        |
+	----------- | -------------- | ------------- |
+	            | platform       | dispatch_data |
 
 # cl::ReImportSemaphoreSyncFd + KHR
 !ppt
@@ -5220,5 +5244,16 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_device_id | UIntPtr     | UIntPtr      | IntPtr const                   | clImagePitchInfo                       | UIntPtr          | pointer     | IntPtr               |
 	----------- | ------------ | ----------- | ------------ | ------------------------------ | -------------------------------------- | ---------------- | ----------- | -------------------- |
 	            | device       | image_width | image_height | image_format                   | param_name                             | param_value_size | param_value | param_value_size_ret |
+
+# cl::SetPerfHint + QCOM
+!ppt
+Result:    clErrorCode
+context:   cl_context
+perf_hint: clPerfHint
+!ffo
+1
+	clErrorCode | cl_context | clPerfHint |
+	----------- | ---------- | ---------- |
+	            | context    | perf_hint  |
 
 

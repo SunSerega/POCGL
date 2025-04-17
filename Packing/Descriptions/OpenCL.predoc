@@ -1100,6 +1100,7 @@ type
     public static property CONTEXT_D3D10_PREFER_SHARED_RESOURCES: clContextInfo read new clContextInfo($402C);
     public static property CONTEXT_D3D11_PREFER_SHARED_RESOURCES: clContextInfo read new clContextInfo($402D);
     public static property CONTEXT_VA_API_DISPLAY:                clContextInfo read new clContextInfo($4097);
+    public static property CONTEXT_PERF_HINT:                     clContextInfo read new clContextInfo($40C2);
     
     public function ToString: string; override;
     begin
@@ -1117,6 +1118,8 @@ type
         Result := 'CONTEXT_D3D11_PREFER_SHARED_RESOURCES' else
       if CONTEXT_VA_API_DISPLAY = self then
         Result := 'CONTEXT_VA_API_DISPLAY' else
+      if CONTEXT_PERF_HINT = self then
+        Result := 'CONTEXT_PERF_HINT' else
         Result := $'clContextInfo[{self.val}]';
     end;
     
@@ -4708,6 +4711,28 @@ type
       end;
       res.Length -= 1;
       Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
+  clPerfHint = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property PERF_HINT_HIGH:   clPerfHint read new clPerfHint($40C3);
+    public static property PERF_HINT_NORMAL: clPerfHint read new clPerfHint($40C4);
+    public static property PERF_HINT_LOW:    clPerfHint read new clPerfHint($40C5);
+    
+    public function ToString: string; override;
+    begin
+      if PERF_HINT_HIGH = self then
+        Result := 'PERF_HINT_HIGH' else
+      if PERF_HINT_NORMAL = self then
+        Result := 'PERF_HINT_NORMAL' else
+      if PERF_HINT_LOW = self then
+        Result := 'PERF_HINT_LOW' else
+        Result := $'clPerfHint[{self.val}]';
     end;
     
   end;
@@ -11332,6 +11357,16 @@ type
       var param_value_sz := new UIntPtr(Marshal.SizeOf&<IntPtr>);
       var param_value_ret_size: UIntPtr;
       Result := GetContextInfo(context, clContextInfo.CONTEXT_VA_API_DISPLAY, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetContextInfo_CONTEXT_PERF_HINT(context: cl_context; var param_value: clPerfHint; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetContextInfo_CONTEXT_PERF_HINT', CallDebug.Wrap(context), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clPerfHint>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetContextInfo(context, clContextInfo.CONTEXT_PERF_HINT, param_value_sz,param_value,param_value_ret_size);
       if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
         raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
@@ -25490,7 +25525,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_khr_icd
-  /// version: 1.0.0
+  /// version: 2.0.0
   clIcdKHR = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -25542,6 +25577,35 @@ type
     begin
       {$ifdef CallDebug}CallDebug.RegisterCallBegin('clIcdKHR.IcdGetPlatformIDsKHR', CallDebug.Wrap(num_entries), CallDebug.Wrap(platforms), CallDebug.Wrap(num_platforms)); try{$endif}
       Result := ntv_IcdGetPlatformIDsKHR_4(num_entries, platforms, num_platforms);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    
+    public IcdGetFunctionAddressForPlatformKHR_adr := GetProcAddress('clIcdGetFunctionAddressForPlatformKHR');
+    private ntv_IcdGetFunctionAddressForPlatformKHR_1 := GetProcOrNil&<function(platform: cl_platform_id; func_name: IntPtr): IntPtr>(IcdGetFunctionAddressForPlatformKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdGetFunctionAddressForPlatformKHR(platform: cl_platform_id; func_name: string): IntPtr;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clIcdKHR.IcdGetFunctionAddressForPlatformKHR', CallDebug.Wrap(platform), CallDebug.Wrap(func_name)); try{$endif}
+      var func_name_str_ptr := Marshal.StringToHGlobalAnsi(func_name);
+      try
+        Result := ntv_IcdGetFunctionAddressForPlatformKHR_1(platform, func_name_str_ptr);
+      finally
+        Marshal.FreeHGlobal(func_name_str_ptr);
+      end;
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdGetFunctionAddressForPlatformKHR(platform: cl_platform_id; func_name: IntPtr): IntPtr;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clIcdKHR.IcdGetFunctionAddressForPlatformKHR', CallDebug.Wrap(platform), CallDebug.Wrap(func_name)); try{$endif}
+      Result := ntv_IcdGetFunctionAddressForPlatformKHR_1(platform, func_name);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    
+    public IcdSetPlatformDispatchDataKHR_adr := GetProcAddress('clIcdSetPlatformDispatchDataKHR');
+    private ntv_IcdSetPlatformDispatchDataKHR_1 := GetProcOrNil&<function(platform: cl_platform_id; dispatch_data: IntPtr): clErrorCode>(IcdSetPlatformDispatchDataKHR_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function IcdSetPlatformDispatchDataKHR(platform: cl_platform_id; dispatch_data: IntPtr): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clIcdKHR.IcdSetPlatformDispatchDataKHR', CallDebug.Wrap(platform), CallDebug.Wrap(dispatch_data)); try{$endif}
+      Result := ntv_IcdSetPlatformDispatchDataKHR_1(platform, dispatch_data);
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     
@@ -26248,6 +26312,33 @@ type
     public const ExtensionString = 'cl_qcom_ion_host_ptr';
   end;
   
+  {$ifndef DEBUG}
+  [System.Security.SuppressUnmanagedCodeSecurity]
+  {$endif DEBUG}
+  [PCUNotRestore]
+  /// id: cl_qcom_perf_hint
+  /// version: 1.0.5
+  clPerfHintQCOM = sealed partial class
+    public constructor(pl: cl_platform_id);
+    private constructor := raise new System.NotSupportedException;
+    public static PlatformLess := new clPerfHintQCOM(default(cl_platform_id));
+    private function GetProcAddress(name: string): IntPtr;
+    private static function GetProcOrNil<T>(fadr: IntPtr) :=
+      fadr=IntPtr.Zero ? default(T) :
+        Marshal.GetDelegateForFunctionPointer&<T>(fadr);
+    public const ExtensionString = 'cl_qcom_perf_hint';
+    
+    public SetPerfHintQCOM_adr := GetProcAddress('clSetPerfHintQCOM');
+    private ntv_SetPerfHintQCOM_1 := GetProcOrNil&<function(context: cl_context; perf_hint: clPerfHint): clErrorCode>(SetPerfHintQCOM_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function SetPerfHintQCOM(context: cl_context; perf_hint: clPerfHint): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clPerfHintQCOM.SetPerfHintQCOM', CallDebug.Wrap(context), CallDebug.Wrap(perf_hint)); try{$endif}
+      Result := ntv_SetPerfHintQCOM_1(context, perf_hint);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    
+  end;
+  
   {$endregion Подпрограммы расширений}
   
 implementation
@@ -26460,6 +26551,10 @@ function clContentSizePOCL.GetProcAddress(name: string) := pl.GetProcAddress(nam
 type clExtHostPtrQCOM = sealed partial class(cl_extension_base) end;
 constructor clExtHostPtrQCOM.Create(pl: cl_platform_id) := inherited Create(pl);
 function clExtHostPtrQCOM.GetProcAddress(name: string) := pl.GetProcAddress(name);
+
+type clPerfHintQCOM = sealed partial class(cl_extension_base) end;
+constructor clPerfHintQCOM.Create(pl: cl_platform_id) := inherited Create(pl);
+function clPerfHintQCOM.GetProcAddress(name: string) := pl.GetProcAddress(name);
 
 {$endregion Инициализаторы расширений}
 

@@ -954,6 +954,7 @@
     public static property CONTEXT_D3D10_PREFER_SHARED_RESOURCES: clContextInfo read new clContextInfo($402C);
     public static property CONTEXT_D3D11_PREFER_SHARED_RESOURCES: clContextInfo read new clContextInfo($402D);
     public static property CONTEXT_VA_API_DISPLAY:                clContextInfo read new clContextInfo($4097);
+    public static property CONTEXT_PERF_HINT:                     clContextInfo read new clContextInfo($40C2);
     
     public function ToString: string; override;
     begin
@@ -971,6 +972,8 @@
         Result := 'CONTEXT_D3D11_PREFER_SHARED_RESOURCES' else
       if CONTEXT_VA_API_DISPLAY = self then
         Result := 'CONTEXT_VA_API_DISPLAY' else
+      if CONTEXT_PERF_HINT = self then
+        Result := 'CONTEXT_PERF_HINT' else
         Result := $'clContextInfo[{self.val}]';
     end;
     
@@ -4562,6 +4565,28 @@
       end;
       res.Length -= 1;
       Result := res.ToString;
+    end;
+    
+  end;
+  
+  ///
+  clPerfHint = record
+    public val: UInt32;
+    public constructor(val: UInt32) := self.val := val;
+    
+    public static property PERF_HINT_HIGH:   clPerfHint read new clPerfHint($40C3);
+    public static property PERF_HINT_NORMAL: clPerfHint read new clPerfHint($40C4);
+    public static property PERF_HINT_LOW:    clPerfHint read new clPerfHint($40C5);
+    
+    public function ToString: string; override;
+    begin
+      if PERF_HINT_HIGH = self then
+        Result := 'PERF_HINT_HIGH' else
+      if PERF_HINT_NORMAL = self then
+        Result := 'PERF_HINT_NORMAL' else
+      if PERF_HINT_LOW = self then
+        Result := 'PERF_HINT_LOW' else
+        Result := $'clPerfHint[{self.val}]';
     end;
     
   end;
