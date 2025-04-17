@@ -516,6 +516,13 @@ errcode_ret: var clErrorCode
 	-------- | ---------- | --------------- |
 	         | context    | errcode_ret     |
 
+# cl::DeinitLayer
+!ppt
+Result: clErrorCode
+!ffo
+1
+	clErrorCode |
+
 # cl::EnqueueAcquireGLObjects
 !ppt
 Result:                  clErrorCode
@@ -2119,7 +2126,7 @@ param_value_size:     UIntPtr
 param_value:          pointer
 param_value_size_ret: var UIntPtr / IntPtr
 !ffo
-23
+24
 	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | var T                                      | var UIntPtr          |
 	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | var T                                      | IntPtr               |
 	clErrorCode | cl_platform_id | clPlatformInfo                                              | UIntPtr          | pointer                                    | var UIntPtr          |
@@ -2135,6 +2142,7 @@ param_value_size_ret: var UIntPtr / IntPtr
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_EXTENSIONS_WITH_VERSION             | UInt32           | var cl_name_version                        | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_COMMAND_BUFFER_CAPABILITIES         | *                | var clPlatformCommandBufferCapabilities    | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_ICD_SUFFIX                          | *                | var string                                 | *                    |
+	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_UNLOADABLE                          | *                | var clBool                                 | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_SEMAPHORE_TYPES                     | *                | var array of clSemaphoreType               | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_SEMAPHORE_TYPES                     | UInt32           | var clSemaphoreType                        | *                    |
 	clErrorCode | cl_platform_id | clPlatformInfo.PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES       | *                | var array of clExternalSemaphoreHandleType | *                    |

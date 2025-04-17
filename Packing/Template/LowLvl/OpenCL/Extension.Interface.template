@@ -134,7 +134,7 @@
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_loader_layers
-  /// version: 1.0.0
+  /// version: 2.0.0
   clLoaderLayers = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -232,6 +232,15 @@
     begin
       {$ifdef CallDebug}CallDebug.RegisterCallBegin('clLoaderLayers.InitLayer', CallDebug.Wrap(num_entries), CallDebug.Wrap(target_dispatch), CallDebug.Wrap(num_entries_ret), CallDebug.Wrap(layer_dispatch_ret)); try{$endif}
       Result := ntv_InitLayer_4(num_entries, target_dispatch, num_entries_ret, layer_dispatch_ret);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    
+    public DeinitLayer_adr := GetProcAddress('clDeinitLayer');
+    private ntv_DeinitLayer_1 := GetProcOrNil&<function: clErrorCode>(DeinitLayer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DeinitLayer: clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clLoaderLayers.DeinitLayer'); try{$endif}
+      Result := ntv_DeinitLayer_1;
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     

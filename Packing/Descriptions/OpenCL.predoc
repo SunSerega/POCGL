@@ -4829,6 +4829,7 @@ type
     public static property PLATFORM_EXTENSIONS_WITH_VERSION:             clPlatformInfo read new clPlatformInfo($0907);
     public static property PLATFORM_COMMAND_BUFFER_CAPABILITIES:         clPlatformInfo read new clPlatformInfo($0908);
     public static property PLATFORM_ICD_SUFFIX:                          clPlatformInfo read new clPlatformInfo($0920);
+    public static property PLATFORM_UNLOADABLE:                          clPlatformInfo read new clPlatformInfo($0921);
     public static property PLATFORM_SEMAPHORE_TYPES:                     clPlatformInfo read new clPlatformInfo($2036);
     public static property PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES:       clPlatformInfo read new clPlatformInfo($2037);
     public static property PLATFORM_SEMAPHORE_EXPORT_HANDLE_TYPES:       clPlatformInfo read new clPlatformInfo($2038);
@@ -4856,6 +4857,8 @@ type
         Result := 'PLATFORM_COMMAND_BUFFER_CAPABILITIES' else
       if PLATFORM_ICD_SUFFIX = self then
         Result := 'PLATFORM_ICD_SUFFIX' else
+      if PLATFORM_UNLOADABLE = self then
+        Result := 'PLATFORM_UNLOADABLE' else
       if PLATFORM_SEMAPHORE_TYPES = self then
         Result := 'PLATFORM_SEMAPHORE_TYPES' else
       if PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES = self then
@@ -15191,6 +15194,16 @@ type
       end;
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo_PLATFORM_UNLOADABLE(platform: cl_platform_id; var param_value: clBool; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetPlatformInfo_PLATFORM_UNLOADABLE', CallDebug.Wrap(platform), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clBool>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetPlatformInfo(platform, clPlatformInfo.PLATFORM_UNLOADABLE, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo_PLATFORM_SEMAPHORE_TYPES(platform: cl_platform_id; var param_value: array of clSemaphoreType): clErrorCode;
     begin
       {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetPlatformInfo_PLATFORM_SEMAPHORE_TYPES', CallDebug.Wrap(platform), CallDebug.WrapVarArg(param_value)); try{$endif}
@@ -16519,7 +16532,7 @@ type
   {$endif DEBUG}
   [PCUNotRestore]
   /// id: cl_loader_layers
-  /// version: 1.0.0
+  /// version: 2.0.0
   clLoaderLayers = sealed partial class
     public constructor(pl: cl_platform_id);
     private constructor := raise new System.NotSupportedException;
@@ -16617,6 +16630,15 @@ type
     begin
       {$ifdef CallDebug}CallDebug.RegisterCallBegin('clLoaderLayers.InitLayer', CallDebug.Wrap(num_entries), CallDebug.Wrap(target_dispatch), CallDebug.Wrap(num_entries_ret), CallDebug.Wrap(layer_dispatch_ret)); try{$endif}
       Result := ntv_InitLayer_4(num_entries, target_dispatch, num_entries_ret, layer_dispatch_ret);
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
+    
+    public DeinitLayer_adr := GetProcAddress('clDeinitLayer');
+    private ntv_DeinitLayer_1 := GetProcOrNil&<function: clErrorCode>(DeinitLayer_adr);
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] function DeinitLayer: clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('clLoaderLayers.DeinitLayer'); try{$endif}
+      Result := ntv_DeinitLayer_1;
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
     

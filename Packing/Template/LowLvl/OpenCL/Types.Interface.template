@@ -4683,6 +4683,7 @@
     public static property PLATFORM_EXTENSIONS_WITH_VERSION:             clPlatformInfo read new clPlatformInfo($0907);
     public static property PLATFORM_COMMAND_BUFFER_CAPABILITIES:         clPlatformInfo read new clPlatformInfo($0908);
     public static property PLATFORM_ICD_SUFFIX:                          clPlatformInfo read new clPlatformInfo($0920);
+    public static property PLATFORM_UNLOADABLE:                          clPlatformInfo read new clPlatformInfo($0921);
     public static property PLATFORM_SEMAPHORE_TYPES:                     clPlatformInfo read new clPlatformInfo($2036);
     public static property PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES:       clPlatformInfo read new clPlatformInfo($2037);
     public static property PLATFORM_SEMAPHORE_EXPORT_HANDLE_TYPES:       clPlatformInfo read new clPlatformInfo($2038);
@@ -4710,6 +4711,8 @@
         Result := 'PLATFORM_COMMAND_BUFFER_CAPABILITIES' else
       if PLATFORM_ICD_SUFFIX = self then
         Result := 'PLATFORM_ICD_SUFFIX' else
+      if PLATFORM_UNLOADABLE = self then
+        Result := 'PLATFORM_UNLOADABLE' else
       if PLATFORM_SEMAPHORE_TYPES = self then
         Result := 'PLATFORM_SEMAPHORE_TYPES' else
       if PLATFORM_SEMAPHORE_IMPORT_HANDLE_TYPES = self then

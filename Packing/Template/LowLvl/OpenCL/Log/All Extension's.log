@@ -10,10 +10,12 @@
 
 # clLoaderLayers (cl_loader_layers)
 	Enum [cl::LAYER_API_VERSION_100]
+	Enum [cl::LAYER_API_VERSION_200]
 	Enum [cl::LAYER_API_VERSION]
 	Enum [cl::LAYER_NAME]
 	Func [cl::GetLayerInfo]
 	Func [cl::InitLayer]
+	Func [cl::DeinitLayer]
 
 # clDeviceAttributeQueryAMD (cl_amd_device_attribute_query)
 	Enum [cl::DEVICE_PREFERRED_WORK_GROUP_SIZE]
@@ -914,6 +916,7 @@
 # clIcdKHR (cl_khr_icd)
 	Enum [cl::PLATFORM_NOT_FOUND]
 	Enum [cl::PLATFORM_ICD_SUFFIX]
+	Enum [cl::PLATFORM_UNLOADABLE]
 	Func [cl::IcdGetPlatformIDs + KHR]
 	Func [cl::IcdGetFunctionAddressForPlatform + KHR]
 	Func [cl::IcdSetPlatformDispatchData + KHR]

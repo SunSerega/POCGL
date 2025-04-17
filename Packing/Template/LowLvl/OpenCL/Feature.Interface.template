@@ -8670,6 +8670,16 @@
       end;
       {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
     end;
+    public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo_PLATFORM_UNLOADABLE(platform: cl_platform_id; var param_value: clBool; param_value_validate_size: boolean := false): clErrorCode;
+    begin
+      {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetPlatformInfo_PLATFORM_UNLOADABLE', CallDebug.Wrap(platform), CallDebug.WrapVarArg(param_value)); try{$endif}
+      var param_value_sz := new UIntPtr(Marshal.SizeOf&<clBool>);
+      var param_value_ret_size: UIntPtr;
+      Result := GetPlatformInfo(platform, clPlatformInfo.PLATFORM_UNLOADABLE, param_value_sz,param_value,param_value_ret_size);
+      if param_value_validate_size and (param_value_ret_size<>param_value_sz) then
+        raise new InvalidOperationException($'Implementation returned a size of {param_value_ret_size} instead of {param_value_sz}');
+      {$ifdef CallDebug}CallDebug.RegisterCallResult(CallDebug.Wrap(Result)); finally CallDebug.RegisterCallEnd; end;{$endif}
+    end;
     public [MethodImpl(MethodImplOptions.AggressiveInlining)] static function GetPlatformInfo_PLATFORM_SEMAPHORE_TYPES(platform: cl_platform_id; var param_value: array of clSemaphoreType): clErrorCode;
     begin
       {$ifdef CallDebug}CallDebug.RegisterCallBegin('cl.GetPlatformInfo_PLATFORM_SEMAPHORE_TYPES', CallDebug.Wrap(platform), CallDebug.WrapVarArg(param_value)); try{$endif}
