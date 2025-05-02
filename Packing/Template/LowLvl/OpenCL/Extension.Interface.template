@@ -1313,6 +1313,13 @@
     public const ExtensionString = 'cl_ext_image_unorm_int_2_101010';
   end;
   
+  /// id: cl_ext_image_unsigned_10x6_12x4_14x2
+  /// version: 1.0.0
+  /// core dependency: cl 1.2
+  clImageUnsigned10x612x414x2EXT = static class
+    public const ExtensionString = 'cl_ext_image_unsigned_10x6_12x4_14x2';
+  end;
+  
   /// id: cl_ext_immutable_memory_objects
   /// version: 1.0.0
   /// core dependency: cl 1.2
@@ -8451,6 +8458,16 @@
     
   end;
   
+  /// id: cl_khr_external_semaphore_dx_fence
+  /// version: 0.9.0 (provisional)
+  /// core dependency: cl 1.2
+  /// ext dependencies:
+  /// - cl_khr_external_semaphore (clExternalSemaphoreKHR)
+  /// - cl_khr_semaphore (clSemaphoreKHR)
+  clExternalSemaphoreDxFenceKHR = static class
+    public const ExtensionString = 'cl_khr_external_semaphore_dx_fence';
+  end;
+  
   /// id: cl_khr_external_semaphore_opaque_fd
   /// version: 1.0.0
   /// core dependency: cl 1.2
@@ -9302,7 +9319,7 @@
   end;
   
   /// id: cl_khr_kernel_clock
-  /// version: 0.9.0 (provisional)
+  /// version: 1.0.0
   clKernelClockKHR = static class
     public const ExtensionString = 'cl_khr_kernel_clock';
   end;

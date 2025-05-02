@@ -9194,6 +9194,7 @@
 	Enum [gl::TEXTURE_EXTERNAL]
 	Enum [gl::TEXTURE_BINDING_EXTERNAL]
 	Enum [gl::REQUIRED_TEXTURE_IMAGE_UNITS]
+	Func [gl::EGLImageTargetTexture2D + OES]
 
 # gles1ElementIndexUintOES (GL_OES_element_index_uint)
 	Enum [gl::UNSIGNED_INT]
@@ -11854,6 +11855,7 @@
 	Enum [gl::SAMPLER_EXTERNAL]
 	Enum [gl::TEXTURE_BINDING_EXTERNAL]
 	Enum [gl::REQUIRED_TEXTURE_IMAGE_UNITS]
+	Func [gl::EGLImageTargetTexture2D + OES]
 
 # gles2EGLImageExternalEssl3OES (GL_OES_EGL_image_external_essl3)
 
