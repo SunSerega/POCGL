@@ -272,9 +272,15 @@
     public static property FLOAT:              clChannelType read new clChannelType($10DE);
     public static property UNORM_INT24:        clChannelType read new clChannelType($10DF);
     public static property UNORM_INT_101010_2: clChannelType read new clChannelType($10E0);
+    public static property UNORM_INT10X6:      clChannelType read new clChannelType($10E1);
     public static property UNSIGNED_INT_RAW10: clChannelType read new clChannelType($10E3);
     public static property UNSIGNED_INT_RAW12: clChannelType read new clChannelType($10E4);
     public static property UNORM_INT_2_101010: clChannelType read new clChannelType($10E5);
+    public static property UNSIGNED_INT10X6:   clChannelType read new clChannelType($10E6);
+    public static property UNSIGNED_INT12X4:   clChannelType read new clChannelType($10E7);
+    public static property UNSIGNED_INT14X2:   clChannelType read new clChannelType($10E8);
+    public static property UNORM_INT12X4:      clChannelType read new clChannelType($10E9);
+    public static property UNORM_INT14X2:      clChannelType read new clChannelType($10EA);
     
     public function ToString: string; override;
     begin
@@ -312,12 +318,24 @@
         Result := 'UNORM_INT24' else
       if UNORM_INT_101010_2 = self then
         Result := 'UNORM_INT_101010_2' else
+      if UNORM_INT10X6 = self then
+        Result := 'UNORM_INT10X6' else
       if UNSIGNED_INT_RAW10 = self then
         Result := 'UNSIGNED_INT_RAW10' else
       if UNSIGNED_INT_RAW12 = self then
         Result := 'UNSIGNED_INT_RAW12' else
       if UNORM_INT_2_101010 = self then
         Result := 'UNORM_INT_2_101010' else
+      if UNSIGNED_INT10X6 = self then
+        Result := 'UNSIGNED_INT10X6' else
+      if UNSIGNED_INT12X4 = self then
+        Result := 'UNSIGNED_INT12X4' else
+      if UNSIGNED_INT14X2 = self then
+        Result := 'UNSIGNED_INT14X2' else
+      if UNORM_INT12X4 = self then
+        Result := 'UNORM_INT12X4' else
+      if UNORM_INT14X2 = self then
+        Result := 'UNORM_INT14X2' else
         Result := $'clChannelType[{self.val}]';
     end;
     
@@ -3363,6 +3381,7 @@
     public static property SEMAPHORE_HANDLE_OPAQUE_WIN32:      clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2056);
     public static property SEMAPHORE_HANDLE_OPAQUE_WIN32_KMT:  clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2057);
     public static property SEMAPHORE_HANDLE_SYNC_FD:           clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2058);
+    public static property SEMAPHORE_HANDLE_D3D12_FENCE:       clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2059);
     public static property SEMAPHORE_HANDLE_OPAQUE_WIN32_NAME: clExternalSemaphoreHandleType read new clExternalSemaphoreHandleType($2068);
     
     public function ToString: string; override;
@@ -3375,6 +3394,8 @@
         Result := 'SEMAPHORE_HANDLE_OPAQUE_WIN32_KMT' else
       if SEMAPHORE_HANDLE_SYNC_FD = self then
         Result := 'SEMAPHORE_HANDLE_SYNC_FD' else
+      if SEMAPHORE_HANDLE_D3D12_FENCE = self then
+        Result := 'SEMAPHORE_HANDLE_D3D12_FENCE' else
       if SEMAPHORE_HANDLE_OPAQUE_WIN32_NAME = self then
         Result := 'SEMAPHORE_HANDLE_OPAQUE_WIN32_NAME' else
         Result := $'clExternalSemaphoreHandleType[{self.val}]';
